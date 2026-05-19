@@ -1,6 +1,7 @@
 import type { NextAuthConfig } from "next-auth";
 import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
+import { TelegramProvider } from "@/lib/telegram-provider";
 
 export const authConfig = {
   providers: [
@@ -12,6 +13,7 @@ export const authConfig = {
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     }),
+    TelegramProvider(),
   ],
   pages: {
     signIn: "/en/login",
