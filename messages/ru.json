@@ -1,0 +1,22 @@
+{
+  "common": {
+    "appName": "Trientes",
+    "tagline": "Топ криптовалют Layer-1, по рангу.",
+    "signIn": "Войти",
+    "signOut": "Выйти",
+    "settings": "Настройки",
+    "admin": "Админ",
+    "watchlist": "Избранное",
+    "request": "Предложить монету",
+    "languageLabel": "Язык",
+    "currencyLabel": "Валюта",
+    "themeLabel": "Тема",
+    "themeLight": "Светлая",
+    "themeDark": "Тёмная",
+    "themeSystem": "Системная"
+  },
+  "home": {
+    "title": "Добро пожаловать",
+    "comingSoon": "Список монет — в Phase 2."
+  }
+}

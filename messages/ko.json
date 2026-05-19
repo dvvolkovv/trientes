@@ -1,0 +1,19 @@
+{
+  "common": {
+    "appName": "Trientes",
+    "tagline": "레이어-1 암호화폐 순위.",
+    "signIn": "로그인",
+    "signOut": "로그아웃",
+    "settings": "설정",
+    "admin": "관리자",
+    "watchlist": "관심목록",
+    "request": "코인 요청",
+    "languageLabel": "언어",
+    "currencyLabel": "통화",
+    "themeLabel": "테마",
+    "themeLight": "라이트",
+    "themeDark": "다크",
+    "themeSystem": "시스템"
+  },
+  "home": { "title": "환영합니다", "comingSoon": "코인 목록은 2단계에 공개." }
+}

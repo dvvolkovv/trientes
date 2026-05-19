@@ -1,0 +1,19 @@
+{
+  "common": {
+    "appName": "Trientes",
+    "tagline": "En iyi Layer-1 kripto paralar, sıralı.",
+    "signIn": "Giriş yap",
+    "signOut": "Çıkış yap",
+    "settings": "Ayarlar",
+    "admin": "Yönetici",
+    "watchlist": "İzleme listesi",
+    "request": "Coin öner",
+    "languageLabel": "Dil",
+    "currencyLabel": "Para birimi",
+    "themeLabel": "Tema",
+    "themeLight": "Açık",
+    "themeDark": "Koyu",
+    "themeSystem": "Sistem"
+  },
+  "home": { "title": "Hoş geldiniz", "comingSoon": "Coin listesi 2. Aşama'da." }
+}

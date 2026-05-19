@@ -1,0 +1,19 @@
+{
+  "common": {
+    "appName": "Trientes",
+    "tagline": "Layer-1 加密货币排行榜。",
+    "signIn": "登录",
+    "signOut": "退出",
+    "settings": "设置",
+    "admin": "管理员",
+    "watchlist": "收藏",
+    "request": "申请添加币种",
+    "languageLabel": "语言",
+    "currencyLabel": "货币",
+    "themeLabel": "主题",
+    "themeLight": "亮色",
+    "themeDark": "深色",
+    "themeSystem": "系统"
+  },
+  "home": { "title": "欢迎", "comingSoon": "币种列表将在第二阶段上线。" }
+}

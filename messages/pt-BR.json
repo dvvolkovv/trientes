@@ -1,0 +1,19 @@
+{
+  "common": {
+    "appName": "Trientes",
+    "tagline": "As principais criptomoedas Layer-1, classificadas.",
+    "signIn": "Entrar",
+    "signOut": "Sair",
+    "settings": "Configurações",
+    "admin": "Admin",
+    "watchlist": "Favoritos",
+    "request": "Solicitar moeda",
+    "languageLabel": "Idioma",
+    "currencyLabel": "Moeda",
+    "themeLabel": "Tema",
+    "themeLight": "Claro",
+    "themeDark": "Escuro",
+    "themeSystem": "Sistema"
+  },
+  "home": { "title": "Bem-vindo", "comingSoon": "Listagem de moedas na Fase 2." }
+}

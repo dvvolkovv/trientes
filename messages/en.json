@@ -1,0 +1,22 @@
+{
+  "common": {
+    "appName": "Trientes",
+    "tagline": "Top Layer-1 cryptocurrencies, ranked.",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "settings": "Settings",
+    "admin": "Admin",
+    "watchlist": "Watchlist",
+    "request": "Request a coin",
+    "languageLabel": "Language",
+    "currencyLabel": "Currency",
+    "themeLabel": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System"
+  },
+  "home": {
+    "title": "Welcome",
+    "comingSoon": "Coin listings coming in Phase 2."
+  }
+}

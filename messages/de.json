@@ -1,0 +1,19 @@
+{
+  "common": {
+    "appName": "Trientes",
+    "tagline": "Die Top Layer-1-Kryptowährungen, sortiert.",
+    "signIn": "Anmelden",
+    "signOut": "Abmelden",
+    "settings": "Einstellungen",
+    "admin": "Admin",
+    "watchlist": "Watchlist",
+    "request": "Coin vorschlagen",
+    "languageLabel": "Sprache",
+    "currencyLabel": "Währung",
+    "themeLabel": "Design",
+    "themeLight": "Hell",
+    "themeDark": "Dunkel",
+    "themeSystem": "System"
+  },
+  "home": { "title": "Willkommen", "comingSoon": "Coin-Liste in Phase 2." }
+}

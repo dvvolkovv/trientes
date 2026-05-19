@@ -1,0 +1,19 @@
+{
+  "common": {
+    "appName": "Trientes",
+    "tagline": "Les meilleures cryptomonnaies Layer-1, classées.",
+    "signIn": "Se connecter",
+    "signOut": "Se déconnecter",
+    "settings": "Paramètres",
+    "admin": "Admin",
+    "watchlist": "Favoris",
+    "request": "Proposer une monnaie",
+    "languageLabel": "Langue",
+    "currencyLabel": "Devise",
+    "themeLabel": "Thème",
+    "themeLight": "Clair",
+    "themeDark": "Sombre",
+    "themeSystem": "Système"
+  },
+  "home": { "title": "Bienvenue", "comingSoon": "Liste des monnaies en phase 2." }
+}
