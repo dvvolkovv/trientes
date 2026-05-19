@@ -13,7 +13,7 @@ export default async function LoginPage({
   return (
     <main className="container mx-auto max-w-md px-4 py-16">
       <h1 className="text-3xl font-bold mb-8">{t("signIn")}</h1>
-      <LoginButtons />
+      <LoginButtons telegramBotUsername={process.env.TELEGRAM_BOT_USERNAME} />
     </main>
   );
 }
