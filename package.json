@@ -13,7 +13,9 @@
     "db:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
     "db:generate": "prisma generate",
-    "grant-admin": "tsx scripts/grant-admin.ts"
+    "grant-admin": "tsx scripts/grant-admin.ts",
+    "worker:dev": "tsx watch worker/index.ts",
+    "worker:start": "tsx worker/index.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.2",
