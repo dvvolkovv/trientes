@@ -3,6 +3,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { SUPPORTED_LOCALES } from "@/lib/locales";
 
 const ALLOWED_CURRENCIES = ["USD", "EUR", "RUB", "GBP", "JPY", "CNY", "BTC", "ETH"];
 const ALLOWED_THEMES = ["light", "dark", "system"];
@@ -17,7 +18,8 @@ export async function updatePreferences(input: {
   if (!userId) return { ok: false, reason: "unauth" as const };
 
   const data: { preferredLocale?: string; preferredCurrency?: string; preferredTheme?: string } = {};
-  if (input.locale) data.preferredLocale = input.locale;
+  if (input.locale && SUPPORTED_LOCALES.includes(input.locale as typeof SUPPORTED_LOCALES[number]))
+    data.preferredLocale = input.locale;
   if (input.currency && ALLOWED_CURRENCIES.includes(input.currency))
     data.preferredCurrency = input.currency;
   if (input.theme && ALLOWED_THEMES.includes(input.theme))

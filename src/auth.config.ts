@@ -11,12 +11,21 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request }) {
       const path = request.nextUrl.pathname;
+      const locale = path.split("/")[1] || "en";
       const isAdminRoute = /\/[a-z-]+\/admin(\/|$)/i.test(path);
       const isProtectedRoute =
         /\/[a-z-]+\/(watchlist|request|settings)(\/|$)/i.test(path);
       const role = (auth?.user as { role?: string } | undefined)?.role;
-      if (isAdminRoute) return role === "ADMIN";
-      if (isProtectedRoute) return !!auth?.user;
+      if (isAdminRoute && role !== "ADMIN") {
+        return Response.redirect(
+          new URL(`/${locale}/login`, request.nextUrl),
+        );
+      }
+      if (isProtectedRoute && !auth?.user) {
+        return Response.redirect(
+          new URL(`/${locale}/login`, request.nextUrl),
+        );
+      }
       return true;
     },
   },
