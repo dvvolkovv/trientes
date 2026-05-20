@@ -18,7 +18,13 @@
   },
   "home": {
     "title": "Welcome",
-    "comingSoon": "Coin listings coming in Phase 2."
+    "comingSoon": "Coin listings coming in Phase 2.",
+    "heroLine1": "The ledger",
+    "heroLine2Before": "of digital ",
+    "heroLine2Accent": "coinage",
+    "heroLine2After": ".",
+    "heroSubtitle": "Live prices for the top Layer-1 cryptocurrencies. Eight display currencies, sparkline trends, and per-coin detail pages.",
+    "heroEyebrow": "Live · Layer-1 Ledger · refreshed every 10 min"
   },
   "listing": {
     "rank": "#",

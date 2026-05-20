@@ -18,7 +18,13 @@
   },
   "home": {
     "title": "Bienvenue",
-    "comingSoon": "Liste des monnaies en phase 2."
+    "comingSoon": "Liste des monnaies en phase 2.",
+    "heroLine1": "Le grand livre",
+    "heroLine2Before": "de la monnaie ",
+    "heroLine2Accent": "numérique",
+    "heroLine2After": ".",
+    "heroSubtitle": "Cours en direct des principales cryptomonnaies Layer-1. Huit monnaies d'affichage, graphiques 7j et pages détaillées.",
+    "heroEyebrow": "En direct · Layer-1 Ledger · actualisé toutes les 10 min"
   },
   "listing": {
     "rank": "#",

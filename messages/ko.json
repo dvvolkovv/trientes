@@ -18,7 +18,13 @@
   },
   "home": {
     "title": "환영합니다",
-    "comingSoon": "코인 목록은 2단계에 공개."
+    "comingSoon": "코인 목록은 2단계에 공개.",
+    "heroLine1": "디지털 자산의",
+    "heroLine2Before": "원장 ",
+    "heroLine2Accent": "실시간",
+    "heroLine2After": ".",
+    "heroSubtitle": "최상위 Layer-1 암호화폐의 실시간 가격. 8개 통화 표시, 7일 차트, 코인별 상세 페이지.",
+    "heroEyebrow": "라이브 · Layer-1 원장 · 10분마다 갱신"
   },
   "listing": {
     "rank": "#",

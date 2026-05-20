@@ -18,7 +18,13 @@
   },
   "home": {
     "title": "Добро пожаловать",
-    "comingSoon": "Список монет — в Phase 2."
+    "comingSoon": "Список монет — в Phase 2.",
+    "heroLine1": "Реестр",
+    "heroLine2Before": "цифровой ",
+    "heroLine2Accent": "монеты",
+    "heroLine2After": ".",
+    "heroSubtitle": "Курсы крупнейших Layer-1 криптовалют. Восемь валют отображения, графики 7д и страницы монет.",
+    "heroEyebrow": "Live · Layer-1 Ledger · обновление каждые 10 минут"
   },
   "listing": {
     "rank": "#",

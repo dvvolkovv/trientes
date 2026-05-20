@@ -18,7 +18,13 @@
   },
   "home": {
     "title": "ようこそ",
-    "comingSoon": "コイン一覧はフェーズ2で公開。"
+    "comingSoon": "コイン一覧はフェーズ2で公開。",
+    "heroLine1": "デジタル",
+    "heroLine2Before": "コイン",
+    "heroLine2Accent": "台帳",
+    "heroLine2After": "。",
+    "heroSubtitle": "主要レイヤー1暗号資産のリアルタイム価格。8通貨表示、7日チャート、コイン詳細ページ。",
+    "heroEyebrow": "ライブ · Layer-1 Ledger · 10分ごとに更新"
   },
   "listing": {
     "rank": "#",

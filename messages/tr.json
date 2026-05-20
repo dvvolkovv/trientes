@@ -18,7 +18,13 @@
   },
   "home": {
     "title": "Hoş geldiniz",
-    "comingSoon": "Coin listesi 2. Aşama'da."
+    "comingSoon": "Coin listesi 2. Aşama'da.",
+    "heroLine1": "Dijital paranın",
+    "heroLine2Before": "büyük ",
+    "heroLine2Accent": "defteri",
+    "heroLine2After": ".",
+    "heroSubtitle": "En önemli Layer-1 kripto paraların canlı fiyatları. Sekiz görüntüleme para birimi ve 7 günlük grafikler.",
+    "heroEyebrow": "Canlı · Layer-1 Defteri · 10 dakikada bir yenilenir"
   },
   "listing": {
     "rank": "#",

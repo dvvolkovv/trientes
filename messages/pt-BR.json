@@ -18,7 +18,13 @@
   },
   "home": {
     "title": "Bem-vindo",
-    "comingSoon": "Listagem de moedas na Fase 2."
+    "comingSoon": "Listagem de moedas na Fase 2.",
+    "heroLine1": "O livro-razão",
+    "heroLine2Before": "da moeda ",
+    "heroLine2Accent": "digital",
+    "heroLine2After": ".",
+    "heroSubtitle": "Cotações em tempo real das principais criptomoedas Layer-1. Oito moedas de exibição e gráficos de 7 dias.",
+    "heroEyebrow": "Ao vivo · Layer-1 Ledger · atualizado a cada 10 min"
   },
   "listing": {
     "rank": "#",

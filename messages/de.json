@@ -18,7 +18,13 @@
   },
   "home": {
     "title": "Willkommen",
-    "comingSoon": "Coin-Liste in Phase 2."
+    "comingSoon": "Coin-Liste in Phase 2.",
+    "heroLine1": "Das Hauptbuch",
+    "heroLine2Before": "der digitalen ",
+    "heroLine2Accent": "Münzen",
+    "heroLine2After": ".",
+    "heroSubtitle": "Live-Preise der wichtigsten Layer-1-Kryptowährungen. Acht Anzeigewährungen und 7-Tage-Charts.",
+    "heroEyebrow": "Live · Layer-1 Hauptbuch · alle 10 Min. aktualisiert"
   },
   "listing": {
     "rank": "#",
