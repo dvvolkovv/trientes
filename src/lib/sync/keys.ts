@@ -1,5 +1,7 @@
 export const KEYS = {
   topList: "snapshot:list:top100",
+  adminAddedList: "snapshot:list:admin",
+  exchangesList: "snapshot:exchanges:top100",
   coin: (id: string) => `snapshot:coin:${id}`,
   globalStats: "global:stats",
   exchangeRates: "exchange:rates",
@@ -10,6 +12,8 @@ export const TTL = {
   snapshot: 900,        // 15 min — covers the 10 min price-sync interval with margin
   globalStats: 2400,    // 40 min — covers the 30 min global-sync interval
   exchangeRates: 2400,  // 40 min — rates barely move
+  exchanges: 3600,         // 1h — list barely moves in scale
+  adminAddedList: 3600,    // 1h
 } as const;
 
 export const HISTORY_KEY = (id: string, timeframe: string) => `coin:history:${id}:${timeframe}`;

@@ -289,3 +289,20 @@ export async function fetchExchanges(btcUsd: number): Promise<Exchange[]> {
   if (!Array.isArray(raw)) throw new Error("coingecko /exchanges: not an array");
   return raw.map((row) => parseExchange(row, btcUsd));
 }
+
+export async function fetchMarketsByIds(ids: string[]): Promise<MarketRow[]> {
+  if (ids.length === 0) return [];
+  const raw = await cgFetch("/coins/markets", {
+    vs_currency: "usd",
+    ids: ids.join(","),
+    order: "market_cap_desc",
+    per_page: String(Math.min(ids.length, 250)),
+    page: "1",
+    sparkline: "true",
+    price_change_percentage: "1h,24h,7d",
+  });
+  if (!Array.isArray(raw)) throw new Error("coingecko /coins/markets ids: not an array");
+  return (raw as unknown[])
+    .filter((r) => typeof (r as { market_cap_rank?: unknown }).market_cap_rank === "number")
+    .map(parseMarketRow);
+}

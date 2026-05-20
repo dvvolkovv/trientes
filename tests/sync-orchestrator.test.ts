@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
-import { syncPrices, syncGlobal, syncExchangeRates } from "@/lib/sync/orchestrator";
+import { syncPrices, syncGlobal, syncExchangeRates, syncExchanges, syncAdminAddedPrices } from "@/lib/sync/orchestrator";
 import { KEYS } from "@/lib/sync/keys";
-import type { MarketRow, GlobalSnap } from "@/lib/coingecko";
+import type { MarketRow, GlobalSnap, Exchange } from "@/lib/coingecko";
 
 function makeFakes() {
   const redisStore = new Map<string, string>();
@@ -136,5 +136,83 @@ describe("syncExchangeRates", () => {
     });
     expect(redisStore.get(KEYS.exchangeRates)).toBeDefined();
     expect(JSON.parse(redisStore.get(KEYS.exchangeRates)!).usd.value).toBe(75000);
+  });
+});
+
+describe("syncExchanges", () => {
+  const ex: Exchange = {
+    id: "gdax",
+    name: "Coinbase Exchange",
+    logoUrl: "https://example.com/c.png",
+    country: "United States",
+    yearEstablished: 2012,
+    trustScore: 10,
+    trustScoreRank: 1,
+    volume24hBtc: 15000,
+    volume24hUsd: 15000 * 76000,
+    url: "https://coinbase.com/",
+    hasTradingIncentive: false,
+  };
+
+  it("writes Redis snapshot and upserts each exchange", async () => {
+    const redisStore = new Map<string, string>();
+    const fakeRedis = { set: vi.fn(async (k: string, v: string) => { redisStore.set(k, v); return "OK"; }) };
+    const upserts: string[] = [];
+    const fakePrisma = {
+      exchange: {
+        upsert: vi.fn(async ({ where }: any) => { upserts.push(where.id); return {}; }),
+      },
+    };
+    const result = await syncExchanges({
+      fetchExchanges: async () => [ex, { ...ex, id: "binance", trustScoreRank: 2 }],
+      btcUsd: 76000,
+      redis: fakeRedis as never,
+      prisma: fakePrisma as never,
+    });
+    expect(result).toEqual({ count: 2 });
+    expect(upserts).toEqual(["gdax", "binance"]);
+    expect(JSON.parse(redisStore.get("snapshot:exchanges:top100")!)).toHaveLength(2);
+  });
+});
+
+describe("syncAdminAddedPrices", () => {
+  const row: MarketRow = {
+    id: "myadmin", symbol: "ADM", name: "Admin Coin", logoUrl: null,
+    rank: 9999, priceUsd: 1, marketCapUsd: 100, volume24hUsd: 10,
+    circulatingSupply: null, totalSupply: null, maxSupply: null,
+    pctChange1h: null, pctChange24h: null, pctChange7d: null,
+    sparkline7d: null,
+  };
+
+  it("writes empty list and skips fetch when no admin ids", async () => {
+    const redisStore = new Map<string, string>();
+    const fakeRedis = { set: vi.fn(async (k: string, v: string) => { redisStore.set(k, v); return "OK"; }) };
+    const fetchByIds = vi.fn(async () => []);
+    const fakePrisma = makeFakes().fakePrisma;
+    const result = await syncAdminAddedPrices({
+      listAdminAddedIds: async () => [],
+      fetchByIds: fetchByIds as never,
+      redis: fakeRedis as never,
+      prisma: fakePrisma as never,
+    });
+    expect(result).toEqual({ count: 0 });
+    expect(fetchByIds).not.toHaveBeenCalled();
+    expect(redisStore.get("snapshot:list:admin")).toBe("[]");
+  });
+
+  it("fetches and persists when admin ids exist", async () => {
+    const { redisStore, fakeRedis, fakePrisma, createdSnapshots, upsertedCoins } = makeFakes();
+    const fetchByIds = vi.fn(async (ids: string[]) => ids.map((id) => ({ ...row, id })));
+    const result = await syncAdminAddedPrices({
+      listAdminAddedIds: async () => ["coinx"],
+      fetchByIds: fetchByIds as never,
+      redis: fakeRedis as never,
+      prisma: fakePrisma as never,
+    });
+    expect(result).toEqual({ count: 1 });
+    expect(fetchByIds).toHaveBeenCalledWith(["coinx"]);
+    expect(JSON.parse(redisStore.get("snapshot:list:admin")!)).toHaveLength(1);
+    expect(upsertedCoins).toEqual([{ id: "coinx", rank: 9999 }]);
+    expect(createdSnapshots).toEqual([{ coinId: "coinx", priceUsd: 1 }]);
   });
 });

@@ -1,4 +1,4 @@
-import type { MarketRow, GlobalSnap, ExchangeRates, CoinDetail } from "@/lib/coingecko";
+import type { MarketRow, GlobalSnap, ExchangeRates, CoinDetail, Exchange } from "@/lib/coingecko";
 import { KEYS, TTL } from "./keys";
 
 // Minimal interfaces — we only use what we need so tests can pass fakes.
@@ -170,4 +170,112 @@ export async function syncCoinMetadata(deps: {
   }
 
   return { updated, skipped, failed };
+}
+
+export async function syncExchanges(deps: {
+  fetchExchanges: (btcUsd: number) => Promise<Exchange[]>;
+  btcUsd: number;
+  redis: RedisLike;
+  prisma: {
+    exchange: {
+      upsert(args: {
+        where: { id: string };
+        update: Record<string, unknown>;
+        create: Record<string, unknown>;
+      }): Promise<unknown>;
+    };
+  };
+}): Promise<{ count: number }> {
+  const list = await deps.fetchExchanges(deps.btcUsd);
+  await deps.redis.set(KEYS.exchangesList, JSON.stringify(list), "EX", TTL.exchanges);
+
+  for (const e of list) {
+    await deps.prisma.exchange.upsert({
+      where: { id: e.id },
+      update: {
+        name: e.name,
+        logoUrl: e.logoUrl,
+        country: e.country,
+        yearEstablished: e.yearEstablished,
+        trustScore: e.trustScore,
+        trustScoreRank: e.trustScoreRank,
+        volume24hBtc: e.volume24hBtc,
+        volume24hUsd: e.volume24hUsd,
+        url: e.url,
+        hasTradingIncentive: e.hasTradingIncentive,
+      },
+      create: {
+        id: e.id,
+        name: e.name,
+        logoUrl: e.logoUrl,
+        country: e.country,
+        yearEstablished: e.yearEstablished,
+        trustScore: e.trustScore,
+        trustScoreRank: e.trustScoreRank,
+        volume24hBtc: e.volume24hBtc,
+        volume24hUsd: e.volume24hUsd,
+        url: e.url,
+        hasTradingIncentive: e.hasTradingIncentive,
+      },
+    });
+  }
+  return { count: list.length };
+}
+
+export async function syncAdminAddedPrices(deps: {
+  // Returns admin-added coin ids; empty array means "nothing to do".
+  listAdminAddedIds: () => Promise<string[]>;
+  fetchByIds: (ids: string[]) => Promise<MarketRow[]>;
+  redis: RedisLike;
+  prisma: PrismaLike;
+}): Promise<{ count: number }> {
+  const ids = await deps.listAdminAddedIds();
+  if (ids.length === 0) {
+    // Clear stale snapshot so the public listing doesn't show orphaned admin coins.
+    await deps.redis.set(KEYS.adminAddedList, JSON.stringify([]), "EX", TTL.adminAddedList);
+    return { count: 0 };
+  }
+
+  const rows = await deps.fetchByIds(ids);
+  await deps.redis.set(KEYS.adminAddedList, JSON.stringify(rows), "EX", TTL.adminAddedList);
+
+  // Per-coin cache + DB snapshot, same as syncPrices.
+  for (const r of rows) {
+    await deps.redis.set(KEYS.coin(r.id), JSON.stringify(r), "EX", TTL.snapshot);
+    await deps.prisma.coin.upsert({
+      where: { id: r.id },
+      update: {
+        symbol: r.symbol,
+        name: r.name,
+        logoUrl: r.logoUrl,
+        rank: r.rank,
+      },
+      // ADMIN_ADDED row already exists from approval; this branch is a defensive fallback.
+      create: {
+        id: r.id,
+        symbol: r.symbol,
+        name: r.name,
+        slug: r.id,
+        rank: r.rank,
+        logoUrl: r.logoUrl,
+        source: "ADMIN_ADDED",
+      },
+    });
+    await deps.prisma.coinSnapshot.create({
+      data: {
+        coinId: r.id,
+        priceUsd: r.priceUsd,
+        marketCapUsd: r.marketCapUsd,
+        volume24hUsd: r.volume24hUsd,
+        pctChange1h: r.pctChange1h,
+        pctChange24h: r.pctChange24h,
+        pctChange7d: r.pctChange7d,
+        circulatingSupply: r.circulatingSupply,
+        totalSupply: r.totalSupply,
+        maxSupply: r.maxSupply,
+        sparkline7d: r.sparkline7d,
+      },
+    });
+  }
+  return { count: rows.length };
 }
