@@ -1,4 +1,4 @@
-import type { MarketRow, GlobalSnap } from "@/lib/coingecko";
+import type { MarketRow, GlobalSnap, ExchangeRates } from "@/lib/coingecko";
 import { redis } from "@/lib/redis";
 import { prisma } from "@/lib/prisma";
 import { KEYS } from "@/lib/sync/keys";
@@ -57,6 +57,7 @@ export async function readTop100(): Promise<MarketRow[]> {
         pctChange1h: s.pctChange1h,
         pctChange24h: s.pctChange24h,
         pctChange7d: s.pctChange7d,
+        sparkline7d: Array.isArray(s.sparkline7d) ? (s.sparkline7d as number[]) : null,
       };
     });
 }
@@ -80,4 +81,14 @@ export async function readGlobalStats(): Promise<GlobalSnap | null> {
     activeCryptos: row.activeCryptos,
     markets: row.markets,
   };
+}
+
+export async function readExchangeRates(): Promise<ExchangeRates | null> {
+  const cached = await redisGet(KEYS.exchangeRates);
+  if (!cached) return null;
+  try {
+    return JSON.parse(cached) as ExchangeRates;
+  } catch {
+    return null;
+  }
 }

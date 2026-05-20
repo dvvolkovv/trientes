@@ -1,4 +1,4 @@
-import type { MarketRow, GlobalSnap } from "@/lib/coingecko";
+import type { MarketRow, GlobalSnap, ExchangeRates } from "@/lib/coingecko";
 import { KEYS, TTL } from "./keys";
 
 // Minimal interfaces — we only use what we need so tests can pass fakes.
@@ -75,6 +75,7 @@ export async function syncPrices(deps: {
         circulatingSupply: r.circulatingSupply,
         totalSupply: r.totalSupply,
         maxSupply: r.maxSupply,
+        sparkline7d: r.sparkline7d,
       },
     });
   }
@@ -94,4 +95,12 @@ export async function syncGlobal(deps: {
     update: { ...snap },
     create: { id: 1, ...snap },
   });
+}
+
+export async function syncExchangeRates(deps: {
+  fetchExchangeRates: () => Promise<ExchangeRates>;
+  redis: RedisLike;
+}): Promise<void> {
+  const rates = await deps.fetchExchangeRates();
+  await deps.redis.set(KEYS.exchangeRates, JSON.stringify(rates), "EX", TTL.exchangeRates);
 }

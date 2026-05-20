@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { syncPrices, syncGlobal } from "@/lib/sync/orchestrator";
+import { syncPrices, syncGlobal, syncExchangeRates } from "@/lib/sync/orchestrator";
 import { KEYS } from "@/lib/sync/keys";
 import type { MarketRow, GlobalSnap } from "@/lib/coingecko";
 
@@ -48,6 +48,7 @@ const row: MarketRow = {
   pctChange1h: 0.02,
   pctChange24h: -0.46,
   pctChange7d: -4.71,
+  sparkline7d: [1, 2, 3],
 };
 
 describe("syncPrices", () => {
@@ -121,5 +122,19 @@ describe("syncGlobal", () => {
       btcDominancePct: 52.3,
     });
     expect(fakePrisma.globalStats.upsert).toHaveBeenCalled();
+  });
+});
+
+describe("syncExchangeRates", () => {
+  it("writes rates JSON to Redis under exchange:rates", async () => {
+    const { redisStore, fakeRedis } = makeFakes();
+    await syncExchangeRates({
+      fetchExchangeRates: async () => ({
+        usd: { name: "US Dollar", unit: "$", value: 75000, type: "fiat" as const },
+      }),
+      redis: fakeRedis as never,
+    });
+    expect(redisStore.get(KEYS.exchangeRates)).toBeDefined();
+    expect(JSON.parse(redisStore.get(KEYS.exchangeRates)!).usd.value).toBe(75000);
   });
 });
