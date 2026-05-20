@@ -47,46 +47,64 @@ export default async function AdminUsersPage({
   return (
     <>
       <AdminNav locale={locale} active="users" />
-      <header className="mb-6">
-        <h1 className="text-3xl font-bold">{t("users.title")}</h1>
-        <p className="text-muted-foreground mt-1">{t("users.subtitle")}</p>
+      <header className="mb-8">
+        <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-3">
+          Admin
+        </div>
+        <h1 className="text-[40px] md:text-[48px] font-bold tracking-[-0.03em] mb-2">
+          {t("users.title")}
+        </h1>
+        <p className="text-muted">{t("users.subtitle")}</p>
       </header>
 
-      <div className="mb-4">
+      <div className="mb-6">
         <AdminSearchInput placeholder={t("users.searchPlaceholder")} />
       </div>
 
-      <div className="overflow-x-auto rounded-lg border">
-        <table className="w-full text-sm">
-          <thead className="bg-muted/50 text-muted-foreground">
-            <tr className="border-b">
-              <th className="px-3 py-2 text-left font-medium">{t("users.email")}</th>
-              <th className="px-3 py-2 text-left font-medium">{t("users.name")}</th>
-              <th className="px-3 py-2 text-left font-medium">{t("users.providers")}</th>
-              <th className="px-3 py-2 text-left font-medium">{t("users.role")}</th>
-              <th className="px-3 py-2 text-right font-medium">{t("users.action")}</th>
+      <div className="bg-card border border-hairline rounded-[20px] overflow-hidden mt-8">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-hairline">
+              <th className="text-left text-[11px] uppercase tracking-[0.18em] text-muted font-medium px-5 py-4">
+                {t("users.email")}
+              </th>
+              <th className="text-left text-[11px] uppercase tracking-[0.18em] text-muted font-medium px-5 py-4">
+                {t("users.name")}
+              </th>
+              <th className="text-left text-[11px] uppercase tracking-[0.18em] text-muted font-medium px-5 py-4">
+                {t("users.providers")}
+              </th>
+              <th className="text-left text-[11px] uppercase tracking-[0.18em] text-muted font-medium px-5 py-4">
+                {t("users.role")}
+              </th>
+              <th className="text-right text-[11px] uppercase tracking-[0.18em] text-muted font-medium px-5 py-4">
+                {t("users.action")}
+              </th>
             </tr>
           </thead>
           <tbody>
-            {users.map((u) => (
-              <tr key={u.id} className="border-b">
-                <td className="px-3 py-2">{u.email ?? "—"}</td>
-                <td className="px-3 py-2">{u.name ?? "—"}</td>
-                <td className="px-3 py-2 text-xs text-muted-foreground">
+            {users.map((u, idx) => (
+              <tr
+                key={u.id}
+                className={idx < users.length - 1 ? "border-b border-hairline" : ""}
+              >
+                <td className="px-5 py-4 text-sm">{u.email ?? "—"}</td>
+                <td className="px-5 py-4 text-sm">{u.name ?? "—"}</td>
+                <td className="px-5 py-4 num text-[11px] text-muted">
                   {u.accounts.map((a) => a.provider).join(", ") || "—"}
                 </td>
-                <td className="px-3 py-2">
+                <td className="px-5 py-4">
                   <span
-                    className={`px-2 py-0.5 text-xs rounded ${
+                    className={
                       u.role === "ADMIN"
-                        ? "bg-purple-500/15 text-purple-700 dark:text-purple-400"
-                        : "bg-muted text-muted-foreground"
-                    }`}
+                        ? "bg-accent/15 text-accent num text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-sm font-medium"
+                        : "bg-card-alt text-muted num text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-sm font-medium"
+                    }
                   >
                     {u.role}
                   </span>
                 </td>
-                <td className="px-3 py-2 text-right">
+                <td className="px-5 py-4 text-right">
                   {admin.ok && admin.userId !== u.id && (
                     <UserRoleToggle userId={u.id} currentRole={u.role} />
                   )}

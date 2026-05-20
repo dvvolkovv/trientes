@@ -17,5 +17,9 @@ export default async function AdminLayout({
   const admin = await checkAdmin();
   if (!admin.ok) redirect(`/${locale}/login`);
 
-  return <div className="container mx-auto px-4 py-8">{children}</div>;
+  return (
+    <div className="max-w-[1600px] mx-auto px-6 md:px-12 xl:px-20 py-12">
+      {children}
+    </div>
+  );
 }

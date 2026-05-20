@@ -2,7 +2,6 @@
 
 import { useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Input } from "@/components/ui/input";
 
 export function AdminSearchInput({ placeholder }: { placeholder: string }) {
   const sp = useSearchParams();
@@ -10,7 +9,8 @@ export function AdminSearchInput({ placeholder }: { placeholder: string }) {
   const [value, setValue] = useState(sp.get("q") ?? "");
   const [pending, start] = useTransition();
   return (
-    <Input
+    <input
+      type="text"
       value={value}
       placeholder={placeholder}
       onChange={(e) => {
@@ -22,7 +22,7 @@ export function AdminSearchInput({ placeholder }: { placeholder: string }) {
           router.replace(`?${params.toString()}`);
         });
       }}
-      className={`max-w-sm ${pending ? "opacity-50" : ""}`}
+      className={`bg-card border border-hairline rounded-md px-3 py-2 text-sm w-full max-w-md placeholder:text-muted focus:ring-1 focus:ring-accent outline-none ${pending ? "opacity-50" : ""}`}
     />
   );
 }

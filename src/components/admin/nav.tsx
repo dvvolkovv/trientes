@@ -11,17 +11,17 @@ const TABS = [
 export async function AdminNav({ locale, active }: { locale: string; active: string }) {
   const t = await getTranslations("admin");
   return (
-    <nav className="border-b mb-6">
-      <div className="flex gap-1">
+    <nav className="border-b border-hairline mb-8">
+      <div className="flex">
         {TABS.map((tab) => (
           <Link
             key={tab.key}
             href={`/${locale}/admin/${tab.path}`}
-            className={`px-4 py-2 text-sm border-b-2 -mb-px transition-colors ${
+            className={
               active === tab.key
-                ? "border-foreground text-foreground"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
+                ? "border-b-2 border-accent text-foreground -mb-px px-5 py-3 text-sm font-medium uppercase tracking-wider transition-colors"
+                : "border-b-2 border-transparent text-muted hover:text-foreground px-5 py-3 text-sm font-medium uppercase tracking-wider transition-colors"
+            }
           >
             {t(`tabs.${tab.key}`)}
           </Link>

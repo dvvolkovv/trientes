@@ -25,11 +25,11 @@ export function CoinActiveToggle({ coinId, initialActive }: { coinId: string; in
           router.refresh();
         });
       }}
-      className={`px-2 py-1 text-xs rounded ${
+      className={
         active
-          ? "bg-green-500/15 text-green-700 dark:text-green-400"
-          : "bg-muted text-muted-foreground"
-      } ${pending ? "opacity-50" : ""}`}
+          ? `bg-up/15 text-up px-3 py-1.5 text-xs uppercase tracking-wider rounded-md font-medium hover:bg-up/25 transition-colors ${pending ? "opacity-50" : ""}`
+          : `bg-card-alt text-muted px-3 py-1.5 text-xs uppercase tracking-wider rounded-md font-medium hover:bg-card-alt/80 transition-colors ${pending ? "opacity-50" : ""}`
+      }
     >
       {active ? "Active" : "Disabled"}
     </button>

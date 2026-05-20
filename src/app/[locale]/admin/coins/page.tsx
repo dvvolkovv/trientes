@@ -33,55 +33,88 @@ export default async function AdminCoinsPage({
   return (
     <>
       <AdminNav locale={locale} active="coins" />
-      <header className="mb-6">
-        <h1 className="text-3xl font-bold">{t("coins.title")}</h1>
-        <p className="text-muted-foreground mt-1">{t("coins.subtitle")}</p>
+      <header className="mb-8">
+        <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-3">
+          Admin
+        </div>
+        <h1 className="text-[40px] md:text-[48px] font-bold tracking-[-0.03em] mb-2">
+          {t("coins.title")}
+        </h1>
+        <p className="text-muted">{t("coins.subtitle")}</p>
       </header>
 
       <div className="mb-6">
-        <h2 className="text-lg font-semibold mb-2">{t("addCoin.heading")}</h2>
+        <h2 className="text-[20px] md:text-[24px] font-bold tracking-[-0.02em] mb-3">
+          {t("addCoin.heading")}
+        </h2>
         <AddCoinForm />
       </div>
 
-      <div className="overflow-x-auto rounded-lg border">
-        <table className="w-full text-sm">
-          <thead className="bg-muted/50 text-muted-foreground">
-            <tr className="border-b">
-              <th className="px-3 py-2 text-left font-medium">#</th>
-              <th className="px-3 py-2 text-left font-medium">{t("coins.name")}</th>
-              <th className="px-3 py-2 text-left font-medium">{t("coins.source")}</th>
-              <th className="px-3 py-2 text-left font-medium">{t("coins.metadata")}</th>
-              <th className="px-3 py-2 text-right font-medium">{t("coins.status")}</th>
+      <div className="bg-card border border-hairline rounded-[20px] overflow-hidden mt-8">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-hairline">
+              <th className="text-left text-[11px] uppercase tracking-[0.18em] text-muted font-medium px-5 py-4">
+                #
+              </th>
+              <th className="text-left text-[11px] uppercase tracking-[0.18em] text-muted font-medium px-5 py-4">
+                {t("coins.name")}
+              </th>
+              <th className="text-left text-[11px] uppercase tracking-[0.18em] text-muted font-medium px-5 py-4">
+                {t("coins.source")}
+              </th>
+              <th className="text-left text-[11px] uppercase tracking-[0.18em] text-muted font-medium px-5 py-4">
+                {t("coins.metadata")}
+              </th>
+              <th className="text-right text-[11px] uppercase tracking-[0.18em] text-muted font-medium px-5 py-4">
+                {t("coins.status")}
+              </th>
             </tr>
           </thead>
           <tbody>
-            {coins.map((c) => (
-              <tr key={c.id} className="border-b">
-                <td className="px-3 py-2 tabular-nums text-muted-foreground">{c.rank >= 9999 ? "—" : c.rank}</td>
-                <td className="px-3 py-2">
-                  <div className="flex items-center gap-2">
+            {coins.map((c, idx) => (
+              <tr
+                key={c.id}
+                className={idx < coins.length - 1 ? "border-b border-hairline" : ""}
+              >
+                <td className="px-5 py-4 num text-[13px] text-muted">
+                  {c.rank >= 9999 ? "—" : c.rank}
+                </td>
+                <td className="px-5 py-4">
+                  <div className="flex items-center gap-3">
                     {c.logoUrl && (
-                      <img src={c.logoUrl} alt="" width={16} height={16} className="rounded-full" />
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={c.logoUrl}
+                        alt=""
+                        width={20}
+                        height={20}
+                        className="rounded-full"
+                      />
                     )}
-                    <span className="font-medium">{c.name}</span>
-                    <span className="text-xs text-muted-foreground uppercase">{c.symbol}</span>
+                    <span className="font-medium text-[15px]">{c.name}</span>
+                    <span className="num text-[11px] uppercase tracking-wider text-muted">
+                      {c.symbol}
+                    </span>
                   </div>
                 </td>
-                <td className="px-3 py-2">
+                <td className="px-5 py-4">
                   <span
-                    className={`px-2 py-0.5 text-xs rounded ${
+                    className={
                       c.source === "AUTO_L1"
-                        ? "bg-blue-500/15 text-blue-700 dark:text-blue-400"
-                        : "bg-purple-500/15 text-purple-700 dark:text-purple-400"
-                    }`}
+                        ? "num text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-sm font-medium bg-info/15 text-info"
+                        : "num text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-sm font-medium bg-accent/15 text-accent"
+                    }
                   >
                     {c.source}
                   </span>
                 </td>
-                <td className="px-3 py-2 text-xs text-muted-foreground">
-                  {c.metadataFetchedAt ? c.metadataFetchedAt.toISOString().slice(0, 10) : "—"}
+                <td className="px-5 py-4 num text-[11px] text-muted">
+                  {c.metadataFetchedAt
+                    ? c.metadataFetchedAt.toISOString().slice(0, 10)
+                    : "—"}
                 </td>
-                <td className="px-3 py-2 text-right">
+                <td className="px-5 py-4 text-right">
                   <CoinActiveToggle coinId={c.id} initialActive={c.isActive} />
                 </td>
               </tr>

@@ -13,34 +13,55 @@ type Row = {
 export async function AuditTable({ rows }: { rows: Row[] }) {
   const t = await getTranslations("admin.audit");
   if (rows.length === 0) {
-    return <p className="text-muted-foreground">{t("empty")}</p>;
+    return (
+      <div className="bg-card border border-hairline rounded-[20px] p-8 text-center text-muted">
+        {t("empty")}
+      </div>
+    );
   }
   return (
-    <div className="overflow-x-auto rounded-lg border">
-      <table className="w-full text-sm">
-        <thead className="bg-muted/50 text-muted-foreground">
-          <tr className="border-b">
-            <th className="px-3 py-2 text-left font-medium">{t("when")}</th>
-            <th className="px-3 py-2 text-left font-medium">{t("who")}</th>
-            <th className="px-3 py-2 text-left font-medium">{t("action")}</th>
-            <th className="px-3 py-2 text-left font-medium">{t("target")}</th>
-            <th className="px-3 py-2 text-left font-medium">{t("details")}</th>
+    <div className="bg-card border border-hairline rounded-[20px] overflow-hidden mt-8">
+      <table className="w-full">
+        <thead>
+          <tr className="border-b border-hairline">
+            <th className="text-left text-[11px] uppercase tracking-[0.18em] text-muted font-medium px-5 py-4">
+              {t("when")}
+            </th>
+            <th className="text-left text-[11px] uppercase tracking-[0.18em] text-muted font-medium px-5 py-4">
+              {t("who")}
+            </th>
+            <th className="text-left text-[11px] uppercase tracking-[0.18em] text-muted font-medium px-5 py-4">
+              {t("action")}
+            </th>
+            <th className="text-left text-[11px] uppercase tracking-[0.18em] text-muted font-medium px-5 py-4">
+              {t("target")}
+            </th>
+            <th className="text-left text-[11px] uppercase tracking-[0.18em] text-muted font-medium px-5 py-4">
+              {t("details")}
+            </th>
           </tr>
         </thead>
         <tbody>
-          {rows.map((r) => (
-            <tr key={r.id} className="border-b">
-              <td className="px-3 py-2 text-xs text-muted-foreground tabular-nums">
+          {rows.map((r, idx) => (
+            <tr
+              key={r.id}
+              className={idx < rows.length - 1 ? "border-b border-hairline" : ""}
+            >
+              <td className="px-5 py-4 num text-[11px] text-muted">
                 {r.createdAt.toISOString().replace("T", " ").slice(0, 16)}
               </td>
-              <td className="px-3 py-2">{r.actor.email ?? r.actor.name ?? "(unknown)"}</td>
-              <td className="px-3 py-2">
-                <span className="px-2 py-0.5 text-xs rounded bg-muted">{r.action}</span>
+              <td className="px-5 py-4 text-sm">
+                {r.actor.email ?? r.actor.name ?? "(unknown)"}
               </td>
-              <td className="px-3 py-2 text-xs">
+              <td className="px-5 py-4">
+                <span className="bg-card-alt text-foreground num text-[10px] uppercase tracking-[0.15em] px-2 py-1 rounded-sm">
+                  {r.action}
+                </span>
+              </td>
+              <td className="px-5 py-4 num text-[11px] text-muted-strong">
                 {r.targetType}:{r.targetId}
               </td>
-              <td className="px-3 py-2 text-xs text-muted-foreground font-mono">
+              <td className="px-5 py-4 num text-[11px] text-muted font-mono">
                 {r.details ? JSON.stringify(r.details) : "—"}
               </td>
             </tr>

@@ -23,9 +23,14 @@ export default async function AdminAuditPage({
   return (
     <>
       <AdminNav locale={locale} active="audit" />
-      <header className="mb-6">
-        <h1 className="text-3xl font-bold">{t("title")}</h1>
-        <p className="text-muted-foreground mt-1">{t("subtitle")}</p>
+      <header className="mb-8">
+        <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-3">
+          Admin
+        </div>
+        <h1 className="text-[40px] md:text-[48px] font-bold tracking-[-0.03em] mb-2">
+          {t("title")}
+        </h1>
+        <p className="text-muted">{t("subtitle")}</p>
       </header>
       <AuditTable rows={rows} />
     </>

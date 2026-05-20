@@ -42,11 +42,16 @@ export default async function AdminRequestsPage({
   return (
     <>
       <AdminNav locale={locale} active="requests" />
-      <header className="mb-6">
-        <h1 className="text-3xl font-bold">{t("requests.title")}</h1>
-        <p className="text-muted-foreground mt-1">{t("requests.subtitle")}</p>
+      <header className="mb-8">
+        <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-3">
+          Admin
+        </div>
+        <h1 className="text-[40px] md:text-[48px] font-bold tracking-[-0.03em] mb-2">
+          {t("requests.title")}
+        </h1>
+        <p className="text-muted">{t("requests.subtitle")}</p>
       </header>
-      <div className="flex gap-2 mb-4">
+      <div className="flex gap-2 mb-6">
         {(["pending", "approved", "rejected"] as const).map((s) => {
           const active =
             (statusFilter === "PENDING" && s === "pending") ||
@@ -57,9 +62,11 @@ export default async function AdminRequestsPage({
             <a
               key={s}
               href={href}
-              className={`px-3 py-1 text-sm rounded ${
-                active ? "bg-foreground text-background" : "bg-muted text-muted-foreground hover:text-foreground"
-              }`}
+              className={
+                active
+                  ? "text-xs uppercase tracking-wider px-3 py-1.5 rounded-md bg-foreground text-bg"
+                  : "text-xs uppercase tracking-wider px-3 py-1.5 rounded-md bg-card text-muted hover:text-foreground border border-hairline"
+              }
             >
               {t(`status.${s.toUpperCase() as "PENDING" | "APPROVED" | "REJECTED"}`)}
             </a>
@@ -67,7 +74,9 @@ export default async function AdminRequestsPage({
         })}
       </div>
       {rows.length === 0 ? (
-        <p className="text-muted-foreground">{t("requests.empty")}</p>
+        <div className="bg-card border border-hairline rounded-[20px] p-8 text-center text-muted">
+          {t("requests.empty")}
+        </div>
       ) : (
         <div className="space-y-3">
           {rows.map((row) => (
