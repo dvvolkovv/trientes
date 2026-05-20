@@ -11,19 +11,17 @@ export const authConfig = {
     signIn: "/en/login",
   },
   callbacks: {
+    // Middleware runs in the edge runtime — it CAN see the session cookie
+    // (so it knows whether the user is logged in) but CANNOT query the DB.
+    // That means it can't see the user's role. So we only gate logged-in
+    // status here. ADMIN role is enforced in src/app/[locale]/admin/layout.tsx
+    // via checkAdmin() at the Node.js runtime.
     authorized({ auth, request }) {
       const path = request.nextUrl.pathname;
       const locale = path.split("/")[1] || "en";
-      const isAdminRoute = /\/[a-z-]+\/admin(\/|$)/i.test(path);
-      const isProtectedRoute =
-        /\/[a-z-]+\/(watchlist|request|settings)(\/|$)/i.test(path);
-      const role = (auth?.user as { role?: string } | undefined)?.role;
-      if (isAdminRoute && role !== "ADMIN") {
-        return Response.redirect(
-          new URL(`/${locale}/login`, request.nextUrl),
-        );
-      }
-      if (isProtectedRoute && !auth?.user) {
+      const needsAuth =
+        /\/[a-z-]+\/(watchlist|request|settings|admin)(\/|$)/i.test(path);
+      if (needsAuth && !auth?.user) {
         return Response.redirect(
           new URL(`/${locale}/login`, request.nextUrl),
         );
