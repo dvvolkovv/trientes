@@ -44,7 +44,7 @@ bot.on("message:text", async (ctx) => {
       await handleCommand(text, userId, {
         session,
         runner,
-        reply: (t) => ctx.reply(t, { parse_mode: "Markdown" }).then(() => {}),
+        reply: (t) => ctx.reply(t).then(() => {}),
       });
     } else {
       await unauthorizedDrop(ctx, text);
@@ -149,7 +149,12 @@ async function processPrompt(
         "\n```";
     }
 
-    await ctx.reply(reply, { parse_mode: "Markdown" });
+    try {
+      await ctx.reply(reply, { parse_mode: "Markdown" });
+    } catch {
+      // Telegram Markdown parser fails on stray underscores etc. — fall back to plain.
+      await ctx.reply(reply);
+    }
 
     await logger.appendAudit({
       ts: new Date().toISOString(),
@@ -174,6 +179,10 @@ async function processPrompt(
     });
   }
 }
+
+bot.catch((err) => {
+  console.error("[bot] unhandled error:", err);
+});
 
 const app = createWebhookApp(bot, config.telegramWebhookSecret);
 app.listen(config.botPort, "127.0.0.1", () => {
