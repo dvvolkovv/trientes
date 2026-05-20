@@ -14,7 +14,12 @@ export function createWebhookApp(bot: Bot, secret: string): Express {
       res.status(401).json({ error: "bad secret token" });
       return;
     }
-    void webhookCallback(bot, "express")(req, res);
+    // Ack Telegram within 1s no matter how long the actual handler takes —
+    // Claude runs can take minutes; without this Telegram retries the update.
+    void webhookCallback(bot, "express", {
+      onTimeout: "return",
+      timeoutMilliseconds: 1000,
+    })(req, res);
   });
   return app;
 }
