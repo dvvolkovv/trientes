@@ -5,6 +5,7 @@ const TABS = [
   { key: "requests", path: "requests" },
   { key: "coins", path: "coins" },
   { key: "users", path: "users" },
+  { key: "audit", path: "audit" },
 ];
 
 export async function AdminNav({ locale, active }: { locale: string; active: string }) {
