@@ -4,6 +4,7 @@ import type { MarketRow, ExchangeRates } from "@/lib/coingecko";
 import { formatPercent } from "@/lib/format";
 import { formatPriceInCurrency, formatCompactInCurrency, type Currency } from "@/lib/currency";
 import { Sparkline } from "./sparkline";
+import { WatchlistButton } from "./watchlist-button";
 
 function pctClass(v: number | null): string {
   if (v === null) return "text-muted-foreground";
@@ -15,11 +16,15 @@ export function CoinRow({
   currency,
   rates,
   locale,
+  isWatched,
+  isAuthed,
 }: {
   row: MarketRow;
   currency: Currency;
   rates: ExchangeRates | null;
   locale: string;
+  isWatched: boolean;
+  isAuthed: boolean;
 }) {
   const ratesOrEmpty = rates ?? {};
   return (
@@ -51,6 +56,14 @@ export function CoinRow({
       </td>
       <td className="px-3 py-3">
         <Sparkline points={row.sparkline7d} />
+      </td>
+      <td className="px-3 py-3 text-right">
+        <WatchlistButton
+          coinId={row.id}
+          initialWatched={isWatched}
+          isAuthed={isAuthed}
+          locale={locale}
+        />
       </td>
     </tr>
   );

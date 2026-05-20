@@ -3,6 +3,7 @@ import { setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { readExchangeRates, readTop100 } from "@/lib/snapshot";
 import { getCurrency } from "@/lib/get-currency";
+import { readUserWatchedIds, isAuthenticated } from "@/lib/watchlist";
 import { CoinHeader } from "@/components/coin-detail/header";
 import { ChartPanel } from "@/components/coin-detail/chart-panel";
 import { Description } from "@/components/coin-detail/description";
@@ -59,11 +60,24 @@ export default async function CoinDetailPage({
 
   if (!coin || !row) notFound();
 
-  const [currency, rates] = await Promise.all([getCurrency(), readExchangeRates()]);
+  const [currency, rates, watchedSet, isAuthed] = await Promise.all([
+    getCurrency(),
+    readExchangeRates(),
+    readUserWatchedIds(),
+    isAuthenticated(),
+  ]);
+  const isWatched = watchedSet.has(coin.id);
 
   return (
     <main className="container mx-auto px-4 py-8 space-y-8">
-      <CoinHeader row={row} currency={currency} rates={rates} />
+      <CoinHeader
+        row={row}
+        currency={currency}
+        rates={rates}
+        isWatched={isWatched}
+        isAuthed={isAuthed}
+        locale={locale}
+      />
       <ChartPanel coinId={coin.id} />
       <SupplyMetrics row={row} currency={currency} rates={rates} />
       <Description html={coin.description} />

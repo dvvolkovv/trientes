@@ -3,6 +3,7 @@ import { readTop100, readGlobalStats, readExchangeRates } from "@/lib/snapshot";
 import { GlobalStatsHero } from "@/components/global-stats-hero";
 import { CoinListClient } from "@/components/coin-list-client";
 import { getCurrency } from "@/lib/get-currency";
+import { readUserWatchedIds, isAuthenticated } from "@/lib/watchlist";
 
 export const revalidate = 60;
 
@@ -16,11 +17,13 @@ export default async function Home({
   const t = await getTranslations("common");
   const tl = await getTranslations("listing");
 
-  const [rows, stats, rates, currency] = await Promise.all([
+  const [rows, stats, rates, currency, watchedSet, isAuthed] = await Promise.all([
     readTop100(),
     readGlobalStats(),
     readExchangeRates(),
     getCurrency(),
+    readUserWatchedIds(),
+    isAuthenticated(),
   ]);
 
   return (
@@ -31,7 +34,14 @@ export default async function Home({
       </header>
       <GlobalStatsHero stats={stats} currency={currency} rates={rates} />
       {rows.length > 0 ? (
-        <CoinListClient rows={rows} currency={currency} rates={rates} locale={locale} />
+        <CoinListClient
+          rows={rows}
+          currency={currency}
+          rates={rates}
+          locale={locale}
+          watchedSet={watchedSet}
+          isAuthed={isAuthed}
+        />
       ) : (
         <p className="text-muted-foreground">{tl("loadingFallback")}</p>
       )}

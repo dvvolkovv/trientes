@@ -51,11 +51,15 @@ export function CoinListClient({
   currency,
   rates,
   locale,
+  watchedSet,
+  isAuthed,
 }: {
   rows: MarketRow[];
   currency: Currency;
   rates: ExchangeRates | null;
   locale: string;
+  watchedSet: Set<string>;
+  isAuthed: boolean;
 }) {
   const t = useTranslations("listing");
   const [query, setQuery] = useState("");
@@ -106,11 +110,20 @@ export function CoinListClient({
               <SortHeader label={t("marketCap")} field="marketCap" currentKey={sortKey} currentDir={sortDir} onSort={toggleSort} />
               <SortHeader label={t("volume24h")} field="volume" currentKey={sortKey} currentDir={sortDir} onSort={toggleSort} />
               <th className="px-3 py-2 text-left font-medium">{t("sparkline7d")}</th>
+              <th className="px-3 py-2 font-medium" />
             </tr>
           </thead>
           <tbody>
             {filtered.map((row) => (
-              <CoinRow key={row.id} row={row} currency={currency} rates={rates} locale={locale} />
+              <CoinRow
+                key={row.id}
+                row={row}
+                currency={currency}
+                rates={rates}
+                locale={locale}
+                isWatched={watchedSet.has(row.id)}
+                isAuthed={isAuthed}
+              />
             ))}
           </tbody>
         </table>
