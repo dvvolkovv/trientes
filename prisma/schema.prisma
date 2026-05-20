@@ -60,3 +60,51 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+enum CoinSource {
+  AUTO_L1
+  ADMIN_ADDED
+}
+
+model Coin {
+  id           String      @id            // CoinGecko id, e.g. "bitcoin"
+  symbol       String
+  name         String
+  slug         String      @unique
+  rank         Int
+  logoUrl      String?
+  source       CoinSource  @default(AUTO_L1)
+  isActive     Boolean     @default(true)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  snapshots    CoinSnapshot[]
+}
+
+model CoinSnapshot {
+  id                String    @id @default(cuid())
+  coinId            String
+  coin              Coin      @relation(fields: [coinId], references: [id], onDelete: Cascade)
+  priceUsd          Decimal   @db.Decimal(24, 10)
+  marketCapUsd      Decimal   @db.Decimal(30, 2)
+  volume24hUsd      Decimal   @db.Decimal(30, 2)
+  pctChange1h       Float?
+  pctChange24h      Float?
+  pctChange7d       Float?
+  circulatingSupply Decimal?  @db.Decimal(30, 2)
+  totalSupply       Decimal?  @db.Decimal(30, 2)
+  maxSupply         Decimal?  @db.Decimal(30, 2)
+  fetchedAt         DateTime  @default(now())
+
+  @@index([coinId, fetchedAt])
+}
+
+model GlobalStats {
+  id                Int       @id @default(1)
+  totalMarketCapUsd Decimal   @db.Decimal(30, 2)
+  total24hVolumeUsd Decimal   @db.Decimal(30, 2)
+  btcDominancePct   Float
+  ethDominancePct   Float
+  activeCryptos     Int
+  markets           Int
+  fetchedAt         DateTime  @default(now())
+}
