@@ -15,5 +15,20 @@
     "themeDark": "Koyu",
     "themeSystem": "Sistem"
   },
-  "home": { "title": "Hoş geldiniz", "comingSoon": "Coin listesi 2. Aşama'da." }
+  "home": { "title": "Hoş geldiniz", "comingSoon": "Coin listesi 2. Aşama'da." },
+  "listing": {
+    "rank": "#",
+    "name": "İsim",
+    "price": "Fiyat",
+    "change1h": "1s %",
+    "change24h": "24s %",
+    "change7d": "7g %",
+    "marketCap": "Piyasa Değ.",
+    "volume24h": "Hacim (24s)",
+    "loadingFallback": "Veriler yükleniyor…",
+    "globalMarketCap": "Toplam piyasa değeri",
+    "globalVolume": "24s hacim",
+    "btcDominance": "BTC hakimiyeti",
+    "ethDominance": "ETH hakimiyeti"
+  }
 }

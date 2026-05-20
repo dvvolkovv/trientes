@@ -15,5 +15,20 @@
     "themeDark": "ダーク",
     "themeSystem": "システム"
   },
-  "home": { "title": "ようこそ", "comingSoon": "コイン一覧はフェーズ2で公開。" }
+  "home": { "title": "ようこそ", "comingSoon": "コイン一覧はフェーズ2で公開。" },
+  "listing": {
+    "rank": "#",
+    "name": "名前",
+    "price": "価格",
+    "change1h": "1時間 %",
+    "change24h": "24時間 %",
+    "change7d": "7日 %",
+    "marketCap": "時価総額",
+    "volume24h": "出来高 (24h)",
+    "loadingFallback": "データを取得中…",
+    "globalMarketCap": "総時価総額",
+    "globalVolume": "24h 取引高",
+    "btcDominance": "BTC 支配率",
+    "ethDominance": "ETH 支配率"
+  }
 }

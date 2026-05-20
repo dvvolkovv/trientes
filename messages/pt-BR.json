@@ -15,5 +15,20 @@
     "themeDark": "Escuro",
     "themeSystem": "Sistema"
   },
-  "home": { "title": "Bem-vindo", "comingSoon": "Listagem de moedas na Fase 2." }
+  "home": { "title": "Bem-vindo", "comingSoon": "Listagem de moedas na Fase 2." },
+  "listing": {
+    "rank": "#",
+    "name": "Nome",
+    "price": "Preço",
+    "change1h": "1h %",
+    "change24h": "24h %",
+    "change7d": "7d %",
+    "marketCap": "Capitalização",
+    "volume24h": "Volume (24h)",
+    "loadingFallback": "Carregando dados…",
+    "globalMarketCap": "Capitalização total",
+    "globalVolume": "Volume 24h",
+    "btcDominance": "Dominância BTC",
+    "ethDominance": "Dominância ETH"
+  }
 }

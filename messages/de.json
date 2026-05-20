@@ -15,5 +15,20 @@
     "themeDark": "Dunkel",
     "themeSystem": "System"
   },
-  "home": { "title": "Willkommen", "comingSoon": "Coin-Liste in Phase 2." }
+  "home": { "title": "Willkommen", "comingSoon": "Coin-Liste in Phase 2." },
+  "listing": {
+    "rank": "#",
+    "name": "Name",
+    "price": "Preis",
+    "change1h": "1h %",
+    "change24h": "24h %",
+    "change7d": "7d %",
+    "marketCap": "Marktkap.",
+    "volume24h": "Volumen (24h)",
+    "loadingFallback": "Daten werden geladen…",
+    "globalMarketCap": "Gesamtmarktkap.",
+    "globalVolume": "24h Volumen",
+    "btcDominance": "BTC-Dominanz",
+    "ethDominance": "ETH-Dominanz"
+  }
 }

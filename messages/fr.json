@@ -15,5 +15,20 @@
     "themeDark": "Sombre",
     "themeSystem": "Système"
   },
-  "home": { "title": "Bienvenue", "comingSoon": "Liste des monnaies en phase 2." }
+  "home": { "title": "Bienvenue", "comingSoon": "Liste des monnaies en phase 2." },
+  "listing": {
+    "rank": "#",
+    "name": "Nom",
+    "price": "Prix",
+    "change1h": "1h %",
+    "change24h": "24h %",
+    "change7d": "7j %",
+    "marketCap": "Capitalisation",
+    "volume24h": "Volume (24h)",
+    "loadingFallback": "Chargement…",
+    "globalMarketCap": "Capitalisation totale",
+    "globalVolume": "Volume 24h",
+    "btcDominance": "Dominance BTC",
+    "ethDominance": "Dominance ETH"
+  }
 }

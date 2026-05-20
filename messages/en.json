@@ -18,5 +18,20 @@
   "home": {
     "title": "Welcome",
     "comingSoon": "Coin listings coming in Phase 2."
+  },
+  "listing": {
+    "rank": "#",
+    "name": "Name",
+    "price": "Price",
+    "change1h": "1h %",
+    "change24h": "24h %",
+    "change7d": "7d %",
+    "marketCap": "Market cap",
+    "volume24h": "Volume (24h)",
+    "loadingFallback": "Fetching latest data…",
+    "globalMarketCap": "Total market cap",
+    "globalVolume": "24h trading vol",
+    "btcDominance": "BTC dominance",
+    "ethDominance": "ETH dominance"
   }
 }

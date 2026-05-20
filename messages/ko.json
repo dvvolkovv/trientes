@@ -15,5 +15,20 @@
     "themeDark": "다크",
     "themeSystem": "시스템"
   },
-  "home": { "title": "환영합니다", "comingSoon": "코인 목록은 2단계에 공개." }
+  "home": { "title": "환영합니다", "comingSoon": "코인 목록은 2단계에 공개." },
+  "listing": {
+    "rank": "#",
+    "name": "이름",
+    "price": "가격",
+    "change1h": "1시간 %",
+    "change24h": "24시간 %",
+    "change7d": "7일 %",
+    "marketCap": "시가총액",
+    "volume24h": "거래량 (24h)",
+    "loadingFallback": "데이터 가져오는 중…",
+    "globalMarketCap": "전체 시가총액",
+    "globalVolume": "24h 거래량",
+    "btcDominance": "BTC 점유율",
+    "ethDominance": "ETH 점유율"
+  }
 }

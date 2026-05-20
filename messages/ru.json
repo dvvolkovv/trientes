@@ -18,5 +18,20 @@
   "home": {
     "title": "Добро пожаловать",
     "comingSoon": "Список монет — в Phase 2."
+  },
+  "listing": {
+    "rank": "#",
+    "name": "Название",
+    "price": "Цена",
+    "change1h": "1ч %",
+    "change24h": "24ч %",
+    "change7d": "7д %",
+    "marketCap": "Капитализация",
+    "volume24h": "Объём (24ч)",
+    "loadingFallback": "Загружаем данные…",
+    "globalMarketCap": "Общая капитализация",
+    "globalVolume": "Объём за 24ч",
+    "btcDominance": "Доминация BTC",
+    "ethDominance": "Доминация ETH"
   }
 }
