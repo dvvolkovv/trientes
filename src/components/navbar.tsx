@@ -4,11 +4,14 @@ import { auth, signIn, signOut } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { LocaleSwitcher } from "./locale-switcher";
 import { ThemeToggle } from "./theme-toggle";
+import { CurrencySwitcher } from "./currency-switcher";
+import { getCurrency } from "@/lib/get-currency";
 
 export async function Navbar() {
   const session = await auth();
   const locale = await getLocale();
   const t = await getTranslations("common");
+  const currency = await getCurrency();
   const isAdmin =
     (session?.user as { role?: string } | undefined)?.role === "ADMIN";
 
@@ -25,6 +28,7 @@ export async function Navbar() {
         </nav>
         <div className="ml-auto flex items-center gap-2">
           <LocaleSwitcher />
+          <CurrencySwitcher current={currency} />
           <ThemeToggle />
           {session?.user ? (
             <form
