@@ -78,16 +78,21 @@ const CG_BASE = "https://api.coingecko.com/api/v3";
 async function cgFetch(path: string, params: Record<string, string>): Promise<unknown> {
   const qs = new URLSearchParams(params).toString();
   const url = `${CG_BASE}${path}?${qs}`;
-  const res = await fetch(url, {
-    headers: { accept: "application/json" },
-    // Next caches fetch by default; we want fresh data on every worker tick.
-    cache: "no-store",
-  });
-  if (!res.ok) {
+  // Retry once on 429 — Free tier occasionally bursts past limits.
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const res = await fetch(url, {
+      headers: { accept: "application/json" },
+      cache: "no-store",
+    });
+    if (res.ok) return res.json();
+    if (res.status === 429 && attempt === 0) {
+      await new Promise((r) => setTimeout(r, 15_000));
+      continue;
+    }
     const body = await res.text().catch(() => "");
     throw new Error(`coingecko ${path} ${res.status}: ${body.slice(0, 200)}`);
   }
-  return res.json();
+  throw new Error(`coingecko ${path}: unreachable`);
 }
 
 export async function fetchTop100L1(): Promise<MarketRow[]> {

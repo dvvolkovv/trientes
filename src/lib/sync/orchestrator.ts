@@ -125,7 +125,7 @@ export async function syncCoinMetadata(deps: {
   staleMs?: number;
   sleep?: (ms: number) => Promise<void>;
 }): Promise<{ updated: number; skipped: number; failed: number }> {
-  const delayMs = deps.delayMs ?? 2000;
+  const delayMs = deps.delayMs ?? 4000;
   const staleMs = deps.staleMs ?? 23 * 60 * 60 * 1000;
   const sleep = deps.sleep ?? ((ms: number) => new Promise((r) => setTimeout(r, ms)));
   const now = Date.now();
