@@ -1,5 +1,9 @@
-import { useTranslations } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
+import { readTop100, readGlobalStats } from "@/lib/snapshot";
+import { GlobalStatsHero } from "@/components/global-stats-hero";
+import { CoinTable } from "@/components/coin-table";
+
+export const revalidate = 60; // ISR: regenerate every 60 seconds.
 
 export default async function Home({
   params,
@@ -8,20 +12,23 @@ export default async function Home({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  return <HomeContent />;
-}
+  const t = await getTranslations("common");
+  const tl = await getTranslations("listing");
 
-function HomeContent() {
-  const t = useTranslations("home");
-  const tc = useTranslations("common");
+  const [rows, stats] = await Promise.all([readTop100(), readGlobalStats()]);
+
   return (
-    <main className="container mx-auto px-4 py-12">
-      <h1 className="text-4xl font-bold">{tc("appName")}</h1>
-      <p className="text-muted-foreground mt-2">{tc("tagline")}</p>
-      <div className="mt-12">
-        <h2 className="text-2xl font-semibold">{t("title")}</h2>
-        <p className="text-muted-foreground mt-2">{t("comingSoon")}</p>
-      </div>
+    <main className="container mx-auto px-4 py-8">
+      <header className="mb-6">
+        <h1 className="text-4xl font-bold">{t("appName")}</h1>
+        <p className="text-muted-foreground mt-1">{t("tagline")}</p>
+      </header>
+      <GlobalStatsHero stats={stats} />
+      {rows.length > 0 ? (
+        <CoinTable rows={rows} />
+      ) : (
+        <p className="text-muted-foreground">{tl("loadingFallback")}</p>
+      )}
     </main>
   );
 }
