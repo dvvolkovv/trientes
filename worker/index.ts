@@ -115,6 +115,19 @@ async function runAdminAddedSync() {
   }
 }
 
+async function runCleanup() {
+  const t0 = Date.now();
+  try {
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const result = await prisma.coinSnapshot.deleteMany({
+      where: { fetchedAt: { lt: thirtyDaysAgo } },
+    });
+    console.log(`[worker] cleanup ok: deleted ${result.count} snapshots in ${Date.now() - t0}ms`);
+  } catch (err) {
+    console.error("[worker] cleanup failed:", err);
+  }
+}
+
 async function main() {
   console.log("[worker] starting…");
   await prisma.$queryRaw`SELECT 1`;
@@ -143,6 +156,10 @@ async function main() {
   });
   // Daily kick; staleMs in syncCoinMetadata skips coins fetched within 7 days.
   cron.schedule("30 3 * * *", () => void runMetadataSync());
+
+  // Daily at 04:00 server time — runs after metadata-sync (03:30) so we don't
+  // race with that job's read of latest snapshots.
+  cron.schedule("0 4 * * *", () => void runCleanup());
 
   // Live price feed via Binance WebSocket — top 20 coins.
   startBinance();
