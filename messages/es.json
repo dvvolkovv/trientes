@@ -15,7 +15,10 @@
     "themeDark": "Oscuro",
     "themeSystem": "Sistema"
   },
-  "home": { "title": "Bienvenido", "comingSoon": "Listado de monedas en la Fase 2." },
+  "home": {
+    "title": "Bienvenido",
+    "comingSoon": "Listado de monedas en la Fase 2."
+  },
   "listing": {
     "rank": "#",
     "name": "Nombre",
@@ -94,6 +97,69 @@
       "coingecko_id_invalid": "CoinGecko ID inválido.",
       "too_many_pending": "Tienes demasiadas solicitudes pendientes.",
       "unknown_error": "Algo salió mal."
+    }
+  },
+  "admin": {
+    "tabs": {
+      "requests": "Solicitudes",
+      "coins": "Monedas",
+      "users": "Usuarios"
+    },
+    "status": {
+      "PENDING": "Pendiente",
+      "APPROVED": "Aprobado",
+      "REJECTED": "Rechazado"
+    },
+    "approve": "Aprobar",
+    "reject": "Rechazar",
+    "confirmReject": "Confirmar rechazo",
+    "rejectReasonPlaceholder": "Why are you rejecting?",
+    "rejectReasonLabel": "Rejection reason",
+    "requests": {
+      "title": "Coin requests",
+      "subtitle": "Review and act on user-submitted coin requests.",
+      "empty": "No requests in this view."
+    },
+    "coins": {
+      "title": "Coins",
+      "subtitle": "Manage tracked coins. Disable to hide from public listings.",
+      "name": "Name",
+      "source": "Source",
+      "metadata": "Metadata fetched",
+      "status": "Status"
+    },
+    "addCoin": {
+      "heading": "Add a coin manually",
+      "coingeckoId": "CoinGecko ID",
+      "symbol": "Symbol",
+      "name": "Name",
+      "add": "Añadir",
+      "adding": "Adding…",
+      "added": "Coin added."
+    },
+    "users": {
+      "title": "Users",
+      "subtitle": "Manage roles for registered users.",
+      "email": "Email",
+      "name": "Name",
+      "providers": "Providers",
+      "role": "Role",
+      "action": "Action",
+      "searchPlaceholder": "Buscar por email o nombre…"
+    },
+    "errors": {
+      "unauth": "Sign in required.",
+      "not_admin": "Admin role required.",
+      "not_found": "Not found.",
+      "not_pending": "Already processed.",
+      "no_coingecko_id": "CoinGecko ID is required.",
+      "coin_exists": "A coin with this ID already exists.",
+      "reason_too_short": "Reason must be at least 3 characters.",
+      "invalid_id": "Invalid ID format.",
+      "invalid_symbol": "Invalid symbol.",
+      "invalid_name": "Invalid name.",
+      "last_admin": "Cannot demote the last admin.",
+      "unknown_error": "Something went wrong."
     }
   }
 }

@@ -15,7 +15,10 @@
     "themeDark": "深色",
     "themeSystem": "系统"
   },
-  "home": { "title": "欢迎", "comingSoon": "币种列表将在第二阶段上线。" },
+  "home": {
+    "title": "欢迎",
+    "comingSoon": "币种列表将在第二阶段上线。"
+  },
   "listing": {
     "rank": "#",
     "name": "名称",
@@ -94,6 +97,69 @@
       "coingecko_id_invalid": "无效的 CoinGecko ID。",
       "too_many_pending": "您的待审核申请过多。",
       "unknown_error": "出错了。"
+    }
+  },
+  "admin": {
+    "tabs": {
+      "requests": "申请",
+      "coins": "币种",
+      "users": "用户"
+    },
+    "status": {
+      "PENDING": "待审核",
+      "APPROVED": "已通过",
+      "REJECTED": "已拒绝"
+    },
+    "approve": "通过",
+    "reject": "拒绝",
+    "confirmReject": "确认拒绝",
+    "rejectReasonPlaceholder": "Why are you rejecting?",
+    "rejectReasonLabel": "Rejection reason",
+    "requests": {
+      "title": "Coin requests",
+      "subtitle": "Review and act on user-submitted coin requests.",
+      "empty": "No requests in this view."
+    },
+    "coins": {
+      "title": "Coins",
+      "subtitle": "Manage tracked coins. Disable to hide from public listings.",
+      "name": "Name",
+      "source": "Source",
+      "metadata": "Metadata fetched",
+      "status": "Status"
+    },
+    "addCoin": {
+      "heading": "Add a coin manually",
+      "coingeckoId": "CoinGecko ID",
+      "symbol": "Symbol",
+      "name": "Name",
+      "add": "添加",
+      "adding": "Adding…",
+      "added": "Coin added."
+    },
+    "users": {
+      "title": "Users",
+      "subtitle": "Manage roles for registered users.",
+      "email": "Email",
+      "name": "Name",
+      "providers": "Providers",
+      "role": "Role",
+      "action": "Action",
+      "searchPlaceholder": "按邮箱或姓名搜索…"
+    },
+    "errors": {
+      "unauth": "Sign in required.",
+      "not_admin": "Admin role required.",
+      "not_found": "Not found.",
+      "not_pending": "Already processed.",
+      "no_coingecko_id": "CoinGecko ID is required.",
+      "coin_exists": "A coin with this ID already exists.",
+      "reason_too_short": "Reason must be at least 3 characters.",
+      "invalid_id": "Invalid ID format.",
+      "invalid_symbol": "Invalid symbol.",
+      "invalid_name": "Invalid name.",
+      "last_admin": "Cannot demote the last admin.",
+      "unknown_error": "Something went wrong."
     }
   }
 }
