@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { checkAdmin } from "@/lib/is-admin";
 import { approveRequestCore } from "@/lib/admin/approve-request";
+import { logAdminAction } from "@/lib/admin/audit";
 
 export async function approveRequest(input: { requestId: string; coingeckoIdOverride?: string }) {
   const admin = await checkAdmin();
@@ -13,7 +14,16 @@ export async function approveRequest(input: { requestId: string; coingeckoIdOver
     reviewerId: admin.userId,
     coingeckoIdOverride: input.coingeckoIdOverride,
   });
-  if (res.ok) revalidatePath("/", "layout");
+  if (res.ok) {
+    await logAdminAction({
+      actorId: admin.userId,
+      action: "APPROVE_REQUEST",
+      targetType: "CoinRequest",
+      targetId: input.requestId,
+      details: { coinId: res.coinId },
+    });
+    revalidatePath("/", "layout");
+  }
   return res;
 }
 
@@ -35,6 +45,13 @@ export async function rejectRequest(input: { requestId: string; rejectReason: st
       reviewedAt: new Date(),
       rejectReason: reason,
     },
+  });
+  await logAdminAction({
+    actorId: admin.userId,
+    action: "REJECT_REQUEST",
+    targetType: "CoinRequest",
+    targetId: req.id,
+    details: { reason },
   });
   revalidatePath("/", "layout");
   return { ok: true };

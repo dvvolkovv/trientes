@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { checkAdmin } from "@/lib/is-admin";
+import { logAdminAction } from "@/lib/admin/audit";
 
 export async function toggleCoinActive(coinId: string) {
   const admin = await checkAdmin();
@@ -10,6 +11,13 @@ export async function toggleCoinActive(coinId: string) {
   const c = await prisma.coin.findUnique({ where: { id: coinId }, select: { isActive: true } });
   if (!c) return { ok: false, reason: "not_found" };
   await prisma.coin.update({ where: { id: coinId }, data: { isActive: !c.isActive } });
+  await logAdminAction({
+    actorId: admin.userId,
+    action: "TOGGLE_COIN_ACTIVE",
+    targetType: "Coin",
+    targetId: coinId,
+    details: { isActive: !c.isActive },
+  });
   revalidatePath("/", "layout");
   return { ok: true, isActive: !c.isActive };
 }
@@ -38,6 +46,13 @@ export async function addAdminCoin(input: { coingeckoId: string; symbol: string;
       isActive: true,
       addedByAdminId: admin.userId,
     },
+  });
+  await logAdminAction({
+    actorId: admin.userId,
+    action: "ADD_COIN",
+    targetType: "Coin",
+    targetId: id,
+    details: { symbol, name },
   });
   revalidatePath("/", "layout");
   return { ok: true, coinId: id };

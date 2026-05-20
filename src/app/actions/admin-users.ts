@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { checkAdmin } from "@/lib/is-admin";
 import { setUserRoleCore } from "@/lib/admin/set-user-role";
+import { logAdminAction } from "@/lib/admin/audit";
 
 export async function setUserRole(input: { userId: string; role: "USER" | "ADMIN" }) {
   const admin = await checkAdmin();
@@ -13,6 +14,15 @@ export async function setUserRole(input: { userId: string; role: "USER" | "ADMIN
     role: input.role,
     actorId: admin.userId,
   });
-  if (res.ok) revalidatePath("/", "layout");
+  if (res.ok) {
+    await logAdminAction({
+      actorId: admin.userId,
+      action: "SET_USER_ROLE",
+      targetType: "User",
+      targetId: input.userId,
+      details: { role: input.role },
+    });
+    revalidatePath("/", "layout");
+  }
   return res;
 }
