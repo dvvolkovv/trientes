@@ -32,9 +32,12 @@ export function MobileNav({ children }: { children: React.ReactNode }) {
         aria-hidden
       />
       <div
-        className="md:hidden fixed left-0 top-0 h-screen w-80 max-w-[85vw] bg-bg-tint border-r border-hairline z-50 p-6 overflow-y-auto flex flex-col"
+        className="md:hidden fixed left-0 top-0 h-dvh w-80 max-w-[85vw] bg-bg-tint border-r border-hairline z-50 p-6 overflow-y-auto flex flex-col"
         role="dialog"
         aria-modal="true"
+        style={{
+          paddingBottom: "calc(env(safe-area-inset-bottom) + 1.5rem)",
+        }}
       >
         <button
           type="button"
