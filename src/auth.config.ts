@@ -5,6 +5,8 @@ import type { NextAuthConfig } from "next-auth";
 // runs in the Node.js runtime.
 export const authConfig = {
   providers: [],
+  // Trust the host header — we run behind nginx/SSL on trientes.org.
+  trustHost: true,
   pages: {
     signIn: "/en/login",
   },

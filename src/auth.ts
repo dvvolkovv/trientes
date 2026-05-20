@@ -13,6 +13,8 @@ const adminWhitelist = parseAdminWhitelist(process.env.ADMIN_WHITELIST);
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
+  // We're behind nginx/SSL on trientes.org — Host header is trusted.
+  trustHost: true,
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
