@@ -1,7 +1,7 @@
 export function Sparkline({
   points,
-  width = 80,
-  height = 24,
+  width = 96,
+  height = 28,
 }: {
   points: number[] | null | undefined;
   width?: number;
@@ -25,7 +25,7 @@ export function Sparkline({
     .join(" ");
 
   const isUp = points[points.length - 1] >= points[0];
-  const stroke = isUp ? "#22c55e" : "#ef4444"; // green-500 / red-500
+  const stroke = isUp ? "var(--color-up)" : "var(--color-down)";
 
   return (
     <svg
@@ -35,7 +35,14 @@ export function Sparkline({
       aria-hidden="true"
       className="overflow-visible"
     >
-      <path d={d} fill="none" stroke={stroke} strokeWidth="1.5" />
+      <path
+        d={d}
+        fill="none"
+        stroke={stroke}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }

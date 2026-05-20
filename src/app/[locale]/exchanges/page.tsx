@@ -21,16 +21,25 @@ export default async function ExchangesPage({
   ]);
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <header className="mb-6">
-        <h1 className="text-3xl font-bold">{t("title")}</h1>
-        <p className="text-muted-foreground mt-1">{t("subtitle")}</p>
-      </header>
-      {rows.length > 0 ? (
-        <ExchangesTable rows={rows} currency={currency} rates={rates} />
-      ) : (
-        <p className="text-muted-foreground">{t("empty")}</p>
-      )}
+    <main className="bg-bg">
+      <div className="max-w-[1600px] mx-auto px-6 md:px-12 xl:px-20 py-12">
+        <header className="mb-10">
+          <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
+            Section · II
+          </div>
+          <h1 className="text-[40px] md:text-[56px] font-bold tracking-[-0.035em]">
+            {t("title")}
+          </h1>
+          <p className="text-muted mt-4 text-[16px] md:text-[18px] leading-[1.5] max-w-[640px]">
+            {t("subtitle")}
+          </p>
+        </header>
+        {rows.length > 0 ? (
+          <ExchangesTable rows={rows} currency={currency} rates={rates} />
+        ) : (
+          <p className="text-muted">{t("empty")}</p>
+        )}
+      </div>
     </main>
   );
 }

@@ -14,19 +14,25 @@ export function GlobalStatsHero({
   const t = useTranslations("listing");
   if (!stats) return null;
   const r = rates ?? {};
-  const fmt = (n: number) => (rates ? formatCompactInCurrency(n, currency, r) : `$${(n / 1e9).toFixed(2)}B`);
-  const cards = [
+  const fmt = (n: number) =>
+    rates ? formatCompactInCurrency(n, currency, r) : `$${(n / 1e9).toFixed(2)}B`;
+  const items = [
     { label: t("globalMarketCap"), value: fmt(stats.totalMarketCapUsd) },
     { label: t("globalVolume"), value: fmt(stats.total24hVolumeUsd) },
     { label: t("btcDominance"), value: `${stats.btcDominancePct.toFixed(1)}%` },
     { label: t("ethDominance"), value: `${stats.ethDominancePct.toFixed(1)}%` },
   ];
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
-      {cards.map((c) => (
-        <div key={c.label} className="border rounded-lg p-4">
-          <div className="text-xs text-muted-foreground">{c.label}</div>
-          <div className="text-2xl font-semibold mt-1">{c.value}</div>
+    <div className="space-y-5">
+      {items.map((s) => (
+        <div
+          key={s.label}
+          className="flex items-baseline justify-between border-b border-hairline pb-3"
+        >
+          <div className="text-[11px] uppercase tracking-[0.18em] text-muted">
+            {s.label}
+          </div>
+          <div className="num text-[22px] font-medium">{s.value}</div>
         </div>
       ))}
     </div>

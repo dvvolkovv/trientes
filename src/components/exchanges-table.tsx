@@ -4,10 +4,10 @@ import type { Exchange, ExchangeRates } from "@/lib/coingecko";
 import { formatCompactInCurrency, type Currency } from "@/lib/currency";
 
 function trustBadgeCls(score: number | null): string {
-  if (score === null) return "bg-muted text-muted-foreground";
-  if (score >= 9) return "bg-green-500/15 text-green-700 dark:text-green-400";
-  if (score >= 7) return "bg-yellow-500/15 text-yellow-700 dark:text-yellow-400";
-  return "bg-red-500/15 text-red-700 dark:text-red-400";
+  if (score === null) return "bg-card-alt text-muted";
+  if (score >= 9) return "bg-up/15 text-up";
+  if (score >= 7) return "bg-accent/15 text-accent";
+  return "bg-down/15 text-down";
 }
 
 export async function ExchangesTable({
@@ -25,44 +25,67 @@ export async function ExchangesTable({
     rates ? formatCompactInCurrency(n, currency, r) : `$${(n / 1e9).toFixed(2)}B`;
 
   return (
-    <div className="overflow-x-auto rounded-lg border">
-      <table className="w-full text-sm">
-        <thead className="bg-muted/50 text-muted-foreground">
-          <tr className="border-b">
-            <th className="px-3 py-2 text-left font-medium">{t("rank")}</th>
-            <th className="px-3 py-2 text-left font-medium">{t("name")}</th>
-            <th className="px-3 py-2 text-left font-medium">{t("trust")}</th>
-            <th className="px-3 py-2 text-left font-medium">{t("country")}</th>
-            <th className="px-3 py-2 text-left font-medium">{t("founded")}</th>
-            <th className="px-3 py-2 text-right font-medium">{t("volume24h")}</th>
+    <div className="bg-card border border-hairline rounded-[20px] overflow-hidden overflow-x-auto">
+      <table className="w-full">
+        <thead>
+          <tr className="text-[11px] uppercase tracking-[0.18em] text-muted border-b border-hairline">
+            <th className="text-left font-medium px-5 py-4">{t("rank")}</th>
+            <th className="text-left font-medium px-5 py-4">{t("name")}</th>
+            <th className="text-left font-medium px-5 py-4">{t("trust")}</th>
+            <th className="text-left font-medium px-5 py-4">{t("country")}</th>
+            <th className="text-left font-medium px-5 py-4">{t("founded")}</th>
+            <th className="text-right font-medium px-5 py-4">{t("volume24h")}</th>
           </tr>
         </thead>
         <tbody>
           {rows.map((e) => (
-            <tr key={e.id} className="border-b hover:bg-muted/30">
-              <td className="px-3 py-3 tabular-nums text-muted-foreground">{e.trustScoreRank ?? "—"}</td>
-              <td className="px-3 py-3">
-                <div className="flex items-center gap-2">
+            <tr
+              key={e.id}
+              className="border-b border-hairline hover:bg-bg-tint transition-colors"
+            >
+              <td className="num px-5 py-5 text-[13px] text-muted">
+                {e.trustScoreRank ?? "—"}
+              </td>
+              <td className="px-5 py-5">
+                <div className="flex items-center gap-3">
                   {e.logoUrl && (
-                    <Image src={e.logoUrl} alt="" width={20} height={20} className="rounded" unoptimized />
+                    <Image
+                      src={e.logoUrl}
+                      alt=""
+                      width={28}
+                      height={28}
+                      className="rounded"
+                      unoptimized
+                    />
                   )}
                   {e.url ? (
-                    <a href={e.url} target="_blank" rel="noopener noreferrer nofollow" className="font-medium hover:underline">
+                    <a
+                      href={e.url}
+                      target="_blank"
+                      rel="noopener noreferrer nofollow"
+                      className="font-medium text-[15px] hover:underline"
+                    >
                       {e.name}
                     </a>
                   ) : (
-                    <span className="font-medium">{e.name}</span>
+                    <span className="font-medium text-[15px]">{e.name}</span>
                   )}
                 </div>
               </td>
-              <td className="px-3 py-3">
-                <span className={`px-2 py-0.5 text-xs rounded ${trustBadgeCls(e.trustScore)}`}>
+              <td className="px-5 py-5">
+                <span
+                  className={`num text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-sm font-medium ${trustBadgeCls(e.trustScore)}`}
+                >
                   {e.trustScore ?? "—"}/10
                 </span>
               </td>
-              <td className="px-3 py-3 text-muted-foreground">{e.country ?? "—"}</td>
-              <td className="px-3 py-3 tabular-nums text-muted-foreground">{e.yearEstablished ?? "—"}</td>
-              <td className="px-3 py-3 tabular-nums text-right">{fmtV(e.volume24hUsd)}</td>
+              <td className="px-5 py-5 text-[13px] text-muted">{e.country ?? "—"}</td>
+              <td className="num px-5 py-5 text-[13px] text-muted">
+                {e.yearEstablished ?? "—"}
+              </td>
+              <td className="num text-right text-[13px] px-5 py-5 font-medium">
+                {fmtV(e.volume24hUsd)}
+              </td>
             </tr>
           ))}
         </tbody>

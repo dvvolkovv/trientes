@@ -27,26 +27,54 @@ export default async function Home({
     isAuthenticated(),
   ]);
 
+  const heroTimestamp = new Date().toUTCString().slice(0, 22) + "Z";
+
   return (
-    <main className="container mx-auto px-4 py-8">
-      <header className="mb-6">
-        <h1 className="text-4xl font-bold">{t("appName")}</h1>
-        <p className="text-muted-foreground mt-1">{t("tagline")}</p>
-      </header>
-      <LivePrices currency={currency} rates={rates} />
-      <GlobalStatsHero stats={stats} currency={currency} rates={rates} />
-      {rows.length > 0 ? (
-        <CoinListClient
-          rows={rows}
-          currency={currency}
-          rates={rates}
-          locale={locale}
-          watchedSet={watchedSet}
-          isAuthed={isAuthed}
-        />
-      ) : (
-        <p className="text-muted-foreground">{tl("loadingFallback")}</p>
-      )}
+    <main className="bg-bg">
+      <div className="max-w-[1600px] mx-auto px-6 md:px-12 xl:px-20">
+        {/* HERO */}
+        <section className="py-16 md:py-28">
+          <div className="grid grid-cols-12 gap-8 items-end">
+            <div className="col-span-12 lg:col-span-8">
+              <div className="num text-[11px] uppercase tracking-[0.3em] text-accent mb-6">
+                ● Live · Layer-1 Ledger · {heroTimestamp}
+              </div>
+              <h1 className="text-[60px] md:text-[88px] lg:text-[112px] leading-[0.92] tracking-[-0.045em] font-black">
+                {t("appName")}.
+              </h1>
+              <p className="mt-8 max-w-[640px] text-[18px] md:text-[20px] leading-[1.5] font-light text-muted">
+                {t("tagline")}
+              </p>
+            </div>
+            <div className="col-span-12 lg:col-span-4">
+              <GlobalStatsHero stats={stats} currency={currency} rates={rates} />
+            </div>
+          </div>
+        </section>
+
+        {/* COIN TABLE */}
+        <section className="py-12">
+          <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
+            Section · I
+          </div>
+          <h2 className="text-[32px] md:text-[40px] font-bold tracking-[-0.03em] mb-8">
+            Top Layer-1.
+          </h2>
+          <LivePrices currency={currency} rates={rates} />
+          {rows.length > 0 ? (
+            <CoinListClient
+              rows={rows}
+              currency={currency}
+              rates={rates}
+              locale={locale}
+              watchedSet={watchedSet}
+              isAuthed={isAuthed}
+            />
+          ) : (
+            <p className="text-muted">{tl("loadingFallback")}</p>
+          )}
+        </section>
+      </div>
     </main>
   );
 }
