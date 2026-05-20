@@ -32,5 +32,29 @@
     "ethDominance": "ETH 占比",
     "sparkline7d": "7天图",
     "search": "按名称或符号搜索…"
+  },
+  "detail": {
+    "about": "关于",
+    "stats": "数据",
+    "links": "链接",
+    "topMarkets": "主要市场",
+    "marketCap": "市值",
+    "volume24h": "24h成交量",
+    "circulating": "流通量",
+    "total": "总供应量",
+    "max": "最大供应量",
+    "exchange": "交易所",
+    "pair": "交易对",
+    "price": "价格",
+    "volume": "成交量 (24h)",
+    "readMore": "展开",
+    "showLess": "收起",
+    "loading": "加载中…",
+    "website": "官网",
+    "explorer": "区块浏览器",
+    "whitepaper": "Whitepaper",
+    "github": "GitHub",
+    "twitter": "Twitter",
+    "reddit": "Reddit"
   }
 }

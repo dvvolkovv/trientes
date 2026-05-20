@@ -32,5 +32,29 @@
     "ethDominance": "ETH hakimiyeti",
     "sparkline7d": "7g grafik",
     "search": "İsim veya sembolle ara…"
+  },
+  "detail": {
+    "about": "Hakkında",
+    "stats": "İstatistikler",
+    "links": "Bağlantılar",
+    "topMarkets": "En çok işlem gören",
+    "marketCap": "Piyasa değeri",
+    "volume24h": "24s hacim",
+    "circulating": "Dolaşımdaki",
+    "total": "Toplam arz",
+    "max": "Maksimum arz",
+    "exchange": "Borsa",
+    "pair": "Çift",
+    "price": "Fiyat",
+    "volume": "Hacim (24s)",
+    "readMore": "Devamı",
+    "showLess": "Daralt",
+    "loading": "Yükleniyor…",
+    "website": "Web sitesi",
+    "explorer": "Gezgin",
+    "whitepaper": "Whitepaper",
+    "github": "GitHub",
+    "twitter": "Twitter",
+    "reddit": "Reddit"
   }
 }

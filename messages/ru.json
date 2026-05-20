@@ -35,5 +35,29 @@
     "ethDominance": "Доминация ETH",
     "sparkline7d": "График 7д",
     "search": "Поиск по названию или символу…"
+  },
+  "detail": {
+    "about": "О проекте",
+    "stats": "Показатели",
+    "links": "Ссылки",
+    "topMarkets": "Топ рынков",
+    "marketCap": "Капитализация",
+    "volume24h": "Объём (24ч)",
+    "circulating": "В обращении",
+    "total": "Всего",
+    "max": "Максимум",
+    "exchange": "Биржа",
+    "pair": "Пара",
+    "price": "Цена",
+    "volume": "Объём (24ч)",
+    "readMore": "Подробнее",
+    "showLess": "Скрыть",
+    "loading": "Загрузка…",
+    "website": "Сайт",
+    "explorer": "Эксплорер",
+    "whitepaper": "Whitepaper",
+    "github": "GitHub",
+    "twitter": "Twitter",
+    "reddit": "Reddit"
   }
 }

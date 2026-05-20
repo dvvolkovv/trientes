@@ -32,5 +32,29 @@
     "ethDominance": "ETH 점유율",
     "sparkline7d": "7일 차트",
     "search": "이름/심볼로 검색…"
+  },
+  "detail": {
+    "about": "소개",
+    "stats": "통계",
+    "links": "링크",
+    "topMarkets": "주요 거래소",
+    "marketCap": "시가총액",
+    "volume24h": "24h 거래량",
+    "circulating": "유통량",
+    "total": "총 공급량",
+    "max": "최대 공급량",
+    "exchange": "거래소",
+    "pair": "페어",
+    "price": "가격",
+    "volume": "거래량 (24h)",
+    "readMore": "더 보기",
+    "showLess": "접기",
+    "loading": "불러오는 중…",
+    "website": "웹사이트",
+    "explorer": "익스플로러",
+    "whitepaper": "Whitepaper",
+    "github": "GitHub",
+    "twitter": "Twitter",
+    "reddit": "Reddit"
   }
 }

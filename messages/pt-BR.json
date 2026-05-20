@@ -32,5 +32,29 @@
     "ethDominance": "Dominância ETH",
     "sparkline7d": "Gráfico 7d",
     "search": "Buscar por nome ou símbolo…"
+  },
+  "detail": {
+    "about": "Sobre",
+    "stats": "Dados",
+    "links": "Links",
+    "topMarkets": "Principais mercados",
+    "marketCap": "Capitalização",
+    "volume24h": "Volume 24h",
+    "circulating": "Em circulação",
+    "total": "Oferta total",
+    "max": "Oferta máx.",
+    "exchange": "Exchange",
+    "pair": "Par",
+    "price": "Preço",
+    "volume": "Volume (24h)",
+    "readMore": "Ler mais",
+    "showLess": "Mostrar menos",
+    "loading": "Carregando…",
+    "website": "Site",
+    "explorer": "Explorador",
+    "whitepaper": "Whitepaper",
+    "github": "GitHub",
+    "twitter": "Twitter",
+    "reddit": "Reddit"
   }
 }

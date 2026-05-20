@@ -32,5 +32,29 @@
     "ethDominance": "ETH 支配率",
     "sparkline7d": "7日チャート",
     "search": "名前/シンボルで検索…"
+  },
+  "detail": {
+    "about": "概要",
+    "stats": "統計",
+    "links": "リンク",
+    "topMarkets": "主要市場",
+    "marketCap": "時価総額",
+    "volume24h": "24h出来高",
+    "circulating": "流通量",
+    "total": "総供給量",
+    "max": "最大供給量",
+    "exchange": "取引所",
+    "pair": "ペア",
+    "price": "価格",
+    "volume": "出来高 (24h)",
+    "readMore": "続きを読む",
+    "showLess": "折りたたむ",
+    "loading": "読み込み中…",
+    "website": "ウェブサイト",
+    "explorer": "エクスプローラ",
+    "whitepaper": "Whitepaper",
+    "github": "GitHub",
+    "twitter": "Twitter",
+    "reddit": "Reddit"
   }
 }
