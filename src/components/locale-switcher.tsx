@@ -30,9 +30,12 @@ export function LocaleSwitcher() {
         <button
           type="button"
           aria-label={t("languageLabel")}
-          className="text-xs px-3 py-1.5 rounded-md font-medium uppercase tracking-wider bg-card text-muted border border-hairline hover:text-foreground transition-colors"
+          className="text-xs px-3 py-1.5 rounded-md font-medium uppercase tracking-wider bg-card hover:bg-card-alt text-muted hover:text-foreground border border-hairline transition-colors inline-flex items-center gap-1.5"
         >
           {label}
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
