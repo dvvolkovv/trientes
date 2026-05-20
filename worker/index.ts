@@ -6,6 +6,7 @@ import { prisma } from "../src/lib/prisma";
 import { redis } from "../src/lib/redis";
 import { fetchTop100L1, fetchGlobalSnap, fetchExchangeRates, fetchCoinDetail, fetchExchanges, fetchMarketsByIds } from "../src/lib/coingecko";
 import { syncPrices, syncGlobal, syncExchangeRates, syncCoinMetadata, syncExchanges, syncAdminAddedPrices } from "../src/lib/sync/orchestrator";
+import { startBinance, stopBinance } from "./binance";
 
 async function runPriceSync() {
   const t0 = Date.now();
@@ -143,8 +144,12 @@ async function main() {
   // Daily kick; staleMs in syncCoinMetadata skips coins fetched within 7 days.
   cron.schedule("30 3 * * *", () => void runMetadataSync());
 
+  // Live price feed via Binance WebSocket — top 20 coins.
+  startBinance();
+
   const shutdown = async (sig: string) => {
     console.log(`[worker] received ${sig}, shutting down`);
+    stopBinance();
     await prisma.$disconnect();
     redis.disconnect();
     process.exit(0);
