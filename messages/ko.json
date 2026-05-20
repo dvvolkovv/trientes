@@ -29,6 +29,8 @@
     "globalMarketCap": "전체 시가총액",
     "globalVolume": "24h 거래량",
     "btcDominance": "BTC 점유율",
-    "ethDominance": "ETH 점유율"
+    "ethDominance": "ETH 점유율",
+    "sparkline7d": "7일 차트",
+    "search": "이름/심볼로 검색…"
   }
 }

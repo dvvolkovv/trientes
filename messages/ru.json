@@ -32,6 +32,8 @@
     "globalMarketCap": "Общая капитализация",
     "globalVolume": "Объём за 24ч",
     "btcDominance": "Доминация BTC",
-    "ethDominance": "Доминация ETH"
+    "ethDominance": "Доминация ETH",
+    "sparkline7d": "График 7д",
+    "search": "Поиск по названию или символу…"
   }
 }

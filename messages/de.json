@@ -29,6 +29,8 @@
     "globalMarketCap": "Gesamtmarktkap.",
     "globalVolume": "24h Volumen",
     "btcDominance": "BTC-Dominanz",
-    "ethDominance": "ETH-Dominanz"
+    "ethDominance": "ETH-Dominanz",
+    "sparkline7d": "7T-Verlauf",
+    "search": "Nach Name oder Symbol suchen…"
   }
 }

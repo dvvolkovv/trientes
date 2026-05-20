@@ -29,6 +29,8 @@
     "globalMarketCap": "総時価総額",
     "globalVolume": "24h 取引高",
     "btcDominance": "BTC 支配率",
-    "ethDominance": "ETH 支配率"
+    "ethDominance": "ETH 支配率",
+    "sparkline7d": "7日チャート",
+    "search": "名前/シンボルで検索…"
   }
 }

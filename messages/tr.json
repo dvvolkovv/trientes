@@ -29,6 +29,8 @@
     "globalMarketCap": "Toplam piyasa değeri",
     "globalVolume": "24s hacim",
     "btcDominance": "BTC hakimiyeti",
-    "ethDominance": "ETH hakimiyeti"
+    "ethDominance": "ETH hakimiyeti",
+    "sparkline7d": "7g grafik",
+    "search": "İsim veya sembolle ara…"
   }
 }

@@ -32,6 +32,8 @@
     "globalMarketCap": "Total market cap",
     "globalVolume": "24h trading vol",
     "btcDominance": "BTC dominance",
-    "ethDominance": "ETH dominance"
+    "ethDominance": "ETH dominance",
+    "sparkline7d": "7d chart",
+    "search": "Search by name or symbol…"
   }
 }
