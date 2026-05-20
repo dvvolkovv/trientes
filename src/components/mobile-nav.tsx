@@ -63,8 +63,12 @@ export function MobileNav({ children }: { children: React.ReactNode }) {
         <div
           className="flex flex-col flex-1"
           onClick={(e) => {
+            // Auto-close on link navigation only. Buttons inside the drawer
+            // (sign-out form submit, currency/locale dropdown triggers) must
+            // stay open — closing mid-submit kills the form, and dropdown
+            // triggers would never get a chance to open their menus.
             const target = e.target as HTMLElement;
-            if (target.closest("a") || target.closest("button")) {
+            if (target.closest("a")) {
               setOpen(false);
             }
           }}
