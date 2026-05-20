@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { checkAdmin } from "@/lib/is-admin";
 import { approveRequestCore } from "@/lib/admin/approve-request";
 import { logAdminAction } from "@/lib/admin/audit";
+import { sendEmail } from "@/lib/email";
 
 export async function approveRequest(input: { requestId: string; coingeckoIdOverride?: string }) {
   const admin = await checkAdmin();
@@ -22,6 +23,22 @@ export async function approveRequest(input: { requestId: string; coingeckoIdOver
       targetId: input.requestId,
       details: { coinId: res.coinId },
     });
+    // Notify requestor (best-effort, never blocks the action).
+    try {
+      const r = await prisma.coinRequest.findUnique({
+        where: { id: input.requestId },
+        include: { user: { select: { email: true } } },
+      });
+      if (r?.user?.email) {
+        void sendEmail({
+          to: r.user.email,
+          subject: `Your coin request was approved: ${r.symbol}`,
+          text: `Good news — your request to add ${r.name} (${r.symbol}) was approved. It will appear on trientes.org within ~30 minutes once price data syncs.`,
+        });
+      }
+    } catch (err) {
+      console.error("[admin-requests] approve email lookup failed:", err);
+    }
     revalidatePath("/", "layout");
   }
   return res;
@@ -53,6 +70,22 @@ export async function rejectRequest(input: { requestId: string; rejectReason: st
     targetId: req.id,
     details: { reason },
   });
+  // Notify requestor (best-effort, never blocks the action).
+  try {
+    const u = await prisma.user.findUnique({
+      where: { id: req.userId },
+      select: { email: true },
+    });
+    if (u?.email) {
+      void sendEmail({
+        to: u.email,
+        subject: `Your coin request was not approved: ${req.symbol}`,
+        text: `Your request to add ${req.name} (${req.symbol}) was not approved.\n\nReason: ${reason}\n\nYou can submit a new request with updated info if needed.`,
+      });
+    }
+  } catch (err) {
+    console.error("[admin-requests] reject email lookup failed:", err);
+  }
   revalidatePath("/", "layout");
   return { ok: true };
 }
