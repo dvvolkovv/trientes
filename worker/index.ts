@@ -81,12 +81,14 @@ async function main() {
   // Kick metadata-sync in the background — don't block startup on a ~3 min loop.
   void runMetadataSync();
 
-  // 60s for prices, 5 min for global stats + rates.
-  cron.schedule("*/60 * * * * *", () => void runPriceSync());
-  cron.schedule("*/5 * * * *", () => {
+  // Cadences sized for CoinGecko Free tier (10k calls/month).
+  // 10 min × 144/day + 30 min × 48/day × 2 = ~240 scheduled calls/day ≈ 7.2k/month.
+  cron.schedule("*/10 * * * *", () => void runPriceSync());
+  cron.schedule("*/30 * * * *", () => {
     void runGlobalSync();
     void runRatesSync();
   });
+  // Daily kick; staleMs in syncCoinMetadata skips coins fetched within 7 days.
   cron.schedule("30 3 * * *", () => void runMetadataSync());
 
   const shutdown = async (sig: string) => {

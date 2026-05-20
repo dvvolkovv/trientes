@@ -5,10 +5,11 @@ export const KEYS = {
   exchangeRates: "exchange:rates",
 } as const;
 
+// TTLs sized to outlive the worker sync cadence (10/30/30 min on CoinGecko Free tier).
 export const TTL = {
-  snapshot: 90,         // seconds — must outlast the 60s sync interval
-  globalStats: 300,     // 5 min
-  exchangeRates: 600,   // 10 min — rates barely move
+  snapshot: 900,        // 15 min — covers the 10 min price-sync interval with margin
+  globalStats: 2400,    // 40 min — covers the 30 min global-sync interval
+  exchangeRates: 2400,  // 40 min — rates barely move
 } as const;
 
 export const HISTORY_KEY = (id: string, timeframe: string) => `coin:history:${id}:${timeframe}`;
