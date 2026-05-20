@@ -22,5 +22,16 @@ module.exports = {
       error_file: "/home/dv/logs/trientes-worker.err.log",
       time: true,
     },
+    {
+      name: "trientes-bot",
+      cwd: "/home/dv/trientes",
+      script: "node_modules/.bin/tsx",
+      args: "bot/index.ts",
+      env: { NODE_ENV: "production" },
+      max_memory_restart: "300M",
+      out_file: "/home/dv/logs/trientes-bot.out.log",
+      error_file: "/home/dv/logs/trientes-bot.err.log",
+      time: true,
+    },
   ],
 };
