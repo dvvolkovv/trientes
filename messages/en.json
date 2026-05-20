@@ -59,5 +59,44 @@
     "github": "GitHub",
     "twitter": "Twitter",
     "reddit": "Reddit"
+  },
+  "watchlist": {
+    "title": "Watchlist",
+    "subtitle": "Your starred coins.",
+    "addToWatchlist": "Add to watchlist",
+    "removeFromWatchlist": "Remove from watchlist",
+    "empty": "Your watchlist is empty. Star a coin to add it here.",
+    "browse": "Browse coins →"
+  },
+  "request": {
+    "title": "Request a coin",
+    "subtitle": "Suggest a coin we should add. Admins review submissions.",
+    "newRequest": "New request",
+    "yourRequests": "Your requests",
+    "noRequestsYet": "You haven't submitted any requests yet.",
+    "name": "Name",
+    "symbol": "Symbol",
+    "coingeckoIdOptional": "CoinGecko ID (optional)",
+    "reason": "Reason / context",
+    "submit": "Submit",
+    "submitting": "Submitting…",
+    "submitted": "Submitted! An admin will review shortly.",
+    "rejectReasonLabel": "Rejection reason",
+    "status": {
+      "PENDING": "Pending",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected"
+    },
+    "errors": {
+      "unauth": "Please sign in.",
+      "name_required": "Name is required.",
+      "symbol_required": "Symbol is required.",
+      "symbol_too_long": "Symbol must be 12 characters or fewer.",
+      "reason_too_short": "Reason must be at least 5 characters.",
+      "reason_too_long": "Reason must be at most 2000 characters.",
+      "coingecko_id_invalid": "Invalid CoinGecko ID.",
+      "too_many_pending": "You have too many pending requests.",
+      "unknown_error": "Something went wrong."
+    }
   }
 }

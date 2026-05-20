@@ -59,5 +59,44 @@
     "github": "GitHub",
     "twitter": "Twitter",
     "reddit": "Reddit"
+  },
+  "watchlist": {
+    "title": "Избранное",
+    "subtitle": "Ваши отмеченные монеты.",
+    "addToWatchlist": "Добавить в избранное",
+    "removeFromWatchlist": "Убрать из избранного",
+    "empty": "Избранное пусто. Отметьте монету звёздочкой, чтобы добавить.",
+    "browse": "К списку монет →"
+  },
+  "request": {
+    "title": "Предложить монету",
+    "subtitle": "Предложите монету для добавления. Заявки проверяет администратор.",
+    "newRequest": "Новая заявка",
+    "yourRequests": "Ваши заявки",
+    "noRequestsYet": "Вы пока не подавали заявок.",
+    "name": "Название",
+    "symbol": "Символ",
+    "coingeckoIdOptional": "CoinGecko ID (необязательно)",
+    "reason": "Причина / контекст",
+    "submit": "Отправить",
+    "submitting": "Отправка…",
+    "submitted": "Отправлено! Заявка скоро будет рассмотрена.",
+    "rejectReasonLabel": "Причина отклонения",
+    "status": {
+      "PENDING": "Ожидает",
+      "APPROVED": "Принято",
+      "REJECTED": "Отклонено"
+    },
+    "errors": {
+      "unauth": "Войдите в аккаунт.",
+      "name_required": "Укажите название.",
+      "symbol_required": "Укажите символ.",
+      "symbol_too_long": "Символ не длиннее 12 символов.",
+      "reason_too_short": "Причина — минимум 5 символов.",
+      "reason_too_long": "Причина — максимум 2000 символов.",
+      "coingecko_id_invalid": "Неверный CoinGecko ID.",
+      "too_many_pending": "Слишком много ожидающих заявок.",
+      "unknown_error": "Что-то пошло не так."
+    }
   }
 }

@@ -56,5 +56,44 @@
     "github": "GitHub",
     "twitter": "Twitter",
     "reddit": "Reddit"
+  },
+  "watchlist": {
+    "title": "お気に入り",
+    "subtitle": "スターを付けたコイン。",
+    "addToWatchlist": "お気に入りに追加",
+    "removeFromWatchlist": "お気に入りから削除",
+    "empty": "お気に入りは空です。星マークで追加してください。",
+    "browse": "コインを見る →"
+  },
+  "request": {
+    "title": "コインをリクエスト",
+    "subtitle": "追加すべきコインを提案してください。管理者が審査します。",
+    "newRequest": "新しいリクエスト",
+    "yourRequests": "あなたのリクエスト",
+    "noRequestsYet": "まだリクエストを送信していません。",
+    "name": "名称",
+    "symbol": "シンボル",
+    "coingeckoIdOptional": "CoinGecko ID(任意)",
+    "reason": "理由 / 説明",
+    "submit": "送信",
+    "submitting": "送信中…",
+    "submitted": "送信しました。管理者が確認します。",
+    "rejectReasonLabel": "却下理由",
+    "status": {
+      "PENDING": "審査中",
+      "APPROVED": "承認済み",
+      "REJECTED": "却下"
+    },
+    "errors": {
+      "unauth": "サインインしてください。",
+      "name_required": "名称は必須です。",
+      "symbol_required": "シンボルは必須です。",
+      "symbol_too_long": "シンボルは12文字以下にしてください。",
+      "reason_too_short": "理由は5文字以上必要です。",
+      "reason_too_long": "理由は2000文字以下にしてください。",
+      "coingecko_id_invalid": "無効な CoinGecko ID です。",
+      "too_many_pending": "保留中のリクエストが多すぎます。",
+      "unknown_error": "問題が発生しました。"
+    }
   }
 }

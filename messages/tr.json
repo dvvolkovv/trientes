@@ -56,5 +56,44 @@
     "github": "GitHub",
     "twitter": "Twitter",
     "reddit": "Reddit"
+  },
+  "watchlist": {
+    "title": "İzleme listesi",
+    "subtitle": "Yıldızladığınız coinler.",
+    "addToWatchlist": "İzleme listesine ekle",
+    "removeFromWatchlist": "Listeden çıkar",
+    "empty": "İzleme listeniz boş. Yıldız ile ekleyin.",
+    "browse": "Coinleri gözat →"
+  },
+  "request": {
+    "title": "Coin öner",
+    "subtitle": "Eklenmesini istediğiniz bir coin önerin. Yöneticiler inceler.",
+    "newRequest": "Yeni öneri",
+    "yourRequests": "Önerileriniz",
+    "noRequestsYet": "Henüz öneri göndermediniz.",
+    "name": "Ad",
+    "symbol": "Sembol",
+    "coingeckoIdOptional": "CoinGecko ID (isteğe bağlı)",
+    "reason": "Sebep / bağlam",
+    "submit": "Gönder",
+    "submitting": "Gönderiliyor…",
+    "submitted": "Gönderildi. Yönetici inceleyecek.",
+    "rejectReasonLabel": "Reddetme sebebi",
+    "status": {
+      "PENDING": "Beklemede",
+      "APPROVED": "Onaylandı",
+      "REJECTED": "Reddedildi"
+    },
+    "errors": {
+      "unauth": "Lütfen giriş yapın.",
+      "name_required": "Ad gerekli.",
+      "symbol_required": "Sembol gerekli.",
+      "symbol_too_long": "Sembol en fazla 12 karakter olabilir.",
+      "reason_too_short": "Sebep en az 5 karakter olmalı.",
+      "reason_too_long": "Sebep en fazla 2000 karakter olabilir.",
+      "coingecko_id_invalid": "Geçersiz CoinGecko ID.",
+      "too_many_pending": "Çok fazla bekleyen öneriniz var.",
+      "unknown_error": "Bir hata oluştu."
+    }
   }
 }

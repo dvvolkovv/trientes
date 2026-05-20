@@ -56,5 +56,44 @@
     "github": "GitHub",
     "twitter": "Twitter",
     "reddit": "Reddit"
+  },
+  "watchlist": {
+    "title": "Watchlist",
+    "subtitle": "Deine markierten Coins.",
+    "addToWatchlist": "Zur Watchlist hinzufügen",
+    "removeFromWatchlist": "Aus Watchlist entfernen",
+    "empty": "Watchlist leer. Münze mit Stern markieren.",
+    "browse": "Coins ansehen →"
+  },
+  "request": {
+    "title": "Coin vorschlagen",
+    "subtitle": "Schlage einen Coin vor. Admins prüfen die Einreichung.",
+    "newRequest": "Neuer Vorschlag",
+    "yourRequests": "Deine Vorschläge",
+    "noRequestsYet": "Du hast noch keine Vorschläge eingereicht.",
+    "name": "Name",
+    "symbol": "Symbol",
+    "coingeckoIdOptional": "CoinGecko ID (optional)",
+    "reason": "Grund / Kontext",
+    "submit": "Absenden",
+    "submitting": "Wird gesendet…",
+    "submitted": "Eingereicht. Admin prüft in Kürze.",
+    "rejectReasonLabel": "Ablehnungsgrund",
+    "status": {
+      "PENDING": "Wartend",
+      "APPROVED": "Genehmigt",
+      "REJECTED": "Abgelehnt"
+    },
+    "errors": {
+      "unauth": "Bitte anmelden.",
+      "name_required": "Name ist erforderlich.",
+      "symbol_required": "Symbol ist erforderlich.",
+      "symbol_too_long": "Symbol darf höchstens 12 Zeichen lang sein.",
+      "reason_too_short": "Grund muss mindestens 5 Zeichen lang sein.",
+      "reason_too_long": "Grund darf höchstens 2000 Zeichen lang sein.",
+      "coingecko_id_invalid": "Ungültige CoinGecko ID.",
+      "too_many_pending": "Zu viele ausstehende Vorschläge.",
+      "unknown_error": "Etwas ist schiefgelaufen."
+    }
   }
 }

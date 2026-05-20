@@ -56,5 +56,44 @@
     "github": "GitHub",
     "twitter": "Twitter",
     "reddit": "Reddit"
+  },
+  "watchlist": {
+    "title": "Favoritos",
+    "subtitle": "Suas moedas marcadas.",
+    "addToWatchlist": "Adicionar aos favoritos",
+    "removeFromWatchlist": "Remover dos favoritos",
+    "empty": "Lista vazia. Marque uma moeda com estrela.",
+    "browse": "Ver moedas →"
+  },
+  "request": {
+    "title": "Solicitar moeda",
+    "subtitle": "Sugira uma moeda para adicionar. Administradores revisam as solicitações.",
+    "newRequest": "Nova solicitação",
+    "yourRequests": "Suas solicitações",
+    "noRequestsYet": "Você ainda não enviou nenhuma solicitação.",
+    "name": "Nome",
+    "symbol": "Símbolo",
+    "coingeckoIdOptional": "CoinGecko ID (opcional)",
+    "reason": "Motivo / contexto",
+    "submit": "Enviar",
+    "submitting": "Enviando…",
+    "submitted": "Enviado. Um admin vai revisar.",
+    "rejectReasonLabel": "Motivo da rejeição",
+    "status": {
+      "PENDING": "Pendente",
+      "APPROVED": "Aprovado",
+      "REJECTED": "Rejeitado"
+    },
+    "errors": {
+      "unauth": "Faça login.",
+      "name_required": "O nome é obrigatório.",
+      "symbol_required": "O símbolo é obrigatório.",
+      "symbol_too_long": "O símbolo deve ter no máximo 12 caracteres.",
+      "reason_too_short": "O motivo deve ter ao menos 5 caracteres.",
+      "reason_too_long": "O motivo deve ter no máximo 2000 caracteres.",
+      "coingecko_id_invalid": "CoinGecko ID inválido.",
+      "too_many_pending": "Muitas solicitações pendentes.",
+      "unknown_error": "Algo deu errado."
+    }
   }
 }

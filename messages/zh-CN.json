@@ -56,5 +56,44 @@
     "github": "GitHub",
     "twitter": "Twitter",
     "reddit": "Reddit"
+  },
+  "watchlist": {
+    "title": "收藏",
+    "subtitle": "您收藏的币种。",
+    "addToWatchlist": "添加到收藏",
+    "removeFromWatchlist": "取消收藏",
+    "empty": "收藏夹为空。点击星标添加。",
+    "browse": "浏览币种 →"
+  },
+  "request": {
+    "title": "申请添加币种",
+    "subtitle": "推荐我们应该添加的币种。管理员将审核您的提交。",
+    "newRequest": "新申请",
+    "yourRequests": "您的申请",
+    "noRequestsYet": "您尚未提交任何申请。",
+    "name": "名称",
+    "symbol": "符号",
+    "coingeckoIdOptional": "CoinGecko ID(可选)",
+    "reason": "原因 / 说明",
+    "submit": "提交",
+    "submitting": "提交中…",
+    "submitted": "已提交!管理员将很快审核。",
+    "rejectReasonLabel": "拒绝原因",
+    "status": {
+      "PENDING": "待审核",
+      "APPROVED": "已通过",
+      "REJECTED": "已拒绝"
+    },
+    "errors": {
+      "unauth": "请先登录。",
+      "name_required": "请填写名称。",
+      "symbol_required": "请填写符号。",
+      "symbol_too_long": "符号不能超过12个字符。",
+      "reason_too_short": "原因至少需要5个字符。",
+      "reason_too_long": "原因最多2000个字符。",
+      "coingecko_id_invalid": "无效的 CoinGecko ID。",
+      "too_many_pending": "您的待审核申请过多。",
+      "unknown_error": "出错了。"
+    }
   }
 }
