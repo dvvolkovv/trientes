@@ -4,8 +4,8 @@ config({ path: ".env.local" });
 import cron from "node-cron";
 import { prisma } from "../src/lib/prisma";
 import { redis } from "../src/lib/redis";
-import { fetchTop100L1, fetchGlobalSnap, fetchExchangeRates, fetchCoinDetail } from "../src/lib/coingecko";
-import { syncPrices, syncGlobal, syncExchangeRates, syncCoinMetadata } from "../src/lib/sync/orchestrator";
+import { fetchTop100L1, fetchGlobalSnap, fetchExchangeRates, fetchCoinDetail, fetchExchanges, fetchMarketsByIds } from "../src/lib/coingecko";
+import { syncPrices, syncGlobal, syncExchangeRates, syncCoinMetadata, syncExchanges, syncAdminAddedPrices } from "../src/lib/sync/orchestrator";
 
 async function runPriceSync() {
   const t0 = Date.now();
@@ -66,6 +66,54 @@ async function runMetadataSync() {
   }
 }
 
+async function runExchangesSync() {
+  const t0 = Date.now();
+  try {
+    // Need BTC/USD to compute USD volumes. Read rates cache.
+    const ratesRaw = await redis.get("exchange:rates");
+    if (!ratesRaw) {
+      console.warn("[worker] exchanges-sync: rates cache empty, skipping tick");
+      return;
+    }
+    const rates = JSON.parse(ratesRaw) as Record<string, { value: number }>;
+    const btcUsd = rates.usd?.value;
+    if (!btcUsd) {
+      console.warn("[worker] exchanges-sync: usd rate missing");
+      return;
+    }
+    const { count } = await syncExchanges({
+      fetchExchanges,
+      btcUsd,
+      redis: redis as never,
+      prisma: prisma as never,
+    });
+    console.log(`[worker] exchanges-sync ok: ${count} in ${Date.now() - t0}ms`);
+  } catch (err) {
+    console.error("[worker] exchanges-sync failed:", err);
+  }
+}
+
+async function runAdminAddedSync() {
+  const t0 = Date.now();
+  try {
+    const { count } = await syncAdminAddedPrices({
+      listAdminAddedIds: async () => {
+        const rows = await prisma.coin.findMany({
+          where: { source: "ADMIN_ADDED", isActive: true },
+          select: { id: true },
+        });
+        return rows.map((r) => r.id);
+      },
+      fetchByIds: fetchMarketsByIds,
+      redis: redis as never,
+      prisma: prisma as never,
+    });
+    console.log(`[worker] admin-added-sync ok: ${count} in ${Date.now() - t0}ms`);
+  } catch (err) {
+    console.error("[worker] admin-added-sync failed:", err);
+  }
+}
+
 async function main() {
   console.log("[worker] starting…");
   await prisma.$queryRaw`SELECT 1`;
@@ -77,6 +125,8 @@ async function main() {
   await runPriceSync();
   await runGlobalSync();
   await runRatesSync();
+  await runExchangesSync();
+  await runAdminAddedSync();
 
   // Kick metadata-sync in the background — don't block startup on a ~3 min loop.
   void runMetadataSync();
@@ -87,6 +137,8 @@ async function main() {
   cron.schedule("*/30 * * * *", () => {
     void runGlobalSync();
     void runRatesSync();
+    void runExchangesSync();
+    void runAdminAddedSync();
   });
   // Daily kick; staleMs in syncCoinMetadata skips coins fetched within 7 days.
   cron.schedule("30 3 * * *", () => void runMetadataSync());
