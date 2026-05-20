@@ -138,3 +138,109 @@ export async function fetchExchangeRates(): Promise<ExchangeRates> {
   const raw = await cgFetch("/exchange_rates", {});
   return parseExchangeRates(raw);
 }
+
+export type CoinDetail = {
+  id: string;
+  descriptionEn: string | null;
+  websiteUrl: string | null;
+  explorerUrl: string | null;
+  whitepaperUrl: string | null;
+  githubUrl: string | null;
+  twitterUrl: string | null;
+  redditUrl: string | null;
+};
+
+export type ChartPoint = { time: number; value: number }; // unix seconds, price USD
+
+export type TickerRow = {
+  exchange: string;
+  base: string;
+  target: string;
+  priceUsd: number;
+  volumeUsd: number;
+  tradeUrl: string | null;
+};
+
+function firstString(arr: unknown): string | null {
+  if (!Array.isArray(arr)) return null;
+  const first = arr.find((x) => typeof x === "string" && x.length > 0);
+  return typeof first === "string" ? first : null;
+}
+
+export function parseCoinDetail(raw: unknown): CoinDetail {
+  const r = raw as Record<string, unknown>;
+  const desc = (r.description as Record<string, unknown> | undefined)?.en;
+  const links = (r.links as Record<string, unknown> | undefined) ?? {};
+  const repos = (links.repos_url as Record<string, unknown> | undefined) ?? {};
+  const twitter = links.twitter_screen_name as string | undefined;
+
+  return {
+    id: req(r.id as string | undefined, "id"),
+    descriptionEn: typeof desc === "string" && desc.length > 0 ? desc : null,
+    websiteUrl: firstString(links.homepage),
+    explorerUrl: firstString(links.blockchain_site),
+    whitepaperUrl: typeof links.whitepaper === "string" && links.whitepaper.length > 0 ? (links.whitepaper as string) : null,
+    githubUrl: firstString(repos.github),
+    twitterUrl: twitter ? `https://twitter.com/${twitter}` : null,
+    redditUrl: typeof links.subreddit_url === "string" && (links.subreddit_url as string).length > 0 ? (links.subreddit_url as string) : null,
+  };
+}
+
+export function parseMarketChart(raw: unknown): ChartPoint[] {
+  const r = raw as { prices?: unknown };
+  if (!Array.isArray(r.prices)) throw new Error("coingecko market_chart: missing prices array");
+  return r.prices
+    .filter((p): p is [number, number] => Array.isArray(p) && p.length === 2 && typeof p[0] === "number" && typeof p[1] === "number")
+    .map(([ts, value]) => ({ time: Math.floor(ts / 1000), value }));
+}
+
+export function parseTickers(raw: unknown): TickerRow[] {
+  const r = raw as { tickers?: unknown };
+  if (!Array.isArray(r.tickers)) return [];
+  const out: TickerRow[] = [];
+  for (const t of r.tickers) {
+    const row = t as Record<string, unknown>;
+    const market = row.market as Record<string, unknown> | undefined;
+    const cl = row.converted_last as Record<string, unknown> | undefined;
+    const cv = row.converted_volume as Record<string, unknown> | undefined;
+    if (!market || typeof market.name !== "string") continue;
+    if (typeof row.base !== "string" || typeof row.target !== "string") continue;
+    const priceUsd = typeof cl?.usd === "number" ? cl.usd : null;
+    const volumeUsd = typeof cv?.usd === "number" ? cv.usd : null;
+    if (priceUsd === null || volumeUsd === null) continue;
+    out.push({
+      exchange: market.name,
+      base: row.base,
+      target: row.target,
+      priceUsd,
+      volumeUsd,
+      tradeUrl: typeof row.trade_url === "string" ? row.trade_url : null,
+    });
+  }
+  return out;
+}
+
+export async function fetchCoinDetail(id: string): Promise<CoinDetail> {
+  const raw = await cgFetch(`/coins/${encodeURIComponent(id)}`, {
+    localization: "false",
+    tickers: "false",
+    market_data: "false",
+    community_data: "false",
+    developer_data: "false",
+    sparkline: "false",
+  });
+  return parseCoinDetail(raw);
+}
+
+export async function fetchMarketChart(id: string, days: number | "max"): Promise<ChartPoint[]> {
+  const raw = await cgFetch(`/coins/${encodeURIComponent(id)}/market_chart`, {
+    vs_currency: "usd",
+    days: String(days),
+  });
+  return parseMarketChart(raw);
+}
+
+export async function fetchTickers(id: string): Promise<TickerRow[]> {
+  const raw = await cgFetch(`/coins/${encodeURIComponent(id)}/tickers`, { page: "1" });
+  return parseTickers(raw);
+}
