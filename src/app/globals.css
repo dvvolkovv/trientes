@@ -96,3 +96,18 @@ body {
   background: var(--color-accent);
   color: var(--color-accent-foreground);
 }
+
+/* Better focus visibility for keyboard navigation. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-md);
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
