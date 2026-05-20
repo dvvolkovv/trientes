@@ -29,6 +29,7 @@ model User {
   coinRequests   CoinRequest[]
   adminAddedCoins Coin[]   @relation("AdminCoinAdditions")
   reviewedRequests CoinRequest[] @relation("RequestReviewer")
+  auditLogs AdminAuditLog[] @relation("AdminAuditActor")
 }
 
 model Account {
@@ -162,6 +163,28 @@ model CoinRequest {
 
   @@index([userId, createdAt])
   @@index([status, createdAt])
+}
+
+enum AdminAction {
+  APPROVE_REQUEST
+  REJECT_REQUEST
+  ADD_COIN
+  TOGGLE_COIN_ACTIVE
+  SET_USER_ROLE
+}
+
+model AdminAuditLog {
+  id         String      @id @default(cuid())
+  actorId    String
+  actor      User        @relation("AdminAuditActor", fields: [actorId], references: [id])
+  action     AdminAction
+  targetType String
+  targetId   String
+  details    Json?
+  createdAt  DateTime    @default(now())
+
+  @@index([actorId, createdAt])
+  @@index([action, createdAt])
 }
 
 model Exchange {
