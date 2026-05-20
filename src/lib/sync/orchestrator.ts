@@ -1,5 +1,4 @@
-import type { MarketRow, GlobalSnap, ExchangeRates } from "@/lib/coingecko";
-import { fetchCoinDetail, type CoinDetail } from "@/lib/coingecko";
+import type { MarketRow, GlobalSnap, ExchangeRates, CoinDetail } from "@/lib/coingecko";
 import { KEYS, TTL } from "./keys";
 
 // Minimal interfaces — we only use what we need so tests can pass fakes.
