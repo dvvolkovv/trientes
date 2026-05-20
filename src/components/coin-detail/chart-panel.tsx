@@ -26,7 +26,7 @@ export function ChartPanel({ coinId }: { coinId: string }) {
               className={
                 "num text-[12px] uppercase tracking-wider px-3.5 py-1.5 rounded-md font-medium transition-all " +
                 (active
-                  ? "bg-accent text-accent-foreground"
+                  ? "bg-foreground text-bg"
                   : "text-muted border border-hairline hover:text-foreground")
               }
             >

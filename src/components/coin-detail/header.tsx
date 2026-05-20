@@ -56,8 +56,8 @@ export function CoinHeader({
               <span className="num text-[16px] uppercase tracking-[0.15em] text-muted">
                 {row.symbol}
               </span>
-              <span className="num text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-sm bg-accent/20 text-accent">
-                ★ Rank {row.rank}
+              <span className="num text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-sm bg-card-alt text-muted-strong border border-hairline">
+                <span className="text-accent">★</span> Rank {row.rank}
               </span>
             </div>
             <div className="mt-2 num text-[11px] uppercase tracking-[0.2em] text-muted">

@@ -53,7 +53,7 @@ export function WatchlistButton({
           }
         });
       }}
-      className={`inline-flex items-center justify-center transition-colors ${watched ? "text-accent" : "text-muted hover:text-foreground"} ${pending ? "opacity-50" : ""}`}
+      className={`inline-flex items-center justify-center transition-colors ${watched ? "text-foreground" : "text-muted hover:text-foreground"} ${pending ? "opacity-50" : ""}`}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
