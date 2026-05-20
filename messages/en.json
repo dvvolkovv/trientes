@@ -8,6 +8,7 @@
     "admin": "Admin",
     "watchlist": "Watchlist",
     "request": "Request a coin",
+    "exchanges": "Exchanges",
     "languageLabel": "Language",
     "currencyLabel": "Currency",
     "themeLabel": "Theme",
@@ -161,5 +162,16 @@
       "last_admin": "Cannot demote the last admin.",
       "unknown_error": "Something went wrong."
     }
+  },
+  "exchanges": {
+    "title": "Exchanges",
+    "subtitle": "Top crypto exchanges ranked by trust score.",
+    "rank": "#",
+    "name": "Exchange",
+    "trust": "Trust",
+    "country": "Country",
+    "founded": "Founded",
+    "volume24h": "Volume (24h)",
+    "empty": "No exchanges data yet."
   }
 }

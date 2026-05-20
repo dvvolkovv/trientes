@@ -8,6 +8,7 @@
     "admin": "Admin",
     "watchlist": "Favoris",
     "request": "Proposer une monnaie",
+    "exchanges": "Plateformes",
     "languageLabel": "Langue",
     "currencyLabel": "Devise",
     "themeLabel": "Thème",
@@ -161,5 +162,16 @@
       "last_admin": "Cannot demote the last admin.",
       "unknown_error": "Something went wrong."
     }
+  },
+  "exchanges": {
+    "title": "Plateformes",
+    "subtitle": "Principales plateformes par trust score.",
+    "rank": "#",
+    "name": "Plateforme",
+    "trust": "Confiance",
+    "country": "Pays",
+    "founded": "Fondée",
+    "volume24h": "Volume (24h)",
+    "empty": "No exchanges data yet."
   }
 }

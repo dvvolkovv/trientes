@@ -8,6 +8,7 @@
     "admin": "관리자",
     "watchlist": "관심목록",
     "request": "코인 요청",
+    "exchanges": "거래소",
     "languageLabel": "언어",
     "currencyLabel": "통화",
     "themeLabel": "테마",
@@ -161,5 +162,16 @@
       "last_admin": "Cannot demote the last admin.",
       "unknown_error": "Something went wrong."
     }
+  },
+  "exchanges": {
+    "title": "거래소",
+    "subtitle": "신뢰 점수 기준 주요 거래소.",
+    "rank": "#",
+    "name": "거래소",
+    "trust": "신뢰도",
+    "country": "국가",
+    "founded": "설립",
+    "volume24h": "거래량 (24h)",
+    "empty": "No exchanges data yet."
   }
 }

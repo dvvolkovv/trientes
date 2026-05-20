@@ -8,6 +8,7 @@
     "admin": "Admin",
     "watchlist": "Watchlist",
     "request": "Coin vorschlagen",
+    "exchanges": "Börsen",
     "languageLabel": "Sprache",
     "currencyLabel": "Währung",
     "themeLabel": "Design",
@@ -161,5 +162,16 @@
       "last_admin": "Cannot demote the last admin.",
       "unknown_error": "Something went wrong."
     }
+  },
+  "exchanges": {
+    "title": "Börsen",
+    "subtitle": "Top-Krypto-Börsen nach Trust-Score.",
+    "rank": "#",
+    "name": "Börse",
+    "trust": "Vertrauen",
+    "country": "Land",
+    "founded": "Gegründet",
+    "volume24h": "Volumen (24h)",
+    "empty": "No exchanges data yet."
   }
 }

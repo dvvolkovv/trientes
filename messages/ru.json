@@ -8,6 +8,7 @@
     "admin": "Админ",
     "watchlist": "Избранное",
     "request": "Предложить монету",
+    "exchanges": "Биржи",
     "languageLabel": "Язык",
     "currencyLabel": "Валюта",
     "themeLabel": "Тема",
@@ -161,5 +162,16 @@
       "last_admin": "Cannot demote the last admin.",
       "unknown_error": "Something went wrong."
     }
+  },
+  "exchanges": {
+    "title": "Биржи",
+    "subtitle": "Топ криптобирж по trust score.",
+    "rank": "#",
+    "name": "Биржа",
+    "trust": "Доверие",
+    "country": "Страна",
+    "founded": "Основана",
+    "volume24h": "Объём (24ч)",
+    "empty": "No exchanges data yet."
   }
 }

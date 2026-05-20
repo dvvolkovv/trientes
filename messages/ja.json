@@ -8,6 +8,7 @@
     "admin": "管理",
     "watchlist": "お気に入り",
     "request": "コインをリクエスト",
+    "exchanges": "取引所",
     "languageLabel": "言語",
     "currencyLabel": "通貨",
     "themeLabel": "テーマ",
@@ -161,5 +162,16 @@
       "last_admin": "Cannot demote the last admin.",
       "unknown_error": "Something went wrong."
     }
+  },
+  "exchanges": {
+    "title": "取引所",
+    "subtitle": "トラストスコアによる主要取引所。",
+    "rank": "#",
+    "name": "取引所",
+    "trust": "信頼度",
+    "country": "国",
+    "founded": "設立",
+    "volume24h": "出来高 (24h)",
+    "empty": "No exchanges data yet."
   }
 }

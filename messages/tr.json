@@ -8,6 +8,7 @@
     "admin": "Yönetici",
     "watchlist": "İzleme listesi",
     "request": "Coin öner",
+    "exchanges": "Borsalar",
     "languageLabel": "Dil",
     "currencyLabel": "Para birimi",
     "themeLabel": "Tema",
@@ -161,5 +162,16 @@
       "last_admin": "Cannot demote the last admin.",
       "unknown_error": "Something went wrong."
     }
+  },
+  "exchanges": {
+    "title": "Borsalar",
+    "subtitle": "Trust score'a göre en iyi borsalar.",
+    "rank": "#",
+    "name": "Borsa",
+    "trust": "Güven",
+    "country": "Ülke",
+    "founded": "Kuruluş",
+    "volume24h": "Hacim (24s)",
+    "empty": "No exchanges data yet."
   }
 }

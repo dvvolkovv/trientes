@@ -8,6 +8,7 @@
     "admin": "Admin",
     "watchlist": "Favoritos",
     "request": "Solicitar moneda",
+    "exchanges": "Exchanges",
     "languageLabel": "Idioma",
     "currencyLabel": "Moneda",
     "themeLabel": "Tema",
@@ -161,5 +162,16 @@
       "last_admin": "Cannot demote the last admin.",
       "unknown_error": "Something went wrong."
     }
+  },
+  "exchanges": {
+    "title": "Exchanges",
+    "subtitle": "Principales exchanges por trust score.",
+    "rank": "#",
+    "name": "Exchange",
+    "trust": "Confianza",
+    "country": "País",
+    "founded": "Fundado",
+    "volume24h": "Volumen (24h)",
+    "empty": "No exchanges data yet."
   }
 }

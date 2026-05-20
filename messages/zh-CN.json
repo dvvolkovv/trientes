@@ -8,6 +8,7 @@
     "admin": "管理员",
     "watchlist": "收藏",
     "request": "申请添加币种",
+    "exchanges": "交易所",
     "languageLabel": "语言",
     "currencyLabel": "货币",
     "themeLabel": "主题",
@@ -161,5 +162,16 @@
       "last_admin": "Cannot demote the last admin.",
       "unknown_error": "Something went wrong."
     }
+  },
+  "exchanges": {
+    "title": "交易所",
+    "subtitle": "按信任评分排名的顶级加密交易所。",
+    "rank": "#",
+    "name": "交易所",
+    "trust": "信任",
+    "country": "国家",
+    "founded": "成立",
+    "volume24h": "成交量 (24h)",
+    "empty": "No exchanges data yet."
   }
 }
