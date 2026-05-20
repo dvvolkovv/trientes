@@ -249,3 +249,43 @@ export async function fetchTickers(id: string): Promise<TickerRow[]> {
   const raw = await cgFetch(`/coins/${encodeURIComponent(id)}/tickers`, { page: "1" });
   return parseTickers(raw);
 }
+
+export type Exchange = {
+  id: string;
+  name: string;
+  logoUrl: string | null;
+  country: string | null;
+  yearEstablished: number | null;
+  trustScore: number | null;
+  trustScoreRank: number | null;
+  volume24hBtc: number;
+  volume24hUsd: number;
+  url: string | null;
+  hasTradingIncentive: boolean;
+};
+
+export function parseExchange(raw: unknown, btcUsd: number): Exchange {
+  const r = raw as Record<string, unknown>;
+  const id = req(r.id as string | undefined, "id");
+  const name = req(r.name as string | undefined, "name");
+  const btc = typeof r.trade_volume_24h_btc === "number" ? r.trade_volume_24h_btc : 0;
+  return {
+    id,
+    name,
+    logoUrl: typeof r.image === "string" ? r.image : null,
+    country: typeof r.country === "string" ? r.country : null,
+    yearEstablished: typeof r.year_established === "number" ? r.year_established : null,
+    trustScore: typeof r.trust_score === "number" ? r.trust_score : null,
+    trustScoreRank: typeof r.trust_score_rank === "number" ? r.trust_score_rank : null,
+    volume24hBtc: btc,
+    volume24hUsd: btc * btcUsd,
+    url: typeof r.url === "string" ? r.url : null,
+    hasTradingIncentive: r.has_trading_incentive === true,
+  };
+}
+
+export async function fetchExchanges(btcUsd: number): Promise<Exchange[]> {
+  const raw = await cgFetch("/exchanges", { per_page: "100", page: "1" });
+  if (!Array.isArray(raw)) throw new Error("coingecko /exchanges: not an array");
+  return raw.map((row) => parseExchange(row, btcUsd));
+}
