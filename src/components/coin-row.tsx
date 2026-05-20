@@ -42,7 +42,7 @@ export function CoinRow({
           <span className="text-xs text-muted-foreground uppercase">{row.symbol}</span>
         </Link>
       </td>
-      <td className="px-3 py-3 text-right tabular-nums">
+      <td className="px-3 py-3 text-right tabular-nums" data-live-price={row.id}>
         {rates ? formatPriceInCurrency(row.priceUsd, currency, ratesOrEmpty) : `$${row.priceUsd.toFixed(2)}`}
       </td>
       <td className={`px-3 py-3 text-right tabular-nums ${pctClass(row.pctChange1h)}`}>{formatPercent(row.pctChange1h)}</td>

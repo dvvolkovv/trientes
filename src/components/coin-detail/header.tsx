@@ -41,7 +41,7 @@ export function CoinHeader({
         </div>
       </div>
       <div className="text-right">
-        <div className="text-3xl font-semibold tabular-nums">
+        <div className="text-3xl font-semibold tabular-nums" data-live-price={row.id}>
           {rates ? formatPriceInCurrency(row.priceUsd, currency, rates) : `$${row.priceUsd.toFixed(2)}`}
         </div>
         <div className={`text-sm tabular-nums ${pctCls}`}>{formatPercent(pct)} (24h)</div>

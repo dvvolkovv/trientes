@@ -2,6 +2,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { readTop100, readGlobalStats, readExchangeRates } from "@/lib/snapshot";
 import { GlobalStatsHero } from "@/components/global-stats-hero";
 import { CoinListClient } from "@/components/coin-list-client";
+import { LivePrices } from "@/components/live-prices";
 import { getCurrency } from "@/lib/get-currency";
 import { readUserWatchedIds, isAuthenticated } from "@/lib/watchlist";
 
@@ -32,6 +33,7 @@ export default async function Home({
         <h1 className="text-4xl font-bold">{t("appName")}</h1>
         <p className="text-muted-foreground mt-1">{t("tagline")}</p>
       </header>
+      <LivePrices currency={currency} rates={rates} />
       <GlobalStatsHero stats={stats} currency={currency} rates={rates} />
       {rows.length > 0 ? (
         <CoinListClient

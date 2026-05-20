@@ -10,6 +10,7 @@ import { Description } from "@/components/coin-detail/description";
 import { CoinLinks } from "@/components/coin-detail/links";
 import { SupplyMetrics } from "@/components/coin-detail/supply";
 import { MarketsTable } from "@/components/coin-detail/markets";
+import { LivePrices } from "@/components/live-prices";
 import type { MarketRow } from "@/lib/coingecko";
 
 export const revalidate = 3600;
@@ -70,6 +71,7 @@ export default async function CoinDetailPage({
 
   return (
     <main className="container mx-auto px-4 py-8 space-y-8">
+      <LivePrices currency={currency} rates={rates} />
       <CoinHeader
         row={row}
         currency={currency}
