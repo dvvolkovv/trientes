@@ -1,23 +1,57 @@
 import { config } from "dotenv";
 config({ path: ".env.local" });
 
+import cron from "node-cron";
 import { prisma } from "../src/lib/prisma";
 import { redis } from "../src/lib/redis";
+import { fetchTop100L1, fetchGlobalSnap } from "../src/lib/coingecko";
+import { syncPrices, syncGlobal } from "../src/lib/sync/orchestrator";
+
+async function runPriceSync() {
+  const t0 = Date.now();
+  try {
+    const { count } = await syncPrices({
+      fetchTop100L1,
+      redis: redis as never,
+      prisma: prisma as never,
+    });
+    console.log(`[worker] price-sync ok: ${count} coins in ${Date.now() - t0}ms`);
+  } catch (err) {
+    console.error(`[worker] price-sync failed:`, err);
+  }
+}
+
+async function runGlobalSync() {
+  const t0 = Date.now();
+  try {
+    await syncGlobal({
+      fetchGlobalSnap,
+      redis: redis as never,
+      prisma: prisma as never,
+    });
+    console.log(`[worker] global-sync ok in ${Date.now() - t0}ms`);
+  } catch (err) {
+    console.error(`[worker] global-sync failed:`, err);
+  }
+}
 
 async function main() {
   console.log("[worker] starting…");
   await prisma.$queryRaw`SELECT 1`;
   if (redis.status === "wait" || redis.status === "end") await redis.connect();
   await redis.ping();
-  console.log("[worker] connections ok. Phase 1 stub running, no jobs scheduled yet.");
+  console.log("[worker] connections ok.");
 
-  const tick = setInterval(() => {
-    console.log(`[worker] alive ${new Date().toISOString()}`);
-  }, 60_000);
+  // Run once at startup so Redis has data immediately.
+  await runPriceSync();
+  await runGlobalSync();
+
+  // 60s for prices, 5 min for global stats.
+  cron.schedule("*/60 * * * * *", () => void runPriceSync());
+  cron.schedule("*/5 * * * *", () => void runGlobalSync());
 
   const shutdown = async (sig: string) => {
     console.log(`[worker] received ${sig}, shutting down`);
-    clearInterval(tick);
     await prisma.$disconnect();
     redis.disconnect();
     process.exit(0);

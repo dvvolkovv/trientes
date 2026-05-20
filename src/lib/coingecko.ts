@@ -95,7 +95,12 @@ export async function fetchTop100L1(): Promise<MarketRow[]> {
     price_change_percentage: "1h,24h,7d",
   });
   if (!Array.isArray(raw)) throw new Error("coingecko /coins/markets: not an array");
-  return raw.map(parseMarketRow);
+  // Some coins in the L1 category occasionally come back with null market_cap_rank
+  // (e.g. wrapped/inactive listings). Drop them — they can't be sensibly placed in the table.
+  const filtered = (raw as Array<Record<string, unknown>>).filter(
+    (r) => typeof r.market_cap_rank === "number",
+  );
+  return filtered.map(parseMarketRow);
 }
 
 export async function fetchGlobalSnap(): Promise<GlobalSnap> {
