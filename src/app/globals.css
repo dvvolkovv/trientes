@@ -66,11 +66,18 @@ body {
 }
 
 /* Live-tick flash for cells annotated with data-live-price. */
-.live-flash {
-  animation: live-flash 700ms ease-out;
+.live-flash-up {
+  animation: live-flash-up 700ms ease-out;
 }
-@keyframes live-flash {
+.live-flash-down {
+  animation: live-flash-down 700ms ease-out;
+}
+@keyframes live-flash-up {
   0% { background-color: rgba(48, 182, 88, 0.22); }
+  100% { background-color: transparent; }
+}
+@keyframes live-flash-down {
+  0% { background-color: rgba(229, 92, 92, 0.22); }
   100% { background-color: transparent; }
 }
 
