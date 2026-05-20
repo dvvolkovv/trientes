@@ -61,7 +61,8 @@ export default async function AdminUsersPage({
         <AdminSearchInput placeholder={t("users.searchPlaceholder")} />
       </div>
 
-      <div className="bg-card border border-hairline rounded-[20px] overflow-hidden mt-8">
+      {/* Desktop table */}
+      <div className="hidden md:block bg-card border border-hairline rounded-[20px] overflow-hidden mt-8">
         <table className="w-full">
           <thead>
             <tr className="border-b border-hairline">
@@ -113,6 +114,44 @@ export default async function AdminUsersPage({
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile cards */}
+      <div className="md:hidden space-y-2 mt-6">
+        {users.map((u) => (
+          <div
+            key={u.id}
+            className="bg-card border border-hairline rounded-[16px] p-4"
+          >
+            <div className="flex items-start justify-between gap-3 mb-2">
+              <div className="min-w-0 flex-1">
+                <div className="text-sm font-medium truncate">
+                  {u.email ?? u.name ?? "(no name)"}
+                </div>
+                {u.name && u.email && (
+                  <div className="text-[12px] text-muted truncate">{u.name}</div>
+                )}
+              </div>
+              <span
+                className={
+                  u.role === "ADMIN"
+                    ? "bg-accent/15 text-accent num text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-sm font-medium flex-shrink-0"
+                    : "bg-card-alt text-muted num text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-sm font-medium flex-shrink-0"
+                }
+              >
+                {u.role}
+              </span>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <div className="num text-[11px] text-muted truncate">
+                {u.accounts.map((a) => a.provider).join(", ") || "no provider"}
+              </div>
+              {admin.ok && admin.userId !== u.id && (
+                <UserRoleToggle userId={u.id} currentRole={u.role} />
+              )}
+            </div>
+          </div>
+        ))}
       </div>
     </>
   );

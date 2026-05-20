@@ -50,7 +50,8 @@ export default async function AdminCoinsPage({
         <AddCoinForm />
       </div>
 
-      <div className="bg-card border border-hairline rounded-[20px] overflow-hidden mt-8">
+      {/* Desktop table */}
+      <div className="hidden md:block bg-card border border-hairline rounded-[20px] overflow-hidden mt-8">
         <table className="w-full">
           <thead>
             <tr className="border-b border-hairline">
@@ -121,6 +122,57 @@ export default async function AdminCoinsPage({
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile cards */}
+      <div className="md:hidden space-y-2 mt-6">
+        {coins.map((c) => (
+          <div
+            key={c.id}
+            className="bg-card border border-hairline rounded-[16px] p-4"
+          >
+            <div className="flex items-center gap-3 mb-3">
+              {c.logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={c.logoUrl}
+                  alt=""
+                  width={24}
+                  height={24}
+                  className="rounded-full flex-shrink-0"
+                />
+              ) : (
+                <div className="w-6 h-6 rounded-full bg-card-alt flex items-center justify-center text-[10px] font-bold flex-shrink-0">
+                  {c.symbol[0]?.toUpperCase()}
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className="font-medium text-[14px]">{c.name}</span>
+                  <span className="num text-[11px] uppercase tracking-wider text-muted">
+                    {c.symbol}
+                  </span>
+                </div>
+                <div className="num text-[11px] text-muted mt-0.5">
+                  #{c.rank >= 9999 ? "—" : c.rank} ·{" "}
+                  {c.metadataFetchedAt
+                    ? c.metadataFetchedAt.toISOString().slice(0, 10)
+                    : "no metadata"}
+                </div>
+              </div>
+              <CoinActiveToggle coinId={c.id} initialActive={c.isActive} />
+            </div>
+            <span
+              className={
+                c.source === "AUTO_L1"
+                  ? "num text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-sm font-medium bg-info/15 text-info"
+                  : "num text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-sm font-medium bg-accent/15 text-accent"
+              }
+            >
+              {c.source}
+            </span>
+          </div>
+        ))}
       </div>
     </>
   );
