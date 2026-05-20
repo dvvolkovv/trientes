@@ -1,4 +1,8 @@
 import "dotenv/config";
+import { setDefaultResultOrder } from "node:dns";
+// Node 22 defaults to "verbatim" DNS, which on hosts with broken IPv6 to
+// api.telegram.org makes outbound requests hang for ~10s. Force IPv4 first.
+setDefaultResultOrder("ipv4first");
 import { Bot, type Context } from "grammy";
 import OpenAI from "openai";
 import Redis from "ioredis";
