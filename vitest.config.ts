@@ -5,6 +5,7 @@ export default defineConfig({
   test: {
     environment: "node",
     include: ["tests/**/*.test.ts", "bot/**/*.test.ts"],
+    setupFiles: ["./bot/__tests__/setup.ts"],
   },
   resolve: {
     alias: {
