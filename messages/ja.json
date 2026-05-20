@@ -104,7 +104,8 @@
     "tabs": {
       "requests": "リクエスト",
       "coins": "コイン",
-      "users": "ユーザー"
+      "users": "ユーザー",
+      "audit": "監査"
     },
     "status": {
       "PENDING": "審査中",
@@ -161,6 +162,16 @@
       "invalid_name": "Invalid name.",
       "last_admin": "Cannot demote the last admin.",
       "unknown_error": "Something went wrong."
+    },
+    "audit": {
+      "title": "監査ログ",
+      "subtitle": "最新200件の管理アクション。",
+      "empty": "まだ記録された操作はありません。",
+      "when": "日時",
+      "who": "実行者",
+      "action": "操作",
+      "target": "対象",
+      "details": "詳細"
     }
   },
   "exchanges": {

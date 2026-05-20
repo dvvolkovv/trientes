@@ -104,7 +104,8 @@
     "tabs": {
       "requests": "Demandes",
       "coins": "Monnaies",
-      "users": "Utilisateurs"
+      "users": "Utilisateurs",
+      "audit": "Audit"
     },
     "status": {
       "PENDING": "En attente",
@@ -161,6 +162,16 @@
       "invalid_name": "Invalid name.",
       "last_admin": "Cannot demote the last admin.",
       "unknown_error": "Something went wrong."
+    },
+    "audit": {
+      "title": "Journal d'audit",
+      "subtitle": "Les 200 dernières actions admin.",
+      "empty": "Aucune action admin enregistrée.",
+      "when": "Quand",
+      "who": "Qui",
+      "action": "Action",
+      "target": "Cible",
+      "details": "Détails"
     }
   },
   "exchanges": {

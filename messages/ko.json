@@ -104,7 +104,8 @@
     "tabs": {
       "requests": "요청",
       "coins": "코인",
-      "users": "사용자"
+      "users": "사용자",
+      "audit": "감사"
     },
     "status": {
       "PENDING": "검토 중",
@@ -161,6 +162,16 @@
       "invalid_name": "Invalid name.",
       "last_admin": "Cannot demote the last admin.",
       "unknown_error": "Something went wrong."
+    },
+    "audit": {
+      "title": "감사 로그",
+      "subtitle": "최근 200개의 관리 작업.",
+      "empty": "아직 기록된 관리 작업이 없습니다.",
+      "when": "시각",
+      "who": "실행자",
+      "action": "작업",
+      "target": "대상",
+      "details": "상세"
     }
   },
   "exchanges": {

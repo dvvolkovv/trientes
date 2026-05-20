@@ -104,7 +104,8 @@
     "tabs": {
       "requests": "申请",
       "coins": "币种",
-      "users": "用户"
+      "users": "用户",
+      "audit": "审计"
     },
     "status": {
       "PENDING": "待审核",
@@ -161,6 +162,16 @@
       "invalid_name": "Invalid name.",
       "last_admin": "Cannot demote the last admin.",
       "unknown_error": "Something went wrong."
+    },
+    "audit": {
+      "title": "审计日志",
+      "subtitle": "最近 200 条管理员操作。",
+      "empty": "暂无管理员操作记录。",
+      "when": "时间",
+      "who": "执行者",
+      "action": "操作",
+      "target": "对象",
+      "details": "详情"
     }
   },
   "exchanges": {

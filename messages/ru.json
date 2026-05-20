@@ -104,7 +104,8 @@
     "tabs": {
       "requests": "Заявки",
       "coins": "Монеты",
-      "users": "Пользователи"
+      "users": "Пользователи",
+      "audit": "Аудит"
     },
     "status": {
       "PENDING": "Ожидает",
@@ -161,6 +162,16 @@
       "invalid_name": "Invalid name.",
       "last_admin": "Cannot demote the last admin.",
       "unknown_error": "Something went wrong."
+    },
+    "audit": {
+      "title": "Журнал действий",
+      "subtitle": "Последние 200 действий администраторов.",
+      "empty": "Действия пока не записаны.",
+      "when": "Когда",
+      "who": "Кто",
+      "action": "Действие",
+      "target": "Объект",
+      "details": "Детали"
     }
   },
   "exchanges": {

@@ -104,7 +104,8 @@
     "tabs": {
       "requests": "İstekler",
       "coins": "Coinler",
-      "users": "Kullanıcılar"
+      "users": "Kullanıcılar",
+      "audit": "Denetim"
     },
     "status": {
       "PENDING": "Beklemede",
@@ -161,6 +162,16 @@
       "invalid_name": "Invalid name.",
       "last_admin": "Cannot demote the last admin.",
       "unknown_error": "Something went wrong."
+    },
+    "audit": {
+      "title": "Denetim günlüğü",
+      "subtitle": "Son 200 yönetici işlemi.",
+      "empty": "Henüz kayıt yok.",
+      "when": "Ne zaman",
+      "who": "Kim",
+      "action": "İşlem",
+      "target": "Hedef",
+      "details": "Detaylar"
     }
   },
   "exchanges": {

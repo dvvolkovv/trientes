@@ -104,7 +104,8 @@
     "tabs": {
       "requests": "Solicitudes",
       "coins": "Monedas",
-      "users": "Usuarios"
+      "users": "Usuarios",
+      "audit": "Auditoría"
     },
     "status": {
       "PENDING": "Pendiente",
@@ -161,6 +162,16 @@
       "invalid_name": "Invalid name.",
       "last_admin": "Cannot demote the last admin.",
       "unknown_error": "Something went wrong."
+    },
+    "audit": {
+      "title": "Registro de auditoría",
+      "subtitle": "Últimas 200 acciones administrativas.",
+      "empty": "Aún no hay acciones registradas.",
+      "when": "Cuándo",
+      "who": "Quién",
+      "action": "Acción",
+      "target": "Objetivo",
+      "details": "Detalles"
     }
   },
   "exchanges": {

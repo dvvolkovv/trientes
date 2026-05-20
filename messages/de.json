@@ -104,7 +104,8 @@
     "tabs": {
       "requests": "Anfragen",
       "coins": "Coins",
-      "users": "Benutzer"
+      "users": "Benutzer",
+      "audit": "Audit"
     },
     "status": {
       "PENDING": "Wartend",
@@ -161,6 +162,16 @@
       "invalid_name": "Invalid name.",
       "last_admin": "Cannot demote the last admin.",
       "unknown_error": "Something went wrong."
+    },
+    "audit": {
+      "title": "Audit-Log",
+      "subtitle": "Letzte 200 Admin-Aktionen.",
+      "empty": "Noch keine Admin-Aktionen aufgezeichnet.",
+      "when": "Wann",
+      "who": "Wer",
+      "action": "Aktion",
+      "target": "Ziel",
+      "details": "Details"
     }
   },
   "exchanges": {
