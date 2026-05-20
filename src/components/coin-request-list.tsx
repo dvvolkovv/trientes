@@ -13,13 +13,15 @@ type ReqRow = {
 };
 
 function badgeCls(status: ReqRow["status"]): string {
+  const base =
+    "num text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-sm font-medium";
   switch (status) {
     case "PENDING":
-      return "bg-yellow-500/15 text-yellow-700 dark:text-yellow-400";
+      return `${base} bg-accent/20 text-accent`;
     case "APPROVED":
-      return "bg-green-500/15 text-green-700 dark:text-green-400";
+      return `${base} bg-up/15 text-up`;
     case "REJECTED":
-      return "bg-red-500/15 text-red-700 dark:text-red-400";
+      return `${base} bg-down/15 text-down`;
   }
 }
 
@@ -45,27 +47,34 @@ export async function CoinRequestList() {
 
   const t = await getTranslations("request");
   if (rows.length === 0) {
-    return <p className="text-muted-foreground text-sm">{t("noRequestsYet")}</p>;
+    return <p className="text-muted text-sm">{t("noRequestsYet")}</p>;
   }
 
   return (
     <div className="space-y-3">
       {rows.map((r) => (
-        <div key={r.id} className="border rounded-lg p-4 space-y-2">
-          <div className="flex items-center gap-2">
-            <span className="font-medium">{r.name}</span>
-            <span className="text-xs text-muted-foreground uppercase">{r.symbol}</span>
-            <span className={`ml-auto px-2 py-0.5 text-xs rounded ${badgeCls(r.status)}`}>
+        <div
+          key={r.id}
+          className="bg-card border border-hairline rounded-[20px] p-5 md:p-6 space-y-3"
+        >
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-medium text-[15px]">{r.name}</span>
+            <span className="num text-[11px] uppercase tracking-wider text-muted">
+              {r.symbol}
+            </span>
+            <span className={`ml-auto ${badgeCls(r.status)}`}>
               {t(`status.${r.status}`)}
             </span>
           </div>
-          <p className="text-sm text-muted-foreground">{r.reason}</p>
+          <p className="text-sm text-muted">{r.reason}</p>
           {r.status === "REJECTED" && r.rejectReason && (
-            <p className="text-sm text-red-500">
+            <p className="text-down text-sm">
               {t("rejectReasonLabel")}: {r.rejectReason}
             </p>
           )}
-          <p className="text-xs text-muted-foreground">{r.createdAt.toISOString().slice(0, 10)}</p>
+          <p className="num text-[11px] text-muted">
+            {r.createdAt.toISOString().slice(0, 10)}
+          </p>
         </div>
       ))}
     </div>

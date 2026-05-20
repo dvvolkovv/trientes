@@ -18,13 +18,21 @@ export default async function SettingsPage({
   if (!user) redirect(`/${locale}/login`);
 
   return (
-    <main className="container mx-auto max-w-lg px-4 py-12">
-      <h1 className="text-3xl font-bold mb-8">Settings</h1>
-      <SettingsForm
-        initialLocale={user.preferredLocale}
-        initialCurrency={user.preferredCurrency}
-        initialTheme={user.preferredTheme}
-      />
+    <main className="max-w-2xl mx-auto px-6 py-12">
+      <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
+        Section · Settings
+      </div>
+      <h1 className="text-[40px] md:text-[48px] font-bold tracking-[-0.03em] mb-2">
+        Settings
+      </h1>
+      <p className="text-muted mb-8">Manage your language, currency, and theme preferences.</p>
+      <div className="bg-card border border-hairline rounded-[20px] p-6 md:p-8">
+        <SettingsForm
+          initialLocale={user.preferredLocale}
+          initialCurrency={user.preferredCurrency}
+          initialTheme={user.preferredTheme}
+        />
+      </div>
     </main>
   );
 }

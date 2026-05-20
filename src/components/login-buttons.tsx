@@ -1,7 +1,6 @@
 "use client";
 
 import { useTransition } from "react";
-import { Button } from "@/components/ui/button";
 import { signInWithProvider } from "@/app/actions/auth";
 import { TelegramLogin } from "@/components/telegram-login";
 
@@ -9,20 +8,24 @@ export function LoginButtons({ telegramBotUsername }: { telegramBotUsername?: st
   const [pending, start] = useTransition();
   return (
     <div className="flex flex-col gap-3">
-      <Button
+      <button
+        type="button"
         disabled={pending}
         onClick={() => start(() => signInWithProvider("google"))}
+        className="bg-accent text-accent-foreground glow-accent rounded-md px-4 py-2.5 text-sm font-semibold uppercase tracking-wider hover:brightness-110 transition-all disabled:opacity-50"
       >
         Continue with Google
-      </Button>
-      <Button
+      </button>
+      <button
+        type="button"
         disabled={pending}
         onClick={() => start(() => signInWithProvider("github"))}
+        className="bg-card-alt text-foreground border border-hairline rounded-md px-4 py-2.5 text-sm font-medium transition-colors hover:bg-card disabled:opacity-50"
       >
         Continue with GitHub
-      </Button>
+      </button>
       {telegramBotUsername ? (
-        <div className="flex justify-center pt-2">
+        <div className="pt-4 mt-2 border-t border-hairline">
           <TelegramLogin botUsername={telegramBotUsername} />
         </div>
       ) : null}

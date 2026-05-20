@@ -37,5 +37,12 @@ export function TelegramLogin({ botUsername }: { botUsername: string }) {
     };
   }, [botUsername]);
 
-  return <div ref={ref} />;
+  return (
+    <div>
+      <div className="text-[10px] uppercase tracking-[0.18em] text-muted mb-3">
+        Or with Telegram
+      </div>
+      <div ref={ref} />
+    </div>
+  );
 }

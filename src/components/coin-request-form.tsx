@@ -3,10 +3,11 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { submitCoinRequest } from "@/app/actions/coin-request";
+
+const inputCls =
+  "w-full bg-card border border-hairline rounded-md px-3 py-2 text-sm placeholder:text-muted focus:ring-1 focus:ring-accent outline-none";
+const labelCls = "text-[12px] uppercase tracking-[0.15em] text-muted mb-2 block";
 
 export function CoinRequestForm() {
   const t = useTranslations("request");
@@ -21,7 +22,7 @@ export function CoinRequestForm() {
 
   return (
     <form
-      className="space-y-4"
+      className="space-y-5"
       onSubmit={(e) => {
         e.preventDefault();
         setError(null);
@@ -41,25 +42,48 @@ export function CoinRequestForm() {
       }}
     >
       <div>
-        <Label htmlFor="rq-name">{t("name")}</Label>
-        <Input id="rq-name" value={name} onChange={(e) => setName(e.target.value)} required maxLength={100} />
+        <label htmlFor="rq-name" className={labelCls}>
+          {t("name")}
+        </label>
+        <input
+          id="rq-name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+          maxLength={100}
+          className={inputCls}
+        />
       </div>
       <div>
-        <Label htmlFor="rq-symbol">{t("symbol")}</Label>
-        <Input id="rq-symbol" value={symbol} onChange={(e) => setSymbol(e.target.value)} required maxLength={12} />
+        <label htmlFor="rq-symbol" className={labelCls}>
+          {t("symbol")}
+        </label>
+        <input
+          id="rq-symbol"
+          value={symbol}
+          onChange={(e) => setSymbol(e.target.value)}
+          required
+          maxLength={12}
+          className={inputCls}
+        />
       </div>
       <div>
-        <Label htmlFor="rq-cg">{t("coingeckoIdOptional")}</Label>
-        <Input
+        <label htmlFor="rq-cg" className={labelCls}>
+          {t("coingeckoIdOptional")}
+        </label>
+        <input
           id="rq-cg"
           value={coingeckoId}
           onChange={(e) => setCoingeckoId(e.target.value)}
           placeholder="e.g. bitcoin"
           maxLength={80}
+          className={inputCls}
         />
       </div>
       <div>
-        <Label htmlFor="rq-reason">{t("reason")}</Label>
+        <label htmlFor="rq-reason" className={labelCls}>
+          {t("reason")}
+        </label>
         <textarea
           id="rq-reason"
           value={reason}
@@ -68,14 +92,18 @@ export function CoinRequestForm() {
           minLength={5}
           maxLength={2000}
           rows={4}
-          className="w-full border rounded-md p-2 text-sm bg-background"
+          className={`${inputCls} min-h-[120px]`}
         />
       </div>
-      {error && <p className="text-red-500 text-sm">{t(`errors.${error}`)}</p>}
-      {done && <p className="text-green-600 text-sm">{t("submitted")}</p>}
-      <Button type="submit" disabled={pending}>
+      {error && <p className="text-down text-sm mt-2">{t(`errors.${error}`)}</p>}
+      {done && <p className="text-up text-sm mt-2">{t("submitted")}</p>}
+      <button
+        type="submit"
+        disabled={pending}
+        className="bg-accent text-accent-foreground glow-accent rounded-md px-5 py-2.5 text-sm font-semibold uppercase tracking-wider hover:brightness-110 disabled:opacity-50 transition-all"
+      >
         {pending ? t("submitting") : t("submit")}
-      </Button>
+      </button>
     </form>
   );
 }

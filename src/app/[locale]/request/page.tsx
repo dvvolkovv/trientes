@@ -19,17 +19,36 @@ export default async function RequestPage({
 
   const t = await getTranslations("request");
   return (
-    <main className="container mx-auto px-4 py-8 max-w-2xl space-y-10">
+    <main className="max-w-2xl mx-auto px-6 py-12 space-y-12">
       <header>
-        <h1 className="text-3xl font-bold">{t("title")}</h1>
-        <p className="text-muted-foreground mt-1">{t("subtitle")}</p>
+        <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
+          Section · Request
+        </div>
+        <h1 className="text-[40px] md:text-[56px] font-bold tracking-[-0.035em]">
+          {t("title")}
+        </h1>
+        <p className="text-muted mt-3 max-w-[640px]">{t("subtitle")}</p>
       </header>
+
       <section>
-        <h2 className="text-lg font-semibold mb-3">{t("newRequest")}</h2>
-        <CoinRequestForm />
+        <div className="num text-[11px] uppercase tracking-[0.18em] text-muted mb-2">
+          New request
+        </div>
+        <h2 className="text-[20px] md:text-[24px] font-bold tracking-[-0.02em] mb-4">
+          {t("newRequest")}
+        </h2>
+        <div className="bg-card border border-hairline rounded-[20px] p-6 md:p-8">
+          <CoinRequestForm />
+        </div>
       </section>
+
       <section>
-        <h2 className="text-lg font-semibold mb-3">{t("yourRequests")}</h2>
+        <div className="num text-[11px] uppercase tracking-[0.18em] text-muted mb-2">
+          History
+        </div>
+        <h2 className="text-[20px] md:text-[24px] font-bold tracking-[-0.02em] mb-4">
+          {t("yourRequests")}
+        </h2>
         <CoinRequestList />
       </section>
     </main>

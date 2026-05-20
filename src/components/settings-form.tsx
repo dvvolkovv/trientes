@@ -2,13 +2,15 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { updatePreferences } from "@/app/actions/settings";
 import { SUPPORTED_LOCALES, LOCALE_LABELS } from "@/lib/locales";
 
 const CURRENCIES = ["USD", "EUR", "RUB", "GBP", "JPY", "CNY", "BTC", "ETH"];
 const THEMES = ["light", "dark", "system"];
+
+const fieldCls =
+  "w-full bg-card border border-hairline rounded-md px-3 py-2 text-sm placeholder:text-muted focus:ring-1 focus:ring-accent outline-none";
+const labelCls = "text-[12px] uppercase tracking-[0.15em] text-muted mb-2 block";
 
 export function SettingsForm(props: {
   initialLocale: string;
@@ -33,9 +35,9 @@ export function SettingsForm(props: {
       }}
     >
       <div>
-        <Label>Language</Label>
+        <label className={labelCls}>Language</label>
         <select
-          className="border rounded p-2 w-full"
+          className={fieldCls}
           value={locale}
           onChange={(e) => setLocale(e.target.value)}
         >
@@ -47,9 +49,9 @@ export function SettingsForm(props: {
         </select>
       </div>
       <div>
-        <Label>Currency</Label>
+        <label className={labelCls}>Currency</label>
         <select
-          className="border rounded p-2 w-full"
+          className={fieldCls}
           value={currency}
           onChange={(e) => setCurrency(e.target.value)}
         >
@@ -61,9 +63,9 @@ export function SettingsForm(props: {
         </select>
       </div>
       <div>
-        <Label>Theme</Label>
+        <label className={labelCls}>Theme</label>
         <select
-          className="border rounded p-2 w-full"
+          className={fieldCls}
           value={theme}
           onChange={(e) => setTheme(e.target.value)}
         >
@@ -74,9 +76,13 @@ export function SettingsForm(props: {
           ))}
         </select>
       </div>
-      <Button disabled={pending} type="submit">
+      <button
+        type="submit"
+        disabled={pending}
+        className="bg-accent text-accent-foreground glow-accent rounded-md px-5 py-2.5 text-sm font-semibold uppercase tracking-wider hover:brightness-110 disabled:opacity-50 transition-all self-start"
+      >
         Save
-      </Button>
+      </button>
     </form>
   );
 }

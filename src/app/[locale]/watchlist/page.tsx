@@ -30,10 +30,15 @@ export default async function WatchlistPage({
   const rows = allRows.filter((r) => watchedSet.has(r.id));
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <header className="mb-6">
-        <h1 className="text-3xl font-bold">{t("title")}</h1>
-        <p className="text-muted-foreground mt-1">{t("subtitle")}</p>
+    <main className="max-w-[1600px] mx-auto px-6 md:px-12 xl:px-20 py-12">
+      <header className="mb-10">
+        <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
+          Section · Watchlist
+        </div>
+        <h1 className="text-[40px] md:text-[56px] font-bold tracking-[-0.035em]">
+          {t("title")}
+        </h1>
+        <p className="text-muted mt-3 max-w-[640px]">{t("subtitle")}</p>
       </header>
       {rows.length > 0 ? (
         <CoinListClient
@@ -45,9 +50,25 @@ export default async function WatchlistPage({
           isAuthed={true}
         />
       ) : (
-        <div className="border rounded-lg p-12 text-center">
-          <p className="text-muted-foreground mb-3">{t("empty")}</p>
-          <Link href={`/${locale}`} className="text-primary hover:underline">
+        <div className="bg-card border border-hairline rounded-[20px] p-12 text-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-10 w-10 mx-auto mb-4 text-muted"
+            aria-hidden="true"
+          >
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+          </svg>
+          <p className="text-muted mb-4">{t("empty")}</p>
+          <Link
+            href={`/${locale}`}
+            className="text-accent hover:text-accent/80 transition-colors text-sm font-medium uppercase tracking-wider"
+          >
             {t("browse")}
           </Link>
         </div>
