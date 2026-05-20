@@ -27,6 +27,8 @@ model User {
   sessions          Session[]
   watchlist      Watchlist[]
   coinRequests   CoinRequest[]
+  adminAddedCoins Coin[]   @relation("AdminCoinAdditions")
+  reviewedRequests CoinRequest[] @relation("RequestReviewer")
 }
 
 model Account {
@@ -87,6 +89,10 @@ model Coin {
   twitterUrl     String?
   redditUrl      String?
   metadataFetchedAt DateTime?
+  addedByAdminId        String?
+  approvedFromRequestId String?     @unique
+  addedBy               User?       @relation("AdminCoinAdditions", fields: [addedByAdminId], references: [id])
+  approvedFromRequest   CoinRequest? @relation("CoinRequestApproved", fields: [approvedFromRequestId], references: [id])
   snapshots    CoinSnapshot[]
   watchedBy      Watchlist[]
 }
@@ -151,6 +157,8 @@ model CoinRequest {
   reviewedById String?
   rejectReason String?
   createdAt    DateTime      @default(now())
+  reviewer       User?  @relation("RequestReviewer", fields: [reviewedById], references: [id])
+  approvedCoin   Coin?  @relation("CoinRequestApproved")
 
   @@index([userId, createdAt])
   @@index([status, createdAt])
