@@ -35,7 +35,19 @@ describe("parseMarketRow", () => {
       pctChange1h: 0.025,
       pctChange24h: -0.466,
       pctChange7d: -4.71,
+      sparkline7d: null,
     });
+  });
+
+  it("extracts sparkline_in_7d.price as an array", () => {
+    const withSpark = { ...sample, sparkline_in_7d: { price: [1, 2, 3, 4] } };
+    expect(parseMarketRow(withSpark).sparkline7d).toEqual([1, 2, 3, 4]);
+  });
+
+  it("returns null sparkline when missing or malformed", () => {
+    expect(parseMarketRow(sample).sparkline7d).toBeNull();
+    const bad = { ...sample, sparkline_in_7d: { price: ["x", 1] } };
+    expect(parseMarketRow(bad).sparkline7d).toBeNull();
   });
 
   it("tolerates missing supplies and percent fields", () => {

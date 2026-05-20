@@ -13,6 +13,7 @@ export type MarketRow = {
   pctChange1h: number | null;
   pctChange24h: number | null;
   pctChange7d: number | null;
+  sparkline7d: number[] | null;
 };
 
 export type GlobalSnap = {
@@ -33,6 +34,10 @@ function req<T>(v: T | undefined | null, name: string): T {
 
 export function parseMarketRow(raw: unknown): MarketRow {
   const r = raw as Record<string, unknown>;
+  const spark = (r.sparkline_in_7d as { price?: unknown } | null)?.price;
+  const sparkline7d = Array.isArray(spark) && spark.every((n) => typeof n === "number")
+    ? (spark as number[])
+    : null;
   return {
     id: req(r.id as string | undefined, "id"),
     symbol: String(req(r.symbol as string | undefined, "symbol")).toUpperCase(),
@@ -48,6 +53,7 @@ export function parseMarketRow(raw: unknown): MarketRow {
     pctChange1h: (r.price_change_percentage_1h_in_currency as number | null) ?? null,
     pctChange24h: (r.price_change_percentage_24h_in_currency as number | null) ?? null,
     pctChange7d: (r.price_change_percentage_7d_in_currency as number | null) ?? null,
+    sparkline7d,
   };
 }
 
@@ -91,7 +97,7 @@ export async function fetchTop100L1(): Promise<MarketRow[]> {
     order: "market_cap_desc",
     per_page: "100",
     page: "1",
-    sparkline: "false",
+    sparkline: "true",
     price_change_percentage: "1h,24h,7d",
   });
   if (!Array.isArray(raw)) throw new Error("coingecko /coins/markets: not an array");
@@ -106,4 +112,29 @@ export async function fetchTop100L1(): Promise<MarketRow[]> {
 export async function fetchGlobalSnap(): Promise<GlobalSnap> {
   const raw = await cgFetch("/global", {});
   return parseGlobal(raw);
+}
+
+export type ExchangeRate = { name: string; unit: string; value: number; type: "crypto" | "fiat" };
+export type ExchangeRates = Record<string, ExchangeRate>;
+
+export function parseExchangeRates(raw: unknown): ExchangeRates {
+  const root = raw as { rates?: Record<string, unknown> };
+  const rates = req(root.rates, "rates");
+  const out: ExchangeRates = {};
+  for (const [code, v] of Object.entries(rates)) {
+    const r = v as Record<string, unknown>;
+    if (typeof r.value !== "number") continue;
+    out[code] = {
+      name: String(r.name ?? code),
+      unit: String(r.unit ?? code.toUpperCase()),
+      value: r.value,
+      type: r.type === "fiat" ? "fiat" : "crypto",
+    };
+  }
+  return out;
+}
+
+export async function fetchExchangeRates(): Promise<ExchangeRates> {
+  const raw = await cgFetch("/exchange_rates", {});
+  return parseExchangeRates(raw);
 }
