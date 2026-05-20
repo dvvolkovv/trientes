@@ -66,3 +66,39 @@ export function parseGlobal(raw: unknown): GlobalSnap {
     markets: req(d.markets as number | undefined, "markets"),
   };
 }
+
+const CG_BASE = "https://api.coingecko.com/api/v3";
+
+async function cgFetch(path: string, params: Record<string, string>): Promise<unknown> {
+  const qs = new URLSearchParams(params).toString();
+  const url = `${CG_BASE}${path}?${qs}`;
+  const res = await fetch(url, {
+    headers: { accept: "application/json" },
+    // Next caches fetch by default; we want fresh data on every worker tick.
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(`coingecko ${path} ${res.status}: ${body.slice(0, 200)}`);
+  }
+  return res.json();
+}
+
+export async function fetchTop100L1(): Promise<MarketRow[]> {
+  const raw = await cgFetch("/coins/markets", {
+    vs_currency: "usd",
+    category: "layer-1",
+    order: "market_cap_desc",
+    per_page: "100",
+    page: "1",
+    sparkline: "false",
+    price_change_percentage: "1h,24h,7d",
+  });
+  if (!Array.isArray(raw)) throw new Error("coingecko /coins/markets: not an array");
+  return raw.map(parseMarketRow);
+}
+
+export async function fetchGlobalSnap(): Promise<GlobalSnap> {
+  const raw = await cgFetch("/global", {});
+  return parseGlobal(raw);
+}
