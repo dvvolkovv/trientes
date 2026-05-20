@@ -4,8 +4,8 @@ config({ path: ".env.local" });
 import cron from "node-cron";
 import { prisma } from "../src/lib/prisma";
 import { redis } from "../src/lib/redis";
-import { fetchTop100L1, fetchGlobalSnap, fetchExchangeRates } from "../src/lib/coingecko";
-import { syncPrices, syncGlobal, syncExchangeRates } from "../src/lib/sync/orchestrator";
+import { fetchTop100L1, fetchGlobalSnap, fetchExchangeRates, fetchCoinDetail } from "../src/lib/coingecko";
+import { syncPrices, syncGlobal, syncExchangeRates, syncCoinMetadata } from "../src/lib/sync/orchestrator";
 
 async function runPriceSync() {
   const t0 = Date.now();
@@ -45,6 +45,27 @@ async function runRatesSync() {
   }
 }
 
+let metadataSyncRunning = false;
+async function runMetadataSync() {
+  if (metadataSyncRunning) {
+    console.log("[worker] metadata-sync: already running, skipping tick");
+    return;
+  }
+  metadataSyncRunning = true;
+  const t0 = Date.now();
+  try {
+    const { updated, skipped, failed } = await syncCoinMetadata({
+      fetchCoinDetail,
+      prisma: prisma as never,
+    });
+    console.log(`[worker] metadata-sync done in ${((Date.now() - t0) / 1000).toFixed(1)}s — updated=${updated} skipped=${skipped} failed=${failed}`);
+  } catch (err) {
+    console.error("[worker] metadata-sync fatal:", err);
+  } finally {
+    metadataSyncRunning = false;
+  }
+}
+
 async function main() {
   console.log("[worker] starting…");
   await prisma.$queryRaw`SELECT 1`;
@@ -57,12 +78,16 @@ async function main() {
   await runGlobalSync();
   await runRatesSync();
 
+  // Kick metadata-sync in the background — don't block startup on a ~3 min loop.
+  void runMetadataSync();
+
   // 60s for prices, 5 min for global stats + rates.
   cron.schedule("*/60 * * * * *", () => void runPriceSync());
   cron.schedule("*/5 * * * *", () => {
     void runGlobalSync();
     void runRatesSync();
   });
+  cron.schedule("30 3 * * *", () => void runMetadataSync());
 
   const shutdown = async (sig: string) => {
     console.log(`[worker] received ${sig}, shutting down`);

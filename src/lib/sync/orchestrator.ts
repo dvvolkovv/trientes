@@ -1,4 +1,5 @@
 import type { MarketRow, GlobalSnap, ExchangeRates } from "@/lib/coingecko";
+import { fetchCoinDetail, type CoinDetail } from "@/lib/coingecko";
 import { KEYS, TTL } from "./keys";
 
 // Minimal interfaces — we only use what we need so tests can pass fakes.
@@ -103,4 +104,70 @@ export async function syncExchangeRates(deps: {
 }): Promise<void> {
   const rates = await deps.fetchExchangeRates();
   await deps.redis.set(KEYS.exchangeRates, JSON.stringify(rates), "EX", TTL.exchangeRates);
+}
+
+type PrismaCoinMetaUpdate = {
+  coin: {
+    findMany(args: {
+      where: { isActive: boolean; OR?: Array<unknown> };
+      orderBy: { rank: "asc" };
+      select: { id: true; metadataFetchedAt: true };
+    }): Promise<Array<{ id: string; metadataFetchedAt: Date | null }>>;
+    update(args: { where: { id: string }; data: Record<string, unknown> }): Promise<unknown>;
+  };
+};
+
+export async function syncCoinMetadata(deps: {
+  fetchCoinDetail: (id: string) => Promise<CoinDetail>;
+  prisma: PrismaCoinMetaUpdate;
+  // ms between fetches — Free tier ~30 req/min → 2000ms is comfortable
+  delayMs?: number;
+  // skip coins fetched within this window (default 23h)
+  staleMs?: number;
+  sleep?: (ms: number) => Promise<void>;
+}): Promise<{ updated: number; skipped: number; failed: number }> {
+  const delayMs = deps.delayMs ?? 2000;
+  const staleMs = deps.staleMs ?? 23 * 60 * 60 * 1000;
+  const sleep = deps.sleep ?? ((ms: number) => new Promise((r) => setTimeout(r, ms)));
+  const now = Date.now();
+
+  const coins = await deps.prisma.coin.findMany({
+    where: { isActive: true },
+    orderBy: { rank: "asc" },
+    select: { id: true, metadataFetchedAt: true },
+  });
+
+  let updated = 0;
+  let skipped = 0;
+  let failed = 0;
+
+  for (const c of coins) {
+    if (c.metadataFetchedAt && now - c.metadataFetchedAt.getTime() < staleMs) {
+      skipped++;
+      continue;
+    }
+    try {
+      const d = await deps.fetchCoinDetail(c.id);
+      await deps.prisma.coin.update({
+        where: { id: c.id },
+        data: {
+          description: d.descriptionEn,
+          websiteUrl: d.websiteUrl,
+          explorerUrl: d.explorerUrl,
+          whitepaperUrl: d.whitepaperUrl,
+          githubUrl: d.githubUrl,
+          twitterUrl: d.twitterUrl,
+          redditUrl: d.redditUrl,
+          metadataFetchedAt: new Date(),
+        },
+      });
+      updated++;
+    } catch (err) {
+      failed++;
+      console.error(`[worker] metadata-sync ${c.id} failed:`, err);
+    }
+    await sleep(delayMs);
+  }
+
+  return { updated, skipped, failed };
 }
