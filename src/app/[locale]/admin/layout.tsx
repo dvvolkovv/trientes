@@ -18,7 +18,7 @@ export default async function AdminLayout({
   if (!admin.ok) redirect(`/${locale}/login`);
 
   return (
-    <div className="max-w-[1600px] mx-auto px-6 md:px-12 xl:px-20 py-12">
+    <div className="max-w-[1600px] mx-auto px-4 md:px-12 xl:px-20 py-12">
       {children}
     </div>
   );

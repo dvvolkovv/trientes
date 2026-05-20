@@ -55,7 +55,7 @@ export function RequestRow({ row }: { row: RequestRowData }) {
 
       {isPending && (
         <>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <input
               type="text"
               value={overrideId}
@@ -91,7 +91,7 @@ export function RequestRow({ row }: { row: RequestRowData }) {
             </button>
           </div>
           {rejectMode && (
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <input
                 type="text"
                 value={rejectMsg}

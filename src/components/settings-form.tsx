@@ -79,7 +79,7 @@ export function SettingsForm(props: {
       <button
         type="submit"
         disabled={pending}
-        className="bg-accent text-accent-foreground glow-accent rounded-md px-5 py-2.5 text-sm font-semibold uppercase tracking-wider hover:brightness-110 disabled:opacity-50 transition-all self-start"
+        className="w-full sm:w-auto bg-accent text-accent-foreground glow-accent rounded-md px-5 py-2.5 text-sm font-semibold uppercase tracking-wider hover:brightness-110 disabled:opacity-50 transition-all sm:self-start"
       >
         Save
       </button>

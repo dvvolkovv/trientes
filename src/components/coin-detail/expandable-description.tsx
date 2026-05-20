@@ -24,7 +24,7 @@ export function ExpandableDescription({
         <button
           type="button"
           onClick={() => setOpen(!open)}
-          className="text-xs text-accent uppercase tracking-wider mt-3 hover:text-accent/80 transition-colors"
+          className="mt-3 px-3 py-2 inline-flex items-center text-xs text-accent uppercase tracking-wider hover:text-accent/80 transition-colors"
         >
           {open ? t("showLess") : t("readMore")}
         </button>

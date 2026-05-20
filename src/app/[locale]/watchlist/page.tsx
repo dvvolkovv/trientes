@@ -30,12 +30,12 @@ export default async function WatchlistPage({
   const rows = allRows.filter((r) => watchedSet.has(r.id));
 
   return (
-    <main className="max-w-[1600px] mx-auto px-6 md:px-12 xl:px-20 py-12">
+    <main className="max-w-[1600px] mx-auto px-4 md:px-12 xl:px-20 py-10 md:py-16">
       <header className="mb-10">
         <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
           Section · Watchlist
         </div>
-        <h1 className="text-[40px] md:text-[56px] font-bold tracking-[-0.035em]">
+        <h1 className="text-[28px] sm:text-[36px] md:text-[48px] font-bold tracking-[-0.035em]">
           {t("title")}
         </h1>
         <p className="text-muted mt-3 max-w-[640px]">{t("subtitle")}</p>

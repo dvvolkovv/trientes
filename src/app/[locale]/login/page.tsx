@@ -11,11 +11,11 @@ export default async function LoginPage({
   setRequestLocale(locale);
   const t = await getTranslations("common");
   return (
-    <main className="max-w-md mx-auto px-6 py-16 md:py-24">
+    <main className="max-w-md mx-auto px-6 py-10 md:py-24">
       <div className="num text-[11px] uppercase tracking-[0.3em] text-accent mb-4">
         ● Sign in
       </div>
-      <h1 className="text-[40px] md:text-[48px] font-bold tracking-[-0.03em] mb-2">
+      <h1 className="text-[32px] md:text-[48px] font-bold tracking-[-0.03em] mb-2">
         {t("signIn")}
       </h1>
       <p className="text-muted mb-8">

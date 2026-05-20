@@ -18,11 +18,11 @@ export default async function SettingsPage({
   if (!user) redirect(`/${locale}/login`);
 
   return (
-    <main className="max-w-2xl mx-auto px-6 py-12">
+    <main className="max-w-2xl mx-auto px-6 py-10 md:py-16">
       <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
         Section · Settings
       </div>
-      <h1 className="text-[40px] md:text-[48px] font-bold tracking-[-0.03em] mb-2">
+      <h1 className="text-[28px] sm:text-[36px] md:text-[48px] font-bold tracking-[-0.03em] mb-2">
         Settings
       </h1>
       <p className="text-muted mb-8">Manage your language, currency, and theme preferences.</p>

@@ -15,7 +15,7 @@ export function ChartPanel({ coinId }: { coinId: string }) {
   const [timeframe, setTimeframe] = useState("7d");
   return (
     <div className="bg-card border border-hairline rounded-[20px] p-6 md:p-8">
-      <div className="flex items-center gap-1 mb-6">
+      <div className="flex flex-wrap items-center gap-1 mb-6">
         {FRAMES.map((f) => {
           const active = timeframe === f.key;
           return (
@@ -35,7 +35,7 @@ export function ChartPanel({ coinId }: { coinId: string }) {
           );
         })}
       </div>
-      <div className="bg-bg-tint border border-hairline rounded-md h-[360px] overflow-hidden">
+      <div className="bg-bg-tint border border-hairline rounded-md h-[240px] md:h-[360px] overflow-hidden">
         <PriceChart coinId={coinId} timeframe={timeframe} />
       </div>
     </div>
