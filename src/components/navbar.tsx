@@ -22,6 +22,7 @@ export async function Navbar() {
           {t("appName")}
         </Link>
         <nav className="flex items-center gap-3 text-sm">
+          <Link href={`/${locale}/exchanges`}>{t("exchanges")}</Link>
           <Link href={`/${locale}/watchlist`}>{t("watchlist")}</Link>
           <Link href={`/${locale}/request`}>{t("request")}</Link>
           {isAdmin && <Link href={`/${locale}/admin`}>{t("admin")}</Link>}
