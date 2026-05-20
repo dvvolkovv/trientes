@@ -28,39 +28,57 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: { strategy: "database" },
   events: {
+    // Fires AFTER the User row is created by PrismaAdapter — safe to update.
     async createUser({ user }) {
       const matched = isAdminWhitelisted(adminWhitelist, {
         email: user.email ?? null,
       });
       if (matched && user.id) {
-        await prisma.user.update({
-          where: { id: user.id },
-          data: { role: "ADMIN" },
-        });
+        try {
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { role: "ADMIN" },
+          });
+        } catch (err) {
+          console.error("[auth] createUser ADMIN-promotion failed:", err);
+        }
       }
     },
-  },
-  callbacks: {
-    ...authConfig.callbacks,
-    async signIn({ user, account, profile }) {
-      if (!user?.id) return true;
+    // Fires AFTER an Account row is linked. Catches the github (login) and
+    // telegram (providerAccountId) paths that aren't available on createUser.
+    async linkAccount({ user, account, profile }) {
+      if (!user?.id) return;
       const githubLogin =
         account?.provider === "github"
           ? ((profile as { login?: string } | undefined)?.login ?? null)
           : null;
       const telegramId =
-        account?.provider === "telegram" ? (account.providerAccountId ?? null) : null;
+        account?.provider === "telegram"
+          ? (account.providerAccountId ?? null)
+          : null;
       const matched = isAdminWhitelisted(adminWhitelist, {
         email: user.email ?? null,
         telegramId,
         githubLogin,
       });
       if (matched) {
-        await prisma.user.update({
-          where: { id: user.id },
-          data: { role: "ADMIN" },
-        });
+        try {
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { role: "ADMIN" },
+          });
+        } catch (err) {
+          console.error("[auth] linkAccount ADMIN-promotion failed:", err);
+        }
       }
+    },
+  },
+  callbacks: {
+    ...authConfig.callbacks,
+    // No DB writes in signIn — at this point the User row may not exist yet on
+    // first OAuth sign-in. Admin promotion happens in events.createUser /
+    // events.linkAccount, which fire after the adapter has done its work.
+    async signIn() {
       return true;
     },
     async session({ session, user }) {
