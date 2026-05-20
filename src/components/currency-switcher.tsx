@@ -7,7 +7,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 import { CURRENCIES, type Currency } from "@/lib/currency";
 import { setCurrency } from "@/app/actions/currency";
 
@@ -16,9 +15,14 @@ export function CurrencySwitcher({ current }: { current: Currency }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" disabled={pending} aria-label="Currency">
+        <button
+          type="button"
+          disabled={pending}
+          aria-label="Currency"
+          className="text-xs px-3 py-1.5 rounded-md font-medium uppercase tracking-wider bg-card text-muted border border-hairline hover:text-foreground transition-colors disabled:opacity-50"
+        >
           {current}
-        </Button>
+        </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         {CURRENCIES.map((c) => (

@@ -9,7 +9,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 
 export function LocaleSwitcher() {
   const locale = useLocale();
@@ -23,12 +22,18 @@ export function LocaleSwitcher() {
     router.push(segments.join("/"));
   };
 
+  const label = LOCALE_LABELS[locale as keyof typeof LOCALE_LABELS] ?? locale;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" aria-label={t("languageLabel")}>
-          {LOCALE_LABELS[locale as keyof typeof LOCALE_LABELS] ?? locale}
-        </Button>
+        <button
+          type="button"
+          aria-label={t("languageLabel")}
+          className="text-xs px-3 py-1.5 rounded-md font-medium uppercase tracking-wider bg-card text-muted border border-hairline hover:text-foreground transition-colors"
+        >
+          {label}
+        </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         {SUPPORTED_LOCALES.map((l) => (
