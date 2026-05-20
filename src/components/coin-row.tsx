@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { MarketRow, ExchangeRates } from "@/lib/coingecko";
 import { formatPercent } from "@/lib/format";
 import { formatPriceInCurrency, formatCompactInCurrency, type Currency } from "@/lib/currency";
@@ -13,23 +14,28 @@ export function CoinRow({
   row,
   currency,
   rates,
+  locale,
 }: {
   row: MarketRow;
   currency: Currency;
   rates: ExchangeRates | null;
+  locale: string;
 }) {
   const ratesOrEmpty = rates ?? {};
   return (
     <tr className="border-b hover:bg-muted/30">
       <td className="px-3 py-3 text-sm text-muted-foreground tabular-nums">{row.rank}</td>
       <td className="px-3 py-3">
-        <div className="flex items-center gap-2">
+        <Link
+          href={`/${locale}/coin/${row.id}`}
+          className="flex items-center gap-2 hover:underline"
+        >
           {row.logoUrl && (
             <Image src={row.logoUrl} alt="" width={20} height={20} className="rounded-full" unoptimized />
           )}
           <span className="font-medium">{row.name}</span>
           <span className="text-xs text-muted-foreground uppercase">{row.symbol}</span>
-        </div>
+        </Link>
       </td>
       <td className="px-3 py-3 text-right tabular-nums">
         {rates ? formatPriceInCurrency(row.priceUsd, currency, ratesOrEmpty) : `$${row.priceUsd.toFixed(2)}`}

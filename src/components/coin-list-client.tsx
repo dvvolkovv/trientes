@@ -50,10 +50,12 @@ export function CoinListClient({
   rows,
   currency,
   rates,
+  locale,
 }: {
   rows: MarketRow[];
   currency: Currency;
   rates: ExchangeRates | null;
+  locale: string;
 }) {
   const t = useTranslations("listing");
   const [query, setQuery] = useState("");
@@ -108,7 +110,7 @@ export function CoinListClient({
           </thead>
           <tbody>
             {filtered.map((row) => (
-              <CoinRow key={row.id} row={row} currency={currency} rates={rates} />
+              <CoinRow key={row.id} row={row} currency={currency} rates={rates} locale={locale} />
             ))}
           </tbody>
         </table>

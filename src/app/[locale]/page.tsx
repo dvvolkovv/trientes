@@ -31,7 +31,7 @@ export default async function Home({
       </header>
       <GlobalStatsHero stats={stats} currency={currency} rates={rates} />
       {rows.length > 0 ? (
-        <CoinListClient rows={rows} currency={currency} rates={rates} />
+        <CoinListClient rows={rows} currency={currency} rates={rates} locale={locale} />
       ) : (
         <p className="text-muted-foreground">{tl("loadingFallback")}</p>
       )}
