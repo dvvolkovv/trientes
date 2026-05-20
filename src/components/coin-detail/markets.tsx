@@ -34,7 +34,8 @@ export async function MarketsTable({
       <h2 className="text-[24px] md:text-[28px] font-bold tracking-[-0.025em] mb-4">
         {t("topMarkets")}
       </h2>
-      <div className="bg-card border border-hairline rounded-[20px] overflow-hidden">
+      {/* Desktop table */}
+      <div className="hidden md:block bg-card border border-hairline rounded-[20px] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -79,6 +80,50 @@ export async function MarketsTable({
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Mobile cards */}
+      <div className="md:hidden space-y-2">
+        {top.map((tk, i) => (
+          <div
+            key={`${tk.exchange}-${tk.base}-${tk.target}-${i}`}
+            className="bg-card border border-hairline rounded-[16px] p-4"
+          >
+            <div className="flex items-center justify-between gap-3 mb-3">
+              {tk.tradeUrl ? (
+                <a
+                  href={tk.tradeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                  className="font-medium text-foreground hover:underline truncate"
+                >
+                  {tk.exchange}
+                </a>
+              ) : (
+                <span className="font-medium text-foreground truncate">
+                  {tk.exchange}
+                </span>
+              )}
+              <span className="num text-[12px] text-muted flex-shrink-0">
+                {tk.base}/{tk.target}
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-[13px]">
+              <span className="text-muted uppercase tracking-wider text-[11px]">
+                {t("price")}
+              </span>
+              <span className="num text-right">{fmtP(tk.priceUsd)}</span>
+            </div>
+            <div className="flex items-center justify-between text-[13px] mt-1">
+              <span className="text-muted uppercase tracking-wider text-[11px]">
+                {t("volume")}
+              </span>
+              <span className="num text-right text-muted">
+                {fmtV(tk.volumeUsd)}
+              </span>
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );

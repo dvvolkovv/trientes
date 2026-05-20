@@ -22,7 +22,7 @@ export default async function ExchangesPage({
 
   return (
     <main className="bg-bg">
-      <div className="max-w-[1600px] mx-auto px-6 md:px-12 xl:px-20 py-12">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-12 xl:px-20 py-12">
         <header className="mb-10">
           <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
             Section · II

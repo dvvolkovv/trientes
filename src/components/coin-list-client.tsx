@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import type { MarketRow, ExchangeRates } from "@/lib/coingecko";
 import { CoinRow } from "./coin-row";
+import { CoinCardMobile } from "./coin-card-mobile";
 import type { Currency } from "@/lib/currency";
 
 type SortKey = "rank" | "price" | "pctChange24h" | "marketCap" | "volume";
@@ -98,7 +99,8 @@ export function CoinListClient({
         onChange={(e) => setQuery(e.target.value)}
         className="bg-card border border-hairline rounded-md px-3 py-2 text-sm placeholder:text-muted focus:ring-1 focus:ring-accent outline-none w-full max-w-sm"
       />
-      <div className="bg-card border border-hairline rounded-[20px] overflow-hidden overflow-x-auto">
+      {/* Desktop table */}
+      <div className="hidden md:block bg-card border border-hairline rounded-[20px] overflow-hidden overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="text-[11px] uppercase tracking-[0.18em] text-muted border-b border-hairline">
@@ -159,6 +161,21 @@ export function CoinListClient({
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile cards */}
+      <div className="md:hidden space-y-2">
+        {filtered.map((row) => (
+          <CoinCardMobile
+            key={row.id}
+            row={row}
+            currency={currency}
+            rates={rates}
+            locale={locale}
+            isWatched={watchedSet.has(row.id)}
+            isAuthed={isAuthed}
+          />
+        ))}
       </div>
     </div>
   );

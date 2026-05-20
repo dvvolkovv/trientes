@@ -70,7 +70,7 @@ export default async function CoinDetailPage({
   const isWatched = watchedSet.has(coin.id);
 
   return (
-    <main className="max-w-[1600px] mx-auto px-6 md:px-12 xl:px-20 py-12 space-y-12">
+    <main className="max-w-[1600px] mx-auto px-4 md:px-12 xl:px-20 py-12 space-y-12">
       <LivePrices currency={currency} rates={rates} />
       <CoinHeader
         row={row}
