@@ -26,7 +26,12 @@ export async function CoinLinks({ coin }: {
 
   return (
     <section>
-      <h2 className="text-lg font-semibold mb-3">{t("links")}</h2>
+      <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
+        Section
+      </div>
+      <h2 className="text-[24px] md:text-[28px] font-bold tracking-[-0.025em] mb-4">
+        {t("links")}
+      </h2>
       <div className="flex flex-wrap gap-2">
         {items.map((l) => (
           <a
@@ -34,9 +39,10 @@ export async function CoinLinks({ coin }: {
             href={l.href!}
             target="_blank"
             rel="noopener noreferrer nofollow"
-            className="px-3 py-1.5 text-sm border rounded-md hover:bg-muted"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm rounded-md bg-card border border-hairline text-foreground hover:bg-card-alt hover:border-muted transition-colors"
           >
-            {l.label} →
+            <span>{l.label}</span>
+            <span aria-hidden>→</span>
           </a>
         ))}
       </div>

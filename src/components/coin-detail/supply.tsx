@@ -34,12 +34,22 @@ export async function SupplyMetrics({
   ];
   return (
     <section>
-      <h2 className="text-lg font-semibold mb-3">{t("stats")}</h2>
+      <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
+        Section
+      </div>
+      <h2 className="text-[24px] md:text-[28px] font-bold tracking-[-0.025em] mb-4">
+        {t("stats")}
+      </h2>
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         {cards.map((c) => (
-          <div key={c.label} className="border rounded-lg p-3">
-            <div className="text-xs text-muted-foreground">{c.label}</div>
-            <div className="text-base font-medium mt-1 tabular-nums">{c.value}</div>
+          <div
+            key={c.label}
+            className="bg-card border border-hairline rounded-md px-4 py-3"
+          >
+            <div className="text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">
+              {c.label}
+            </div>
+            <div className="num text-[16px] font-medium">{c.value}</div>
           </div>
         ))}
       </div>

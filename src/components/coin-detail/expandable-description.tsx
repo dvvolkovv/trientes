@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
 
 export function ExpandableDescription({
   htmlShort,
@@ -18,13 +17,17 @@ export function ExpandableDescription({
   return (
     <div>
       <div
-        className="prose prose-sm dark:prose-invert max-w-none"
+        className="text-muted-strong leading-[1.7]"
         dangerouslySetInnerHTML={{ __html: html }}
       />
       {showToggle && (
-        <Button variant="ghost" size="sm" className="mt-2" onClick={() => setOpen(!open)}>
+        <button
+          type="button"
+          onClick={() => setOpen(!open)}
+          className="text-xs text-accent uppercase tracking-wider mt-3 hover:text-accent/80 transition-colors"
+        >
           {open ? t("showLess") : t("readMore")}
-        </Button>
+        </button>
       )}
     </div>
   );

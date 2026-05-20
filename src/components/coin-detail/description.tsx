@@ -16,7 +16,12 @@ export async function Description({ html }: { html: string | null }) {
       : cleanFull;
   return (
     <section>
-      <h2 className="text-lg font-semibold mb-3">{t("about")}</h2>
+      <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
+        Section
+      </div>
+      <h2 className="text-[24px] md:text-[28px] font-bold tracking-[-0.025em] mb-4">
+        {t("about")}
+      </h2>
       <ExpandableDescription htmlShort={cleanShort} htmlFull={cleanFull} />
     </section>
   );
