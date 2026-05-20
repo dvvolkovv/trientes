@@ -87,7 +87,7 @@ export function CoinCardMobile({
             : `$${row.priceUsd.toFixed(2)}`}
         </div>
         <div className="flex-shrink-0">
-          <Sparkline points={row.sparkline7d} width={64} height={20} />
+          <Sparkline points={row.sparkline7d} width={80} height={24} />
         </div>
       </div>
     </div>
