@@ -163,3 +163,21 @@ model CoinRequest {
   @@index([userId, createdAt])
   @@index([status, createdAt])
 }
+
+model Exchange {
+  id                  String   @id              // CoinGecko id, e.g. "binance"
+  name                String
+  logoUrl             String?
+  country             String?
+  yearEstablished     Int?
+  trustScore          Int?
+  trustScoreRank      Int?
+  volume24hBtc        Float
+  volume24hUsd        Float
+  url                 String?
+  hasTradingIncentive Boolean  @default(false)
+  fetchedAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([trustScoreRank])
+}
