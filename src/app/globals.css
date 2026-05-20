@@ -1,34 +1,98 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Brand palette — Trientes Ledger (dark, sibling-aligned with trientes.com) */
+  --color-bg: #161616;
+  --color-bg-tint: #16151a;
+  --color-card: #1e1d24;
+  --color-card-alt: #312f3a;
+  --color-hairline: #2a2932;
+
+  --color-foreground: #ffffff;
+  --color-muted: #a09baa;
+  --color-muted-strong: #c6c1cf;
+
+  --color-accent: #f7931a;
+  --color-accent-foreground: #0a0a0a;
+
+  --color-up: #30b658;
+  --color-down: #e55c5c;
+  --color-info: #304db6;
+
+  /* Bridge names so existing shadcn components don't break visually */
+  --color-background: var(--color-bg);
+  --color-border: var(--color-hairline);
+  --color-input: var(--color-card);
+  --color-ring: var(--color-accent);
+  --color-primary: var(--color-accent);
+  --color-primary-foreground: var(--color-accent-foreground);
+  --color-secondary: var(--color-card-alt);
+  --color-secondary-foreground: var(--color-foreground);
+  --color-destructive: var(--color-down);
+  --color-destructive-foreground: var(--color-foreground);
+
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+
+  --radius-md: 0.625rem;
+  --radius-lg: 1.25rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: var(--color-bg);
+  color: var(--color-foreground);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01" 1, "cv11" 1;
 }
 
+/* Tabular numerics — apply via .num class anywhere a price/percent/volume renders. */
+.num {
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum" 1, "zero" 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Subtle hairline divider — use for table rows, section breaks. */
+.hairline {
+  background: var(--color-hairline);
+}
+
+/* Live-tick flash for cells annotated with data-live-price. */
 .live-flash {
-  animation: live-flash 500ms ease-out;
+  animation: live-flash 700ms ease-out;
 }
 @keyframes live-flash {
-  0% { background-color: rgba(34, 197, 94, 0.35); }
+  0% { background-color: rgba(48, 182, 88, 0.22); }
   100% { background-color: transparent; }
+}
+
+/* Soft glow used for primary CTAs. */
+.glow-accent {
+  box-shadow:
+    0 0 0 1px rgba(247, 147, 26, 0.25),
+    0 12px 48px -12px rgba(247, 147, 26, 0.28);
+}
+
+/* Scrollbar — keep it dark, narrow. */
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: var(--color-bg); }
+*::-webkit-scrollbar-thumb {
+  background: var(--color-card-alt);
+  border-radius: 999px;
+  border: 2px solid var(--color-bg);
+}
+*::-webkit-scrollbar-thumb:hover { background: var(--color-muted); }
+
+/* Selection. */
+::selection {
+  background: var(--color-accent);
+  color: var(--color-accent-foreground);
 }
