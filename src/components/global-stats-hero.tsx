@@ -1,13 +1,23 @@
 import { useTranslations } from "next-intl";
-import type { GlobalSnap } from "@/lib/coingecko";
-import { formatCompact } from "@/lib/format";
+import type { GlobalSnap, ExchangeRates } from "@/lib/coingecko";
+import { formatCompactInCurrency, type Currency } from "@/lib/currency";
 
-export function GlobalStatsHero({ stats }: { stats: GlobalSnap | null }) {
+export function GlobalStatsHero({
+  stats,
+  currency,
+  rates,
+}: {
+  stats: GlobalSnap | null;
+  currency: Currency;
+  rates: ExchangeRates | null;
+}) {
   const t = useTranslations("listing");
   if (!stats) return null;
+  const r = rates ?? {};
+  const fmt = (n: number) => (rates ? formatCompactInCurrency(n, currency, r) : `$${(n / 1e9).toFixed(2)}B`);
   const cards = [
-    { label: t("globalMarketCap"), value: formatCompact(stats.totalMarketCapUsd) },
-    { label: t("globalVolume"), value: formatCompact(stats.total24hVolumeUsd) },
+    { label: t("globalMarketCap"), value: fmt(stats.totalMarketCapUsd) },
+    { label: t("globalVolume"), value: fmt(stats.total24hVolumeUsd) },
     { label: t("btcDominance"), value: `${stats.btcDominancePct.toFixed(1)}%` },
     { label: t("ethDominance"), value: `${stats.ethDominancePct.toFixed(1)}%` },
   ];
