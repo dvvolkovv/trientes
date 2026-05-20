@@ -93,6 +93,7 @@ model CoinSnapshot {
   circulatingSupply Decimal?  @db.Decimal(30, 2)
   totalSupply       Decimal?  @db.Decimal(30, 2)
   maxSupply         Decimal?  @db.Decimal(30, 2)
+  sparkline7d       Json?
   fetchedAt         DateTime  @default(now())
 
   @@index([coinId, fetchedAt])
