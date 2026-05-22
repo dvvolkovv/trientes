@@ -65,7 +65,19 @@
     "whitepaper": "Whitepaper",
     "github": "GitHub",
     "twitter": "Twitter",
-    "reddit": "Reddit"
+    "reddit": "Reddit",
+    "simple": "Просто",
+    "pro": "Про",
+    "candles": "Свечи",
+    "line": "Линия",
+    "indicators": "Индикаторы",
+    "volumePane": "Объём",
+    "reducedGranularity": "Ограниченные данные — монеты нет на Binance, показаны дневные свечи",
+    "ma": "MA",
+    "ema": "EMA",
+    "bollinger": "Боллинджер",
+    "rsi": "RSI",
+    "macd": "MACD"
   },
   "watchlist": {
     "title": "Избранное",

@@ -65,7 +65,19 @@
     "whitepaper": "Whitepaper",
     "github": "GitHub",
     "twitter": "Twitter",
-    "reddit": "Reddit"
+    "reddit": "Reddit",
+    "simple": "Einfach",
+    "pro": "Pro",
+    "candles": "Kerzen",
+    "line": "Linie",
+    "indicators": "Indikatoren",
+    "volumePane": "Volumen",
+    "reducedGranularity": "Begrenzte Daten – diese Münze ist nicht auf Binance, zeige Tageskerzen",
+    "ma": "MA",
+    "ema": "EMA",
+    "bollinger": "Bollinger",
+    "rsi": "RSI",
+    "macd": "MACD"
   },
   "watchlist": {
     "title": "Watchlist",

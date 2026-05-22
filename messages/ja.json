@@ -65,7 +65,19 @@
     "whitepaper": "Whitepaper",
     "github": "GitHub",
     "twitter": "Twitter",
-    "reddit": "Reddit"
+    "reddit": "Reddit",
+    "simple": "シンプル",
+    "pro": "プロ",
+    "candles": "ローソク足",
+    "line": "ライン",
+    "indicators": "指標",
+    "volumePane": "出来高",
+    "reducedGranularity": "データ制限 — この通貨はBinance未対応のため日足を表示",
+    "ma": "MA",
+    "ema": "EMA",
+    "bollinger": "Bollinger",
+    "rsi": "RSI",
+    "macd": "MACD"
   },
   "watchlist": {
     "title": "お気に入り",

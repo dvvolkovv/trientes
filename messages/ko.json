@@ -65,7 +65,19 @@
     "whitepaper": "Whitepaper",
     "github": "GitHub",
     "twitter": "Twitter",
-    "reddit": "Reddit"
+    "reddit": "Reddit",
+    "simple": "간단",
+    "pro": "프로",
+    "candles": "캔들",
+    "line": "라인",
+    "indicators": "지표",
+    "volumePane": "거래량",
+    "reducedGranularity": "제한된 데이터 — 이 코인은 Binance에 없어 일봉을 표시합니다",
+    "ma": "MA",
+    "ema": "EMA",
+    "bollinger": "Bollinger",
+    "rsi": "RSI",
+    "macd": "MACD"
   },
   "watchlist": {
     "title": "관심목록",

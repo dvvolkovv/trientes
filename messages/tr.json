@@ -65,7 +65,19 @@
     "whitepaper": "Whitepaper",
     "github": "GitHub",
     "twitter": "Twitter",
-    "reddit": "Reddit"
+    "reddit": "Reddit",
+    "simple": "Basit",
+    "pro": "Pro",
+    "candles": "Mumlar",
+    "line": "Çizgi",
+    "indicators": "Göstergeler",
+    "volumePane": "Hacim",
+    "reducedGranularity": "Sınırlı veri — bu coin Binance'te yok, günlük mumlar gösteriliyor",
+    "ma": "MA",
+    "ema": "EMA",
+    "bollinger": "Bollinger",
+    "rsi": "RSI",
+    "macd": "MACD"
   },
   "watchlist": {
     "title": "İzleme listesi",

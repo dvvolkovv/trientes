@@ -65,7 +65,19 @@
     "whitepaper": "Whitepaper",
     "github": "GitHub",
     "twitter": "Twitter",
-    "reddit": "Reddit"
+    "reddit": "Reddit",
+    "simple": "简单",
+    "pro": "专业",
+    "candles": "K线",
+    "line": "折线",
+    "indicators": "指标",
+    "volumePane": "成交量",
+    "reducedGranularity": "数据有限 — 该币种不在 Binance，显示日线",
+    "ma": "MA",
+    "ema": "EMA",
+    "bollinger": "Bollinger",
+    "rsi": "RSI",
+    "macd": "MACD"
   },
   "watchlist": {
     "title": "收藏",
