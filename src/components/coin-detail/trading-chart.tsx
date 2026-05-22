@@ -13,8 +13,11 @@ import {
 import { useTranslations } from "next-intl";
 import { TIMEFRAMES, type Timeframe } from "@/lib/chart-intervals";
 import { CG_TO_BINANCE } from "@/lib/live/binance-mapping";
+import { EXCHANGES, exchangeSupports, type ExchangeId } from "@/lib/exchanges";
 import { sma, ema, bollinger, rsi, macd } from "@/lib/indicators";
 import type { OHLCV } from "@/lib/binance-klines";
+
+const POLL_MS = 15_000; // non-Binance exchanges have no WS path — refresh by polling
 
 const UP = "#30B658";
 const DOWN = "#E55C5C";
@@ -41,15 +44,39 @@ export function TradingChart({ coinId }: { coinId: string }) {
   const typeRef = useRef<"candles" | "line">("candles");
 
   const [tf, setTf] = useState<Timeframe>("1h");
+  const [exchange, setExchange] = useState<ExchangeId>("binance");
   const [type, setType] = useState<"candles" | "line">("candles");
   const [active, setActive] = useState<Set<IndicatorKey>>(new Set<IndicatorKey>(["ma"]));
-  const [source, setSource] = useState<"binance" | "coingecko" | null>(null);
+  const [source, setSource] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Keep the latest chart type readable from the long-lived WS closure.
   useEffect(() => {
     typeRef.current = type;
   }, [type]);
+
+  // Push one candle into the chart in place (no fitContent — preserves zoom/pan).
+  // Shared by the Binance WS stream and the poll loop for other exchanges.
+  function pushCandle(candle: OHLCV) {
+    const arr = dataRef.current;
+    const last = arr[arr.length - 1];
+    if (last && last.time === candle.time) arr[arr.length - 1] = candle;
+    else if (!last || candle.time > last.time) arr.push(candle);
+    const time = candle.time as Time;
+    if (typeRef.current === "candles") {
+      candleRef.current?.update({ time, open: candle.open, high: candle.high, low: candle.low, close: candle.close });
+    } else {
+      lineRef.current?.update({ time, value: candle.close });
+    }
+    volRef.current?.update({ time, value: candle.volume, color: candle.close >= candle.open ? VOL_UP : VOL_DOWN });
+  }
+
+  // Switch exchange; if it can't serve the current timeframe, fall back to 1H.
+  function selectExchange(id: ExchangeId) {
+    setExchange(id);
+    const conf = TIMEFRAMES.find((f) => f.key === tf)!;
+    if (!exchangeSupports(id, conf.interval)) setTf("1h");
+  }
 
   // Create the chart once.
   useEffect(() => {
@@ -166,14 +193,16 @@ export function TradingChart({ coinId }: { coinId: string }) {
     chart.timeScale().fitContent();
   }
 
-  // Fetch on coin / timeframe change, then open the live WS.
+  // Fetch on coin / timeframe / exchange change, then start live updates.
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
     const conf = TIMEFRAMES.find((f) => f.key === tf)!;
-    fetch(`/api/coins/${encodeURIComponent(coinId)}/klines?interval=${conf.interval}&limit=${conf.limit}`)
+    const klinesUrl = `/api/coins/${encodeURIComponent(coinId)}/klines?interval=${conf.interval}&limit=${conf.limit}&exchange=${exchange}`;
+
+    fetch(klinesUrl)
       .then((r) => r.json())
-      .then((res: { source: "binance" | "coingecko"; candles: OHLCV[] }) => {
+      .then((res: { source: string; candles: OHLCV[] }) => {
         if (cancelled) return;
         dataRef.current = res.candles ?? [];
         setSource(res.source);
@@ -184,9 +213,9 @@ export function TradingChart({ coinId }: { coinId: string }) {
         if (!cancelled) setLoading(false);
       });
 
-    // Live updates via direct Binance WS (Binance-listed coins only).
+    // Live updates. Binance has a direct per-symbol WS; everyone else polls.
     const symbol = CG_TO_BINANCE[coinId];
-    if (symbol) {
+    if (exchange === "binance" && symbol) {
       const ws = new WebSocket(
         `wss://stream.binance.com:9443/ws/${symbol.toLowerCase()}@kline_${conf.interval}`,
       );
@@ -199,35 +228,38 @@ export function TradingChart({ coinId }: { coinId: string }) {
           return;
         }
         if (!k) return;
-        const candle: OHLCV = {
+        pushCandle({
           time: Math.floor(Number(k.t) / 1000),
           open: Number(k.o),
           high: Number(k.h),
           low: Number(k.l),
           close: Number(k.c),
           volume: Number(k.v),
-        };
-        const arr = dataRef.current;
-        const last = arr[arr.length - 1];
-        if (last && last.time === candle.time) arr[arr.length - 1] = candle;
-        else if (!last || candle.time > last.time) arr.push(candle);
-        const time = candle.time as Time;
-        if (typeRef.current === "candles") {
-          candleRef.current?.update({ time, open: candle.open, high: candle.high, low: candle.low, close: candle.close });
-        } else {
-          lineRef.current?.update({ time, value: candle.close });
-        }
-        volRef.current?.update({ time, value: candle.volume, color: candle.close >= candle.open ? VOL_UP : VOL_DOWN });
+        });
       };
+    }
+
+    let poll: ReturnType<typeof setInterval> | null = null;
+    if (exchange !== "binance") {
+      poll = setInterval(() => {
+        fetch(klinesUrl)
+          .then((r) => r.json())
+          .then((res: { candles?: OHLCV[] }) => {
+            if (cancelled || !res.candles?.length) return;
+            for (const c of res.candles.slice(-2)) pushCandle(c);
+          })
+          .catch(() => {});
+      }, POLL_MS);
     }
 
     return () => {
       cancelled = true;
       wsRef.current?.close();
       wsRef.current = null;
+      if (poll) clearInterval(poll);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [coinId, tf]);
+  }, [coinId, tf, exchange]);
 
   // Redraw on type / indicator changes without refetching.
   useEffect(() => {
@@ -246,19 +278,44 @@ export function TradingChart({ coinId }: { coinId: string }) {
   return (
     <div>
       <div className="flex flex-wrap items-center gap-1 mb-3">
-        {TIMEFRAMES.map((f) => (
+        {EXCHANGES.map((ex) => (
           <button
-            key={f.key}
+            key={ex.id}
             type="button"
-            onClick={() => setTf(f.key)}
+            onClick={() => selectExchange(ex.id)}
             className={
-              "num text-[12px] uppercase tracking-wider px-3 py-1.5 rounded-md font-medium transition-all " +
-              (tf === f.key ? "bg-foreground text-bg" : "text-muted border border-hairline hover:text-foreground")
+              "text-[12px] px-3 py-1.5 rounded-md font-medium transition-all " +
+              (exchange === ex.id
+                ? "bg-accent text-accent-foreground"
+                : "text-muted border border-hairline hover:text-foreground")
             }
           >
-            {f.label}
+            {ex.label}
           </button>
         ))}
+      </div>
+      <div className="flex flex-wrap items-center gap-1 mb-3">
+        {TIMEFRAMES.map((f) => {
+          const ok = exchangeSupports(exchange, f.interval);
+          return (
+            <button
+              key={f.key}
+              type="button"
+              disabled={!ok}
+              onClick={() => setTf(f.key)}
+              className={
+                "num text-[12px] uppercase tracking-wider px-3 py-1.5 rounded-md font-medium transition-all " +
+                (!ok
+                  ? "text-muted/40 border border-hairline cursor-not-allowed"
+                  : tf === f.key
+                    ? "bg-foreground text-bg"
+                    : "text-muted border border-hairline hover:text-foreground")
+              }
+            >
+              {f.label}
+            </button>
+          );
+        })}
       </div>
       <div className="flex flex-wrap items-center gap-1 mb-4">
         <button

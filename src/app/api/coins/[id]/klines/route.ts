@@ -1,13 +1,18 @@
 import { NextResponse } from "next/server";
 import { redis } from "@/lib/redis";
-import { fetchKlines } from "@/lib/binance-klines";
 import { fetchOhlc } from "@/lib/coingecko";
-import { CG_TO_BINANCE } from "@/lib/live/binance-mapping";
 import { ALLOWED_INTERVALS, CACHEABLE_INTERVAL_TTL } from "@/lib/chart-intervals";
+import {
+  baseTicker,
+  exchangeSupports,
+  fetchExchangeKlines,
+  isExchangeId,
+  type ExchangeId,
+} from "@/lib/exchanges";
 
 export const dynamic = "force-dynamic";
 
-// Maps a Binance interval to a CoinGecko `days` window for the fallback path.
+// Maps a canonical interval to a CoinGecko `days` window for the fallback path.
 function fallbackDays(interval: string): number {
   switch (interval) {
     case "1s":
@@ -33,6 +38,8 @@ export async function GET(
   const url = new URL(req.url);
   const interval = url.searchParams.get("interval") ?? "1h";
   const limit = Math.min(Number(url.searchParams.get("limit") ?? "500") || 500, 1000);
+  const exParam = url.searchParams.get("exchange") ?? "binance";
+  const exchange: ExchangeId = isExchangeId(exParam) ? exParam : "binance";
 
   if (!/^[a-z0-9-]+$/i.test(id)) {
     return NextResponse.json({ error: "invalid id" }, { status: 400 });
@@ -41,18 +48,19 @@ export async function GET(
     return NextResponse.json({ error: "invalid interval" }, { status: 400 });
   }
 
-  const symbol = CG_TO_BINANCE[id];
-  const cacheKey = `coin:klines:${id}:${interval}:${limit}`;
+  const base = baseTicker(id);
+  const supported = base !== null && exchangeSupports(exchange, interval);
+  const cacheKey = `coin:klines:${exchange}:${id}:${interval}:${limit}`;
   const ttl = CACHEABLE_INTERVAL_TTL[interval];
 
   // Try cache for coarse intervals only.
-  if (symbol && ttl) {
+  if (supported && ttl) {
     try {
       if (redis.status === "wait" || redis.status === "end") await redis.connect();
       const cached = await redis.get(cacheKey);
       if (cached) {
         return NextResponse.json(
-          { source: "binance", candles: JSON.parse(cached) },
+          { source: exchange, candles: JSON.parse(cached) },
           { headers: { "x-cache": "hit" } },
         );
       }
@@ -61,9 +69,9 @@ export async function GET(
     }
   }
 
-  if (symbol) {
+  if (supported && base) {
     try {
-      const candles = await fetchKlines(symbol, interval, limit);
+      const candles = await fetchExchangeKlines(exchange, base, interval, limit);
       if (ttl) {
         try {
           await redis.set(cacheKey, JSON.stringify(candles), "EX", ttl);
@@ -71,7 +79,7 @@ export async function GET(
           // best-effort cache write
         }
       }
-      return NextResponse.json({ source: "binance", candles }, { headers: { "x-cache": "miss" } });
+      return NextResponse.json({ source: exchange, candles }, { headers: { "x-cache": "miss" } });
     } catch {
       // fall through to CoinGecko fallback
     }
