@@ -1,3 +1,5 @@
+import type { OHLCV } from "@/lib/binance-klines";
+
 export type MarketRow = {
   id: string;
   symbol: string;
@@ -243,6 +245,30 @@ export async function fetchMarketChart(id: string, days: number | "max"): Promis
     days: String(days),
   });
   return parseMarketChart(raw);
+}
+
+export function parseOhlc(raw: unknown): OHLCV[] {
+  if (!Array.isArray(raw)) throw new Error("coingecko ohlc: not an array");
+  return (raw as unknown[]).map((row) => {
+    const r = row as number[];
+    return {
+      time: Math.floor(Number(r[0]) / 1000),
+      open: Number(r[1]),
+      high: Number(r[2]),
+      low: Number(r[3]),
+      close: Number(r[4]),
+      volume: 0,
+    };
+  });
+}
+
+// CoinGecko OHLC candles (no volume). days ∈ {1,7,14,30,90,180,365,"max"}.
+export async function fetchOhlc(id: string, days: number | "max"): Promise<OHLCV[]> {
+  const raw = await cgFetch(`/coins/${encodeURIComponent(id)}/ohlc`, {
+    vs_currency: "usd",
+    days: String(days),
+  });
+  return parseOhlc(raw);
 }
 
 export async function fetchTickers(id: string): Promise<TickerRow[]> {
