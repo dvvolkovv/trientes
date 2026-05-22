@@ -189,7 +189,14 @@
       "who": "実行者",
       "action": "操作",
       "target": "対象",
-      "details": "詳細"
+      "details": "詳細",
+      "searchPlaceholder": "Search by actor email/name or target id…",
+      "allActions": "All actions",
+      "apply": "Apply",
+      "reset": "Reset",
+      "resultCount": "{total} entries · page {page} of {totalPages}",
+      "prev": "Prev",
+      "next": "Next"
     }
   },
   "exchanges": {

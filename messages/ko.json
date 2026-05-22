@@ -189,7 +189,14 @@
       "who": "실행자",
       "action": "작업",
       "target": "대상",
-      "details": "상세"
+      "details": "상세",
+      "searchPlaceholder": "Search by actor email/name or target id…",
+      "allActions": "All actions",
+      "apply": "Apply",
+      "reset": "Reset",
+      "resultCount": "{total} entries · page {page} of {totalPages}",
+      "prev": "Prev",
+      "next": "Next"
     }
   },
   "exchanges": {

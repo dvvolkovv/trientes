@@ -183,13 +183,20 @@
     },
     "audit": {
       "title": "Audit log",
-      "subtitle": "Recent administrative actions (last 200).",
-      "empty": "No admin actions recorded yet.",
+      "subtitle": "All recorded administrative actions.",
+      "empty": "No admin actions match this filter.",
       "when": "When",
       "who": "Who",
       "action": "Action",
       "target": "Target",
-      "details": "Details"
+      "details": "Details",
+      "searchPlaceholder": "Search by actor email/name or target id…",
+      "allActions": "All actions",
+      "apply": "Apply",
+      "reset": "Reset",
+      "resultCount": "{total} entries · page {page} of {totalPages}",
+      "prev": "Prev",
+      "next": "Next"
     }
   },
   "exchanges": {
