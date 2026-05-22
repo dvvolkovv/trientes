@@ -147,8 +147,10 @@ async function main() {
 
   // Cadences sized for CoinGecko Free tier (10k calls/month).
   // 10 min × 144/day + 30 min × 48/day × 2 = ~240 scheduled calls/day ≈ 7.2k/month.
+  // Stagger the 30-min batch off the 10-min boundary so we don't fire 5 CoinGecko
+  // calls in the same second at :00 / :30 (caused sporadic 429s).
   cron.schedule("*/10 * * * *", () => void runPriceSync());
-  cron.schedule("*/30 * * * *", () => {
+  cron.schedule("5,35 * * * *", () => {
     void runGlobalSync();
     void runRatesSync();
     void runExchangesSync();
