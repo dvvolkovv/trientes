@@ -1,4 +1,5 @@
 import type { MarketRow, GlobalSnap, ExchangeRates, CoinDetail, Exchange } from "@/lib/coingecko";
+import type { NewsItem } from "@/lib/news";
 import { KEYS, TTL } from "./keys";
 
 // Minimal interfaces — we only use what we need so tests can pass fakes.
@@ -103,6 +104,15 @@ export async function syncExchangeRates(deps: {
 }): Promise<void> {
   const rates = await deps.fetchExchangeRates();
   await deps.redis.set(KEYS.exchangeRates, JSON.stringify(rates), "EX", TTL.exchangeRates);
+}
+
+export async function syncNews(deps: {
+  fetchNews: () => Promise<NewsItem[]>;
+  redis: RedisLike;
+}): Promise<{ count: number }> {
+  const items = await deps.fetchNews();
+  await deps.redis.set(KEYS.news, JSON.stringify(items), "EX", TTL.news);
+  return { count: items.length };
 }
 
 type PrismaCoinMetaUpdate = {

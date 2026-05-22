@@ -5,7 +5,8 @@ import cron from "node-cron";
 import { prisma } from "../src/lib/prisma";
 import { redis } from "../src/lib/redis";
 import { fetchTop100L1, fetchGlobalSnap, fetchExchangeRates, fetchCoinDetail, fetchExchanges, fetchMarketsByIds } from "../src/lib/coingecko";
-import { syncPrices, syncGlobal, syncExchangeRates, syncCoinMetadata, syncExchanges, syncAdminAddedPrices } from "../src/lib/sync/orchestrator";
+import { fetchNews } from "../src/lib/news";
+import { syncPrices, syncGlobal, syncExchangeRates, syncCoinMetadata, syncExchanges, syncAdminAddedPrices, syncNews } from "../src/lib/sync/orchestrator";
 import { startBinance, stopBinance } from "./binance";
 
 async function runPriceSync() {
@@ -43,6 +44,16 @@ async function runRatesSync() {
     console.log(`[worker] rates-sync ok in ${Date.now() - t0}ms`);
   } catch (err) {
     console.error(`[worker] rates-sync failed:`, err);
+  }
+}
+
+async function runNewsSync() {
+  const t0 = Date.now();
+  try {
+    const { count } = await syncNews({ fetchNews, redis: redis as never });
+    console.log(`[worker] news-sync ok: ${count} items in ${Date.now() - t0}ms`);
+  } catch (err) {
+    console.error(`[worker] news-sync failed:`, err);
   }
 }
 
@@ -141,6 +152,7 @@ async function main() {
   await runRatesSync();
   await runExchangesSync();
   await runAdminAddedSync();
+  await runNewsSync();
 
   // Kick metadata-sync in the background — don't block startup on a ~3 min loop.
   void runMetadataSync();
@@ -156,6 +168,9 @@ async function main() {
     void runExchangesSync();
     void runAdminAddedSync();
   });
+  // News from public RSS feeds — independent of CoinGecko, so staggered to :15/:45.
+  cron.schedule("15,45 * * * *", () => void runNewsSync());
+
   // Daily kick; staleMs in syncCoinMetadata skips coins fetched within 7 days.
   cron.schedule("30 3 * * *", () => void runMetadataSync());
 

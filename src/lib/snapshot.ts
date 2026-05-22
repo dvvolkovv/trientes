@@ -1,7 +1,8 @@
 import type { MarketRow, GlobalSnap, ExchangeRates, Exchange } from "@/lib/coingecko";
+import { fetchNews, type NewsItem } from "@/lib/news";
 import { redis } from "@/lib/redis";
 import { prisma } from "@/lib/prisma";
-import { KEYS } from "@/lib/sync/keys";
+import { KEYS, TTL } from "@/lib/sync/keys";
 
 async function redisGet(key: string): Promise<string | null> {
   if (redis.status === "wait" || redis.status === "end") {
@@ -135,5 +136,29 @@ export async function readExchangeRates(): Promise<ExchangeRates | null> {
     return JSON.parse(cached) as ExchangeRates;
   } catch {
     return null;
+  }
+}
+
+export async function readNews(): Promise<NewsItem[]> {
+  const cached = await redisGet(KEYS.news);
+  if (cached) {
+    try {
+      return JSON.parse(cached) as NewsItem[];
+    } catch {
+      // fall through to a fresh fetch
+    }
+  }
+  // Cold cache (worker hasn't populated it yet): fetch once so the banner shows
+  // immediately, and best-effort warm the cache for the next reader.
+  try {
+    const items = await fetchNews();
+    try {
+      await redis.set(KEYS.news, JSON.stringify(items), "EX", TTL.news);
+    } catch {
+      // best-effort cache write
+    }
+    return items;
+  } catch {
+    return [];
   }
 }
