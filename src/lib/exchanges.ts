@@ -17,10 +17,18 @@ export const EXCHANGES: { id: ExchangeId; label: string }[] = [
   { id: "kraken", label: "Kraken" },
 ];
 
-// Canonical base ticker for a coin (e.g. "BTC"); null if not on our exchanges.
-export function baseTicker(coinId: string): string | null {
-  const b = CG_TO_BINANCE[coinId];
-  return b ? b.replace(/USDT$/, "") : null;
+// Canonical base ticker for a coin (e.g. "BTC"); null if we can't form one.
+//
+// The curated CG→Binance map is authoritative for the top-20 (a few CG ids
+// don't match their ticker, and Kraken renames some bases). For everything
+// else — including admin-added coins like Dash — fall back to the coin's own
+// symbol, since adapters build pairs as `${base}USDT` and most listed coins
+// trade as such. The symbol is sanitized so nothing unsafe reaches a URL.
+export function baseTicker(coinId: string, symbol?: string | null): string | null {
+  const mapped = CG_TO_BINANCE[coinId];
+  if (mapped) return mapped.replace(/USDT$/, "");
+  const sym = (symbol ?? "").trim().toUpperCase();
+  return /^[A-Z0-9]{2,15}$/.test(sym) ? sym : null;
 }
 
 // ---- Parsers (pure; exported for unit tests) -------------------------------

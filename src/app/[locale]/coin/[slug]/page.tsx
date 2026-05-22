@@ -80,7 +80,7 @@ export default async function CoinDetailPage({
         isAuthed={isAuthed}
         locale={locale}
       />
-      <ChartPanel coinId={coin.id} />
+      <ChartPanel coinId={coin.id} symbol={coin.symbol} />
       <SupplyMetrics row={row} currency={currency} rates={rates} />
       <Description html={coin.description} />
       <CoinLinks coin={coin} />

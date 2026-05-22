@@ -77,6 +77,23 @@ describe("baseTicker", () => {
     expect(baseTicker("solana")).toBe("SOL");
     expect(baseTicker("unknown-coin")).toBeNull();
   });
+
+  it("falls back to the coin's own symbol for coins outside the curated map", () => {
+    // Dash isn't in CG_TO_BINANCE but DASHUSDT is a real Binance/Bybit/etc. pair.
+    expect(baseTicker("dash", "DASH")).toBe("DASH");
+    expect(baseTicker("dash", "dash")).toBe("DASH"); // normalizes case
+  });
+
+  it("prefers the curated map over a passed symbol", () => {
+    // Curated map is authoritative where a CG id's ticker would mislead.
+    expect(baseTicker("bitcoin", "XBT")).toBe("BTC");
+  });
+
+  it("rejects malformed symbols so nothing unsafe reaches exchange URLs", () => {
+    expect(baseTicker("evil", "../../x")).toBeNull();
+    expect(baseTicker("evil", "")).toBeNull();
+    expect(baseTicker("unknown-coin")).toBeNull();
+  });
 });
 
 describe("exchangeSupports", () => {

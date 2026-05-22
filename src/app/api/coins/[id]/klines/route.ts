@@ -40,6 +40,9 @@ export async function GET(
   const limit = Math.min(Number(url.searchParams.get("limit") ?? "500") || 500, 1000);
   const exParam = url.searchParams.get("exchange") ?? "binance";
   const exchange: ExchangeId = isExchangeId(exParam) ? exParam : "binance";
+  // Coin's own ticker — lets coins outside the curated map (e.g. Dash) still
+  // use the exchange pairs that exist for them. baseTicker sanitizes it.
+  const symbol = url.searchParams.get("symbol");
 
   if (!/^[a-z0-9-]+$/i.test(id)) {
     return NextResponse.json({ error: "invalid id" }, { status: 400 });
@@ -48,7 +51,7 @@ export async function GET(
     return NextResponse.json({ error: "invalid interval" }, { status: 400 });
   }
 
-  const base = baseTicker(id);
+  const base = baseTicker(id, symbol);
   const supported = base !== null && exchangeSupports(exchange, interval);
   const cacheKey = `coin:klines:${exchange}:${id}:${interval}:${limit}`;
   const ttl = CACHEABLE_INTERVAL_TTL[interval];

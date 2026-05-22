@@ -12,8 +12,7 @@ import {
 } from "lightweight-charts";
 import { useTranslations } from "next-intl";
 import { TIMEFRAMES, type Timeframe } from "@/lib/chart-intervals";
-import { CG_TO_BINANCE } from "@/lib/live/binance-mapping";
-import { EXCHANGES, exchangeSupports, type ExchangeId } from "@/lib/exchanges";
+import { EXCHANGES, exchangeSupports, baseTicker, type ExchangeId } from "@/lib/exchanges";
 import { sma, ema, bollinger, rsi, macd } from "@/lib/indicators";
 import type { OHLCV } from "@/lib/binance-klines";
 
@@ -30,7 +29,7 @@ const VOL_DOWN = "rgba(229,92,92,0.5)";
 type IndicatorKey = "ma" | "ema" | "bollinger" | "rsi" | "macd";
 const INDICATOR_KEYS: IndicatorKey[] = ["ma", "ema", "bollinger", "rsi", "macd"];
 
-export function TradingChart({ coinId }: { coinId: string }) {
+export function TradingChart({ coinId, symbol }: { coinId: string; symbol: string }) {
   const t = useTranslations("detail");
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -198,7 +197,7 @@ export function TradingChart({ coinId }: { coinId: string }) {
     let cancelled = false;
     setLoading(true);
     const conf = TIMEFRAMES.find((f) => f.key === tf)!;
-    const klinesUrl = `/api/coins/${encodeURIComponent(coinId)}/klines?interval=${conf.interval}&limit=${conf.limit}&exchange=${exchange}`;
+    const klinesUrl = `/api/coins/${encodeURIComponent(coinId)}/klines?interval=${conf.interval}&limit=${conf.limit}&exchange=${exchange}&symbol=${encodeURIComponent(symbol)}`;
 
     fetch(klinesUrl)
       .then((r) => r.json())
@@ -214,10 +213,12 @@ export function TradingChart({ coinId }: { coinId: string }) {
       });
 
     // Live updates. Binance has a direct per-symbol WS; everyone else polls.
-    const symbol = CG_TO_BINANCE[coinId];
-    if (exchange === "binance" && symbol) {
+    // Derive the pair from the coin's own ticker so admin-added coins (Dash)
+    // get live candles too. If the pair doesn't exist, the WS just stays quiet.
+    const wsBase = baseTicker(coinId, symbol);
+    if (exchange === "binance" && wsBase) {
       const ws = new WebSocket(
-        `wss://stream.binance.com:9443/ws/${symbol.toLowerCase()}@kline_${conf.interval}`,
+        `wss://stream.binance.com:9443/ws/${wsBase.toLowerCase()}usdt@kline_${conf.interval}`,
       );
       wsRef.current = ws;
       ws.onmessage = (ev) => {
@@ -259,7 +260,7 @@ export function TradingChart({ coinId }: { coinId: string }) {
       if (poll) clearInterval(poll);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [coinId, tf, exchange]);
+  }, [coinId, symbol, tf, exchange]);
 
   // Redraw on type / indicator changes without refetching.
   useEffect(() => {

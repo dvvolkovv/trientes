@@ -13,7 +13,7 @@ const FRAMES: Array<{ key: string; label: string }> = [
   { key: "all", label: "All" },
 ];
 
-export function ChartPanel({ coinId }: { coinId: string }) {
+export function ChartPanel({ coinId, symbol }: { coinId: string; symbol: string }) {
   const t = useTranslations("detail");
   const [mode, setMode] = useState<"simple" | "pro">("simple");
   const [timeframe, setTimeframe] = useState("7d");
@@ -69,7 +69,7 @@ export function ChartPanel({ coinId }: { coinId: string }) {
           <PriceChart coinId={coinId} timeframe={timeframe} />
         </div>
       ) : (
-        <TradingChart coinId={coinId} />
+        <TradingChart coinId={coinId} symbol={symbol} />
       )}
     </div>
   );
