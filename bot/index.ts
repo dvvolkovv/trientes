@@ -3,10 +3,11 @@ import { setDefaultResultOrder } from "node:dns";
 // Node 22 defaults to "verbatim" DNS, which on hosts with broken IPv6 to
 // api.telegram.org makes outbound requests hang for ~10s. Force IPv4 first.
 setDefaultResultOrder("ipv4first");
-import { Bot, type Context } from "grammy";
+import { Bot, type Context, InputFile } from "grammy";
 import OpenAI from "openai";
 import Redis from "ioredis";
-import { join } from "node:path";
+import { existsSync } from "node:fs";
+import { isAbsolute, join, resolve } from "node:path";
 import { loadConfig } from "./config";
 import { createLogger } from "./logger";
 import { isAllowed } from "./auth";
@@ -18,6 +19,7 @@ import { handleCommand } from "./commands";
 import { collectHeadInfo } from "./gitEnrich";
 import { downloadTelegramVoice, transcribeBuffer } from "./voice";
 import { createWebhookApp } from "./webhook";
+import { parseAttachments } from "./attachments";
 
 const config = loadConfig();
 const logger = createLogger(join(config.claudeCwd, "bot/logs"));
@@ -132,6 +134,7 @@ async function processPrompt(
     }
 
     let reply: string;
+    let attachmentPaths: string[] = [];
     if (result.exitCode === 0) {
       let suffix = "";
       try {
@@ -144,7 +147,9 @@ async function processPrompt(
       } catch {
         suffix = "\n\n✅ готово (git enrich failed)";
       }
-      reply = truncate(result.finalText || "(пусто)", 3500) + suffix;
+      const parsed = parseAttachments(result.finalText || "");
+      attachmentPaths = parsed.paths;
+      reply = truncate(parsed.text || "(пусто)", 3500) + suffix;
     } else {
       reply =
         `❌ claude exited ${result.exitCode}\n` +
@@ -158,6 +163,26 @@ async function processPrompt(
     } catch {
       // Telegram Markdown parser fails on stray underscores etc. — fall back to plain.
       await ctx.reply(reply);
+    }
+
+    const failed: string[] = [];
+    for (const rawPath of attachmentPaths) {
+      const abs = isAbsolute(rawPath)
+        ? rawPath
+        : resolve(config.claudeCwd, rawPath);
+      if (!existsSync(abs)) {
+        failed.push(`${rawPath} (not found)`);
+        continue;
+      }
+      try {
+        await ctx.replyWithDocument(new InputFile(abs));
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        failed.push(`${rawPath} (${msg.slice(0, 80)})`);
+      }
+    }
+    if (failed.length > 0) {
+      await ctx.reply(`⚠️ не прицепил: ${failed.join(", ")}`);
     }
 
     await logger.appendAudit({
@@ -188,7 +213,7 @@ bot.catch((err) => {
   console.error("[bot] unhandled error:", err);
 });
 
-const app = createWebhookApp(bot, config.telegramWebhookSecret);
+const app = createWebhookApp(bot, config.telegramWebhookSecret, redis);
 app.listen(config.botPort, "127.0.0.1", () => {
   console.log(
     `[bot] listening on 127.0.0.1:${config.botPort}, cwd=${config.claudeCwd}, whitelist=${[...config.allowedUserIds].join(",") || "(empty)"}`,
