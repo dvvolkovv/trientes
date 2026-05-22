@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { SUPPORTED_LOCALES } from "@/lib/locales";
 
-const ALLOWED_CURRENCIES = ["USD", "EUR", "RUB", "GBP", "JPY", "CNY", "BTC", "ETH"];
+const ALLOWED_CURRENCIES = ["USD", "EUR", "RUB", "GBP", "JPY", "CNY", "BTC", "ETH", "DASH"];
 const ALLOWED_THEMES = ["light", "dark", "system"];
 
 export async function updatePreferences(input: {

@@ -1,6 +1,6 @@
 import type { ExchangeRates } from "@/lib/coingecko";
 
-export const CURRENCIES = ["USD", "EUR", "RUB", "GBP", "JPY", "CNY", "BTC", "ETH"] as const;
+export const CURRENCIES = ["USD", "EUR", "RUB", "GBP", "JPY", "CNY", "BTC", "ETH", "DASH"] as const;
 export type Currency = (typeof CURRENCIES)[number];
 
 const SYMBOLS: Record<Currency, string> = {
@@ -12,12 +12,13 @@ const SYMBOLS: Record<Currency, string> = {
   CNY: "CN¥",
   BTC: "₿",
   ETH: "Ξ",
+  DASH: "Đ",
 };
 
 // Decimals at-or-above 1; sub-1 prices use formatPrice's adaptive precision.
 const DECIMALS: Record<Currency, number> = {
   USD: 2, EUR: 2, RUB: 2, GBP: 2, JPY: 0, CNY: 2,
-  BTC: 6, ETH: 4,
+  BTC: 6, ETH: 4, DASH: 4,
 };
 
 export function convert(priceUsd: number, target: Currency, rates: ExchangeRates): number {

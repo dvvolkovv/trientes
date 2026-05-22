@@ -71,7 +71,7 @@ describe("formatCompactInCurrency", () => {
 });
 
 describe("CURRENCIES", () => {
-  it("lists exactly 8 currencies", () => {
-    expect(CURRENCIES).toEqual(["USD", "EUR", "RUB", "GBP", "JPY", "CNY", "BTC", "ETH"]);
+  it("lists exactly 9 currencies", () => {
+    expect(CURRENCIES).toEqual(["USD", "EUR", "RUB", "GBP", "JPY", "CNY", "BTC", "ETH", "DASH"]);
   });
 });

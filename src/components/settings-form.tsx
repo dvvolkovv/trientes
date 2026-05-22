@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { updatePreferences } from "@/app/actions/settings";
 import { SUPPORTED_LOCALES, LOCALE_LABELS } from "@/lib/locales";
 
-const CURRENCIES = ["USD", "EUR", "RUB", "GBP", "JPY", "CNY", "BTC", "ETH"];
+const CURRENCIES = ["USD", "EUR", "RUB", "GBP", "JPY", "CNY", "BTC", "ETH", "DASH"];
 const THEMES = ["light", "dark", "system"];
 
 const fieldCls =
