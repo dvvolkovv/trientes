@@ -14,6 +14,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { useTranslations } from "next-intl";
 import type { Poi, PoiLayer, RouteResult, Social, OgPreview } from "@/lib/crypto-map";
 import { StreetViewOverlay } from "@/components/coin-detail/street-view-overlay";
+import { CURATED_POIS, type CuratedPoi } from "@/lib/curated-pois";
 
 // MapLibre flattens non-primitive feature properties to JSON strings, so `socials`
 // rides through the GeoJSON source as a string and is parsed back when a popup opens.
@@ -220,6 +221,27 @@ export default function CryptoNavigator({
         paint: { "line-color": "#F7931A", "line-width": 5, "line-opacity": 0.85 },
       });
 
+      // Shared popup opener for OSM markers AND curated logo markers.
+      const openPoiPopup = (lonlat: [number, number], p: PoiProps) => {
+        const origin = originRef.current;
+        const near = origin ? distMeters(origin[1], origin[0], lonlat[1], lonlat[0]) <= 150 : false;
+        const el = buildCard(p, t, near);
+        wirePhotoFallback(el);
+        const popup = new Popup({ offset: 14, closeButton: true, maxWidth: "264px", className: "cmap-pop" })
+          .setLngLat(lonlat)
+          .setDOMContent(el)
+          .addTo(map);
+        el.querySelector<HTMLButtonElement>(".cmap-route")?.addEventListener("click", () => {
+          setDestination(lonlat, p.name);
+          popup.remove();
+        });
+        el.querySelector<HTMLButtonElement>(".cmap-street")?.addEventListener("click", () => {
+          setStreet({ lat: lonlat[1], lon: lonlat[0], name: p.name });
+          popup.remove();
+        });
+        hydratePhoto(el, p, t);
+      };
+
       (["financial", "atm", "merchant"] as PoiLayer[]).forEach((layer) => {
         map.addLayer({
           id: `poi-${layer}`,
@@ -243,29 +265,20 @@ export default function CryptoNavigator({
           if (!f) return;
           const p = f.properties as PoiProps;
           const lonlat = (f.geometry as GeoJSON.Point).coordinates as [number, number];
-          // "150 m before the target": highlight if the viewer's known location is close.
-          const origin = originRef.current;
-          const near = origin ? distMeters(origin[1], origin[0], lonlat[1], lonlat[0]) <= 150 : false;
-          const el = buildCard(p, t, near);
-          wirePhotoFallback(el);
-          const popup = new Popup({
-            offset: 14,
-            closeButton: true,
-            maxWidth: "264px",
-            className: "cmap-pop",
-          })
-            .setLngLat(lonlat)
-            .setDOMContent(el)
-            .addTo(map);
-          el.querySelector<HTMLButtonElement>(".cmap-route")?.addEventListener("click", () => {
-            setDestination(lonlat, p.name);
-            popup.remove();
-          });
-          el.querySelector<HTMLButtonElement>(".cmap-street")?.addEventListener("click", () => {
-            setStreet({ lat: lonlat[1], lon: lonlat[0], name: p.name });
-            popup.remove();
-          });
-          hydratePhoto(el, p, t);
+          openPoiPopup(lonlat, p);
+        });
+      });
+
+      // Curated crypto-accepting businesses: always-on logo markers.
+      CURATED_POIS.forEach((c) => {
+        const elm = document.createElement("div");
+        elm.className = "cmap-logo-marker";
+        elm.title = c.name;
+        elm.innerHTML = `<img src="${escapeHtml(c.logo)}" alt="${escapeHtml(c.name)}" loading="lazy"/>`;
+        new Marker({ element: elm, anchor: "bottom" }).setLngLat([c.lon, c.lat]).addTo(map);
+        elm.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          openPoiPopup([c.lon, c.lat], curatedToProps(c));
         });
       });
 
@@ -586,6 +599,28 @@ function distMeters(aLat: number, aLon: number, bLat: number, bLon: number): num
   const la2 = (bLat * Math.PI) / 180;
   const h = Math.sin(dLat / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLon / 2) ** 2;
   return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
+}
+
+// Adapt a curated entry into the same flattened shape an OSM popup expects, so it
+// reuses buildCard (logo doubles as the card photo; always coin-highlighted).
+function curatedToProps(c: CuratedPoi): PoiProps {
+  return {
+    id: c.id,
+    lat: c.lat,
+    lon: c.lon,
+    name: c.name,
+    layer: "merchant",
+    category: c.category,
+    address: c.address,
+    lightning: c.lightning,
+    coinSpecific: true,
+    website: c.website,
+    openingHours: null,
+    phone: c.phone,
+    email: c.email,
+    socials: JSON.stringify(c.socials),
+    image: c.logo,
+  };
 }
 
 // Lazily upgrade the photo slot with the place's own OpenGraph splash. Guards against

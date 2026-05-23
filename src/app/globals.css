@@ -312,3 +312,24 @@ select:focus-visible {
   border-radius: 999px;
   padding: 1px 6px;
 }
+
+/* Curated business logo marker (always-on featured points). */
+.cmap-logo-marker {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 2px solid #f7931a;
+  border-radius: 10px;
+  padding: 4px 7px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  transition: transform 0.15s ease;
+}
+.cmap-logo-marker:hover { transform: scale(1.06); }
+.cmap-logo-marker img {
+  display: block;
+  height: 18px;
+  width: auto;
+  max-width: 90px;
+  object-fit: contain;
+}
