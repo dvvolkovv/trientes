@@ -247,9 +247,25 @@ export function parseOsrm(raw: unknown): RouteResult | null {
 
 export type OgPreview = { title: string | null; image: string | null; video: string | null };
 
+// Decode the handful of HTML entities that actually show up in meta content —
+// crucially `&amp;`, which CDNs emit inside og:image query strings. `&amp;` is
+// resolved last so `&amp;amp;` collapses to `&amp;` rather than `&`.
+function decodeEntities(s: string): string {
+  return s
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+    .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(parseInt(d, 10)))
+    .replace(/&quot;/g, '"')
+    .replace(/&(?:apos|#39);/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
+}
+
+// Read one attribute off a single `<meta …>` string. The name must be preceded by
+// whitespace (or tag start) so `content` doesn't match inside `data-content`.
 function attr(tag: string, name: string): string | null {
-  const m = new RegExp(`\\b${name}\\s*=\\s*("([^"]*)"|'([^']*)')`, "i").exec(tag);
-  return m ? (m[2] ?? m[3] ?? "").trim() : null;
+  const m = new RegExp(`(?:^|\\s)${name}\\s*=\\s*("([^"]*)"|'([^']*)')`, "i").exec(tag);
+  return m ? decodeEntities((m[2] ?? m[3] ?? "").trim()) : null;
 }
 
 function metaContent(html: string, keys: string[]): string | null {
@@ -306,6 +322,18 @@ export function isBlockedIp(ip: string): boolean {
   const mapped = v.match(/^::ffff:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$/);
   if (mapped) return isBlockedIp(mapped[1]);
   return false;
+}
+
+/** Return the URL unchanged iff it parses as absolute http(s); else null. Blocks
+ * `javascript:`/`data:` and relative junk before rendering an untrusted link/href. */
+export function safeHttpUrl(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  try {
+    const u = new URL(raw);
+    return u.protocol === "http:" || u.protocol === "https:" ? raw : null;
+  } catch {
+    return null;
+  }
 }
 
 /** Validate scheme/credentials and reject literal-IP/localhost hosts. Does NOT resolve DNS. */
@@ -383,12 +411,28 @@ export async function fetchRoute(
 const EMPTY_OG: OgPreview = { title: null, image: null, video: null };
 const OG_MAX_BYTES = 256 * 1024;
 
+// `dns.lookup` ignores AbortSignal, so the outer fetch timeout can't bound it —
+// race it against its own timeout to avoid a hung resolver stalling the request.
+async function lookupAll(host: string, ms = 4000): Promise<Array<{ address: string }>> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      lookup(host, { all: true }),
+      new Promise<never>((_, rej) => {
+        timer = setTimeout(() => rej(new Error("dns timeout")), ms);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 /** assertUrlShape + DNS resolution, rejecting hosts that resolve to a blocked IP. */
 export async function assertPublicUrl(raw: string): Promise<URL> {
   const u = assertUrlShape(raw);
   const host = u.hostname.replace(/^\[|\]$/g, "");
   if (/^\d{1,3}(\.\d{1,3}){3}$/.test(host) || host.includes(":")) return u; // already vetted as a literal
-  const records = await lookup(host, { all: true });
+  const records = await lookupAll(host);
   if (records.some((r) => isBlockedIp(r.address))) throw new Error("resolves to blocked ip");
   return u;
 }
@@ -441,7 +485,7 @@ export async function fetchOgPreview(rawUrl: string, timeoutMs = 6000): Promise<
         break;
       }
       if (!res || !res.ok) return EMPTY_OG;
-      if (!(res.headers.get("content-type") ?? "").includes("html")) return EMPTY_OG;
+      if (!(res.headers.get("content-type") ?? "").toLowerCase().includes("html")) return EMPTY_OG;
       return parseOpenGraph(await readCapped(res, OG_MAX_BYTES), current.href);
     });
   } catch {

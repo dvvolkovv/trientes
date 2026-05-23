@@ -242,6 +242,7 @@ export default function CryptoNavigator({
           const p = f.properties as PoiProps;
           const lonlat = (f.geometry as GeoJSON.Point).coordinates as [number, number];
           const el = buildCard(p, t);
+          wirePhotoFallback(el);
           const popup = new Popup({
             offset: 14,
             closeButton: true,
@@ -456,6 +457,26 @@ function escapeHtml(s: string): string {
   return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 }
 
+// Mirror of lib `safeHttpUrl`. Can't import it: crypto-map.ts pulls in node:dns,
+// so this client bundle only takes its types. Keep the two in sync.
+function safeWebsite(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  try {
+    const u = new URL(raw);
+    return u.protocol === "http:" || u.protocol === "https:" ? raw : null;
+  } catch {
+    return null;
+  }
+}
+
+// Collapse the photo slot if its image fails to load (404, hotlink block, or an
+// http image blocked as mixed content on the https page) instead of showing a broken icon.
+function wirePhotoFallback(el: HTMLElement): void {
+  el.querySelectorAll<HTMLImageElement>(".cmap-photo img").forEach((img) => {
+    img.onerror = () => img.closest(".cmap-photo")?.remove();
+  });
+}
+
 const SOCIAL_LABELS: Record<string, string> = {
   instagram: "Instagram",
   facebook: "Facebook",
@@ -492,7 +513,8 @@ function buildCard(p: PoiProps, t: Translator): HTMLDivElement {
   const el = document.createElement("div");
   el.className = "cmap-popup";
 
-  const hasPhoto = !!p.image || !!p.website;
+  const website = safeWebsite(p.website);
+  const hasPhoto = !!p.image || !!website;
   const photoHtml = hasPhoto
     ? `<div class="cmap-photo">${
         p.image
@@ -527,8 +549,8 @@ function buildCard(p: PoiProps, t: Translator): HTMLDivElement {
       ${rows.join("")}
       ${socialHtml}
       ${
-        p.website
-          ? `<a class="cmap-site" href="${escapeHtml(p.website)}" target="_blank" rel="noopener noreferrer nofollow">${escapeHtml(
+        website
+          ? `<a class="cmap-site" href="${escapeHtml(website)}" target="_blank" rel="noopener noreferrer nofollow">${escapeHtml(
               t("openSite"),
             )} ↗</a>`
           : ""
@@ -541,15 +563,17 @@ function buildCard(p: PoiProps, t: Translator): HTMLDivElement {
 // Lazily upgrade the photo slot with the place's own OpenGraph splash. Guards against
 // the popup being closed mid-flight; prefers the source image, falls back to OSM's.
 function hydratePhoto(el: HTMLElement, p: PoiProps, t: Translator): void {
-  if (!p.website) return; // OSM image (if any) is already shown; nothing to fetch
+  const website = safeWebsite(p.website);
+  if (!website) return; // OSM image (if any) is already shown; nothing to fetch
   const photo = el.querySelector<HTMLElement>(".cmap-photo");
-  fetch(`/api/crypto-map/preview?url=${encodeURIComponent(p.website)}`)
+  fetch(`/api/crypto-map/preview?url=${encodeURIComponent(website)}`)
     .then((r) => (r.ok ? r.json() : Promise.reject(new Error("bad status"))))
     .then((res: { preview?: OgPreview }) => {
       if (!el.isConnected || !photo) return;
       const og = res.preview ?? { title: null, image: null, video: null };
       if (og.image) {
         photo.innerHTML = `<img src="${escapeHtml(og.image)}" alt="" loading="lazy" referrerpolicy="no-referrer"/>`;
+        wirePhotoFallback(el);
       } else if (!p.image) {
         photo.remove();
         return;
@@ -557,7 +581,7 @@ function hydratePhoto(el: HTMLElement, p: PoiProps, t: Translator): void {
       if (og.video && photo.isConnected) {
         const a = document.createElement("a");
         a.className = "cmap-video";
-        a.href = p.website!;
+        a.href = website;
         a.target = "_blank";
         a.rel = "noopener noreferrer nofollow";
         a.textContent = `▶ ${t("watchVideo")}`;

@@ -11,6 +11,7 @@ import {
   parseOpenGraph,
   isBlockedIp,
   assertUrlShape,
+  safeHttpUrl,
 } from "@/lib/crypto-map";
 
 describe("parseBbox", () => {
@@ -309,6 +310,35 @@ describe("parseOpenGraph", () => {
 
   it("returns nulls when there are no og tags", () => {
     expect(parseOpenGraph("<html></html>", base)).toEqual({ title: null, image: null, video: null });
+  });
+
+  it("decodes HTML entities in URLs (e.g. &amp; in CDN query strings)", () => {
+    const html = `<meta property="og:image" content="https://cdn.x/i.jpg?w=1200&amp;h=630&amp;fit=crop">`;
+    expect(parseOpenGraph(html, base).image).toBe("https://cdn.x/i.jpg?w=1200&h=630&fit=crop");
+  });
+
+  it("ignores a data-content decoy and reads the real content attribute", () => {
+    const html = `<meta property="og:image" data-content="JUNK_DECOY" content="https://real.x/p.jpg">`;
+    expect(parseOpenGraph(html, base).image).toBe("https://real.x/p.jpg");
+  });
+});
+
+describe("safeHttpUrl", () => {
+  it("returns http(s) URLs unchanged", () => {
+    expect(safeHttpUrl("https://sats.cafe/x")).toBe("https://sats.cafe/x");
+    expect(safeHttpUrl("http://sats.cafe")).toBe("http://sats.cafe");
+  });
+
+  it("rejects javascript: and other dangerous schemes", () => {
+    expect(safeHttpUrl("javascript:alert(1)")).toBeNull();
+    expect(safeHttpUrl("data:text/html,<script>x</script>")).toBeNull();
+    expect(safeHttpUrl("ftp://x")).toBeNull();
+  });
+
+  it("rejects empty, relative or garbage values", () => {
+    expect(safeHttpUrl(null)).toBeNull();
+    expect(safeHttpUrl("")).toBeNull();
+    expect(safeHttpUrl("/relative/path")).toBeNull();
   });
 });
 
