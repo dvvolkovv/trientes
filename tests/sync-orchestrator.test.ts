@@ -194,9 +194,10 @@ describe("syncExchanges", () => {
       redis: fakeRedis as never,
       prisma: fakePrisma as never,
     });
-    expect(result).toEqual({ count: 2 });
-    expect(upserts).toEqual(["gdax", "binance"]);
-    expect(JSON.parse(redisStore.get("snapshot:exchanges:top100")!)).toHaveLength(2);
+    // Curated exchanges (e.g. richamster) are prepended to the CoinGecko list.
+    expect(result).toEqual({ count: 3 });
+    expect(upserts).toEqual(["richamster", "gdax", "binance"]);
+    expect(JSON.parse(redisStore.get("snapshot:exchanges:top100")!)).toHaveLength(3);
   });
 });
 

@@ -5,6 +5,7 @@ import { fetchFearGreed, type FearGreed } from "@/lib/fear-greed";
 import { redis } from "@/lib/redis";
 import { prisma } from "@/lib/prisma";
 import { KEYS, TTL } from "@/lib/sync/keys";
+import { mergeCuratedExchanges } from "@/lib/curated-exchanges";
 
 async function redisGet(key: string): Promise<string | null> {
   if (redis.status === "wait" || redis.status === "end") {
@@ -85,7 +86,7 @@ export async function readExchanges(): Promise<Exchange[]> {
   const cached = await redisGet(KEYS.exchangesList);
   if (cached) {
     try {
-      return JSON.parse(cached) as Exchange[];
+      return mergeCuratedExchanges(JSON.parse(cached) as Exchange[]);
     } catch {
       // fall through
     }
@@ -93,21 +94,23 @@ export async function readExchanges(): Promise<Exchange[]> {
   // DB fallback
   const rows = await prisma.exchange.findMany({
     orderBy: { trustScoreRank: "asc" },
-    take: 100,
+    take: 300,
   });
-  return rows.map((r) => ({
-    id: r.id,
-    name: r.name,
-    logoUrl: r.logoUrl,
-    country: r.country,
-    yearEstablished: r.yearEstablished,
-    trustScore: r.trustScore,
-    trustScoreRank: r.trustScoreRank,
-    volume24hBtc: r.volume24hBtc,
-    volume24hUsd: r.volume24hUsd,
-    url: r.url,
-    hasTradingIncentive: r.hasTradingIncentive,
-  }));
+  return mergeCuratedExchanges(
+    rows.map((r) => ({
+      id: r.id,
+      name: r.name,
+      logoUrl: r.logoUrl,
+      country: r.country,
+      yearEstablished: r.yearEstablished,
+      trustScore: r.trustScore,
+      trustScoreRank: r.trustScoreRank,
+      volume24hBtc: r.volume24hBtc,
+      volume24hUsd: r.volume24hUsd,
+      url: r.url,
+      hasTradingIncentive: r.hasTradingIncentive,
+    })),
+  );
 }
 
 export async function readGlobalStats(): Promise<GlobalSnap | null> {

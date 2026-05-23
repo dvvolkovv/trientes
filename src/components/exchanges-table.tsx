@@ -38,7 +38,7 @@ export function ExchangesTable({
   const watched = new Set(watchedIds);
   const r = rates ?? {};
   const fmtV = (n: number) =>
-    rates ? formatCompactInCurrency(n, currency, r) : `$${(n / 1e9).toFixed(2)}B`;
+    n <= 0 ? "—" : rates ? formatCompactInCurrency(n, currency, r) : `$${(n / 1e9).toFixed(2)}B`;
 
   const shown = collapsible && !expanded ? rows.slice(0, VISIBLE) : rows;
   const canCollapse = collapsible && rows.length > VISIBLE;

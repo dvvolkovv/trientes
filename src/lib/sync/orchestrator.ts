@@ -2,6 +2,7 @@ import type { MarketRow, GlobalSnap, ExchangeRates, CoinDetail, Exchange } from 
 import type { NewsItem } from "@/lib/news";
 import type { FearGreed } from "@/lib/fear-greed";
 import { KEYS, TTL } from "./keys";
+import { mergeCuratedExchanges } from "@/lib/curated-exchanges";
 
 // Minimal interfaces — we only use what we need so tests can pass fakes.
 type RedisLike = {
@@ -206,7 +207,7 @@ export async function syncExchanges(deps: {
     };
   };
 }): Promise<{ count: number }> {
-  const list = await deps.fetchExchanges(deps.btcUsd);
+  const list = mergeCuratedExchanges(await deps.fetchExchanges(deps.btcUsd));
   await deps.redis.set(KEYS.exchangesList, JSON.stringify(list), "EX", TTL.exchanges);
 
   for (const e of list) {
