@@ -6,6 +6,7 @@ import { topExchangesByVolume, listedAdapterExchanges } from "@/lib/listings";
 import { EXCHANGES } from "@/lib/exchanges";
 import { getCurrency } from "@/lib/get-currency";
 import { readUserWatchedIds, isAuthenticated } from "@/lib/watchlist";
+import { localizedDescription } from "@/lib/coin-description";
 import { CoinHeader } from "@/components/coin-detail/header";
 import { ChartPanel } from "@/components/coin-detail/chart-panel";
 import { Description } from "@/components/coin-detail/description";
@@ -77,6 +78,9 @@ export default async function CoinDetailPage({
   ]);
   const isWatched = watchedSet.has(coin.id);
 
+  // "About" description, localized to the interface language (cached machine translation).
+  const aboutHtml = await localizedDescription(coin.id, locale, coin.description);
+
   // Tickers drive both per-coin views: the top-20 distinct exchanges table and
   // the chart selector (restricted to adapter venues the coin is actually on).
   const topExchanges = topExchangesByVolume(tickers, 20);
@@ -97,7 +101,7 @@ export default async function CoinDetailPage({
       <SectionNav hasNews={news.length > 0} />
       <ChartPanel coinId={coin.id} symbol={coin.symbol} availableExchanges={availableExchanges} />
       <SupplyMetrics row={row} currency={currency} rates={rates} />
-      <Description html={coin.description} />
+      <Description html={aboutHtml} />
       <CoinLinks coin={coin} />
       <section id="exchanges" className="scroll-mt-24">
         <MarketsTable exchanges={topExchanges} currency={currency} rates={rates} />
