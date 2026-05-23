@@ -12,7 +12,12 @@ import maplibregl, {
 } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useTranslations } from "next-intl";
-import type { Poi, PoiLayer, RouteResult } from "@/lib/crypto-map";
+import type { Poi, PoiLayer, RouteResult, Social, OgPreview } from "@/lib/crypto-map";
+
+// MapLibre flattens non-primitive feature properties to JSON strings, so `socials`
+// rides through the GeoJSON source as a string and is parsed back when a popup opens.
+type PoiProps = Omit<Poi, "socials"> & { socials: string };
+type Translator = (key: string) => string;
 
 const MIN_ZOOM = 11; // below this the Overpass bbox would be too wide to query usefully
 const PRAGUE: [number, number] = [14.4212535, 50.0874654]; // dense BTCMap coverage — a non-empty default
@@ -118,7 +123,7 @@ export default function CryptoNavigator({
           features: pois.map((p) => ({
             type: "Feature",
             geometry: { type: "Point", coordinates: [p.lon, p.lat] },
-            properties: { ...p },
+            properties: { ...p, socials: JSON.stringify(p.socials) },
           })),
         });
         setCounts({
@@ -234,34 +239,23 @@ export default function CryptoNavigator({
         map.on("click", `poi-${layer}`, (e) => {
           const f = e.features?.[0];
           if (!f) return;
-          const p = f.properties as Poi;
+          const p = f.properties as PoiProps;
           const lonlat = (f.geometry as GeoJSON.Point).coordinates as [number, number];
-          const el = document.createElement("div");
-          el.className = "cmap-popup";
-          el.innerHTML = `
-            <div style="font-weight:600;margin-bottom:2px">${escapeHtml(p.name)}</div>
-            <div style="color:#a09baa;font-size:12px;margin-bottom:4px">${escapeHtml(p.category)}${
-              p.lightning ? " · ⚡ Lightning" : ""
-            }</div>
-            ${p.address ? `<div style="color:#a09baa;font-size:12px;margin-bottom:6px">${escapeHtml(p.address)}</div>` : ""}
-            ${
-              p.website
-                ? `<a href="${escapeHtml(p.website)}" target="_blank" rel="noopener noreferrer nofollow" style="color:#5B8DEF;font-size:12px">${t(
-                    "openSite",
-                  )}</a><br/>`
-                : ""
-            }
-          `;
-          const btn = document.createElement("button");
-          btn.textContent = t("routeHere");
-          btn.style.cssText =
-            "margin-top:6px;background:#F7931A;color:#0a0a0a;border:none;border-radius:6px;padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer";
-          btn.onclick = () => {
+          const el = buildCard(p, t);
+          const popup = new Popup({
+            offset: 14,
+            closeButton: true,
+            maxWidth: "264px",
+            className: "cmap-pop",
+          })
+            .setLngLat(lonlat)
+            .setDOMContent(el)
+            .addTo(map);
+          el.querySelector<HTMLButtonElement>(".cmap-route")?.addEventListener("click", () => {
             setDestination(lonlat, p.name);
             popup.remove();
-          };
-          el.appendChild(btn);
-          const popup = new Popup({ offset: 12, closeButton: true }).setLngLat(lonlat).setDOMContent(el).addTo(map);
+          });
+          hydratePhoto(el, p, t);
         });
       });
 
@@ -460,4 +454,117 @@ export default function CryptoNavigator({
 
 function escapeHtml(s: string): string {
   return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+}
+
+const SOCIAL_LABELS: Record<string, string> = {
+  instagram: "Instagram",
+  facebook: "Facebook",
+  telegram: "Telegram",
+  twitter: "X",
+  x: "X",
+  youtube: "YouTube",
+  tiktok: "TikTok",
+  vk: "VK",
+  linkedin: "LinkedIn",
+  whatsapp: "WhatsApp",
+};
+
+function parseSocialProps(raw: unknown): Social[] {
+  if (Array.isArray(raw)) return raw as Social[];
+  if (typeof raw === "string" && raw) {
+    try {
+      const v = JSON.parse(raw);
+      return Array.isArray(v) ? (v as Social[]) : [];
+    } catch {
+      return [];
+    }
+  }
+  return [];
+}
+
+function infoRow(icon: string, inner: string): string {
+  return `<div class="cmap-row"><span class="i">${icon}</span><span>${inner}</span></div>`;
+}
+
+// Build the dark Ledger detail card. Photo slot leads (skeleton until the OG preview
+// resolves, or an OSM image straight away); empty fields are omitted.
+function buildCard(p: PoiProps, t: Translator): HTMLDivElement {
+  const el = document.createElement("div");
+  el.className = "cmap-popup";
+
+  const hasPhoto = !!p.image || !!p.website;
+  const photoHtml = hasPhoto
+    ? `<div class="cmap-photo">${
+        p.image
+          ? `<img src="${escapeHtml(p.image)}" alt="" loading="lazy" referrerpolicy="no-referrer"/>`
+          : `<div class="cmap-skel"></div>`
+      }</div>`
+    : "";
+
+  const rows: string[] = [];
+  if (p.openingHours) rows.push(infoRow("🕒", escapeHtml(p.openingHours)));
+  if (p.address) rows.push(infoRow("📍", escapeHtml(p.address)));
+  if (p.phone) rows.push(infoRow("📞", `<a href="tel:${escapeHtml(p.phone)}">${escapeHtml(p.phone)}</a>`));
+  if (p.email) rows.push(infoRow("✉️", `<a href="mailto:${escapeHtml(p.email)}">${escapeHtml(p.email)}</a>`));
+
+  const socials = parseSocialProps(p.socials);
+  const socialHtml = socials.length
+    ? `<div class="cmap-socials">${socials
+        .map(
+          (s) =>
+            `<a class="cmap-chip" href="${escapeHtml(s.url)}" target="_blank" rel="noopener noreferrer nofollow">${escapeHtml(
+              SOCIAL_LABELS[s.network] ?? s.network,
+            )}</a>`,
+        )
+        .join("")}</div>`
+    : "";
+
+  el.innerHTML = `
+    ${photoHtml}
+    <div class="cmap-body">
+      <div class="cmap-title">${escapeHtml(p.name)}</div>
+      <div class="cmap-sub">${escapeHtml(p.category)}${p.lightning ? " · ⚡ Lightning" : ""}</div>
+      ${rows.join("")}
+      ${socialHtml}
+      ${
+        p.website
+          ? `<a class="cmap-site" href="${escapeHtml(p.website)}" target="_blank" rel="noopener noreferrer nofollow">${escapeHtml(
+              t("openSite"),
+            )} ↗</a>`
+          : ""
+      }
+      <button type="button" class="cmap-route">${escapeHtml(t("routeHere"))}</button>
+    </div>`;
+  return el;
+}
+
+// Lazily upgrade the photo slot with the place's own OpenGraph splash. Guards against
+// the popup being closed mid-flight; prefers the source image, falls back to OSM's.
+function hydratePhoto(el: HTMLElement, p: PoiProps, t: Translator): void {
+  if (!p.website) return; // OSM image (if any) is already shown; nothing to fetch
+  const photo = el.querySelector<HTMLElement>(".cmap-photo");
+  fetch(`/api/crypto-map/preview?url=${encodeURIComponent(p.website)}`)
+    .then((r) => (r.ok ? r.json() : Promise.reject(new Error("bad status"))))
+    .then((res: { preview?: OgPreview }) => {
+      if (!el.isConnected || !photo) return;
+      const og = res.preview ?? { title: null, image: null, video: null };
+      if (og.image) {
+        photo.innerHTML = `<img src="${escapeHtml(og.image)}" alt="" loading="lazy" referrerpolicy="no-referrer"/>`;
+      } else if (!p.image) {
+        photo.remove();
+        return;
+      }
+      if (og.video && photo.isConnected) {
+        const a = document.createElement("a");
+        a.className = "cmap-video";
+        a.href = p.website!;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer nofollow";
+        a.textContent = `▶ ${t("watchVideo")}`;
+        photo.appendChild(a);
+      }
+    })
+    .catch(() => {
+      if (el.isConnected && !p.image) photo?.remove();
+    });
 }

@@ -244,6 +244,7 @@
     "pickDestination": "Pick a destination on the map",
     "noRoute": "Couldn't build a route",
     "notFound": "Place not found",
-    "dataNote": "Places from OpenStreetMap contributors (crypto-payment tags); routing by OSRM; geocoding by Nominatim. Coverage is community-sourced and skewed toward Bitcoin/Lightning."
+    "dataNote": "Places from OpenStreetMap contributors (crypto-payment tags); routing by OSRM; geocoding by Nominatim. Coverage is community-sourced and skewed toward Bitcoin/Lightning.",
+    "watchVideo": "Watch"
   }
 }

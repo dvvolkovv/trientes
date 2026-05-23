@@ -244,6 +244,7 @@
     "pickDestination": "Выберите точку на карте",
     "noRoute": "Не удалось построить маршрут",
     "notFound": "Место не найдено",
-    "dataNote": "Точки — из OpenStreetMap (теги криптоплатежей); маршруты — OSRM; геокодинг — Nominatim. Покрытие краудсорсное и смещено в сторону Bitcoin/Lightning."
+    "dataNote": "Точки — из OpenStreetMap (теги криптоплатежей); маршруты — OSRM; геокодинг — Nominatim. Покрытие краудсорсное и смещено в сторону Bitcoin/Lightning.",
+    "watchVideo": "Смотреть"
   }
 }

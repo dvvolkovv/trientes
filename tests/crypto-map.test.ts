@@ -6,6 +6,11 @@ import {
   parseOverpassElements,
   parseNominatim,
   parseOsrm,
+  parseSocials,
+  parseOsmImage,
+  parseOpenGraph,
+  isBlockedIp,
+  assertUrlShape,
 } from "@/lib/crypto-map";
 
 describe("parseBbox", () => {
@@ -158,6 +163,194 @@ describe("parseOverpassElements", () => {
   it("returns [] on a malformed payload", () => {
     expect(parseOverpassElements({}, btcTags)).toEqual([]);
     expect(parseOverpassElements(null, btcTags)).toEqual([]);
+  });
+
+  it("reads opening hours, contacts, socials and image", () => {
+    const pois = parseOverpassElements(
+      {
+        elements: [
+          {
+            type: "node",
+            id: 5,
+            lat: 1,
+            lon: 2,
+            tags: {
+              shop: "cafe",
+              name: "Sats Cafe",
+              "payment:bitcoin": "yes",
+              opening_hours: "Mo-Fr 09:00-18:00",
+              "contact:phone": "+420 123 456 789",
+              "contact:email": "hi@sats.cafe",
+              "contact:instagram": "satscafe",
+              image: "https://sats.cafe/photo.jpg",
+            },
+          },
+        ],
+      },
+      btcTags,
+    );
+    expect(pois[0]).toMatchObject({
+      openingHours: "Mo-Fr 09:00-18:00",
+      phone: "+420 123 456 789",
+      email: "hi@sats.cafe",
+      image: "https://sats.cafe/photo.jpg",
+      socials: [{ network: "instagram", url: "https://instagram.com/satscafe" }],
+    });
+  });
+
+  it("falls back to the un-prefixed phone/email tags", () => {
+    const pois = parseOverpassElements(
+      {
+        elements: [
+          { type: "node", id: 6, lat: 1, lon: 2, tags: { shop: "cafe", "payment:bitcoin": "yes", phone: "111", email: "a@b.co" } },
+        ],
+      },
+      btcTags,
+    );
+    expect(pois[0]).toMatchObject({ phone: "111", email: "a@b.co" });
+  });
+
+  it("leaves the new fields empty when the tags are absent", () => {
+    const pois = parseOverpassElements(
+      { elements: [{ type: "node", id: 7, lat: 1, lon: 2, tags: { shop: "cafe", "payment:bitcoin": "yes" } }] },
+      btcTags,
+    );
+    expect(pois[0].openingHours).toBeNull();
+    expect(pois[0].phone).toBeNull();
+    expect(pois[0].email).toBeNull();
+    expect(pois[0].image).toBeNull();
+    expect(pois[0].socials).toEqual([]);
+  });
+});
+
+describe("parseSocials", () => {
+  it("normalizes a bare instagram handle to a full URL", () => {
+    expect(parseSocials({ "contact:instagram": "satscafe" })).toEqual([
+      { network: "instagram", url: "https://instagram.com/satscafe" },
+    ]);
+  });
+
+  it("passes a full social URL through untouched", () => {
+    expect(parseSocials({ "contact:facebook": "https://facebook.com/SatsCafe" })).toEqual([
+      { network: "facebook", url: "https://facebook.com/SatsCafe" },
+    ]);
+  });
+
+  it("maps twitter to x.com and strips a leading @", () => {
+    expect(parseSocials({ "contact:twitter": "@sats" })).toEqual([
+      { network: "twitter", url: "https://x.com/sats" },
+    ]);
+  });
+
+  it("turns a whatsapp number into a wa.me link", () => {
+    expect(parseSocials({ "contact:whatsapp": "+1 (555) 123-4567" })).toEqual([
+      { network: "whatsapp", url: "https://wa.me/15551234567" },
+    ]);
+  });
+
+  it("returns [] when no social tags are present", () => {
+    expect(parseSocials({ shop: "cafe" })).toEqual([]);
+  });
+});
+
+describe("parseOsmImage", () => {
+  it("uses a direct http(s) image url", () => {
+    expect(parseOsmImage({ image: "https://ex.com/p.jpg" })).toBe("https://ex.com/p.jpg");
+  });
+
+  it("builds a Commons FilePath thumb from wikimedia_commons", () => {
+    expect(parseOsmImage({ wikimedia_commons: "File:Sats Cafe.jpg" })).toBe(
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Sats%20Cafe.jpg?width=400",
+    );
+  });
+
+  it("ignores a non-http image value", () => {
+    expect(parseOsmImage({ image: "ftp://x/p.jpg" })).toBeNull();
+  });
+
+  it("returns null without image tags", () => {
+    expect(parseOsmImage({ shop: "cafe" })).toBeNull();
+  });
+});
+
+describe("parseOpenGraph", () => {
+  const base = "https://sats.cafe/";
+
+  it("extracts og:title, og:image and og:video", () => {
+    const html =
+      `<meta property="og:title" content="Sats Cafe">` +
+      `<meta property="og:image" content="https://sats.cafe/og.jpg">` +
+      `<meta property="og:video" content="https://sats.cafe/promo.mp4">`;
+    expect(parseOpenGraph(html, base)).toEqual({
+      title: "Sats Cafe",
+      image: "https://sats.cafe/og.jpg",
+      video: "https://sats.cafe/promo.mp4",
+    });
+  });
+
+  it("reads content before the property attr and falls back to twitter:image", () => {
+    const html = `<meta content="/img/p.jpg" name="twitter:image">`;
+    expect(parseOpenGraph(html, base)).toEqual({
+      title: null,
+      image: "https://sats.cafe/img/p.jpg",
+      video: null,
+    });
+  });
+
+  it("resolves a relative og:image against the base", () => {
+    expect(parseOpenGraph(`<meta property="og:image" content="/photo.png">`, base).image).toBe(
+      "https://sats.cafe/photo.png",
+    );
+  });
+
+  it("drops a non-http image", () => {
+    expect(parseOpenGraph(`<meta property="og:image" content="data:image/png;base64,xx">`, base).image).toBeNull();
+  });
+
+  it("returns nulls when there are no og tags", () => {
+    expect(parseOpenGraph("<html></html>", base)).toEqual({ title: null, image: null, video: null });
+  });
+});
+
+describe("isBlockedIp", () => {
+  it("blocks loopback, private and link-local IPv4", () => {
+    for (const ip of ["127.0.0.1", "10.0.0.5", "172.16.0.1", "172.31.255.255", "192.168.1.1", "169.254.1.1", "0.0.0.0"]) {
+      expect(isBlockedIp(ip)).toBe(true);
+    }
+  });
+
+  it("blocks loopback, unique-local and link-local IPv6", () => {
+    for (const ip of ["::1", "fc00::1", "fd12::1", "fe80::1", "::"]) {
+      expect(isBlockedIp(ip)).toBe(true);
+    }
+  });
+
+  it("allows public addresses", () => {
+    expect(isBlockedIp("8.8.8.8")).toBe(false);
+    expect(isBlockedIp("172.32.0.1")).toBe(false);
+    expect(isBlockedIp("2606:4700:4700::1111")).toBe(false);
+  });
+});
+
+describe("assertUrlShape", () => {
+  it("returns the parsed URL for a public http(s) host", () => {
+    expect(assertUrlShape("https://sats.cafe/x").hostname).toBe("sats.cafe");
+  });
+
+  it("rejects non-http schemes", () => {
+    expect(() => assertUrlShape("ftp://sats.cafe")).toThrow();
+    expect(() => assertUrlShape("file:///etc/passwd")).toThrow();
+  });
+
+  it("rejects embedded credentials", () => {
+    expect(() => assertUrlShape("https://user:pass@sats.cafe")).toThrow();
+  });
+
+  it("rejects localhost and private IP literals", () => {
+    expect(() => assertUrlShape("http://localhost/x")).toThrow();
+    expect(() => assertUrlShape("http://127.0.0.1/x")).toThrow();
+    expect(() => assertUrlShape("http://192.168.0.1/x")).toThrow();
+    expect(() => assertUrlShape("http://[::1]/x")).toThrow();
   });
 });
 

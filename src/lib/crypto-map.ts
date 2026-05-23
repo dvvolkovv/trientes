@@ -6,6 +6,8 @@
 // is unit-tested; the fetch* helpers do the network IO and are wrapped so callers
 // can degrade to empty results. Mirrors the fear-greed lib's parse/fetch split.
 
+import { lookup } from "node:dns/promises";
+
 export type Bbox = { minLon: number; minLat: number; maxLon: number; maxLat: number };
 
 /** Parse "minLon,minLat,maxLon,maxLat" (GeoJSON / MapLibre bounds order). */
@@ -72,6 +74,8 @@ export function buildOverpassQuery(b: Bbox): string {
 
 export type PoiLayer = "merchant" | "atm" | "financial";
 
+export type Social = { network: string; url: string };
+
 export type Poi = {
   id: string; // "node/123"
   lat: number;
@@ -83,6 +87,11 @@ export type Poi = {
   lightning: boolean;
   coinSpecific: boolean;
   website: string | null;
+  openingHours: string | null;
+  phone: string | null;
+  email: string | null;
+  socials: Social[];
+  image: string | null;
 };
 
 type OsmElement = {
@@ -121,6 +130,52 @@ function buildAddress(tags: Record<string, string>): string | null {
   return parts.length ? parts.join(", ") : null;
 }
 
+// Social networks we surface, with the base used to expand a bare handle into a URL.
+const SOCIAL_BASES: Record<string, string> = {
+  instagram: "https://instagram.com/",
+  facebook: "https://facebook.com/",
+  telegram: "https://t.me/",
+  twitter: "https://x.com/",
+  x: "https://x.com/",
+  youtube: "https://youtube.com/",
+  tiktok: "https://tiktok.com/@",
+  vk: "https://vk.com/",
+  linkedin: "https://linkedin.com/",
+};
+
+const isHttp = (s: string) => /^https?:\/\//i.test(s);
+
+/** Map OSM `contact:*` (and bare) tags to {network, url}; bare handles get a base prepended. */
+export function parseSocials(tags: Record<string, string>): Social[] {
+  const out: Social[] = [];
+  for (const network of Object.keys(SOCIAL_BASES)) {
+    const raw = (tags[`contact:${network}`] ?? tags[network] ?? "").trim();
+    if (!raw) continue;
+    const url = isHttp(raw) ? raw : SOCIAL_BASES[network] + raw.replace(/^@/, "");
+    out.push({ network, url });
+  }
+  const wa = (tags["contact:whatsapp"] ?? tags.whatsapp ?? "").trim();
+  if (wa) {
+    if (isHttp(wa)) out.push({ network: "whatsapp", url: wa });
+    else {
+      const digits = wa.replace(/\D/g, "");
+      if (digits) out.push({ network: "whatsapp", url: "https://wa.me/" + digits });
+    }
+  }
+  return out;
+}
+
+/** A displayable photo URL from OSM: a direct `image`, else a Wikimedia Commons thumb. */
+export function parseOsmImage(tags: Record<string, string>): string | null {
+  const img = (tags.image ?? "").trim();
+  if (isHttp(img)) return img;
+  const wc = (tags.wikimedia_commons ?? "").trim();
+  if (wc.startsWith("File:")) {
+    return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(wc.slice(5))}?width=400`;
+  }
+  return null;
+}
+
 export function parseOverpassElements(raw: unknown, coinTags: string[]): Poi[] {
   const elements = (raw as { elements?: OsmElement[] } | null)?.elements;
   if (!Array.isArray(elements)) return [];
@@ -145,7 +200,12 @@ export function parseOverpassElements(raw: unknown, coinTags: string[]): Poi[] {
       address: buildAddress(tags),
       lightning,
       coinSpecific,
-      website: tags.website || tags.url || null,
+      website: tags.website || tags["contact:website"] || tags.url || null,
+      openingHours: tags.opening_hours || null,
+      phone: tags["contact:phone"] || tags.phone || null,
+      email: tags["contact:email"] || tags.email || null,
+      socials: parseSocials(tags),
+      image: parseOsmImage(tags),
     });
   }
   return out;
@@ -181,6 +241,84 @@ export function parseOsrm(raw: unknown): RouteResult | null {
   const geometry = route.geometry as RouteResult["geometry"] | undefined;
   if (!Number.isFinite(distance) || !Number.isFinite(duration) || !geometry?.coordinates) return null;
   return { distance, duration, geometry };
+}
+
+// ---- OpenGraph preview (lazy, per-POI website) ----
+
+export type OgPreview = { title: string | null; image: string | null; video: string | null };
+
+function attr(tag: string, name: string): string | null {
+  const m = new RegExp(`\\b${name}\\s*=\\s*("([^"]*)"|'([^']*)')`, "i").exec(tag);
+  return m ? (m[2] ?? m[3] ?? "").trim() : null;
+}
+
+function metaContent(html: string, keys: string[]): string | null {
+  const re = /<meta\b[^>]*>/gi;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(html))) {
+    const key = (attr(m[0], "property") ?? attr(m[0], "name") ?? "").toLowerCase();
+    if (key && keys.includes(key)) {
+      const content = attr(m[0], "content");
+      if (content) return content;
+    }
+  }
+  return null;
+}
+
+function absHttp(value: string | null, base: string): string | null {
+  if (!value) return null;
+  try {
+    const u = new URL(value, base);
+    return u.protocol === "http:" || u.protocol === "https:" ? u.href : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Extract og:image/og:video/og:title (twitter:image fallback); resolve & http(s)-filter URLs. */
+export function parseOpenGraph(html: string, baseUrl: string): OgPreview {
+  return {
+    title: metaContent(html, ["og:title"]) ?? null,
+    image: absHttp(metaContent(html, ["og:image", "og:image:url", "og:image:secure_url", "twitter:image"]), baseUrl),
+    video: absHttp(metaContent(html, ["og:video", "og:video:url", "og:video:secure_url"]), baseUrl),
+  };
+}
+
+// ---- SSRF guard ----
+
+/** True for loopback / private / link-local / unspecified IPv4 & IPv6 (incl. IPv4-mapped). */
+export function isBlockedIp(ip: string): boolean {
+  const v = ip.trim().toLowerCase();
+  const m4 = v.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+  if (m4) {
+    const a = Number(m4[1]);
+    const b = Number(m4[2]);
+    if (a === 0 || a === 10 || a === 127) return true;
+    if (a === 172 && b >= 16 && b <= 31) return true;
+    if (a === 192 && b === 168) return true;
+    if (a === 169 && b === 254) return true;
+    if (a === 100 && b >= 64 && b <= 127) return true; // CGNAT 100.64/10
+    return false;
+  }
+  if (v === "::" || v === "::1") return true;
+  if (/^fe[89ab]/.test(v)) return true; // link-local fe80::/10
+  if (/^f[cd]/.test(v)) return true; // unique-local fc00::/7
+  const mapped = v.match(/^::ffff:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$/);
+  if (mapped) return isBlockedIp(mapped[1]);
+  return false;
+}
+
+/** Validate scheme/credentials and reject literal-IP/localhost hosts. Does NOT resolve DNS. */
+export function assertUrlShape(raw: string): URL {
+  const u = new URL(raw);
+  if (u.protocol !== "http:" && u.protocol !== "https:") throw new Error("scheme not allowed");
+  if (u.username || u.password) throw new Error("credentials not allowed");
+  const host = u.hostname.replace(/^\[|\]$/g, "").toLowerCase();
+  if (host === "localhost" || host.endsWith(".localhost")) throw new Error("localhost not allowed");
+  if (/^\d{1,3}(\.\d{1,3}){3}$/.test(host) || host.includes(":")) {
+    if (isBlockedIp(host)) throw new Error("blocked ip literal");
+  }
+  return u;
 }
 
 // ---- Network helpers (wrapped; callers degrade to empty/null on failure) ----
@@ -238,4 +376,75 @@ export async function fetchRoute(
     if (!res.ok) throw new Error(`osrm HTTP ${res.status}`);
     return parseOsrm(await res.json());
   });
+}
+
+// ---- OpenGraph fetch (SSRF-guarded; degrades to an empty preview) ----
+
+const EMPTY_OG: OgPreview = { title: null, image: null, video: null };
+const OG_MAX_BYTES = 256 * 1024;
+
+/** assertUrlShape + DNS resolution, rejecting hosts that resolve to a blocked IP. */
+export async function assertPublicUrl(raw: string): Promise<URL> {
+  const u = assertUrlShape(raw);
+  const host = u.hostname.replace(/^\[|\]$/g, "");
+  if (/^\d{1,3}(\.\d{1,3}){3}$/.test(host) || host.includes(":")) return u; // already vetted as a literal
+  const records = await lookup(host, { all: true });
+  if (records.some((r) => isBlockedIp(r.address))) throw new Error("resolves to blocked ip");
+  return u;
+}
+
+function concat(chunks: Uint8Array[]): Uint8Array {
+  const total = chunks.reduce((n, c) => n + c.byteLength, 0);
+  const out = new Uint8Array(total);
+  let off = 0;
+  for (const c of chunks) {
+    out.set(c, off);
+    off += c.byteLength;
+  }
+  return out;
+}
+
+async function readCapped(res: Response, maxBytes: number): Promise<string> {
+  const reader = res.body?.getReader();
+  if (!reader) return (await res.text()).slice(0, maxBytes);
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  while (total < maxBytes) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    chunks.push(value);
+    total += value.byteLength;
+  }
+  reader.cancel().catch(() => {});
+  return new TextDecoder("utf-8", { fatal: false }).decode(concat(chunks));
+}
+
+/** Fetch a place's website and return its OpenGraph preview. Best-effort; never throws. */
+export async function fetchOgPreview(rawUrl: string, timeoutMs = 6000): Promise<OgPreview> {
+  try {
+    return await withTimeout(timeoutMs, async (signal) => {
+      let current = await assertPublicUrl(rawUrl);
+      let res: Response | null = null;
+      for (let hop = 0; hop < 3; hop++) {
+        res = await fetch(current.href, {
+          headers: { "user-agent": UA, accept: "text/html,application/xhtml+xml" },
+          redirect: "manual",
+          cache: "no-store",
+          signal,
+        });
+        if (res.status >= 300 && res.status < 400) {
+          const loc = res.headers.get("location");
+          if (!loc) break;
+          current = await assertPublicUrl(new URL(loc, current).href); // re-vet every hop
+          continue;
+        }
+        break;
+      }
+      if (!res || !res.ok) return EMPTY_OG;
+      if (!(res.headers.get("content-type") ?? "").includes("html")) return EMPTY_OG;
+      return parseOpenGraph(await readCapped(res, OG_MAX_BYTES), current.href);
+    });
+  } catch {
+    return EMPTY_OG;
+  }
 }
