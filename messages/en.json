@@ -14,7 +14,8 @@
     "themeLabel": "Theme",
     "themeLight": "Light",
     "themeDark": "Dark",
-    "themeSystem": "System"
+    "themeSystem": "System",
+    "markets": "Markets"
   },
   "home": {
     "title": "Welcome",
@@ -277,5 +278,21 @@
     "noStreetview": "No street imagery here yet",
     "streetviewNear": "you're near",
     "close": "Close"
+  },
+  "markets": {
+    "title": "Markets",
+    "subtitle": "Stock indices, CME futures and precious metals.",
+    "indices": "Stock indices",
+    "futures": "CME futures",
+    "metals": "Precious metals",
+    "asOf": "As of",
+    "dataNote": "Delayed, indicative data via Stooq — not for trading.",
+    "empty": "Market data is not available right now.",
+    "gold": "Gold",
+    "silver": "Silver",
+    "platinum": "Platinum",
+    "palladium": "Palladium",
+    "crude": "Crude Oil",
+    "natgas": "Natural Gas"
   }
 }

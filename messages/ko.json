@@ -14,7 +14,8 @@
     "themeLabel": "테마",
     "themeLight": "라이트",
     "themeDark": "다크",
-    "themeSystem": "시스템"
+    "themeSystem": "시스템",
+    "markets": "시장"
   },
   "home": {
     "title": "환영합니다",
@@ -277,5 +278,21 @@
     "noStreetview": "No street imagery here yet",
     "streetviewNear": "you're near",
     "close": "Close"
+  },
+  "markets": {
+    "title": "시장",
+    "subtitle": "주가지수, CME 선물, 귀금속.",
+    "indices": "주가지수",
+    "futures": "CME 선물",
+    "metals": "귀금속",
+    "asOf": "기준:",
+    "dataNote": "Stooq의 지연·참고용 데이터 — 거래용이 아닙니다.",
+    "empty": "현재 시장 데이터를 사용할 수 없습니다.",
+    "gold": "금",
+    "silver": "은",
+    "platinum": "백금",
+    "palladium": "팔라듐",
+    "crude": "원유",
+    "natgas": "천연가스"
   }
 }

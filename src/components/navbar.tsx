@@ -32,6 +32,12 @@ export async function Navbar() {
               {t("exchanges")}
             </Link>
             <Link
+              href={`/${locale}/markets`}
+              className="block py-3 text-base text-foreground hover:text-accent border-b border-hairline transition-colors"
+            >
+              {t("markets")}
+            </Link>
+            <Link
               href={`/${locale}/watchlist`}
               className="block py-3 text-base text-foreground hover:text-accent border-b border-hairline transition-colors"
             >
@@ -114,6 +120,12 @@ export async function Navbar() {
             className="hover:text-foreground transition-colors"
           >
             {t("exchanges")}
+          </Link>
+          <Link
+            href={`/${locale}/markets`}
+            className="hover:text-foreground transition-colors"
+          >
+            {t("markets")}
           </Link>
           <Link
             href={`/${locale}/watchlist`}

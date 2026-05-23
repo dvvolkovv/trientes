@@ -14,7 +14,8 @@
     "themeLabel": "主题",
     "themeLight": "亮色",
     "themeDark": "深色",
-    "themeSystem": "系统"
+    "themeSystem": "系统",
+    "markets": "市场"
   },
   "home": {
     "title": "欢迎",
@@ -277,5 +278,21 @@
     "noStreetview": "No street imagery here yet",
     "streetviewNear": "you're near",
     "close": "Close"
+  },
+  "markets": {
+    "title": "市场",
+    "subtitle": "股票指数、芝商所期货和贵金属。",
+    "indices": "股票指数",
+    "futures": "芝商所期货",
+    "metals": "贵金属",
+    "asOf": "截至",
+    "dataNote": "经由 Stooq 的延迟、指示性数据 — 不用于交易。",
+    "empty": "市场数据当前不可用。",
+    "gold": "黄金",
+    "silver": "白银",
+    "platinum": "铂金",
+    "palladium": "钯金",
+    "crude": "原油",
+    "natgas": "天然气"
   }
 }

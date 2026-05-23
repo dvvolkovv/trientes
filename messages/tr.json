@@ -14,7 +14,8 @@
     "themeLabel": "Tema",
     "themeLight": "Açık",
     "themeDark": "Koyu",
-    "themeSystem": "Sistem"
+    "themeSystem": "Sistem",
+    "markets": "Piyasalar"
   },
   "home": {
     "title": "Hoş geldiniz",
@@ -277,5 +278,21 @@
     "noStreetview": "No street imagery here yet",
     "streetviewNear": "you're near",
     "close": "Close"
+  },
+  "markets": {
+    "title": "Piyasalar",
+    "subtitle": "Borsa endeksleri, CME vadeli işlemleri ve değerli metaller.",
+    "indices": "Borsa endeksleri",
+    "futures": "CME vadeli işlemleri",
+    "metals": "Değerli metaller",
+    "asOf": "İtibarıyla",
+    "dataNote": "Stooq üzerinden gecikmeli, gösterge niteliğinde veriler — alım satım için değildir.",
+    "empty": "Piyasa verileri şu anda mevcut değil.",
+    "gold": "Altın",
+    "silver": "Gümüş",
+    "platinum": "Platin",
+    "palladium": "Paladyum",
+    "crude": "Ham petrol",
+    "natgas": "Doğal gaz"
   }
 }

@@ -14,7 +14,8 @@
     "themeLabel": "Tema",
     "themeLight": "Claro",
     "themeDark": "Oscuro",
-    "themeSystem": "Sistema"
+    "themeSystem": "Sistema",
+    "markets": "Mercados"
   },
   "home": {
     "title": "Bienvenido",
@@ -277,5 +278,21 @@
     "noStreetview": "No street imagery here yet",
     "streetviewNear": "you're near",
     "close": "Close"
+  },
+  "markets": {
+    "title": "Mercados",
+    "subtitle": "Índices bursátiles, futuros de CME y metales preciosos.",
+    "indices": "Índices bursátiles",
+    "futures": "Futuros de CME",
+    "metals": "Metales preciosos",
+    "asOf": "Al",
+    "dataNote": "Datos con retraso e indicativos vía Stooq — no aptos para operar.",
+    "empty": "Los datos de mercado no están disponibles ahora.",
+    "gold": "Oro",
+    "silver": "Plata",
+    "platinum": "Platino",
+    "palladium": "Paladio",
+    "crude": "Petróleo",
+    "natgas": "Gas natural"
   }
 }

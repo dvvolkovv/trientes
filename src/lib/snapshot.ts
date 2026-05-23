@@ -1,6 +1,7 @@
 import type { MarketRow, GlobalSnap, ExchangeRates, Exchange, TickerRow } from "@/lib/coingecko";
 import { fetchTickers } from "@/lib/coingecko";
 import { fetchNews, type NewsItem } from "@/lib/news";
+import type { MarketQuote } from "@/lib/markets";
 import { fetchFearGreed, type FearGreed } from "@/lib/fear-greed";
 import { redis } from "@/lib/redis";
 import { prisma } from "@/lib/prisma";
@@ -132,6 +133,16 @@ export async function readGlobalStats(): Promise<GlobalSnap | null> {
     activeCryptos: row.activeCryptos,
     markets: row.markets,
   };
+}
+
+export async function readMarkets(): Promise<MarketQuote[]> {
+  const cached = await redisGet(KEYS.markets);
+  if (!cached) return [];
+  try {
+    return JSON.parse(cached) as MarketQuote[];
+  } catch {
+    return [];
+  }
 }
 
 export async function readExchangeRates(): Promise<ExchangeRates | null> {

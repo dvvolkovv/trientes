@@ -1,6 +1,7 @@
 import type { MarketRow, GlobalSnap, ExchangeRates, CoinDetail, Exchange } from "@/lib/coingecko";
 import type { NewsItem } from "@/lib/news";
 import type { FearGreed } from "@/lib/fear-greed";
+import type { MarketQuote } from "@/lib/markets";
 import { KEYS, TTL } from "./keys";
 import { mergeCuratedExchanges } from "@/lib/curated-exchanges";
 
@@ -124,6 +125,15 @@ export async function syncFearGreed(deps: {
   const fg = await deps.fetchFearGreed();
   await deps.redis.set(KEYS.fearGreed, JSON.stringify(fg), "EX", TTL.fearGreed);
   return { value: fg.value };
+}
+
+export async function syncMarkets(deps: {
+  fetchMarkets: () => Promise<MarketQuote[]>;
+  redis: RedisLike;
+}): Promise<{ count: number }> {
+  const quotes = await deps.fetchMarkets();
+  await deps.redis.set(KEYS.markets, JSON.stringify(quotes), "EX", TTL.markets);
+  return { count: quotes.length };
 }
 
 type PrismaCoinMetaUpdate = {

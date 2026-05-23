@@ -7,6 +7,7 @@ export const KEYS = {
   exchangeRates: "exchange:rates",
   news: "news:latest",
   fearGreed: "fng:latest",
+  markets: "snapshot:markets",
   tickers: (id: string) => `tickers:${id}`,
 } as const;
 
@@ -19,6 +20,7 @@ export const TTL = {
   adminAddedList: 3600,    // 1h
   news: 7200,              // 2h — outlives the 30 min news-sync + worker restarts
   fearGreed: 21600,        // 6h — index updates ~daily; long TTL survives worker restarts
+  markets: 3600,           // 1h — Stooq quotes are delayed; outlives the 20 min markets-sync
   tickers: 900,            // 15 min — bounds CoinGecko /tickers calls on the free tier
 } as const;
 

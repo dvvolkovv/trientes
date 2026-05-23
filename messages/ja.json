@@ -14,7 +14,8 @@
     "themeLabel": "テーマ",
     "themeLight": "ライト",
     "themeDark": "ダーク",
-    "themeSystem": "システム"
+    "themeSystem": "システム",
+    "markets": "市場"
   },
   "home": {
     "title": "ようこそ",
@@ -277,5 +278,21 @@
     "noStreetview": "No street imagery here yet",
     "streetviewNear": "you're near",
     "close": "Close"
+  },
+  "markets": {
+    "title": "市場",
+    "subtitle": "株価指数、CME先物、貴金属。",
+    "indices": "株価指数",
+    "futures": "CME先物",
+    "metals": "貴金属",
+    "asOf": "時点:",
+    "dataNote": "Stooq による遅延・参考データ — 取引用ではありません。",
+    "empty": "市場データは現在利用できません。",
+    "gold": "金",
+    "silver": "銀",
+    "platinum": "プラチナ",
+    "palladium": "パラジウム",
+    "crude": "原油",
+    "natgas": "天然ガス"
   }
 }

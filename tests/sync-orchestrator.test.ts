@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { syncPrices, syncGlobal, syncExchangeRates, syncExchanges, syncAdminAddedPrices, syncFearGreed } from "@/lib/sync/orchestrator";
+import { syncPrices, syncGlobal, syncExchangeRates, syncExchanges, syncAdminAddedPrices, syncFearGreed, syncMarkets } from "@/lib/sync/orchestrator";
 import { KEYS } from "@/lib/sync/keys";
 import type { MarketRow, GlobalSnap, Exchange } from "@/lib/coingecko";
 import type { FearGreed } from "@/lib/fear-greed";
@@ -147,6 +147,22 @@ describe("syncFearGreed", () => {
         redis: fakeRedis as never,
       }),
     ).rejects.toThrow("network");
+  });
+});
+
+describe("syncMarkets", () => {
+  it("writes the quotes to Redis and returns the count", async () => {
+    const { redisStore, fakeRedis } = makeFakes();
+    const quotes = [
+      { symbol: "^dji", name: "Dow Jones", group: "index", unit: "pts", date: "2026-05-22", time: "23:00:00", open: 1, high: 2, low: 1, last: 2, changePct: 100 },
+      { symbol: "xauusd", name: "gold", group: "metal", unit: "usd", date: "2026-05-22", time: "22:00:00", open: 4544, high: 4546, low: 4492, last: 4508, changePct: -0.79 },
+    ];
+    const result = await syncMarkets({
+      fetchMarkets: async () => quotes as never,
+      redis: fakeRedis as never,
+    });
+    expect(result).toEqual({ count: 2 });
+    expect(JSON.parse(redisStore.get(KEYS.markets)!)).toHaveLength(2);
   });
 });
 

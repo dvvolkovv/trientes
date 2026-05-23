@@ -14,7 +14,8 @@
     "themeLabel": "Design",
     "themeLight": "Hell",
     "themeDark": "Dunkel",
-    "themeSystem": "System"
+    "themeSystem": "System",
+    "markets": "Märkte"
   },
   "home": {
     "title": "Willkommen",
@@ -277,5 +278,21 @@
     "noStreetview": "No street imagery here yet",
     "streetviewNear": "you're near",
     "close": "Close"
+  },
+  "markets": {
+    "title": "Märkte",
+    "subtitle": "Aktienindizes, CME-Futures und Edelmetalle.",
+    "indices": "Aktienindizes",
+    "futures": "CME-Futures",
+    "metals": "Edelmetalle",
+    "asOf": "Stand",
+    "dataNote": "Verzögerte, indikative Daten über Stooq — nicht zum Handel.",
+    "empty": "Marktdaten sind derzeit nicht verfügbar.",
+    "gold": "Gold",
+    "silver": "Silber",
+    "platinum": "Platin",
+    "palladium": "Palladium",
+    "crude": "Rohöl",
+    "natgas": "Erdgas"
   }
 }

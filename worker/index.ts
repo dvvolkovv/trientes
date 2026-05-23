@@ -7,7 +7,8 @@ import { redis } from "../src/lib/redis";
 import { fetchTop100L1, fetchGlobalSnap, fetchExchangeRates, fetchCoinDetail, fetchExchanges, fetchMarketsByIds } from "../src/lib/coingecko";
 import { fetchNews } from "../src/lib/news";
 import { fetchFearGreed } from "../src/lib/fear-greed";
-import { syncPrices, syncGlobal, syncExchangeRates, syncCoinMetadata, syncExchanges, syncAdminAddedPrices, syncNews, syncFearGreed } from "../src/lib/sync/orchestrator";
+import { fetchMarkets } from "../src/lib/markets";
+import { syncPrices, syncGlobal, syncExchangeRates, syncCoinMetadata, syncExchanges, syncAdminAddedPrices, syncNews, syncFearGreed, syncMarkets } from "../src/lib/sync/orchestrator";
 import { startBinance, stopBinance } from "./binance";
 
 async function runPriceSync() {
@@ -65,6 +66,16 @@ async function runFearGreedSync() {
     console.log(`[worker] fear-greed-sync ok: ${value} in ${Date.now() - t0}ms`);
   } catch (err) {
     console.error(`[worker] fear-greed-sync failed:`, err);
+  }
+}
+
+async function runMarketsSync() {
+  const t0 = Date.now();
+  try {
+    const { count } = await syncMarkets({ fetchMarkets, redis: redis as never });
+    console.log(`[worker] markets-sync ok: ${count} in ${Date.now() - t0}ms`);
+  } catch (err) {
+    console.error(`[worker] markets-sync failed:`, err);
   }
 }
 
@@ -165,6 +176,7 @@ async function main() {
   await runAdminAddedSync();
   await runNewsSync();
   await runFearGreedSync();
+  await runMarketsSync();
 
   // Kick metadata-sync in the background — don't block startup on a ~3 min loop.
   void runMetadataSync();
@@ -185,6 +197,9 @@ async function main() {
     void runNewsSync();
     void runFearGreedSync();
   });
+
+  // Markets (Stooq) — key-less, independent of CoinGecko; every 20 min, offset off the others.
+  cron.schedule("8,28,48 * * * *", () => void runMarketsSync());
 
   // Daily kick; staleMs in syncCoinMetadata skips coins fetched within 7 days.
   cron.schedule("30 3 * * *", () => void runMetadataSync());
