@@ -12,7 +12,7 @@ export function LoginButtons({ telegramBotUsername }: { telegramBotUsername?: st
         type="button"
         disabled={pending}
         onClick={() => start(() => signInWithProvider("google"))}
-        className="bg-accent text-accent-foreground glow-accent rounded-md px-4 py-2.5 text-sm font-semibold uppercase tracking-wider hover:brightness-110 transition-all disabled:opacity-50"
+        className="bg-blue text-blue-foreground rounded-full px-4 py-2.5 text-sm font-semibold uppercase tracking-wider hover:brightness-110 transition-all disabled:opacity-50"
       >
         Continue with Google
       </button>

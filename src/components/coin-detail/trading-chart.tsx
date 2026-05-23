@@ -20,7 +20,7 @@ const POLL_MS = 15_000; // non-Binance exchanges have no WS path — refresh by 
 
 const UP = "#30B658";
 const DOWN = "#E55C5C";
-const ORANGE = "#F7931A";
+const ORANGE = "#FE5C04";
 const GRID = "#2A2932";
 const TEXT = "#9C99A6";
 const VOL_UP = "rgba(48,182,88,0.5)";

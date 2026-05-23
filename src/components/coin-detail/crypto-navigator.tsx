@@ -26,7 +26,7 @@ const PRAGUE: [number, number] = [14.4212535, 50.0874654]; // dense BTCMap cover
 
 const LAYER_COLOR: Record<PoiLayer, string> = {
   merchant: "#30B658",
-  atm: "#F7931A",
+  atm: "#FE5C04",
   financial: "#5B8DEF",
 };
 
@@ -218,7 +218,7 @@ export default function CryptoNavigator({
         type: "line",
         source: "route",
         layout: { "line-cap": "round", "line-join": "round" },
-        paint: { "line-color": "#F7931A", "line-width": 5, "line-opacity": 0.85 },
+        paint: { "line-color": "#FE5C04", "line-width": 5, "line-opacity": 0.85 },
       });
 
       // Shared popup opener for OSM markers AND curated logo markers.
@@ -347,7 +347,7 @@ export default function CryptoNavigator({
         const lonlat: [number, number] = [top.lon, top.lat];
         originRef.current = lonlat;
         originMarkerRef.current?.remove();
-        originMarkerRef.current = new Marker({ color: "#F7931A" }).setLngLat(lonlat).addTo(map);
+        originMarkerRef.current = new Marker({ color: "#FE5C04" }).setLngLat(lonlat).addTo(map);
         map.flyTo({ center: lonlat, zoom: 14 });
         if (destRef.current) buildRoute();
       })

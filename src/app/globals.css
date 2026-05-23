@@ -12,8 +12,13 @@
   --color-muted: #a09baa;
   --color-muted-strong: #c6c1cf;
 
-  --color-accent: #f7931a;
+  /* Brand accent — bright orange, matched to trientes.com (#FE5C04). */
+  --color-accent: #fe5c04;
   --color-accent-foreground: #0a0a0a;
+
+  /* Primary-CTA electric blue, also from trientes.com. */
+  --color-blue: #0005ff;
+  --color-blue-foreground: #ffffff;
 
   --color-up: #30b658;
   --color-down: #e55c5c;
@@ -84,8 +89,8 @@ body {
 /* Soft glow used for primary CTAs. */
 .glow-accent {
   box-shadow:
-    0 0 0 1px rgba(247, 147, 26, 0.25),
-    0 12px 48px -12px rgba(247, 147, 26, 0.28);
+    0 0 0 1px rgba(254, 92, 4, 0.25),
+    0 12px 48px -12px rgba(254, 92, 4, 0.28);
 }
 
 /* Scrollbar — keep it dark, narrow. */
@@ -260,7 +265,7 @@ select:focus-visible {
   text-decoration: none;
   transition: color 0.15s ease, border-color 0.15s ease;
 }
-.cmap-chip:hover { color: #f7931a; border-color: #f7931a; }
+.cmap-chip:hover { color: #fe5c04; border-color: #fe5c04; }
 .cmap-site {
   display: inline-block;
   margin-top: 10px;
@@ -272,7 +277,7 @@ select:focus-visible {
 .cmap-route {
   margin-top: 11px;
   width: 100%;
-  background: #f7931a;
+  background: #fe5c04;
   color: #0a0a0a;
   border: none;
   border-radius: 8px;
@@ -319,7 +324,7 @@ select:focus-visible {
   display: flex;
   align-items: center;
   background: #fff;
-  border: 2px solid #f7931a;
+  border: 2px solid #fe5c04;
   border-radius: 10px;
   padding: 4px 7px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);

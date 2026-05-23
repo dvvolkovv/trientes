@@ -140,7 +140,7 @@ export function StreetViewOverlay({
                   <span
                     key={s.id}
                     className="w-1.5 h-1.5 rounded-full transition-all"
-                    style={{ background: i === idx ? "#F7931A" : "rgba(255,255,255,0.4)" }}
+                    style={{ background: i === idx ? "#FE5C04" : "rgba(255,255,255,0.4)" }}
                   />
                 ))}
               </div>

@@ -6,7 +6,7 @@ import { NewsCardImage } from "@/components/news-card-image";
 // presentational hex (used via inline style) so Tailwind's purge can't drop
 // runtime-built color classes.
 const THEME: Record<NewsTheme, { label: string; color: string }> = {
-  market: { label: "Market", color: "#f7931a" },
+  market: { label: "Market", color: "#fe5c04" },
   blockchain: { label: "Blockchain", color: "#5b8def" },
   regulation: { label: "Regulation", color: "#e55c5c" },
   tech: { label: "Tech", color: "#30b658" },

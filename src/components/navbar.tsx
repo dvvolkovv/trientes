@@ -81,7 +81,7 @@ export async function Navbar() {
             ) : (
               <Link
                 href={`/${locale}/login`}
-                className="block w-full text-center text-sm px-4 py-3 rounded-md font-semibold uppercase tracking-wider bg-accent text-accent-foreground transition-all hover:brightness-110"
+                className="block w-full text-center text-sm px-4 py-3 rounded-full font-semibold uppercase tracking-wider bg-blue text-blue-foreground transition-all hover:brightness-110"
               >
                 {t("signIn")}
               </Link>
@@ -157,7 +157,7 @@ export async function Navbar() {
           ) : (
             <Link
               href={`/${locale}/login`}
-              className="ml-2 text-xs px-4 py-1.5 rounded-md font-semibold uppercase tracking-wider bg-accent text-accent-foreground transition-all hover:brightness-110"
+              className="ml-2 text-xs px-4 py-1.5 rounded-full font-semibold uppercase tracking-wider bg-blue text-blue-foreground transition-all hover:brightness-110"
             >
               {t("signIn")}
             </Link>
