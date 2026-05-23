@@ -86,7 +86,10 @@
     "ema": "EMA",
     "bollinger": "Bollinger",
     "rsi": "RSI",
-    "macd": "MACD"
+    "macd": "MACD",
+    "high": "High",
+    "low": "Low",
+    "live": "Live"
   },
   "watchlist": {
     "title": "收藏",

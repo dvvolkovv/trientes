@@ -74,9 +74,7 @@ export function ChartPanel({
         )}
       </div>
       {mode === "simple" ? (
-        <div className="bg-bg-tint border border-hairline rounded-md h-[240px] md:h-[360px] overflow-hidden">
-          <PriceChart coinId={coinId} timeframe={timeframe} />
-        </div>
+        <PriceChart coinId={coinId} symbol={symbol} timeframe={timeframe} />
       ) : (
         <TradingChart coinId={coinId} symbol={symbol} availableExchanges={availableExchanges} />
       )}

@@ -86,7 +86,10 @@
     "ema": "EMA",
     "bollinger": "Боллинджер",
     "rsi": "RSI",
-    "macd": "MACD"
+    "macd": "MACD",
+    "high": "Макс",
+    "low": "Мин",
+    "live": "Live"
   },
   "watchlist": {
     "title": "Избранное",
