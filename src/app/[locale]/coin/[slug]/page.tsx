@@ -12,6 +12,7 @@ import { Description } from "@/components/coin-detail/description";
 import { CoinLinks } from "@/components/coin-detail/links";
 import { SupplyMetrics } from "@/components/coin-detail/supply";
 import { MarketsTable } from "@/components/coin-detail/markets";
+import { CryptoMapSection } from "@/components/coin-detail/crypto-map-section";
 import { LivePrices } from "@/components/live-prices";
 import type { MarketRow } from "@/lib/coingecko";
 
@@ -94,6 +95,7 @@ export default async function CoinDetailPage({
       <Description html={coin.description} />
       <CoinLinks coin={coin} />
       <MarketsTable exchanges={topExchanges} currency={currency} rates={rates} />
+      <CryptoMapSection coinId={coin.id} symbol={coin.symbol} coinName={coin.name} />
     </main>
   );
 }

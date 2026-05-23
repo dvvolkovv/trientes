@@ -218,5 +218,32 @@
     "founded": "Fundada",
     "volume24h": "Volume (24h)",
     "empty": "No exchanges data yet."
+  },
+  "cryptoMap": {
+    "eyebrow": "Navigator",
+    "title": "Crypto Navigator",
+    "intro": "Find merchants, ATMs and financial services that transact in crypto near you — switch to satellite or 3D terrain, and route there from your location or any address.",
+    "streets": "Streets",
+    "satellite": "Satellite",
+    "threeD": "3D",
+    "myLocation": "My location",
+    "searchPlaceholder": "Search an address or place…",
+    "search": "Search",
+    "zoomIn": "Zoom in to load points",
+    "loading": "Loading…",
+    "layer_merchant": "Merchants",
+    "layer_atm": "ATMs / buy-sell",
+    "layer_financial": "Financial",
+    "coinHighlight": "{symbol} accepted",
+    "distance": "Distance",
+    "duration": "Time",
+    "clearRoute": "Clear route",
+    "routeHere": "Route here",
+    "openSite": "Website",
+    "noOrigin": "Set your location first (📍 or search an address)",
+    "pickDestination": "Pick a destination on the map",
+    "noRoute": "Couldn't build a route",
+    "notFound": "Place not found",
+    "dataNote": "Places from OpenStreetMap contributors (crypto-payment tags); routing by OSRM; geocoding by Nominatim. Coverage is community-sourced and skewed toward Bitcoin/Lightning."
   }
 }
