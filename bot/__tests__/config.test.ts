@@ -34,7 +34,7 @@ describe("loadConfig", () => {
     expect(cfg.claudeCwd).toBe("/home/dv/trientes");
     expect(cfg.allowedUserIds).toEqual(new Set([111, 222]));
     expect(cfg.botPort).toBe(4100);
-    expect(cfg.claudeTimeoutMs).toBe(600_000);
+    expect(cfg.claudeTimeoutMs).toBe(1_800_000);
     expect(cfg.redisUrl).toBe("redis://127.0.0.1:6379");
     expect(cfg.githubRepoUrl).toBe("https://github.com/dvvolkovv/trientes");
   });

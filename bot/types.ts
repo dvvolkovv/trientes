@@ -31,6 +31,8 @@ export interface RunResult {
   stderrTail: string;
   sessionId: string | null; // populated from first init event
   durationMs: number;
+  timedOut: boolean; // killed by the watchdog after claudeTimeoutMs
+  canceled: boolean; // killed via cancel() (e.g. /cancel)
 }
 
 export interface AuditEntry {

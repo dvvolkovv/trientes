@@ -93,6 +93,8 @@ describe("ClaudeRunner", () => {
     expect(result.exitCode).toBe(0);
     expect(result.finalText).toBe("done");
     expect(result.sessionId).toBe("sess-001");
+    expect(result.timedOut).toBe(false);
+    expect(result.canceled).toBe(false);
     expect(events.length).toBeGreaterThanOrEqual(2);
   });
 
@@ -157,6 +159,8 @@ describe("ClaudeRunner", () => {
     exitClean(child, 143);
     const r = await promise;
     expect(r.exitCode).toBe(143);
+    expect(r.canceled).toBe(true);
+    expect(r.timedOut).toBe(false);
   });
 
   it("rejects second concurrent run for same user", async () => {
@@ -203,6 +207,8 @@ describe("ClaudeRunner", () => {
     exitClean(child, 143);
     const r = await promise;
     expect(r.exitCode).toBe(143);
+    expect(r.timedOut).toBe(true);
+    expect(r.canceled).toBe(false);
     vi.useRealTimers();
   });
 });

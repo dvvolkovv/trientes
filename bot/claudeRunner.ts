@@ -16,8 +16,13 @@ export interface RunnerOptions {
   claudeBinary?: string; // default "claude"
 }
 
+interface RunState {
+  child: ChildProcess;
+  canceled: boolean;
+}
+
 export class ClaudeRunner {
-  private active = new Map<number, ChildProcess>();
+  private active = new Map<number, RunState>();
 
   constructor(private readonly opts: RunnerOptions) {}
 
@@ -26,9 +31,10 @@ export class ClaudeRunner {
   }
 
   cancel(userId: number): void {
-    const child = this.active.get(userId);
-    if (!child) return;
-    child.kill("SIGTERM");
+    const state = this.active.get(userId);
+    if (!state) return;
+    state.canceled = true;
+    state.child.kill("SIGTERM");
   }
 
   async run(args: RunArgs): Promise<RunResult> {
@@ -54,11 +60,13 @@ export class ClaudeRunner {
       env: process.env,
       stdio: ["ignore", "pipe", "pipe"],
     });
-    this.active.set(args.userId, child);
+    const state: RunState = { child, canceled: false };
+    this.active.set(args.userId, state);
 
     let finalText = "";
     let sessionId: string | null = null;
     let stderrBuf = "";
+    let timedOut = false;
 
     const stdoutLines = createInterface({ input: child.stdout! });
     stdoutLines.on("line", (line) => {
@@ -77,6 +85,7 @@ export class ClaudeRunner {
     });
 
     const timeout = setTimeout(() => {
+      timedOut = true;
       child.kill("SIGTERM");
       setTimeout(() => {
         if (!child.killed) child.kill("SIGKILL");
@@ -93,6 +102,8 @@ export class ClaudeRunner {
           stderrTail: stderrBuf.slice(-2000),
           sessionId,
           durationMs: Date.now() - startedAt,
+          timedOut,
+          canceled: state.canceled,
         });
       });
     });

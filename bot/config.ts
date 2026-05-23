@@ -30,7 +30,7 @@ export function loadConfig(): Config {
     claudeCwd: required("CLAUDE_CWD"),
     allowedUserIds: parseIds(process.env.BOT_ALLOWED_USER_IDS ?? ""),
     botPort: Number(process.env.BOT_PORT ?? 4100),
-    claudeTimeoutMs: Number(process.env.CLAUDE_TIMEOUT_MS ?? 600_000),
+    claudeTimeoutMs: Number(process.env.CLAUDE_TIMEOUT_MS ?? 1_800_000), // 30 min — long builds/tests/browser runs need headroom
     redisUrl: process.env.REDIS_URL ?? "redis://127.0.0.1:6379",
     githubRepoUrl:
       process.env.GITHUB_REPO_URL ?? "https://github.com/dvvolkovv/trientes",

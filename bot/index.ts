@@ -133,8 +133,13 @@ async function processPrompt(
       await session.touch(userId);
     }
 
+    // Parse attachments / strip markers in every branch — a timed-out or canceled
+    // run may still have produced partial text and emitted an attachment first.
+    const parsed = parseAttachments(result.finalText || "");
+    const attachmentPaths = parsed.paths;
+    const partial = parsed.text.trim();
     let reply: string;
-    let attachmentPaths: string[] = [];
+
     if (result.exitCode === 0) {
       let suffix = "";
       try {
@@ -147,14 +152,23 @@ async function processPrompt(
       } catch {
         suffix = "\n\n✅ готово (git enrich failed)";
       }
-      const parsed = parseAttachments(result.finalText || "");
-      attachmentPaths = parsed.paths;
-      reply = truncate(parsed.text || "(пусто)", 3500) + suffix;
+      reply = truncate(partial || "(пусто)", 3500) + suffix;
+    } else if (result.canceled) {
+      reply =
+        "⏹ Остановил по твоей команде." +
+        (partial ? "\n\nЧто успел сделать:\n" + truncate(partial, 3000) : "");
+    } else if (result.timedOut) {
+      const mins = Math.round(config.claudeTimeoutMs / 60000);
+      reply =
+        `⏳ Задача шла дольше ${mins} мин — я остановил её по таймауту, чтобы не зависла. ` +
+        "Это не ошибка в коде, просто лимит времени на один заход." +
+        (partial ? "\n\nЧто успел к этому моменту:\n" + truncate(partial, 3000) : "") +
+        '\n\nНапиши «продолжи» — доделаю с того же места.';
     } else {
       reply =
-        `❌ claude exited ${result.exitCode}\n` +
+        `⚠️ Сессия завершилась нештатно (код ${result.exitCode}). Хвост лога для диагностики:\n` +
         "```\n" +
-        truncate(result.stderrTail || "(no stderr)", 2000) +
+        truncate(result.stderrTail || "(пусто)", 1500) +
         "\n```";
     }
 
