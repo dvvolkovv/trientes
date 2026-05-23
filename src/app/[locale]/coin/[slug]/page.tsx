@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
-import { readExchangeRates, readTop100, readTickers } from "@/lib/snapshot";
+import { readExchangeRates, readTop100, readTickers, readNews } from "@/lib/snapshot";
 import { topExchangesByVolume, listedAdapterExchanges } from "@/lib/listings";
 import { EXCHANGES } from "@/lib/exchanges";
 import { getCurrency } from "@/lib/get-currency";
@@ -13,6 +13,8 @@ import { CoinLinks } from "@/components/coin-detail/links";
 import { SupplyMetrics } from "@/components/coin-detail/supply";
 import { MarketsTable } from "@/components/coin-detail/markets";
 import { CryptoMapSection } from "@/components/coin-detail/crypto-map-section";
+import { SectionNav } from "@/components/coin-detail/section-nav";
+import { NewsRail } from "@/components/news-rail";
 import { LivePrices } from "@/components/live-prices";
 import type { MarketRow } from "@/lib/coingecko";
 
@@ -25,6 +27,7 @@ export default async function CoinDetailPage({
 }) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations("detail");
 
   const coin = await prisma.coin.findUnique({
     where: { slug },
@@ -64,12 +67,13 @@ export default async function CoinDetailPage({
 
   if (!coin || !row) notFound();
 
-  const [currency, rates, watchedSet, isAuthed, tickers] = await Promise.all([
+  const [currency, rates, watchedSet, isAuthed, tickers, news] = await Promise.all([
     getCurrency(),
     readExchangeRates(),
     readUserWatchedIds(),
     isAuthenticated(),
     readTickers(coin.id),
+    readNews(),
   ]);
   const isWatched = watchedSet.has(coin.id);
 
@@ -80,7 +84,7 @@ export default async function CoinDetailPage({
   const availableExchanges = EXCHANGES.filter((e) => listed.has(e.id)).map((e) => e.id);
 
   return (
-    <main className="max-w-[1600px] mx-auto px-4 md:px-12 xl:px-20 py-12 space-y-12">
+    <main className="max-w-[1600px] mx-auto px-4 md:px-12 xl:px-20 py-12 space-y-12 scroll-smooth">
       <LivePrices currency={currency} rates={rates} />
       <CoinHeader
         row={row}
@@ -90,12 +94,27 @@ export default async function CoinDetailPage({
         isAuthed={isAuthed}
         locale={locale}
       />
+      <SectionNav hasNews={news.length > 0} />
       <ChartPanel coinId={coin.id} symbol={coin.symbol} availableExchanges={availableExchanges} />
       <SupplyMetrics row={row} currency={currency} rates={rates} />
       <Description html={coin.description} />
       <CoinLinks coin={coin} />
-      <MarketsTable exchanges={topExchanges} currency={currency} rates={rates} />
-      <CryptoMapSection coinId={coin.id} symbol={coin.symbol} coinName={coin.name} />
+      <section id="exchanges" className="scroll-mt-24">
+        <MarketsTable exchanges={topExchanges} currency={currency} rates={rates} />
+      </section>
+      <section id="navigator" className="scroll-mt-24">
+        <CryptoMapSection coinId={coin.id} symbol={coin.symbol} coinName={coin.name} />
+      </section>
+      {news.length > 0 && (
+        <section id="news" className="scroll-mt-24">
+          <div className="num text-[11px] uppercase tracking-[0.3em] text-accent inline-flex items-center gap-2 mb-2">
+            <span className="w-2 h-2 rounded-full bg-accent" aria-hidden />
+            Newsflow
+          </div>
+          <h2 className="text-[24px] md:text-[28px] font-bold tracking-[-0.025em] mb-4">{t("jumpNews")}</h2>
+          <NewsRail items={news} locale={locale} />
+        </section>
+      )}
     </main>
   );
 }

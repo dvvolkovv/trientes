@@ -89,7 +89,10 @@
     "macd": "MACD",
     "high": "High",
     "low": "Low",
-    "live": "Live"
+    "live": "Live",
+    "jumpNavigator": "Navigator",
+    "jumpExchanges": "Top exchanges",
+    "jumpNews": "News"
   },
   "watchlist": {
     "title": "관심목록",

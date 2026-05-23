@@ -89,7 +89,10 @@
     "macd": "MACD",
     "high": "Макс",
     "low": "Мин",
-    "live": "Live"
+    "live": "Live",
+    "jumpNavigator": "Навигатор",
+    "jumpExchanges": "Топ биржи",
+    "jumpNews": "Новости"
   },
   "watchlist": {
     "title": "Избранное",
