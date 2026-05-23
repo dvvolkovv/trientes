@@ -12,7 +12,7 @@ import maplibregl, {
 } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useTranslations } from "next-intl";
-import type { Poi, PoiLayer, RouteResult, RouteMode, TransitLeg, Social, OgPreview } from "@/lib/crypto-map";
+import type { Poi, PoiLayer, RouteResult, RouteMode, TransitLeg, GeoResult, Social, OgPreview } from "@/lib/crypto-map";
 import { StreetViewOverlay } from "@/components/coin-detail/street-view-overlay";
 import { CURATED_POIS, type CuratedPoi } from "@/lib/curated-pois";
 
@@ -133,6 +133,7 @@ export default function CryptoNavigator({
     legs?: TransitLeg[];
   } | null>(null);
   const [status, setStatus] = useState<string | null>(null);
+  const [originLabel, setOriginLabel] = useState<string | null>(null);
   const [street, setStreet] = useState<{ lat: number; lon: number; name: string } | null>(null);
 
   // ---- POI loading for the current viewport ----
@@ -243,6 +244,47 @@ export default function CryptoNavigator({
     [buildRoute, t],
   );
 
+  // Resolve a pin to a street address (best-effort): show a placeholder, then upgrade.
+  const reverseLabel = useCallback(
+    (lonlat: [number, number]) => {
+      setOriginLabel(t("posPin"));
+      fetch(`/api/crypto-map/geocode?lat=${lonlat[1]}&lon=${lonlat[0]}`)
+        .then((r) => (r.ok ? r.json() : Promise.reject()))
+        .then((res: { result?: GeoResult | null }) => {
+          if (res.result?.label) setOriginLabel(res.result.label);
+        })
+        .catch(() => {});
+    },
+    [t],
+  );
+
+  // Single entry point for setting "my position": drops/moves a draggable orange
+  // pin, labels it (reverse-geocoded when `reverse`), and rebuilds the route.
+  const setOrigin = useCallback(
+    (lonlat: [number, number], label: string | null, reverse: boolean) => {
+      const map = mapRef.current;
+      if (!map) return;
+      originRef.current = lonlat;
+      if (originMarkerRef.current) {
+        originMarkerRef.current.setLngLat(lonlat);
+      } else {
+        const mk = new Marker({ color: "#FE5C04", draggable: true }).setLngLat(lonlat).addTo(map);
+        mk.on("dragend", () => {
+          const ll = mk.getLngLat();
+          const next: [number, number] = [ll.lng, ll.lat];
+          originRef.current = next;
+          reverseLabel(next);
+          if (destRef.current) buildRoute();
+        });
+        originMarkerRef.current = mk;
+      }
+      if (reverse) reverseLabel(lonlat);
+      else setOriginLabel(label);
+      if (destRef.current) buildRoute();
+    },
+    [buildRoute, reverseLabel],
+  );
+
   // ---- Map setup (once) ----
   useEffect(() => {
     if (!containerRef.current) return;
@@ -266,8 +308,10 @@ export default function CryptoNavigator({
     map.addControl(geo, "top-right");
     geo.on("geolocate", (e: GeolocationPosition) => {
       originRef.current = [e.coords.longitude, e.coords.latitude];
+      // GeolocateControl shows its own blue dot — drop the manual orange pin.
       originMarkerRef.current?.remove();
       originMarkerRef.current = null;
+      setOriginLabel(t("posGps"));
       if (destRef.current) buildRoute();
     });
 
@@ -349,6 +393,15 @@ export default function CryptoNavigator({
         });
       });
 
+      // Click on empty map → drop/move the draggable "my position" pin.
+      map.on("click", (e) => {
+        const hit = map.queryRenderedFeatures(e.point, {
+          layers: ["poi-merchant", "poi-atm", "poi-financial"],
+        });
+        if (hit.length) return; // a POI was clicked — its popup opener handles it
+        setOrigin([e.lngLat.lng, e.lngLat.lat], null, true);
+      });
+
       // Curated crypto-accepting businesses: always-on logo markers.
       CURATED_POIS.forEach((c) => {
         const elm = document.createElement("div");
@@ -417,7 +470,7 @@ export default function CryptoNavigator({
     setStatus(null);
     fetch(`/api/crypto-map/geocode?q=${encodeURIComponent(q)}`)
       .then((r) => r.json())
-      .then((res: { results?: { label: string; lat: number; lon: number }[] }) => {
+      .then((res: { results?: GeoResult[] }) => {
         const top = res.results?.[0];
         const map = mapRef.current;
         if (!top || !map) {
@@ -425,13 +478,25 @@ export default function CryptoNavigator({
           return;
         }
         const lonlat: [number, number] = [top.lon, top.lat];
-        originRef.current = lonlat;
-        originMarkerRef.current?.remove();
-        originMarkerRef.current = new Marker({ color: "#FE5C04" }).setLngLat(lonlat).addTo(map);
+        setOrigin(lonlat, top.label, false);
         map.flyTo({ center: lonlat, zoom: 14 });
-        if (destRef.current) buildRoute();
       })
       .catch(() => setStatus(t("notFound")));
+  }
+
+  function clearOrigin() {
+    const map = mapRef.current;
+    originRef.current = null;
+    setOriginLabel(null);
+    originMarkerRef.current?.remove();
+    originMarkerRef.current = null;
+    // origin gone → the route is no longer valid; drop its geometry + summary.
+    setRoute(null);
+    setStatus(null);
+    (map?.getSource("route") as GeoJSONSource | undefined)?.setData({
+      type: "FeatureCollection",
+      features: [],
+    });
   }
 
   function clearRoute() {
@@ -464,33 +529,53 @@ export default function CryptoNavigator({
         <button type="button" onClick={toggle3D} className={btn(is3D)}>
           {t("threeD")}
         </button>
-        <button
-          type="button"
-          onClick={() => geolocateRef.current?.trigger()}
-          className="text-[12px] px-3 py-1.5 rounded-md font-medium border border-hairline text-muted hover:text-foreground transition-all"
-        >
-          📍 {t("myLocation")}
-        </button>
         <span className="num text-[11px] uppercase tracking-[0.18em] text-muted ml-auto">
           {symbol.toUpperCase()} · {coinName}
         </span>
       </div>
 
-      {/* Address search */}
-      <form onSubmit={submitSearch} className="flex gap-2">
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={t("searchPlaceholder")}
-          className="flex-1 bg-bg-tint border border-hairline rounded-md px-3 py-2 text-[13px] placeholder:text-muted/60 focus:outline-none focus:border-accent"
-        />
-        <button
-          type="submit"
-          className="text-[12px] px-4 py-2 rounded-md font-medium bg-accent text-accent-foreground hover:opacity-90 transition-opacity"
-        >
-          {t("search")}
-        </button>
-      </form>
+      {/* My position */}
+      <div className="space-y-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-[11px] uppercase tracking-[0.16em] text-muted">{t("myPosition")}</span>
+          {originLabel && (
+            <span className="flex items-center gap-1.5 text-[12px] text-foreground bg-bg-tint border border-hairline rounded-full pl-2.5 pr-1.5 py-0.5 max-w-full">
+              <span className="truncate max-w-[240px]">{originLabel}</span>
+              <button
+                type="button"
+                onClick={clearOrigin}
+                title={t("clearOrigin")}
+                aria-label={t("clearOrigin")}
+                className="text-muted hover:text-foreground leading-none"
+              >
+                ✕
+              </button>
+            </span>
+          )}
+        </div>
+        <form onSubmit={submitSearch} className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => geolocateRef.current?.trigger()}
+            className="text-[12px] px-3 py-2 rounded-md font-medium border border-hairline text-muted hover:text-foreground transition-all whitespace-nowrap"
+          >
+            📍 {t("posAuto")}
+          </button>
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={t("searchPlaceholder")}
+            className="flex-1 min-w-[140px] bg-bg-tint border border-hairline rounded-md px-3 py-2 text-[13px] placeholder:text-muted/60 focus:outline-none focus:border-accent"
+          />
+          <button
+            type="submit"
+            className="text-[12px] px-4 py-2 rounded-md font-medium bg-accent text-accent-foreground hover:opacity-90 transition-opacity"
+          >
+            {t("search")}
+          </button>
+        </form>
+        <p className="text-[11px] text-muted/70">{t("clickToDrop")}</p>
+      </div>
 
       {/* Travel mode */}
       <div className="flex flex-wrap items-center gap-1.5">

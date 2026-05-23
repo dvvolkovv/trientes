@@ -226,6 +226,19 @@ export function parseNominatim(raw: unknown): GeoResult[] {
   return out;
 }
 
+// Nominatim `reverse` returns a single object (not an array like `search`), or
+// `{ error: ... }` when the point can't be resolved.
+export function parseReverseGeocode(raw: unknown): GeoResult | null {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+  const r = raw as Record<string, unknown>;
+  if (r.error) return null;
+  const lat = Number(r.lat);
+  const lon = Number(r.lon);
+  const label = String(r.display_name ?? "").trim();
+  if (!Number.isFinite(lat) || !Number.isFinite(lon) || !label) return null;
+  return { label, lat, lon };
+}
+
 export type RouteMode = "walk" | "car" | "transit";
 
 export type OsrmRoute = {
@@ -498,6 +511,7 @@ export function assertUrlShape(raw: string): URL {
 const UA = "trientes.org crypto-navigator (https://trientes.org)";
 const OVERPASS_URL = "https://overpass-api.de/api/interpreter";
 const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search";
+const NOMINATIM_REVERSE_URL = "https://nominatim.openstreetmap.org/reverse";
 // FOSSGIS OSRM instances are key-less and expose the foot profile (the demo server
 // only has driving); MOTIS/Transitous adds key-less timetable-based transit routing.
 const OSRM_FOOT_URL = "https://routing.openstreetmap.de/routed-foot/route/v1/foot";
@@ -538,6 +552,24 @@ export async function fetchGeocode(q: string, timeoutMs = 8000): Promise<GeoResu
     });
     if (!res.ok) throw new Error(`nominatim HTTP ${res.status}`);
     return parseNominatim(await res.json());
+  });
+}
+
+// Resolve a dropped/dragged pin (lon,lat) to a human address, best-effort.
+export async function fetchReverseGeocode(
+  lon: number,
+  lat: number,
+  timeoutMs = 8000,
+): Promise<GeoResult | null> {
+  return withTimeout(timeoutMs, async (signal) => {
+    const url = `${NOMINATIM_REVERSE_URL}?format=jsonv2&lat=${lat}&lon=${lon}`;
+    const res = await fetch(url, {
+      headers: { accept: "application/json", "user-agent": UA },
+      cache: "no-store",
+      signal,
+    });
+    if (!res.ok) throw new Error(`nominatim reverse HTTP ${res.status}`);
+    return parseReverseGeocode(await res.json());
   });
 }
 

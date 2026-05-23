@@ -5,6 +5,7 @@ import {
   buildOverpassQuery,
   parseOverpassElements,
   parseNominatim,
+  parseReverseGeocode,
   parseOsrm,
   decodePolyline,
   parseMotis,
@@ -397,6 +398,28 @@ describe("parseNominatim", () => {
 
   it("returns [] for non-array input", () => {
     expect(parseNominatim({})).toEqual([]);
+  });
+});
+
+describe("parseReverseGeocode", () => {
+  it("maps a single reverse object to {label, lat, lon}", () => {
+    const out = parseReverseGeocode({
+      display_name: "Stephansplatz, Wien, Österreich",
+      lat: "48.2082",
+      lon: "16.3719",
+    });
+    expect(out).toEqual({ label: "Stephansplatz, Wien, Österreich", lat: 48.2082, lon: 16.3719 });
+  });
+
+  it("returns null on an error response", () => {
+    expect(parseReverseGeocode({ error: "Unable to geocode" })).toBeNull();
+  });
+
+  it("returns null when coords or label are missing/non-numeric", () => {
+    expect(parseReverseGeocode({ display_name: "x", lat: "nope", lon: "16.3" })).toBeNull();
+    expect(parseReverseGeocode({ lat: "48.2", lon: "16.3" })).toBeNull(); // no label
+    expect(parseReverseGeocode(null)).toBeNull();
+    expect(parseReverseGeocode([])).toBeNull(); // reverse returns an object, not an array
   });
 });
 
