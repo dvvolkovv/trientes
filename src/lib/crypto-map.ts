@@ -226,21 +226,165 @@ export function parseNominatim(raw: unknown): GeoResult[] {
   return out;
 }
 
-export type RouteResult = {
+export type RouteMode = "walk" | "car" | "transit";
+
+export type OsrmRoute = {
   distance: number; // meters
   duration: number; // seconds
   geometry: { type: "LineString"; coordinates: [number, number][] };
 };
 
-export function parseOsrm(raw: unknown): RouteResult | null {
+// A single leg of a public-transport itinerary — a walking connector or a vehicle ride.
+export type TransitLeg = {
+  mode: string; // "WALK" | "SUBWAY" | "BUS" | "TRAM" | "RAIL" | …
+  line: string | null; // route short name, e.g. "U4"
+  from: string | null; // boarding stop
+  to: string | null; // alighting stop
+  duration: number; // seconds
+  dashed: boolean; // render dashed (walking connector)
+  color: string; // line colour on the map
+  coordinates: [number, number][]; // [lon,lat]
+};
+
+export type RouteResult = OsrmRoute & {
+  mode: RouteMode;
+  transfers?: number; // transit only
+  legs?: TransitLeg[]; // transit only
+};
+
+export function parseOsrm(raw: unknown): OsrmRoute | null {
   const r = raw as { code?: string; routes?: Array<Record<string, unknown>> } | null;
   if (!r || r.code !== "Ok" || !Array.isArray(r.routes) || r.routes.length === 0) return null;
   const route = r.routes[0];
   const distance = Number(route.distance);
   const duration = Number(route.duration);
-  const geometry = route.geometry as RouteResult["geometry"] | undefined;
+  const geometry = route.geometry as OsrmRoute["geometry"] | undefined;
   if (!Number.isFinite(distance) || !Number.isFinite(duration) || !geometry?.coordinates) return null;
   return { distance, duration, geometry };
+}
+
+// ---- Public-transport routing (MOTIS / Transitous) ----
+
+// Google "encoded polyline" → [lon,lat] pairs (GeoJSON order). MOTIS emits precision 7.
+export function decodePolyline(str: string, precision = 5): [number, number][] {
+  const factor = Math.pow(10, precision);
+  const out: [number, number][] = [];
+  let index = 0;
+  let lat = 0;
+  let lon = 0;
+  while (index < str.length) {
+    let result = 0;
+    let shift = 0;
+    let b: number;
+    do {
+      b = str.charCodeAt(index++) - 63;
+      result |= (b & 0x1f) << shift;
+      shift += 5;
+    } while (b >= 0x20);
+    lat += result & 1 ? ~(result >> 1) : result >> 1;
+    result = 0;
+    shift = 0;
+    do {
+      b = str.charCodeAt(index++) - 63;
+      result |= (b & 0x1f) << shift;
+      shift += 5;
+    } while (b >= 0x20);
+    lon += result & 1 ? ~(result >> 1) : result >> 1;
+    out.push([lon / factor, lat / factor]);
+  }
+  return out;
+}
+
+// Map a MOTIS leg mode to a line colour: rail/metro blue, bus green, tram orange.
+const TRANSIT_COLORS: Record<string, string> = {
+  WALK: "#8a8f98",
+  SUBWAY: "#5B8DEF",
+  METRO: "#5B8DEF",
+  RAIL: "#5B8DEF",
+  REGIONAL_RAIL: "#5B8DEF",
+  REGIONAL_FAST_RAIL: "#5B8DEF",
+  LONG_DISTANCE: "#5B8DEF",
+  HIGHSPEED_RAIL: "#5B8DEF",
+  NIGHT_RAIL: "#5B8DEF",
+  BUS: "#30B658",
+  COACH: "#30B658",
+  TRAM: "#FE5C04",
+  FERRY: "#19C2C2",
+};
+
+function transitColor(mode: string): string {
+  return TRANSIT_COLORS[mode.toUpperCase()] ?? "#FE5C04";
+}
+
+function samePoint(a: [number, number], b: [number, number]): boolean {
+  return Math.abs(a[0] - b[0]) < 1e-7 && Math.abs(a[1] - b[1]) < 1e-7;
+}
+
+function legLengthMeters(c: [number, number][]): number {
+  const R = 6371000;
+  let total = 0;
+  for (let i = 1; i < c.length; i++) {
+    const dLat = ((c[i][1] - c[i - 1][1]) * Math.PI) / 180;
+    const dLon = ((c[i][0] - c[i - 1][0]) * Math.PI) / 180;
+    const la1 = (c[i - 1][1] * Math.PI) / 180;
+    const la2 = (c[i][1] * Math.PI) / 180;
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLon / 2) ** 2;
+    total += 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
+  }
+  return total;
+}
+
+type MotisLeg = {
+  mode?: string;
+  duration?: number;
+  routeShortName?: string;
+  from?: { name?: string };
+  to?: { name?: string };
+  legGeometry?: { points?: string; precision?: number };
+};
+type MotisItinerary = { duration?: number; transfers?: number; legs?: MotisLeg[] };
+
+/** Take the first MOTIS itinerary; decode + stitch its legs into one route. */
+export function parseMotis(raw: unknown): RouteResult | null {
+  const its = (raw as { itineraries?: MotisItinerary[] } | null)?.itineraries;
+  if (!Array.isArray(its) || its.length === 0) return null;
+  const it = its[0];
+  const rawLegs = Array.isArray(it.legs) ? it.legs : [];
+  const legs: TransitLeg[] = [];
+  const coords: [number, number][] = [];
+  let distance = 0;
+  for (const lg of rawLegs) {
+    const mode = String(lg.mode ?? "WALK").toUpperCase();
+    const pts = lg.legGeometry?.points;
+    const c = typeof pts === "string" && pts ? decodePolyline(pts, lg.legGeometry?.precision ?? 7) : [];
+    if (c.length === 0) continue;
+    for (let i = 0; i < c.length; i++) {
+      if (i === 0 && coords.length && samePoint(coords[coords.length - 1], c[0])) continue;
+      coords.push(c[i]);
+    }
+    distance += legLengthMeters(c);
+    legs.push({
+      mode,
+      line: lg.routeShortName ? String(lg.routeShortName) : null,
+      from: lg.from?.name ?? null,
+      to: lg.to?.name ?? null,
+      duration: Number(lg.duration) || 0,
+      dashed: mode === "WALK",
+      color: transitColor(mode),
+      coordinates: c,
+    });
+  }
+  if (coords.length < 2 || legs.length === 0) return null;
+  const duration = Number(it.duration);
+  const transfers = Number(it.transfers);
+  return {
+    mode: "transit",
+    distance: Math.round(distance),
+    duration: Number.isFinite(duration) ? duration : legs.reduce((s, l) => s + l.duration, 0),
+    geometry: { type: "LineString", coordinates: coords },
+    transfers: Number.isFinite(transfers) ? transfers : 0,
+    legs,
+  };
 }
 
 // ---- OpenGraph preview (lazy, per-POI website) ----
@@ -354,7 +498,11 @@ export function assertUrlShape(raw: string): URL {
 const UA = "trientes.org crypto-navigator (https://trientes.org)";
 const OVERPASS_URL = "https://overpass-api.de/api/interpreter";
 const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search";
-const OSRM_URL = "https://router.project-osrm.org/route/v1/driving";
+// FOSSGIS OSRM instances are key-less and expose the foot profile (the demo server
+// only has driving); MOTIS/Transitous adds key-less timetable-based transit routing.
+const OSRM_FOOT_URL = "https://routing.openstreetmap.de/routed-foot/route/v1/foot";
+const OSRM_CAR_URL = "https://routing.openstreetmap.de/routed-car/route/v1/driving";
+const MOTIS_URL = "https://api.transitous.org/api/v1/plan";
 
 async function withTimeout<T>(ms: number, run: (signal: AbortSignal) => Promise<T>): Promise<T> {
   const ctrl = new AbortController();
@@ -396,13 +544,33 @@ export async function fetchGeocode(q: string, timeoutMs = 8000): Promise<GeoResu
 export async function fetchRoute(
   from: [number, number],
   to: [number, number],
-  timeoutMs = 8000,
+  mode: RouteMode = "car",
+  timeoutMs = 9000,
 ): Promise<RouteResult | null> {
   return withTimeout(timeoutMs, async (signal) => {
-    const url = `${OSRM_URL}/${from[0]},${from[1]};${to[0]},${to[1]}?overview=full&geometries=geojson`;
-    const res = await fetch(url, { headers: { accept: "application/json" }, cache: "no-store", signal });
+    if (mode === "transit") {
+      // MOTIS takes lat,lon (OSRM/our tuples are lon,lat).
+      const url =
+        `${MOTIS_URL}?fromPlace=${from[1]},${from[0]}&toPlace=${to[1]},${to[0]}` +
+        `&transitModes=TRANSIT&directModes=WALK`;
+      const res = await fetch(url, {
+        headers: { accept: "application/json", "user-agent": UA },
+        cache: "no-store",
+        signal,
+      });
+      if (!res.ok) throw new Error(`motis HTTP ${res.status}`);
+      return parseMotis(await res.json());
+    }
+    const base = mode === "walk" ? OSRM_FOOT_URL : OSRM_CAR_URL;
+    const url = `${base}/${from[0]},${from[1]};${to[0]},${to[1]}?overview=full&geometries=geojson`;
+    const res = await fetch(url, {
+      headers: { accept: "application/json", "user-agent": UA },
+      cache: "no-store",
+      signal,
+    });
     if (!res.ok) throw new Error(`osrm HTTP ${res.status}`);
-    return parseOsrm(await res.json());
+    const r = parseOsrm(await res.json());
+    return r ? { ...r, mode } : null;
   });
 }
 

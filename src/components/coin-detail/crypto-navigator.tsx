@@ -12,7 +12,7 @@ import maplibregl, {
 } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useTranslations } from "next-intl";
-import type { Poi, PoiLayer, RouteResult, Social, OgPreview } from "@/lib/crypto-map";
+import type { Poi, PoiLayer, RouteResult, RouteMode, TransitLeg, Social, OgPreview } from "@/lib/crypto-map";
 import { StreetViewOverlay } from "@/components/coin-detail/street-view-overlay";
 import { CURATED_POIS, type CuratedPoi } from "@/lib/curated-pois";
 
@@ -29,6 +29,29 @@ const LAYER_COLOR: Record<PoiLayer, string> = {
   atm: "#FE5C04",
   financial: "#5B8DEF",
 };
+
+const MODE_ICON: Record<RouteMode, string> = { walk: "🚶", car: "🚗", transit: "🚍" };
+
+// Emoji for a transit leg by MOTIS mode; vehicles fall back to a generic train.
+const LEG_ICON: Record<string, string> = {
+  WALK: "🚶",
+  SUBWAY: "🚇",
+  METRO: "🚇",
+  RAIL: "🚆",
+  REGIONAL_RAIL: "🚆",
+  REGIONAL_FAST_RAIL: "🚆",
+  LONG_DISTANCE: "🚆",
+  HIGHSPEED_RAIL: "🚄",
+  NIGHT_RAIL: "🚆",
+  BUS: "🚌",
+  COACH: "🚌",
+  TRAM: "🚊",
+  FERRY: "⛴️",
+};
+
+function legIcon(mode: string): string {
+  return LEG_ICON[mode.toUpperCase()] ?? "🚆";
+}
 
 // Raster-only style (no glyphs needed — we draw circles + DOM popups). Dark base
 // matches the Ledger palette; satellite + terrain are toggled on at runtime.
@@ -87,6 +110,7 @@ export default function CryptoNavigator({
   const originRef = useRef<[number, number] | null>(null);
   const originMarkerRef = useRef<Marker | null>(null);
   const destRef = useRef<{ lonlat: [number, number]; name: string } | null>(null);
+  const modeRef = useRef<RouteMode>("walk");
   const moveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [base, setBase] = useState<Base>("dark");
@@ -100,7 +124,14 @@ export default function CryptoNavigator({
   const [tooFar, setTooFar] = useState(false);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
-  const [route, setRoute] = useState<{ distance: number; duration: number } | null>(null);
+  const [mode, setMode] = useState<RouteMode>("walk");
+  const [route, setRoute] = useState<{
+    distance: number;
+    duration: number;
+    mode: RouteMode;
+    transfers?: number;
+    legs?: TransitLeg[];
+  } | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [street, setStreet] = useState<{ lat: number; lon: number; name: string } | null>(null);
 
@@ -153,24 +184,55 @@ export default function CryptoNavigator({
       setStatus(t("pickDestination"));
       return;
     }
+    const m = modeRef.current;
     setStatus(null);
     fetch(
-      `/api/crypto-map/directions?from=${origin[0]},${origin[1]}&to=${dest.lonlat[0]},${dest.lonlat[1]}`,
+      `/api/crypto-map/directions?from=${origin[0]},${origin[1]}&to=${dest.lonlat[0]},${dest.lonlat[1]}&mode=${m}`,
     )
       .then((r) => (r.ok ? r.json() : Promise.reject()))
       .then((res: RouteResult) => {
         const src = map.getSource("route") as GeoJSONSource | undefined;
-        src?.setData({ type: "Feature", geometry: res.geometry, properties: {} });
-        setRoute({ distance: res.distance, duration: res.duration });
+        // Transit draws one feature per leg (walk connectors dashed, vehicles coloured);
+        // walk/car is a single solid line.
+        const features =
+          res.mode === "transit" && res.legs?.length
+            ? res.legs.map((lg) => ({
+                type: "Feature" as const,
+                geometry: { type: "LineString" as const, coordinates: lg.coordinates },
+                properties: { dashed: lg.dashed, color: lg.color },
+              }))
+            : [
+                {
+                  type: "Feature" as const,
+                  geometry: res.geometry,
+                  properties: { dashed: false, color: "#FE5C04" },
+                },
+              ];
+        src?.setData({ type: "FeatureCollection", features });
+        setRoute({
+          distance: res.distance,
+          duration: res.duration,
+          mode: res.mode,
+          transfers: res.transfers,
+          legs: res.legs,
+        });
         const coords = res.geometry.coordinates;
-        const bounds = coords.reduce(
-          (bb, c) => bb.extend(c as [number, number]),
-          new maplibregl.LngLatBounds(coords[0] as [number, number], coords[0] as [number, number]),
-        );
-        map.fitBounds(bounds, { padding: 80, maxZoom: 15 });
+        if (coords.length) {
+          const bounds = coords.reduce(
+            (bb, c) => bb.extend(c as [number, number]),
+            new maplibregl.LngLatBounds(coords[0] as [number, number], coords[0] as [number, number]),
+          );
+          map.fitBounds(bounds, { padding: 80, maxZoom: 15 });
+        }
       })
-      .catch(() => setStatus(t("noRoute")));
+      .catch(() => setStatus(modeRef.current === "transit" ? t("noTransit") : t("noRoute")));
   }, [t]);
+
+  function switchMode(next: RouteMode) {
+    modeRef.current = next;
+    setMode(next);
+    if (originRef.current && destRef.current) buildRoute();
+  }
 
   const setDestination = useCallback(
     (lonlat: [number, number], name: string) => {
@@ -217,8 +279,26 @@ export default function CryptoNavigator({
         id: "route-line",
         type: "line",
         source: "route",
+        filter: ["!=", ["get", "dashed"], true],
         layout: { "line-cap": "round", "line-join": "round" },
-        paint: { "line-color": "#FE5C04", "line-width": 5, "line-opacity": 0.85 },
+        paint: {
+          "line-color": ["coalesce", ["get", "color"], "#FE5C04"],
+          "line-width": 5,
+          "line-opacity": 0.85,
+        },
+      });
+      map.addLayer({
+        id: "route-walk",
+        type: "line",
+        source: "route",
+        filter: ["==", ["get", "dashed"], true],
+        layout: { "line-cap": "round", "line-join": "round" },
+        paint: {
+          "line-color": "#8a8f98",
+          "line-width": 4,
+          "line-opacity": 0.9,
+          "line-dasharray": [1.5, 1.6],
+        },
       });
 
       // Shared popup opener for OSM markers AND curated logo markers.
@@ -412,6 +492,16 @@ export default function CryptoNavigator({
         </button>
       </form>
 
+      {/* Travel mode */}
+      <div className="flex flex-wrap items-center gap-1.5">
+        <span className="text-[11px] uppercase tracking-[0.16em] text-muted mr-1">{t("travelMode")}</span>
+        {(["walk", "car", "transit"] as RouteMode[]).map((m) => (
+          <button key={m} type="button" onClick={() => switchMode(m)} className={btn(mode === m)}>
+            {MODE_ICON[m]} {t(`mode_${m}`)}
+          </button>
+        ))}
+      </div>
+
       {/* Map */}
       <div className="relative">
         <div ref={containerRef} className="w-full h-[420px] md:h-[520px] rounded-md overflow-hidden border border-hairline" />
@@ -456,11 +546,32 @@ export default function CryptoNavigator({
           {route && (
             <>
               <span className="text-muted">
-                {t("distance")}: <span className="num text-foreground">{(route.distance / 1000).toFixed(1)} km</span>
-              </span>
-              <span className="text-muted">
                 {t("duration")}: <span className="num text-foreground">{Math.round(route.duration / 60)} min</span>
               </span>
+              {route.mode === "transit" ? (
+                <>
+                  <span className="text-muted">
+                    {route.transfers ? t("transfers", { count: route.transfers }) : t("transitDirect")}
+                  </span>
+                  {route.legs && route.legs.length > 0 && (
+                    <span className="flex flex-wrap items-center gap-1">
+                      {route.legs.map((lg, i) => (
+                        <span key={i} className="inline-flex items-center gap-1">
+                          {i > 0 && <span className="text-muted/50">›</span>}
+                          <span style={{ color: lg.dashed ? undefined : lg.color }}>
+                            {legIcon(lg.mode)}
+                            {lg.line ? ` ${lg.line}` : ""}
+                          </span>
+                        </span>
+                      ))}
+                    </span>
+                  )}
+                </>
+              ) : (
+                <span className="text-muted">
+                  {t("distance")}: <span className="num text-foreground">{(route.distance / 1000).toFixed(1)} km</span>
+                </span>
+              )}
               <button type="button" onClick={clearRoute} className="text-muted hover:text-foreground underline">
                 {t("clearRoute")}
               </button>

@@ -6,6 +6,8 @@ import {
   parseOverpassElements,
   parseNominatim,
   parseOsrm,
+  decodePolyline,
+  parseMotis,
   parseSocials,
   parseOsmImage,
   parseOpenGraph,
@@ -408,5 +410,106 @@ describe("parseOsrm", () => {
   it("returns null when no route is found", () => {
     expect(parseOsrm({ code: "NoRoute", routes: [] })).toBeNull();
     expect(parseOsrm({})).toBeNull();
+  });
+});
+
+// Standalone Google-polyline encoder (independent of decodePolyline) for fixtures.
+function encodePolyline(latlngs: [number, number][], precision = 7): string {
+  const factor = 10 ** precision;
+  const enc = (n: number): string => {
+    let v = n < 0 ? ~(n << 1) : n << 1;
+    let s = "";
+    while (v >= 0x20) {
+      s += String.fromCharCode((0x20 | (v & 0x1f)) + 63);
+      v >>= 5;
+    }
+    return s + String.fromCharCode(v + 63);
+  };
+  let lastLat = 0;
+  let lastLng = 0;
+  let out = "";
+  for (const [lat, lng] of latlngs) {
+    const la = Math.round(lat * factor);
+    const ln = Math.round(lng * factor);
+    out += enc(la - lastLat) + enc(ln - lastLng);
+    lastLat = la;
+    lastLng = ln;
+  }
+  return out;
+}
+
+describe("decodePolyline", () => {
+  it("decodes the canonical Google example (precision 5) to [lon,lat] pairs", () => {
+    const out = decodePolyline("_p~iF~ps|U_ulLnnqC_mqNvxq`@", 5);
+    const expected = [
+      [-120.2, 38.5],
+      [-120.95, 40.7],
+      [-126.453, 43.252],
+    ];
+    expect(out).toHaveLength(3);
+    out.forEach(([lon, lat], i) => {
+      expect(lon).toBeCloseTo(expected[i][0], 5);
+      expect(lat).toBeCloseTo(expected[i][1], 5);
+    });
+  });
+
+  it("round-trips precision-7 coordinates", () => {
+    const pts: [number, number][] = [
+      [48.2082, 16.3719],
+      [48.2106, 16.3769],
+    ];
+    const out = decodePolyline(encodePolyline(pts, 7), 7);
+    expect(out[0][0]).toBeCloseTo(16.3719, 6); // lon
+    expect(out[0][1]).toBeCloseTo(48.2082, 6); // lat
+    expect(out[1][0]).toBeCloseTo(16.3769, 6);
+  });
+});
+
+describe("parseMotis", () => {
+  const walk1 = encodePolyline([[48.2082, 16.3719], [48.209, 16.373]], 7);
+  const ride = encodePolyline([[48.209, 16.373], [48.205, 16.376], [48.2099, 16.3765]], 7);
+  const walk2 = encodePolyline([[48.2099, 16.3765], [48.2106, 16.3769]], 7);
+  const itinerary = {
+    duration: 1680,
+    transfers: 0,
+    legs: [
+      { mode: "WALK", duration: 120, legGeometry: { points: walk1, precision: 7 } },
+      {
+        mode: "SUBWAY",
+        duration: 360,
+        routeShortName: "U4",
+        from: { name: "Schönbrunn" },
+        to: { name: "Schwedenplatz" },
+        legGeometry: { points: ride, precision: 7 },
+      },
+      { mode: "WALK", duration: 200, legGeometry: { points: walk2, precision: 7 } },
+    ],
+  };
+
+  it("stitches the first itinerary's legs into one route", () => {
+    const out = parseMotis({ itineraries: [itinerary] });
+    expect(out).not.toBeNull();
+    expect(out!.mode).toBe("transit");
+    expect(out!.duration).toBe(1680);
+    expect(out!.transfers).toBe(0);
+    expect(out!.legs).toHaveLength(3);
+    // shared endpoints aren't duplicated: total points = sum - overlaps
+    expect(out!.geometry.coordinates.length).toBe(2 + 3 + 2 - 2);
+    expect(out!.distance).toBeGreaterThan(0);
+  });
+
+  it("flags walk legs dashed and colours the transit leg", () => {
+    const out = parseMotis({ itineraries: [itinerary] })!;
+    expect(out.legs![0].dashed).toBe(true);
+    expect(out.legs![1].dashed).toBe(false);
+    expect(out.legs![1].mode).toBe("SUBWAY");
+    expect(out.legs![1].line).toBe("U4");
+    expect(out.legs![1].color).toBe("#5B8DEF"); // rail/metro blue
+  });
+
+  it("returns null when there are no itineraries", () => {
+    expect(parseMotis({ itineraries: [] })).toBeNull();
+    expect(parseMotis({})).toBeNull();
+    expect(parseMotis(null)).toBeNull();
   });
 });
