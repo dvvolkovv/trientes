@@ -278,3 +278,32 @@ select:focus-visible {
   transition: filter 0.15s ease;
 }
 .cmap-route:hover { filter: brightness(1.06); }
+.cmap-street {
+  margin-top: 6px;
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: transparent;
+  color: #c9c4d2;
+  border: 1px solid #3a3744;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.cmap-street:hover { color: #fff; border-color: #5b8def; }
+.cmap-street.is-near { border-color: #30b658; color: #fff; }
+.cmap-near {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #0a0a0a;
+  background: #30b658;
+  border-radius: 999px;
+  padding: 1px 6px;
+}

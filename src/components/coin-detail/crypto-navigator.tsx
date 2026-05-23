@@ -13,6 +13,7 @@ import maplibregl, {
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useTranslations } from "next-intl";
 import type { Poi, PoiLayer, RouteResult, Social, OgPreview } from "@/lib/crypto-map";
+import { StreetViewOverlay } from "@/components/coin-detail/street-view-overlay";
 
 // MapLibre flattens non-primitive feature properties to JSON strings, so `socials`
 // rides through the GeoJSON source as a string and is parsed back when a popup opens.
@@ -100,6 +101,7 @@ export default function CryptoNavigator({
   const [query, setQuery] = useState("");
   const [route, setRoute] = useState<{ distance: number; duration: number } | null>(null);
   const [status, setStatus] = useState<string | null>(null);
+  const [street, setStreet] = useState<{ lat: number; lon: number; name: string } | null>(null);
 
   // ---- POI loading for the current viewport ----
   const loadPois = useCallback(() => {
@@ -241,7 +243,10 @@ export default function CryptoNavigator({
           if (!f) return;
           const p = f.properties as PoiProps;
           const lonlat = (f.geometry as GeoJSON.Point).coordinates as [number, number];
-          const el = buildCard(p, t);
+          // "150 m before the target": highlight if the viewer's known location is close.
+          const origin = originRef.current;
+          const near = origin ? distMeters(origin[1], origin[0], lonlat[1], lonlat[0]) <= 150 : false;
+          const el = buildCard(p, t, near);
           wirePhotoFallback(el);
           const popup = new Popup({
             offset: 14,
@@ -254,6 +259,10 @@ export default function CryptoNavigator({
             .addTo(map);
           el.querySelector<HTMLButtonElement>(".cmap-route")?.addEventListener("click", () => {
             setDestination(lonlat, p.name);
+            popup.remove();
+          });
+          el.querySelector<HTMLButtonElement>(".cmap-street")?.addEventListener("click", () => {
+            setStreet({ lat: lonlat[1], lon: lonlat[0], name: p.name });
             popup.remove();
           });
           hydratePhoto(el, p, t);
@@ -449,6 +458,10 @@ export default function CryptoNavigator({
       )}
 
       <p className="text-[10px] text-muted/60 leading-relaxed">{t("dataNote")}</p>
+
+      {street && (
+        <StreetViewOverlay lat={street.lat} lon={street.lon} name={street.name} onClose={() => setStreet(null)} />
+      )}
     </div>
   );
 }
@@ -509,7 +522,7 @@ function infoRow(icon: string, inner: string): string {
 
 // Build the dark Ledger detail card. Photo slot leads (skeleton until the OG preview
 // resolves, or an OSM image straight away); empty fields are omitted.
-function buildCard(p: PoiProps, t: Translator): HTMLDivElement {
+function buildCard(p: PoiProps, t: Translator, near: boolean): HTMLDivElement {
   const el = document.createElement("div");
   el.className = "cmap-popup";
 
@@ -556,8 +569,23 @@ function buildCard(p: PoiProps, t: Translator): HTMLDivElement {
           : ""
       }
       <button type="button" class="cmap-route">${escapeHtml(t("routeHere"))}</button>
+      <button type="button" class="cmap-street${near ? " is-near" : ""}">👁 ${escapeHtml(t("streetview"))}${
+        near ? `<span class="cmap-near">${escapeHtml(t("streetviewNear"))}</span>` : ""
+      }</button>
     </div>`;
   return el;
+}
+
+// Great-circle distance in metres (inline so this client bundle stays free of the
+// server streetview module). Mirrors lib/streetview haversineMeters.
+function distMeters(aLat: number, aLon: number, bLat: number, bLon: number): number {
+  const R = 6371000;
+  const dLat = ((bLat - aLat) * Math.PI) / 180;
+  const dLon = ((bLon - aLon) * Math.PI) / 180;
+  const la1 = (aLat * Math.PI) / 180;
+  const la2 = (bLat * Math.PI) / 180;
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLon / 2) ** 2;
+  return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
 }
 
 // Lazily upgrade the photo slot with the place's own OpenGraph splash. Guards against

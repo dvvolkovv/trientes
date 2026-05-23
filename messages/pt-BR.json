@@ -248,6 +248,11 @@
     "noRoute": "Couldn't build a route",
     "notFound": "Place not found",
     "dataNote": "Places from OpenStreetMap contributors (crypto-payment tags); routing by OSRM; geocoding by Nominatim. Coverage is community-sourced and skewed toward Bitcoin/Lightning.",
-    "watchVideo": "Watch"
+    "watchVideo": "Watch",
+    "streetview": "Surroundings",
+    "streetviewTitle": "Around this spot",
+    "noStreetview": "No street imagery here yet",
+    "streetviewNear": "you're near",
+    "close": "Close"
   }
 }

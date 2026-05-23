@@ -248,6 +248,11 @@
     "noRoute": "Не удалось построить маршрут",
     "notFound": "Место не найдено",
     "dataNote": "Точки — из OpenStreetMap (теги криптоплатежей); маршруты — OSRM; геокодинг — Nominatim. Покрытие краудсорсное и смещено в сторону Bitcoin/Lightning.",
-    "watchVideo": "Смотреть"
+    "watchVideo": "Смотреть",
+    "streetview": "Окрестности",
+    "streetviewTitle": "Как выглядит место",
+    "noStreetview": "Съёмки этого места пока нет",
+    "streetviewNear": "вы рядом",
+    "close": "Закрыть"
   }
 }
