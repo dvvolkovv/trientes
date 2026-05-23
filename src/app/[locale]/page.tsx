@@ -59,6 +59,22 @@ export default async function Home({
           </div>
         </section>
 
+        {/* NEWSFLOW BANNER */}
+        {news.length > 0 && (
+          <section className="pb-12">
+            <div className="flex items-baseline justify-between mb-5">
+              <div className="num text-[11px] uppercase tracking-[0.3em] text-accent inline-flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-accent" aria-hidden />
+                Newsflow
+              </div>
+              <span className="hidden sm:inline text-muted text-[12px] font-light">
+                Latest crypto headlines · refreshed every 30 min
+              </span>
+            </div>
+            <NewsRail items={news} locale={locale} />
+          </section>
+        )}
+
         {/* COIN TABLE */}
         <section className="py-12">
           <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
@@ -81,22 +97,6 @@ export default async function Home({
             <p className="text-muted">{tl("loadingFallback")}</p>
           )}
         </section>
-
-        {/* NEWSFLOW */}
-        {news.length > 0 && (
-          <section className="py-12">
-            <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
-              Section · II
-            </div>
-            <h2 className="text-[32px] md:text-[40px] font-bold tracking-[-0.03em] mb-2">
-              Newsflow.
-            </h2>
-            <p className="text-muted text-[15px] font-light mb-8">
-              Headlines from across the chain — refreshed every 30 minutes.
-            </p>
-            <NewsRail items={news} locale={locale} />
-          </section>
-        )}
       </div>
     </main>
   );
