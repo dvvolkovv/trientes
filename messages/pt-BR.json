@@ -40,6 +40,14 @@
     "globalVolume": "Volume 24h",
     "btcDominance": "Dominância BTC",
     "ethDominance": "Dominância ETH",
+    "fearGreed": "Medo e ganância",
+    "fng": {
+      "extremeFear": "Medo extremo",
+      "fear": "Medo",
+      "neutral": "Neutro",
+      "greed": "Ganância",
+      "extremeGreed": "Ganância extrema"
+    },
     "sparkline7d": "Gráfico 7d",
     "search": "Buscar por nome ou símbolo…"
   },

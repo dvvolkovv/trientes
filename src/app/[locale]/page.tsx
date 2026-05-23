@@ -1,5 +1,5 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { readTop100, readGlobalStats, readExchangeRates, readNews } from "@/lib/snapshot";
+import { readTop100, readGlobalStats, readExchangeRates, readNews, readFearGreed } from "@/lib/snapshot";
 import { GlobalStatsHero } from "@/components/global-stats-hero";
 import { CoinListClient } from "@/components/coin-list-client";
 import { NewsRail } from "@/components/news-rail";
@@ -19,7 +19,7 @@ export default async function Home({
   const tl = await getTranslations("listing");
   const th = await getTranslations("home");
 
-  const [rows, stats, rates, currency, watchedSet, isAuthed, news] = await Promise.all([
+  const [rows, stats, rates, currency, watchedSet, isAuthed, news, fearGreed] = await Promise.all([
     readTop100(),
     readGlobalStats(),
     readExchangeRates(),
@@ -27,6 +27,7 @@ export default async function Home({
     readUserWatchedIds(),
     isAuthenticated(),
     readNews(),
+    readFearGreed(),
   ]);
 
   return (
@@ -54,7 +55,7 @@ export default async function Home({
               </p>
             </div>
             <div className="col-span-12 lg:col-span-4">
-              <GlobalStatsHero stats={stats} currency={currency} rates={rates} />
+              <GlobalStatsHero stats={stats} currency={currency} rates={rates} fearGreed={fearGreed} />
             </div>
           </div>
         </section>

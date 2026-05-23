@@ -6,7 +6,8 @@ import { prisma } from "../src/lib/prisma";
 import { redis } from "../src/lib/redis";
 import { fetchTop100L1, fetchGlobalSnap, fetchExchangeRates, fetchCoinDetail, fetchExchanges, fetchMarketsByIds } from "../src/lib/coingecko";
 import { fetchNews } from "../src/lib/news";
-import { syncPrices, syncGlobal, syncExchangeRates, syncCoinMetadata, syncExchanges, syncAdminAddedPrices, syncNews } from "../src/lib/sync/orchestrator";
+import { fetchFearGreed } from "../src/lib/fear-greed";
+import { syncPrices, syncGlobal, syncExchangeRates, syncCoinMetadata, syncExchanges, syncAdminAddedPrices, syncNews, syncFearGreed } from "../src/lib/sync/orchestrator";
 import { startBinance, stopBinance } from "./binance";
 
 async function runPriceSync() {
@@ -54,6 +55,16 @@ async function runNewsSync() {
     console.log(`[worker] news-sync ok: ${count} items in ${Date.now() - t0}ms`);
   } catch (err) {
     console.error(`[worker] news-sync failed:`, err);
+  }
+}
+
+async function runFearGreedSync() {
+  const t0 = Date.now();
+  try {
+    const { value } = await syncFearGreed({ fetchFearGreed, redis: redis as never });
+    console.log(`[worker] fear-greed-sync ok: ${value} in ${Date.now() - t0}ms`);
+  } catch (err) {
+    console.error(`[worker] fear-greed-sync failed:`, err);
   }
 }
 
@@ -153,6 +164,7 @@ async function main() {
   await runExchangesSync();
   await runAdminAddedSync();
   await runNewsSync();
+  await runFearGreedSync();
 
   // Kick metadata-sync in the background — don't block startup on a ~3 min loop.
   void runMetadataSync();
@@ -168,8 +180,11 @@ async function main() {
     void runExchangesSync();
     void runAdminAddedSync();
   });
-  // News from public RSS feeds — independent of CoinGecko, so staggered to :15/:45.
-  cron.schedule("15,45 * * * *", () => void runNewsSync());
+  // News + Fear & Greed — both public, no-key, independent of CoinGecko, so staggered to :15/:45.
+  cron.schedule("15,45 * * * *", () => {
+    void runNewsSync();
+    void runFearGreedSync();
+  });
 
   // Daily kick; staleMs in syncCoinMetadata skips coins fetched within 7 days.
   cron.schedule("30 3 * * *", () => void runMetadataSync());

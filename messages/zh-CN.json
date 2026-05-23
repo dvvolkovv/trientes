@@ -40,6 +40,14 @@
     "globalVolume": "24小时交易量",
     "btcDominance": "BTC 占比",
     "ethDominance": "ETH 占比",
+    "fearGreed": "恐惧与贪婪",
+    "fng": {
+      "extremeFear": "极度恐惧",
+      "fear": "恐惧",
+      "neutral": "中性",
+      "greed": "贪婪",
+      "extremeGreed": "极度贪婪"
+    },
     "sparkline7d": "7天图",
     "search": "按名称或符号搜索…"
   },

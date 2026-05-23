@@ -1,6 +1,7 @@
 import type { MarketRow, GlobalSnap, ExchangeRates, Exchange, TickerRow } from "@/lib/coingecko";
 import { fetchTickers } from "@/lib/coingecko";
 import { fetchNews, type NewsItem } from "@/lib/news";
+import { fetchFearGreed, type FearGreed } from "@/lib/fear-greed";
 import { redis } from "@/lib/redis";
 import { prisma } from "@/lib/prisma";
 import { KEYS, TTL } from "@/lib/sync/keys";
@@ -161,6 +162,30 @@ export async function readNews(): Promise<NewsItem[]> {
     return items;
   } catch {
     return [];
+  }
+}
+
+export async function readFearGreed(): Promise<FearGreed | null> {
+  const cached = await redisGet(KEYS.fearGreed);
+  if (cached) {
+    try {
+      return JSON.parse(cached) as FearGreed;
+    } catch {
+      // fall through to a fresh fetch
+    }
+  }
+  // Cold cache (worker hasn't populated it yet): fetch once so the hero row shows
+  // immediately, and best-effort warm the cache for the next reader.
+  try {
+    const fg = await fetchFearGreed();
+    try {
+      await redis.set(KEYS.fearGreed, JSON.stringify(fg), "EX", TTL.fearGreed);
+    } catch {
+      // best-effort cache write
+    }
+    return fg;
+  } catch {
+    return null;
   }
 }
 

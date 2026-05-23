@@ -1,5 +1,6 @@
 import type { MarketRow, GlobalSnap, ExchangeRates, CoinDetail, Exchange } from "@/lib/coingecko";
 import type { NewsItem } from "@/lib/news";
+import type { FearGreed } from "@/lib/fear-greed";
 import { KEYS, TTL } from "./keys";
 
 // Minimal interfaces — we only use what we need so tests can pass fakes.
@@ -113,6 +114,15 @@ export async function syncNews(deps: {
   const items = await deps.fetchNews();
   await deps.redis.set(KEYS.news, JSON.stringify(items), "EX", TTL.news);
   return { count: items.length };
+}
+
+export async function syncFearGreed(deps: {
+  fetchFearGreed: () => Promise<FearGreed>;
+  redis: RedisLike;
+}): Promise<{ value: number }> {
+  const fg = await deps.fetchFearGreed();
+  await deps.redis.set(KEYS.fearGreed, JSON.stringify(fg), "EX", TTL.fearGreed);
+  return { value: fg.value };
 }
 
 type PrismaCoinMetaUpdate = {

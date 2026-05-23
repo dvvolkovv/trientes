@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
-import { syncPrices, syncGlobal, syncExchangeRates, syncExchanges, syncAdminAddedPrices } from "@/lib/sync/orchestrator";
+import { syncPrices, syncGlobal, syncExchangeRates, syncExchanges, syncAdminAddedPrices, syncFearGreed } from "@/lib/sync/orchestrator";
 import { KEYS } from "@/lib/sync/keys";
 import type { MarketRow, GlobalSnap, Exchange } from "@/lib/coingecko";
+import type { FearGreed } from "@/lib/fear-greed";
 
 function makeFakes() {
   const redisStore = new Map<string, string>();
@@ -122,6 +123,30 @@ describe("syncGlobal", () => {
       btcDominancePct: 52.3,
     });
     expect(fakePrisma.globalStats.upsert).toHaveBeenCalled();
+  });
+});
+
+describe("syncFearGreed", () => {
+  const fg: FearGreed = { value: 40, classification: "Fear", updatedAt: 1700000000 };
+
+  it("writes the index JSON to Redis and returns its value", async () => {
+    const { redisStore, fakeRedis } = makeFakes();
+    const result = await syncFearGreed({
+      fetchFearGreed: async () => fg,
+      redis: fakeRedis as never,
+    });
+    expect(result).toEqual({ value: 40 });
+    expect(JSON.parse(redisStore.get(KEYS.fearGreed)!)).toEqual(fg);
+  });
+
+  it("propagates fetch errors", async () => {
+    const { fakeRedis } = makeFakes();
+    await expect(
+      syncFearGreed({
+        fetchFearGreed: async () => { throw new Error("network"); },
+        redis: fakeRedis as never,
+      }),
+    ).rejects.toThrow("network");
   });
 });
 

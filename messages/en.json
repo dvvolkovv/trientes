@@ -40,6 +40,14 @@
     "globalVolume": "24h trading vol",
     "btcDominance": "BTC dominance",
     "ethDominance": "ETH dominance",
+    "fearGreed": "Fear & Greed",
+    "fng": {
+      "extremeFear": "Extreme Fear",
+      "fear": "Fear",
+      "neutral": "Neutral",
+      "greed": "Greed",
+      "extremeGreed": "Extreme Greed"
+    },
     "sparkline7d": "7d chart",
     "search": "Search by name or symbol…"
   },

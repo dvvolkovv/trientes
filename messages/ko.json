@@ -40,6 +40,14 @@
     "globalVolume": "24h 거래량",
     "btcDominance": "BTC 점유율",
     "ethDominance": "ETH 점유율",
+    "fearGreed": "공포와 탐욕",
+    "fng": {
+      "extremeFear": "극단적 공포",
+      "fear": "공포",
+      "neutral": "중립",
+      "greed": "탐욕",
+      "extremeGreed": "극단적 탐욕"
+    },
     "sparkline7d": "7일 차트",
     "search": "이름/심볼로 검색…"
   },

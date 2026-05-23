@@ -40,6 +40,14 @@
     "globalVolume": "24h 取引高",
     "btcDominance": "BTC 支配率",
     "ethDominance": "ETH 支配率",
+    "fearGreed": "恐怖と強欲",
+    "fng": {
+      "extremeFear": "極度の恐怖",
+      "fear": "恐怖",
+      "neutral": "中立",
+      "greed": "強欲",
+      "extremeGreed": "極度の強欲"
+    },
     "sparkline7d": "7日チャート",
     "search": "名前/シンボルで検索…"
   },

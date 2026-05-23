@@ -40,6 +40,14 @@
     "globalVolume": "Объём за 24ч",
     "btcDominance": "Доминация BTC",
     "ethDominance": "Доминация ETH",
+    "fearGreed": "Страх и жадность",
+    "fng": {
+      "extremeFear": "Крайний страх",
+      "fear": "Страх",
+      "neutral": "Нейтрально",
+      "greed": "Жадность",
+      "extremeGreed": "Крайняя жадность"
+    },
     "sparkline7d": "График 7д",
     "search": "Поиск по названию или символу…"
   },

@@ -40,6 +40,14 @@
     "globalVolume": "24s hacim",
     "btcDominance": "BTC hakimiyeti",
     "ethDominance": "ETH hakimiyeti",
+    "fearGreed": "Korku ve açgözlülük",
+    "fng": {
+      "extremeFear": "Aşırı korku",
+      "fear": "Korku",
+      "neutral": "Nötr",
+      "greed": "Açgözlülük",
+      "extremeGreed": "Aşırı açgözlülük"
+    },
     "sparkline7d": "7g grafik",
     "search": "İsim veya sembolle ara…"
   },
