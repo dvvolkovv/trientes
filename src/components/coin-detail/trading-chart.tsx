@@ -29,7 +29,15 @@ const VOL_DOWN = "rgba(229,92,92,0.5)";
 type IndicatorKey = "ma" | "ema" | "bollinger" | "rsi" | "macd";
 const INDICATOR_KEYS: IndicatorKey[] = ["ma", "ema", "bollinger", "rsi", "macd"];
 
-export function TradingChart({ coinId, symbol }: { coinId: string; symbol: string }) {
+export function TradingChart({
+  coinId,
+  symbol,
+  availableExchanges,
+}: {
+  coinId: string;
+  symbol: string;
+  availableExchanges: ExchangeId[];
+}) {
   const t = useTranslations("detail");
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -43,7 +51,9 @@ export function TradingChart({ coinId, symbol }: { coinId: string; symbol: strin
   const typeRef = useRef<"candles" | "line">("candles");
 
   const [tf, setTf] = useState<Timeframe>("1h");
-  const [exchange, setExchange] = useState<ExchangeId>("binance");
+  // Default to the busiest listed venue; "binance" when none (the klines route
+  // then falls back to CoinGecko OHLC since the coin trades on no adapter venue).
+  const [exchange, setExchange] = useState<ExchangeId>(availableExchanges[0] ?? "binance");
   const [type, setType] = useState<"candles" | "line">("candles");
   const [active, setActive] = useState<Set<IndicatorKey>>(new Set<IndicatorKey>(["ma"]));
   const [source, setSource] = useState<string | null>(null);
@@ -278,23 +288,25 @@ export function TradingChart({ coinId, symbol }: { coinId: string; symbol: strin
 
   return (
     <div>
-      <div className="flex flex-wrap items-center gap-1 mb-3">
-        {EXCHANGES.map((ex) => (
-          <button
-            key={ex.id}
-            type="button"
-            onClick={() => selectExchange(ex.id)}
-            className={
-              "text-[12px] px-3 py-1.5 rounded-md font-medium transition-all " +
-              (exchange === ex.id
-                ? "bg-accent text-accent-foreground"
-                : "text-muted border border-hairline hover:text-foreground")
-            }
-          >
-            {ex.label}
-          </button>
-        ))}
-      </div>
+      {availableExchanges.length > 0 && (
+        <div className="flex flex-wrap items-center gap-1 mb-3">
+          {EXCHANGES.filter((ex) => availableExchanges.includes(ex.id)).map((ex) => (
+            <button
+              key={ex.id}
+              type="button"
+              onClick={() => selectExchange(ex.id)}
+              className={
+                "text-[12px] px-3 py-1.5 rounded-md font-medium transition-all " +
+                (exchange === ex.id
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted border border-hairline hover:text-foreground")
+              }
+            >
+              {ex.label}
+            </button>
+          ))}
+        </div>
+      )}
       <div className="flex flex-wrap items-center gap-1 mb-3">
         {TIMEFRAMES.map((f) => {
           const ok = exchangeSupports(exchange, f.interval);

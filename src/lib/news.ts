@@ -13,6 +13,7 @@ export type NewsItem = {
   source: string;
   publishedAt: number; // unix seconds
   theme: NewsTheme;
+  imageUrl: string | null; // article thumbnail, null when the feed carries none
 };
 
 // Verified to return valid RSS without an API key (with a browser UA + redirects).
@@ -79,7 +80,62 @@ function isHttpUrl(u: unknown): u is string {
   }
 }
 
-const parser = new Parser();
+// Most feeds expose a thumbnail via media:* or enclosure; keep the raw nodes so
+// extractImage can pick the best one. enclosure is a built-in rss-parser field.
+const parser = new Parser({
+  customFields: {
+    item: [
+      ["media:content", "mediaContent", { keepArray: true }],
+      ["media:thumbnail", "mediaThumbnail", { keepArray: true }],
+      ["content:encoded", "contentEncoded"],
+    ],
+  },
+});
+
+const IMG_EXT = /\.(jpe?g|png|gif|webp|avif)(\?|#|$)/i;
+
+// Pull a usable image URL from a media:* node (single or array). xml2js puts
+// attributes under `$`; some shapes inline them. When requireImageHint is set,
+// only accept nodes that look like images (medium/type/extension).
+function mediaUrl(node: unknown, requireImageHint: boolean): string | null {
+  const arr = Array.isArray(node) ? node : node == null ? [] : [node];
+  for (const raw of arr) {
+    const m = raw as { $?: Record<string, unknown>; url?: unknown };
+    const attrs = (m.$ ?? m) as Record<string, unknown>;
+    const url = attrs.url;
+    if (typeof url !== "string" || !isHttpUrl(url)) continue;
+    if (!requireImageHint) return url;
+    const medium = attrs.medium;
+    const type = typeof attrs.type === "string" ? attrs.type : "";
+    if (medium === "image" || type.startsWith("image/") || IMG_EXT.test(url)) return url;
+  }
+  return null;
+}
+
+// Best-effort article thumbnail. Priority: media:thumbnail, image media:content,
+// image enclosure, then the first <img> in the body. null when none qualify.
+export function extractImage(item: Record<string, unknown>): string | null {
+  const thumb = mediaUrl(item.mediaThumbnail, false);
+  if (thumb) return thumb;
+
+  const media = mediaUrl(item.mediaContent, true);
+  if (media) return media;
+
+  const enc = item.enclosure as { url?: unknown; type?: unknown } | undefined;
+  if (enc && typeof enc.url === "string" && isHttpUrl(enc.url)) {
+    const t = typeof enc.type === "string" ? enc.type : "";
+    if (t.startsWith("image/") || IMG_EXT.test(enc.url)) return enc.url;
+  }
+
+  const html = [item.contentEncoded, item.content].find((v) => typeof v === "string") as
+    | string
+    | undefined;
+  if (html) {
+    const m = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+    if (m && isHttpUrl(m[1])) return m[1];
+  }
+  return null;
+}
 
 export async function parseFeed(xml: string, source: string): Promise<NewsItem[]> {
   const feed = await parser.parseString(xml);
@@ -90,7 +146,14 @@ export async function parseFeed(xml: string, source: string): Promise<NewsItem[]
     if (!title || !isHttpUrl(url)) continue;
     const ms = Date.parse(it.isoDate ?? it.pubDate ?? "");
     const publishedAt = Number.isFinite(ms) ? Math.floor(ms / 1000) : Math.floor(Date.now() / 1000);
-    out.push({ title, url, source, publishedAt, theme: classifyTheme(`${title} ${it.contentSnippet ?? ""}`) });
+    out.push({
+      title,
+      url,
+      source,
+      publishedAt,
+      theme: classifyTheme(`${title} ${it.contentSnippet ?? ""}`),
+      imageUrl: extractImage(it as unknown as Record<string, unknown>),
+    });
   }
   return out;
 }

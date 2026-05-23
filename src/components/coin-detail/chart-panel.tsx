@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { PriceChart } from "@/components/price-chart";
 import { TradingChart } from "@/components/coin-detail/trading-chart";
+import type { ExchangeId } from "@/lib/exchanges";
 
 const FRAMES: Array<{ key: string; label: string }> = [
   { key: "1d", label: "1D" },
@@ -13,7 +14,15 @@ const FRAMES: Array<{ key: string; label: string }> = [
   { key: "all", label: "All" },
 ];
 
-export function ChartPanel({ coinId, symbol }: { coinId: string; symbol: string }) {
+export function ChartPanel({
+  coinId,
+  symbol,
+  availableExchanges,
+}: {
+  coinId: string;
+  symbol: string;
+  availableExchanges: ExchangeId[];
+}) {
   const t = useTranslations("detail");
   const [mode, setMode] = useState<"simple" | "pro">("simple");
   const [timeframe, setTimeframe] = useState("7d");
@@ -69,7 +78,7 @@ export function ChartPanel({ coinId, symbol }: { coinId: string; symbol: string 
           <PriceChart coinId={coinId} timeframe={timeframe} />
         </div>
       ) : (
-        <TradingChart coinId={coinId} symbol={symbol} />
+        <TradingChart coinId={coinId} symbol={symbol} availableExchanges={availableExchanges} />
       )}
     </div>
   );

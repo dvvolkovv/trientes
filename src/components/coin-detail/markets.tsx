@@ -1,25 +1,19 @@
 import { getTranslations } from "next-intl/server";
-import { fetchTickers, type TickerRow } from "@/lib/coingecko";
 import { formatPriceInCurrency, formatCompactInCurrency, type Currency } from "@/lib/currency";
 import type { ExchangeRates } from "@/lib/coingecko";
+import type { TopExchange } from "@/lib/listings";
 
 export async function MarketsTable({
-  coinId,
+  exchanges,
   currency,
   rates,
 }: {
-  coinId: string;
+  exchanges: TopExchange[];
   currency: Currency;
   rates: ExchangeRates | null;
 }) {
   const t = await getTranslations("detail");
-  let tickers: TickerRow[] = [];
-  try {
-    tickers = await fetchTickers(coinId);
-  } catch {
-    return null;
-  }
-  const top = [...tickers].sort((a, b) => b.volumeUsd - a.volumeUsd).slice(0, 10);
+  const top = exchanges;
   if (top.length === 0) return null;
   const r = rates ?? {};
   const fmtP = (n: number) =>
@@ -32,7 +26,7 @@ export async function MarketsTable({
         Section
       </div>
       <h2 className="text-[24px] md:text-[28px] font-bold tracking-[-0.025em] mb-4">
-        {t("topMarkets")}
+        {t("topExchanges")}
       </h2>
       {/* Desktop table */}
       <div className="hidden md:block bg-card border border-hairline rounded-[20px] overflow-hidden">

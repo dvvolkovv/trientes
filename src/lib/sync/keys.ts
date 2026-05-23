@@ -6,6 +6,7 @@ export const KEYS = {
   globalStats: "global:stats",
   exchangeRates: "exchange:rates",
   news: "news:latest",
+  tickers: (id: string) => `tickers:${id}`,
 } as const;
 
 // TTLs sized to outlive the worker sync cadence (10/30/30 min on CoinGecko Free tier).
@@ -16,6 +17,7 @@ export const TTL = {
   exchanges: 3600,         // 1h — list barely moves in scale
   adminAddedList: 3600,    // 1h
   news: 7200,              // 2h — outlives the 30 min news-sync + worker restarts
+  tickers: 900,            // 15 min — bounds CoinGecko /tickers calls on the free tier
 } as const;
 
 export const HISTORY_KEY = (id: string, timeframe: string) => `coin:history:${id}:${timeframe}`;

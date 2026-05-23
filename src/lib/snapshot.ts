@@ -1,4 +1,5 @@
-import type { MarketRow, GlobalSnap, ExchangeRates, Exchange } from "@/lib/coingecko";
+import type { MarketRow, GlobalSnap, ExchangeRates, Exchange, TickerRow } from "@/lib/coingecko";
+import { fetchTickers } from "@/lib/coingecko";
 import { fetchNews, type NewsItem } from "@/lib/news";
 import { redis } from "@/lib/redis";
 import { prisma } from "@/lib/prisma";
@@ -158,6 +159,30 @@ export async function readNews(): Promise<NewsItem[]> {
       // best-effort cache write
     }
     return items;
+  } catch {
+    return [];
+  }
+}
+
+// Per-coin exchange tickers (every venue the coin lists on). Cached to bound
+// CoinGecko /tickers calls; cold cache fetches live and best-effort warms it.
+export async function readTickers(coinId: string): Promise<TickerRow[]> {
+  const cached = await redisGet(KEYS.tickers(coinId));
+  if (cached) {
+    try {
+      return JSON.parse(cached) as TickerRow[];
+    } catch {
+      // fall through to a fresh fetch
+    }
+  }
+  try {
+    const tickers = await fetchTickers(coinId);
+    try {
+      await redis.set(KEYS.tickers(coinId), JSON.stringify(tickers), "EX", TTL.tickers);
+    } catch {
+      // best-effort cache write
+    }
+    return tickers;
   } catch {
     return [];
   }
