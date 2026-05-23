@@ -100,7 +100,10 @@
     "addToWatchlist": "お気に入りに追加",
     "removeFromWatchlist": "お気に入りから削除",
     "empty": "お気に入りは空です。星マークで追加してください。",
-    "browse": "コインを見る →"
+    "browse": "コインを見る →",
+    "exchangesTitle": "お気に入りの取引所",
+    "exchangesEmpty": "お気に入りの取引所はまだありません",
+    "browseExchanges": "取引所を見る"
   },
   "request": {
     "title": "コインをリクエスト",
@@ -223,7 +226,11 @@
     "country": "国",
     "founded": "設立",
     "volume24h": "出来高 (24h)",
-    "empty": "No exchanges data yet."
+    "empty": "No exchanges data yet.",
+    "showAll": "すべて表示 {count}",
+    "collapse": "折りたたむ",
+    "favorite": "お気に入りに追加",
+    "unfavorite": "お気に入りから削除"
   },
   "cryptoMap": {
     "eyebrow": "Navigator",

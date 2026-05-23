@@ -1,9 +1,10 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { readExchanges, readExchangeRates } from "@/lib/snapshot";
 import { getCurrency } from "@/lib/get-currency";
+import { readUserWatchedExchangeIds, isAuthenticated } from "@/lib/watchlist";
 import { ExchangesTable } from "@/components/exchanges-table";
 
-export const revalidate = 600;
+export const dynamic = "force-dynamic";
 
 export default async function ExchangesPage({
   params,
@@ -14,10 +15,12 @@ export default async function ExchangesPage({
   setRequestLocale(locale);
   const t = await getTranslations("exchanges");
 
-  const [rows, rates, currency] = await Promise.all([
+  const [rows, rates, currency, watchedSet, isAuthed] = await Promise.all([
     readExchanges(),
     readExchangeRates(),
     getCurrency(),
+    readUserWatchedExchangeIds(),
+    isAuthenticated(),
   ]);
 
   return (
@@ -35,7 +38,14 @@ export default async function ExchangesPage({
           </p>
         </header>
         {rows.length > 0 ? (
-          <ExchangesTable rows={rows} currency={currency} rates={rates} />
+          <ExchangesTable
+            rows={rows}
+            currency={currency}
+            rates={rates}
+            watchedIds={[...watchedSet]}
+            isAuthed={isAuthed}
+            locale={locale}
+          />
         ) : (
           <p className="text-muted">{t("empty")}</p>
         )}

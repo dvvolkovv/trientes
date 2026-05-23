@@ -100,7 +100,10 @@
     "addToWatchlist": "添加到收藏",
     "removeFromWatchlist": "取消收藏",
     "empty": "收藏夹为空。点击星标添加。",
-    "browse": "浏览币种 →"
+    "browse": "浏览币种 →",
+    "exchangesTitle": "收藏的交易所",
+    "exchangesEmpty": "还没有收藏的交易所",
+    "browseExchanges": "浏览交易所"
   },
   "request": {
     "title": "申请添加币种",
@@ -223,7 +226,11 @@
     "country": "国家",
     "founded": "成立",
     "volume24h": "成交量 (24h)",
-    "empty": "No exchanges data yet."
+    "empty": "No exchanges data yet.",
+    "showAll": "显示全部 {count}",
+    "collapse": "收起",
+    "favorite": "加入收藏",
+    "unfavorite": "取消收藏"
   },
   "cryptoMap": {
     "eyebrow": "Navigator",

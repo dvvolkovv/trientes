@@ -26,6 +26,7 @@ model User {
   accounts          Account[]
   sessions          Session[]
   watchlist      Watchlist[]
+  exchangeWatchlist ExchangeWatchlist[]
   coinRequests   CoinRequest[]
   adminAddedCoins Coin[]   @relation("AdminCoinAdditions")
   reviewedRequests CoinRequest[] @relation("RequestReviewer")
@@ -201,6 +202,18 @@ model Exchange {
   hasTradingIncentive Boolean  @default(false)
   fetchedAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
+  watchedBy           ExchangeWatchlist[]
 
   @@index([trustScoreRank])
+}
+
+model ExchangeWatchlist {
+  userId     String
+  exchangeId String
+  addedAt    DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exchange   Exchange @relation(fields: [exchangeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, exchangeId])
+  @@index([userId])
 }

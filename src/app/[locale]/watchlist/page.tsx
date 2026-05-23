@@ -1,10 +1,11 @@
 import { redirect } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
-import { readTop100, readExchangeRates } from "@/lib/snapshot";
+import { readTop100, readExchanges, readExchangeRates } from "@/lib/snapshot";
 import { getCurrency } from "@/lib/get-currency";
-import { readUserWatchedIds, isAuthenticated } from "@/lib/watchlist";
+import { readUserWatchedIds, readUserWatchedExchangeIds, isAuthenticated } from "@/lib/watchlist";
 import { CoinListClient } from "@/components/coin-list-client";
+import { ExchangesTable } from "@/components/exchanges-table";
 
 export const dynamic = "force-dynamic";
 
@@ -21,13 +22,16 @@ export default async function WatchlistPage({
 
   const t = await getTranslations("watchlist");
 
-  const [allRows, rates, currency, watchedSet] = await Promise.all([
+  const [allRows, allExchanges, rates, currency, watchedSet, watchedExSet] = await Promise.all([
     readTop100(),
+    readExchanges(),
     readExchangeRates(),
     getCurrency(),
     readUserWatchedIds(),
+    readUserWatchedExchangeIds(),
   ]);
   const rows = allRows.filter((r) => watchedSet.has(r.id));
+  const exchanges = allExchanges.filter((e) => watchedExSet.has(e.id));
 
   return (
     <main className="max-w-[1600px] mx-auto px-4 md:px-12 xl:px-20 py-10 md:py-16">
@@ -40,6 +44,8 @@ export default async function WatchlistPage({
         </h1>
         <p className="text-muted mt-3 max-w-[640px]">{t("subtitle")}</p>
       </header>
+
+      {/* Favorite coins */}
       {rows.length > 0 ? (
         <CoinListClient
           rows={rows}
@@ -70,6 +76,32 @@ export default async function WatchlistPage({
             className="text-accent hover:text-accent/80 transition-colors text-sm font-medium uppercase tracking-wider"
           >
             {t("browse")}
+          </Link>
+        </div>
+      )}
+
+      {/* Favorite exchanges */}
+      <h2 className="text-[20px] md:text-[26px] font-bold tracking-[-0.02em] mt-14 mb-5">
+        {t("exchangesTitle")}
+      </h2>
+      {exchanges.length > 0 ? (
+        <ExchangesTable
+          rows={exchanges}
+          currency={currency}
+          rates={rates}
+          watchedIds={[...watchedExSet]}
+          isAuthed={true}
+          locale={locale}
+          collapsible={false}
+        />
+      ) : (
+        <div className="bg-card border border-hairline rounded-[20px] p-10 text-center">
+          <p className="text-muted mb-4">{t("exchangesEmpty")}</p>
+          <Link
+            href={`/${locale}/exchanges`}
+            className="text-accent hover:text-accent/80 transition-colors text-sm font-medium uppercase tracking-wider"
+          >
+            {t("browseExchanges")}
           </Link>
         </div>
       )}

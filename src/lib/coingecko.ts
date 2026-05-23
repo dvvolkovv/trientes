@@ -311,7 +311,9 @@ export function parseExchange(raw: unknown, btcUsd: number): Exchange {
 }
 
 export async function fetchExchanges(btcUsd: number): Promise<Exchange[]> {
-  const raw = await cgFetch("/exchanges", { per_page: "100", page: "1" });
+  // 250 is CoinGecko's max page size; one page keeps us well within the free-tier
+  // call budget while covering far more than the previous top-100.
+  const raw = await cgFetch("/exchanges", { per_page: "250", page: "1" });
   if (!Array.isArray(raw)) throw new Error("coingecko /exchanges: not an array");
   return raw.map((row) => parseExchange(row, btcUsd));
 }

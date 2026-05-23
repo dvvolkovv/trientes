@@ -100,7 +100,10 @@
     "addToWatchlist": "Añadir a favoritos",
     "removeFromWatchlist": "Quitar de favoritos",
     "empty": "Tu lista está vacía. Marca una moneda con estrella.",
-    "browse": "Ver monedas →"
+    "browse": "Ver monedas →",
+    "exchangesTitle": "Exchanges favoritos",
+    "exchangesEmpty": "Aún no hay exchanges favoritos",
+    "browseExchanges": "Ver exchanges"
   },
   "request": {
     "title": "Solicitar moneda",
@@ -223,7 +226,11 @@
     "country": "País",
     "founded": "Fundado",
     "volume24h": "Volumen (24h)",
-    "empty": "No exchanges data yet."
+    "empty": "No exchanges data yet.",
+    "showAll": "Ver todas {count}",
+    "collapse": "Contraer",
+    "favorite": "Añadir a favoritos",
+    "unfavorite": "Quitar de favoritos"
   },
   "cryptoMap": {
     "eyebrow": "Navigator",

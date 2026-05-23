@@ -100,7 +100,10 @@
     "addToWatchlist": "Zur Watchlist hinzufügen",
     "removeFromWatchlist": "Aus Watchlist entfernen",
     "empty": "Watchlist leer. Münze mit Stern markieren.",
-    "browse": "Coins ansehen →"
+    "browse": "Coins ansehen →",
+    "exchangesTitle": "Favorisierte Börsen",
+    "exchangesEmpty": "Noch keine favorisierten Börsen",
+    "browseExchanges": "Börsen ansehen"
   },
   "request": {
     "title": "Coin vorschlagen",
@@ -223,7 +226,11 @@
     "country": "Land",
     "founded": "Gegründet",
     "volume24h": "Volumen (24h)",
-    "empty": "No exchanges data yet."
+    "empty": "No exchanges data yet.",
+    "showAll": "Alle {count} anzeigen",
+    "collapse": "Einklappen",
+    "favorite": "Zu Favoriten",
+    "unfavorite": "Aus Favoriten entfernen"
   },
   "cryptoMap": {
     "eyebrow": "Navigator",

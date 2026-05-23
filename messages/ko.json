@@ -100,7 +100,10 @@
     "addToWatchlist": "관심목록 추가",
     "removeFromWatchlist": "관심목록 제거",
     "empty": "관심목록이 비었습니다. 별표로 추가하세요.",
-    "browse": "코인 둘러보기 →"
+    "browse": "코인 둘러보기 →",
+    "exchangesTitle": "즐겨찾는 거래소",
+    "exchangesEmpty": "아직 즐겨찾는 거래소가 없습니다",
+    "browseExchanges": "거래소 보기"
   },
   "request": {
     "title": "코인 요청",
@@ -223,7 +226,11 @@
     "country": "국가",
     "founded": "설립",
     "volume24h": "거래량 (24h)",
-    "empty": "No exchanges data yet."
+    "empty": "No exchanges data yet.",
+    "showAll": "전체 {count}개 보기",
+    "collapse": "접기",
+    "favorite": "즐겨찾기 추가",
+    "unfavorite": "즐겨찾기 제거"
   },
   "cryptoMap": {
     "eyebrow": "Navigator",

@@ -100,7 +100,10 @@
     "addToWatchlist": "İzleme listesine ekle",
     "removeFromWatchlist": "Listeden çıkar",
     "empty": "İzleme listeniz boş. Yıldız ile ekleyin.",
-    "browse": "Coinleri gözat →"
+    "browse": "Coinleri gözat →",
+    "exchangesTitle": "Favori borsalar",
+    "exchangesEmpty": "Henüz favori borsa yok",
+    "browseExchanges": "Borsalara göz at"
   },
   "request": {
     "title": "Coin öner",
@@ -223,7 +226,11 @@
     "country": "Ülke",
     "founded": "Kuruluş",
     "volume24h": "Hacim (24s)",
-    "empty": "No exchanges data yet."
+    "empty": "No exchanges data yet.",
+    "showAll": "Tümünü göster {count}",
+    "collapse": "Daralt",
+    "favorite": "Favorilere ekle",
+    "unfavorite": "Favorilerden çıkar"
   },
   "cryptoMap": {
     "eyebrow": "Navigator",

@@ -100,7 +100,10 @@
     "addToWatchlist": "Добавить в избранное",
     "removeFromWatchlist": "Убрать из избранного",
     "empty": "Избранное пусто. Отметьте монету звёздочкой, чтобы добавить.",
-    "browse": "К списку монет →"
+    "browse": "К списку монет →",
+    "exchangesTitle": "Избранные биржи",
+    "exchangesEmpty": "Пока нет избранных бирж",
+    "browseExchanges": "К биржам"
   },
   "request": {
     "title": "Предложить монету",
@@ -223,7 +226,11 @@
     "country": "Страна",
     "founded": "Основана",
     "volume24h": "Объём (24ч)",
-    "empty": "No exchanges data yet."
+    "empty": "No exchanges data yet.",
+    "showAll": "Показать все {count}",
+    "collapse": "Свернуть",
+    "favorite": "В избранное",
+    "unfavorite": "Убрать из избранного"
   },
   "cryptoMap": {
     "eyebrow": "Навигатор",

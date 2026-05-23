@@ -100,7 +100,10 @@
     "addToWatchlist": "Add to watchlist",
     "removeFromWatchlist": "Remove from watchlist",
     "empty": "Your watchlist is empty. Star a coin to add it here.",
-    "browse": "Browse coins →"
+    "browse": "Browse coins →",
+    "exchangesTitle": "Favorite exchanges",
+    "exchangesEmpty": "No favorite exchanges yet",
+    "browseExchanges": "Browse exchanges"
   },
   "request": {
     "title": "Request a coin",
@@ -223,7 +226,11 @@
     "country": "Country",
     "founded": "Founded",
     "volume24h": "Volume (24h)",
-    "empty": "No exchanges data yet."
+    "empty": "No exchanges data yet.",
+    "showAll": "Show all {count}",
+    "collapse": "Collapse",
+    "favorite": "Add to favorites",
+    "unfavorite": "Remove from favorites"
   },
   "cryptoMap": {
     "eyebrow": "Navigator",

@@ -12,6 +12,17 @@ export async function readUserWatchedIds(): Promise<Set<string>> {
   return new Set(rows.map((r) => r.coinId));
 }
 
+export async function readUserWatchedExchangeIds(): Promise<Set<string>> {
+  const session = await auth();
+  const userId = (session?.user as { id?: string } | undefined)?.id;
+  if (!userId) return new Set();
+  const rows = await prisma.exchangeWatchlist.findMany({
+    where: { userId },
+    select: { exchangeId: true },
+  });
+  return new Set(rows.map((r) => r.exchangeId));
+}
+
 export async function isAuthenticated(): Promise<boolean> {
   const session = await auth();
   return Boolean((session?.user as { id?: string } | undefined)?.id);

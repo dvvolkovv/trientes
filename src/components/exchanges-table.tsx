@@ -1,7 +1,13 @@
+"use client";
+
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { useState } from "react";
+import { useTranslations } from "next-intl";
 import type { Exchange, ExchangeRates } from "@/lib/coingecko";
 import { formatCompactInCurrency, type Currency } from "@/lib/currency";
+import { ExchangeStar } from "@/components/exchange-star";
+
+const VISIBLE = 25; // rows shown before "show all"
 
 function trustBadgeCls(score: number | null): string {
   if (score === null) return "bg-card-alt text-muted";
@@ -10,19 +16,32 @@ function trustBadgeCls(score: number | null): string {
   return "bg-down/15 text-down";
 }
 
-export async function ExchangesTable({
+export function ExchangesTable({
   rows,
   currency,
   rates,
+  watchedIds,
+  isAuthed,
+  locale,
+  collapsible = true,
 }: {
   rows: Exchange[];
   currency: Currency;
   rates: ExchangeRates | null;
+  watchedIds: string[];
+  isAuthed: boolean;
+  locale: string;
+  collapsible?: boolean;
 }) {
-  const t = await getTranslations("exchanges");
+  const t = useTranslations("exchanges");
+  const [expanded, setExpanded] = useState(false);
+  const watched = new Set(watchedIds);
   const r = rates ?? {};
   const fmtV = (n: number) =>
     rates ? formatCompactInCurrency(n, currency, r) : `$${(n / 1e9).toFixed(2)}B`;
+
+  const shown = collapsible && !expanded ? rows.slice(0, VISIBLE) : rows;
+  const canCollapse = collapsible && rows.length > VISIBLE;
 
   return (
     <>
@@ -31,6 +50,7 @@ export async function ExchangesTable({
         <table className="w-full">
           <thead>
             <tr className="text-[11px] uppercase tracking-[0.18em] text-muted border-b border-hairline">
+              <th className="w-10 px-3 py-4" />
               <th className="text-left font-medium px-5 py-4">{t("rank")}</th>
               <th className="text-left font-medium px-5 py-4">{t("name")}</th>
               <th className="text-left font-medium px-5 py-4">{t("trust")}</th>
@@ -40,25 +60,21 @@ export async function ExchangesTable({
             </tr>
           </thead>
           <tbody>
-            {rows.map((e) => (
-              <tr
-                key={e.id}
-                className="border-b border-hairline hover:bg-bg-tint transition-colors"
-              >
-                <td className="num px-5 py-5 text-[13px] text-muted">
-                  {e.trustScoreRank ?? "—"}
+            {shown.map((e) => (
+              <tr key={e.id} className="border-b border-hairline hover:bg-bg-tint transition-colors">
+                <td className="px-3 py-5 text-center align-middle">
+                  <ExchangeStar
+                    exchangeId={e.id}
+                    initialWatched={watched.has(e.id)}
+                    isAuthed={isAuthed}
+                    locale={locale}
+                  />
                 </td>
+                <td className="num px-5 py-5 text-[13px] text-muted">{e.trustScoreRank ?? "—"}</td>
                 <td className="px-5 py-5">
                   <div className="flex items-center gap-3">
                     {e.logoUrl && (
-                      <Image
-                        src={e.logoUrl}
-                        alt=""
-                        width={28}
-                        height={28}
-                        className="rounded"
-                        unoptimized
-                      />
+                      <Image src={e.logoUrl} alt="" width={28} height={28} className="rounded" unoptimized />
                     )}
                     {e.url ? (
                       <a
@@ -82,12 +98,8 @@ export async function ExchangesTable({
                   </span>
                 </td>
                 <td className="px-5 py-5 text-[13px] text-muted">{e.country ?? "—"}</td>
-                <td className="num px-5 py-5 text-[13px] text-muted">
-                  {e.yearEstablished ?? "—"}
-                </td>
-                <td className="num text-right text-[13px] px-5 py-5 font-medium">
-                  {fmtV(e.volume24hUsd)}
-                </td>
+                <td className="num px-5 py-5 text-[13px] text-muted">{e.yearEstablished ?? "—"}</td>
+                <td className="num text-right text-[13px] px-5 py-5 font-medium">{fmtV(e.volume24hUsd)}</td>
               </tr>
             ))}
           </tbody>
@@ -96,21 +108,17 @@ export async function ExchangesTable({
 
       {/* Mobile cards */}
       <div className="md:hidden space-y-2">
-        {rows.map((e) => (
-          <div
-            key={e.id}
-            className="bg-card border border-hairline rounded-[16px] p-4"
-          >
+        {shown.map((e) => (
+          <div key={e.id} className="bg-card border border-hairline rounded-[16px] p-4">
             <div className="flex items-center gap-3 mb-3">
+              <ExchangeStar
+                exchangeId={e.id}
+                initialWatched={watched.has(e.id)}
+                isAuthed={isAuthed}
+                locale={locale}
+              />
               {e.logoUrl && (
-                <Image
-                  src={e.logoUrl}
-                  alt=""
-                  width={28}
-                  height={28}
-                  className="rounded flex-shrink-0"
-                  unoptimized
-                />
+                <Image src={e.logoUrl} alt="" width={28} height={28} className="rounded flex-shrink-0" unoptimized />
               )}
               <div className="flex-1 min-w-0">
                 {e.url ? (
@@ -139,13 +147,23 @@ export async function ExchangesTable({
               <span className="num text-[11px] text-muted uppercase tracking-wider">
                 #{e.trustScoreRank ?? "—"}
               </span>
-              <span className="num text-[14px] font-medium">
-                {fmtV(e.volume24hUsd)}
-              </span>
+              <span className="num text-[14px] font-medium">{fmtV(e.volume24hUsd)}</span>
             </div>
           </div>
         ))}
       </div>
+
+      {canCollapse && (
+        <div className="mt-4 text-center">
+          <button
+            type="button"
+            onClick={() => setExpanded((v) => !v)}
+            className="text-[12px] px-4 py-2 rounded-md font-medium border border-hairline text-muted hover:text-foreground transition-all uppercase tracking-wider"
+          >
+            {expanded ? t("collapse") : t("showAll", { count: rows.length })}
+          </button>
+        </div>
+      )}
     </>
   );
 }
