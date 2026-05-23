@@ -1,7 +1,8 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { readTop100, readGlobalStats, readExchangeRates } from "@/lib/snapshot";
+import { readTop100, readGlobalStats, readExchangeRates, readNews } from "@/lib/snapshot";
 import { GlobalStatsHero } from "@/components/global-stats-hero";
 import { CoinListClient } from "@/components/coin-list-client";
+import { NewsRail } from "@/components/news-rail";
 import { LivePrices } from "@/components/live-prices";
 import { getCurrency } from "@/lib/get-currency";
 import { readUserWatchedIds, isAuthenticated } from "@/lib/watchlist";
@@ -18,13 +19,14 @@ export default async function Home({
   const tl = await getTranslations("listing");
   const th = await getTranslations("home");
 
-  const [rows, stats, rates, currency, watchedSet, isAuthed] = await Promise.all([
+  const [rows, stats, rates, currency, watchedSet, isAuthed, news] = await Promise.all([
     readTop100(),
     readGlobalStats(),
     readExchangeRates(),
     getCurrency(),
     readUserWatchedIds(),
     isAuthenticated(),
+    readNews(),
   ]);
 
   return (
@@ -79,6 +81,22 @@ export default async function Home({
             <p className="text-muted">{tl("loadingFallback")}</p>
           )}
         </section>
+
+        {/* NEWSFLOW */}
+        {news.length > 0 && (
+          <section className="py-12">
+            <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
+              Section · II
+            </div>
+            <h2 className="text-[32px] md:text-[40px] font-bold tracking-[-0.03em] mb-2">
+              Newsflow.
+            </h2>
+            <p className="text-muted text-[15px] font-light mb-8">
+              Headlines from across the chain — refreshed every 30 minutes.
+            </p>
+            <NewsRail items={news} locale={locale} />
+          </section>
+        )}
       </div>
     </main>
   );
