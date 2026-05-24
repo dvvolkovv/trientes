@@ -23,11 +23,14 @@ export type PointRowData = {
 export function PointRow({ row }: { row: PointRowData }) {
   const [pending, start] = useTransition();
   const [reason, setReason] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const act = (fn: () => Promise<{ ok: boolean }>) =>
+  const act = (fn: () => Promise<{ ok: boolean; reason?: string }>) =>
     start(async () => {
-      await fn();
-      router.refresh();
+      setError(null);
+      const res = await fn();
+      if (res.ok) router.refresh();
+      else setError(res.reason ?? "unknown_error");
     });
 
   return (
@@ -93,6 +96,7 @@ export function PointRow({ row }: { row: PointRowData }) {
           Rejected: {row.rejectReason}
         </div>
       )}
+      {error && <div className="text-[12px] text-down mt-2">Error: {error}</div>}
     </div>
   );
 }
