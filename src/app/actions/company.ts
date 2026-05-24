@@ -3,8 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { validateCompanyProfile, validateCompanyPoint } from "@/lib/company";
-import type { PointType } from "@prisma/client";
+import {
+  validateCompanyProfile,
+  validateCompanyPoint,
+  type CompanyProfileInput,
+  type CompanyPointInput,
+} from "@/lib/company";
+import { Prisma, type PointType } from "@prisma/client";
 
 const MAX_PENDING_POINTS = 20;
 
@@ -21,28 +26,35 @@ export async function registerCompany(input: { legalName: string; displayName: s
   if (existing) return { ok: false, reason: "already_company" };
   const v = validateCompanyProfile(input);
   if (!v.ok) return { ok: false, reason: v.reason };
-  await prisma.$transaction([
-    prisma.company.create({
-      data: {
-        ownerUserId: userId,
-        legalName: v.data.legalName,
-        displayName: v.data.displayName,
-        description: v.data.description,
-        country: v.data.country,
-        address: v.data.address,
-        phone: v.data.phone,
-        email: v.data.email,
-        website: v.data.website,
-        logoUrl: v.data.logoUrl,
-      },
-    }),
-    prisma.user.update({ where: { id: userId }, data: { accountType: "COMPANY" } }),
-  ]);
+  try {
+    await prisma.$transaction([
+      prisma.company.create({
+        data: {
+          ownerUserId: userId,
+          legalName: v.data.legalName,
+          displayName: v.data.displayName,
+          description: v.data.description,
+          country: v.data.country,
+          address: v.data.address,
+          phone: v.data.phone,
+          email: v.data.email,
+          website: v.data.website,
+          logoUrl: v.data.logoUrl,
+        },
+      }),
+      prisma.user.update({ where: { id: userId }, data: { accountType: "COMPANY" } }),
+    ]);
+  } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
+      return { ok: false, reason: "already_company" };
+    }
+    throw err;
+  }
   revalidatePath("/", "layout");
   return { ok: true };
 }
 
-export async function saveCompanyProfile(input: Parameters<typeof validateCompanyProfile>[0]) {
+export async function saveCompanyProfile(input: CompanyProfileInput) {
   const userId = await requireUser();
   if (!userId) return { ok: false, reason: "unauth" };
   const company = await prisma.company.findUnique({ where: { ownerUserId: userId } });
@@ -54,7 +66,7 @@ export async function saveCompanyProfile(input: Parameters<typeof validateCompan
   return { ok: true };
 }
 
-export async function submitCompanyPoint(input: Parameters<typeof validateCompanyPoint>[0] & { socials?: { network: string; url: string }[] }) {
+export async function submitCompanyPoint(input: CompanyPointInput & { socials?: { network: string; url: string }[] }) {
   const userId = await requireUser();
   if (!userId) return { ok: false, reason: "unauth" };
   const company = await prisma.company.findUnique({ where: { ownerUserId: userId } });
