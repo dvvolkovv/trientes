@@ -1,7 +1,7 @@
 export const RESERVED_USERNAMES = new Set([
   "admin", "administrator", "root", "system", "support", "help",
   "cabinet", "business", "settings", "login", "register", "logout",
-  "signin", "signup", "api", "auth", "user", "users", "me", "you",
+  "signin", "signup", "api", "auth", "user", "users", "you",
   "trientes", "anonymous", "null", "undefined", "owner",
 ]);
 
