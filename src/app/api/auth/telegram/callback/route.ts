@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { randomBytes } from "node:crypto";
 import { verifyTelegramAuth } from "@/lib/telegram-auth";
 import { prisma } from "@/lib/prisma";
 import { isAdminWhitelisted, parseAdminWhitelist } from "@/lib/admin-whitelist";
+import { createDatabaseSession } from "@/lib/session";
 
 const adminWhitelist = parseAdminWhitelist(process.env.ADMIN_WHITELIST);
 
@@ -69,28 +69,13 @@ export async function POST(req: Request) {
   }
 
   // Create a proper database session that Auth.js will recognise.
-  const sessionToken = randomBytes(32).toString("hex");
-  const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-  await prisma.session.create({ data: { sessionToken, userId, expires } });
-
-  const isProd = process.env.NODE_ENV === "production";
-  const cookieName = isProd
-    ? "__Secure-authjs.session-token"
-    : "authjs.session-token";
+  const cookie = await createDatabaseSession(userId);
 
   const redirectTo = req.headers.get("referer")
     ? new URL("/", new URL(req.headers.get("referer")!))
     : new URL("/", req.url);
 
   const response = NextResponse.redirect(redirectTo);
-  response.cookies.set({
-    name: cookieName,
-    value: sessionToken,
-    expires,
-    httpOnly: true,
-    sameSite: "lax",
-    secure: isProd,
-    path: "/",
-  });
+  response.cookies.set(cookie);
   return response;
 }
