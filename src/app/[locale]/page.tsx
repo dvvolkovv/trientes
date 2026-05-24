@@ -4,8 +4,10 @@ import { GlobalStatsHero } from "@/components/global-stats-hero";
 import { CoinListClient } from "@/components/coin-list-client";
 import { NewsRail } from "@/components/news-rail";
 import { LivePrices } from "@/components/live-prices";
+import { HomeTicker, type TickerItem } from "@/components/home-ticker";
 import { getCurrency } from "@/lib/get-currency";
 import { readUserWatchedIds, isAuthenticated } from "@/lib/watchlist";
+import { formatCompactInCurrency } from "@/lib/currency";
 
 export const revalidate = 60;
 
@@ -29,6 +31,63 @@ export default async function Home({
     readNews(),
     readFearGreed(),
   ]);
+
+  const tlist = await getTranslations("listing");
+
+  // ----- Build ticker items: interleave phrases (white) and live stats (orange).
+  const phrasesRaw = th.raw("ticker.phrases");
+  const phrases: string[] = Array.isArray(phrasesRaw)
+    ? (phrasesRaw as unknown[]).filter((x): x is string => typeof x === "string")
+    : [];
+
+  const statItems: TickerItem[] = [];
+  if (stats && rates) {
+    statItems.push({
+      kind: "stat",
+      label: tlist("globalMarketCap"),
+      value: formatCompactInCurrency(stats.totalMarketCapUsd, currency, rates),
+      href: `/${locale}/markets`,
+    });
+    statItems.push({
+      kind: "stat",
+      label: tlist("globalVolume"),
+      value: formatCompactInCurrency(stats.total24hVolumeUsd, currency, rates),
+      href: `/${locale}/markets`,
+    });
+    statItems.push({
+      kind: "stat",
+      label: tlist("btcDominance"),
+      value: `${stats.btcDominancePct.toFixed(1)}%`,
+      href: `/${locale}/markets`,
+    });
+  }
+  if (fearGreed) {
+    const fngKey =
+      {
+        "extreme fear": "fng.extremeFear",
+        fear: "fng.fear",
+        neutral: "fng.neutral",
+        greed: "fng.greed",
+        "extreme greed": "fng.extremeGreed",
+      }[fearGreed.classification.toLowerCase()] ?? null;
+    const fngLabel = fngKey ? tlist(fngKey) : fearGreed.classification;
+    statItems.push({
+      kind: "stat",
+      label: tlist("fearGreed"),
+      value: `${fearGreed.value} · ${fngLabel}`,
+      href: `/${locale}/markets`,
+    });
+  }
+
+  // Interleave: phrase, stat, phrase, stat, ... — phrases cycle if shorter.
+  const tickerItems: TickerItem[] = [];
+  const maxLen = Math.max(phrases.length, statItems.length);
+  for (let i = 0; i < maxLen; i++) {
+    if (phrases.length > 0) {
+      tickerItems.push({ kind: "phrase", text: phrases[i % phrases.length] });
+    }
+    if (statItems[i]) tickerItems.push(statItems[i]);
+  }
 
   return (
     <main className="bg-bg">
@@ -59,6 +118,9 @@ export default async function Home({
             </div>
           </div>
         </section>
+
+        {/* TICKER BANNER */}
+        <HomeTicker items={tickerItems} ariaLabel={th("ticker.ariaLabel")} />
 
         {/* NEWSFLOW BANNER */}
         {news.length > 0 && (
