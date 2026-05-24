@@ -28,4 +28,17 @@ describe("companyPointToPoi", () => {
     expect(p.image).toBe("https://x/c.png");
     expect(p.website).toBe("https://acme.co");
   });
+  it("drops socials with non-http(s) urls (XSS guard)", () => {
+    const dirty = {
+      ...row,
+      socials: [
+        { network: "telegram", url: "https://t.me/ok" },
+        { network: "evil", url: "javascript:alert(1)" },
+        { network: "", url: "https://t.me/empty-network" },
+        "not-an-object",
+      ],
+    };
+    const p = companyPointToPoi(dirty as never, "bitcoin");
+    expect(p.socials).toEqual([{ network: "telegram", url: "https://t.me/ok" }]);
+  });
 });

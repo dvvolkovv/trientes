@@ -1,26 +1,40 @@
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import type { Bbox, Poi, PoiLayer, Social } from "@/lib/crypto-map";
 
 // Shape returned by the prisma query in fetchApprovedPointsInBbox (point + its company).
-export type PointWithCompany = {
-  id: string; type: "SHOP" | "ATM" | "POS" | "SALES_OFFICE"; name: string; description: string | null;
-  lat: number; lon: number; address: string | null; acceptedCoinIds: string[];
-  logoUrl: string | null; openingHours: string | null; phone: string | null; website: string | null;
-  socials: unknown;
-  company: { displayName: string; logoUrl: string | null; website: string | null; socials: unknown };
-};
+export type PointWithCompany = Prisma.CompanyPointGetPayload<{
+  include: { company: { select: { displayName: true; logoUrl: true; website: true; socials: true } } };
+}>;
 
 function layerFor(type: PointWithCompany["type"]): PoiLayer {
   return type === "ATM" ? "atm" : "merchant";
 }
 function asSocials(raw: unknown): Social[] {
-  return Array.isArray(raw) ? (raw as Social[]) : [];
+  if (!Array.isArray(raw)) return [];
+  const out: Social[] = [];
+  for (const item of raw) {
+    if (!item || typeof item !== "object") continue;
+    const network = (item as { network?: unknown }).network;
+    const url = (item as { url?: unknown }).url;
+    if (typeof network !== "string" || !network.trim()) continue;
+    if (typeof url !== "string") continue;
+    try {
+      const u = new URL(url);
+      if (u.protocol !== "http:" && u.protocol !== "https:") continue;
+    } catch {
+      continue;
+    }
+    out.push({ network: network.trim(), url });
+  }
+  return out;
 }
 
 // Convert a company-submitted point into the same Poi shape OSM points use, so the
 // existing navigator card/markers render it unchanged. Company-level logo/website/
 // socials are the fallback when the point omits its own.
 export function companyPointToPoi(p: PointWithCompany, coinId: string): Poi {
+  const pointSocials = asSocials(p.socials);
   return {
     id: `company/${p.id}`,
     lat: p.lat,
@@ -35,7 +49,7 @@ export function companyPointToPoi(p: PointWithCompany, coinId: string): Poi {
     openingHours: p.openingHours,
     phone: p.phone,
     email: null,
-    socials: asSocials(p.socials).length ? asSocials(p.socials) : asSocials(p.company.socials),
+    socials: pointSocials.length ? pointSocials : asSocials(p.company.socials),
     image: p.logoUrl ?? p.company.logoUrl ?? null,
   };
 }
@@ -51,5 +65,5 @@ export async function fetchApprovedPointsInBbox(bbox: Bbox, coinId: string): Pro
     take: 500,
     include: { company: { select: { displayName: true, logoUrl: true, website: true, socials: true } } },
   });
-  return rows.map((r) => companyPointToPoi(r as unknown as PointWithCompany, coinId));
+  return rows.map((r) => companyPointToPoi(r, coinId));
 }
