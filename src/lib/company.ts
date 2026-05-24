@@ -77,6 +77,7 @@ export function validateCompanyPoint(input: CompanyPointInput): PointResult {
   if (!POINT_TYPES.includes(type)) return { ok: false, reason: "type_invalid" };
   const name = (input.name ?? "").trim();
   if (!name) return { ok: false, reason: "name_required" };
+  if (input.lat == null || input.lon == null) return { ok: false, reason: "coords_invalid" };
   const lat = Number(input.lat);
   const lon = Number(input.lon);
   if (!Number.isFinite(lat) || !Number.isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180)

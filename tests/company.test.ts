@@ -34,6 +34,11 @@ describe("validateCompanyPoint", () => {
     expect(validateCompanyPoint({ ...base, lat: 100 })).toMatchObject({ ok: false, reason: "coords_invalid" });
     expect(validateCompanyPoint({ ...base, lon: 999 })).toMatchObject({ ok: false, reason: "coords_invalid" });
   });
+  it("rejects nullish coordinates", () => {
+    expect(validateCompanyPoint({ ...base, lat: null })).toMatchObject({ ok: false, reason: "coords_invalid" });
+    expect(validateCompanyPoint({ ...base, lon: null })).toMatchObject({ ok: false, reason: "coords_invalid" });
+    expect(validateCompanyPoint({ ...base, lat: undefined })).toMatchObject({ ok: false, reason: "coords_invalid" });
+  });
   it("normalizes acceptedCoinIds to lowercase unique slugs", () => {
     const r = validateCompanyPoint({ ...base, acceptedCoinIds: ["Bitcoin", "bitcoin", "ETH"] });
     expect(r.ok).toBe(true);
