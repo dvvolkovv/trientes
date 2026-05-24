@@ -297,7 +297,16 @@
     "streetviewTitle": "Around this spot",
     "noStreetview": "No street imagery here yet",
     "streetviewNear": "you're near",
-    "close": "Close"
+    "close": "Close",
+    "start": "Başlat",
+    "stop": "Durdur",
+    "recompute": "Yeniden hesapla",
+    "remaining": "Kalan",
+    "etaMin": "{min} dk",
+    "arrived": "Hedefe ulaştınız",
+    "permissionDenied": "Konum erişimi engellendi. Yönlendirme için tarayıcı ayarlarından etkinleştirin.",
+    "startOnlyWalk": "Yalnızca yürüyüş rotaları için kullanılabilir",
+    "navStarting": "GPS isteniyor…"
   },
   "markets": {
     "title": "Piyasalar",

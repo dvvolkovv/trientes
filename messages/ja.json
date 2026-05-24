@@ -297,7 +297,16 @@
     "streetviewTitle": "Around this spot",
     "noStreetview": "No street imagery here yet",
     "streetviewNear": "you're near",
-    "close": "Close"
+    "close": "Close",
+    "start": "スタート",
+    "stop": "ストップ",
+    "recompute": "再計算",
+    "remaining": "残り",
+    "etaMin": "{min} 分",
+    "arrived": "目的地に到着しました",
+    "permissionDenied": "位置情報がブロックされています。ブラウザの設定で有効にしてください。",
+    "startOnlyWalk": "徒歩ルートでのみ利用可能",
+    "navStarting": "GPS を要求中…"
   },
   "markets": {
     "title": "市場",

@@ -297,7 +297,16 @@
     "streetviewTitle": "Around this spot",
     "noStreetview": "No street imagery here yet",
     "streetviewNear": "you're near",
-    "close": "Close"
+    "close": "Close",
+    "start": "Iniciar",
+    "stop": "Parar",
+    "recompute": "Recalcular",
+    "remaining": "Restante",
+    "etaMin": "{min} min",
+    "arrived": "Você chegou",
+    "permissionDenied": "Geolocalização bloqueada. Ative-a nas configurações do navegador para seguir a rota.",
+    "startOnlyWalk": "Disponível apenas para rotas a pé",
+    "navStarting": "Solicitando GPS…"
   },
   "markets": {
     "title": "Mercados",

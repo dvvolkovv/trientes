@@ -297,7 +297,16 @@
     "streetviewTitle": "Around this spot",
     "noStreetview": "No street imagery here yet",
     "streetviewNear": "you're near",
-    "close": "Close"
+    "close": "Close",
+    "start": "开始",
+    "stop": "停止",
+    "recompute": "重新计算",
+    "remaining": "剩余",
+    "etaMin": "{min} 分钟",
+    "arrived": "您已到达",
+    "permissionDenied": "位置访问已被阻止。请在浏览器设置中开启以进行导航。",
+    "startOnlyWalk": "仅适用于步行路线",
+    "navStarting": "正在请求 GPS…"
   },
   "markets": {
     "title": "市场",

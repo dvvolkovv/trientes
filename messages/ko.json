@@ -297,7 +297,16 @@
     "streetviewTitle": "Around this spot",
     "noStreetview": "No street imagery here yet",
     "streetviewNear": "you're near",
-    "close": "Close"
+    "close": "Close",
+    "start": "시작",
+    "stop": "정지",
+    "recompute": "다시 계산",
+    "remaining": "남음",
+    "etaMin": "{min} 분",
+    "arrived": "도착했습니다",
+    "permissionDenied": "위치 정보가 차단되었습니다. 브라우저 설정에서 허용하세요.",
+    "startOnlyWalk": "도보 경로에서만 사용 가능",
+    "navStarting": "GPS 요청 중…"
   },
   "markets": {
     "title": "시장",
