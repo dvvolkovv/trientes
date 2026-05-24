@@ -27,7 +27,19 @@
     "heroLine2Accent": "coinage",
     "heroLine2After": ".",
     "heroSubtitle": "Live prices for the top Layer-1 cryptocurrencies. Eight display currencies, sparkline trends, and per-coin detail pages.",
-    "heroEyebrow": "Live · Layer-1 Ledger · refreshed every 10 min"
+    "heroEyebrow": "Live · Layer-1 Ledger · refreshed every 10 min",
+    "ticker": {
+      "ariaLabel": "Service highlights and live market ticker",
+      "phrases": [
+        "Digital coin registry",
+        "Top Layer-1",
+        "8 fiat currencies",
+        "7-day charts",
+        "Live market news",
+        "Worldwide crypto navigator",
+        "Prices with no delay"
+      ]
+    }
   },
   "listing": {
     "rank": "#",
