@@ -58,59 +58,55 @@ username проставится при первом заходе на `/cabinet`
 
 ## Регистрация и логин
 
-### Credentials-провайдер
-Добавляем `Credentials` в `src/auth.ts` рядом с Google/GitHub:
+### Route-handlers (не Credentials провайдер)
+Зеркалим telegram-callback. Два эндпоинта в `src/app/api/auth/password/`:
 
 ```ts
-Credentials({
-  credentials: { identifier: {}, password: {} },
-  async authorize(creds, req) {
-    const id = String(creds.identifier ?? "").trim().toLowerCase();
-    const pw = String(creds.password ?? "");
-    if (!id || !pw) return null;
-    const ip = clientIp(req);
-    if (await isRateLimited(ip, id)) return null;
-    const user = id.includes("@")
-      ? await prisma.user.findUnique({ where: { email: id } })
-      : await prisma.user.findUnique({ where: { username: id } });
-    const ok = !!user?.passwordHash && (await bcrypt.compare(pw, user.passwordHash));
-    await prisma.loginAttempt.create({ data: { ip, identifier: id, success: ok } });
-    return ok ? { id: user.id, email: user.email, name: user.name } : null;
-  },
-})
+// POST /api/auth/password/login
+// body: { identifier, password }  // identifier = username или email
+// 1) проверяем rate-limit по (ip, identifier)
+// 2) нормализуем identifier (lowercase)
+// 3) findUnique по username | email; bcrypt.compare(pw, user.passwordHash)
+// 4) пишем LoginAttempt { ip, identifier, success }
+// 5) на успех — создаём Session row + ставим session cookie (как в
+//    telegram/callback/route.ts), редирект на ?next или /{locale}/cabinet
+
+// POST /api/auth/password/register
+// body: { username, password, email? }
+// 1) валидация (username regex, длина пароля), проверка резервных имён
+// 2) check unique username/email; rate-limit регистрации
+// 3) bcrypt.hash → создаём User { accountType:INDIVIDUAL, passwordHash, ... }
+//    + Account { provider:"credentials", providerAccountId:user.id }
+// 4) Session row + cookie → редирект на /{locale}/cabinet
 ```
 
-**Стратегия сессий.** NextAuth v5 Credentials-провайдер несовместим с
-`session.strategy: "database"` (адаптер не выдаёт `sessionToken`). Два пути:
-1. **Переключить весь сайт на `strategy: "jwt"`** (рекомендую). JWT хранится в
-   cookie, БД-таблица `Session` остаётся, но не используется для credentials.
-   OAuth-юзеры тоже работают через JWT — `session` callback идентичен,
-   `session.user.id`/`role` берётся из токена (заполняется в `jwt` callback из
-   `user` при первом логине, потом из `token`).
-   **Цена миграции:** все текущие пользователи разлогиниваются один раз (старые
-   database-сессии становятся невалидны). Учитывая, что сайт ещё молодой и
-   активных юзеров мало, считаем приемлемой.
-2. Альтернатива (если хотим сохранить database): после `authorize` вручную
-   создавать `Session` row и ставить cookie через `cookies()`. Это требует
-   ручного управления TTL/ротацией, дублирует логику адаптера и ломается при
-   обновлениях NextAuth. **Не рекомендую.**
+**Стратегия сессий.** NextAuth v5 Credentials-провайдер не умеет работать с
+`session.strategy: "database"` (`authorize()` не возвращает sessionToken). В
+проекте **уже решён** этот вопрос для Telegram-логина — см.
+`src/app/api/auth/telegram/callback/route.ts`. Там сделан собственный endpoint,
+который после ручной верификации полезной нагрузки сам создаёт `Session` row
+и ставит cookie с именем `__Secure-authjs.session-token` / `authjs.session-token`.
+NextAuth подхватывает её как обычную database-сессию.
 
-Идём по пути 1: правим `src/auth.ts` (strategy, `jwt` callback), `Credentials`
-провайдер становится first-class. Account row с `provider="credentials"`
-создаём при регистрации, чтобы видеть метод входа в UI.
+Идём этим же путём: НЕ переключаем сайт на JWT, НЕ регистрируем `Credentials`
+провайдер в `src/auth.ts`. Вместо этого пишем `POST /api/auth/password/login` и
+`POST /api/auth/password/register` route handlers, зеркальные telegram-callback:
+проверяем учётные данные → находим/создаём `User` + `Account{provider:"credentials"}`
+→ создаём `Session` row → ставим cookie → редирект. Logout уже работает через
+существующий `signOut`. Все остальные сессии (Google/GitHub/Telegram) остаются
+как есть; миграция не требуется.
 
 ### Server actions
-- `registerWithPassword(form)` — валидация, проверка свободного username, hash,
-  создание `User` (`accountType=INDIVIDUAL`) + `Account{provider:"credentials"}`,
-  затем `signIn("credentials", { redirect:false })`.
-- `loginWithPassword(form)` — обёртка над `signIn("credentials")` с
-  rate-limit-проверкой и нормальной ошибкой формы.
 - `changePassword(oldPw, newPw)` — для уже залогиненного, в секции профиля.
 - `setUsername(next)` — переименование (раз в N дней — лимит не вводим в этом
   слайсе, только проверка уникальности).
 - `updateProfile({ firstName, lastName, phone, email })` — обновление полей,
   e-mail — с пометкой «requires verification»; верификации пока нет, поэтому
   меняем сразу, но **сбрасываем `emailVerified=null`** и логируем смену.
+- `setPasswordFirstTime(pw)` — для OAuth-only юзеров, создаёт `passwordHash`
+  + `Account{provider:"credentials"}`.
+
+(Регистрация и логин — не server actions, а route handlers — см. выше.)
 
 ### Rate-limit логина
 - Лимит: **10 неудачных попыток** с одного IP за 10 минут → блок на 15 минут
@@ -163,9 +159,14 @@ matcher (но добавим `cabinet` в `needsAuth`-regexp).
 
 - `prisma/schema.prisma` — поля + модель `LoginAttempt`.
 - `prisma/migrations/20260524180000_individual_cabinet/migration.sql`.
-- `src/auth.ts` — `Credentials` провайдер, `clientIp`/`isRateLimited` хелперы.
-- `src/auth.config.ts` — добавить `cabinet|register` в `needsAuth`-regex
-  (`register` пропускаем, он публичный; `cabinet` гейтим).
+- `src/auth.ts` — без изменений (Credentials провайдер не используем,
+  database-сессии остаются).
+- `src/auth.config.ts` — добавить `cabinet` в `needsAuth`-regex
+  (`register` публичный, пропускаем).
+- `src/app/api/auth/password/login/route.ts` — POST login route.
+- `src/app/api/auth/password/register/route.ts` — POST register route.
+- `src/lib/session.ts` — `createDatabaseSession(userId)` (экстракт общей логики
+  из telegram-callback в reusable helper).
 - `src/lib/username.ts` — валидация, нормализация, `generateFromName(name)`,
   `ensureUsername(userId)` (вызывается при заходе в кабинет, если у юзера нет
   username — генерим и сохраняем; гонка ловится `P2002` retry до 5 раз с
