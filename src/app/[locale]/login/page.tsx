@@ -4,10 +4,13 @@ import { LoginButtons } from "@/components/login-buttons";
 
 export default async function LoginPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ next?: string }>;
 }) {
   const { locale } = await params;
+  const { next } = await searchParams;
   setRequestLocale(locale);
   const t = await getTranslations("common");
   return (
@@ -19,10 +22,14 @@ export default async function LoginPage({
         {t("signIn")}
       </h1>
       <p className="text-muted mb-8">
-        Continue with your preferred provider to access your watchlist and preferences.
+        Continue with your preferred provider or sign in with a password.
       </p>
       <div className="bg-card border border-hairline rounded-[20px] p-6 md:p-8">
-        <LoginButtons telegramBotUsername={process.env.TELEGRAM_BOT_USERNAME} />
+        <LoginButtons
+          locale={locale}
+          telegramBotUsername={process.env.TELEGRAM_BOT_USERNAME}
+          next={typeof next === "string" ? next : undefined}
+        />
       </div>
     </main>
   );
