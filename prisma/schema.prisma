@@ -17,6 +17,11 @@ model User {
   email             String?             @unique
   name              String?
   image             String?
+  username          String?             @unique
+  passwordHash      String?
+  firstName         String?
+  lastName          String?
+  phone             String?
   role              Role                @default(USER)
   accountType       AccountType         @default(INDIVIDUAL)
   preferredLocale   String              @default("en")
@@ -34,6 +39,7 @@ model User {
   auditLogs         AdminAuditLog[]     @relation("AdminAuditActor")
   company           Company?
   reviewedPoints    CompanyPoint[]      @relation("PointReviewer")
+  loginAttempts     LoginAttempt[]
 }
 
 model Account {
@@ -281,4 +287,17 @@ model CompanyPoint {
   @@index([status])
   @@index([companyId])
   @@index([lat, lon])
+}
+
+model LoginAttempt {
+  id         String   @id @default(cuid())
+  ip         String
+  identifier String
+  success    Boolean
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt  DateTime @default(now())
+
+  @@index([ip, createdAt])
+  @@index([identifier, createdAt])
 }
