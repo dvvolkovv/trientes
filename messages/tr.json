@@ -27,7 +27,19 @@
     "heroLine2Accent": "defteri",
     "heroLine2After": ".",
     "heroSubtitle": "En önemli Layer-1 kripto paraların canlı fiyatları. Sekiz görüntüleme para birimi ve 7 günlük grafikler.",
-    "heroEyebrow": "Canlı · Layer-1 Defteri · 10 dakikada bir yenilenir"
+    "heroEyebrow": "Canlı · Layer-1 Defteri · 10 dakikada bir yenilenir",
+    "ticker": {
+      "ariaLabel": "Servis öne çıkanları ve canlı piyasa şeridi",
+      "phrases": [
+        "Dijital paranın sicili",
+        "En iyi Layer-1",
+        "8 itibari para birimi",
+        "7 günlük grafikler",
+        "Canlı piyasa haberleri",
+        "Dünya çapında kripto navigatörü",
+        "Gecikmesiz fiyatlar"
+      ]
+    }
   },
   "listing": {
     "rank": "#",

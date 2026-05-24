@@ -27,7 +27,19 @@
     "heroLine2Accent": "numérique",
     "heroLine2After": ".",
     "heroSubtitle": "Cours en direct des principales cryptomonnaies Layer-1. Huit monnaies d'affichage, graphiques 7j et pages détaillées.",
-    "heroEyebrow": "En direct · Layer-1 Ledger · actualisé toutes les 10 min"
+    "heroEyebrow": "En direct · Layer-1 Ledger · actualisé toutes les 10 min",
+    "ticker": {
+      "ariaLabel": "Points forts du service et téléscripteur de marché en direct",
+      "phrases": [
+        "Registre de la pièce numérique",
+        "Top Layer-1",
+        "8 devises fiat",
+        "Graphiques sur 7 jours",
+        "Actualités de marché en direct",
+        "Navigateur crypto mondial",
+        "Prix sans délai"
+      ]
+    }
   },
   "listing": {
     "rank": "#",

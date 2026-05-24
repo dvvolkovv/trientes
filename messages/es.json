@@ -27,7 +27,19 @@
     "heroLine2Accent": "digital",
     "heroLine2After": ".",
     "heroSubtitle": "Precios en vivo de las principales criptomonedas Layer-1. Ocho monedas de visualización y gráficos de 7 días.",
-    "heroEyebrow": "En vivo · Layer-1 Ledger · actualizado cada 10 min"
+    "heroEyebrow": "En vivo · Layer-1 Ledger · actualizado cada 10 min",
+    "ticker": {
+      "ariaLabel": "Destacados del servicio y ticker de mercado en vivo",
+      "phrases": [
+        "Registro de la moneda digital",
+        "Top Layer-1",
+        "8 monedas fiat",
+        "Gráficos a 7 días",
+        "Noticias del mercado en vivo",
+        "Navegador cripto mundial",
+        "Precios sin retraso"
+      ]
+    }
   },
   "listing": {
     "rank": "#",

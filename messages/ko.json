@@ -27,7 +27,19 @@
     "heroLine2Accent": "실시간",
     "heroLine2After": ".",
     "heroSubtitle": "최상위 Layer-1 암호화폐의 실시간 가격. 8개 통화 표시, 7일 차트, 코인별 상세 페이지.",
-    "heroEyebrow": "라이브 · Layer-1 원장 · 10분마다 갱신"
+    "heroEyebrow": "라이브 · Layer-1 원장 · 10분마다 갱신",
+    "ticker": {
+      "ariaLabel": "서비스 하이라이트 및 실시간 시장 티커",
+      "phrases": [
+        "디지털 코인 레지스터",
+        "Top Layer-1",
+        "8 개 법정 화폐",
+        "7 일 차트",
+        "실시간 시장 뉴스",
+        "전 세계 크립토 내비게이터",
+        "지연 없는 가격"
+      ]
+    }
   },
   "listing": {
     "rank": "#",

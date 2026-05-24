@@ -27,7 +27,19 @@
     "heroLine2Accent": "Münzen",
     "heroLine2After": ".",
     "heroSubtitle": "Live-Preise der wichtigsten Layer-1-Kryptowährungen. Acht Anzeigewährungen und 7-Tage-Charts.",
-    "heroEyebrow": "Live · Layer-1 Hauptbuch · alle 10 Min. aktualisiert"
+    "heroEyebrow": "Live · Layer-1 Hauptbuch · alle 10 Min. aktualisiert",
+    "ticker": {
+      "ariaLabel": "Service-Highlights und Live-Markt-Ticker",
+      "phrases": [
+        "Register der Digitalmünze",
+        "Top Layer-1",
+        "8 Fiat-Währungen",
+        "7-Tage-Charts",
+        "Live-Marktnachrichten",
+        "Weltweiter Krypto-Navigator",
+        "Preise ohne Verzögerung"
+      ]
+    }
   },
   "listing": {
     "rank": "#",

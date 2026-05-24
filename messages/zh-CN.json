@@ -27,7 +27,19 @@
     "heroLine2Accent": "实时",
     "heroLine2After": "。",
     "heroSubtitle": "顶级 Layer-1 加密货币的实时价格，八种法币显示，七日走势图。",
-    "heroEyebrow": "实时 · Layer-1 总账 · 每 10 分钟刷新"
+    "heroEyebrow": "实时 · Layer-1 总账 · 每 10 分钟刷新",
+    "ticker": {
+      "ariaLabel": "服务亮点和实时市场行情",
+      "phrases": [
+        "数字货币登记册",
+        "顶级 Layer-1",
+        "8 种法币",
+        "7 天图表",
+        "实时市场新闻",
+        "全球加密导航器",
+        "价格无延迟"
+      ]
+    }
   },
   "listing": {
     "rank": "#",
