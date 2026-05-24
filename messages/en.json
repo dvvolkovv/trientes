@@ -297,7 +297,16 @@
     "streetviewTitle": "Around this spot",
     "noStreetview": "No street imagery here yet",
     "streetviewNear": "you're near",
-    "close": "Close"
+    "close": "Close",
+    "start": "Start",
+    "stop": "Stop",
+    "recompute": "Recompute",
+    "remaining": "Remaining",
+    "etaMin": "{min} min",
+    "arrived": "You have arrived",
+    "permissionDenied": "Geolocation is blocked. Enable it in your browser settings to navigate along the route.",
+    "startOnlyWalk": "Available only for walking routes",
+    "navStarting": "Requesting GPS…"
   },
   "markets": {
     "title": "Markets",
