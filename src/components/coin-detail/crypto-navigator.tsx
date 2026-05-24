@@ -15,6 +15,8 @@ import { useTranslations } from "next-intl";
 import type { Poi, PoiLayer, RouteResult, RouteMode, TransitLeg, GeoResult, Social, OgPreview } from "@/lib/crypto-map";
 import { StreetViewOverlay } from "@/components/coin-detail/street-view-overlay";
 import { CURATED_POIS, type CuratedPoi } from "@/lib/curated-pois";
+import { NavigationController, type NavigationCallbacks } from "./navigation-controller";
+import { haversineMeters } from "@/lib/route-geometry";
 
 // MapLibre flattens non-primitive feature properties to JSON strings, so `socials`
 // rides through the GeoJSON source as a string and is parsed back when a popup opens.
@@ -131,10 +133,17 @@ export default function CryptoNavigator({
     mode: RouteMode;
     transfers?: number;
     legs?: TransitLeg[];
+    coordinates: [number, number][];
   } | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [originLabel, setOriginLabel] = useState<string | null>(null);
   const [street, setStreet] = useState<{ lat: number; lon: number; name: string } | null>(null);
+  const [navActive, setNavActive] = useState(false);
+  const [navOffRoute, setNavOffRoute] = useState<number | null>(null);
+  const [navRemaining, setNavRemaining] = useState<{ m: number; sec: number } | null>(null);
+  const [navError, setNavError] = useState<string | null>(null);
+  const [pendingStart, setPendingStart] = useState(false);
+  const navControllerRef = useRef<NavigationController | null>(null);
 
   // ---- POI loading for the current viewport ----
   const loadPois = useCallback(() => {
@@ -210,15 +219,20 @@ export default function CryptoNavigator({
                 },
               ];
         src?.setData({ type: "FeatureCollection", features });
+        const coords = res.geometry.coordinates;
         setRoute({
           distance: res.distance,
           duration: res.duration,
           mode: res.mode,
           transfers: res.transfers,
           legs: res.legs,
+          coordinates: coords,
         });
-        const coords = res.geometry.coordinates;
-        if (coords.length) {
+        if (navControllerRef.current) {
+          navControllerRef.current.updateRoute(coords);
+          setNavOffRoute(null);
+        }
+        if (coords.length && !navControllerRef.current) {
           const bounds = coords.reduce(
             (bb, c) => bb.extend(c as [number, number]),
             new maplibregl.LngLatBounds(coords[0] as [number, number], coords[0] as [number, number]),
@@ -348,8 +362,8 @@ export default function CryptoNavigator({
       // Shared popup opener for OSM markers AND curated logo markers.
       const openPoiPopup = (lonlat: [number, number], p: PoiProps) => {
         const origin = originRef.current;
-        const near = origin ? distMeters(origin[1], origin[0], lonlat[1], lonlat[0]) <= 150 : false;
-        const el = buildCard(p, t, near);
+        const near = origin ? haversineMeters([origin[0], origin[1]], [lonlat[0], lonlat[1]]) <= 150 : false;
+        const el = buildCard(p, t, near, modeRef.current === "walk");
         wirePhotoFallback(el);
         const popup = new Popup({ offset: 14, closeButton: true, maxWidth: "264px", className: "cmap-pop" })
           .setLngLat(lonlat)
@@ -362,6 +376,11 @@ export default function CryptoNavigator({
         el.querySelector<HTMLButtonElement>(".cmap-street")?.addEventListener("click", () => {
           setStreet({ lat: lonlat[1], lon: lonlat[0], name: p.name });
           popup.remove();
+        });
+        el.querySelector<HTMLButtonElement>(".cmap-start")?.addEventListener("click", () => {
+          setDestination(lonlat, p.name);
+          popup.remove();
+          setPendingStart(true);
         });
         hydratePhoto(el, p, t);
       };
@@ -425,6 +444,8 @@ export default function CryptoNavigator({
     map.on("moveend", onMoveEnd);
 
     return () => {
+      navControllerRef.current?.stop();
+      navControllerRef.current = null;
       if (moveTimer.current) clearTimeout(moveTimer.current);
       map.remove();
       mapRef.current = null;
@@ -509,6 +530,72 @@ export default function CryptoNavigator({
       features: [],
     });
   }
+
+  const stopNavigation = useCallback(() => {
+    navControllerRef.current?.stop();
+    navControllerRef.current = null;
+    setNavActive(false);
+    setNavOffRoute(null);
+    setNavRemaining(null);
+    setStatus(null);
+    const map = mapRef.current;
+    if (map) {
+      map.easeTo({ pitch: 0, bearing: 0, duration: 600 });
+    }
+  }, []);
+
+  const startNavigation = useCallback(async () => {
+    const map = mapRef.current;
+    if (!map || !route || route.mode !== "walk") return;
+    if (navControllerRef.current) return;
+
+    setStatus(t("navStarting"));
+    setNavError(null);
+
+    const ctl = new NavigationController(route.coordinates);
+    navControllerRef.current = ctl;
+
+    const cb: NavigationCallbacks = {
+      onPosition: (pos) => {
+        const center: [number, number] = [pos.coords.longitude, pos.coords.latitude];
+        const bearing =
+          typeof pos.coords.heading === "number" &&
+          typeof pos.coords.speed === "number" &&
+          pos.coords.speed > 0.5
+            ? pos.coords.heading
+            : map.getBearing();
+        map.easeTo({ center, bearing, pitch: 45, duration: 800 });
+      },
+      onProgress: (m, sec) => {
+        setNavRemaining({ m, sec });
+        setStatus(null);
+      },
+      onOffRoute: (dist) => {
+        setNavOffRoute(dist);
+      },
+      onArrival: () => {
+        setStatus(t("arrived"));
+        window.setTimeout(() => stopNavigation(), 5000);
+      },
+      onError: (code) => {
+        if (code === "permission_denied") setNavError(t("permissionDenied"));
+        else setNavError(t("permissionDenied"));
+        stopNavigation();
+      },
+    };
+
+    setNavActive(true);
+    map.easeTo({ zoom: 17, duration: 600 });
+    await ctl.start(cb);
+  }, [route, t, stopNavigation]);
+
+  // Popup .cmap-start click sets pendingStart; once route settles for walk mode, fire navigation.
+  useEffect(() => {
+    if (pendingStart && route && route.mode === "walk") {
+      setPendingStart(false);
+      void startNavigation();
+    }
+  }, [pendingStart, route, startNavigation]);
 
   const btn = (active: boolean) =>
     "text-[12px] px-3 py-1.5 rounded-md font-medium transition-all " +
@@ -626,13 +713,27 @@ export default function CryptoNavigator({
       </div>
 
       {/* Route summary */}
-      {(route || status) && (
+      {(route || status || navError) && (
         <div className="flex flex-wrap items-center gap-3 text-[13px] border-t border-hairline pt-3">
           {route && (
             <>
-              <span className="text-muted">
-                {t("duration")}: <span className="num text-foreground">{Math.round(route.duration / 60)} min</span>
-              </span>
+              {!navActive && (
+                <span className="text-muted">
+                  {t("duration")}: <span className="num text-foreground">{Math.round(route.duration / 60)} min</span>
+                </span>
+              )}
+              {navActive && navRemaining && (
+                <span className="text-muted">
+                  {t("remaining")}:{" "}
+                  <span className="num text-foreground">
+                    {(navRemaining.m / 1000).toFixed(navRemaining.m < 1000 ? 2 : 1)} km
+                  </span>
+                  {" · "}
+                  <span className="num text-foreground">
+                    {t("etaMin", { min: Math.max(1, Math.round(navRemaining.sec / 60)) })}
+                  </span>
+                </span>
+              )}
               {route.mode === "transit" ? (
                 <>
                   <span className="text-muted">
@@ -657,12 +758,45 @@ export default function CryptoNavigator({
                   {t("distance")}: <span className="num text-foreground">{(route.distance / 1000).toFixed(1)} km</span>
                 </span>
               )}
+              {route.mode === "walk" && !navActive && (
+                <button
+                  type="button"
+                  onClick={startNavigation}
+                  className="text-accent hover:opacity-80 font-medium"
+                  aria-label={t("start")}
+                >
+                  ▶ {t("start")}
+                </button>
+              )}
+              {navActive && (
+                <>
+                  <button
+                    type="button"
+                    onClick={stopNavigation}
+                    className="text-down hover:opacity-80 font-medium"
+                    aria-label={t("stop")}
+                  >
+                    ■ {t("stop")}
+                  </button>
+                  {navOffRoute !== null && navOffRoute > 30 && (
+                    <button
+                      type="button"
+                      onClick={() => buildRoute()}
+                      className="text-accent hover:opacity-80 font-medium"
+                      aria-label={t("recompute")}
+                    >
+                      ↻ {t("recompute")}
+                    </button>
+                  )}
+                </>
+              )}
               <button type="button" onClick={clearRoute} className="text-muted hover:text-foreground underline">
                 {t("clearRoute")}
               </button>
             </>
           )}
           {status && <span className="text-accent">{status}</span>}
+          {navError && <span className="text-down">{navError}</span>}
         </div>
       )}
 
@@ -731,7 +865,7 @@ function infoRow(icon: string, inner: string): string {
 
 // Build the dark Ledger detail card. Photo slot leads (skeleton until the OG preview
 // resolves, or an OSM image straight away); empty fields are omitted.
-function buildCard(p: PoiProps, t: Translator, near: boolean): HTMLDivElement {
+function buildCard(p: PoiProps, t: Translator, near: boolean, showStart: boolean): HTMLDivElement {
   const el = document.createElement("div");
   el.className = "cmap-popup";
 
@@ -781,21 +915,11 @@ function buildCard(p: PoiProps, t: Translator, near: boolean): HTMLDivElement {
       <button type="button" class="cmap-street${near ? " is-near" : ""}">👁 ${escapeHtml(t("streetview"))}${
         near ? `<span class="cmap-near">${escapeHtml(t("streetviewNear"))}</span>` : ""
       }</button>
+      ${showStart ? `<button type="button" class="cmap-start">▶ ${escapeHtml(t("start"))}</button>` : ""}
     </div>`;
   return el;
 }
 
-// Great-circle distance in metres (inline so this client bundle stays free of the
-// server streetview module). Mirrors lib/streetview haversineMeters.
-function distMeters(aLat: number, aLon: number, bLat: number, bLon: number): number {
-  const R = 6371000;
-  const dLat = ((bLat - aLat) * Math.PI) / 180;
-  const dLon = ((bLon - aLon) * Math.PI) / 180;
-  const la1 = (aLat * Math.PI) / 180;
-  const la2 = (bLat * Math.PI) / 180;
-  const h = Math.sin(dLat / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLon / 2) ** 2;
-  return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
-}
 
 // Adapt a curated entry into the same flattened shape an OSM popup expects, so it
 // reuses buildCard (logo doubles as the card photo; always coin-highlighted).
