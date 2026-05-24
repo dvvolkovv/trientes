@@ -1,4 +1,5 @@
-import "dotenv/config";
+import * as dotenv from "dotenv";
+dotenv.config({ override: true });
 import { setDefaultResultOrder } from "node:dns";
 // Node 22 defaults to "verbatim" DNS, which on hosts with broken IPv6 to
 // api.telegram.org makes outbound requests hang for ~10s. Force IPv4 first.
@@ -18,6 +19,7 @@ import { renderToolStatus } from "./statusRender";
 import { handleCommand } from "./commands";
 import { collectHeadInfo } from "./gitEnrich";
 import { downloadTelegramVoice, transcribeBuffer } from "./voice";
+import { saveTelegramFile } from "./incoming";
 import { createWebhookApp } from "./webhook";
 import { parseAttachments } from "./attachments";
 
@@ -88,6 +90,76 @@ bot.on("message:voice", async (ctx) => {
   }
   await ctx.reply(`🎤 услышал: ${prompt}`);
   await processPrompt(ctx, userId, prompt);
+});
+
+// Photo or document → download to /incoming/, then process the caption (if any)
+// alongside a marker line so Claude sees the absolute path and can pick it up.
+async function handleIncomingFile(
+  ctx: Context,
+  userId: number,
+  fileId: string,
+  originalName: string | null,
+  caption: string,
+): Promise<void> {
+  let saved;
+  try {
+    saved = await saveTelegramFile(fileId, originalName, config.telegramBotToken);
+  } catch (err) {
+    await ctx.reply(
+      "не смог скачать файл (" +
+        (err instanceof Error ? err.message : String(err)).slice(0, 120) +
+        ")",
+    );
+    return;
+  }
+  const sizeKb = Math.max(1, Math.round(saved.sizeBytes / 1024));
+  await ctx.reply(
+    `📥 файл получен: ${saved.originalName} (${sizeKb} KB) → ${saved.relPath}`,
+  );
+  // Inject the absolute path so the assistant sees it as a normal incoming file.
+  // Caption (if any) is the user instruction; otherwise default to a pickup hint.
+  const userText = caption.trim();
+  const prompt =
+    (userText ? userText + "\n\n" : "") +
+    `📎 received: ${saved.absPath}\n` +
+    `(original name: ${saved.originalName}, ${sizeKb} KB)`;
+  await processPrompt(ctx, userId, prompt);
+}
+
+bot.on("message:photo", async (ctx) => {
+  const userId = ctx.from.id;
+  if (!isAllowed(userId, config.allowedUserIds)) {
+    await unauthorizedDrop(ctx, "<photo>");
+    return;
+  }
+  // Telegram sends photo in several size variants — pick the largest by file_size.
+  const variants = ctx.message.photo;
+  const best = variants.reduce((a, b) =>
+    (b.file_size ?? 0) > (a.file_size ?? 0) ? b : a,
+  );
+  await handleIncomingFile(
+    ctx,
+    userId,
+    best.file_id,
+    null,
+    ctx.message.caption ?? "",
+  );
+});
+
+bot.on("message:document", async (ctx) => {
+  const userId = ctx.from.id;
+  if (!isAllowed(userId, config.allowedUserIds)) {
+    await unauthorizedDrop(ctx, "<document>");
+    return;
+  }
+  const doc = ctx.message.document;
+  await handleIncomingFile(
+    ctx,
+    userId,
+    doc.file_id,
+    doc.file_name ?? null,
+    ctx.message.caption ?? "",
+  );
 });
 
 async function processPrompt(
