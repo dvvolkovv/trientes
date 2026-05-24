@@ -343,7 +343,7 @@ select:focus-visible {
 .ticker-viewport {
   overflow: hidden;
   position: relative;
-  height: 36px;
+  height: 108px;
 }
 .ticker-track {
   display: inline-flex;
@@ -364,26 +364,26 @@ select:focus-visible {
 .ticker-dot-orange {
   font-family: var(--font-inter), system-ui, sans-serif;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 39px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  background-size: 2px 2px;
+  background-size: 4px 4px;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
 }
 .ticker-dot-white {
-  background-image: radial-gradient(circle, #ffffff 0.6px, transparent 1px);
+  background-image: radial-gradient(circle, #ffffff 1.2px, transparent 2px);
 }
 .ticker-dot-orange {
-  background-image: radial-gradient(circle, #fe5c04 0.6px, transparent 1px);
+  background-image: radial-gradient(circle, #fe5c04 1.2px, transparent 2px);
 }
 .ticker-sep {
-  margin: 0 1.25rem;
+  margin: 0 2rem;
   color: rgba(254, 92, 4, 0.45);
   font-weight: 700;
-  font-size: 13px;
+  font-size: 39px;
 }
 .ticker-stat-label {
   opacity: 0.7;
