@@ -16,7 +16,8 @@
     "themeDark": "Escuro",
     "themeSystem": "Sistema",
     "markets": "Mercados",
-    "business": "Empresas"
+    "business": "Empresas",
+    "cabinet": "Painel"
   },
   "home": {
     "title": "Bem-vindo",
@@ -351,6 +352,90 @@
       "coords_invalid": "Posicione o ponto no mapa",
       "too_many_pending": "Pontos pendentes demais",
       "generic": "Algo deu errado"
+    }
+  },
+  "cabinet": {
+    "kicker": "Seção · Painel",
+    "title": "Seu painel",
+    "subtitle": "Gerencie seu perfil, preferências e alertas.",
+    "profile": {
+      "title": "Perfil",
+      "usernameTitle": "Nome de usuário",
+      "username": "Nome de usuário",
+      "contactTitle": "Dados de contato",
+      "firstName": "Nome",
+      "lastName": "Sobrenome",
+      "phone": "Telefone",
+      "email": "E-mail",
+      "save": "Salvar",
+      "saved": "Salvo.",
+      "changePasswordTitle": "Alterar senha",
+      "setPasswordTitle": "Definir uma senha",
+      "currentPassword": "Senha atual",
+      "newPassword": "Nova senha",
+      "changePassword": "Alterar senha",
+      "setPassword": "Definir senha",
+      "passwordSaved": "Senha atualizada.",
+      "errors": {
+        "unauth": "Você não está autenticado.",
+        "username_too_short": "O nome de usuário deve ter ao menos 3 caracteres.",
+        "username_too_long": "O nome de usuário deve ter no máximo 32 caracteres.",
+        "username_invalid_chars": "Apenas letras minúsculas, dígitos e sublinhado são permitidos.",
+        "username_reserved": "Esse nome de usuário é reservado.",
+        "username_taken": "Esse nome de usuário já está em uso.",
+        "email_invalid": "Informe um e-mail válido.",
+        "email_taken": "Esse e-mail já está em uso.",
+        "first_name_too_long": "O nome é muito longo.",
+        "last_name_too_long": "O sobrenome é muito longo.",
+        "phone_too_long": "O telefone é muito longo.",
+        "no_password_set": "Você ainda não definiu uma senha.",
+        "invalid_credentials": "Senha atual incorreta.",
+        "password_too_short": "A senha deve ter ao menos 8 caracteres.",
+        "password_too_long": "A senha é muito longa.",
+        "password_already_set": "Você já tem uma senha definida."
+      }
+    },
+    "settings": {
+      "title": "Preferências"
+    },
+    "alerts": {
+      "title": "Favoritos e alertas",
+      "watchlistKicker": "Favoritos",
+      "watchlistTitle": "Moedas favoritas",
+      "watchlistBody": "Abra seus favoritos para gerenciar as moedas que você acompanha.",
+      "alertsKicker": "Em breve",
+      "alertsTitle": "Alertas de preço",
+      "alertsBody": "Notificações por gatilhos de preço e geo — chegando na próxima etapa."
+    }
+  },
+  "register": {
+    "kicker": "Criar conta",
+    "title": "Cadastro",
+    "subtitle": "Escolha um nome de usuário e uma senha. O e-mail é opcional por enquanto.",
+    "username": "Nome de usuário",
+    "password": "Senha",
+    "emailOptional": "E-mail (opcional)",
+    "identifier": "Nome de usuário ou e-mail",
+    "submit": "Criar conta",
+    "submitting": "Criando…",
+    "signIn": "Entrar",
+    "createAccount": "Criar uma",
+    "haveAccount": "Já tem uma conta?",
+    "noAccount": "Ainda não tem conta?",
+    "errors": {
+      "unknown_error": "Algo deu errado. Tente novamente.",
+      "rate_limited": "Muitas tentativas. Tente novamente em alguns minutos.",
+      "username_too_short": "O nome de usuário deve ter ao menos 3 caracteres.",
+      "username_too_long": "O nome de usuário deve ter no máximo 32 caracteres.",
+      "username_invalid_chars": "Apenas letras minúsculas, dígitos e sublinhado são permitidos.",
+      "username_reserved": "Esse nome de usuário é reservado.",
+      "username_taken": "Esse nome de usuário já está em uso.",
+      "email_invalid": "Informe um e-mail válido.",
+      "email_taken": "Esse e-mail já está em uso.",
+      "password_too_short": "A senha deve ter ao menos 8 caracteres.",
+      "password_too_long": "A senha é muito longa.",
+      "invalid_credentials": "Nome de usuário ou senha incorretos.",
+      "missing_fields": "Preencha os dois campos."
     }
   }
 }

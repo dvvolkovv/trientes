@@ -16,7 +16,8 @@
     "themeDark": "Koyu",
     "themeSystem": "Sistem",
     "markets": "Piyasalar",
-    "business": "İşletme"
+    "business": "İşletme",
+    "cabinet": "Kabin"
   },
   "home": {
     "title": "Hoş geldiniz",
@@ -351,6 +352,90 @@
       "coords_invalid": "Noktayı haritada yerleştirin",
       "too_many_pending": "Beklemede çok fazla nokta var",
       "generic": "Bir şeyler ters gitti"
+    }
+  },
+  "cabinet": {
+    "kicker": "Bölüm · Kabin",
+    "title": "Kabininiz",
+    "subtitle": "Profilinizi, tercihlerinizi ve uyarılarınızı yönetin.",
+    "profile": {
+      "title": "Profil",
+      "usernameTitle": "Kullanıcı adı",
+      "username": "Kullanıcı adı",
+      "contactTitle": "İletişim bilgileri",
+      "firstName": "Ad",
+      "lastName": "Soyad",
+      "phone": "Telefon",
+      "email": "E-posta",
+      "save": "Kaydet",
+      "saved": "Kaydedildi.",
+      "changePasswordTitle": "Parolayı değiştir",
+      "setPasswordTitle": "Parola belirle",
+      "currentPassword": "Mevcut parola",
+      "newPassword": "Yeni parola",
+      "changePassword": "Parolayı değiştir",
+      "setPassword": "Parolayı belirle",
+      "passwordSaved": "Parola güncellendi.",
+      "errors": {
+        "unauth": "Giriş yapmadınız.",
+        "username_too_short": "Kullanıcı adı en az 3 karakter olmalı.",
+        "username_too_long": "Kullanıcı adı en fazla 32 karakter olabilir.",
+        "username_invalid_chars": "Yalnızca küçük harf, rakam ve alt çizgi kullanılabilir.",
+        "username_reserved": "Bu kullanıcı adı ayrılmış.",
+        "username_taken": "Bu kullanıcı adı zaten alınmış.",
+        "email_invalid": "Lütfen geçerli bir e-posta girin.",
+        "email_taken": "Bu e-posta zaten kullanımda.",
+        "first_name_too_long": "Ad çok uzun.",
+        "last_name_too_long": "Soyad çok uzun.",
+        "phone_too_long": "Telefon çok uzun.",
+        "no_password_set": "Henüz bir parolanız yok.",
+        "invalid_credentials": "Mevcut parola hatalı.",
+        "password_too_short": "Parola en az 8 karakter olmalı.",
+        "password_too_long": "Parola çok uzun.",
+        "password_already_set": "Zaten bir parolanız var."
+      }
+    },
+    "settings": {
+      "title": "Tercihler"
+    },
+    "alerts": {
+      "title": "Favoriler ve uyarılar",
+      "watchlistKicker": "İzleme listesi",
+      "watchlistTitle": "Favori coinler",
+      "watchlistBody": "Takip ettiğiniz coinleri yönetmek için izleme listenizi açın.",
+      "alertsKicker": "Yakında",
+      "alertsTitle": "Fiyat uyarıları",
+      "alertsBody": "Fiyat ve konum tetikleyicileri için bildirimler — bir sonraki aşamada gelecek."
+    }
+  },
+  "register": {
+    "kicker": "Hesap oluştur",
+    "title": "Kayıt ol",
+    "subtitle": "Bir kullanıcı adı ve parola seçin. E-posta şimdilik isteğe bağlı.",
+    "username": "Kullanıcı adı",
+    "password": "Parola",
+    "emailOptional": "E-posta (isteğe bağlı)",
+    "identifier": "Kullanıcı adı veya e-posta",
+    "submit": "Hesap oluştur",
+    "submitting": "Oluşturuluyor…",
+    "signIn": "Giriş yap",
+    "createAccount": "Oluştur",
+    "haveAccount": "Hesabınız var mı?",
+    "noAccount": "Henüz hesabınız yok mu?",
+    "errors": {
+      "unknown_error": "Bir hata oluştu. Lütfen tekrar deneyin.",
+      "rate_limited": "Çok fazla deneme. Birkaç dakika sonra tekrar deneyin.",
+      "username_too_short": "Kullanıcı adı en az 3 karakter olmalı.",
+      "username_too_long": "Kullanıcı adı en fazla 32 karakter olabilir.",
+      "username_invalid_chars": "Yalnızca küçük harf, rakam ve alt çizgi kullanılabilir.",
+      "username_reserved": "Bu kullanıcı adı ayrılmış.",
+      "username_taken": "Bu kullanıcı adı zaten alınmış.",
+      "email_invalid": "Lütfen geçerli bir e-posta girin.",
+      "email_taken": "Bu e-posta zaten kullanımda.",
+      "password_too_short": "Parola en az 8 karakter olmalı.",
+      "password_too_long": "Parola çok uzun.",
+      "invalid_credentials": "Kullanıcı adı veya parola hatalı.",
+      "missing_fields": "Lütfen iki alanı da doldurun."
     }
   }
 }

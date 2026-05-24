@@ -16,7 +16,8 @@
     "themeDark": "Oscuro",
     "themeSystem": "Sistema",
     "markets": "Mercados",
-    "business": "Empresas"
+    "business": "Empresas",
+    "cabinet": "Panel"
   },
   "home": {
     "title": "Bienvenido",
@@ -351,6 +352,90 @@
       "coords_invalid": "Sitúa el punto en el mapa",
       "too_many_pending": "Demasiados puntos pendientes",
       "generic": "Algo salió mal"
+    }
+  },
+  "cabinet": {
+    "kicker": "Sección · Panel",
+    "title": "Tu panel",
+    "subtitle": "Gestiona tu perfil, preferencias y alertas.",
+    "profile": {
+      "title": "Perfil",
+      "usernameTitle": "Nombre de usuario",
+      "username": "Nombre de usuario",
+      "contactTitle": "Datos de contacto",
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "phone": "Teléfono",
+      "email": "Email",
+      "save": "Guardar",
+      "saved": "Guardado.",
+      "changePasswordTitle": "Cambiar contraseña",
+      "setPasswordTitle": "Establecer contraseña",
+      "currentPassword": "Contraseña actual",
+      "newPassword": "Nueva contraseña",
+      "changePassword": "Cambiar contraseña",
+      "setPassword": "Establecer contraseña",
+      "passwordSaved": "Contraseña actualizada.",
+      "errors": {
+        "unauth": "No has iniciado sesión.",
+        "username_too_short": "El nombre de usuario debe tener al menos 3 caracteres.",
+        "username_too_long": "El nombre de usuario no puede tener más de 32 caracteres.",
+        "username_invalid_chars": "Solo se permiten minúsculas, dígitos y guion bajo.",
+        "username_reserved": "Ese nombre de usuario está reservado.",
+        "username_taken": "Ese nombre de usuario ya está en uso.",
+        "email_invalid": "Introduce un email válido.",
+        "email_taken": "Ese email ya está en uso.",
+        "first_name_too_long": "El nombre es demasiado largo.",
+        "last_name_too_long": "El apellido es demasiado largo.",
+        "phone_too_long": "El teléfono es demasiado largo.",
+        "no_password_set": "Aún no tienes contraseña.",
+        "invalid_credentials": "La contraseña actual no es correcta.",
+        "password_too_short": "La contraseña debe tener al menos 8 caracteres.",
+        "password_too_long": "La contraseña es demasiado larga.",
+        "password_already_set": "Ya tienes una contraseña."
+      }
+    },
+    "settings": {
+      "title": "Preferencias"
+    },
+    "alerts": {
+      "title": "Favoritos y alertas",
+      "watchlistKicker": "Favoritos",
+      "watchlistTitle": "Monedas favoritas",
+      "watchlistBody": "Abre tus favoritos para gestionar las monedas que sigues.",
+      "alertsKicker": "Próximamente",
+      "alertsTitle": "Alertas de precio",
+      "alertsBody": "Notificaciones por precio y geolocalización — llegan en la siguiente entrega."
+    }
+  },
+  "register": {
+    "kicker": "Crear cuenta",
+    "title": "Registro",
+    "subtitle": "Elige un nombre de usuario y una contraseña. El email es opcional por ahora.",
+    "username": "Nombre de usuario",
+    "password": "Contraseña",
+    "emailOptional": "Email (opcional)",
+    "identifier": "Nombre de usuario o email",
+    "submit": "Crear cuenta",
+    "submitting": "Creando…",
+    "signIn": "Iniciar sesión",
+    "createAccount": "Crear una",
+    "haveAccount": "¿Ya tienes cuenta?",
+    "noAccount": "¿Aún no tienes cuenta?",
+    "errors": {
+      "unknown_error": "Algo salió mal. Inténtalo de nuevo.",
+      "rate_limited": "Demasiados intentos. Prueba en unos minutos.",
+      "username_too_short": "El nombre de usuario debe tener al menos 3 caracteres.",
+      "username_too_long": "El nombre de usuario no puede tener más de 32 caracteres.",
+      "username_invalid_chars": "Solo se permiten minúsculas, dígitos y guion bajo.",
+      "username_reserved": "Ese nombre de usuario está reservado.",
+      "username_taken": "Ese nombre de usuario ya está en uso.",
+      "email_invalid": "Introduce un email válido.",
+      "email_taken": "Ese email ya está en uso.",
+      "password_too_short": "La contraseña debe tener al menos 8 caracteres.",
+      "password_too_long": "La contraseña es demasiado larga.",
+      "invalid_credentials": "Usuario o contraseña incorrectos.",
+      "missing_fields": "Rellena ambos campos."
     }
   }
 }

@@ -16,7 +16,8 @@
     "themeDark": "深色",
     "themeSystem": "系统",
     "markets": "市场",
-    "business": "企业"
+    "business": "企业",
+    "cabinet": "个人中心"
   },
   "home": {
     "title": "欢迎",
@@ -351,6 +352,90 @@
       "coords_invalid": "请在地图上标记地点",
       "too_many_pending": "审核中的地点过多",
       "generic": "出错了"
+    }
+  },
+  "cabinet": {
+    "kicker": "板块 · 个人中心",
+    "title": "个人中心",
+    "subtitle": "管理您的资料、偏好与提醒。",
+    "profile": {
+      "title": "资料",
+      "usernameTitle": "用户名",
+      "username": "用户名",
+      "contactTitle": "联系方式",
+      "firstName": "名",
+      "lastName": "姓",
+      "phone": "电话",
+      "email": "邮箱",
+      "save": "保存",
+      "saved": "已保存。",
+      "changePasswordTitle": "修改密码",
+      "setPasswordTitle": "设置密码",
+      "currentPassword": "当前密码",
+      "newPassword": "新密码",
+      "changePassword": "修改密码",
+      "setPassword": "设置密码",
+      "passwordSaved": "密码已更新。",
+      "errors": {
+        "unauth": "您尚未登录。",
+        "username_too_short": "用户名至少需要 3 个字符。",
+        "username_too_long": "用户名最多 32 个字符。",
+        "username_invalid_chars": "仅允许使用小写字母、数字和下划线。",
+        "username_reserved": "该用户名为保留用户名。",
+        "username_taken": "该用户名已被占用。",
+        "email_invalid": "请输入有效的邮箱地址。",
+        "email_taken": "该邮箱已被使用。",
+        "first_name_too_long": "名过长。",
+        "last_name_too_long": "姓过长。",
+        "phone_too_long": "电话过长。",
+        "no_password_set": "您尚未设置密码。",
+        "invalid_credentials": "当前密码不正确。",
+        "password_too_short": "密码至少需要 8 个字符。",
+        "password_too_long": "密码过长。",
+        "password_already_set": "您已设置过密码。"
+      }
+    },
+    "settings": {
+      "title": "偏好设置"
+    },
+    "alerts": {
+      "title": "收藏与提醒",
+      "watchlistKicker": "收藏",
+      "watchlistTitle": "收藏的币种",
+      "watchlistBody": "打开收藏夹管理您关注的币种。",
+      "alertsKicker": "即将推出",
+      "alertsTitle": "价格提醒",
+      "alertsBody": "价格与位置触发的通知 — 将在下一个版本推出。"
+    }
+  },
+  "register": {
+    "kicker": "创建账号",
+    "title": "注册",
+    "subtitle": "选择一个用户名和密码。邮箱暂为可选。",
+    "username": "用户名",
+    "password": "密码",
+    "emailOptional": "邮箱(可选)",
+    "identifier": "用户名或邮箱",
+    "submit": "创建账号",
+    "submitting": "创建中…",
+    "signIn": "登录",
+    "createAccount": "立即创建",
+    "haveAccount": "已有账号?",
+    "noAccount": "还没有账号?",
+    "errors": {
+      "unknown_error": "出错了,请重试。",
+      "rate_limited": "尝试次数过多,请几分钟后再试。",
+      "username_too_short": "用户名至少需要 3 个字符。",
+      "username_too_long": "用户名最多 32 个字符。",
+      "username_invalid_chars": "仅允许使用小写字母、数字和下划线。",
+      "username_reserved": "该用户名为保留用户名。",
+      "username_taken": "该用户名已被占用。",
+      "email_invalid": "请输入有效的邮箱地址。",
+      "email_taken": "该邮箱已被使用。",
+      "password_too_short": "密码至少需要 8 个字符。",
+      "password_too_long": "密码过长。",
+      "invalid_credentials": "用户名或密码不正确。",
+      "missing_fields": "请填写完整两项。"
     }
   }
 }

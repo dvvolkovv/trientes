@@ -16,7 +16,8 @@
     "themeDark": "ダーク",
     "themeSystem": "システム",
     "markets": "市場",
-    "business": "ビジネス"
+    "business": "ビジネス",
+    "cabinet": "キャビネット"
   },
   "home": {
     "title": "ようこそ",
@@ -351,6 +352,90 @@
       "coords_invalid": "地図上に拠点を配置してください",
       "too_many_pending": "審査中の拠点が多すぎます",
       "generic": "問題が発生しました"
+    }
+  },
+  "cabinet": {
+    "kicker": "セクション · キャビネット",
+    "title": "マイキャビネット",
+    "subtitle": "プロフィール、設定、アラートを管理します。",
+    "profile": {
+      "title": "プロフィール",
+      "usernameTitle": "ユーザー名",
+      "username": "ユーザー名",
+      "contactTitle": "連絡先情報",
+      "firstName": "名",
+      "lastName": "姓",
+      "phone": "電話番号",
+      "email": "メール",
+      "save": "保存",
+      "saved": "保存しました。",
+      "changePasswordTitle": "パスワードを変更",
+      "setPasswordTitle": "パスワードを設定",
+      "currentPassword": "現在のパスワード",
+      "newPassword": "新しいパスワード",
+      "changePassword": "パスワードを変更",
+      "setPassword": "パスワードを設定",
+      "passwordSaved": "パスワードを更新しました。",
+      "errors": {
+        "unauth": "サインインしていません。",
+        "username_too_short": "ユーザー名は3文字以上必要です。",
+        "username_too_long": "ユーザー名は32文字以下にしてください。",
+        "username_invalid_chars": "使用できるのは小文字、数字、アンダースコアのみです。",
+        "username_reserved": "そのユーザー名は予約されています。",
+        "username_taken": "そのユーザー名はすでに使用されています。",
+        "email_invalid": "有効なメールアドレスを入力してください。",
+        "email_taken": "そのメールアドレスはすでに使用されています。",
+        "first_name_too_long": "名が長すぎます。",
+        "last_name_too_long": "姓が長すぎます。",
+        "phone_too_long": "電話番号が長すぎます。",
+        "no_password_set": "パスワードがまだ設定されていません。",
+        "invalid_credentials": "現在のパスワードが正しくありません。",
+        "password_too_short": "パスワードは8文字以上必要です。",
+        "password_too_long": "パスワードが長すぎます。",
+        "password_already_set": "すでにパスワードが設定されています。"
+      }
+    },
+    "settings": {
+      "title": "設定"
+    },
+    "alerts": {
+      "title": "お気に入りとアラート",
+      "watchlistKicker": "ウォッチリスト",
+      "watchlistTitle": "お気に入りのコイン",
+      "watchlistBody": "ウォッチリストを開いて、フォロー中のコインを管理します。",
+      "alertsKicker": "近日公開",
+      "alertsTitle": "価格アラート",
+      "alertsBody": "価格や位置情報のトリガー通知 — 次のスライスで提供予定です。"
+    }
+  },
+  "register": {
+    "kicker": "アカウント作成",
+    "title": "新規登録",
+    "subtitle": "ユーザー名とパスワードを選択してください。メールは現時点では任意です。",
+    "username": "ユーザー名",
+    "password": "パスワード",
+    "emailOptional": "メール(任意)",
+    "identifier": "ユーザー名またはメール",
+    "submit": "アカウントを作成",
+    "submitting": "作成中…",
+    "signIn": "ログイン",
+    "createAccount": "新規作成",
+    "haveAccount": "すでにアカウントをお持ちですか?",
+    "noAccount": "アカウントをお持ちでないですか?",
+    "errors": {
+      "unknown_error": "問題が発生しました。もう一度お試しください。",
+      "rate_limited": "試行回数が多すぎます。数分後に再度お試しください。",
+      "username_too_short": "ユーザー名は3文字以上必要です。",
+      "username_too_long": "ユーザー名は32文字以下にしてください。",
+      "username_invalid_chars": "使用できるのは小文字、数字、アンダースコアのみです。",
+      "username_reserved": "そのユーザー名は予約されています。",
+      "username_taken": "そのユーザー名はすでに使用されています。",
+      "email_invalid": "有効なメールアドレスを入力してください。",
+      "email_taken": "そのメールアドレスはすでに使用されています。",
+      "password_too_short": "パスワードは8文字以上必要です。",
+      "password_too_long": "パスワードが長すぎます。",
+      "invalid_credentials": "ユーザー名またはパスワードが正しくありません。",
+      "missing_fields": "両方のフィールドを入力してください。"
     }
   }
 }

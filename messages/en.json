@@ -16,7 +16,8 @@
     "themeDark": "Dark",
     "themeSystem": "System",
     "markets": "Markets",
-    "business": "Business"
+    "business": "Business",
+    "cabinet": "Cabinet"
   },
   "home": {
     "title": "Welcome",
@@ -351,6 +352,90 @@
       "coords_invalid": "Place the point on the map",
       "too_many_pending": "Too many pending points",
       "generic": "Something went wrong"
+    }
+  },
+  "cabinet": {
+    "kicker": "Section · Cabinet",
+    "title": "Your Cabinet",
+    "subtitle": "Manage your profile, preferences, and alerts.",
+    "profile": {
+      "title": "Profile",
+      "usernameTitle": "Username",
+      "username": "Username",
+      "contactTitle": "Contact details",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "phone": "Phone",
+      "email": "Email",
+      "save": "Save",
+      "saved": "Saved.",
+      "changePasswordTitle": "Change password",
+      "setPasswordTitle": "Set a password",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "changePassword": "Change password",
+      "setPassword": "Set password",
+      "passwordSaved": "Password updated.",
+      "errors": {
+        "unauth": "You are not signed in.",
+        "username_too_short": "Username must be at least 3 characters.",
+        "username_too_long": "Username must be at most 32 characters.",
+        "username_invalid_chars": "Only lowercase letters, digits, and underscore are allowed.",
+        "username_reserved": "That username is reserved.",
+        "username_taken": "That username is already taken.",
+        "email_invalid": "Please enter a valid email address.",
+        "email_taken": "That email is already in use.",
+        "first_name_too_long": "First name is too long.",
+        "last_name_too_long": "Last name is too long.",
+        "phone_too_long": "Phone is too long.",
+        "no_password_set": "You don't have a password set yet.",
+        "invalid_credentials": "Current password is incorrect.",
+        "password_too_short": "Password must be at least 8 characters.",
+        "password_too_long": "Password is too long.",
+        "password_already_set": "You already have a password."
+      }
+    },
+    "settings": {
+      "title": "Preferences"
+    },
+    "alerts": {
+      "title": "Favorites & alerts",
+      "watchlistKicker": "Watchlist",
+      "watchlistTitle": "Favorite coins",
+      "watchlistBody": "Open your watchlist to manage coins you follow.",
+      "alertsKicker": "Coming soon",
+      "alertsTitle": "Price alerts",
+      "alertsBody": "Notifications for price and geo triggers — shipping in the next slice."
+    }
+  },
+  "register": {
+    "kicker": "Create account",
+    "title": "Register",
+    "subtitle": "Pick a username and password. Email is optional for now.",
+    "username": "Username",
+    "password": "Password",
+    "emailOptional": "Email (optional)",
+    "identifier": "Username or email",
+    "submit": "Create account",
+    "submitting": "Creating…",
+    "signIn": "Sign in",
+    "createAccount": "Create one",
+    "haveAccount": "Already have an account?",
+    "noAccount": "No account yet?",
+    "errors": {
+      "unknown_error": "Something went wrong. Please try again.",
+      "rate_limited": "Too many attempts. Try again in a few minutes.",
+      "username_too_short": "Username must be at least 3 characters.",
+      "username_too_long": "Username must be at most 32 characters.",
+      "username_invalid_chars": "Only lowercase letters, digits, and underscore are allowed.",
+      "username_reserved": "That username is reserved.",
+      "username_taken": "That username is already taken.",
+      "email_invalid": "Please enter a valid email address.",
+      "email_taken": "That email is already in use.",
+      "password_too_short": "Password must be at least 8 characters.",
+      "password_too_long": "Password is too long.",
+      "invalid_credentials": "Incorrect username or password.",
+      "missing_fields": "Please fill in both fields."
     }
   }
 }

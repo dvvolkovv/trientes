@@ -16,7 +16,8 @@
     "themeDark": "Тёмная",
     "themeSystem": "Системная",
     "markets": "Рынки",
-    "business": "Бизнес"
+    "business": "Бизнес",
+    "cabinet": "Кабинет"
   },
   "home": {
     "title": "Добро пожаловать",
@@ -351,6 +352,90 @@
       "coords_invalid": "Поставьте точку на карте",
       "too_many_pending": "Слишком много точек на модерации",
       "generic": "Что-то пошло не так"
+    }
+  },
+  "cabinet": {
+    "kicker": "Раздел · Кабинет",
+    "title": "Ваш кабинет",
+    "subtitle": "Управляйте профилем, настройками и уведомлениями.",
+    "profile": {
+      "title": "Профиль",
+      "usernameTitle": "Имя пользователя",
+      "username": "Имя пользователя",
+      "contactTitle": "Контактные данные",
+      "firstName": "Имя",
+      "lastName": "Фамилия",
+      "phone": "Телефон",
+      "email": "Email",
+      "save": "Сохранить",
+      "saved": "Сохранено.",
+      "changePasswordTitle": "Изменить пароль",
+      "setPasswordTitle": "Задать пароль",
+      "currentPassword": "Текущий пароль",
+      "newPassword": "Новый пароль",
+      "changePassword": "Изменить пароль",
+      "setPassword": "Задать пароль",
+      "passwordSaved": "Пароль обновлён.",
+      "errors": {
+        "unauth": "Вы не вошли в аккаунт.",
+        "username_too_short": "Имя пользователя — минимум 3 символа.",
+        "username_too_long": "Имя пользователя — максимум 32 символа.",
+        "username_invalid_chars": "Только строчные латинские буквы, цифры и подчёркивание.",
+        "username_reserved": "Это имя зарезервировано.",
+        "username_taken": "Это имя уже занято.",
+        "email_invalid": "Введите корректный email.",
+        "email_taken": "Этот email уже используется.",
+        "first_name_too_long": "Имя слишком длинное.",
+        "last_name_too_long": "Фамилия слишком длинная.",
+        "phone_too_long": "Телефон слишком длинный.",
+        "no_password_set": "У вас ещё не задан пароль.",
+        "invalid_credentials": "Текущий пароль неверен.",
+        "password_too_short": "Пароль — минимум 8 символов.",
+        "password_too_long": "Пароль слишком длинный.",
+        "password_already_set": "У вас уже задан пароль."
+      }
+    },
+    "settings": {
+      "title": "Настройки"
+    },
+    "alerts": {
+      "title": "Избранное и уведомления",
+      "watchlistKicker": "Избранное",
+      "watchlistTitle": "Любимые монеты",
+      "watchlistBody": "Откройте избранное, чтобы управлять отслеживаемыми монетами.",
+      "alertsKicker": "Скоро",
+      "alertsTitle": "Уведомления о ценах",
+      "alertsBody": "Уведомления по цене и геолокации — в следующем срезе."
+    }
+  },
+  "register": {
+    "kicker": "Создание аккаунта",
+    "title": "Регистрация",
+    "subtitle": "Выберите имя пользователя и пароль. Email можно не указывать.",
+    "username": "Имя пользователя",
+    "password": "Пароль",
+    "emailOptional": "Email (необязательно)",
+    "identifier": "Имя пользователя или email",
+    "submit": "Создать аккаунт",
+    "submitting": "Создаём…",
+    "signIn": "Войти",
+    "createAccount": "Создать",
+    "haveAccount": "Уже есть аккаунт?",
+    "noAccount": "Ещё нет аккаунта?",
+    "errors": {
+      "unknown_error": "Что-то пошло не так. Попробуйте ещё раз.",
+      "rate_limited": "Слишком много попыток. Повторите через несколько минут.",
+      "username_too_short": "Имя пользователя — минимум 3 символа.",
+      "username_too_long": "Имя пользователя — максимум 32 символа.",
+      "username_invalid_chars": "Только строчные латинские буквы, цифры и подчёркивание.",
+      "username_reserved": "Это имя зарезервировано.",
+      "username_taken": "Это имя уже занято.",
+      "email_invalid": "Введите корректный email.",
+      "email_taken": "Этот email уже используется.",
+      "password_too_short": "Пароль — минимум 8 символов.",
+      "password_too_long": "Пароль слишком длинный.",
+      "invalid_credentials": "Неверное имя пользователя или пароль.",
+      "missing_fields": "Заполните оба поля."
     }
   }
 }
