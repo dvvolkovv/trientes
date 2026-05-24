@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { redis } from "@/lib/redis";
-import { parseBbox, coinPaymentTags, fetchPois } from "@/lib/crypto-map";
+import { parseBbox, coinPaymentTags, fetchPois, type Poi } from "@/lib/crypto-map";
+import { fetchApprovedPointsInBbox } from "@/lib/company-points";
 
 export const dynamic = "force-dynamic";
 
@@ -26,26 +27,33 @@ export async function GET(req: Request) {
   const coinTags = coinPaymentTags(coin, symbol);
   const cacheKey = `cmap:poi:${coin}:${roundKey(bboxParam!)}`;
 
+  let osm: Poi[] = [];
+  let osmCache: "hit" | "miss" | "error" = "miss";
   try {
     if (redis.status === "wait" || redis.status === "end") await redis.connect();
     const cached = await redis.get(cacheKey);
     if (cached) {
-      return NextResponse.json({ pois: JSON.parse(cached) }, { headers: { "x-cache": "hit" } });
+      osm = JSON.parse(cached) as Poi[];
+      osmCache = "hit";
+    } else {
+      osm = await fetchPois(bbox, coinTags);
+      try {
+        await redis.set(cacheKey, JSON.stringify(osm), "EX", TTL);
+      } catch {
+        // best-effort cache write
+      }
     }
   } catch {
-    // ignore — fall through to fetch
+    // OSM source / redis down — leave osm empty, still merge company points below.
+    osmCache = "error";
   }
 
+  let company: Poi[] = [];
   try {
-    const pois = await fetchPois(bbox, coinTags);
-    try {
-      await redis.set(cacheKey, JSON.stringify(pois), "EX", TTL);
-    } catch {
-      // best-effort cache write
-    }
-    return NextResponse.json({ pois }, { headers: { "x-cache": "miss" } });
+    company = await fetchApprovedPointsInBbox(bbox, coin);
   } catch {
-    // Source down / rate-limited — degrade to empty so the map still renders.
-    return NextResponse.json({ pois: [] }, { headers: { "x-cache": "error" } });
+    // DB hiccup — degrade to OSM only.
   }
+
+  return NextResponse.json({ pois: [...company, ...osm] }, { headers: { "x-cache": osmCache } });
 }
