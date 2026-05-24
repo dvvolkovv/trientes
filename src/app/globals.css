@@ -367,17 +367,17 @@ select:focus-visible {
   font-size: 39px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  background-size: 4px 4px;
+  background-size: 2px 2px;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
 }
 .ticker-dot-white {
-  background-image: radial-gradient(circle, #ffffff 1.2px, transparent 2px);
+  background-image: radial-gradient(circle, #ffffff 0.55px, transparent 1px);
 }
 .ticker-dot-orange {
-  background-image: radial-gradient(circle, #fe5c04 1.2px, transparent 2px);
+  background-image: radial-gradient(circle, #fe5c04 0.55px, transparent 1px);
 }
 .ticker-sep {
   margin: 0 2rem;
