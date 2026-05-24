@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { auth, signOut } from "@/auth";
+import { prisma } from "@/lib/prisma";
 import { LocaleSwitcher } from "./locale-switcher";
 import { CurrencySwitcher } from "./currency-switcher";
 import { MobileNav } from "./mobile-nav";
@@ -11,8 +12,17 @@ export async function Navbar() {
   const locale = await getLocale();
   const t = await getTranslations("common");
   const currency = await getCurrency();
+  const userId = (session?.user as { id?: string } | undefined)?.id;
   const isAdmin =
     (session?.user as { role?: string } | undefined)?.role === "ADMIN";
+  const accountType = userId
+    ? (await prisma.user.findUnique({ where: { id: userId }, select: { accountType: true } }))?.accountType
+    : null;
+  const cabinetHref =
+    accountType === "COMPANY" ? `/${locale}/business` : `/${locale}/cabinet`;
+  const cabinetLabel =
+    accountType === "COMPANY" ? t("business") : t("cabinet");
+  const showCabinetLink = !!session?.user;
 
   return (
     <header className="sticky top-0 z-30 backdrop-blur-md bg-[rgba(22,22,22,0.85)] border-b border-hairline">
@@ -37,12 +47,21 @@ export async function Navbar() {
             >
               {t("markets")}
             </Link>
-            <Link
-              href={`/${locale}/business`}
-              className="block py-3 text-base text-foreground hover:text-accent border-b border-hairline transition-colors"
-            >
-              {t("business")}
-            </Link>
+            {showCabinetLink ? (
+              <Link
+                href={cabinetHref}
+                className="block py-3 text-base text-foreground hover:text-accent border-b border-hairline transition-colors"
+              >
+                {cabinetLabel}
+              </Link>
+            ) : (
+              <Link
+                href={`/${locale}/business`}
+                className="block py-3 text-base text-foreground hover:text-accent border-b border-hairline transition-colors"
+              >
+                {t("business")}
+              </Link>
+            )}
             <Link
               href={`/${locale}/watchlist`}
               className="block py-3 text-base text-foreground hover:text-accent border-b border-hairline transition-colors"
@@ -133,12 +152,21 @@ export async function Navbar() {
           >
             {t("markets")}
           </Link>
-          <Link
-            href={`/${locale}/business`}
-            className="hover:text-foreground transition-colors"
-          >
-            {t("business")}
-          </Link>
+          {showCabinetLink ? (
+            <Link
+              href={cabinetHref}
+              className="hover:text-foreground transition-colors"
+            >
+              {cabinetLabel}
+            </Link>
+          ) : (
+            <Link
+              href={`/${locale}/business`}
+              className="hover:text-foreground transition-colors"
+            >
+              {t("business")}
+            </Link>
+          )}
           <Link
             href={`/${locale}/watchlist`}
             className="hover:text-foreground transition-colors"

@@ -20,7 +20,7 @@ export const authConfig = {
       const path = request.nextUrl.pathname;
       const locale = path.split("/")[1] || "en";
       const needsAuth =
-        /\/[a-z-]+\/(watchlist|request|settings|admin)(\/|$)/i.test(path);
+        /\/[a-z-]+\/(watchlist|request|settings|admin|cabinet)(\/|$)/i.test(path);
       if (needsAuth && !auth?.user) {
         return Response.redirect(
           new URL(`/${locale}/login`, request.nextUrl),
