@@ -15,7 +15,8 @@
     "themeLight": "라이트",
     "themeDark": "다크",
     "themeSystem": "시스템",
-    "markets": "시장"
+    "markets": "시장",
+    "business": "비즈니스"
   },
   "home": {
     "title": "환영합니다",
@@ -142,7 +143,8 @@
       "requests": "요청",
       "coins": "코인",
       "users": "사용자",
-      "audit": "감사"
+      "audit": "감사",
+      "business": "비즈니스"
     },
     "status": {
       "PENDING": "검토 중",
@@ -216,6 +218,11 @@
       "resultCount": "{total} entries · page {page} of {totalPages}",
       "prev": "Prev",
       "next": "Next"
+    },
+    "business": {
+      "title": "회사 지점",
+      "subtitle": "제출된 위치를 검토합니다.",
+      "empty": "비어 있습니다."
     }
   },
   "exchanges": {
@@ -294,5 +301,56 @@
     "palladium": "팔라듐",
     "crude": "원유",
     "natgas": "천연가스"
+  },
+  "business": {
+    "title": "비즈니스 캐비닛",
+    "registerIntro": "암호화폐를 받는 위치를 지도에 추가하려면 회사를 등록하세요.",
+    "profileIntro": "회사의 공개 프로필.",
+    "registerCompany": "회사 등록",
+    "saveProfile": "프로필 저장",
+    "profileSaved": "저장됨",
+    "legalName": "법인명",
+    "displayName": "표시 이름",
+    "description": "회사 소개",
+    "logoUrl": "로고 URL",
+    "website": "웹사이트",
+    "address": "주소",
+    "phone": "전화번호",
+    "email": "이메일",
+    "country": "국가",
+    "yourPoints": "내 지점",
+    "addPoint": "지점 추가",
+    "noPoints": "아직 지점이 없습니다.",
+    "pointName": "지점 이름",
+    "pointAddress": "주소",
+    "clickMapToPlace": "지도를 클릭해서 지점을 배치하세요(드래그로 조정).",
+    "acceptedCoins": "허용 코인",
+    "submitPoint": "검토 요청",
+    "pointSubmitted": "검토에 제출됨",
+    "type": {
+      "SHOP": "상점",
+      "ATM": "ATM",
+      "POS": "POS",
+      "SALES_OFFICE": "영업소"
+    },
+    "status": {
+      "PENDING": "검토 중",
+      "APPROVED": "승인됨",
+      "REJECTED": "거부됨"
+    },
+    "err": {
+      "unauth": "로그인해주세요",
+      "already_company": "이미 회사가 등록되어 있습니다",
+      "not_company": "먼저 회사를 등록하세요",
+      "legal_name_required": "법인명이 필요합니다",
+      "display_name_required": "표시 이름이 필요합니다",
+      "website_invalid": "유효하지 않은 웹사이트 URL",
+      "logo_invalid": "유효하지 않은 로고 URL",
+      "type_invalid": "지점 유형을 선택하세요",
+      "name_required": "이름이 필요합니다",
+      "coords_invalid": "지도에 지점을 배치하세요",
+      "too_many_pending": "검토 중인 지점이 너무 많습니다",
+      "generic": "문제가 발생했습니다"
+    }
   }
 }

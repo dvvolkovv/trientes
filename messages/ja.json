@@ -15,7 +15,8 @@
     "themeLight": "ライト",
     "themeDark": "ダーク",
     "themeSystem": "システム",
-    "markets": "市場"
+    "markets": "市場",
+    "business": "ビジネス"
   },
   "home": {
     "title": "ようこそ",
@@ -142,7 +143,8 @@
       "requests": "リクエスト",
       "coins": "コイン",
       "users": "ユーザー",
-      "audit": "監査"
+      "audit": "監査",
+      "business": "ビジネス"
     },
     "status": {
       "PENDING": "審査中",
@@ -216,6 +218,11 @@
       "resultCount": "{total} entries · page {page} of {totalPages}",
       "prev": "Prev",
       "next": "Next"
+    },
+    "business": {
+      "title": "企業の拠点",
+      "subtitle": "送信された場所を承認/却下します。",
+      "empty": "ありません。"
     }
   },
   "exchanges": {
@@ -294,5 +301,56 @@
     "palladium": "パラジウム",
     "crude": "原油",
     "natgas": "天然ガス"
+  },
+  "business": {
+    "title": "ビジネスキャビネット",
+    "registerIntro": "暗号通貨を受け付ける場所を地図に追加するには、会社を登録してください。",
+    "profileIntro": "会社の公開プロフィール。",
+    "registerCompany": "会社を登録",
+    "saveProfile": "プロフィールを保存",
+    "profileSaved": "保存しました",
+    "legalName": "法人名",
+    "displayName": "表示名",
+    "description": "会社について",
+    "logoUrl": "ロゴURL",
+    "website": "ウェブサイト",
+    "address": "住所",
+    "phone": "電話番号",
+    "email": "メール",
+    "country": "国",
+    "yourPoints": "あなたの拠点",
+    "addPoint": "拠点を追加",
+    "noPoints": "まだ拠点がありません。",
+    "pointName": "拠点名",
+    "pointAddress": "住所",
+    "clickMapToPlace": "地図をクリックして拠点を配置(ドラッグで調整可能)。",
+    "acceptedCoins": "対応する通貨",
+    "submitPoint": "審査に提出",
+    "pointSubmitted": "審査に提出しました",
+    "type": {
+      "SHOP": "店舗",
+      "ATM": "ATM",
+      "POS": "POS",
+      "SALES_OFFICE": "営業所"
+    },
+    "status": {
+      "PENDING": "審査中",
+      "APPROVED": "承認済み",
+      "REJECTED": "却下"
+    },
+    "err": {
+      "unauth": "サインインしてください",
+      "already_company": "すでに会社が登録されています",
+      "not_company": "先に会社を登録してください",
+      "legal_name_required": "法人名は必須です",
+      "display_name_required": "表示名は必須です",
+      "website_invalid": "ウェブサイトURLが無効です",
+      "logo_invalid": "ロゴURLが無効です",
+      "type_invalid": "拠点タイプを選択してください",
+      "name_required": "名前は必須です",
+      "coords_invalid": "地図上に拠点を配置してください",
+      "too_many_pending": "審査中の拠点が多すぎます",
+      "generic": "問題が発生しました"
+    }
   }
 }

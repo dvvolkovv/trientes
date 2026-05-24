@@ -15,7 +15,8 @@
     "themeLight": "Light",
     "themeDark": "Dark",
     "themeSystem": "System",
-    "markets": "Markets"
+    "markets": "Markets",
+    "business": "Business"
   },
   "home": {
     "title": "Welcome",
@@ -142,7 +143,8 @@
       "requests": "Requests",
       "coins": "Coins",
       "users": "Users",
-      "audit": "Audit"
+      "audit": "Audit",
+      "business": "Business"
     },
     "status": {
       "PENDING": "Pending",
@@ -216,6 +218,11 @@
       "resultCount": "{total} entries · page {page} of {totalPages}",
       "prev": "Prev",
       "next": "Next"
+    },
+    "business": {
+      "title": "Company points",
+      "subtitle": "Moderate submitted locations.",
+      "empty": "Nothing here."
     }
   },
   "exchanges": {
@@ -294,5 +301,56 @@
     "palladium": "Palladium",
     "crude": "Crude Oil",
     "natgas": "Natural Gas"
+  },
+  "business": {
+    "title": "Business cabinet",
+    "registerIntro": "Register your company to add crypto-accepting locations to the map.",
+    "profileIntro": "Your public company profile.",
+    "registerCompany": "Register company",
+    "saveProfile": "Save profile",
+    "profileSaved": "Saved",
+    "legalName": "Legal name",
+    "displayName": "Display name",
+    "description": "About the company",
+    "logoUrl": "Logo URL",
+    "website": "Website",
+    "address": "Address",
+    "phone": "Phone",
+    "email": "Email",
+    "country": "Country",
+    "yourPoints": "Your points",
+    "addPoint": "Add a point",
+    "noPoints": "No points yet.",
+    "pointName": "Point name",
+    "pointAddress": "Address",
+    "clickMapToPlace": "Click the map to place the point (drag to adjust).",
+    "acceptedCoins": "Accepted coins",
+    "submitPoint": "Submit for review",
+    "pointSubmitted": "Submitted for review",
+    "type": {
+      "SHOP": "Shop",
+      "ATM": "ATM",
+      "POS": "POS",
+      "SALES_OFFICE": "Sales office"
+    },
+    "status": {
+      "PENDING": "Pending",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected"
+    },
+    "err": {
+      "unauth": "Please sign in",
+      "already_company": "You already have a company",
+      "not_company": "Register a company first",
+      "legal_name_required": "Legal name is required",
+      "display_name_required": "Display name is required",
+      "website_invalid": "Invalid website URL",
+      "logo_invalid": "Invalid logo URL",
+      "type_invalid": "Pick a point type",
+      "name_required": "Name is required",
+      "coords_invalid": "Place the point on the map",
+      "too_many_pending": "Too many pending points",
+      "generic": "Something went wrong"
+    }
   }
 }

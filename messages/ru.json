@@ -15,7 +15,8 @@
     "themeLight": "Светлая",
     "themeDark": "Тёмная",
     "themeSystem": "Системная",
-    "markets": "Рынки"
+    "markets": "Рынки",
+    "business": "Бизнес"
   },
   "home": {
     "title": "Добро пожаловать",
@@ -142,7 +143,8 @@
       "requests": "Заявки",
       "coins": "Монеты",
       "users": "Пользователи",
-      "audit": "Аудит"
+      "audit": "Аудит",
+      "business": "Бизнес"
     },
     "status": {
       "PENDING": "Ожидает",
@@ -216,6 +218,11 @@
       "resultCount": "{total} записей · стр. {page} из {totalPages}",
       "prev": "Назад",
       "next": "Вперёд"
+    },
+    "business": {
+      "title": "Точки компаний",
+      "subtitle": "Модерация присланных точек.",
+      "empty": "Пусто."
     }
   },
   "exchanges": {
@@ -294,5 +301,56 @@
     "palladium": "Палладий",
     "crude": "Нефть",
     "natgas": "Природный газ"
+  },
+  "business": {
+    "title": "Кабинет компании",
+    "registerIntro": "Зарегистрируйте компанию, чтобы добавлять на карту точки, принимающие крипто.",
+    "profileIntro": "Публичный профиль вашей компании.",
+    "registerCompany": "Зарегистрировать компанию",
+    "saveProfile": "Сохранить профиль",
+    "profileSaved": "Сохранено",
+    "legalName": "Юридическое наименование",
+    "displayName": "Отображаемое имя",
+    "description": "О компании",
+    "logoUrl": "URL логотипа",
+    "website": "Сайт",
+    "address": "Адрес",
+    "phone": "Телефон",
+    "email": "Email",
+    "country": "Страна",
+    "yourPoints": "Ваши точки",
+    "addPoint": "Добавить точку",
+    "noPoints": "Пока нет точек.",
+    "pointName": "Название точки",
+    "pointAddress": "Адрес",
+    "clickMapToPlace": "Кликните по карте, чтобы поставить булавку (можно перетащить).",
+    "acceptedCoins": "Принимаемые монеты",
+    "submitPoint": "Отправить на модерацию",
+    "pointSubmitted": "Отправлено на модерацию",
+    "type": {
+      "SHOP": "Магазин",
+      "ATM": "Банкомат",
+      "POS": "POS-терминал",
+      "SALES_OFFICE": "Отдел продаж"
+    },
+    "status": {
+      "PENDING": "На модерации",
+      "APPROVED": "Одобрено",
+      "REJECTED": "Отклонено"
+    },
+    "err": {
+      "unauth": "Войдите в аккаунт",
+      "already_company": "У вас уже есть компания",
+      "not_company": "Сначала зарегистрируйте компанию",
+      "legal_name_required": "Укажите юридическое наименование",
+      "display_name_required": "Укажите отображаемое имя",
+      "website_invalid": "Некорректный URL сайта",
+      "logo_invalid": "Некорректный URL логотипа",
+      "type_invalid": "Выберите тип точки",
+      "name_required": "Укажите название",
+      "coords_invalid": "Поставьте точку на карте",
+      "too_many_pending": "Слишком много точек на модерации",
+      "generic": "Что-то пошло не так"
+    }
   }
 }

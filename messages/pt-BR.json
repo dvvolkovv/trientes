@@ -15,7 +15,8 @@
     "themeLight": "Claro",
     "themeDark": "Escuro",
     "themeSystem": "Sistema",
-    "markets": "Mercados"
+    "markets": "Mercados",
+    "business": "Empresas"
   },
   "home": {
     "title": "Bem-vindo",
@@ -142,7 +143,8 @@
       "requests": "Solicitações",
       "coins": "Moedas",
       "users": "Usuários",
-      "audit": "Auditoria"
+      "audit": "Auditoria",
+      "business": "Empresas"
     },
     "status": {
       "PENDING": "Pendente",
@@ -216,6 +218,11 @@
       "resultCount": "{total} entries · page {page} of {totalPages}",
       "prev": "Prev",
       "next": "Next"
+    },
+    "business": {
+      "title": "Pontos de empresa",
+      "subtitle": "Modere os locais enviados.",
+      "empty": "Nada aqui."
     }
   },
   "exchanges": {
@@ -294,5 +301,56 @@
     "palladium": "Paládio",
     "crude": "Petróleo",
     "natgas": "Gás natural"
+  },
+  "business": {
+    "title": "Painel da empresa",
+    "registerIntro": "Cadastre sua empresa para adicionar ao mapa locais que aceitam cripto.",
+    "profileIntro": "Perfil público da sua empresa.",
+    "registerCompany": "Cadastrar empresa",
+    "saveProfile": "Salvar perfil",
+    "profileSaved": "Salvo",
+    "legalName": "Razão social",
+    "displayName": "Nome de exibição",
+    "description": "Sobre a empresa",
+    "logoUrl": "URL do logo",
+    "website": "Site",
+    "address": "Endereço",
+    "phone": "Telefone",
+    "email": "E-mail",
+    "country": "País",
+    "yourPoints": "Seus pontos",
+    "addPoint": "Adicionar um ponto",
+    "noPoints": "Ainda sem pontos.",
+    "pointName": "Nome do ponto",
+    "pointAddress": "Endereço",
+    "clickMapToPlace": "Clique no mapa para posicionar o ponto (arraste para ajustar).",
+    "acceptedCoins": "Moedas aceitas",
+    "submitPoint": "Enviar para revisão",
+    "pointSubmitted": "Enviado para revisão",
+    "type": {
+      "SHOP": "Loja",
+      "ATM": "Caixa eletrônico",
+      "POS": "POS",
+      "SALES_OFFICE": "Escritório de vendas"
+    },
+    "status": {
+      "PENDING": "Pendente",
+      "APPROVED": "Aprovado",
+      "REJECTED": "Rejeitado"
+    },
+    "err": {
+      "unauth": "Faça login",
+      "already_company": "Você já tem uma empresa",
+      "not_company": "Cadastre uma empresa primeiro",
+      "legal_name_required": "Razão social é obrigatória",
+      "display_name_required": "Nome de exibição é obrigatório",
+      "website_invalid": "URL do site inválida",
+      "logo_invalid": "URL do logo inválida",
+      "type_invalid": "Escolha um tipo de ponto",
+      "name_required": "Nome é obrigatório",
+      "coords_invalid": "Posicione o ponto no mapa",
+      "too_many_pending": "Pontos pendentes demais",
+      "generic": "Algo deu errado"
+    }
   }
 }

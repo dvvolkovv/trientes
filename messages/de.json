@@ -15,7 +15,8 @@
     "themeLight": "Hell",
     "themeDark": "Dunkel",
     "themeSystem": "System",
-    "markets": "Märkte"
+    "markets": "Märkte",
+    "business": "Business"
   },
   "home": {
     "title": "Willkommen",
@@ -142,7 +143,8 @@
       "requests": "Anfragen",
       "coins": "Coins",
       "users": "Benutzer",
-      "audit": "Audit"
+      "audit": "Audit",
+      "business": "Business"
     },
     "status": {
       "PENDING": "Wartend",
@@ -216,6 +218,11 @@
       "resultCount": "{total} entries · page {page} of {totalPages}",
       "prev": "Prev",
       "next": "Next"
+    },
+    "business": {
+      "title": "Firmenstandorte",
+      "subtitle": "Eingereichte Standorte moderieren.",
+      "empty": "Nichts hier."
     }
   },
   "exchanges": {
@@ -294,5 +301,56 @@
     "palladium": "Palladium",
     "crude": "Rohöl",
     "natgas": "Erdgas"
+  },
+  "business": {
+    "title": "Unternehmenskonto",
+    "registerIntro": "Registrieren Sie Ihr Unternehmen, um krypto-akzeptierende Standorte auf der Karte hinzuzufügen.",
+    "profileIntro": "Ihr öffentliches Unternehmensprofil.",
+    "registerCompany": "Unternehmen registrieren",
+    "saveProfile": "Profil speichern",
+    "profileSaved": "Gespeichert",
+    "legalName": "Firmenname (rechtlich)",
+    "displayName": "Anzeigename",
+    "description": "Über das Unternehmen",
+    "logoUrl": "Logo-URL",
+    "website": "Webseite",
+    "address": "Adresse",
+    "phone": "Telefon",
+    "email": "E-Mail",
+    "country": "Land",
+    "yourPoints": "Ihre Standorte",
+    "addPoint": "Standort hinzufügen",
+    "noPoints": "Noch keine Standorte.",
+    "pointName": "Standortname",
+    "pointAddress": "Adresse",
+    "clickMapToPlace": "Klicken Sie auf die Karte, um den Standort zu setzen (ziehbar).",
+    "acceptedCoins": "Akzeptierte Coins",
+    "submitPoint": "Zur Prüfung einreichen",
+    "pointSubmitted": "Zur Prüfung eingereicht",
+    "type": {
+      "SHOP": "Geschäft",
+      "ATM": "Geldautomat",
+      "POS": "POS",
+      "SALES_OFFICE": "Vertriebsbüro"
+    },
+    "status": {
+      "PENDING": "Wartet",
+      "APPROVED": "Genehmigt",
+      "REJECTED": "Abgelehnt"
+    },
+    "err": {
+      "unauth": "Bitte anmelden",
+      "already_company": "Sie haben bereits ein Unternehmen",
+      "not_company": "Registrieren Sie zuerst ein Unternehmen",
+      "legal_name_required": "Firmenname erforderlich",
+      "display_name_required": "Anzeigename erforderlich",
+      "website_invalid": "Ungültige Webseiten-URL",
+      "logo_invalid": "Ungültige Logo-URL",
+      "type_invalid": "Standorttyp wählen",
+      "name_required": "Name erforderlich",
+      "coords_invalid": "Standort auf der Karte setzen",
+      "too_many_pending": "Zu viele wartende Standorte",
+      "generic": "Etwas ist schiefgelaufen"
+    }
   }
 }

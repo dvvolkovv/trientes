@@ -15,7 +15,8 @@
     "themeLight": "亮色",
     "themeDark": "深色",
     "themeSystem": "系统",
-    "markets": "市场"
+    "markets": "市场",
+    "business": "企业"
   },
   "home": {
     "title": "欢迎",
@@ -142,7 +143,8 @@
       "requests": "申请",
       "coins": "币种",
       "users": "用户",
-      "audit": "审计"
+      "audit": "审计",
+      "business": "企业"
     },
     "status": {
       "PENDING": "待审核",
@@ -216,6 +218,11 @@
       "resultCount": "{total} entries · page {page} of {totalPages}",
       "prev": "Prev",
       "next": "Next"
+    },
+    "business": {
+      "title": "公司地点",
+      "subtitle": "审核提交的位置。",
+      "empty": "暂无。"
     }
   },
   "exchanges": {
@@ -294,5 +301,56 @@
     "palladium": "钯金",
     "crude": "原油",
     "natgas": "天然气"
+  },
+  "business": {
+    "title": "企业后台",
+    "registerIntro": "注册您的公司,以便在地图上添加接受加密货币的地点。",
+    "profileIntro": "公司公开资料。",
+    "registerCompany": "注册公司",
+    "saveProfile": "保存资料",
+    "profileSaved": "已保存",
+    "legalName": "公司全称",
+    "displayName": "显示名称",
+    "description": "公司介绍",
+    "logoUrl": "Logo 链接",
+    "website": "网站",
+    "address": "地址",
+    "phone": "电话",
+    "email": "邮箱",
+    "country": "国家",
+    "yourPoints": "您的地点",
+    "addPoint": "添加地点",
+    "noPoints": "暂无地点。",
+    "pointName": "地点名称",
+    "pointAddress": "地址",
+    "clickMapToPlace": "点击地图选择地点(可拖动调整)。",
+    "acceptedCoins": "接受的币种",
+    "submitPoint": "提交审核",
+    "pointSubmitted": "已提交审核",
+    "type": {
+      "SHOP": "商店",
+      "ATM": "ATM",
+      "POS": "POS",
+      "SALES_OFFICE": "营业部"
+    },
+    "status": {
+      "PENDING": "审核中",
+      "APPROVED": "已通过",
+      "REJECTED": "已拒绝"
+    },
+    "err": {
+      "unauth": "请登录",
+      "already_company": "您已注册过公司",
+      "not_company": "请先注册公司",
+      "legal_name_required": "请填写公司全称",
+      "display_name_required": "请填写显示名称",
+      "website_invalid": "网站链接无效",
+      "logo_invalid": "Logo 链接无效",
+      "type_invalid": "请选择地点类型",
+      "name_required": "请填写名称",
+      "coords_invalid": "请在地图上标记地点",
+      "too_many_pending": "审核中的地点过多",
+      "generic": "出错了"
+    }
   }
 }

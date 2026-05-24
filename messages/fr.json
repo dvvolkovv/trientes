@@ -15,7 +15,8 @@
     "themeLight": "Clair",
     "themeDark": "Sombre",
     "themeSystem": "Système",
-    "markets": "Marchés"
+    "markets": "Marchés",
+    "business": "Entreprises"
   },
   "home": {
     "title": "Bienvenue",
@@ -142,7 +143,8 @@
       "requests": "Demandes",
       "coins": "Monnaies",
       "users": "Utilisateurs",
-      "audit": "Audit"
+      "audit": "Audit",
+      "business": "Entreprises"
     },
     "status": {
       "PENDING": "En attente",
@@ -216,6 +218,11 @@
       "resultCount": "{total} entries · page {page} of {totalPages}",
       "prev": "Prev",
       "next": "Next"
+    },
+    "business": {
+      "title": "Points d'entreprise",
+      "subtitle": "Modérez les emplacements soumis.",
+      "empty": "Rien ici."
     }
   },
   "exchanges": {
@@ -294,5 +301,56 @@
     "palladium": "Palladium",
     "crude": "Pétrole brut",
     "natgas": "Gaz naturel"
+  },
+  "business": {
+    "title": "Espace entreprise",
+    "registerIntro": "Inscrivez votre entreprise pour ajouter sur la carte les lieux qui acceptent les cryptos.",
+    "profileIntro": "Profil public de votre entreprise.",
+    "registerCompany": "Inscrire l'entreprise",
+    "saveProfile": "Enregistrer le profil",
+    "profileSaved": "Enregistré",
+    "legalName": "Raison sociale",
+    "displayName": "Nom d'affichage",
+    "description": "À propos de l'entreprise",
+    "logoUrl": "URL du logo",
+    "website": "Site web",
+    "address": "Adresse",
+    "phone": "Téléphone",
+    "email": "E-mail",
+    "country": "Pays",
+    "yourPoints": "Vos points",
+    "addPoint": "Ajouter un point",
+    "noPoints": "Aucun point pour le moment.",
+    "pointName": "Nom du point",
+    "pointAddress": "Adresse",
+    "clickMapToPlace": "Cliquez sur la carte pour placer le point (glissez pour ajuster).",
+    "acceptedCoins": "Cryptos acceptées",
+    "submitPoint": "Soumettre pour examen",
+    "pointSubmitted": "Soumis pour examen",
+    "type": {
+      "SHOP": "Boutique",
+      "ATM": "Distributeur",
+      "POS": "TPE",
+      "SALES_OFFICE": "Bureau commercial"
+    },
+    "status": {
+      "PENDING": "En attente",
+      "APPROVED": "Approuvé",
+      "REJECTED": "Refusé"
+    },
+    "err": {
+      "unauth": "Veuillez vous connecter",
+      "already_company": "Vous avez déjà une entreprise",
+      "not_company": "Inscrivez d'abord une entreprise",
+      "legal_name_required": "La raison sociale est requise",
+      "display_name_required": "Le nom d'affichage est requis",
+      "website_invalid": "URL du site invalide",
+      "logo_invalid": "URL du logo invalide",
+      "type_invalid": "Choisissez un type de point",
+      "name_required": "Le nom est requis",
+      "coords_invalid": "Placez le point sur la carte",
+      "too_many_pending": "Trop de points en attente",
+      "generic": "Une erreur est survenue"
+    }
   }
 }

@@ -15,7 +15,8 @@
     "themeLight": "Açık",
     "themeDark": "Koyu",
     "themeSystem": "Sistem",
-    "markets": "Piyasalar"
+    "markets": "Piyasalar",
+    "business": "İşletme"
   },
   "home": {
     "title": "Hoş geldiniz",
@@ -142,7 +143,8 @@
       "requests": "İstekler",
       "coins": "Coinler",
       "users": "Kullanıcılar",
-      "audit": "Denetim"
+      "audit": "Denetim",
+      "business": "İşletme"
     },
     "status": {
       "PENDING": "Beklemede",
@@ -216,6 +218,11 @@
       "resultCount": "{total} entries · page {page} of {totalPages}",
       "prev": "Prev",
       "next": "Next"
+    },
+    "business": {
+      "title": "Şirket noktaları",
+      "subtitle": "Gönderilen konumları onaylayın.",
+      "empty": "Burada bir şey yok."
     }
   },
   "exchanges": {
@@ -294,5 +301,56 @@
     "palladium": "Paladyum",
     "crude": "Ham petrol",
     "natgas": "Doğal gaz"
+  },
+  "business": {
+    "title": "İşletme paneli",
+    "registerIntro": "Kriptopara kabul eden konumları haritaya eklemek için şirketinizi kaydedin.",
+    "profileIntro": "Şirketinizin herkese açık profili.",
+    "registerCompany": "Şirketi kaydet",
+    "saveProfile": "Profili kaydet",
+    "profileSaved": "Kaydedildi",
+    "legalName": "Resmi unvan",
+    "displayName": "Görünen ad",
+    "description": "Şirket hakkında",
+    "logoUrl": "Logo URL'si",
+    "website": "Web sitesi",
+    "address": "Adres",
+    "phone": "Telefon",
+    "email": "E-posta",
+    "country": "Ülke",
+    "yourPoints": "Noktalarınız",
+    "addPoint": "Nokta ekle",
+    "noPoints": "Henüz nokta yok.",
+    "pointName": "Nokta adı",
+    "pointAddress": "Adres",
+    "clickMapToPlace": "Noktayı yerleştirmek için haritaya tıklayın (sürükleyerek ayarlayın).",
+    "acceptedCoins": "Kabul edilen coin'ler",
+    "submitPoint": "İnceleme için gönder",
+    "pointSubmitted": "İnceleme için gönderildi",
+    "type": {
+      "SHOP": "Mağaza",
+      "ATM": "ATM",
+      "POS": "POS",
+      "SALES_OFFICE": "Satış ofisi"
+    },
+    "status": {
+      "PENDING": "Beklemede",
+      "APPROVED": "Onaylandı",
+      "REJECTED": "Reddedildi"
+    },
+    "err": {
+      "unauth": "Lütfen giriş yapın",
+      "already_company": "Zaten bir şirketiniz var",
+      "not_company": "Önce bir şirket kaydedin",
+      "legal_name_required": "Resmi unvan gerekli",
+      "display_name_required": "Görünen ad gerekli",
+      "website_invalid": "Geçersiz web sitesi URL'si",
+      "logo_invalid": "Geçersiz logo URL'si",
+      "type_invalid": "Nokta türü seçin",
+      "name_required": "Ad gerekli",
+      "coords_invalid": "Noktayı haritada yerleştirin",
+      "too_many_pending": "Beklemede çok fazla nokta var",
+      "generic": "Bir şeyler ters gitti"
+    }
   }
 }
