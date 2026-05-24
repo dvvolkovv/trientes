@@ -6,12 +6,14 @@ export type AuditAction =
   | "REJECT_REQUEST"
   | "ADD_COIN"
   | "TOGGLE_COIN_ACTIVE"
-  | "SET_USER_ROLE";
+  | "SET_USER_ROLE"
+  | "APPROVE_POINT"
+  | "REJECT_POINT";
 
 export async function logAdminAction(input: {
   actorId: string;
   action: AuditAction;
-  targetType: "CoinRequest" | "Coin" | "User";
+  targetType: "CoinRequest" | "Coin" | "User" | "CompanyPoint";
   targetId: string;
   details?: Record<string, unknown>;
 }): Promise<void> {
