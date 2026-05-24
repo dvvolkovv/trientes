@@ -13,24 +13,27 @@ enum Role {
 }
 
 model User {
-  id                String    @id @default(cuid())
-  email             String?   @unique
+  id                String              @id @default(cuid())
+  email             String?             @unique
   name              String?
   image             String?
-  role              Role      @default(USER)
-  preferredLocale   String    @default("en")
-  preferredCurrency String    @default("USD")
-  preferredTheme    String    @default("system")
+  role              Role                @default(USER)
+  accountType       AccountType         @default(INDIVIDUAL)
+  preferredLocale   String              @default("en")
+  preferredCurrency String              @default("USD")
+  preferredTheme    String              @default("system")
   emailVerified     DateTime?
-  createdAt         DateTime  @default(now())
+  createdAt         DateTime            @default(now())
   accounts          Account[]
   sessions          Session[]
-  watchlist      Watchlist[]
+  watchlist         Watchlist[]
   exchangeWatchlist ExchangeWatchlist[]
-  coinRequests   CoinRequest[]
-  adminAddedCoins Coin[]   @relation("AdminCoinAdditions")
-  reviewedRequests CoinRequest[] @relation("RequestReviewer")
-  auditLogs AdminAuditLog[] @relation("AdminAuditActor")
+  coinRequests      CoinRequest[]
+  adminAddedCoins   Coin[]              @relation("AdminCoinAdditions")
+  reviewedRequests  CoinRequest[]       @relation("RequestReviewer")
+  auditLogs         AdminAuditLog[]     @relation("AdminAuditActor")
+  company           Company?
+  reviewedPoints    CompanyPoint[]      @relation("PointReviewer")
 }
 
 model Account {
@@ -73,60 +76,60 @@ enum CoinSource {
 }
 
 model Coin {
-  id           String      @id            // CoinGecko id, e.g. "bitcoin"
-  symbol       String
-  name         String
-  slug         String      @unique
-  rank         Int
-  logoUrl      String?
-  source       CoinSource  @default(AUTO_L1)
-  isActive     Boolean     @default(true)
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  description    String?     @db.Text
-  websiteUrl     String?
-  explorerUrl    String?
-  whitepaperUrl  String?
-  githubUrl      String?
-  twitterUrl     String?
-  redditUrl      String?
-  metadataFetchedAt DateTime?
+  id                    String         @id // CoinGecko id, e.g. "bitcoin"
+  symbol                String
+  name                  String
+  slug                  String         @unique
+  rank                  Int
+  logoUrl               String?
+  source                CoinSource     @default(AUTO_L1)
+  isActive              Boolean        @default(true)
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+  description           String?        @db.Text
+  websiteUrl            String?
+  explorerUrl           String?
+  whitepaperUrl         String?
+  githubUrl             String?
+  twitterUrl            String?
+  redditUrl             String?
+  metadataFetchedAt     DateTime?
   addedByAdminId        String?
-  approvedFromRequestId String?     @unique
-  addedBy               User?       @relation("AdminCoinAdditions", fields: [addedByAdminId], references: [id])
-  approvedFromRequest   CoinRequest? @relation("CoinRequestApproved", fields: [approvedFromRequestId], references: [id])
-  snapshots    CoinSnapshot[]
-  watchedBy      Watchlist[]
+  approvedFromRequestId String?        @unique
+  addedBy               User?          @relation("AdminCoinAdditions", fields: [addedByAdminId], references: [id])
+  approvedFromRequest   CoinRequest?   @relation("CoinRequestApproved", fields: [approvedFromRequestId], references: [id])
+  snapshots             CoinSnapshot[]
+  watchedBy             Watchlist[]
 }
 
 model CoinSnapshot {
-  id                String    @id @default(cuid())
+  id                String   @id @default(cuid())
   coinId            String
-  coin              Coin      @relation(fields: [coinId], references: [id], onDelete: Cascade)
-  priceUsd          Decimal   @db.Decimal(24, 10)
-  marketCapUsd      Decimal   @db.Decimal(30, 2)
-  volume24hUsd      Decimal   @db.Decimal(30, 2)
+  coin              Coin     @relation(fields: [coinId], references: [id], onDelete: Cascade)
+  priceUsd          Decimal  @db.Decimal(24, 10)
+  marketCapUsd      Decimal  @db.Decimal(30, 2)
+  volume24hUsd      Decimal  @db.Decimal(30, 2)
   pctChange1h       Float?
   pctChange24h      Float?
   pctChange7d       Float?
-  circulatingSupply Decimal?  @db.Decimal(30, 2)
-  totalSupply       Decimal?  @db.Decimal(30, 2)
-  maxSupply         Decimal?  @db.Decimal(30, 2)
+  circulatingSupply Decimal? @db.Decimal(30, 2)
+  totalSupply       Decimal? @db.Decimal(30, 2)
+  maxSupply         Decimal? @db.Decimal(30, 2)
   sparkline7d       Json?
-  fetchedAt         DateTime  @default(now())
+  fetchedAt         DateTime @default(now())
 
   @@index([coinId, fetchedAt])
 }
 
 model GlobalStats {
-  id                Int       @id @default(1)
-  totalMarketCapUsd Decimal   @db.Decimal(30, 2)
-  total24hVolumeUsd Decimal   @db.Decimal(30, 2)
+  id                Int      @id @default(1)
+  totalMarketCapUsd Decimal  @db.Decimal(30, 2)
+  total24hVolumeUsd Decimal  @db.Decimal(30, 2)
   btcDominancePct   Float
   ethDominancePct   Float
   activeCryptos     Int
   markets           Int
-  fetchedAt         DateTime  @default(now())
+  fetchedAt         DateTime @default(now())
 }
 
 enum RequestStatus {
@@ -159,8 +162,8 @@ model CoinRequest {
   reviewedById String?
   rejectReason String?
   createdAt    DateTime      @default(now())
-  reviewer       User?  @relation("RequestReviewer", fields: [reviewedById], references: [id])
-  approvedCoin   Coin?  @relation("CoinRequestApproved")
+  reviewer     User?         @relation("RequestReviewer", fields: [reviewedById], references: [id])
+  approvedCoin Coin?         @relation("CoinRequestApproved")
 
   @@index([userId, createdAt])
   @@index([status, createdAt])
@@ -172,6 +175,8 @@ enum AdminAction {
   ADD_COIN
   TOGGLE_COIN_ACTIVE
   SET_USER_ROLE
+  APPROVE_POINT
+  REJECT_POINT
 }
 
 model AdminAuditLog {
@@ -189,7 +194,7 @@ model AdminAuditLog {
 }
 
 model Exchange {
-  id                  String   @id              // CoinGecko id, e.g. "binance"
+  id                  String              @id // CoinGecko id, e.g. "binance"
   name                String
   logoUrl             String?
   country             String?
@@ -199,9 +204,9 @@ model Exchange {
   volume24hBtc        Float
   volume24hUsd        Float
   url                 String?
-  hasTradingIncentive Boolean  @default(false)
-  fetchedAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  hasTradingIncentive Boolean             @default(false)
+  fetchedAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
   watchedBy           ExchangeWatchlist[]
 
   @@index([trustScoreRank])
@@ -216,4 +221,64 @@ model ExchangeWatchlist {
 
   @@id([userId, exchangeId])
   @@index([userId])
+}
+
+enum AccountType {
+  INDIVIDUAL
+  COMPANY
+}
+
+enum PointType {
+  SHOP
+  ATM
+  POS
+  SALES_OFFICE
+}
+
+model Company {
+  id          String         @id @default(cuid())
+  ownerUserId String         @unique
+  owner       User           @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
+  legalName   String
+  displayName String
+  logoUrl     String?
+  description String?        @db.Text
+  country     String?
+  address     String?
+  phone       String?
+  email       String?
+  website     String?
+  socials     Json?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  points      CompanyPoint[]
+}
+
+model CompanyPoint {
+  id              String        @id @default(cuid())
+  companyId       String
+  company         Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  type            PointType
+  name            String
+  description     String?       @db.Text
+  lat             Float
+  lon             Float
+  address         String?
+  acceptedCoinIds String[]
+  logoUrl         String?
+  openingHours    String?
+  phone           String?
+  website         String?
+  socials         Json?
+  status          RequestStatus @default(PENDING)
+  reviewedById    String?
+  reviewer        User?         @relation("PointReviewer", fields: [reviewedById], references: [id])
+  reviewedAt      DateTime?
+  rejectReason    String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([status])
+  @@index([companyId])
+  @@index([lat, lon])
 }
