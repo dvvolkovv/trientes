@@ -54,7 +54,7 @@ export async function POST(req: Request) {
   try {
     const user = await prisma.$transaction(async (tx) => {
       const u = await tx.user.create({
-        data: { username: v.value, passwordHash, email, accountType: "INDIVIDUAL" },
+        data: { username: v.value, passwordHash, email },
       });
       await tx.account.create({
         data: {
