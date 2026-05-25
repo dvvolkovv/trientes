@@ -61,14 +61,17 @@ export function validateExchangeProfile(input: ExchangeProfileInput): ExchangePr
   if (!email) return { ok: false, reason: "email_required" };
   const websiteRaw = (input.website ?? "").trim();
   if (!websiteRaw) return { ok: false, reason: "website_required" };
-  const website = httpOrNull(websiteRaw);
-  if (website === "invalid" || website === null) return { ok: false, reason: "website_invalid" };
+  // websiteRaw is non-empty here, so httpOrNull cannot return null.
+  const website = httpOrNull(websiteRaw) as string | "invalid";
+  if (website === "invalid") return { ok: false, reason: "website_invalid" };
   const logoUrl = httpOrNull(input.logoUrl);
   if (logoUrl === "invalid") return { ok: false, reason: "logo_invalid" };
   const t = (v: string | null | undefined) => {
     const s = (v ?? "").trim();
     return s ? s : null;
   };
+  // `socials` is intentionally excluded from ValidatedExchangeProfile — it is passed
+  // through at the call site and validated at the mapper layer (same pattern as company.ts).
   return {
     ok: true,
     data: {
