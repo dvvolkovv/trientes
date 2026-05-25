@@ -29,6 +29,16 @@ One unified personal cabinet per user. Companies and exchanges become **owned en
 - Email or push notifications for moderation decisions.
 - Self-serve account-type switching UI (it doesn't exist as a concept any more — there is no account type).
 
+## Hard rule: public-facing pages stay untouched
+
+This work adds a private cabinet experience for newly registered users. It MUST NOT change anything visible on the existing public site:
+
+- The coin pages (`/`, `/{locale}`, `/{locale}/coin/[id]`, watchlist, request, markets) — untouched.
+- The exchange catalog (`/{locale}/exchanges`, exchange detail pages, the CMC-sourced data and worker that feeds them) — untouched.
+- The Crypto Navigator map (`/{locale}/navigator`) and its POI feed (`/api/crypto-map/poi`) — untouched, including the merge of approved `CompanyPoint`s.
+
+If any plan task starts touching these areas to "make things consistent" or "while we're in here," stop and revisit the spec. The cabinet is additive: new tables, new routes, new admin tab. Public surfaces stay exactly as they are today.
+
 ## User flow
 
 ```
