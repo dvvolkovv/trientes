@@ -7,6 +7,8 @@ import { ensureUsername } from "@/lib/ensure-username";
 import { ProfileSection } from "@/components/cabinet/profile-section";
 import { SettingsSection } from "@/components/cabinet/settings-section";
 import { AlertsStub } from "@/components/cabinet/alerts-stub";
+import { CompaniesSection } from "@/components/cabinet/companies-section";
+import { ExchangesSection } from "@/components/cabinet/exchanges-section";
 
 export default async function CabinetPage({
   params,
@@ -21,8 +23,6 @@ export default async function CabinetPage({
 
   let user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) redirect(`/${locale}/login`);
-  if (user.accountType === "COMPANY") redirect(`/${locale}/business`);
-
   if (!user.username) {
     await ensureUsername(userId);
     user = await prisma.user.findUnique({ where: { id: userId } });
@@ -61,6 +61,10 @@ export default async function CabinetPage({
       />
 
       <AlertsStub locale={locale} />
+
+      <CompaniesSection locale={locale} />
+
+      <ExchangesSection locale={locale} />
     </main>
   );
 }
