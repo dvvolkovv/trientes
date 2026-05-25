@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { listViewerExchanges } from "@/lib/exchange";
+import { listViewerExchanges } from "@/lib/registered-exchange";
 import { CreateExchangeForm } from "@/components/cabinet/create-exchange-form";
 
 const STATUS_CLASS: Record<string, string> = {
@@ -10,7 +10,7 @@ const STATUS_CLASS: Record<string, string> = {
 };
 
 export async function ExchangesSection({ locale }: { locale: string }) {
-  const { exchanges } = await listViewerExchanges();
+  const exchanges = await listViewerExchanges();
   const t = await getTranslations("cabinet.exchanges");
   return (
     <section id="exchanges" className="space-y-6">
