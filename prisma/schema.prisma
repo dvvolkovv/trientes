@@ -23,7 +23,6 @@ model User {
   lastName          String?
   phone             String?
   role              Role                @default(USER)
-  accountType       AccountType         @default(INDIVIDUAL)
   preferredLocale   String              @default("en")
   preferredCurrency String              @default("USD")
   preferredTheme    String              @default("system")
@@ -37,7 +36,8 @@ model User {
   adminAddedCoins   Coin[]              @relation("AdminCoinAdditions")
   reviewedRequests  CoinRequest[]       @relation("RequestReviewer")
   auditLogs         AdminAuditLog[]     @relation("AdminAuditActor")
-  company           Company?
+  companies         Company[]
+  registeredExchanges RegisteredExchange[]
   reviewedPoints    CompanyPoint[]      @relation("PointReviewer")
   loginAttempts     LoginAttempt[]
 }
@@ -229,11 +229,6 @@ model ExchangeWatchlist {
   @@index([userId])
 }
 
-enum AccountType {
-  INDIVIDUAL
-  COMPANY
-}
-
 enum PointType {
   SHOP
   ATM
@@ -243,7 +238,7 @@ enum PointType {
 
 model Company {
   id          String         @id @default(cuid())
-  ownerUserId String         @unique
+  ownerUserId String
   owner       User           @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
   legalName   String
   displayName String
@@ -258,6 +253,8 @@ model Company {
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
   points      CompanyPoint[]
+
+  @@index([ownerUserId])
 }
 
 model CompanyPoint {
@@ -300,4 +297,39 @@ model LoginAttempt {
 
   @@index([ip, createdAt])
   @@index([identifier, createdAt])
+}
+
+enum ExchangeStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// User-submitted exchange registrations awaiting admin moderation.
+// NOTE: The existing "Exchange" model is the CoinGecko catalog (public exchange data).
+// This model is named "RegisteredExchange" to avoid collision with that table.
+model RegisteredExchange {
+  id              String         @id @default(cuid())
+  ownerUserId     String
+  owner           User           @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
+
+  legalName       String
+  displayName     String
+  logoUrl         String?
+  description     String?
+  website         String
+  country         String
+  email           String
+  phone           String?
+  address         String?
+  socials         Json?
+
+  status          ExchangeStatus @default(PENDING)
+  rejectionReason String?
+
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([ownerUserId])
+  @@index([status, createdAt])
 }
