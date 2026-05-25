@@ -157,7 +157,8 @@
       "coins": "코인",
       "users": "사용자",
       "audit": "감사",
-      "business": "비즈니스"
+      "business": "비즈니스",
+      "exchanges": "거래소"
     },
     "status": {
       "PENDING": "검토 중",
@@ -236,6 +237,22 @@
       "title": "회사 지점",
       "subtitle": "제출된 위치를 검토합니다.",
       "empty": "비어 있습니다."
+    },
+    "exchanges": {
+      "title": "거래소",
+      "subtitle": "거래소 등록 신청을 검토하고 관리합니다.",
+      "empty": "이 상태의 거래소가 없습니다.",
+      "approve": "승인",
+      "reject": "거부",
+      "rejectReasonPlaceholder": "사유 (3자 이상)",
+      "errors": {
+        "unauth": "권한이 없습니다.",
+        "not_admin": "관리자 권한이 필요합니다.",
+        "not_found": "거래소를 찾을 수 없습니다.",
+        "not_pending": "검토 대기 중이 아닙니다.",
+        "reason_too_short": "사유는 3자 이상이어야 합니다.",
+        "generic": "문제가 발생했습니다."
+      }
     }
   },
   "exchanges": {
@@ -326,7 +343,6 @@
   },
   "business": {
     "title": "비즈니스 캐비닛",
-    "registerIntro": "암호화폐를 받는 위치를 지도에 추가하려면 회사를 등록하세요.",
     "profileIntro": "회사의 공개 프로필.",
     "registerCompany": "회사 등록",
     "saveProfile": "프로필 저장",
@@ -427,6 +443,35 @@
       "alertsKicker": "곧 출시",
       "alertsTitle": "가격 알림",
       "alertsBody": "가격 및 위치 트리거에 대한 알림 — 다음 단계에서 제공됩니다."
+    },
+    "companies": {
+      "title": "내 회사",
+      "empty": "아직 회사가 없습니다.",
+      "add": "회사 추가",
+      "legalName": "법인명",
+      "displayName": "표시 이름",
+      "submit": "회사 만들기",
+      "submitting": "만드는 중…",
+      "errors": {
+        "unauth": "먼저 로그인하세요.",
+        "legal_name_required": "법인명은 필수입니다.",
+        "display_name_required": "표시 이름은 필수입니다.",
+        "country_required": "국가는 필수입니다.",
+        "generic": "문제가 발생했습니다."
+      }
+    },
+    "exchanges": {
+      "title": "내 거래소",
+      "empty": "아직 거래소가 없습니다.",
+      "add": "거래소 추가",
+      "submit": "거래소 만들기",
+      "submitting": "만드는 중…",
+      "rejectedReason": "사유",
+      "status": {
+        "PENDING": "검토 중",
+        "APPROVED": "승인됨",
+        "REJECTED": "거부됨"
+      }
     }
   },
   "register": {
@@ -457,6 +502,32 @@
       "password_too_long": "비밀번호가 너무 깁니다.",
       "invalid_credentials": "사용자 이름 또는 비밀번호가 올바르지 않습니다.",
       "missing_fields": "두 항목을 모두 입력해주세요."
+    }
+  },
+  "exchange": {
+    "legalName": "법인명",
+    "displayName": "표시 이름",
+    "description": "설명",
+    "website": "웹사이트",
+    "country": "국가",
+    "email": "이메일",
+    "phone": "전화",
+    "address": "주소",
+    "logoUrl": "로고 URL",
+    "submit": "저장",
+    "submitting": "저장 중…",
+    "saved": "저장되었습니다.",
+    "errors": {
+      "unauth": "먼저 로그인하세요.",
+      "not_found": "거래소를 찾을 수 없습니다.",
+      "legal_name_required": "법인명은 필수입니다.",
+      "display_name_required": "표시 이름은 필수입니다.",
+      "website_required": "웹사이트는 필수입니다.",
+      "website_invalid": "웹사이트는 http 또는 https여야 합니다.",
+      "country_required": "국가는 필수입니다.",
+      "email_required": "이메일은 필수입니다.",
+      "logo_invalid": "로고 URL은 http 또는 https여야 합니다.",
+      "generic": "문제가 발생했습니다."
     }
   }
 }

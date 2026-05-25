@@ -157,7 +157,8 @@
       "coins": "コイン",
       "users": "ユーザー",
       "audit": "監査",
-      "business": "ビジネス"
+      "business": "ビジネス",
+      "exchanges": "取引所"
     },
     "status": {
       "PENDING": "審査中",
@@ -236,6 +237,22 @@
       "title": "企業の拠点",
       "subtitle": "送信された場所を承認/却下します。",
       "empty": "ありません。"
+    },
+    "exchanges": {
+      "title": "取引所",
+      "subtitle": "取引所の登録申請を確認・モデレートします。",
+      "empty": "このステータスの取引所はありません。",
+      "approve": "承認",
+      "reject": "却下",
+      "rejectReasonPlaceholder": "理由（3文字以上）",
+      "errors": {
+        "unauth": "権限がありません。",
+        "not_admin": "管理者権限が必要です。",
+        "not_found": "取引所が見つかりません。",
+        "not_pending": "審査中ではありません。",
+        "reason_too_short": "理由は3文字以上必要です。",
+        "generic": "問題が発生しました。"
+      }
     }
   },
   "exchanges": {
@@ -326,7 +343,6 @@
   },
   "business": {
     "title": "ビジネスキャビネット",
-    "registerIntro": "暗号通貨を受け付ける場所を地図に追加するには、会社を登録してください。",
     "profileIntro": "会社の公開プロフィール。",
     "registerCompany": "会社を登録",
     "saveProfile": "プロフィールを保存",
@@ -427,6 +443,35 @@
       "alertsKicker": "近日公開",
       "alertsTitle": "価格アラート",
       "alertsBody": "価格や位置情報のトリガー通知 — 次のスライスで提供予定です。"
+    },
+    "companies": {
+      "title": "マイカンパニー",
+      "empty": "まだ会社がありません。",
+      "add": "会社を追加",
+      "legalName": "法人名",
+      "displayName": "表示名",
+      "submit": "会社を作成",
+      "submitting": "作成中…",
+      "errors": {
+        "unauth": "先にサインインしてください。",
+        "legal_name_required": "法人名は必須です。",
+        "display_name_required": "表示名は必須です。",
+        "country_required": "国は必須です。",
+        "generic": "問題が発生しました。"
+      }
+    },
+    "exchanges": {
+      "title": "マイ取引所",
+      "empty": "まだ取引所がありません。",
+      "add": "取引所を追加",
+      "submit": "取引所を作成",
+      "submitting": "作成中…",
+      "rejectedReason": "理由",
+      "status": {
+        "PENDING": "審査中",
+        "APPROVED": "承認済み",
+        "REJECTED": "却下"
+      }
     }
   },
   "register": {
@@ -457,6 +502,32 @@
       "password_too_long": "パスワードが長すぎます。",
       "invalid_credentials": "ユーザー名またはパスワードが正しくありません。",
       "missing_fields": "両方のフィールドを入力してください。"
+    }
+  },
+  "exchange": {
+    "legalName": "法人名",
+    "displayName": "表示名",
+    "description": "説明",
+    "website": "ウェブサイト",
+    "country": "国",
+    "email": "メール",
+    "phone": "電話",
+    "address": "住所",
+    "logoUrl": "ロゴ URL",
+    "submit": "保存",
+    "submitting": "保存中…",
+    "saved": "保存しました。",
+    "errors": {
+      "unauth": "先にサインインしてください。",
+      "not_found": "取引所が見つかりません。",
+      "legal_name_required": "法人名は必須です。",
+      "display_name_required": "表示名は必須です。",
+      "website_required": "ウェブサイトは必須です。",
+      "website_invalid": "ウェブサイトは http または https にしてください。",
+      "country_required": "国は必須です。",
+      "email_required": "メールは必須です。",
+      "logo_invalid": "ロゴ URL は http または https にしてください。",
+      "generic": "問題が発生しました。"
     }
   }
 }

@@ -157,7 +157,8 @@
       "coins": "Coins",
       "users": "Users",
       "audit": "Audit",
-      "business": "Business"
+      "business": "Business",
+      "exchanges": "Exchanges"
     },
     "status": {
       "PENDING": "Pending",
@@ -236,6 +237,22 @@
       "title": "Company points",
       "subtitle": "Moderate submitted locations.",
       "empty": "Nothing here."
+    },
+    "exchanges": {
+      "title": "Exchanges",
+      "subtitle": "Review and moderate exchange registrations.",
+      "empty": "No exchanges in this status.",
+      "approve": "Approve",
+      "reject": "Reject",
+      "rejectReasonPlaceholder": "Reason (at least 3 characters)",
+      "errors": {
+        "unauth": "Not authorized.",
+        "not_admin": "Admin access required.",
+        "not_found": "Exchange not found.",
+        "not_pending": "Not in pending status.",
+        "reason_too_short": "Reason must be at least 3 characters.",
+        "generic": "Something went wrong."
+      }
     }
   },
   "exchanges": {
@@ -326,7 +343,6 @@
   },
   "business": {
     "title": "Business cabinet",
-    "registerIntro": "Register your company to add crypto-accepting locations to the map.",
     "profileIntro": "Your public company profile.",
     "registerCompany": "Register company",
     "saveProfile": "Save profile",
@@ -427,6 +443,35 @@
       "alertsKicker": "Coming soon",
       "alertsTitle": "Price alerts",
       "alertsBody": "Notifications for price and geo triggers — shipping in the next slice."
+    },
+    "companies": {
+      "title": "My companies",
+      "empty": "You have no companies yet.",
+      "add": "Add company",
+      "legalName": "Legal name",
+      "displayName": "Display name",
+      "submit": "Create company",
+      "submitting": "Creating…",
+      "errors": {
+        "unauth": "Please sign in first.",
+        "legal_name_required": "Legal name is required.",
+        "display_name_required": "Display name is required.",
+        "country_required": "Country is required.",
+        "generic": "Something went wrong."
+      }
+    },
+    "exchanges": {
+      "title": "My exchanges",
+      "empty": "You have no exchanges yet.",
+      "add": "Add exchange",
+      "submit": "Create exchange",
+      "submitting": "Creating…",
+      "rejectedReason": "Reason",
+      "status": {
+        "PENDING": "Pending review",
+        "APPROVED": "Approved",
+        "REJECTED": "Rejected"
+      }
     }
   },
   "register": {
@@ -457,6 +502,32 @@
       "password_too_long": "Password is too long.",
       "invalid_credentials": "Incorrect username or password.",
       "missing_fields": "Please fill in both fields."
+    }
+  },
+  "exchange": {
+    "legalName": "Legal name",
+    "displayName": "Display name",
+    "description": "Description",
+    "website": "Website",
+    "country": "Country",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "logoUrl": "Logo URL",
+    "submit": "Save",
+    "submitting": "Saving…",
+    "saved": "Saved.",
+    "errors": {
+      "unauth": "Please sign in first.",
+      "not_found": "Exchange not found.",
+      "legal_name_required": "Legal name is required.",
+      "display_name_required": "Display name is required.",
+      "website_required": "Website is required.",
+      "website_invalid": "Website must be http or https.",
+      "country_required": "Country is required.",
+      "email_required": "Email is required.",
+      "logo_invalid": "Logo URL must be http or https.",
+      "generic": "Something went wrong."
     }
   }
 }

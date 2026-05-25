@@ -157,7 +157,8 @@
       "coins": "Coins",
       "users": "Benutzer",
       "audit": "Audit",
-      "business": "Business"
+      "business": "Business",
+      "exchanges": "Börsen"
     },
     "status": {
       "PENDING": "Wartend",
@@ -236,6 +237,22 @@
       "title": "Firmenstandorte",
       "subtitle": "Eingereichte Standorte moderieren.",
       "empty": "Nichts hier."
+    },
+    "exchanges": {
+      "title": "Börsen",
+      "subtitle": "Börsenanmeldungen prüfen und moderieren.",
+      "empty": "Keine Börsen in diesem Status.",
+      "approve": "Genehmigen",
+      "reject": "Ablehnen",
+      "rejectReasonPlaceholder": "Grund (mindestens 3 Zeichen)",
+      "errors": {
+        "unauth": "Nicht autorisiert.",
+        "not_admin": "Admin-Zugriff erforderlich.",
+        "not_found": "Börse nicht gefunden.",
+        "not_pending": "Nicht im Wartestatus.",
+        "reason_too_short": "Grund muss mindestens 3 Zeichen lang sein.",
+        "generic": "Ein Fehler ist aufgetreten."
+      }
     }
   },
   "exchanges": {
@@ -326,7 +343,6 @@
   },
   "business": {
     "title": "Unternehmenskonto",
-    "registerIntro": "Registrieren Sie Ihr Unternehmen, um krypto-akzeptierende Standorte auf der Karte hinzuzufügen.",
     "profileIntro": "Ihr öffentliches Unternehmensprofil.",
     "registerCompany": "Unternehmen registrieren",
     "saveProfile": "Profil speichern",
@@ -427,6 +443,35 @@
       "alertsKicker": "Demnächst",
       "alertsTitle": "Preis-Benachrichtigungen",
       "alertsBody": "Benachrichtigungen für Preis- und Geo-Trigger – kommen in der nächsten Phase."
+    },
+    "companies": {
+      "title": "Meine Unternehmen",
+      "empty": "Sie haben noch keine Unternehmen.",
+      "add": "Unternehmen hinzufügen",
+      "legalName": "Rechtlicher Name",
+      "displayName": "Anzeigename",
+      "submit": "Unternehmen erstellen",
+      "submitting": "Wird erstellt…",
+      "errors": {
+        "unauth": "Bitte zuerst anmelden.",
+        "legal_name_required": "Rechtlicher Name ist erforderlich.",
+        "display_name_required": "Anzeigename ist erforderlich.",
+        "country_required": "Land ist erforderlich.",
+        "generic": "Ein Fehler ist aufgetreten."
+      }
+    },
+    "exchanges": {
+      "title": "Meine Börsen",
+      "empty": "Sie haben noch keine Börsen.",
+      "add": "Börse hinzufügen",
+      "submit": "Börse erstellen",
+      "submitting": "Wird erstellt…",
+      "rejectedReason": "Grund",
+      "status": {
+        "PENDING": "Wartet",
+        "APPROVED": "Genehmigt",
+        "REJECTED": "Abgelehnt"
+      }
     }
   },
   "register": {
@@ -457,6 +502,32 @@
       "password_too_long": "Passwort ist zu lang.",
       "invalid_credentials": "Benutzername oder Passwort ist falsch.",
       "missing_fields": "Bitte beide Felder ausfüllen."
+    }
+  },
+  "exchange": {
+    "legalName": "Rechtlicher Name",
+    "displayName": "Anzeigename",
+    "description": "Beschreibung",
+    "website": "Webseite",
+    "country": "Land",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "address": "Adresse",
+    "logoUrl": "Logo-URL",
+    "submit": "Speichern",
+    "submitting": "Wird gespeichert…",
+    "saved": "Gespeichert.",
+    "errors": {
+      "unauth": "Bitte zuerst anmelden.",
+      "not_found": "Börse nicht gefunden.",
+      "legal_name_required": "Rechtlicher Name ist erforderlich.",
+      "display_name_required": "Anzeigename ist erforderlich.",
+      "website_required": "Webseite ist erforderlich.",
+      "website_invalid": "Webseite muss http oder https sein.",
+      "country_required": "Land ist erforderlich.",
+      "email_required": "E-Mail ist erforderlich.",
+      "logo_invalid": "Logo-URL muss http oder https sein.",
+      "generic": "Ein Fehler ist aufgetreten."
     }
   }
 }

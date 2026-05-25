@@ -157,7 +157,8 @@
       "coins": "Monnaies",
       "users": "Utilisateurs",
       "audit": "Audit",
-      "business": "Entreprises"
+      "business": "Entreprises",
+      "exchanges": "Exchanges"
     },
     "status": {
       "PENDING": "En attente",
@@ -236,6 +237,22 @@
       "title": "Points d'entreprise",
       "subtitle": "Modérez les emplacements soumis.",
       "empty": "Rien ici."
+    },
+    "exchanges": {
+      "title": "Exchanges",
+      "subtitle": "Examiner et modérer les inscriptions d'exchanges.",
+      "empty": "Aucun exchange dans ce statut.",
+      "approve": "Approuver",
+      "reject": "Refuser",
+      "rejectReasonPlaceholder": "Motif (au moins 3 caractères)",
+      "errors": {
+        "unauth": "Non autorisé.",
+        "not_admin": "Accès administrateur requis.",
+        "not_found": "Exchange introuvable.",
+        "not_pending": "Pas en attente.",
+        "reason_too_short": "Le motif doit comporter au moins 3 caractères.",
+        "generic": "Une erreur s'est produite."
+      }
     }
   },
   "exchanges": {
@@ -326,7 +343,6 @@
   },
   "business": {
     "title": "Espace entreprise",
-    "registerIntro": "Inscrivez votre entreprise pour ajouter sur la carte les lieux qui acceptent les cryptos.",
     "profileIntro": "Profil public de votre entreprise.",
     "registerCompany": "Inscrire l'entreprise",
     "saveProfile": "Enregistrer le profil",
@@ -427,6 +443,35 @@
       "alertsKicker": "Bientôt",
       "alertsTitle": "Alertes de prix",
       "alertsBody": "Notifications pour les déclencheurs de prix et géographiques — prochaine tranche."
+    },
+    "companies": {
+      "title": "Mes entreprises",
+      "empty": "Vous n'avez pas encore d'entreprises.",
+      "add": "Ajouter une entreprise",
+      "legalName": "Raison sociale",
+      "displayName": "Nom affiché",
+      "submit": "Créer l'entreprise",
+      "submitting": "Création…",
+      "errors": {
+        "unauth": "Veuillez d'abord vous connecter.",
+        "legal_name_required": "La raison sociale est requise.",
+        "display_name_required": "Le nom affiché est requis.",
+        "country_required": "Le pays est requis.",
+        "generic": "Une erreur s'est produite."
+      }
+    },
+    "exchanges": {
+      "title": "Mes exchanges",
+      "empty": "Vous n'avez pas encore d'exchanges.",
+      "add": "Ajouter un exchange",
+      "submit": "Créer l'exchange",
+      "submitting": "Création…",
+      "rejectedReason": "Motif",
+      "status": {
+        "PENDING": "En attente",
+        "APPROVED": "Approuvé",
+        "REJECTED": "Refusé"
+      }
     }
   },
   "register": {
@@ -457,6 +502,32 @@
       "password_too_long": "Le mot de passe est trop long.",
       "invalid_credentials": "Nom d'utilisateur ou mot de passe incorrect.",
       "missing_fields": "Veuillez remplir les deux champs."
+    }
+  },
+  "exchange": {
+    "legalName": "Raison sociale",
+    "displayName": "Nom affiché",
+    "description": "Description",
+    "website": "Site web",
+    "country": "Pays",
+    "email": "Email",
+    "phone": "Téléphone",
+    "address": "Adresse",
+    "logoUrl": "URL du logo",
+    "submit": "Enregistrer",
+    "submitting": "Enregistrement…",
+    "saved": "Enregistré.",
+    "errors": {
+      "unauth": "Veuillez d'abord vous connecter.",
+      "not_found": "Exchange introuvable.",
+      "legal_name_required": "La raison sociale est requise.",
+      "display_name_required": "Le nom affiché est requis.",
+      "website_required": "Le site web est requis.",
+      "website_invalid": "Le site web doit être http ou https.",
+      "country_required": "Le pays est requis.",
+      "email_required": "L'email est requis.",
+      "logo_invalid": "L'URL du logo doit être http ou https.",
+      "generic": "Une erreur s'est produite."
     }
   }
 }

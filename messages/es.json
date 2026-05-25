@@ -157,7 +157,8 @@
       "coins": "Monedas",
       "users": "Usuarios",
       "audit": "Auditoría",
-      "business": "Empresas"
+      "business": "Empresas",
+      "exchanges": "Exchanges"
     },
     "status": {
       "PENDING": "Pendiente",
@@ -236,6 +237,22 @@
       "title": "Puntos de empresa",
       "subtitle": "Modera las ubicaciones enviadas.",
       "empty": "Nada aquí."
+    },
+    "exchanges": {
+      "title": "Exchanges",
+      "subtitle": "Revisar y moderar registros de exchanges.",
+      "empty": "No hay exchanges en este estado.",
+      "approve": "Aprobar",
+      "reject": "Rechazar",
+      "rejectReasonPlaceholder": "Motivo (al menos 3 caracteres)",
+      "errors": {
+        "unauth": "No autorizado.",
+        "not_admin": "Se requiere acceso de admin.",
+        "not_found": "Exchange no encontrado.",
+        "not_pending": "No está en estado pendiente.",
+        "reason_too_short": "El motivo debe tener al menos 3 caracteres.",
+        "generic": "Algo salió mal."
+      }
     }
   },
   "exchanges": {
@@ -326,7 +343,6 @@
   },
   "business": {
     "title": "Panel de empresa",
-    "registerIntro": "Registra tu empresa para añadir ubicaciones que aceptan cripto al mapa.",
     "profileIntro": "Perfil público de tu empresa.",
     "registerCompany": "Registrar empresa",
     "saveProfile": "Guardar perfil",
@@ -427,6 +443,35 @@
       "alertsKicker": "Próximamente",
       "alertsTitle": "Alertas de precio",
       "alertsBody": "Notificaciones por precio y geolocalización — llegan en la siguiente entrega."
+    },
+    "companies": {
+      "title": "Mis empresas",
+      "empty": "Aún no tienes empresas.",
+      "add": "Añadir empresa",
+      "legalName": "Razón social",
+      "displayName": "Nombre visible",
+      "submit": "Crear empresa",
+      "submitting": "Creando…",
+      "errors": {
+        "unauth": "Inicia sesión primero.",
+        "legal_name_required": "La razón social es obligatoria.",
+        "display_name_required": "El nombre visible es obligatorio.",
+        "country_required": "El país es obligatorio.",
+        "generic": "Algo salió mal."
+      }
+    },
+    "exchanges": {
+      "title": "Mis exchanges",
+      "empty": "Aún no tienes exchanges.",
+      "add": "Añadir exchange",
+      "submit": "Crear exchange",
+      "submitting": "Creando…",
+      "rejectedReason": "Motivo",
+      "status": {
+        "PENDING": "Pendiente",
+        "APPROVED": "Aprobado",
+        "REJECTED": "Rechazado"
+      }
     }
   },
   "register": {
@@ -457,6 +502,32 @@
       "password_too_long": "La contraseña es demasiado larga.",
       "invalid_credentials": "Usuario o contraseña incorrectos.",
       "missing_fields": "Rellena ambos campos."
+    }
+  },
+  "exchange": {
+    "legalName": "Razón social",
+    "displayName": "Nombre visible",
+    "description": "Descripción",
+    "website": "Sitio web",
+    "country": "País",
+    "email": "Email",
+    "phone": "Teléfono",
+    "address": "Dirección",
+    "logoUrl": "URL del logo",
+    "submit": "Guardar",
+    "submitting": "Guardando…",
+    "saved": "Guardado.",
+    "errors": {
+      "unauth": "Inicia sesión primero.",
+      "not_found": "Exchange no encontrado.",
+      "legal_name_required": "La razón social es obligatoria.",
+      "display_name_required": "El nombre visible es obligatorio.",
+      "website_required": "El sitio web es obligatorio.",
+      "website_invalid": "El sitio web debe ser http o https.",
+      "country_required": "El país es obligatorio.",
+      "email_required": "El email es obligatorio.",
+      "logo_invalid": "La URL del logo debe ser http o https.",
+      "generic": "Algo salió mal."
     }
   }
 }

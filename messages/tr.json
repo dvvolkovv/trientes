@@ -157,7 +157,8 @@
       "coins": "Coinler",
       "users": "Kullanıcılar",
       "audit": "Denetim",
-      "business": "İşletme"
+      "business": "İşletme",
+      "exchanges": "Borsalar"
     },
     "status": {
       "PENDING": "Beklemede",
@@ -236,6 +237,22 @@
       "title": "Şirket noktaları",
       "subtitle": "Gönderilen konumları onaylayın.",
       "empty": "Burada bir şey yok."
+    },
+    "exchanges": {
+      "title": "Borsalar",
+      "subtitle": "Borsa kayıtlarını inceleyin ve onaylayın.",
+      "empty": "Bu durumda borsa yok.",
+      "approve": "Onayla",
+      "reject": "Reddet",
+      "rejectReasonPlaceholder": "Sebep (en az 3 karakter)",
+      "errors": {
+        "unauth": "Yetkili değilsiniz.",
+        "not_admin": "Yönetici erişimi gerekiyor.",
+        "not_found": "Borsa bulunamadı.",
+        "not_pending": "Beklemede değil.",
+        "reason_too_short": "Sebep en az 3 karakter olmalıdır.",
+        "generic": "Bir hata oluştu."
+      }
     }
   },
   "exchanges": {
@@ -326,7 +343,6 @@
   },
   "business": {
     "title": "İşletme paneli",
-    "registerIntro": "Kriptopara kabul eden konumları haritaya eklemek için şirketinizi kaydedin.",
     "profileIntro": "Şirketinizin herkese açık profili.",
     "registerCompany": "Şirketi kaydet",
     "saveProfile": "Profili kaydet",
@@ -427,6 +443,35 @@
       "alertsKicker": "Yakında",
       "alertsTitle": "Fiyat uyarıları",
       "alertsBody": "Fiyat ve konum tetikleyicileri için bildirimler — bir sonraki aşamada gelecek."
+    },
+    "companies": {
+      "title": "Şirketlerim",
+      "empty": "Henüz şirketiniz yok.",
+      "add": "Şirket ekle",
+      "legalName": "Resmi unvan",
+      "displayName": "Görünen ad",
+      "submit": "Şirket oluştur",
+      "submitting": "Oluşturuluyor…",
+      "errors": {
+        "unauth": "Önce oturum açın.",
+        "legal_name_required": "Resmi unvan gereklidir.",
+        "display_name_required": "Görünen ad gereklidir.",
+        "country_required": "Ülke gereklidir.",
+        "generic": "Bir hata oluştu."
+      }
+    },
+    "exchanges": {
+      "title": "Borsalarım",
+      "empty": "Henüz borsanız yok.",
+      "add": "Borsa ekle",
+      "submit": "Borsa oluştur",
+      "submitting": "Oluşturuluyor…",
+      "rejectedReason": "Sebep",
+      "status": {
+        "PENDING": "Beklemede",
+        "APPROVED": "Onaylandı",
+        "REJECTED": "Reddedildi"
+      }
     }
   },
   "register": {
@@ -457,6 +502,32 @@
       "password_too_long": "Parola çok uzun.",
       "invalid_credentials": "Kullanıcı adı veya parola hatalı.",
       "missing_fields": "Lütfen iki alanı da doldurun."
+    }
+  },
+  "exchange": {
+    "legalName": "Resmi unvan",
+    "displayName": "Görünen ad",
+    "description": "Açıklama",
+    "website": "Web sitesi",
+    "country": "Ülke",
+    "email": "E-posta",
+    "phone": "Telefon",
+    "address": "Adres",
+    "logoUrl": "Logo URL",
+    "submit": "Kaydet",
+    "submitting": "Kaydediliyor…",
+    "saved": "Kaydedildi.",
+    "errors": {
+      "unauth": "Önce oturum açın.",
+      "not_found": "Borsa bulunamadı.",
+      "legal_name_required": "Resmi unvan gereklidir.",
+      "display_name_required": "Görünen ad gereklidir.",
+      "website_required": "Web sitesi gereklidir.",
+      "website_invalid": "Web sitesi http veya https olmalıdır.",
+      "country_required": "Ülke gereklidir.",
+      "email_required": "E-posta gereklidir.",
+      "logo_invalid": "Logo URL http veya https olmalıdır.",
+      "generic": "Bir hata oluştu."
     }
   }
 }
