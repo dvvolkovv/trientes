@@ -1,57 +1,10 @@
 import { redirect } from "next/navigation";
-import { setRequestLocale, getTranslations } from "next-intl/server";
-import { prisma } from "@/lib/prisma";
-import { getViewerCompany } from "@/lib/business";
-import { readTop100 } from "@/lib/snapshot";
-import { CompanyProfileForm } from "@/components/business/company-profile-form";
-import { PointForm } from "@/components/business/point-form";
-import { PointsList, type PointListItem } from "@/components/business/points-list";
 
-export const dynamic = "force-dynamic";
-
-export default async function BusinessPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function BusinessLegacyRedirect({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
-  setRequestLocale(locale);
-  const t = await getTranslations("business");
-  const { userId, company } = await getViewerCompany();
-  if (!userId) redirect(`/${locale}/login`);
-
-  if (!company) {
-    return (
-      <main className="max-w-[720px] mx-auto px-4 md:px-12 py-12">
-        <h1 className="text-[36px] font-bold tracking-[-0.03em] mb-2">{t("title")}</h1>
-        <p className="text-muted mb-6">{t("registerIntro")}</p>
-        <CompanyProfileForm mode="register" />
-      </main>
-    );
-  }
-
-  const [points, coins] = await Promise.all([
-    prisma.companyPoint.findMany({ where: { companyId: company.id }, orderBy: { createdAt: "desc" }, take: 100 }),
-    readTop100(),
-  ]);
-  const items: PointListItem[] = points.map((p) => ({ id: p.id, name: p.name, type: p.type, status: p.status, rejectReason: p.rejectReason }));
-  const coinOpts = coins.map((c) => ({ id: c.id, symbol: c.symbol }));
-
-  return (
-    <main className="max-w-[860px] mx-auto px-4 md:px-12 py-12 space-y-12">
-      <section>
-        <h1 className="text-[36px] font-bold tracking-[-0.03em] mb-1">{company.displayName}</h1>
-        <p className="text-muted mb-6">{t("profileIntro")}</p>
-        <CompanyProfileForm mode="edit" initial={{
-          legalName: company.legalName, displayName: company.displayName, description: company.description ?? "",
-          website: company.website ?? "", logoUrl: company.logoUrl ?? "", address: company.address ?? "",
-          phone: company.phone ?? "", email: company.email ?? "", country: company.country ?? "",
-        }} />
-      </section>
-      <section>
-        <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-4">{t("yourPoints")}</h2>
-        <PointsList points={items} />
-      </section>
-      <section>
-        <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-4">{t("addPoint")}</h2>
-        <PointForm coins={coinOpts} />
-      </section>
-    </main>
-  );
+  redirect(`/${locale}/cabinet#companies`);
 }
