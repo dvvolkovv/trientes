@@ -1,7 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { auth, signOut } from "@/auth";
-import { prisma } from "@/lib/prisma";
 import { LocaleSwitcher } from "./locale-switcher";
 import { CurrencySwitcher } from "./currency-switcher";
 import { MobileNav } from "./mobile-nav";
@@ -12,16 +12,10 @@ export async function Navbar() {
   const locale = await getLocale();
   const t = await getTranslations("common");
   const currency = await getCurrency();
-  const userId = (session?.user as { id?: string } | undefined)?.id;
   const isAdmin =
     (session?.user as { role?: string } | undefined)?.role === "ADMIN";
-  const accountType = userId
-    ? (await prisma.user.findUnique({ where: { id: userId }, select: { accountType: true } }))?.accountType
-    : null;
-  const cabinetHref =
-    accountType === "COMPANY" ? `/${locale}/business` : `/${locale}/cabinet`;
-  const cabinetLabel =
-    accountType === "COMPANY" ? t("business") : t("cabinet");
+  const cabinetHref = `/${locale}/cabinet`;
+  const cabinetLabel = t("cabinet");
   const showCabinetLink = !!session?.user;
 
   return (
@@ -122,9 +116,17 @@ export async function Navbar() {
 
         <Link
           href={`/${locale}`}
-          className="flex items-baseline gap-2"
+          className="flex items-center gap-2"
           aria-label={t("appName")}
         >
+          <Image
+            src="/logo.png"
+            alt=""
+            width={43}
+            height={43}
+            priority
+            className="block"
+          />
           <span className="text-[20px] font-bold tracking-[-0.02em] text-foreground">
             trientes
           </span>
