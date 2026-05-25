@@ -1,19 +1,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
+import { listViewerExchanges } from "@/lib/exchange";
 import { CreateExchangeForm } from "@/components/cabinet/create-exchange-form";
-
-async function listViewerExchanges() {
-  const session = await auth();
-  const userId = (session?.user as { id?: string } | undefined)?.id;
-  if (!userId) return [];
-  return prisma.registeredExchange.findMany({
-    where: { ownerUserId: userId },
-    orderBy: { createdAt: "asc" },
-    select: { id: true, displayName: true, legalName: true, status: true },
-  });
-}
 
 const STATUS_CLASS: Record<string, string> = {
   PENDING: "bg-yellow-500/15 text-yellow-500",
@@ -22,7 +10,7 @@ const STATUS_CLASS: Record<string, string> = {
 };
 
 export async function ExchangesSection({ locale }: { locale: string }) {
-  const exchanges = await listViewerExchanges();
+  const { exchanges } = await listViewerExchanges();
   const t = await getTranslations("cabinet.exchanges");
   return (
     <section id="exchanges" className="space-y-6">
@@ -41,7 +29,7 @@ export async function ExchangesSection({ locale }: { locale: string }) {
                   <div className="font-medium">{x.displayName}</div>
                   <div className="text-xs text-muted">{x.legalName}</div>
                 </div>
-                <span className={`text-xs px-2 py-0.5 rounded ${STATUS_CLASS[x.status]}`}>
+                <span className={`text-xs px-2 py-0.5 rounded ${STATUS_CLASS[x.status] ?? ""}`}>
                   {t(`status.${x.status}`)}
                 </span>
               </Link>
