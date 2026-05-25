@@ -10,7 +10,7 @@ import { submitCompanyPoint } from "@/app/actions/company";
 const PRAGUE: [number, number] = [14.4212535, 50.0874654];
 const TYPES = ["SHOP", "ATM", "POS", "SALES_OFFICE"] as const;
 
-export function PointForm({ coins }: { coins: { id: string; symbol: string }[] }) {
+export function PointForm({ companyId, coins }: { companyId: string; coins: { id: string; symbol: string }[] }) {
   const t = useTranslations("business");
   const containerRef = useRef<HTMLDivElement>(null);
   const markerRef = useRef<Marker | null>(null);
@@ -46,7 +46,7 @@ export function PointForm({ coins }: { coins: { id: string; symbol: string }[] }
   function save() {
     setMsg(null);
     start(async () => {
-      const res = await submitCompanyPoint({
+      const res = await submitCompanyPoint(companyId, {
         type, name, address, lat: pos?.[1] ?? null, lon: pos?.[0] ?? null, acceptedCoinIds: accepted,
       });
       if (res.ok) { setMsg(t("pointSubmitted")); setName(""); setAddress(""); setAccepted([]); router.refresh(); }

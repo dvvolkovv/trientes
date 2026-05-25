@@ -6,6 +6,8 @@
 
 **Architecture:** Server-action style (matches the existing `src/app/actions/company.ts` pattern). Pure validation logic in `src/lib/`, server actions in `src/app/actions/`, vitest unit tests in `tests/*.test.ts`. Public-facing pages (coins, `/exchanges` catalog, navigator) are not touched at all.
 
+**Naming note (T1 discovery):** The Prisma model for user-submitted exchanges is `RegisteredExchange` (Prisma client: `prisma.registeredExchange`). The name `Exchange` is already taken by the CoinGecko catalog model — they coexist. User-facing labels everywhere (UI, i18n, file names like `exchange-profile-form.tsx`, function names like `createExchange`) remain neutral "exchange" / "биржа".
+
 **Tech Stack:** Next.js (server actions), Prisma, vitest, next-intl (10 locales), Auth.js DB sessions, PM2 (deploy).
 
 **Spec:** `docs/superpowers/specs/2026-05-25-unified-cabinet-and-exchange-foundation-design.md`
@@ -365,7 +367,7 @@ export async function createExchange(input: ExchangeProfileInput) {
   if (!userId) return { ok: false as const, reason: "unauth" as const };
   const v = validateExchangeProfile(input);
   if (!v.ok) return { ok: false as const, reason: v.reason };
-  const exchange = await prisma.exchange.create({
+  const exchange = await prisma.registeredExchange.create({
     data: {
       ownerUserId: userId,
       legalName: v.data.legalName,
@@ -391,7 +393,7 @@ export async function saveExchangeProfile(
 ) {
   const userId = await requireUser();
   if (!userId) return { ok: false as const, reason: "unauth" as const };
-  const existing = await prisma.exchange.findUnique({ where: { id: exchangeId } });
+  const existing = await prisma.registeredExchange.findUnique({ where: { id: exchangeId } });
   if (!existing || existing.ownerUserId !== userId) {
     return { ok: false as const, reason: "not_found" as const };
   }
@@ -399,7 +401,7 @@ export async function saveExchangeProfile(
   if (!v.ok) return { ok: false as const, reason: v.reason };
   // Editing an approved exchange returns it to PENDING (admin must re-approve).
   const nextStatus = existing.status === "APPROVED" ? "PENDING" : existing.status;
-  await prisma.exchange.update({
+  await prisma.registeredExchange.update({
     where: { id: exchangeId },
     data: {
       ...v.data,
@@ -458,7 +460,7 @@ export async function approveExchange(exchangeId: string) {
   const adminId = await requireAdmin();
   if (!adminId) return { ok: false as const, reason: "unauth" as const };
   await prisma.$transaction([
-    prisma.exchange.update({
+    prisma.registeredExchange.update({
       where: { id: exchangeId },
       data: { status: "APPROVED", rejectionReason: null },
     }),
@@ -481,7 +483,7 @@ export async function rejectExchange(exchangeId: string, reason: string) {
   const trimmed = reason.trim();
   if (trimmed.length < 3) return { ok: false as const, reason: "reason_too_short" as const };
   await prisma.$transaction([
-    prisma.exchange.update({
+    prisma.registeredExchange.update({
       where: { id: exchangeId },
       data: { status: "REJECTED", rejectionReason: trimmed },
     }),
@@ -811,7 +813,7 @@ async function listViewerExchanges() {
   const session = await auth();
   const userId = (session?.user as { id?: string } | undefined)?.id;
   if (!userId) return [];
-  return prisma.exchange.findMany({
+  return prisma.registeredExchange.findMany({
     where: { ownerUserId: userId },
     orderBy: { createdAt: "asc" },
     select: { id: true, displayName: true, legalName: true, status: true },
@@ -1099,7 +1101,7 @@ export default async function ExchangeManagementPage({
   const session = await auth();
   const userId = (session?.user as { id?: string } | undefined)?.id;
   if (!userId) redirect(`/${locale}/login`);
-  const exchange = await prisma.exchange.findUnique({ where: { id } });
+  const exchange = await prisma.registeredExchange.findUnique({ where: { id } });
   if (!exchange || exchange.ownerUserId !== userId) notFound();
 
   return (
@@ -1235,7 +1237,7 @@ export default async function AdminExchangesPage({
     ? (sp.status as ExchangeStatus)
     : "PENDING";
 
-  const rows = await prisma.exchange.findMany({
+  const rows = await prisma.registeredExchange.findMany({
     where: { status },
     orderBy: { createdAt: "desc" },
     include: { owner: { select: { username: true } } },
