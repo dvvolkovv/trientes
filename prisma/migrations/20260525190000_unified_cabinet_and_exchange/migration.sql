@@ -38,3 +38,7 @@ CREATE INDEX "RegisteredExchange_status_createdAt_idx" ON "RegisteredExchange"("
 ALTER TABLE "RegisteredExchange"
   ADD CONSTRAINT "RegisteredExchange_ownerUserId_fkey"
   FOREIGN KEY ("ownerUserId") REFERENCES "User"("id") ON DELETE CASCADE;
+
+-- Admin audit actions for exchange moderation
+ALTER TYPE "AdminAction" ADD VALUE 'APPROVE_EXCHANGE';
+ALTER TYPE "AdminAction" ADD VALUE 'REJECT_EXCHANGE';

@@ -183,6 +183,8 @@ enum AdminAction {
   SET_USER_ROLE
   APPROVE_POINT
   REJECT_POINT
+  APPROVE_EXCHANGE
+  REJECT_EXCHANGE
 }
 
 model AdminAuditLog {

@@ -8,12 +8,14 @@ export type AuditAction =
   | "TOGGLE_COIN_ACTIVE"
   | "SET_USER_ROLE"
   | "APPROVE_POINT"
-  | "REJECT_POINT";
+  | "REJECT_POINT"
+  | "APPROVE_EXCHANGE"
+  | "REJECT_EXCHANGE";
 
 export async function logAdminAction(input: {
   actorId: string;
   action: AuditAction;
-  targetType: "CoinRequest" | "Coin" | "User" | "CompanyPoint";
+  targetType: "CoinRequest" | "Coin" | "User" | "CompanyPoint" | "RegisteredExchange";
   targetId: string;
   details?: Record<string, unknown>;
 }): Promise<void> {
