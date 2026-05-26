@@ -16,6 +16,13 @@ export const CURATED_EXCHANGES: Exchange[] = [
     volume24hUsd: 0,
     url: "https://richamster.com",
     hasTradingIncentive: false,
+    description: null,
+    exchangeType: "CEX",
+    currencies: null,
+    pairsCount: null,
+    fiats: [],
+    socials: null,
+    source: "curated",
   },
 ];
 

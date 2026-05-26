@@ -193,6 +193,13 @@ describe("syncExchanges", () => {
     volume24hUsd: 15000 * 76000,
     url: "https://coinbase.com/",
     hasTradingIncentive: false,
+    description: null,
+    exchangeType: null,
+    currencies: null,
+    pairsCount: null,
+    fiats: [],
+    socials: null,
+    source: "cg",
   };
 
   it("writes Redis snapshot and upserts each exchange", async () => {

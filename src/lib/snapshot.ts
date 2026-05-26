@@ -110,6 +110,13 @@ export async function readExchanges(): Promise<Exchange[]> {
       volume24hUsd: r.volume24hUsd,
       url: r.url,
       hasTradingIncentive: r.hasTradingIncentive,
+      description: null,
+      exchangeType: null,
+      currencies: null,
+      pairsCount: null,
+      fiats: [],
+      socials: null,
+      source: "cg" as const,
     })),
   );
 }

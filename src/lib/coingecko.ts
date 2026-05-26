@@ -288,6 +288,21 @@ export type Exchange = {
   volume24hUsd: number;
   url: string | null;
   hasTradingIncentive: boolean;
+  description: string | null;
+  exchangeType: "CEX" | "DEX" | "HYBRID" | "OTHER" | null;
+  currencies: number | null;
+  pairsCount: number | null;
+  fiats: string[];
+  socials: {
+    twitter?: string;
+    telegram?: string;
+    facebook?: string;
+    github?: string;
+    reddit?: string;
+    youtube?: string;
+    website?: string;
+  } | null;
+  source: "cg" | "cp" | "curated";
 };
 
 export function parseExchange(raw: unknown, btcUsd: number): Exchange {
@@ -307,6 +322,13 @@ export function parseExchange(raw: unknown, btcUsd: number): Exchange {
     volume24hUsd: btc * btcUsd,
     url: typeof r.url === "string" ? r.url : null,
     hasTradingIncentive: r.has_trading_incentive === true,
+    description: null,
+    exchangeType: null,
+    currencies: null,
+    pairsCount: null,
+    fiats: [],
+    socials: null,
+    source: "cg" as const,
   };
 }
 

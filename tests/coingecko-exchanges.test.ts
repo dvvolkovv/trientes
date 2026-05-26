@@ -29,6 +29,13 @@ describe("parseExchange", () => {
       volume24hUsd: 15509.32 * 76000,
       url: "https://www.coinbase.com/",
       hasTradingIncentive: false,
+      description: null,
+      exchangeType: null,
+      currencies: null,
+      pairsCount: null,
+      fiats: [],
+      socials: null,
+      source: "cg",
     });
   });
 
@@ -50,6 +57,13 @@ describe("parseExchange", () => {
       volume24hUsd: 0,
       url: null,
       hasTradingIncentive: false,
+      description: null,
+      exchangeType: null,
+      currencies: null,
+      pairsCount: null,
+      fiats: [],
+      socials: null,
+      source: "cg",
     });
   });
 
