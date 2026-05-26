@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseCoinPaprikaExchange, cpTypeToExchangeType } from "@/lib/coinpaprika";
+import { parseCoinPaprikaExchange, cpTypeToExchangeType, resolveCpId, CP_TO_CG_ALIAS } from "@/lib/coinpaprika";
 
 describe("parseCoinPaprikaExchange", () => {
   const sample = {
@@ -65,5 +65,17 @@ describe("cpTypeToExchangeType", () => {
   });
   it("returns null for empty array", () => {
     expect(cpTypeToExchangeType([])).toBeNull();
+  });
+});
+
+describe("resolveCpId", () => {
+  it("returns the alias target when present", () => {
+    expect(resolveCpId("coinbase")).toBe("gdax");
+  });
+  it("returns the input id when no alias is set", () => {
+    expect(resolveCpId("xeggex")).toBe("xeggex");
+  });
+  it("CP_TO_CG_ALIAS contains the coinbase→gdax mapping", () => {
+    expect(CP_TO_CG_ALIAS.coinbase).toBe("gdax");
   });
 });
