@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import type { Exchange, ExchangeRates } from "@/lib/coingecko";
@@ -76,18 +77,12 @@ export function ExchangesTable({
                     {e.logoUrl && (
                       <Image src={e.logoUrl} alt="" width={28} height={28} className="rounded" unoptimized />
                     )}
-                    {e.url ? (
-                      <a
-                        href={e.url}
-                        target="_blank"
-                        rel="noopener noreferrer nofollow"
-                        className="font-medium text-[15px] hover:underline"
-                      >
-                        {e.name}
-                      </a>
-                    ) : (
-                      <span className="font-medium text-[15px]">{e.name}</span>
-                    )}
+                    <Link
+                      href={`/${locale}/exchanges/${e.id}`}
+                      className="font-medium text-[15px] hover:underline"
+                    >
+                      {e.name}
+                    </Link>
                   </div>
                 </td>
                 <td className="px-5 py-5">
@@ -121,18 +116,12 @@ export function ExchangesTable({
                 <Image src={e.logoUrl} alt="" width={28} height={28} className="rounded flex-shrink-0" unoptimized />
               )}
               <div className="flex-1 min-w-0">
-                {e.url ? (
-                  <a
-                    href={e.url}
-                    target="_blank"
-                    rel="noopener noreferrer nofollow"
-                    className="font-medium hover:underline block truncate"
-                  >
-                    {e.name}
-                  </a>
-                ) : (
-                  <span className="font-medium block truncate">{e.name}</span>
-                )}
+                <Link
+                  href={`/${locale}/exchanges/${e.id}`}
+                  className="font-medium hover:underline block truncate"
+                >
+                  {e.name}
+                </Link>
                 <div className="num text-[11px] text-muted">
                   {e.country ?? "—"} · {e.yearEstablished ?? "—"}
                 </div>
