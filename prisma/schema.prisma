@@ -213,11 +213,19 @@ model Exchange {
   volume24hUsd        Float
   url                 String?
   hasTradingIncentive Boolean             @default(false)
+  description         String?             @db.Text
+  exchangeType        String?             // "CEX" | "DEX" | "HYBRID" | "OTHER"
+  currencies          Int?
+  pairsCount          Int?
+  fiats               String[]            @default([])
+  socials             Json?
+  source              String              @default("cg") // "cg" | "cp" | "curated"
   fetchedAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
   watchedBy           ExchangeWatchlist[]
 
   @@index([trustScoreRank])
+  @@index([source])
 }
 
 model ExchangeWatchlist {
