@@ -145,8 +145,9 @@ async function runCoinPaprikaSync() {
       prisma: prisma as never,
       minVolumeUsd: 100_000,
       btcUsd,
+      detailCallBudget: 25,
     });
-    console.log(`[worker] coinpaprika-sync ok: +${result.created} new, ~${result.enriched} enriched, ${result.skipped} skipped in ${Date.now() - t0}ms`);
+    console.log(`[worker] coinpaprika-sync ok: +${result.created} new, ~${result.enriched} enriched, ${result.skipped} skipped, ${result.detailsAttempted} details, ${result.marketsUpserted} markets in ${Date.now() - t0}ms`);
   } catch (err) {
     console.error(`[worker] coinpaprika-sync failed:`, err);
   }

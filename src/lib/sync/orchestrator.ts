@@ -4,7 +4,7 @@ import type { FearGreed } from "@/lib/fear-greed";
 import type { MarketQuote } from "@/lib/markets";
 import { KEYS, TTL } from "./keys";
 import { mergeCuratedExchanges } from "@/lib/curated-exchanges";
-import { cpTypeToExchangeType, resolveCpId, type CoinPaprikaExchange, type CoinPaprikaExchangeDetail } from "@/lib/coinpaprika";
+import { cpTypeToExchangeType, resolveCpId, type CoinPaprikaExchange, type CoinPaprikaExchangeDetail, type CoinPaprikaMarket } from "@/lib/coinpaprika";
 
 // Minimal interfaces — we only use what we need so tests can pass fakes.
 type RedisLike = {
@@ -330,6 +330,11 @@ function socialsFromLinks(links: CoinPaprikaExchange["links"]): Record<string, s
   return Object.keys(out).length > 0 ? out : null;
 }
 
+function marketRowId(exchangeId: string, m: CoinPaprikaMarket): string {
+  const cat = m.category ?? "spot";
+  return `${exchangeId}:${m.baseSymbol}:${m.quoteSymbol}:${cat}`;
+}
+
 export async function syncCoinPaprikaExchanges(deps: {
   fetchAll: () => Promise<CoinPaprikaExchange[]>;
   fetchDetail: (id: string) => Promise<CoinPaprikaExchangeDetail | null>;
@@ -339,12 +344,19 @@ export async function syncCoinPaprikaExchanges(deps: {
       update(args: { where: { id: string }; data: Record<string, unknown> }): Promise<unknown>;
       create(args: { data: Record<string, unknown> }): Promise<unknown>;
     };
+    exchangeMarket: {
+      upsert(args: { where: { id: string }; update: Record<string, unknown>; create: Record<string, unknown> }): Promise<unknown>;
+    };
   };
   minVolumeUsd: number;
   btcUsd: number;
-}): Promise<{ created: number; enriched: number; skipped: number }> {
-  const all = await deps.fetchAll();
-  let created = 0, enriched = 0, skipped = 0;
+  /** Hard cap on per-exchange detail calls per run — CoinPaprika free tier is 60 req/hour. */
+  detailCallBudget: number;
+}): Promise<{ created: number; enriched: number; skipped: number; marketsUpserted: number; detailsAttempted: number }> {
+  const allRaw = await deps.fetchAll();
+  // Sort by volume desc so top exchanges get fresh detail first within rate-limit budget.
+  const all = [...allRaw].sort((a, b) => b.volume24hUsd - a.volume24hUsd);
+  let created = 0, enriched = 0, skipped = 0, marketsUpserted = 0, detailsAttempted = 0;
 
   for (const cp of all) {
     if (!cp.active || !cp.markets_data_fetched || cp.volume24hUsd <= deps.minVolumeUsd) {
@@ -353,26 +365,31 @@ export async function syncCoinPaprikaExchanges(deps: {
     }
     const targetId = resolveCpId(cp.id);
     const existing = await deps.prisma.exchange.findUnique({ where: { id: targetId } });
-    const detail = await deps.fetchDetail(cp.id);
+    const wantDetail = detailsAttempted < deps.detailCallBudget;
+    const detail = wantDetail ? await deps.fetchDetail(cp.id) : null;
+    if (wantDetail) detailsAttempted++;
     const pairsCount = detail?.pairsCount ?? null;
     const fiats = cp.fiats.map((f) => f.symbol).filter((s): s is string => typeof s === "string" && s.length > 0);
     const socials = socialsFromLinks(cp.links);
     const exchangeType = cpTypeToExchangeType(cp.type);
+    const volBtc = deps.btcUsd > 0 ? cp.volume24hUsd / deps.btcUsd : 0;
 
     if (existing) {
-      const data: Record<string, unknown> = {};
+      // Always refresh volatile metrics; only fill in nullable curated fields once.
+      const data: Record<string, unknown> = {
+        volume24hUsd: cp.volume24hUsd,
+        volume24hBtc: volBtc,
+        trustScoreRank: cp.adjusted_rank ?? null,
+      };
+      if (cp.currencies !== null) data.currencies = cp.currencies;
+      if (pairsCount !== null) data.pairsCount = pairsCount;
       if (existing.description === null && cp.description) data.description = cp.description;
       if (existing.exchangeType === null && exchangeType) data.exchangeType = exchangeType;
-      if (existing.currencies === null && cp.currencies !== null) data.currencies = cp.currencies;
-      if (existing.pairsCount === null && pairsCount !== null) data.pairsCount = pairsCount;
       if ((!existing.fiats || existing.fiats.length === 0) && fiats.length > 0) data.fiats = fiats;
       if (!existing.socials && socials) data.socials = socials;
-      if (Object.keys(data).length > 0) {
-        await deps.prisma.exchange.update({ where: { id: targetId }, data });
-        enriched++;
-      } else {
-        skipped++;
-      }
+      if (detail && detail.markets.length > 0) data.marketsFetchedAt = new Date();
+      await deps.prisma.exchange.update({ where: { id: targetId }, data });
+      enriched++;
     } else {
       const websiteUrl = pickFirst(cp.links.website) ?? null;
       const create: Record<string, unknown> = {
@@ -384,7 +401,7 @@ export async function syncCoinPaprikaExchanges(deps: {
         trustScore: null,
         trustScoreRank: cp.adjusted_rank ?? null,
         volume24hUsd: cp.volume24hUsd,
-        volume24hBtc: deps.btcUsd > 0 ? cp.volume24hUsd / deps.btcUsd : 0,
+        volume24hBtc: volBtc,
         url: websiteUrl,
         hasTradingIncentive: false,
         description: cp.description,
@@ -394,11 +411,41 @@ export async function syncCoinPaprikaExchanges(deps: {
         fiats,
         socials,
         source: "cp",
+        marketsFetchedAt: detail && detail.markets.length > 0 ? new Date() : null,
       };
       await deps.prisma.exchange.create({ data: create });
       created++;
     }
+
+    if (detail && detail.markets.length > 0) {
+      const now = new Date();
+      for (const m of detail.markets) {
+        if (!m.baseSymbol || !m.quoteSymbol) continue;
+        const id = marketRowId(targetId, m);
+        const common = {
+          pair: m.pair,
+          baseSymbol: m.baseSymbol,
+          quoteSymbol: m.quoteSymbol,
+          baseCurrencyId: m.baseCurrencyId,
+          quoteCurrencyId: m.quoteCurrencyId,
+          category: m.category,
+          priceUsd: m.priceUsd,
+          volumeUsd24h: m.volumeUsd24h,
+          volumeSharePct: m.volumeSharePct,
+          outlier: m.outlier,
+          marketUrl: m.marketUrl,
+          lastTradedAt: m.lastTradedAt,
+          lastSeenAt: now,
+        };
+        await deps.prisma.exchangeMarket.upsert({
+          where: { id },
+          update: common,
+          create: { id, exchangeId: targetId, firstSeenAt: now, ...common },
+        });
+        marketsUpserted++;
+      }
+    }
   }
 
-  return { created, enriched, skipped };
+  return { created, enriched, skipped, marketsUpserted, detailsAttempted };
 }

@@ -288,7 +288,35 @@
       "trustScore": "Trust score"
     },
     "description": {
-      "title": "О бирже"
+      "title": "О бирже",
+      "source": {
+        "wikipedia": "Источник: Википедия",
+        "coinpaprika": "Источник: CoinPaprika"
+      }
+    },
+    "pairs": {
+      "title": "Торговые пары",
+      "empty": "Данные о парах индексируются — загляните чуть позже.",
+      "topN": "Топ-{count} по объёму",
+      "newBadge": "НОВ",
+      "columns": {
+        "pair": "Пара",
+        "price": "Цена",
+        "volume24h": "Объём 24ч",
+        "share": "Доля"
+      }
+    },
+    "newPairs": {
+      "title": "Новые листинги",
+      "subtitle": "новых пар за последние {days} дн."
+    },
+    "freshness": {
+      "updated": "Обновлено {ago}",
+      "justNow": "только что",
+      "secAgo": "{n} с назад",
+      "minAgo": "{n} мин назад",
+      "hourAgo": "{n} ч назад",
+      "dayAgo": "{n} д назад"
     },
     "socials": {
       "title": "Ссылки"

@@ -288,7 +288,35 @@
       "trustScore": "Trust score"
     },
     "description": {
-      "title": "About"
+      "title": "Hakkında",
+      "source": {
+        "wikipedia": "Kaynak: Vikipedi",
+        "coinpaprika": "Kaynak: CoinPaprika"
+      }
+    },
+    "pairs": {
+      "title": "İşlem çiftleri",
+      "empty": "Piyasa verileri taranıyor — kısa süre sonra tekrar deneyin.",
+      "topN": "Hacme göre ilk {count}",
+      "newBadge": "YENİ",
+      "columns": {
+        "pair": "Çift",
+        "price": "Fiyat",
+        "volume24h": "24s Hacim",
+        "share": "Hacim %"
+      }
+    },
+    "newPairs": {
+      "title": "Yeni listelemeler",
+      "subtitle": "son {days} gündeki yeni çiftler"
+    },
+    "freshness": {
+      "updated": "{ago} güncellendi",
+      "justNow": "az önce",
+      "secAgo": "{n} sn önce",
+      "minAgo": "{n} dk önce",
+      "hourAgo": "{n} sa önce",
+      "dayAgo": "{n} gün önce"
     },
     "socials": {
       "title": "Links"

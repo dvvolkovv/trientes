@@ -288,7 +288,35 @@
       "trustScore": "Trust score"
     },
     "description": {
-      "title": "About"
+      "title": "소개",
+      "source": {
+        "wikipedia": "출처: Wikipedia",
+        "coinpaprika": "출처: CoinPaprika"
+      }
+    },
+    "pairs": {
+      "title": "거래 페어",
+      "empty": "시장 데이터를 수집 중입니다.",
+      "topN": "거래량 상위 {count}",
+      "newBadge": "신규",
+      "columns": {
+        "pair": "페어",
+        "price": "가격",
+        "volume24h": "24시간 거래량",
+        "share": "비중"
+      }
+    },
+    "newPairs": {
+      "title": "신규 상장",
+      "subtitle": "최근 {days}일간 신규 페어"
+    },
+    "freshness": {
+      "updated": "{ago} 업데이트",
+      "justNow": "방금",
+      "secAgo": "{n}초 전",
+      "minAgo": "{n}분 전",
+      "hourAgo": "{n}시간 전",
+      "dayAgo": "{n}일 전"
     },
     "socials": {
       "title": "Links"

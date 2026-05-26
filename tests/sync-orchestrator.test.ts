@@ -314,10 +314,11 @@ describe("syncCoinPaprikaExchanges", () => {
     };
     const result = await syncCoinPaprikaExchanges({
       fetchAll: async () => [cpRichamster, cpNew],
-      fetchDetail: async (id) => ({ ...(id === "xeggex" ? cpNew : cpRichamster), pairsCount: 120 }),
-      prisma: fakePrisma as never,
+      fetchDetail: async (id) => ({ ...(id === "xeggex" ? cpNew : cpRichamster), pairsCount: 120, markets: [] }),
+      prisma: { ...fakePrisma, exchangeMarket: { upsert: vi.fn(async () => ({})) } } as never,
       minVolumeUsd: 100_000,
       btcUsd: 50_000,
+      detailCallBudget: 100,
     });
 
     expect(result.enriched).toBe(1);
@@ -357,11 +358,12 @@ describe("syncCoinPaprikaExchanges", () => {
     const result = await syncCoinPaprikaExchanges({
       fetchAll: async () => [{ ...cpNew, volume24hUsd: 5_000 }],
       fetchDetail: async () => null,
-      prisma: fakePrisma as never,
+      prisma: { ...fakePrisma, exchangeMarket: { upsert: vi.fn() } } as never,
       minVolumeUsd: 100_000,
       btcUsd: 50_000,
+      detailCallBudget: 100,
     });
-    expect(result).toEqual({ created: 0, enriched: 0, skipped: 1 });
+    expect(result).toEqual({ created: 0, enriched: 0, skipped: 1, marketsUpserted: 0, detailsAttempted: 0 });
     expect(fakePrisma.exchange.findUnique).not.toHaveBeenCalled();
   });
 
@@ -379,10 +381,11 @@ describe("syncCoinPaprikaExchanges", () => {
     };
     await syncCoinPaprikaExchanges({
       fetchAll: async () => [{ ...cpNew, id: "coinbase", name: "Coinbase" }],
-      fetchDetail: async () => ({ ...cpNew, id: "coinbase", name: "Coinbase", pairsCount: 200 }),
-      prisma: fakePrisma as never,
+      fetchDetail: async () => ({ ...cpNew, id: "coinbase", name: "Coinbase", pairsCount: 200, markets: [] }),
+      prisma: { ...fakePrisma, exchangeMarket: { upsert: vi.fn() } } as never,
       minVolumeUsd: 100_000,
       btcUsd: 50_000,
+      detailCallBudget: 100,
     });
     expect(updates).toHaveLength(1);
     expect(updates[0].id).toBe("gdax");

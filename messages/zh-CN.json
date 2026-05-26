@@ -288,7 +288,35 @@
       "trustScore": "Trust score"
     },
     "description": {
-      "title": "About"
+      "title": "关于",
+      "source": {
+        "wikipedia": "来源：维基百科",
+        "coinpaprika": "来源：CoinPaprika"
+      }
+    },
+    "pairs": {
+      "title": "交易对",
+      "empty": "市场数据正在收录中。",
+      "topN": "成交量前 {count}",
+      "newBadge": "新",
+      "columns": {
+        "pair": "交易对",
+        "price": "价格",
+        "volume24h": "24h 成交额",
+        "share": "占比"
+      }
+    },
+    "newPairs": {
+      "title": "近期新增",
+      "subtitle": "近 {days} 天内的新增交易对"
+    },
+    "freshness": {
+      "updated": "更新于 {ago}",
+      "justNow": "刚刚",
+      "secAgo": "{n} 秒前",
+      "minAgo": "{n} 分钟前",
+      "hourAgo": "{n} 小时前",
+      "dayAgo": "{n} 天前"
     },
     "socials": {
       "title": "Links"

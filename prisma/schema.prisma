@@ -222,10 +222,37 @@ model Exchange {
   source              String              @default("cg") // "cg" | "cp" | "curated"
   fetchedAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
+  marketsFetchedAt    DateTime?           // last successful per-pair sync
   watchedBy           ExchangeWatchlist[]
+  markets             ExchangeMarket[]
 
   @@index([trustScoreRank])
   @@index([source])
+}
+
+model ExchangeMarket {
+  id              String   @id // "{exchangeId}:{base}:{quote}:{category}"
+  exchangeId      String
+  pair            String   // display label, e.g. "BTC/USDT"
+  baseSymbol      String
+  quoteSymbol     String
+  baseCurrencyId  String?  // CoinPaprika id, e.g. "btc-bitcoin"
+  quoteCurrencyId String?
+  category        String?  // "spot" | "perpetual" | "futures" | "other"
+  priceUsd        Float?
+  volumeUsd24h    Float?
+  volumeSharePct  Float?   // adjusted_volume_share from CoinPaprika
+  outlier         Boolean  @default(false)
+  marketUrl       String?
+  lastTradedAt    DateTime?
+  firstSeenAt     DateTime @default(now())
+  lastSeenAt      DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  exchange        Exchange @relation(fields: [exchangeId], references: [id], onDelete: Cascade)
+
+  @@index([exchangeId, volumeUsd24h(sort: Desc)])
+  @@index([exchangeId, firstSeenAt(sort: Desc)])
+  @@index([exchangeId, lastSeenAt])
 }
 
 model ExchangeWatchlist {

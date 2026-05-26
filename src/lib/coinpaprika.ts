@@ -110,7 +110,80 @@ export async function fetchCoinPaprikaExchanges(): Promise<CoinPaprikaExchange[]
   return out;
 }
 
-export type CoinPaprikaExchangeDetail = CoinPaprikaExchange & { pairsCount: number };
+export type CoinPaprikaMarket = {
+  pair: string;
+  baseSymbol: string;
+  quoteSymbol: string;
+  baseCurrencyId: string | null;
+  quoteCurrencyId: string | null;
+  category: string | null;
+  priceUsd: number | null;
+  volumeUsd24h: number | null;
+  volumeSharePct: number | null;
+  outlier: boolean;
+  marketUrl: string | null;
+  lastTradedAt: Date | null;
+};
+
+const cpMarketSchema = z.object({
+  pair: z.string(),
+  base_currency_id: z.string().nullable().optional(),
+  base_currency_name: z.string().nullable().optional(),
+  quote_currency_id: z.string().nullable().optional(),
+  quote_currency_name: z.string().nullable().optional(),
+  market_url: z.string().nullable().optional(),
+  category: z.string().nullable().optional(),
+  outlier: z.boolean().nullable().optional(),
+  adjusted_volume_share: z.number().nullable().optional(),
+  reported_volume_share: z.number().nullable().optional(),
+  last_updated: z.string().nullable().optional(),
+  quotes: z.record(z.string(), z.object({
+    price: z.number().nullable().optional(),
+    volume_24h: z.number().nullable().optional(),
+  })).optional().default({}),
+});
+
+function parseSymbol(pair: string, side: "base" | "quote"): string {
+  const sep = pair.indexOf("/");
+  if (sep === -1) return side === "base" ? pair : "";
+  return side === "base" ? pair.slice(0, sep) : pair.slice(sep + 1);
+}
+
+function normalizeCategory(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  const v = raw.toLowerCase();
+  if (v.includes("perp")) return "perpetual";
+  if (v.includes("fut")) return "futures";
+  if (v.includes("spot")) return "spot";
+  return v;
+}
+
+export function parseCoinPaprikaMarket(raw: unknown): CoinPaprikaMarket | null {
+  const r = cpMarketSchema.safeParse(raw);
+  if (!r.success) return null;
+  const d = r.data;
+  const usd = d.quotes?.USD ?? null;
+  const ts = d.last_updated ? new Date(d.last_updated) : null;
+  return {
+    pair: d.pair,
+    baseSymbol: parseSymbol(d.pair, "base"),
+    quoteSymbol: parseSymbol(d.pair, "quote"),
+    baseCurrencyId: d.base_currency_id ?? null,
+    quoteCurrencyId: d.quote_currency_id ?? null,
+    category: normalizeCategory(d.category),
+    priceUsd: usd?.price ?? null,
+    volumeUsd24h: usd?.volume_24h ?? null,
+    volumeSharePct: d.adjusted_volume_share ?? d.reported_volume_share ?? null,
+    outlier: d.outlier ?? false,
+    marketUrl: d.market_url ?? null,
+    lastTradedAt: ts && !isNaN(ts.getTime()) ? ts : null,
+  };
+}
+
+export type CoinPaprikaExchangeDetail = CoinPaprikaExchange & {
+  pairsCount: number;
+  markets: CoinPaprikaMarket[];
+};
 
 /**
  * Detail call — only used for exchanges that survive the volume filter,
@@ -125,6 +198,11 @@ export async function fetchCoinPaprikaExchangeDetail(id: string): Promise<CoinPa
   const json = (await res.json()) as { markets?: unknown[] } & Record<string, unknown>;
   const base = parseCoinPaprikaExchange(json);
   if (!base) return null;
-  const pairsCount = Array.isArray(json.markets) ? json.markets.length : 0;
-  return { ...base, pairsCount };
+  const rawMarkets = Array.isArray(json.markets) ? json.markets : [];
+  const markets: CoinPaprikaMarket[] = [];
+  for (const m of rawMarkets) {
+    const parsed = parseCoinPaprikaMarket(m);
+    if (parsed && parsed.pair) markets.push(parsed);
+  }
+  return { ...base, pairsCount: rawMarkets.length, markets };
 }

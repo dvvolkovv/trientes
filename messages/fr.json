@@ -288,7 +288,35 @@
       "trustScore": "Trust score"
     },
     "description": {
-      "title": "About"
+      "title": "À propos",
+      "source": {
+        "wikipedia": "Source : Wikipédia",
+        "coinpaprika": "Source : CoinPaprika"
+      }
+    },
+    "pairs": {
+      "title": "Paires de trading",
+      "empty": "Les données de marché sont en cours d'indexation — revenez bientôt.",
+      "topN": "Top {count} par volume",
+      "newBadge": "NEW",
+      "columns": {
+        "pair": "Paire",
+        "price": "Prix",
+        "volume24h": "Volume 24h",
+        "share": "Vol %"
+      }
+    },
+    "newPairs": {
+      "title": "Nouveaux listings",
+      "subtitle": "nouvelles paires sur les {days} derniers jours"
+    },
+    "freshness": {
+      "updated": "Mis à jour {ago}",
+      "justNow": "à l'instant",
+      "secAgo": "il y a {n} s",
+      "minAgo": "il y a {n} min",
+      "hourAgo": "il y a {n} h",
+      "dayAgo": "il y a {n} j"
     },
     "socials": {
       "title": "Links"

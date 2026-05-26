@@ -288,7 +288,35 @@
       "trustScore": "Trust score"
     },
     "description": {
-      "title": "About"
+      "title": "概要",
+      "source": {
+        "wikipedia": "出典: Wikipedia",
+        "coinpaprika": "出典: CoinPaprika"
+      }
+    },
+    "pairs": {
+      "title": "取引ペア",
+      "empty": "市場データを取得中です。",
+      "topN": "出来高上位{count}",
+      "newBadge": "新規",
+      "columns": {
+        "pair": "ペア",
+        "price": "価格",
+        "volume24h": "24時間出来高",
+        "share": "比率"
+      }
+    },
+    "newPairs": {
+      "title": "新規上場",
+      "subtitle": "過去{days}日間の新規ペア"
+    },
+    "freshness": {
+      "updated": "更新: {ago}",
+      "justNow": "たった今",
+      "secAgo": "{n}秒前",
+      "minAgo": "{n}分前",
+      "hourAgo": "{n}時間前",
+      "dayAgo": "{n}日前"
     },
     "socials": {
       "title": "Links"
