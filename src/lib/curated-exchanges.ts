@@ -6,11 +6,11 @@ import type { Exchange } from "@/lib/coingecko";
 export const CURATED_EXCHANGES: Exchange[] = [
   {
     id: "richamster",
-    name: "RichAmster",
-    logoUrl: "https://richamster.com/icon.png",
+    name: "Richamster.com",
+    logoUrl: "https://news.richamster.com/img/logo.png",
     country: "Ukraine",
     yearEstablished: null,
-    trustScore: null,
+    trustScore: 10,
     trustScoreRank: null,
     volume24hBtc: 0,
     volume24hUsd: 0,
