@@ -8,7 +8,8 @@ import { fetchTop100L1, fetchGlobalSnap, fetchExchangeRates, fetchCoinDetail, fe
 import { fetchNews } from "../src/lib/news";
 import { fetchFearGreed } from "../src/lib/fear-greed";
 import { fetchMarkets } from "../src/lib/markets";
-import { syncPrices, syncGlobal, syncExchangeRates, syncCoinMetadata, syncExchanges, syncAdminAddedPrices, syncNews, syncFearGreed, syncMarkets } from "../src/lib/sync/orchestrator";
+import { syncPrices, syncGlobal, syncExchangeRates, syncCoinMetadata, syncExchanges, syncAdminAddedPrices, syncNews, syncFearGreed, syncMarkets, syncCoinPaprikaExchanges } from "../src/lib/sync/orchestrator";
+import { fetchCoinPaprikaExchanges, fetchCoinPaprikaExchangeDetail } from "../src/lib/coinpaprika";
 import { startBinance, stopBinance } from "./binance";
 
 async function runPriceSync() {
@@ -127,6 +128,30 @@ async function runExchangesSync() {
   }
 }
 
+async function runCoinPaprikaSync() {
+  const t0 = Date.now();
+  try {
+    // Read BTC/USD from the latest CoinSnapshot. Falls back to 0 (skip volume24hBtc) if absent.
+    // No price:bitcoin:usd Redis key exists in this codebase, so we use Prisma directly.
+    const btcRow = await prisma.coinSnapshot.findFirst({
+      where: { coinId: "bitcoin" },
+      orderBy: { fetchedAt: "desc" },
+      select: { priceUsd: true },
+    });
+    const btcUsd = btcRow?.priceUsd ? Number(btcRow.priceUsd) : 0;
+    const result = await syncCoinPaprikaExchanges({
+      fetchAll: fetchCoinPaprikaExchanges,
+      fetchDetail: fetchCoinPaprikaExchangeDetail,
+      prisma: prisma as never,
+      minVolumeUsd: 100_000,
+      btcUsd,
+    });
+    console.log(`[worker] coinpaprika-sync ok: +${result.created} new, ~${result.enriched} enriched, ${result.skipped} skipped in ${Date.now() - t0}ms`);
+  } catch (err) {
+    console.error(`[worker] coinpaprika-sync failed:`, err);
+  }
+}
+
 async function runAdminAddedSync() {
   const t0 = Date.now();
   try {
@@ -173,6 +198,7 @@ async function main() {
   await runGlobalSync();
   await runRatesSync();
   await runExchangesSync();
+  void runCoinPaprikaSync();
   await runAdminAddedSync();
   await runNewsSync();
   await runFearGreedSync();
@@ -200,6 +226,11 @@ async function main() {
 
   // Markets (Stooq) — key-less, independent of CoinGecko; every 20 min, offset off the others.
   cron.schedule("8,28,48 * * * *", () => void runMarketsSync());
+
+  // CoinPaprika exchanges — hourly enrichment + new-exchange discovery; offset to :25/:55.
+  cron.schedule("25,55 * * * *", () => {
+    void runCoinPaprikaSync();
+  });
 
   // Daily kick; staleMs in syncCoinMetadata skips coins fetched within 7 days.
   cron.schedule("30 3 * * *", () => void runMetadataSync());
