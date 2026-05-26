@@ -270,6 +270,39 @@
     "favorite": "Adicionar aos favoritos",
     "unfavorite": "Remover dos favoritos"
   },
+  "exchangeCard": {
+    "back": "← Back to exchanges",
+    "parameters": {
+      "title": "Parameters",
+      "type": "Type",
+      "country": "Country",
+      "yearEstablished": "Founded",
+      "kyc": "KYC required",
+      "fiats": "Fiat currencies",
+      "currencies": "Listed coins",
+      "pairs": "Trading pairs"
+    },
+    "metrics": {
+      "title": "Trading metrics",
+      "volume24h": "24h volume",
+      "trustScore": "Trust score"
+    },
+    "description": {
+      "title": "About"
+    },
+    "socials": {
+      "title": "Links"
+    },
+    "outbound": {
+      "disclaimer": "You are about to leave our site. Please independently verify trading conditions, fees and risks on the exchange's own website.",
+      "cta": "Visit {name}"
+    },
+    "notFound": {
+      "title": "Exchange not found",
+      "back": "Back to the exchanges list"
+    },
+    "noData": "—"
+  },
   "cryptoMap": {
     "eyebrow": "Navigator",
     "title": "Crypto Navigator",

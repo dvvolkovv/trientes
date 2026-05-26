@@ -270,6 +270,39 @@
     "favorite": "В избранное",
     "unfavorite": "Убрать из избранного"
   },
+  "exchangeCard": {
+    "back": "← Назад к биржам",
+    "parameters": {
+      "title": "Параметры",
+      "type": "Тип",
+      "country": "Страна",
+      "yearEstablished": "Год основания",
+      "kyc": "KYC обязателен",
+      "fiats": "Фиатные валюты",
+      "currencies": "Монет на бирже",
+      "pairs": "Торговых пар"
+    },
+    "metrics": {
+      "title": "Торговые метрики",
+      "volume24h": "Объём 24ч",
+      "trustScore": "Trust score"
+    },
+    "description": {
+      "title": "О бирже"
+    },
+    "socials": {
+      "title": "Ссылки"
+    },
+    "outbound": {
+      "disclaimer": "Вы покидаете наш сайт. Самостоятельно проверьте условия, комиссии и риски на сайте биржи.",
+      "cta": "Перейти на {name}"
+    },
+    "notFound": {
+      "title": "Биржа не найдена",
+      "back": "К списку бирж"
+    },
+    "noData": "—"
+  },
   "cryptoMap": {
     "eyebrow": "Навигатор",
     "title": "Крипто-навигатор",
