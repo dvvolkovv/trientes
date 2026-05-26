@@ -4,6 +4,7 @@ import type { FearGreed } from "@/lib/fear-greed";
 import type { MarketQuote } from "@/lib/markets";
 import { KEYS, TTL } from "./keys";
 import { mergeCuratedExchanges } from "@/lib/curated-exchanges";
+import { cpTypeToExchangeType, resolveCpId, type CoinPaprikaExchange, type CoinPaprikaExchangeDetail } from "@/lib/coinpaprika";
 
 // Minimal interfaces — we only use what we need so tests can pass fakes.
 type RedisLike = {
@@ -309,4 +310,95 @@ export async function syncAdminAddedPrices(deps: {
     });
   }
   return { count: rows.length };
+}
+
+function pickFirst(arr: string[] | undefined): string | undefined {
+  if (!Array.isArray(arr) || arr.length === 0) return undefined;
+  const v = arr[0];
+  return typeof v === "string" && v.length > 0 ? v : undefined;
+}
+
+function socialsFromLinks(links: CoinPaprikaExchange["links"]): Record<string, string> | null {
+  const out: Record<string, string> = {};
+  const tw = pickFirst(links.twitter); if (tw) out.twitter = tw;
+  const tg = pickFirst(links.telegram); if (tg) out.telegram = tg;
+  const fb = pickFirst(links.facebook); if (fb) out.facebook = fb;
+  const gh = pickFirst(links.github); if (gh) out.github = gh;
+  const rd = pickFirst(links.reddit); if (rd) out.reddit = rd;
+  const yt = pickFirst(links.youtube); if (yt) out.youtube = yt;
+  const ws = pickFirst(links.website); if (ws) out.website = ws;
+  return Object.keys(out).length > 0 ? out : null;
+}
+
+export async function syncCoinPaprikaExchanges(deps: {
+  fetchAll: () => Promise<CoinPaprikaExchange[]>;
+  fetchDetail: (id: string) => Promise<CoinPaprikaExchangeDetail | null>;
+  prisma: {
+    exchange: {
+      findUnique(args: { where: { id: string } }): Promise<{ id: string; description: string | null; exchangeType: string | null; currencies: number | null; pairsCount: number | null; fiats: string[]; socials: unknown; source: string } | null>;
+      update(args: { where: { id: string }; data: Record<string, unknown> }): Promise<unknown>;
+      create(args: { data: Record<string, unknown> }): Promise<unknown>;
+    };
+  };
+  minVolumeUsd: number;
+  btcUsd: number;
+}): Promise<{ created: number; enriched: number; skipped: number }> {
+  const all = await deps.fetchAll();
+  let created = 0, enriched = 0, skipped = 0;
+
+  for (const cp of all) {
+    if (!cp.active || !cp.markets_data_fetched || cp.volume24hUsd <= deps.minVolumeUsd) {
+      skipped++;
+      continue;
+    }
+    const targetId = resolveCpId(cp.id);
+    const existing = await deps.prisma.exchange.findUnique({ where: { id: targetId } });
+    const detail = await deps.fetchDetail(cp.id);
+    const pairsCount = detail?.pairsCount ?? null;
+    const fiats = cp.fiats.map((f) => f.symbol).filter((s): s is string => typeof s === "string" && s.length > 0);
+    const socials = socialsFromLinks(cp.links);
+    const exchangeType = cpTypeToExchangeType(cp.type);
+
+    if (existing) {
+      const data: Record<string, unknown> = {};
+      if (existing.description === null && cp.description) data.description = cp.description;
+      if (existing.exchangeType === null && exchangeType) data.exchangeType = exchangeType;
+      if (existing.currencies === null && cp.currencies !== null) data.currencies = cp.currencies;
+      if (existing.pairsCount === null && pairsCount !== null) data.pairsCount = pairsCount;
+      if ((!existing.fiats || existing.fiats.length === 0) && fiats.length > 0) data.fiats = fiats;
+      if (!existing.socials && socials) data.socials = socials;
+      if (Object.keys(data).length > 0) {
+        await deps.prisma.exchange.update({ where: { id: targetId }, data });
+        enriched++;
+      } else {
+        skipped++;
+      }
+    } else {
+      const websiteUrl = pickFirst(cp.links.website) ?? null;
+      const create: Record<string, unknown> = {
+        id: cp.id,
+        name: cp.name,
+        logoUrl: `https://static.coinpaprika.com/exchange/${cp.id}/logo.png`,
+        country: null,
+        yearEstablished: null,
+        trustScore: null,
+        trustScoreRank: cp.adjusted_rank ?? null,
+        volume24hUsd: cp.volume24hUsd,
+        volume24hBtc: deps.btcUsd > 0 ? cp.volume24hUsd / deps.btcUsd : 0,
+        url: websiteUrl,
+        hasTradingIncentive: false,
+        description: cp.description,
+        exchangeType,
+        currencies: cp.currencies,
+        pairsCount,
+        fiats,
+        socials,
+        source: "cp",
+      };
+      await deps.prisma.exchange.create({ data: create });
+      created++;
+    }
+  }
+
+  return { created, enriched, skipped };
 }

@@ -1,8 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
-import { syncPrices, syncGlobal, syncExchangeRates, syncExchanges, syncAdminAddedPrices, syncFearGreed, syncMarkets } from "@/lib/sync/orchestrator";
+import { syncPrices, syncGlobal, syncExchangeRates, syncExchanges, syncAdminAddedPrices, syncFearGreed, syncMarkets, syncCoinPaprikaExchanges } from "@/lib/sync/orchestrator";
 import { KEYS } from "@/lib/sync/keys";
 import type { MarketRow, GlobalSnap, Exchange } from "@/lib/coingecko";
 import type { FearGreed } from "@/lib/fear-greed";
+import type { CoinPaprikaExchange, CoinPaprikaExchangeDetail } from "@/lib/coinpaprika";
 
 function makeFakes() {
   const redisStore = new Map<string, string>();
@@ -263,5 +264,128 @@ describe("syncAdminAddedPrices", () => {
     expect(JSON.parse(redisStore.get("snapshot:list:admin")!)).toHaveLength(1);
     expect(upsertedCoins).toEqual([{ id: "coinx", rank: 9999 }]);
     expect(createdSnapshots).toEqual([{ coinId: "coinx", priceUsd: 1 }]);
+  });
+});
+
+describe("syncCoinPaprikaExchanges", () => {
+  const cpRichamster: CoinPaprikaExchange = {
+    id: "richamster",
+    name: "Richamster",
+    type: ["cex"],
+    description: "A team of crypto enthusiasts.",
+    active: true,
+    markets_data_fetched: true,
+    adjusted_rank: 217,
+    currencies: 24,
+    fiats: [{ name: "Ukrainian Hryvnia", symbol: "UAH" }],
+    volume24hUsd: 200_000,
+    links: { twitter: ["https://twitter.com/Richamster_com"], website: ["https://richamster.com"] },
+  };
+
+  const cpNew: CoinPaprikaExchange = {
+    id: "xeggex",
+    name: "XeggeX",
+    type: ["cex"],
+    description: null,
+    active: true,
+    markets_data_fetched: true,
+    adjusted_rank: 3,
+    currencies: 50,
+    fiats: [],
+    volume24hUsd: 5_000_000,
+    links: { website: ["https://xeggex.com"] },
+  };
+
+  it("creates a new row for CP-only exchange and enriches existing one only on nulls", async () => {
+    const existing: Record<string, any> = {
+      richamster: {
+        id: "richamster", name: "Richamster.com", description: null, exchangeType: null,
+        currencies: null, pairsCount: null, fiats: [], socials: null, source: "curated",
+      },
+    };
+    const updates: any[] = [];
+    const creates: any[] = [];
+    const fakePrisma = {
+      exchange: {
+        findUnique: vi.fn(async ({ where }: any) => existing[where.id] ?? null),
+        update: vi.fn(async ({ where, data }: any) => { updates.push({ id: where.id, data }); return {}; }),
+        create: vi.fn(async ({ data }: any) => { creates.push(data); return {}; }),
+      },
+    };
+    const result = await syncCoinPaprikaExchanges({
+      fetchAll: async () => [cpRichamster, cpNew],
+      fetchDetail: async (id) => ({ ...(id === "xeggex" ? cpNew : cpRichamster), pairsCount: 120 }),
+      prisma: fakePrisma as never,
+      minVolumeUsd: 100_000,
+      btcUsd: 50_000,
+    });
+
+    expect(result.enriched).toBe(1);
+    expect(result.created).toBe(1);
+
+    expect(updates).toHaveLength(1);
+    expect(updates[0].id).toBe("richamster");
+    expect(updates[0].data.description).toBe("A team of crypto enthusiasts.");
+    expect(updates[0].data.exchangeType).toBe("CEX");
+    expect(updates[0].data.currencies).toBe(24);
+    expect(updates[0].data.pairsCount).toBe(120);
+    expect(updates[0].data.fiats).toEqual(["UAH"]);
+    expect(updates[0].data.socials).toEqual({ twitter: "https://twitter.com/Richamster_com", website: "https://richamster.com" });
+    expect(updates[0].data.source).toBeUndefined();
+    expect(updates[0].data.name).toBeUndefined();
+    expect(updates[0].data.url).toBeUndefined();
+
+    expect(creates).toHaveLength(1);
+    expect(creates[0].id).toBe("xeggex");
+    expect(creates[0].source).toBe("cp");
+    expect(creates[0].name).toBe("XeggeX");
+    expect(creates[0].url).toBe("https://xeggex.com");
+    expect(creates[0].volume24hUsd).toBe(5_000_000);
+    expect(creates[0].volume24hBtc).toBe(100);
+    expect(creates[0].pairsCount).toBe(120);
+    expect(creates[0].logoUrl).toBe("https://static.coinpaprika.com/exchange/xeggex/logo.png");
+  });
+
+  it("skips rows under the volume threshold", async () => {
+    const fakePrisma = {
+      exchange: {
+        findUnique: vi.fn(),
+        update: vi.fn(),
+        create: vi.fn(),
+      },
+    };
+    const result = await syncCoinPaprikaExchanges({
+      fetchAll: async () => [{ ...cpNew, volume24hUsd: 5_000 }],
+      fetchDetail: async () => null,
+      prisma: fakePrisma as never,
+      minVolumeUsd: 100_000,
+      btcUsd: 50_000,
+    });
+    expect(result).toEqual({ created: 0, enriched: 0, skipped: 1 });
+    expect(fakePrisma.exchange.findUnique).not.toHaveBeenCalled();
+  });
+
+  it("honors CP_TO_CG_ALIAS for known divergent ids", async () => {
+    const existing: Record<string, any> = {
+      gdax: { id: "gdax", name: "Coinbase Exchange", description: null, exchangeType: null, currencies: null, pairsCount: null, fiats: [], socials: null, source: "cg" },
+    };
+    const updates: any[] = [];
+    const fakePrisma = {
+      exchange: {
+        findUnique: vi.fn(async ({ where }: any) => existing[where.id] ?? null),
+        update: vi.fn(async ({ where, data }: any) => { updates.push({ id: where.id, data }); return {}; }),
+        create: vi.fn(),
+      },
+    };
+    await syncCoinPaprikaExchanges({
+      fetchAll: async () => [{ ...cpNew, id: "coinbase", name: "Coinbase" }],
+      fetchDetail: async () => ({ ...cpNew, id: "coinbase", name: "Coinbase", pairsCount: 200 }),
+      prisma: fakePrisma as never,
+      minVolumeUsd: 100_000,
+      btcUsd: 50_000,
+    });
+    expect(updates).toHaveLength(1);
+    expect(updates[0].id).toBe("gdax");
+    expect(fakePrisma.exchange.create).not.toHaveBeenCalled();
   });
 });
