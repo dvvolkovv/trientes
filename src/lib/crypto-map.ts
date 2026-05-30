@@ -73,7 +73,7 @@ export function buildOverpassQuery(b: Bbox): string {
   return `[out:json][timeout:25];(${union});out center tags 400;`;
 }
 
-export type PoiLayer = "merchant" | "atm" | "financial";
+export type PoiLayer = "merchant" | "atm" | "financial" | "fintech";
 
 export type Social = { network: string; url: string };
 
