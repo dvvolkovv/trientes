@@ -236,7 +236,11 @@
     "business": {
       "title": "Firmenstandorte",
       "subtitle": "Eingereichte Standorte moderieren.",
-      "empty": "Nichts hier."
+      "empty": "Nichts hier.",
+      "scope": {
+        "companies": "Firmen",
+        "points": "Standorte"
+      }
     },
     "exchanges": {
       "title": "Börsen",
@@ -252,6 +256,22 @@
         "not_pending": "Nicht im Wartestatus.",
         "reason_too_short": "Grund muss mindestens 3 Zeichen lang sein.",
         "generic": "Ein Fehler ist aufgetreten."
+      }
+    },
+    "companies": {
+      "title": "Firmen",
+      "subtitle": "Eingereichte Firmen moderieren.",
+      "empty": "Nichts zu prüfen.",
+      "approve": "Akzeptieren",
+      "reject": "Ablehnen",
+      "rejectReasonPlaceholder": "Ablehnungsgrund (≥ 3 Zeichen)",
+      "errors": {
+        "unauth": "Nicht angemeldet.",
+        "not_admin": "Admin erforderlich.",
+        "not_found": "Firma nicht gefunden.",
+        "not_pending": "Nicht in Bearbeitung.",
+        "reason_too_short": "Mindestens 3 Zeichen.",
+        "generic": "Etwas ist schiefgelaufen."
       }
     }
   },
@@ -461,7 +481,13 @@
     "useCompanyAddress": "Firmenadresse verwenden",
     "geocoding": "Koordinaten zur Adresse suchen…",
     "geocodingOk": "Markierung an der Adresse gesetzt",
-    "geocodingFailed": "Adresse nicht erkannt — Markierung manuell setzen"
+    "geocodingFailed": "Adresse nicht erkannt — Markierung manuell setzen",
+    "statusBadge": {
+      "PENDING": "In Bearbeitung",
+      "APPROVED": "Akzeptiert",
+      "REJECTED": "Abgelehnt"
+    },
+    "rejectionReasonLabel": "Ablehnungsgrund"
   },
   "cabinet": {
     "kicker": "Bereich · Kabinett",
@@ -530,6 +556,11 @@
         "display_name_required": "Anzeigename ist erforderlich.",
         "country_required": "Land ist erforderlich.",
         "generic": "Ein Fehler ist aufgetreten."
+      },
+      "status": {
+        "PENDING": "In Bearbeitung",
+        "APPROVED": "Akzeptiert",
+        "REJECTED": "Abgelehnt"
       }
     },
     "exchanges": {

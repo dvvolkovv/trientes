@@ -236,7 +236,11 @@
     "business": {
       "title": "企業の拠点",
       "subtitle": "送信された場所を承認/却下します。",
-      "empty": "ありません。"
+      "empty": "ありません。",
+      "scope": {
+        "companies": "会社",
+        "points": "拠点"
+      }
     },
     "exchanges": {
       "title": "取引所",
@@ -250,6 +254,22 @@
         "not_admin": "管理者権限が必要です。",
         "not_found": "取引所が見つかりません。",
         "not_pending": "審査中ではありません。",
+        "reason_too_short": "理由は3文字以上必要です。",
+        "generic": "問題が発生しました。"
+      }
+    },
+    "companies": {
+      "title": "会社",
+      "subtitle": "申請された会社をモデレートします。",
+      "empty": "確認するものはありません。",
+      "approve": "承認",
+      "reject": "却下",
+      "rejectReasonPlaceholder": "理由(3文字以上)",
+      "errors": {
+        "unauth": "未認証。",
+        "not_admin": "管理者権限が必要です。",
+        "not_found": "会社が見つかりません。",
+        "not_pending": "保留中ではありません。",
         "reason_too_short": "理由は3文字以上必要です。",
         "generic": "問題が発生しました。"
       }
@@ -461,7 +481,13 @@
     "useCompanyAddress": "会社の住所を使用",
     "geocoding": "住所から座標を検索中…",
     "geocodingOk": "住所にピンを配置しました",
-    "geocodingFailed": "住所を認識できません — 手動でピンを配置してください"
+    "geocodingFailed": "住所を認識できません — 手動でピンを配置してください",
+    "statusBadge": {
+      "PENDING": "処理中",
+      "APPROVED": "承認済み",
+      "REJECTED": "却下"
+    },
+    "rejectionReasonLabel": "却下理由"
   },
   "cabinet": {
     "kicker": "セクション · キャビネット",
@@ -530,6 +556,11 @@
         "display_name_required": "表示名は必須です。",
         "country_required": "国は必須です。",
         "generic": "問題が発生しました。"
+      },
+      "status": {
+        "PENDING": "処理中",
+        "APPROVED": "承認済み",
+        "REJECTED": "却下"
       }
     },
     "exchanges": {

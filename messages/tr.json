@@ -236,7 +236,11 @@
     "business": {
       "title": "Şirket noktaları",
       "subtitle": "Gönderilen konumları onaylayın.",
-      "empty": "Burada bir şey yok."
+      "empty": "Burada bir şey yok.",
+      "scope": {
+        "companies": "Şirketler",
+        "points": "Noktalar"
+      }
     },
     "exchanges": {
       "title": "Borsalar",
@@ -252,6 +256,22 @@
         "not_pending": "Beklemede değil.",
         "reason_too_short": "Sebep en az 3 karakter olmalıdır.",
         "generic": "Bir hata oluştu."
+      }
+    },
+    "companies": {
+      "title": "Şirketler",
+      "subtitle": "Gönderilen şirketleri moderasyon edin.",
+      "empty": "İncelenecek bir şey yok.",
+      "approve": "Onayla",
+      "reject": "Reddet",
+      "rejectReasonPlaceholder": "Sebep (en az 3 karakter)",
+      "errors": {
+        "unauth": "Kimliği doğrulanmadı.",
+        "not_admin": "Yönetici gerekli.",
+        "not_found": "Şirket bulunamadı.",
+        "not_pending": "Bekliyor değil.",
+        "reason_too_short": "En az 3 karakter.",
+        "generic": "Bir şeyler ters gitti."
       }
     }
   },
@@ -461,7 +481,13 @@
     "useCompanyAddress": "Şirket adresini kullan",
     "geocoding": "Adresten koordinatlar aranıyor…",
     "geocodingOk": "İşaretçi adrese yerleştirildi",
-    "geocodingFailed": "Adres tanınmadı — işaretçiyi manuel yerleştirin"
+    "geocodingFailed": "Adres tanınmadı — işaretçiyi manuel yerleştirin",
+    "statusBadge": {
+      "PENDING": "İşleniyor",
+      "APPROVED": "Onaylandı",
+      "REJECTED": "Reddedildi"
+    },
+    "rejectionReasonLabel": "Red nedeni"
   },
   "cabinet": {
     "kicker": "Bölüm · Kabin",
@@ -530,6 +556,11 @@
         "display_name_required": "Görünen ad gereklidir.",
         "country_required": "Ülke gereklidir.",
         "generic": "Bir hata oluştu."
+      },
+      "status": {
+        "PENDING": "İşleniyor",
+        "APPROVED": "Onaylandı",
+        "REJECTED": "Reddedildi"
       }
     },
     "exchanges": {

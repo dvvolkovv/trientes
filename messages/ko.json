@@ -236,7 +236,11 @@
     "business": {
       "title": "회사 지점",
       "subtitle": "제출된 위치를 검토합니다.",
-      "empty": "비어 있습니다."
+      "empty": "비어 있습니다.",
+      "scope": {
+        "companies": "회사",
+        "points": "지점"
+      }
     },
     "exchanges": {
       "title": "거래소",
@@ -252,6 +256,22 @@
         "not_pending": "검토 대기 중이 아닙니다.",
         "reason_too_short": "사유는 3자 이상이어야 합니다.",
         "generic": "문제가 발생했습니다."
+      }
+    },
+    "companies": {
+      "title": "회사",
+      "subtitle": "제출된 회사를 검토하세요.",
+      "empty": "검토할 항목이 없습니다.",
+      "approve": "승인",
+      "reject": "거부",
+      "rejectReasonPlaceholder": "사유 (3자 이상)",
+      "errors": {
+        "unauth": "인증되지 않음.",
+        "not_admin": "관리자 권한이 필요합니다.",
+        "not_found": "회사를 찾을 수 없음.",
+        "not_pending": "보류 상태가 아님.",
+        "reason_too_short": "사유는 3자 이상이어야 합니다.",
+        "generic": "오류가 발생했습니다."
       }
     }
   },
@@ -461,7 +481,13 @@
     "useCompanyAddress": "회사 주소 사용",
     "geocoding": "주소로 좌표를 찾는 중…",
     "geocodingOk": "주소에 핀을 배치했습니다",
-    "geocodingFailed": "주소를 인식하지 못했습니다 — 직접 핀을 배치하세요"
+    "geocodingFailed": "주소를 인식하지 못했습니다 — 직접 핀을 배치하세요",
+    "statusBadge": {
+      "PENDING": "처리 중",
+      "APPROVED": "승인됨",
+      "REJECTED": "거부됨"
+    },
+    "rejectionReasonLabel": "거부 사유"
   },
   "cabinet": {
     "kicker": "섹션 · 캐비닛",
@@ -530,6 +556,11 @@
         "display_name_required": "표시 이름은 필수입니다.",
         "country_required": "국가는 필수입니다.",
         "generic": "문제가 발생했습니다."
+      },
+      "status": {
+        "PENDING": "처리 중",
+        "APPROVED": "승인됨",
+        "REJECTED": "거부됨"
       }
     },
     "exchanges": {

@@ -55,10 +55,13 @@ export function companyPointToPoi(p: PointWithCompany, coinId: string): Poi {
 }
 
 // Approved company points whose coordinates fall inside the viewport bbox.
+// Defense-in-depth: the parent Company must also be APPROVED — a rejected company
+// shouldn't leak its previously-approved points onto the public map.
 export async function fetchApprovedPointsInBbox(bbox: Bbox, coinId: string): Promise<Poi[]> {
   const rows = await prisma.companyPoint.findMany({
     where: {
       status: "APPROVED",
+      company: { status: "APPROVED" },
       lat: { gte: bbox.minLat, lte: bbox.maxLat },
       lon: { gte: bbox.minLon, lte: bbox.maxLon },
     },

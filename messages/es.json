@@ -236,7 +236,11 @@
     "business": {
       "title": "Puntos de empresa",
       "subtitle": "Modera las ubicaciones enviadas.",
-      "empty": "Nada aquí."
+      "empty": "Nada aquí.",
+      "scope": {
+        "companies": "Empresas",
+        "points": "Puntos"
+      }
     },
     "exchanges": {
       "title": "Exchanges",
@@ -251,6 +255,22 @@
         "not_found": "Exchange no encontrado.",
         "not_pending": "No está en estado pendiente.",
         "reason_too_short": "El motivo debe tener al menos 3 caracteres.",
+        "generic": "Algo salió mal."
+      }
+    },
+    "companies": {
+      "title": "Empresas",
+      "subtitle": "Modera las empresas registradas.",
+      "empty": "Nada para revisar.",
+      "approve": "Aprobar",
+      "reject": "Rechazar",
+      "rejectReasonPlaceholder": "Motivo (≥ 3 caracteres)",
+      "errors": {
+        "unauth": "No autenticado.",
+        "not_admin": "Se requiere admin.",
+        "not_found": "Empresa no encontrada.",
+        "not_pending": "No está pendiente.",
+        "reason_too_short": "Mínimo 3 caracteres.",
         "generic": "Algo salió mal."
       }
     }
@@ -461,7 +481,13 @@
     "useCompanyAddress": "Usar la dirección de la empresa",
     "geocoding": "Buscando coordenadas por la dirección…",
     "geocodingOk": "Marcador colocado en la dirección",
-    "geocodingFailed": "Dirección no reconocida — coloca el marcador manualmente"
+    "geocodingFailed": "Dirección no reconocida — coloca el marcador manualmente",
+    "statusBadge": {
+      "PENDING": "Procesando",
+      "APPROVED": "Aceptada",
+      "REJECTED": "Rechazada"
+    },
+    "rejectionReasonLabel": "Motivo del rechazo"
   },
   "cabinet": {
     "kicker": "Sección · Panel",
@@ -530,6 +556,11 @@
         "display_name_required": "El nombre visible es obligatorio.",
         "country_required": "El país es obligatorio.",
         "generic": "Algo salió mal."
+      },
+      "status": {
+        "PENDING": "Procesando",
+        "APPROVED": "Aceptada",
+        "REJECTED": "Rechazada"
       }
     },
     "exchanges": {

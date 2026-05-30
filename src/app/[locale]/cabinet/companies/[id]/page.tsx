@@ -41,8 +41,23 @@ export default async function CompanyManagementPage({
   return (
     <main className="max-w-[860px] mx-auto px-4 md:px-12 py-12 space-y-12">
       <section>
-        <h1 className="text-[36px] font-bold tracking-[-0.03em] mb-1">{company.displayName}</h1>
+        <div className="flex items-center gap-3 mb-1 flex-wrap">
+          <h1 className="text-[36px] font-bold tracking-[-0.03em]">{company.displayName}</h1>
+          <span className={`text-xs px-2 py-1 rounded ${
+            company.status === "APPROVED" ? "bg-green-500/15 text-green-500" :
+            company.status === "REJECTED" ? "bg-red-500/15 text-red-500" :
+            "bg-yellow-500/15 text-yellow-500"
+          }`}>
+            {t(`statusBadge.${company.status}`)}
+          </span>
+        </div>
         <p className="text-muted mb-6">{t("profileIntro")}</p>
+        {company.status === "REJECTED" && company.rejectionReason && (
+          <div className="mb-6 p-4 rounded-md border border-red-500/30 bg-red-500/10">
+            <div className="text-xs uppercase tracking-wider text-red-400 mb-1">{t("rejectionReasonLabel")}</div>
+            <div className="text-sm text-red-300">{company.rejectionReason}</div>
+          </div>
+        )}
         <CompanyProfileForm
           companyId={company.id}
           initial={{
@@ -50,6 +65,9 @@ export default async function CompanyManagementPage({
             description: company.description ?? "", website: company.website ?? "",
             logoUrl: company.logoUrl ?? "", address: company.address ?? "",
             phone: company.phone ?? "", email: company.email ?? "", country: company.country ?? "",
+            countryCode: company.countryCode ?? "", city: company.city ?? "",
+            street: company.street ?? "", houseNumber: company.houseNumber ?? "",
+            postalCode: company.postalCode ?? "",
           }}
         />
       </section>

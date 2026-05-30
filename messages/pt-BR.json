@@ -236,7 +236,11 @@
     "business": {
       "title": "Pontos de empresa",
       "subtitle": "Modere os locais enviados.",
-      "empty": "Nada aqui."
+      "empty": "Nada aqui.",
+      "scope": {
+        "companies": "Empresas",
+        "points": "Pontos"
+      }
     },
     "exchanges": {
       "title": "Exchanges",
@@ -251,6 +255,22 @@
         "not_found": "Exchange não encontrada.",
         "not_pending": "Não está em status pendente.",
         "reason_too_short": "O motivo deve ter pelo menos 3 caracteres.",
+        "generic": "Algo deu errado."
+      }
+    },
+    "companies": {
+      "title": "Empresas",
+      "subtitle": "Modere as empresas enviadas.",
+      "empty": "Nada para revisar.",
+      "approve": "Aprovar",
+      "reject": "Rejeitar",
+      "rejectReasonPlaceholder": "Motivo (≥ 3 caracteres)",
+      "errors": {
+        "unauth": "Não autenticado.",
+        "not_admin": "Admin necessário.",
+        "not_found": "Empresa não encontrada.",
+        "not_pending": "Não está pendente.",
+        "reason_too_short": "Mínimo 3 caracteres.",
         "generic": "Algo deu errado."
       }
     }
@@ -461,7 +481,13 @@
     "useCompanyAddress": "Usar o endereço da empresa",
     "geocoding": "Buscando coordenadas pelo endereço…",
     "geocodingOk": "Marcador colocado no endereço",
-    "geocodingFailed": "Endereço não reconhecido — coloque o marcador manualmente"
+    "geocodingFailed": "Endereço não reconhecido — coloque o marcador manualmente",
+    "statusBadge": {
+      "PENDING": "Em processamento",
+      "APPROVED": "Aceita",
+      "REJECTED": "Rejeitada"
+    },
+    "rejectionReasonLabel": "Motivo da rejeição"
   },
   "cabinet": {
     "kicker": "Seção · Painel",
@@ -530,6 +556,11 @@
         "display_name_required": "O nome de exibição é obrigatório.",
         "country_required": "O país é obrigatório.",
         "generic": "Algo deu errado."
+      },
+      "status": {
+        "PENDING": "Em processamento",
+        "APPROVED": "Aceita",
+        "REJECTED": "Rejeitada"
       }
     },
     "exchanges": {

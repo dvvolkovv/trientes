@@ -10,12 +10,14 @@ export type AuditAction =
   | "APPROVE_POINT"
   | "REJECT_POINT"
   | "APPROVE_EXCHANGE"
-  | "REJECT_EXCHANGE";
+  | "REJECT_EXCHANGE"
+  | "APPROVE_COMPANY"
+  | "REJECT_COMPANY";
 
 export async function logAdminAction(input: {
   actorId: string;
   action: AuditAction;
-  targetType: "CoinRequest" | "Coin" | "User" | "CompanyPoint" | "RegisteredExchange";
+  targetType: "CoinRequest" | "Coin" | "User" | "CompanyPoint" | "RegisteredExchange" | "Company";
   targetId: string;
   details?: Record<string, unknown>;
 }): Promise<void> {

@@ -236,7 +236,11 @@
     "business": {
       "title": "Company points",
       "subtitle": "Moderate submitted locations.",
-      "empty": "Nothing here."
+      "empty": "Nothing here.",
+      "scope": {
+        "companies": "Companies",
+        "points": "Points"
+      }
     },
     "exchanges": {
       "title": "Exchanges",
@@ -251,6 +255,22 @@
         "not_found": "Exchange not found.",
         "not_pending": "Not in pending status.",
         "reason_too_short": "Reason must be at least 3 characters.",
+        "generic": "Something went wrong."
+      }
+    },
+    "companies": {
+      "title": "Companies",
+      "subtitle": "Moderate submitted companies.",
+      "empty": "Nothing to review.",
+      "approve": "Approve",
+      "reject": "Reject",
+      "rejectReasonPlaceholder": "Rejection reason (≥ 3 chars)",
+      "errors": {
+        "unauth": "Not signed in.",
+        "not_admin": "Admin required.",
+        "not_found": "Company not found.",
+        "not_pending": "Not pending.",
+        "reason_too_short": "Reason must be at least 3 chars.",
         "generic": "Something went wrong."
       }
     }
@@ -461,7 +481,13 @@
     "useCompanyAddress": "Use the company address",
     "geocoding": "Looking up coordinates from address…",
     "geocodingOk": "Pin placed at the address",
-    "geocodingFailed": "Address not recognized — place the pin manually"
+    "geocodingFailed": "Address not recognized — place the pin manually",
+    "statusBadge": {
+      "PENDING": "Processing",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected"
+    },
+    "rejectionReasonLabel": "Rejection reason"
   },
   "cabinet": {
     "kicker": "Section · Cabinet",
@@ -530,6 +556,11 @@
         "display_name_required": "Display name is required.",
         "country_required": "Country is required.",
         "generic": "Something went wrong."
+      },
+      "status": {
+        "PENDING": "Processing",
+        "APPROVED": "Approved",
+        "REJECTED": "Rejected"
       }
     },
     "exchanges": {

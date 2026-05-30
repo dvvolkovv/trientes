@@ -39,6 +39,7 @@ model User {
   companies         Company[]
   registeredExchanges RegisteredExchange[]
   reviewedPoints    CompanyPoint[]      @relation("PointReviewer")
+  reviewedCompanies Company[]           @relation("CompanyReviewer")
   loginAttempts     LoginAttempt[]
 }
 
@@ -185,6 +186,8 @@ enum AdminAction {
   REJECT_POINT
   APPROVE_EXCHANGE
   REJECT_EXCHANGE
+  APPROVE_COMPANY
+  REJECT_COMPANY
 }
 
 model AdminAuditLog {
@@ -293,11 +296,17 @@ model Company {
   email       String?
   website     String?
   socials     Json?
+  status          RequestStatus @default(PENDING)
+  rejectionReason String?
+  reviewedById    String?
+  reviewer        User?         @relation("CompanyReviewer", fields: [reviewedById], references: [id])
+  reviewedAt      DateTime?
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
   points      CompanyPoint[]
 
   @@index([ownerUserId])
+  @@index([status, createdAt])
 }
 
 model CompanyPoint {

@@ -236,7 +236,11 @@
     "business": {
       "title": "公司地点",
       "subtitle": "审核提交的位置。",
-      "empty": "暂无。"
+      "empty": "暂无。",
+      "scope": {
+        "companies": "公司",
+        "points": "网点"
+      }
     },
     "exchanges": {
       "title": "交易所",
@@ -252,6 +256,22 @@
         "not_pending": "不处于待审核状态。",
         "reason_too_short": "原因至少需要 3 个字符。",
         "generic": "出现错误。"
+      }
+    },
+    "companies": {
+      "title": "公司",
+      "subtitle": "审核提交的公司。",
+      "empty": "没有待审核的。",
+      "approve": "批准",
+      "reject": "拒绝",
+      "rejectReasonPlaceholder": "原因(至少 3 个字符)",
+      "errors": {
+        "unauth": "未登录。",
+        "not_admin": "需要管理员权限。",
+        "not_found": "未找到公司。",
+        "not_pending": "不在待审核状态。",
+        "reason_too_short": "原因至少 3 个字符。",
+        "generic": "出错了。"
       }
     }
   },
@@ -461,7 +481,13 @@
     "useCompanyAddress": "使用公司地址",
     "geocoding": "正在按地址查找坐标…",
     "geocodingOk": "已在地址处放置标记",
-    "geocodingFailed": "地址未识别 — 请手动放置标记"
+    "geocodingFailed": "地址未识别 — 请手动放置标记",
+    "statusBadge": {
+      "PENDING": "处理中",
+      "APPROVED": "已接受",
+      "REJECTED": "已拒绝"
+    },
+    "rejectionReasonLabel": "拒绝原因"
   },
   "cabinet": {
     "kicker": "板块 · 个人中心",
@@ -530,6 +556,11 @@
         "display_name_required": "显示名称为必填项。",
         "country_required": "国家/地区为必填项。",
         "generic": "出现错误。"
+      },
+      "status": {
+        "PENDING": "处理中",
+        "APPROVED": "已接受",
+        "REJECTED": "已拒绝"
       }
     },
     "exchanges": {
