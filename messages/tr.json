@@ -422,7 +422,7 @@
     "noPoints": "Henüz nokta yok.",
     "pointName": "Nokta adı",
     "pointAddress": "Adres",
-    "clickMapToPlace": "Noktayı yerleştirmek için haritaya tıklayın (sürükleyerek ayarlayın).",
+    "clickMapToPlace": "Yukarıdan adresi girin, işaretçi otomatik görünür — veya haritaya tıklayın.",
     "acceptedCoins": "Kabul edilen coin'ler",
     "submitPoint": "İnceleme için gönder",
     "pointSubmitted": "İnceleme için gönderildi",
@@ -430,7 +430,8 @@
       "SHOP": "Mağaza",
       "ATM": "ATM",
       "POS": "POS",
-      "SALES_OFFICE": "Satış ofisi"
+      "SALES_OFFICE": "Satış ofisi",
+      "COMPANY": "Şirket (çevrimiçi)"
     },
     "status": {
       "PENDING": "Beklemede",
@@ -450,7 +451,17 @@
       "coords_invalid": "Noktayı haritada yerleştirin",
       "too_many_pending": "Beklemede çok fazla nokta var",
       "generic": "Bir şeyler ters gitti"
-    }
+    },
+    "websiteHint": "https://, http:// veya sadece www.example.com — hepsi geçerli",
+    "addressSection": "Adres",
+    "city": "Şehir",
+    "street": "Sokak",
+    "houseNumber": "Bina no",
+    "postalCode": "Posta kodu",
+    "useCompanyAddress": "Şirket adresini kullan",
+    "geocoding": "Adresten koordinatlar aranıyor…",
+    "geocodingOk": "İşaretçi adrese yerleştirildi",
+    "geocodingFailed": "Adres tanınmadı — işaretçiyi manuel yerleştirin"
   },
   "cabinet": {
     "kicker": "Bölüm · Kabin",

@@ -271,6 +271,7 @@ enum PointType {
   ATM
   POS
   SALES_OFFICE
+  COMPANY
 }
 
 model Company {
@@ -282,6 +283,11 @@ model Company {
   logoUrl     String?
   description String?        @db.Text
   country     String?
+  countryCode String?
+  city        String?
+  street      String?
+  houseNumber String?
+  postalCode  String?
   address     String?
   phone       String?
   email       String?
@@ -303,6 +309,11 @@ model CompanyPoint {
   description     String?       @db.Text
   lat             Float
   lon             Float
+  countryCode     String?
+  city            String?
+  street          String?
+  houseNumber     String?
+  postalCode      String?
   address         String?
   acceptedCoinIds String[]
   logoUrl         String?

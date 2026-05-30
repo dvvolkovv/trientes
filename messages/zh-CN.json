@@ -422,7 +422,7 @@
     "noPoints": "暂无地点。",
     "pointName": "地点名称",
     "pointAddress": "地址",
-    "clickMapToPlace": "点击地图选择地点(可拖动调整)。",
+    "clickMapToPlace": "在上方输入地址,标记会自动出现。或点击地图手动放置。",
     "acceptedCoins": "接受的币种",
     "submitPoint": "提交审核",
     "pointSubmitted": "已提交审核",
@@ -430,7 +430,8 @@
       "SHOP": "商店",
       "ATM": "ATM",
       "POS": "POS",
-      "SALES_OFFICE": "营业部"
+      "SALES_OFFICE": "营业部",
+      "COMPANY": "公司(线上)"
     },
     "status": {
       "PENDING": "审核中",
@@ -450,7 +451,17 @@
       "coords_invalid": "请在地图上标记地点",
       "too_many_pending": "审核中的地点过多",
       "generic": "出错了"
-    }
+    },
+    "websiteHint": "支持 https://、http:// 或直接 www.example.com",
+    "addressSection": "地址",
+    "city": "城市",
+    "street": "街道",
+    "houseNumber": "门牌号",
+    "postalCode": "邮编",
+    "useCompanyAddress": "使用公司地址",
+    "geocoding": "正在按地址查找坐标…",
+    "geocodingOk": "已在地址处放置标记",
+    "geocodingFailed": "地址未识别 — 请手动放置标记"
   },
   "cabinet": {
     "kicker": "板块 · 个人中心",

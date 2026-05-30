@@ -422,7 +422,7 @@
     "noPoints": "Aún sin puntos.",
     "pointName": "Nombre del punto",
     "pointAddress": "Dirección",
-    "clickMapToPlace": "Haz clic en el mapa para situar el punto (arrastra para ajustar).",
+    "clickMapToPlace": "Escribe la dirección arriba y el marcador aparece solo — o haz clic en el mapa.",
     "acceptedCoins": "Monedas aceptadas",
     "submitPoint": "Enviar a revisión",
     "pointSubmitted": "Enviado a revisión",
@@ -430,7 +430,8 @@
       "SHOP": "Tienda",
       "ATM": "Cajero",
       "POS": "TPV",
-      "SALES_OFFICE": "Oficina de ventas"
+      "SALES_OFFICE": "Oficina de ventas",
+      "COMPANY": "Empresa (en línea)"
     },
     "status": {
       "PENDING": "Pendiente",
@@ -450,7 +451,17 @@
       "coords_invalid": "Sitúa el punto en el mapa",
       "too_many_pending": "Demasiados puntos pendientes",
       "generic": "Algo salió mal"
-    }
+    },
+    "websiteHint": "Con https://, http:// o simplemente www.example.com — todo vale",
+    "addressSection": "Dirección",
+    "city": "Ciudad",
+    "street": "Calle",
+    "houseNumber": "Nº",
+    "postalCode": "Código postal",
+    "useCompanyAddress": "Usar la dirección de la empresa",
+    "geocoding": "Buscando coordenadas por la dirección…",
+    "geocodingOk": "Marcador colocado en la dirección",
+    "geocodingFailed": "Dirección no reconocida — coloca el marcador manualmente"
   },
   "cabinet": {
     "kicker": "Sección · Panel",

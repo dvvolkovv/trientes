@@ -422,7 +422,7 @@
     "noPoints": "まだ拠点がありません。",
     "pointName": "拠点名",
     "pointAddress": "住所",
-    "clickMapToPlace": "地図をクリックして拠点を配置(ドラッグで調整可能)。",
+    "clickMapToPlace": "上で住所を入力するとピンが自動で表示されます。または地図をクリックしてください。",
     "acceptedCoins": "対応する通貨",
     "submitPoint": "審査に提出",
     "pointSubmitted": "審査に提出しました",
@@ -430,7 +430,8 @@
       "SHOP": "店舗",
       "ATM": "ATM",
       "POS": "POS",
-      "SALES_OFFICE": "営業所"
+      "SALES_OFFICE": "営業所",
+      "COMPANY": "会社(オンライン)"
     },
     "status": {
       "PENDING": "審査中",
@@ -450,7 +451,17 @@
       "coords_invalid": "地図上に拠点を配置してください",
       "too_many_pending": "審査中の拠点が多すぎます",
       "generic": "問題が発生しました"
-    }
+    },
+    "websiteHint": "https://、http://、または www.example.com の形式でOK",
+    "addressSection": "住所",
+    "city": "市区町村",
+    "street": "通り",
+    "houseNumber": "番地",
+    "postalCode": "郵便番号",
+    "useCompanyAddress": "会社の住所を使用",
+    "geocoding": "住所から座標を検索中…",
+    "geocodingOk": "住所にピンを配置しました",
+    "geocodingFailed": "住所を認識できません — 手動でピンを配置してください"
   },
   "cabinet": {
     "kicker": "セクション · キャビネット",

@@ -422,7 +422,7 @@
     "noPoints": "아직 지점이 없습니다.",
     "pointName": "지점 이름",
     "pointAddress": "주소",
-    "clickMapToPlace": "지도를 클릭해서 지점을 배치하세요(드래그로 조정).",
+    "clickMapToPlace": "위에 주소를 입력하면 핀이 자동으로 표시됩니다. 또는 지도에서 클릭하세요.",
     "acceptedCoins": "허용 코인",
     "submitPoint": "검토 요청",
     "pointSubmitted": "검토에 제출됨",
@@ -430,7 +430,8 @@
       "SHOP": "상점",
       "ATM": "ATM",
       "POS": "POS",
-      "SALES_OFFICE": "영업소"
+      "SALES_OFFICE": "영업소",
+      "COMPANY": "회사(온라인)"
     },
     "status": {
       "PENDING": "검토 중",
@@ -450,7 +451,17 @@
       "coords_invalid": "지도에 지점을 배치하세요",
       "too_many_pending": "검토 중인 지점이 너무 많습니다",
       "generic": "문제가 발생했습니다"
-    }
+    },
+    "websiteHint": "https://, http:// 또는 그냥 www.example.com 모두 가능",
+    "addressSection": "주소",
+    "city": "도시",
+    "street": "도로명",
+    "houseNumber": "번지",
+    "postalCode": "우편번호",
+    "useCompanyAddress": "회사 주소 사용",
+    "geocoding": "주소로 좌표를 찾는 중…",
+    "geocodingOk": "주소에 핀을 배치했습니다",
+    "geocodingFailed": "주소를 인식하지 못했습니다 — 직접 핀을 배치하세요"
   },
   "cabinet": {
     "kicker": "섹션 · 캐비닛",

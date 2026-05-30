@@ -422,7 +422,7 @@
     "noPoints": "No points yet.",
     "pointName": "Point name",
     "pointAddress": "Address",
-    "clickMapToPlace": "Click the map to place the point (drag to adjust).",
+    "clickMapToPlace": "Type the address above and the pin appears automatically — or click the map to place it.",
     "acceptedCoins": "Accepted coins",
     "submitPoint": "Submit for review",
     "pointSubmitted": "Submitted for review",
@@ -430,7 +430,8 @@
       "SHOP": "Shop",
       "ATM": "ATM",
       "POS": "POS",
-      "SALES_OFFICE": "Sales office"
+      "SALES_OFFICE": "Sales office",
+      "COMPANY": "Company (online)"
     },
     "status": {
       "PENDING": "Pending",
@@ -450,7 +451,17 @@
       "coords_invalid": "Place the point on the map",
       "too_many_pending": "Too many pending points",
       "generic": "Something went wrong"
-    }
+    },
+    "websiteHint": "https://, http://, or just www.example.com — all work",
+    "addressSection": "Address",
+    "city": "City",
+    "street": "Street",
+    "houseNumber": "House #",
+    "postalCode": "Postal code",
+    "useCompanyAddress": "Use the company address",
+    "geocoding": "Looking up coordinates from address…",
+    "geocodingOk": "Pin placed at the address",
+    "geocodingFailed": "Address not recognized — place the pin manually"
   },
   "cabinet": {
     "kicker": "Section · Cabinet",

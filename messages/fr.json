@@ -422,7 +422,7 @@
     "noPoints": "Aucun point pour le moment.",
     "pointName": "Nom du point",
     "pointAddress": "Adresse",
-    "clickMapToPlace": "Cliquez sur la carte pour placer le point (glissez pour ajuster).",
+    "clickMapToPlace": "Saisissez l'adresse ci-dessus, le repère apparaît tout seul — ou cliquez sur la carte.",
     "acceptedCoins": "Cryptos acceptées",
     "submitPoint": "Soumettre pour examen",
     "pointSubmitted": "Soumis pour examen",
@@ -430,7 +430,8 @@
       "SHOP": "Boutique",
       "ATM": "Distributeur",
       "POS": "TPE",
-      "SALES_OFFICE": "Bureau commercial"
+      "SALES_OFFICE": "Bureau commercial",
+      "COMPANY": "Entreprise (en ligne)"
     },
     "status": {
       "PENDING": "En attente",
@@ -450,7 +451,17 @@
       "coords_invalid": "Placez le point sur la carte",
       "too_many_pending": "Trop de points en attente",
       "generic": "Une erreur est survenue"
-    }
+    },
+    "websiteHint": "Avec https://, http:// ou juste www.example.com — tout fonctionne",
+    "addressSection": "Adresse",
+    "city": "Ville",
+    "street": "Rue",
+    "houseNumber": "N°",
+    "postalCode": "Code postal",
+    "useCompanyAddress": "Utiliser l'adresse de l'entreprise",
+    "geocoding": "Recherche des coordonnées à partir de l'adresse…",
+    "geocodingOk": "Repère placé à l'adresse",
+    "geocodingFailed": "Adresse non reconnue — placez le repère manuellement"
   },
   "cabinet": {
     "kicker": "Section · Espace personnel",

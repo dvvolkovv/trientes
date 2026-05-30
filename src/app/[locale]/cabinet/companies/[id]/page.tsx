@@ -36,7 +36,7 @@ export default async function CompanyManagementPage({
     status: p.status,
     rejectReason: p.rejectReason,
   }));
-  const coinOpts = coins.map((c) => ({ id: c.id, symbol: c.symbol }));
+  const coinOpts = coins.map((c) => ({ id: c.id, symbol: c.symbol, logoUrl: c.logoUrl }));
 
   return (
     <main className="max-w-[860px] mx-auto px-4 md:px-12 py-12 space-y-12">
@@ -59,7 +59,17 @@ export default async function CompanyManagementPage({
       </section>
       <section>
         <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-4">{t("addPoint")}</h2>
-        <PointForm companyId={company.id} coins={coinOpts} />
+        <PointForm
+          companyId={company.id}
+          coins={coinOpts}
+          companyAddress={{
+            countryCode: company.countryCode ?? "",
+            city: company.city ?? "",
+            street: company.street ?? "",
+            houseNumber: company.houseNumber ?? "",
+            postalCode: company.postalCode ?? "",
+          }}
+        />
       </section>
     </main>
   );

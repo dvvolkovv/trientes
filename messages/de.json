@@ -422,7 +422,7 @@
     "noPoints": "Noch keine Standorte.",
     "pointName": "Standortname",
     "pointAddress": "Adresse",
-    "clickMapToPlace": "Klicken Sie auf die Karte, um den Standort zu setzen (ziehbar).",
+    "clickMapToPlace": "Adresse oben eingeben — die Markierung erscheint automatisch. Oder auf die Karte klicken.",
     "acceptedCoins": "Akzeptierte Coins",
     "submitPoint": "Zur Prüfung einreichen",
     "pointSubmitted": "Zur Prüfung eingereicht",
@@ -430,7 +430,8 @@
       "SHOP": "Geschäft",
       "ATM": "Geldautomat",
       "POS": "POS",
-      "SALES_OFFICE": "Vertriebsbüro"
+      "SALES_OFFICE": "Vertriebsbüro",
+      "COMPANY": "Firma (online)"
     },
     "status": {
       "PENDING": "Wartet",
@@ -450,7 +451,17 @@
       "coords_invalid": "Standort auf der Karte setzen",
       "too_many_pending": "Zu viele wartende Standorte",
       "generic": "Etwas ist schiefgelaufen"
-    }
+    },
+    "websiteHint": "Mit https://, http:// oder einfach www.example.com — alles möglich",
+    "addressSection": "Adresse",
+    "city": "Stadt",
+    "street": "Straße",
+    "houseNumber": "Hausnr.",
+    "postalCode": "PLZ",
+    "useCompanyAddress": "Firmenadresse verwenden",
+    "geocoding": "Koordinaten zur Adresse suchen…",
+    "geocodingOk": "Markierung an der Adresse gesetzt",
+    "geocodingFailed": "Adresse nicht erkannt — Markierung manuell setzen"
   },
   "cabinet": {
     "kicker": "Bereich · Kabinett",
