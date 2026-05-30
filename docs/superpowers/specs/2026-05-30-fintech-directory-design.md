@@ -162,7 +162,7 @@ Server-side (Zod):
 - `slug`: `^[a-z0-9-]{2,40}$`.
 - `displayName`: 2–80 chars.
 - `website`: must parse as `http:`/`https:` URL.
-- `socials`: object `{ twitter?, facebook?, instagram?, linkedin?, telegram?, youtube?, github?, discord?, reddit?, ... }` — at most 10 keys; each value must be `http:`/`https:` URL (sanitize, do not trust client). Same pattern as `CompanyPoint`.
+- `socials`: array of `{ network: string, url: string }` (matches existing `CompanyPoint.socials` convention); at most 10 entries; `network` non-empty string, `url` must parse as `http:`/`https:`. Sanitize at mapper, do not trust client (defense-in-depth against `javascript:` XSS in popups).
 - `countryCode`, items in `availableIn`: ISO-3166-1 alpha-2 list (validate against a constant set).
 - `supportedCoinIds`: each must exist in `Coin` (check at write).
 - `supportedFiats`: ISO-4217 set.
