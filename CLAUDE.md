@@ -1,5 +1,10 @@
 @AGENTS.md
 
+# Always-on behaviors
+
+- **Audio reply every turn.** Generate a Russian voice summary (OpenAI TTS → mp3) and emit `📎 attach: <abs-path>` in the reply so the Telegram bot sends it. No exceptions, even for short answers or errors — the user reads with difficulty and voice is the primary channel ([[feedback_audio_summaries]]).
+- **Persist the session across bot restarts.** Whenever `trientes-bot` is restarted (manually or after a 143/SIGTERM timeout), the next invocation must resume the prior Claude Code session (`claude --resume` / saved session id) instead of starting fresh — never lose conversation state on restart.
+
 # Project history (server only)
 
 If the file `~/.claude/projects/-home-dv-trientes/memory/project_trientes_phase1.md` exists, read it — it documents phases 1-9 of the build (stack, deployed URLs, design language, worker cadences, server addresses, and known gotchas). On laptop checkouts the path won't exist; that's fine, skip silently.
@@ -47,3 +52,40 @@ This `/home/dv/trientes` checkout **IS the live production box** (trientes.org),
 - **Always push from here yourself.** The deploy key has write access; `git push origin main` works from this server. The laptop no longer pushes — never defer a push to it and never leave commits unpushed.
 
 Full procedure, cadences, and the worker stale-lib gotcha: see the `project_trientes_deploy_from_server.md` memory.
+
+# iOS builds (via the Mac at home)
+
+This server cannot build iOS apps (Linux). For iOS work, drive the Mac at
+home through the existing reverse SSH tunnel — `/home/dv/bin/mac-ios`
+SSHes back through `localhost:2222` and invokes a fastlane lane on the
+Mac:
+
+```bash
+/home/dv/bin/mac-ios --lane build_sim            # ~2 min — simulator smoke + unit tests
+/home/dv/bin/mac-ios --lane release_testflight   # ~5 min — signed IPA → TestFlight
+```
+
+Always invoke with the absolute path — non-interactive `claude -p` does
+not load `~/.profile`, so `~/bin` is not on PATH.
+
+Source of truth: `~/trientes-ios/` on the Mac. Bundle ID `org.trientes.ios`.
+Apple Dev account is **separate** from poolwatt's — team `MU88T5DUW2`
+(TRUST CHANGE SP Z O O), ASC API key at `~/.trientes-ios-secrets/` on the Mac.
+
+# Android builds (on this server)
+
+Unlike iOS, Android builds run directly on this Linux server. A Capacitor
+app at `~/trientes-android/` wraps `https://trientes.org` in a WebView
+and produces a debug-signed APK.
+
+```bash
+/home/dv/bin/android-build                # build + publish (default)
+/home/dv/bin/android-build --no-publish   # build only, no copy to /downloads/
+```
+
+Downloads land at:
+- `https://trientes.org/downloads/trientes.apk` — always latest
+- `https://trientes.org/downloads/trientes-build-<N>.apk` — versioned
+- `https://trientes.org/downloads/` — autoindex listing
+
+Builds keep on disk the newest 20 versioned APKs (~80 MB ceiling).
