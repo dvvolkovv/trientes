@@ -41,6 +41,8 @@ model User {
   reviewedPoints    CompanyPoint[]      @relation("PointReviewer")
   reviewedCompanies Company[]           @relation("CompanyReviewer")
   loginAttempts     LoginAttempt[]
+  ownedFintech      FintechCompany?     @relation("FintechOwner")
+  reviewedFintechs  FintechCompany[]    @relation("FintechReviewer")
 }
 
 model Account {
@@ -188,6 +190,11 @@ enum AdminAction {
   REJECT_EXCHANGE
   APPROVE_COMPANY
   REJECT_COMPANY
+  APPROVE_FINTECH
+  REJECT_FINTECH
+  EDIT_FINTECH
+  CREATE_FINTECH
+  DELETE_FINTECH
 }
 
 model AdminAuditLog {
@@ -389,4 +396,69 @@ model RegisteredExchange {
 
   @@index([ownerUserId])
   @@index([status, createdAt])
+}
+
+enum FintechService {
+  CARD
+  IBAN
+  SEPA
+  SWIFT
+  SAVINGS
+  CRYPTO_LOANS
+  STAKING
+  EXCHANGE
+  CUSTODY
+  PAYMENTS
+  ONRAMP
+  OFFRAMP
+}
+
+enum FintechKyc {
+  NONE
+  BASIC
+  FULL
+}
+
+model FintechCompany {
+  id              String           @id @default(cuid())
+  slug            String           @unique
+  displayName     String
+  legalName       String?
+  logoUrl         String?
+  description     String?          @db.Text
+  website         String
+  socials         Json?
+  foundedYear     Int?
+
+  countryCode     String?
+  city            String?
+  address         String?
+  hqLat           Float?
+  hqLon           Float?
+
+  services         FintechService[]
+  supportedCoinIds String[]
+  supportedFiats   String[]
+  availableIn      String[]
+
+  kycLevel        FintechKyc?
+  feesSummary     String?          @db.Text
+  appStoreUrl     String?
+  playStoreUrl    String?
+
+  source          String           @default("curated")
+  ownerUserId     String?          @unique
+  owner           User?            @relation("FintechOwner", fields: [ownerUserId], references: [id], onDelete: Cascade)
+
+  status          RequestStatus    @default(APPROVED)
+  rejectionReason String?
+  reviewedById    String?
+  reviewer        User?            @relation("FintechReviewer", fields: [reviewedById], references: [id])
+  reviewedAt      DateTime?
+
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([status, displayName])
+  @@index([source])
 }
