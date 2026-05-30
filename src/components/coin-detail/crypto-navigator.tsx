@@ -30,6 +30,7 @@ const LAYER_COLOR: Record<PoiLayer, string> = {
   merchant: "#30B658",
   atm: "#FE5C04",
   financial: "#5B8DEF",
+  fintech: "#A855F7",
 };
 
 const MODE_ICON: Record<RouteMode, string> = { walk: "🚶", car: "🚗", transit: "🚍" };
@@ -121,8 +122,9 @@ export default function CryptoNavigator({
     merchant: true,
     atm: true,
     financial: true,
+    fintech: true,
   });
-  const [counts, setCounts] = useState<Record<PoiLayer, number>>({ merchant: 0, atm: 0, financial: 0 });
+  const [counts, setCounts] = useState<Record<PoiLayer, number>>({ merchant: 0, atm: 0, financial: 0, fintech: 0 });
   const [tooFar, setTooFar] = useState(false);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
@@ -174,6 +176,7 @@ export default function CryptoNavigator({
           merchant: pois.filter((p) => p.layer === "merchant").length,
           atm: pois.filter((p) => p.layer === "atm").length,
           financial: pois.filter((p) => p.layer === "financial").length,
+          fintech: pois.filter((p) => p.layer === "fintech").length,
         });
       })
       .catch(() => {})
@@ -385,7 +388,7 @@ export default function CryptoNavigator({
         hydratePhoto(el, p, t);
       };
 
-      (["financial", "atm", "merchant"] as PoiLayer[]).forEach((layer) => {
+      (["fintech", "financial", "atm", "merchant"] as PoiLayer[]).forEach((layer) => {
         map.addLayer({
           id: `poi-${layer}`,
           type: "circle",
@@ -415,7 +418,7 @@ export default function CryptoNavigator({
       // Click on empty map → drop/move the draggable "my position" pin.
       map.on("click", (e) => {
         const hit = map.queryRenderedFeatures(e.point, {
-          layers: ["poi-merchant", "poi-atm", "poi-financial"],
+          layers: ["poi-merchant", "poi-atm", "poi-financial", "poi-fintech"],
         });
         if (hit.length) return; // a POI was clicked — its popup opener handles it
         setOrigin([e.lngLat.lng, e.lngLat.lat], null, true);
@@ -691,7 +694,7 @@ export default function CryptoNavigator({
 
       {/* Legend + counts */}
       <div className="flex flex-wrap items-center gap-2">
-        {(["merchant", "atm", "financial"] as PoiLayer[]).map((layer) => (
+        {(["merchant", "atm", "financial", "fintech"] as PoiLayer[]).map((layer) => (
           <button
             key={layer}
             type="button"

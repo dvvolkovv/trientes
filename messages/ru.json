@@ -366,6 +366,7 @@
     "layer_merchant": "Магазины",
     "layer_atm": "Банкоматы / обмен",
     "layer_financial": "Финучреждения",
+    "layer_fintech": "Финтех",
     "coinHighlight": "Принимают {symbol}",
     "distance": "Расстояние",
     "duration": "Время",

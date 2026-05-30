@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { redis } from "@/lib/redis";
 import { parseBbox, coinPaymentTags, fetchPois, type Poi } from "@/lib/crypto-map";
 import { fetchApprovedPointsInBbox } from "@/lib/company-points";
+import { fetchApprovedFintechHqInBbox } from "@/lib/fintech-pois";
 
 export const dynamic = "force-dynamic";
 
@@ -55,5 +56,15 @@ export async function GET(req: Request) {
     // DB hiccup — degrade to OSM only.
   }
 
-  return NextResponse.json({ pois: [...company, ...osm] }, { headers: { "x-cache": osmCache } });
+  let fintech: Poi[] = [];
+  try {
+    fintech = await fetchApprovedFintechHqInBbox(bbox);
+  } catch {
+    // DB hiccup — degrade silently.
+  }
+
+  return NextResponse.json(
+    { pois: [...fintech, ...company, ...osm] },
+    { headers: { "x-cache": osmCache } },
+  );
 }

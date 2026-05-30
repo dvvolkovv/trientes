@@ -366,6 +366,7 @@
     "layer_merchant": "Merchants",
     "layer_atm": "ATMs / buy-sell",
     "layer_financial": "Financial",
+    "layer_fintech": "핀테크",
     "coinHighlight": "{symbol} accepted",
     "distance": "Distance",
     "duration": "Time",
