@@ -17,7 +17,8 @@
     "themeSystem": "系统",
     "markets": "市场",
     "business": "企业",
-    "cabinet": "个人中心"
+    "cabinet": "个人中心",
+    "fintech": "Fintech"
   },
   "home": {
     "title": "欢迎",
@@ -158,7 +159,8 @@
       "users": "用户",
       "audit": "审计",
       "business": "企业",
-      "exchanges": "交易所"
+      "exchanges": "交易所",
+      "fintech": "Fintech"
     },
     "status": {
       "PENDING": "待审核",
@@ -632,6 +634,113 @@
       "email_required": "邮箱为必填项。",
       "logo_invalid": "Logo URL 必须为 http 或 https。",
       "generic": "出现错误。"
+    }
+  },
+  "fintech": {
+    "title": "Fintech directory",
+    "subtitle": "Crypto-friendly fintech companies — neobanks, on/off-ramps, custody and crypto-loan platforms.",
+    "breadcrumb": "Fintech",
+    "empty": "No fintech companies match these filters yet.",
+    "filters": {
+      "allServices": "All services",
+      "allKyc": "All KYC levels",
+      "countryCode": "Country"
+    },
+    "sort": {
+      "name": "By name",
+      "featured": "Featured first",
+      "newest": "Newest"
+    },
+    "services": {
+      "CARD": "Card",
+      "IBAN": "IBAN",
+      "SEPA": "SEPA",
+      "SWIFT": "SWIFT",
+      "SAVINGS": "Savings",
+      "CRYPTO_LOANS": "Crypto loans",
+      "STAKING": "Staking",
+      "EXCHANGE": "Exchange",
+      "CUSTODY": "Custody",
+      "PAYMENTS": "Payments",
+      "ONRAMP": "On-ramp",
+      "OFFRAMP": "Off-ramp"
+    },
+    "kyc": {
+      "NONE": "No KYC",
+      "BASIC": "Basic KYC",
+      "FULL": "Full KYC"
+    },
+    "sections": {
+      "services": "Services",
+      "kyc": "KYC",
+      "availableIn": "Available in",
+      "fiats": "Supported fiats",
+      "coins": "Supported coins",
+      "hq": "Headquarters",
+      "fees": "Fees",
+      "apps": "Apps",
+      "socials": "Socials"
+    },
+    "business": {
+      "eyebrow": "Business",
+      "title": "Register your fintech",
+      "subtitle": "Tell us what your product does, who can use it, and how it touches crypto. We review every submission.",
+      "status": "Status",
+      "statuses": {
+        "PENDING": "Pending review",
+        "APPROVED": "Approved — live",
+        "REJECTED": "Rejected"
+      }
+    },
+    "admin": {
+      "title": "Fintech moderation",
+      "subtitle": "Approve, reject, or remove fintech listings.",
+      "empty": "Nothing here.",
+      "approve": "Approve",
+      "reject": "Reject",
+      "delete": "Delete",
+      "confirm": "Confirm",
+      "confirmDelete": "Delete this fintech?",
+      "rejectReason": "Reason (≥3 chars)",
+      "availableIn": "Available in",
+      "owner": "Owner"
+    },
+    "form": {
+      "slug": "Slug",
+      "slugHint": "lowercase letters / digits / hyphens, 2–40",
+      "displayName": "Display name",
+      "website": "Website",
+      "legalName": "Legal name",
+      "logoUrl": "Logo URL",
+      "foundedYear": "Founded",
+      "description": "Description",
+      "services": "Services",
+      "availableIn": "Available in (ISO-2 codes)",
+      "supportedFiats": "Supported fiats (ISO codes)",
+      "supportedCoins": "Supported coins (CoinGecko ids)",
+      "csvHint": "comma-separated",
+      "kycLevel": "KYC level",
+      "countryCode": "HQ country",
+      "city": "HQ city",
+      "address": "HQ address",
+      "hqLat": "HQ latitude",
+      "hqLon": "HQ longitude",
+      "feesSummary": "Fees summary",
+      "appStoreUrl": "App Store URL",
+      "playStoreUrl": "Play Store URL",
+      "submit": "Save",
+      "submitting": "Saving…",
+      "submitted": "Saved — awaiting review.",
+      "errors": {
+        "unauth": "Sign in first.",
+        "invalid": "Some fields look off.",
+        "slug_taken": "That slug is taken.",
+        "already_registered": "You already have a fintech.",
+        "not_found": "Not found.",
+        "not_pending": "Already reviewed.",
+        "reason_too_short": "Reason is too short.",
+        "unknown": "Unknown error"
+      }
     }
   }
 }

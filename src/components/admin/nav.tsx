@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 const TABS = [
   { key: "requests", path: "requests" },
   { key: "business", path: "business" },
+  { key: "fintech", path: "fintech" },
   { key: "exchanges", path: "exchanges" },
   { key: "coins", path: "coins" },
   { key: "users", path: "users" },

@@ -17,7 +17,8 @@
     "themeSystem": "Системная",
     "markets": "Рынки",
     "business": "Бизнес",
-    "cabinet": "Кабинет"
+    "cabinet": "Кабинет",
+    "fintech": "Финтех"
   },
   "home": {
     "title": "Добро пожаловать",
@@ -158,7 +159,8 @@
       "users": "Пользователи",
       "audit": "Аудит",
       "business": "Бизнес",
-      "exchanges": "Биржи"
+      "exchanges": "Биржи",
+      "fintech": "Финтех"
     },
     "status": {
       "PENDING": "Ожидает",
@@ -632,6 +634,113 @@
       "email_required": "Укажите email.",
       "logo_invalid": "URL логотипа должен быть http или https.",
       "generic": "Что-то пошло не так."
+    }
+  },
+  "fintech": {
+    "title": "Каталог финтехов",
+    "subtitle": "Финтех-компании, работающие с криптой — необанки, on/off-ramp, кастодиальные сервисы и крипто-кредиты.",
+    "breadcrumb": "Финтех",
+    "empty": "Под такие фильтры пока никого нет.",
+    "filters": {
+      "allServices": "Все услуги",
+      "allKyc": "Любой KYC",
+      "countryCode": "Страна"
+    },
+    "sort": {
+      "name": "По имени",
+      "featured": "Сначала избранные",
+      "newest": "Новые"
+    },
+    "services": {
+      "CARD": "Карта",
+      "IBAN": "IBAN",
+      "SEPA": "SEPA",
+      "SWIFT": "SWIFT",
+      "SAVINGS": "Накопления",
+      "CRYPTO_LOANS": "Крипто-кредиты",
+      "STAKING": "Стейкинг",
+      "EXCHANGE": "Обмен",
+      "CUSTODY": "Кастоди",
+      "PAYMENTS": "Платежи",
+      "ONRAMP": "On-ramp",
+      "OFFRAMP": "Off-ramp"
+    },
+    "kyc": {
+      "NONE": "Без KYC",
+      "BASIC": "Базовый KYC",
+      "FULL": "Полный KYC"
+    },
+    "sections": {
+      "services": "Услуги",
+      "kyc": "KYC",
+      "availableIn": "Доступно в",
+      "fiats": "Поддерживаемые фиаты",
+      "coins": "Поддерживаемые монеты",
+      "hq": "Штаб-квартира",
+      "fees": "Комиссии",
+      "apps": "Приложения",
+      "socials": "Соцсети"
+    },
+    "business": {
+      "eyebrow": "Бизнес",
+      "title": "Зарегистрируйте свой финтех",
+      "subtitle": "Расскажите, что делает продукт, кому доступен и как связан с криптой. Каждая заявка проходит модерацию.",
+      "status": "Статус",
+      "statuses": {
+        "PENDING": "На рассмотрении",
+        "APPROVED": "Одобрено — в каталоге",
+        "REJECTED": "Отклонено"
+      }
+    },
+    "admin": {
+      "title": "Модерация финтехов",
+      "subtitle": "Одобряйте, отклоняйте и удаляйте записи в каталоге финтехов.",
+      "empty": "Пусто.",
+      "approve": "Одобрить",
+      "reject": "Отклонить",
+      "delete": "Удалить",
+      "confirm": "Подтвердить",
+      "confirmDelete": "Удалить этот финтех?",
+      "rejectReason": "Причина (≥3 символа)",
+      "availableIn": "Доступно в",
+      "owner": "Владелец"
+    },
+    "form": {
+      "slug": "Slug",
+      "slugHint": "латиница / цифры / дефис, 2–40",
+      "displayName": "Отображаемое имя",
+      "website": "Сайт",
+      "legalName": "Юр. название",
+      "logoUrl": "URL логотипа",
+      "foundedYear": "Год основания",
+      "description": "Описание",
+      "services": "Услуги",
+      "availableIn": "Доступно в (ISO-2 коды)",
+      "supportedFiats": "Фиаты (ISO коды)",
+      "supportedCoins": "Монеты (CoinGecko id)",
+      "csvHint": "через запятую",
+      "kycLevel": "Уровень KYC",
+      "countryCode": "Страна HQ",
+      "city": "Город HQ",
+      "address": "Адрес HQ",
+      "hqLat": "Широта HQ",
+      "hqLon": "Долгота HQ",
+      "feesSummary": "Сводка комиссий",
+      "appStoreUrl": "App Store URL",
+      "playStoreUrl": "Play Store URL",
+      "submit": "Сохранить",
+      "submitting": "Сохраняем…",
+      "submitted": "Сохранено — ждёт модерации.",
+      "errors": {
+        "unauth": "Сначала войдите.",
+        "invalid": "Какие-то поля не подходят.",
+        "slug_taken": "Этот slug занят.",
+        "already_registered": "У вас уже есть финтех.",
+        "not_found": "Не найдено.",
+        "not_pending": "Уже отмодерировано.",
+        "reason_too_short": "Причина слишком короткая.",
+        "unknown": "Неизвестная ошибка"
+      }
     }
   }
 }
