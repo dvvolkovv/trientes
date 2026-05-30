@@ -7,6 +7,7 @@
 // can degrade to empty results. Mirrors the fear-greed lib's parse/fetch split.
 
 import { lookup } from "node:dns/promises";
+import { isWebsiteBlocked } from "@/lib/poi-blocklist";
 
 export type Bbox = { minLon: number; minLat: number; maxLon: number; maxLat: number };
 
@@ -185,6 +186,8 @@ export function parseOverpassElements(raw: unknown, coinTags: string[]): Poi[] {
     const lon = el.lon ?? el.center?.lon;
     if (!Number.isFinite(lat) || !Number.isFinite(lon)) continue;
     const tags = el.tags ?? {};
+    const website = tags.website || tags["contact:website"] || tags.url || null;
+    if (isWebsiteBlocked(website)) continue;
     const { layer, category } = classify(tags);
     const name = tags.name || tags.operator || tags.brand || (layer === "atm" ? "Crypto ATM" : prettify(category));
     const lightning =
@@ -200,7 +203,7 @@ export function parseOverpassElements(raw: unknown, coinTags: string[]): Poi[] {
       address: buildAddress(tags),
       lightning,
       coinSpecific,
-      website: tags.website || tags["contact:website"] || tags.url || null,
+      website,
       openingHours: tags.opening_hours || null,
       phone: tags["contact:phone"] || tags.phone || null,
       email: tags["contact:email"] || tags.email || null,
