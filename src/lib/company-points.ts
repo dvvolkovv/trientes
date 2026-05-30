@@ -54,6 +54,37 @@ export function companyPointToPoi(p: PointWithCompany, coinId: string): Poi {
   };
 }
 
+export type PlaceHit = { label: string; lat: number; lon: number };
+
+// Name-search for approved company points (point name OR parent company displayName).
+// Used by the navigator search bar so owners can find their own business by brand,
+// not only by street address. Case-insensitive substring match; both name and
+// company status must be APPROVED.
+export async function searchApprovedPointsByName(q: string, limit = 5): Promise<PlaceHit[]> {
+  const needle = q.trim();
+  if (needle.length < 2) return [];
+  const rows = await prisma.companyPoint.findMany({
+    where: {
+      status: "APPROVED",
+      company: { status: "APPROVED" },
+      OR: [
+        { name: { contains: needle, mode: "insensitive" } },
+        { company: { displayName: { contains: needle, mode: "insensitive" } } },
+      ],
+    },
+    take: limit,
+    orderBy: { createdAt: "desc" },
+    select: {
+      lat: true, lon: true, name: true, address: true,
+      company: { select: { displayName: true } },
+    },
+  });
+  return rows.map((r) => ({
+    label: r.address ? `${r.name} — ${r.address}` : `${r.name} (${r.company.displayName})`,
+    lat: r.lat, lon: r.lon,
+  }));
+}
+
 // Approved company points whose coordinates fall inside the viewport bbox.
 // Defense-in-depth: the parent Company must also be APPROVED — a rejected company
 // shouldn't leak its previously-approved points onto the public map.

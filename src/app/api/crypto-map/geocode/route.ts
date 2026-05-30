@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { redis } from "@/lib/redis";
 import { fetchGeocode, fetchReverseGeocode } from "@/lib/crypto-map";
+import { searchApprovedPointsByName } from "@/lib/company-points";
 
 export const dynamic = "force-dynamic";
 
@@ -43,24 +44,44 @@ export async function GET(req: Request) {
   const q = (url.searchParams.get("q") ?? "").trim();
   if (q.length < 2) return NextResponse.json({ results: [] });
 
+  // Two-source search: registered company points (by name / brand, looked up
+  // fresh so new approvals appear instantly) + Nominatim addresses (cached).
+  // Places rank first so typing a brand name finds the business, not a street.
   const cacheKey = `cmap:geo:${q.toLowerCase()}`;
+  let addressResults: { label: string; lat: number; lon: number }[] = [];
+  let addressCache: "hit" | "miss" | "error" = "miss";
   try {
     if (redis.status === "wait" || redis.status === "end") await redis.connect();
     const cached = await redis.get(cacheKey);
-    if (cached) return NextResponse.json({ results: JSON.parse(cached) }, { headers: { "x-cache": "hit" } });
+    if (cached) {
+      addressResults = JSON.parse(cached);
+      addressCache = "hit";
+    }
   } catch {
     // ignore
   }
-
-  try {
-    const results = await fetchGeocode(q);
+  if (addressCache !== "hit") {
     try {
-      await redis.set(cacheKey, JSON.stringify(results), "EX", TTL);
+      addressResults = await fetchGeocode(q);
+      try {
+        await redis.set(cacheKey, JSON.stringify(addressResults), "EX", TTL);
+      } catch {
+        // best-effort
+      }
     } catch {
-      // best-effort
+      addressCache = "error";
     }
-    return NextResponse.json({ results }, { headers: { "x-cache": "miss" } });
-  } catch {
-    return NextResponse.json({ results: [] }, { headers: { "x-cache": "error" } });
   }
+
+  let places: { label: string; lat: number; lon: number }[] = [];
+  try {
+    places = await searchApprovedPointsByName(q, 5);
+  } catch {
+    // DB hiccup — fall back to address results only.
+  }
+
+  return NextResponse.json(
+    { results: [...places, ...addressResults] },
+    { headers: { "x-cache": addressCache } },
+  );
 }
