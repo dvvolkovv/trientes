@@ -12,12 +12,17 @@ export type AuditAction =
   | "APPROVE_EXCHANGE"
   | "REJECT_EXCHANGE"
   | "APPROVE_COMPANY"
-  | "REJECT_COMPANY";
+  | "REJECT_COMPANY"
+  | "APPROVE_FINTECH"
+  | "REJECT_FINTECH"
+  | "EDIT_FINTECH"
+  | "CREATE_FINTECH"
+  | "DELETE_FINTECH";
 
 export async function logAdminAction(input: {
   actorId: string;
   action: AuditAction;
-  targetType: "CoinRequest" | "Coin" | "User" | "CompanyPoint" | "RegisteredExchange" | "Company";
+  targetType: "CoinRequest" | "Coin" | "User" | "CompanyPoint" | "RegisteredExchange" | "Company" | "FintechCompany";
   targetId: string;
   details?: Record<string, unknown>;
 }): Promise<void> {
