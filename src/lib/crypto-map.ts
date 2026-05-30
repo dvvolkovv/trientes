@@ -93,6 +93,7 @@ export type Poi = {
   email: string | null;
   socials: Social[];
   image: string | null;
+  description: string | null;
 };
 
 type OsmElement = {
@@ -209,6 +210,7 @@ export function parseOverpassElements(raw: unknown, coinTags: string[]): Poi[] {
       email: tags["contact:email"] || tags.email || null,
       socials: parseSocials(tags),
       image: parseOsmImage(tags),
+      description: tags.description || null,
     });
   }
   return out;

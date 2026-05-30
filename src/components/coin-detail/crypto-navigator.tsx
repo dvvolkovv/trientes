@@ -897,11 +897,16 @@ function buildCard(p: PoiProps, t: Translator, near: boolean, showStart: boolean
         .join("")}</div>`
     : "";
 
+  const descHtml = p.description
+    ? `<div class="cmap-desc">${escapeHtml(p.description)}</div>`
+    : "";
+
   el.innerHTML = `
     ${photoHtml}
     <div class="cmap-body">
       <div class="cmap-title">${escapeHtml(p.name)}</div>
       <div class="cmap-sub">${escapeHtml(p.category)}${p.lightning ? " · ⚡ Lightning" : ""}</div>
+      ${descHtml}
       ${rows.join("")}
       ${socialHtml}
       ${
@@ -940,6 +945,7 @@ function curatedToProps(c: CuratedPoi): PoiProps {
     email: c.email,
     socials: JSON.stringify(c.socials),
     image: c.logo,
+    description: null,
   };
 }
 

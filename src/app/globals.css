@@ -232,6 +232,13 @@ select:focus-visible {
   font-size: 11.5px;
   margin-top: 2px;
 }
+.cmap-desc {
+  margin-top: 8px;
+  color: #cfcad5;
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
 .cmap-row {
   display: flex;
   gap: 6px;

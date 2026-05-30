@@ -4,7 +4,14 @@ import type { Bbox, Poi, PoiLayer, Social } from "@/lib/crypto-map";
 
 // Shape returned by the prisma query in fetchApprovedPointsInBbox (point + its company).
 export type PointWithCompany = Prisma.CompanyPointGetPayload<{
-  include: { company: { select: { displayName: true; logoUrl: true; website: true; socials: true } } };
+  include: {
+    company: {
+      select: {
+        displayName: true; logoUrl: true; website: true; socials: true;
+        description: true; email: true; phone: true;
+      };
+    };
+  };
 }>;
 
 function layerFor(type: PointWithCompany["type"]): PoiLayer {
@@ -31,8 +38,8 @@ function asSocials(raw: unknown): Social[] {
 }
 
 // Convert a company-submitted point into the same Poi shape OSM points use, so the
-// existing navigator card/markers render it unchanged. Company-level logo/website/
-// socials are the fallback when the point omits its own.
+// existing navigator card/markers render it unchanged. Company-level fields are the
+// fallback when the point omits its own (point description first, then company about).
 export function companyPointToPoi(p: PointWithCompany, coinId: string): Poi {
   const pointSocials = asSocials(p.socials);
   return {
@@ -47,10 +54,11 @@ export function companyPointToPoi(p: PointWithCompany, coinId: string): Poi {
     coinSpecific: p.acceptedCoinIds.includes(coinId.toLowerCase()),
     website: p.website ?? p.company.website ?? null,
     openingHours: p.openingHours,
-    phone: p.phone,
-    email: null,
+    phone: p.phone ?? p.company.phone ?? null,
+    email: p.company.email ?? null,
     socials: pointSocials.length ? pointSocials : asSocials(p.company.socials),
     image: p.logoUrl ?? p.company.logoUrl ?? null,
+    description: p.description ?? p.company.description ?? null,
   };
 }
 
@@ -97,7 +105,14 @@ export async function fetchApprovedPointsInBbox(bbox: Bbox, coinId: string): Pro
       lon: { gte: bbox.minLon, lte: bbox.maxLon },
     },
     take: 500,
-    include: { company: { select: { displayName: true, logoUrl: true, website: true, socials: true } } },
+    include: {
+      company: {
+        select: {
+          displayName: true, logoUrl: true, website: true, socials: true,
+          description: true, email: true, phone: true,
+        },
+      },
+    },
   });
   return rows.map((r) => companyPointToPoi(r, coinId));
 }
