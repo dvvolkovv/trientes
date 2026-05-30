@@ -94,6 +94,8 @@ export type Poi = {
   socials: Social[];
   image: string | null;
   description: string | null;
+  // Optional in-app deep-link slug. Set only for fintech HQs (→ /{locale}/fintech/{slug}).
+  slug?: string;
 };
 
 type OsmElement = {

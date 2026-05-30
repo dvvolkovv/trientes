@@ -35,4 +35,7 @@ describe("fintechToPoi", () => {
   it("returns coinSpecific=false (HQ pin is not coin-aware)", () => {
     expect(fintechToPoi(row as never).coinSpecific).toBe(false);
   });
+  it("carries the company slug through so the popup can deep-link", () => {
+    expect(fintechToPoi(row as never).slug).toBe("revolut");
+  });
 });

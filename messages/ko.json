@@ -375,6 +375,7 @@
     "clearRoute": "Clear route",
     "routeHere": "Route here",
     "openSite": "Website",
+    "viewProfile": "View profile",
     "noOrigin": "Set your location first (📍 or search an address)",
     "pickDestination": "Pick a destination on the map",
     "noRoute": "Couldn't build a route",

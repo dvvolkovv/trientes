@@ -11,7 +11,7 @@ import maplibregl, {
   type GeoJSONSource,
 } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import type { Poi, PoiLayer, RouteResult, RouteMode, TransitLeg, GeoResult, Social, OgPreview } from "@/lib/crypto-map";
 import { StreetViewOverlay } from "@/components/coin-detail/street-view-overlay";
 import { CURATED_POIS, type CuratedPoi } from "@/lib/curated-pois";
@@ -107,6 +107,7 @@ export default function CryptoNavigator({
   coinName: string;
 }) {
   const t = useTranslations("cryptoMap");
+  const locale = useLocale();
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MlMap | null>(null);
   const geolocateRef = useRef<GeolocateControl | null>(null);
@@ -366,7 +367,7 @@ export default function CryptoNavigator({
       const openPoiPopup = (lonlat: [number, number], p: PoiProps) => {
         const origin = originRef.current;
         const near = origin ? haversineMeters([origin[0], origin[1]], [lonlat[0], lonlat[1]]) <= 150 : false;
-        const el = buildCard(p, t, near, modeRef.current === "walk");
+        const el = buildCard(p, t, near, modeRef.current === "walk", locale);
         wirePhotoFallback(el);
         const popup = new Popup({ offset: 14, closeButton: true, maxWidth: "264px", className: "cmap-pop" })
           .setLngLat(lonlat)
@@ -868,7 +869,7 @@ function infoRow(icon: string, inner: string): string {
 
 // Build the dark Ledger detail card. Photo slot leads (skeleton until the OG preview
 // resolves, or an OSM image straight away); empty fields are omitted.
-function buildCard(p: PoiProps, t: Translator, near: boolean, showStart: boolean): HTMLDivElement {
+function buildCard(p: PoiProps, t: Translator, near: boolean, showStart: boolean, locale: string): HTMLDivElement {
   const el = document.createElement("div");
   el.className = "cmap-popup";
 
@@ -904,6 +905,15 @@ function buildCard(p: PoiProps, t: Translator, near: boolean, showStart: boolean
     ? `<div class="cmap-desc">${escapeHtml(p.description)}</div>`
     : "";
 
+  // Fintech HQ pins carry an in-app slug → render a deep-link to the profile page,
+  // styled the same as the external "Open site" link so both info-links group together.
+  const profileHtml =
+    p.layer === "fintech" && p.slug
+      ? `<a class="cmap-site" href="/${escapeHtml(locale)}/fintech/${escapeHtml(p.slug)}">${escapeHtml(
+          t("viewProfile"),
+        )} →</a>`
+      : "";
+
   el.innerHTML = `
     ${photoHtml}
     <div class="cmap-body">
@@ -912,6 +922,7 @@ function buildCard(p: PoiProps, t: Translator, near: boolean, showStart: boolean
       ${descHtml}
       ${rows.join("")}
       ${socialHtml}
+      ${profileHtml}
       ${
         website
           ? `<a class="cmap-site" href="${escapeHtml(website)}" target="_blank" rel="noopener noreferrer nofollow">${escapeHtml(
