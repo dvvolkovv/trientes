@@ -18,19 +18,4 @@ export type CuratedPoi = {
   lightning: boolean;
 };
 
-export const CURATED_POIS: CuratedPoi[] = [
-  {
-    id: "curated/sangita",
-    name: "Sangita Yoga Studio",
-    lat: 48.2105932,
-    lon: 16.3768773,
-    category: "Yoga / Wellness",
-    address: "Fleischmarkt 16, 1010 Wien",
-    website: "https://sangita.com",
-    phone: "+43 676 5734954",
-    email: "info@sangita.com",
-    socials: [{ network: "instagram", url: "https://instagram.com/sangita_yoga_studio" }],
-    logo: "/curated/sangita.png",
-    lightning: false,
-  },
-];
+export const CURATED_POIS: CuratedPoi[] = [];
