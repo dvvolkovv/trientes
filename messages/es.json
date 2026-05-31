@@ -19,7 +19,8 @@
     "business": "Empresas",
     "cabinet": "Panel",
     "fintech": "Fintech",
-    "companies": "Empresas"
+    "companies": "Empresas",
+    "services": "Servicios"
   },
   "home": {
     "title": "Bienvenido",
@@ -933,5 +934,18 @@
     "clear": "Limpiar",
     "empty": "Sin resultados.",
     "pageOf": "Página {page} de {pages}"
+  },
+  "servicesDirectory": {
+    "kicker": "En línea",
+    "title": "Servicios en línea que aceptan cripto",
+    "subtitle": "Apps, marketplaces y plataformas que aceptan cripto como pago — sin dirección física.",
+    "searchPlaceholder": "Buscar por nombre",
+    "countryPlaceholder": "ISO-2",
+    "coinPlaceholder": "ID de moneda",
+    "search": "Buscar",
+    "clear": "Limpiar",
+    "empty": "Nada todavía.",
+    "pageOf": "Página {page} de {pages}",
+    "visit": "Visitar"
   }
 }

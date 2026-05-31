@@ -19,7 +19,8 @@
     "business": "ビジネス",
     "cabinet": "キャビネット",
     "fintech": "Fintech",
-    "companies": "企業"
+    "companies": "企業",
+    "services": "サービス"
   },
   "home": {
     "title": "ようこそ",
@@ -933,5 +934,18 @@
     "clear": "クリア",
     "empty": "一致する企業はありません。",
     "pageOf": "{pages} ページ中 {page}"
+  },
+  "servicesDirectory": {
+    "kicker": "オンライン",
+    "title": "暗号資産対応オンラインサービス",
+    "subtitle": "暗号資産を支払い手段として受け付けるアプリ、マーケット、プラットフォーム — 物理住所不要。",
+    "searchPlaceholder": "名前で検索",
+    "countryPlaceholder": "ISO-2",
+    "coinPlaceholder": "コインID",
+    "search": "検索",
+    "clear": "クリア",
+    "empty": "まだ何もありません。",
+    "pageOf": "{page} / {pages}ページ",
+    "visit": "開く"
   }
 }

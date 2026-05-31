@@ -19,7 +19,8 @@
     "business": "비즈니스",
     "cabinet": "캐비닛",
     "fintech": "Fintech",
-    "companies": "회사"
+    "companies": "회사",
+    "services": "서비스"
   },
   "home": {
     "title": "환영합니다",
@@ -933,5 +934,18 @@
     "clear": "지우기",
     "empty": "결과 없음.",
     "pageOf": "{pages} 페이지 중 {page}"
+  },
+  "servicesDirectory": {
+    "kicker": "온라인",
+    "title": "암호화폐 결제 가능 온라인 서비스",
+    "subtitle": "암호화폐 결제를 지원하는 앱, 마켓플레이스, 플랫폼 — 실제 주소 불필요.",
+    "searchPlaceholder": "이름으로 검색",
+    "countryPlaceholder": "ISO-2",
+    "coinPlaceholder": "코인 ID",
+    "search": "검색",
+    "clear": "지우기",
+    "empty": "아직 없습니다.",
+    "pageOf": "{page} / {pages}",
+    "visit": "열기"
   }
 }

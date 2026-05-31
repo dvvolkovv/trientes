@@ -19,7 +19,8 @@
     "business": "Entreprises",
     "cabinet": "Espace personnel",
     "fintech": "Fintech",
-    "companies": "Entreprises"
+    "companies": "Entreprises",
+    "services": "Services"
   },
   "home": {
     "title": "Bienvenue",
@@ -933,5 +934,18 @@
     "clear": "Effacer",
     "empty": "Aucun résultat.",
     "pageOf": "Page {page} sur {pages}"
+  },
+  "servicesDirectory": {
+    "kicker": "En ligne",
+    "title": "Services en ligne acceptant la crypto",
+    "subtitle": "Apps, places de marché et plateformes qui acceptent la crypto comme paiement — sans adresse physique.",
+    "searchPlaceholder": "Recherche par nom",
+    "countryPlaceholder": "ISO-2",
+    "coinPlaceholder": "ID de la pièce",
+    "search": "Rechercher",
+    "clear": "Effacer",
+    "empty": "Rien pour l'instant.",
+    "pageOf": "Page {page} sur {pages}",
+    "visit": "Ouvrir"
   }
 }

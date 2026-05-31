@@ -19,7 +19,8 @@
     "business": "Business",
     "cabinet": "Kabinett",
     "fintech": "Fintech",
-    "companies": "Unternehmen"
+    "companies": "Unternehmen",
+    "services": "Dienste"
   },
   "home": {
     "title": "Willkommen",
@@ -933,5 +934,18 @@
     "clear": "Leeren",
     "empty": "Keine Treffer.",
     "pageOf": "Seite {page} von {pages}"
+  },
+  "servicesDirectory": {
+    "kicker": "Online",
+    "title": "Online-Dienste mit Krypto-Zahlung",
+    "subtitle": "Apps, Marktplätze und Plattformen, die Krypto als Zahlung akzeptieren — ohne physische Adresse.",
+    "searchPlaceholder": "Nach Namen suchen",
+    "countryPlaceholder": "ISO-2",
+    "coinPlaceholder": "Coin-ID",
+    "search": "Suchen",
+    "clear": "Zurücksetzen",
+    "empty": "Noch nichts hier.",
+    "pageOf": "Seite {page} von {pages}",
+    "visit": "Öffnen"
   }
 }

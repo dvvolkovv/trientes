@@ -19,7 +19,8 @@
     "business": "Business",
     "cabinet": "Cabinet",
     "fintech": "Fintech",
-    "companies": "Companies"
+    "companies": "Companies",
+    "services": "Services"
   },
   "home": {
     "title": "Welcome",
@@ -933,5 +934,18 @@
     "clear": "Clear",
     "empty": "No companies match.",
     "pageOf": "Page {page} of {pages}"
+  },
+  "servicesDirectory": {
+    "kicker": "Online",
+    "title": "Crypto-accepting online services",
+    "subtitle": "Apps, marketplaces and platforms that accept crypto as payment — no physical address required.",
+    "searchPlaceholder": "Search by name",
+    "countryPlaceholder": "ISO-2",
+    "coinPlaceholder": "Coin ID",
+    "search": "Search",
+    "clear": "Clear",
+    "empty": "Nothing here yet.",
+    "pageOf": "Page {page} of {pages}",
+    "visit": "Visit"
   }
 }

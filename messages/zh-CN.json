@@ -19,7 +19,8 @@
     "business": "企业",
     "cabinet": "个人中心",
     "fintech": "Fintech",
-    "companies": "公司"
+    "companies": "公司",
+    "services": "在线服务"
   },
   "home": {
     "title": "欢迎",
@@ -933,5 +934,18 @@
     "clear": "清除",
     "empty": "暂无匹配。",
     "pageOf": "第 {page} 页（共 {pages} 页）"
+  },
+  "servicesDirectory": {
+    "kicker": "在线",
+    "title": "支持加密支付的在线服务",
+    "subtitle": "支持加密货币作为支付方式的应用、市场和平台 — 无需实体地址。",
+    "searchPlaceholder": "按名称搜索",
+    "countryPlaceholder": "ISO-2",
+    "coinPlaceholder": "币种 ID",
+    "search": "搜索",
+    "clear": "清除",
+    "empty": "暂无内容。",
+    "pageOf": "第 {page} 页，共 {pages} 页",
+    "visit": "打开"
   }
 }

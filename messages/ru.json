@@ -19,7 +19,8 @@
     "business": "Бизнес",
     "cabinet": "Кабинет",
     "fintech": "Финтех",
-    "companies": "Компании"
+    "companies": "Компании",
+    "services": "Сервисы"
   },
   "home": {
     "title": "Добро пожаловать",
@@ -933,5 +934,18 @@
     "clear": "Сброс",
     "empty": "По фильтрам ничего нет.",
     "pageOf": "Стр. {page} из {pages}"
+  },
+  "servicesDirectory": {
+    "kicker": "Онлайн",
+    "title": "Онлайн-сервисы, принимающие крипту",
+    "subtitle": "Приложения, маркетплейсы и платформы, которые принимают крипту как платёж — без физического адреса.",
+    "searchPlaceholder": "Поиск по имени",
+    "countryPlaceholder": "ИСО-2",
+    "coinPlaceholder": "ID монеты",
+    "search": "Найти",
+    "clear": "Сбросить",
+    "empty": "Пока пусто.",
+    "pageOf": "Страница {page} из {pages}",
+    "visit": "Открыть"
   }
 }

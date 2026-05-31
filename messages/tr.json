@@ -19,7 +19,8 @@
     "business": "İşletme",
     "cabinet": "Kabin",
     "fintech": "Fintech",
-    "companies": "Şirketler"
+    "companies": "Şirketler",
+    "services": "Hizmetler"
   },
   "home": {
     "title": "Hoş geldiniz",
@@ -933,5 +934,18 @@
     "clear": "Temizle",
     "empty": "Eşleşen sonuç yok.",
     "pageOf": "{pages} sayfadan {page}"
+  },
+  "servicesDirectory": {
+    "kicker": "Çevrimiçi",
+    "title": "Kripto kabul eden çevrimiçi hizmetler",
+    "subtitle": "Ödeme olarak kripto kabul eden uygulamalar, pazaryerleri ve platformlar — fiziksel adres gerektirmez.",
+    "searchPlaceholder": "İsme göre ara",
+    "countryPlaceholder": "ISO-2",
+    "coinPlaceholder": "Coin ID",
+    "search": "Ara",
+    "clear": "Temizle",
+    "empty": "Henüz hiçbir şey yok.",
+    "pageOf": "Sayfa {page} / {pages}",
+    "visit": "Aç"
   }
 }
