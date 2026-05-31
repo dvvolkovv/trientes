@@ -1,5 +1,7 @@
 import type { FintechService, FintechKyc } from "@prisma/client";
 
+export { logoForDomain } from "@/lib/logo";
+
 export type CuratedFintech = {
   slug: string;
   displayName: string;
@@ -16,14 +18,6 @@ export type CuratedFintech = {
   appStoreUrl?: string;
   playStoreUrl?: string;
 };
-
-// DuckDuckGo icon proxy works without an API key and returns PNG/ICO for every
-// public domain. Quality varies; replace per-row with a curated CDN URL if a
-// company ships a sharper press-kit logo.
-export function logoForDomain(website: string): string {
-  const host = new URL(website).hostname.replace(/^www\./, "");
-  return `https://icons.duckduckgo.com/ip3/${host}.ico`;
-}
 
 const MAJORS = ["US","GB","DE","FR","ES","IT","NL","PL","CH","AT","BE","PT","IE","SE","NO","DK","FI","CZ","JP","SG","HK","AU","CA","BR","MX","AE","TR"];
 

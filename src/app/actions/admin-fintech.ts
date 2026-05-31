@@ -13,6 +13,7 @@ import {
 import { redis } from "@/lib/redis";
 import { notifyGeoForFintech } from "@/lib/geo-alerts-notify";
 import { notifyUser } from "@/lib/notify";
+import { logoForDomain } from "@/lib/logo";
 
 async function bustAvailabilityCache(countryCodes: string[]) {
   try {
@@ -54,9 +55,16 @@ export async function approveFintech(input: { id: string }) {
   const row = await prisma.fintechCompany.findUnique({ where: { id: input.id } });
   if (!row) return { ok: false as const, reason: "not_found" as const };
   if (row.status === "APPROVED") return { ok: false as const, reason: "not_pending" as const };
+  const derivedLogo = row.logoUrl ? null : logoForDomain(row.website);
   await prisma.fintechCompany.update({
     where: { id: row.id },
-    data: { status: "APPROVED", rejectionReason: null, reviewedById: admin.userId, reviewedAt: new Date() },
+    data: {
+      status: "APPROVED",
+      rejectionReason: null,
+      reviewedById: admin.userId,
+      reviewedAt: new Date(),
+      ...(derivedLogo ? { logoUrl: derivedLogo } : {}),
+    },
   });
   await logAdminAction({
     actorId: admin.userId,
@@ -117,8 +125,10 @@ export async function createCuratedFintech(input: unknown) {
   const parsed = fintechCreateSchema.safeParse(input);
   if (!parsed.success) return { ok: false as const, reason: "invalid" as const, details: parsed.error.flatten() };
   try {
+    const base = toData(parsed.data);
+    if (!base.logoUrl) base.logoUrl = logoForDomain(base.website);
     const row = await prisma.fintechCompany.create({
-      data: { ...toData(parsed.data), source: "curated", status: "APPROVED" },
+      data: { ...base, source: "curated", status: "APPROVED" },
     });
     await logAdminAction({
       actorId: admin.userId,

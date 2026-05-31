@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { checkAdmin } from "@/lib/is-admin";
 import { logAdminAction } from "@/lib/admin/audit";
 import { notifyUser } from "@/lib/notify";
+import { logoForDomain } from "@/lib/logo";
 
 export async function approveCompany(input: { companyId: string }) {
   const admin = await checkAdmin();
@@ -12,6 +13,7 @@ export async function approveCompany(input: { companyId: string }) {
   const company = await prisma.company.findUnique({ where: { id: input.companyId } });
   if (!company) return { ok: false, reason: "not_found" };
   if (company.status !== "PENDING") return { ok: false, reason: "not_pending" };
+  const derivedLogo = company.logoUrl ? null : logoForDomain(company.website);
   await prisma.company.update({
     where: { id: company.id },
     data: {
@@ -19,6 +21,7 @@ export async function approveCompany(input: { companyId: string }) {
       rejectionReason: null,
       reviewedById: admin.userId,
       reviewedAt: new Date(),
+      ...(derivedLogo ? { logoUrl: derivedLogo } : {}),
     },
   });
   await logAdminAction({

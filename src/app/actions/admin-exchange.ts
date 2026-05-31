@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { checkAdmin } from "@/lib/is-admin";
 import { logAdminAction } from "@/lib/admin/audit";
 import { notifyUser } from "@/lib/notify";
+import { logoForDomain } from "@/lib/logo";
 
 export async function approveExchange(input: { exchangeId: string }) {
   const admin = await checkAdmin();
@@ -12,9 +13,14 @@ export async function approveExchange(input: { exchangeId: string }) {
   const exchange = await prisma.registeredExchange.findUnique({ where: { id: input.exchangeId } });
   if (!exchange) return { ok: false, reason: "not_found" };
   if (exchange.status !== "PENDING") return { ok: false, reason: "not_pending" };
+  const derivedLogo = exchange.logoUrl ? null : logoForDomain(exchange.website);
   await prisma.registeredExchange.update({
     where: { id: exchange.id },
-    data: { status: "APPROVED", rejectionReason: null },
+    data: {
+      status: "APPROVED",
+      rejectionReason: null,
+      ...(derivedLogo ? { logoUrl: derivedLogo } : {}),
+    },
   });
   await logAdminAction({
     actorId: admin.userId,
