@@ -376,7 +376,13 @@
       "title": "Exchange not found",
       "back": "Back to the exchanges list"
     },
-    "noData": "—"
+    "noData": "—",
+    "fees": {
+      "title": "Comisiones",
+      "maker": "Comisión maker",
+      "taker": "Comisión taker",
+      "officialSchedule": "Tarifas oficiales"
+    }
   },
   "cryptoMap": {
     "eyebrow": "Navigator",

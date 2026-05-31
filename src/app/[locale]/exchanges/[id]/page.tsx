@@ -5,6 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { ExchangeCardHeader } from "@/components/exchange-card/header";
 import { ExchangeCardParameters } from "@/components/exchange-card/parameters";
+import { ExchangeCardFees } from "@/components/exchange-card/fees";
 import { ExchangeCardMetrics } from "@/components/exchange-card/metrics";
 import { ExchangeCardDescription, type DescriptionSource } from "@/components/exchange-card/description";
 import { ExchangeCardSocials } from "@/components/exchange-card/socials";
@@ -129,6 +130,12 @@ export default async function ExchangeDetailPage({
         exchange={exchange}
         liveCurrencies={fresh?.currencies}
         livePairsCount={fresh?.pairsCount}
+      />
+      <ExchangeCardFees
+        makerFeePercent={row.makerFeePercent}
+        takerFeePercent={row.takerFeePercent}
+        feesNote={row.feesNote}
+        feesUrl={row.feesUrl}
       />
       <ExchangeCardNewPairs exchangeId={row.id} />
       <ExchangeCardPairs exchangeId={row.id} />

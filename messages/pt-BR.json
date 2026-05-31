@@ -376,7 +376,13 @@
       "title": "Exchange not found",
       "back": "Back to the exchanges list"
     },
-    "noData": "—"
+    "noData": "—",
+    "fees": {
+      "title": "Taxas",
+      "maker": "Taxa maker",
+      "taker": "Taxa taker",
+      "officialSchedule": "Tabela oficial"
+    }
   },
   "cryptoMap": {
     "eyebrow": "Navigator",

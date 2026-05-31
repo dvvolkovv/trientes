@@ -338,6 +338,10 @@ model Exchange {
   fiats               String[]            @default([])
   socials             Json?
   source              String              @default("cg") // "cg" | "cp" | "curated"
+  makerFeePercent     Float?              // standard spot maker fee, e.g. 0.10
+  takerFeePercent     Float?              // standard spot taker fee
+  feesNote            String?             // tier disclaimer ("VIP / BNB tiers reduce further")
+  feesUrl             String?             // link to official fee schedule
   fetchedAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
   marketsFetchedAt    DateTime?           // last successful per-pair sync

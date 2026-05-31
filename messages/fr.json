@@ -376,7 +376,13 @@
       "title": "Exchange not found",
       "back": "Back to the exchanges list"
     },
-    "noData": "—"
+    "noData": "—",
+    "fees": {
+      "title": "Frais",
+      "maker": "Frais maker",
+      "taker": "Frais taker",
+      "officialSchedule": "Grille de frais officielle"
+    }
   },
   "cryptoMap": {
     "eyebrow": "Navigator",

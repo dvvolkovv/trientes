@@ -376,7 +376,13 @@
       "title": "Биржа не найдена",
       "back": "К списку бирж"
     },
-    "noData": "—"
+    "noData": "—",
+    "fees": {
+      "title": "Комиссии",
+      "maker": "Мейкер",
+      "taker": "Тейкер",
+      "officialSchedule": "Официальный прайс"
+    }
   },
   "cryptoMap": {
     "eyebrow": "Навигатор",

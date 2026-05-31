@@ -376,7 +376,13 @@
       "title": "Exchange not found",
       "back": "Back to the exchanges list"
     },
-    "noData": "—"
+    "noData": "—",
+    "fees": {
+      "title": "수수료",
+      "maker": "메이커 수수료",
+      "taker": "테이커 수수료",
+      "officialSchedule": "공식 수수료"
+    }
   },
   "cryptoMap": {
     "eyebrow": "Navigator",
