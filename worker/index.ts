@@ -196,10 +196,12 @@ async function runCleanup() {
   const t0 = Date.now();
   try {
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    const result = await prisma.coinSnapshot.deleteMany({
-      where: { fetchedAt: { lt: thirtyDaysAgo } },
-    });
-    console.log(`[worker] cleanup ok: deleted ${result.count} snapshots in ${Date.now() - t0}ms`);
+    const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
+    const [snaps, views] = await Promise.all([
+      prisma.coinSnapshot.deleteMany({ where: { fetchedAt: { lt: thirtyDaysAgo } } }),
+      prisma.pageView.deleteMany({ where: { createdAt: { lt: ninetyDaysAgo } } }),
+    ]);
+    console.log(`[worker] cleanup ok: deleted ${snaps.count} snapshots + ${views.count} page views in ${Date.now() - t0}ms`);
   } catch (err) {
     console.error("[worker] cleanup failed:", err);
   }

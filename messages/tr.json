@@ -161,7 +161,8 @@
       "audit": "Denetim",
       "business": "İşletme",
       "exchanges": "Borsalar",
-      "fintech": "Fintech"
+      "fintech": "Fintech",
+      "analytics": "Analitik"
     },
     "status": {
       "PENDING": "Beklemede",
@@ -281,6 +282,18 @@
         "reason_too_short": "En az 3 karakter.",
         "generic": "Bir şeyler ters gitti."
       }
+    },
+    "analytics": {
+      "title": "Analitik",
+      "subtitle": "Yerleşik izleyiciden anonim sayfa görüntülemeleri.",
+      "totalViews": "Görüntüleme",
+      "uniqueSessions": "Benzersiz oturum",
+      "timeline": "Zaman çizelgesi",
+      "topPaths": "En çok ziyaret edilen",
+      "topReferrers": "Önemli kaynaklar",
+      "topCountries": "Önde gelen ülkeler",
+      "topLocales": "Önde gelen diller",
+      "empty": "Bu dönemde trafik yok."
     }
   },
   "exchanges": {

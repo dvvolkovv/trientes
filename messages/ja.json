@@ -161,7 +161,8 @@
       "audit": "監査",
       "business": "ビジネス",
       "exchanges": "取引所",
-      "fintech": "Fintech"
+      "fintech": "Fintech",
+      "analytics": "アナリティクス"
     },
     "status": {
       "PENDING": "審査中",
@@ -281,6 +282,18 @@
         "reason_too_short": "理由は3文字以上必要です。",
         "generic": "問題が発生しました。"
       }
+    },
+    "analytics": {
+      "title": "アナリティクス",
+      "subtitle": "内部トラッカーで集計した匿名ページビュー。",
+      "totalViews": "ページビュー",
+      "uniqueSessions": "ユニークセッション",
+      "timeline": "タイムライン",
+      "topPaths": "上位ページ",
+      "topReferrers": "上位リファラ",
+      "topCountries": "上位国",
+      "topLocales": "上位ロケール",
+      "empty": "この期間のトラフィックはまだありません。"
     }
   },
   "exchanges": {

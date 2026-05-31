@@ -161,7 +161,8 @@
       "audit": "Audit",
       "business": "Business",
       "exchanges": "Exchanges",
-      "fintech": "Fintech"
+      "fintech": "Fintech",
+      "analytics": "Analytics"
     },
     "status": {
       "PENDING": "Pending",
@@ -281,6 +282,18 @@
         "reason_too_short": "Reason must be at least 3 chars.",
         "generic": "Something went wrong."
       }
+    },
+    "analytics": {
+      "title": "Analytics",
+      "subtitle": "Anonymous page views and aggregates collected by the in-app tracker.",
+      "totalViews": "Page views",
+      "uniqueSessions": "Unique sessions",
+      "timeline": "Timeline",
+      "topPaths": "Top paths",
+      "topReferrers": "Top referrers",
+      "topCountries": "Top countries",
+      "topLocales": "Top locales",
+      "empty": "No traffic in this window yet."
     }
   },
   "exchanges": {

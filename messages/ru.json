@@ -161,7 +161,8 @@
       "audit": "Аудит",
       "business": "Бизнес",
       "exchanges": "Биржи",
-      "fintech": "Финтех"
+      "fintech": "Финтех",
+      "analytics": "Аналитика"
     },
     "status": {
       "PENDING": "Ожидает",
@@ -281,6 +282,18 @@
         "reason_too_short": "Причина — не менее 3 символов.",
         "generic": "Что-то пошло не так."
       }
+    },
+    "analytics": {
+      "title": "Аналитика",
+      "subtitle": "Анонимные просмотры и сводки от встроенного трекера.",
+      "totalViews": "Просмотров",
+      "uniqueSessions": "Уникальных сессий",
+      "timeline": "Динамика",
+      "topPaths": "Топ страниц",
+      "topReferrers": "Топ источников",
+      "topCountries": "Топ стран",
+      "topLocales": "Топ локалей",
+      "empty": "В этом окне трафика пока нет."
     }
   },
   "exchanges": {

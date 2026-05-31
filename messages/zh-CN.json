@@ -161,7 +161,8 @@
       "audit": "审计",
       "business": "企业",
       "exchanges": "交易所",
-      "fintech": "Fintech"
+      "fintech": "Fintech",
+      "analytics": "分析"
     },
     "status": {
       "PENDING": "待审核",
@@ -281,6 +282,18 @@
         "reason_too_short": "原因至少 3 个字符。",
         "generic": "出错了。"
       }
+    },
+    "analytics": {
+      "title": "分析",
+      "subtitle": "内置追踪器收集的匿名页面访问与汇总。",
+      "totalViews": "浏览量",
+      "uniqueSessions": "独立会话",
+      "timeline": "时间线",
+      "topPaths": "热门页面",
+      "topReferrers": "热门来源",
+      "topCountries": "热门国家",
+      "topLocales": "热门语言",
+      "empty": "该时间段暂无流量。"
     }
   },
   "exchanges": {

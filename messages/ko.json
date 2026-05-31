@@ -161,7 +161,8 @@
       "audit": "감사",
       "business": "비즈니스",
       "exchanges": "거래소",
-      "fintech": "Fintech"
+      "fintech": "Fintech",
+      "analytics": "애널리틱스"
     },
     "status": {
       "PENDING": "검토 중",
@@ -281,6 +282,18 @@
         "reason_too_short": "사유는 3자 이상이어야 합니다.",
         "generic": "오류가 발생했습니다."
       }
+    },
+    "analytics": {
+      "title": "애널리틱스",
+      "subtitle": "내장 트래커가 집계한 익명 페이지뷰.",
+      "totalViews": "페이지뷰",
+      "uniqueSessions": "고유 세션",
+      "timeline": "타임라인",
+      "topPaths": "상위 경로",
+      "topReferrers": "상위 리퍼러",
+      "topCountries": "상위 국가",
+      "topLocales": "상위 로케일",
+      "empty": "이 기간에는 트래픽이 없습니다."
     }
   },
   "exchanges": {

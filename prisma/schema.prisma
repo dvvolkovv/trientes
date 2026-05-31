@@ -56,6 +56,23 @@ enum CompanyRole {
   VIEWER
 }
 
+model PageView {
+  id        String   @id @default(cuid())
+  path      String   // canonical path including locale, e.g. "/en/coin/bitcoin"
+  locale    String?  // extracted from path for fast aggregation
+  sessionId String?  // anonymous 30-day rolling cookie (UUID); null for prerendered bot hits
+  userId    String?  // populated when the viewer is signed in
+  referrer  String?  // document.referrer at hit time; null for direct
+  country   String?  // ISO-2 from CF-IPCountry header when present
+  isBot     Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([path, createdAt])
+  @@index([sessionId, createdAt])
+  @@index([country, createdAt])
+}
+
 enum KybStatus {
   NONE
   PENDING

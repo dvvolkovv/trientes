@@ -161,7 +161,8 @@
       "audit": "Auditoria",
       "business": "Empresas",
       "exchanges": "Exchanges",
-      "fintech": "Fintech"
+      "fintech": "Fintech",
+      "analytics": "Analytics"
     },
     "status": {
       "PENDING": "Pendente",
@@ -281,6 +282,18 @@
         "reason_too_short": "Mínimo 3 caracteres.",
         "generic": "Algo deu errado."
       }
+    },
+    "analytics": {
+      "title": "Analytics",
+      "subtitle": "Visitas anônimas e agregados do rastreador interno.",
+      "totalViews": "Visualizações",
+      "uniqueSessions": "Sessões únicas",
+      "timeline": "Cronologia",
+      "topPaths": "Páginas em alta",
+      "topReferrers": "Fontes em alta",
+      "topCountries": "Países em alta",
+      "topLocales": "Idiomas em alta",
+      "empty": "Sem tráfego nesta janela."
     }
   },
   "exchanges": {
