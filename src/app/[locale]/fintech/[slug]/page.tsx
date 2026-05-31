@@ -26,8 +26,8 @@ export async function generateMetadata({
   return {
     title, description,
     alternates: { canonical },
-    openGraph: { title, description, url: canonical, images: row.logoUrl ? [{ url: row.logoUrl }] : undefined },
-    twitter: { card: "summary", title, description, images: row.logoUrl ? [row.logoUrl] : undefined },
+    openGraph: { title, description, url: canonical },
+    twitter: { card: "summary_large_image", title, description },
   };
 }
 
@@ -45,9 +45,22 @@ export default async function FintechDetail({
 
   const socials = sanitizeFintechSocials(row.socials);
   const website = safeHttpUrl(row.website);
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Fintech", item: `${SITE}/${locale}/fintech` },
+      { "@type": "ListItem", position: 2, name: row.displayName, item: `${SITE}/${locale}/fintech/${slug}` },
+    ],
+  };
 
   return (
     <main className="bg-bg">
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
       <div className="max-w-[1200px] mx-auto px-4 md:px-12 xl:px-20 py-12">
         <header className="flex flex-col md:flex-row items-start gap-6 mb-10">
           {row.logoUrl ? (

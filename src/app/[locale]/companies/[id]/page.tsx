@@ -28,8 +28,8 @@ export async function generateMetadata({
   return {
     title, description,
     alternates: { canonical },
-    openGraph: { title, description, url: canonical, images: row.logoUrl ? [{ url: row.logoUrl }] : undefined },
-    twitter: { card: "summary", title, description, images: row.logoUrl ? [row.logoUrl] : undefined },
+    openGraph: { title, description, url: canonical },
+    twitter: { card: "summary_large_image", title, description },
   };
 }
 
@@ -62,8 +62,39 @@ export default async function PublicCompanyPage({
   const onlinePoints = company.points.filter((p) => p.type === "ONLINE");
   const physicalPoints = company.points.filter((p) => p.type !== "ONLINE");
 
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Companies", item: `${SITE}/${locale}/companies` },
+      { "@type": "ListItem", position: 2, name: company.displayName, item: `${SITE}/${locale}/companies/${id}` },
+    ],
+  };
+  const orgLd = company.kybStatus === "APPROVED" ? {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: company.displayName,
+    legalName: company.legalName,
+    url: `${SITE}/${locale}/companies/${id}`,
+    logo: company.logoUrl ?? undefined,
+    description: company.description ?? undefined,
+    address: company.address ? { "@type": "PostalAddress", streetAddress: company.address } : undefined,
+  } : null;
+
   return (
     <main className="max-w-[860px] mx-auto px-4 md:px-12 py-12 space-y-10">
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
+      {orgLd ? (
+        <script
+          type="application/ld+json"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgLd) }}
+        />
+      ) : null}
       <header className="flex items-start gap-4 flex-wrap">
         {company.logoUrl ? (
           // eslint-disable-next-line @next/next/no-img-element

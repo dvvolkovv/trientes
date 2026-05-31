@@ -48,15 +48,11 @@ export async function generateMetadata({
     title,
     description,
     alternates: { canonical, languages },
-    openGraph: {
-      title, description, url: canonical, type: "website",
-      images: coin.logoUrl ? [{ url: coin.logoUrl }] : undefined,
-    },
-    twitter: {
-      card: "summary",
-      title, description,
-      images: coin.logoUrl ? [coin.logoUrl] : undefined,
-    },
+    // openGraph.images / twitter.images intentionally omitted — Next.js picks
+    // up the per-route opengraph-image.tsx automatically and gives us a
+    // branded social card with live price.
+    openGraph: { title, description, url: canonical, type: "website" },
+    twitter: { card: "summary_large_image", title, description },
   };
 }
 
@@ -129,7 +125,8 @@ export default async function CoinDetailPage({
   // JSON-LD: emit a Product-with-offers describing the coin so search engines
   // can show price snippets. Crypto has no native schema.org type, so the
   // industry convention is Product + offers in USD.
-  const jsonLd = {
+  const slugOrId = coin.slug ?? coin.id;
+  const productLd = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: `${coin.name} (${coin.symbol.toUpperCase()})`,
@@ -141,8 +138,16 @@ export default async function CoinDetailPage({
       priceCurrency: "USD",
       price: row.priceUsd,
       availability: "https://schema.org/InStock",
-      url: `${SITE}/${locale}/coin/${coin.slug ?? coin.id}`,
+      url: `${SITE}/${locale}/coin/${slugOrId}`,
     },
+  };
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Coins", item: `${SITE}/${locale}` },
+      { "@type": "ListItem", position: 2, name: `${coin.name} (${coin.symbol.toUpperCase()})`, item: `${SITE}/${locale}/coin/${slugOrId}` },
+    ],
   };
 
   return (
@@ -150,7 +155,12 @@ export default async function CoinDetailPage({
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productLd) }}
+      />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
       <LivePrices currency={currency} rates={rates} />
       <CoinHeader

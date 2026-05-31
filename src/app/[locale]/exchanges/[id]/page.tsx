@@ -37,8 +37,8 @@ export async function generateMetadata({
   return {
     title, description,
     alternates: { canonical },
-    openGraph: { title, description, url: canonical, images: row.logoUrl ? [{ url: row.logoUrl }] : undefined },
-    twitter: { card: "summary", title, description, images: row.logoUrl ? [row.logoUrl] : undefined },
+    openGraph: { title, description, url: canonical },
+    twitter: { card: "summary_large_image", title, description },
   };
 }
 
@@ -100,8 +100,22 @@ export default async function ExchangeDetailPage({
     ? new Date(fresh.fetchedAt)
     : row.marketsFetchedAt ?? row.fetchedAt;
 
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Exchanges", item: `${SITE}/${locale}/exchanges` },
+      { "@type": "ListItem", position: 2, name: exchange.name, item: `${SITE}/${locale}/exchanges/${row.id}` },
+    ],
+  };
+
   return (
     <main className="max-w-3xl mx-auto px-5 py-10 space-y-6">
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
       <Link href={`/${locale}/exchanges`} className="text-accent text-[13px] hover:underline inline-block">
         {t("back")}
       </Link>

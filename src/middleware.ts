@@ -15,5 +15,11 @@ const intlMiddleware = createIntlMiddleware({
 export default intlMiddleware;
 
 export const config = {
-  matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
+  // Excludes:
+  // - api / _next / _vercel internals
+  // - anything with a dot (static assets, robots.txt, sitemap.xml, robots/sitemap.txml routes)
+  // - root-level Next.js metadata file routes (opengraph-image, twitter-image,
+  //   icon, apple-icon, manifest) so the i18n middleware doesn't 307 them to
+  //   /en/opengraph-image, which doesn't exist as a route.
+  matcher: ["/((?!api|_next|_vercel|opengraph-image|twitter-image|icon|apple-icon|manifest|.*\\..*).*)"],
 };
