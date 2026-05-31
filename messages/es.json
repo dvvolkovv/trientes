@@ -455,7 +455,8 @@
       "ATM": "Cajero",
       "POS": "TPV",
       "SALES_OFFICE": "Oficina de ventas",
-      "COMPANY": "Empresa (en línea)"
+      "COMPANY": "Empresa (en línea)",
+      "ONLINE": "Servicio solo online"
     },
     "status": {
       "PENDING": "Pendiente",
@@ -491,7 +492,8 @@
       "APPROVED": "Aceptada",
       "REJECTED": "Rechazada"
     },
-    "rejectionReasonLabel": "Motivo del rechazo"
+    "rejectionReasonLabel": "Motivo del rechazo",
+    "onlineHint": "Los servicios solo online no tienen ubicación física, por eso no se muestra pin."
   },
   "cabinet": {
     "kicker": "Sección · Panel",

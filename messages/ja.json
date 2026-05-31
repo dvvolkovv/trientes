@@ -455,7 +455,8 @@
       "ATM": "ATM",
       "POS": "POS",
       "SALES_OFFICE": "営業所",
-      "COMPANY": "会社(オンライン)"
+      "COMPANY": "会社(オンライン)",
+      "ONLINE": "オンライン専用サービス"
     },
     "status": {
       "PENDING": "審査中",
@@ -491,7 +492,8 @@
       "APPROVED": "承認済み",
       "REJECTED": "却下"
     },
-    "rejectionReasonLabel": "却下理由"
+    "rejectionReasonLabel": "却下理由",
+    "onlineHint": "オンライン専用サービスは物理的な店舗がないため、地図にピンは表示されません。"
   },
   "cabinet": {
     "kicker": "セクション · キャビネット",

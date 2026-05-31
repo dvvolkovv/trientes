@@ -455,7 +455,8 @@
       "ATM": "Geldautomat",
       "POS": "POS",
       "SALES_OFFICE": "Vertriebsbüro",
-      "COMPANY": "Firma (online)"
+      "COMPANY": "Firma (online)",
+      "ONLINE": "Nur-Online-Dienst"
     },
     "status": {
       "PENDING": "Wartet",
@@ -491,7 +492,8 @@
       "APPROVED": "Akzeptiert",
       "REJECTED": "Abgelehnt"
     },
-    "rejectionReasonLabel": "Ablehnungsgrund"
+    "rejectionReasonLabel": "Ablehnungsgrund",
+    "onlineHint": "Reine Online-Dienste haben keinen physischen Standort — keine Karten-Markierung."
   },
   "cabinet": {
     "kicker": "Bereich · Kabinett",

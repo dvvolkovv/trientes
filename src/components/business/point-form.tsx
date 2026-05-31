@@ -9,7 +9,7 @@ import { submitCompanyPoint } from "@/app/actions/company";
 import { COUNTRIES, countryName } from "@/lib/countries";
 
 const PRAGUE: [number, number] = [14.4212535, 50.0874654];
-const TYPES = ["SHOP", "ATM", "POS", "SALES_OFFICE", "COMPANY"] as const;
+const TYPES = ["SHOP", "ATM", "POS", "SALES_OFFICE", "COMPANY", "ONLINE"] as const;
 type PointType = (typeof TYPES)[number];
 
 export type PointFormCoin = { id: string; symbol: string; logoUrl: string | null };
@@ -173,13 +173,19 @@ export function PointForm({
         <input className={input} value={addr.houseNumber} onChange={(e) => setAddrField("houseNumber", e.target.value)} placeholder={t("houseNumber")} />
       </div>
 
-      <p className="text-[12px] text-muted">
-        {geoStatus === "loading" && `↻ ${t("geocoding")}`}
-        {geoStatus === "ok" && `● ${t("geocodingOk")}`}
-        {geoStatus === "fail" && `⚠ ${t("geocodingFailed")}`}
-        {geoStatus === "idle" && t("clickMapToPlace")}
-      </p>
-      <div ref={containerRef} className="w-full h-[320px] rounded-md overflow-hidden border border-hairline" />
+      {type === "ONLINE" ? (
+        <p className="text-[12px] text-muted">{t("onlineHint")}</p>
+      ) : (
+        <>
+          <p className="text-[12px] text-muted">
+            {geoStatus === "loading" && `↻ ${t("geocoding")}`}
+            {geoStatus === "ok" && `● ${t("geocodingOk")}`}
+            {geoStatus === "fail" && `⚠ ${t("geocodingFailed")}`}
+            {geoStatus === "idle" && t("clickMapToPlace")}
+          </p>
+          <div ref={containerRef} className="w-full h-[320px] rounded-md overflow-hidden border border-hairline" />
+        </>
+      )}
 
       <div className="text-[12px] text-muted">{t("acceptedCoins")}:</div>
       <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">
@@ -198,7 +204,7 @@ export function PointForm({
           );
         })}
       </div>
-      <button type="button" disabled={pending || !pos || !name.trim()} onClick={save}
+      <button type="button" disabled={pending || !name.trim() || (type !== "ONLINE" && !pos)} onClick={save}
         className="text-[13px] px-4 py-2 rounded-md font-medium bg-accent text-accent-foreground disabled:opacity-50">
         {t("submitPoint")}
       </button>

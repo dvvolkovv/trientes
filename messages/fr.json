@@ -455,7 +455,8 @@
       "ATM": "Distributeur",
       "POS": "TPE",
       "SALES_OFFICE": "Bureau commercial",
-      "COMPANY": "Entreprise (en ligne)"
+      "COMPANY": "Entreprise (en ligne)",
+      "ONLINE": "Service en ligne uniquement"
     },
     "status": {
       "PENDING": "En attente",
@@ -491,7 +492,8 @@
       "APPROVED": "Acceptée",
       "REJECTED": "Refusée"
     },
-    "rejectionReasonLabel": "Motif du refus"
+    "rejectionReasonLabel": "Motif du refus",
+    "onlineHint": "Les services en ligne uniquement n'ont pas de localisation physique, pas de point sur la carte."
   },
   "cabinet": {
     "kicker": "Section · Espace personnel",

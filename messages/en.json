@@ -455,7 +455,8 @@
       "ATM": "ATM",
       "POS": "POS",
       "SALES_OFFICE": "Sales office",
-      "COMPANY": "Company (online)"
+      "COMPANY": "Company (online)",
+      "ONLINE": "Online-only service"
     },
     "status": {
       "PENDING": "Pending",
@@ -491,7 +492,8 @@
       "APPROVED": "Approved",
       "REJECTED": "Rejected"
     },
-    "rejectionReasonLabel": "Rejection reason"
+    "rejectionReasonLabel": "Rejection reason",
+    "onlineHint": "Online-only services have no physical location, so no map pin is shown."
   },
   "cabinet": {
     "kicker": "Section · Cabinet",

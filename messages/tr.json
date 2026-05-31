@@ -455,7 +455,8 @@
       "ATM": "ATM",
       "POS": "POS",
       "SALES_OFFICE": "Satış ofisi",
-      "COMPANY": "Şirket (çevrimiçi)"
+      "COMPANY": "Şirket (çevrimiçi)",
+      "ONLINE": "Yalnızca çevrimiçi hizmet"
     },
     "status": {
       "PENDING": "Beklemede",
@@ -491,7 +492,8 @@
       "APPROVED": "Onaylandı",
       "REJECTED": "Reddedildi"
     },
-    "rejectionReasonLabel": "Red nedeni"
+    "rejectionReasonLabel": "Red nedeni",
+    "onlineHint": "Yalnızca çevrimiçi hizmetlerin fiziksel adresi yoktur — haritaya iğne eklenmez."
   },
   "cabinet": {
     "kicker": "Bölüm · Kabin",

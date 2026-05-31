@@ -329,6 +329,7 @@ enum PointType {
   POS
   SALES_OFFICE
   COMPANY
+  ONLINE
 }
 
 model Company {
@@ -370,8 +371,8 @@ model CompanyPoint {
   type            PointType
   name            String
   description     String?       @db.Text
-  lat             Float
-  lon             Float
+  lat             Float?
+  lon             Float?
   countryCode     String?
   city            String?
   street          String?

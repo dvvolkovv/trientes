@@ -42,10 +42,13 @@ function asSocials(raw: unknown): Social[] {
 // fallback when the point omits its own (point description first, then company about).
 export function companyPointToPoi(p: PointWithCompany, coinId: string): Poi {
   const pointSocials = asSocials(p.socials);
+  // Caller (fetchApprovedPointsInBbox) already filters by lat/lon bounds, which
+  // implicitly excludes ONLINE-type points (their coords are null). The non-null
+  // assertion here is documented by that invariant.
   return {
     id: `company/${p.id}`,
-    lat: p.lat,
-    lon: p.lon,
+    lat: p.lat!,
+    lon: p.lon!,
     name: p.name,
     layer: layerFor(p.type),
     category: p.company.displayName,
@@ -75,6 +78,10 @@ export async function searchApprovedPointsByName(q: string, limit = 5): Promise<
     where: {
       status: "APPROVED",
       company: { status: "APPROVED" },
+      // Exclude ONLINE-only points — search bar drives a map fly-to, useless
+      // without coordinates.
+      lat: { not: null },
+      lon: { not: null },
       OR: [
         { name: { contains: needle, mode: "insensitive" } },
         { company: { displayName: { contains: needle, mode: "insensitive" } } },
@@ -87,10 +94,12 @@ export async function searchApprovedPointsByName(q: string, limit = 5): Promise<
       company: { select: { displayName: true } },
     },
   });
-  return rows.map((r) => ({
-    label: r.address ? `${r.name} — ${r.address}` : `${r.name} (${r.company.displayName})`,
-    lat: r.lat, lon: r.lon,
-  }));
+  return rows
+    .filter((r): r is typeof r & { lat: number; lon: number } => r.lat !== null && r.lon !== null)
+    .map((r) => ({
+      label: r.address ? `${r.name} — ${r.address}` : `${r.name} (${r.company.displayName})`,
+      lat: r.lat, lon: r.lon,
+    }));
 }
 
 // Approved company points whose coordinates fall inside the viewport bbox.

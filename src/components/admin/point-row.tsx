@@ -9,8 +9,8 @@ export type PointRowData = {
   type: string;
   name: string;
   description: string | null;
-  lat: number;
-  lon: number;
+  lat: number | null;
+  lon: number | null;
   address: string | null;
   acceptedCoinIds: string[];
   status: string;
@@ -45,22 +45,28 @@ export function PointRow({ row }: { row: PointRowData }) {
           {row.address && (
             <div className="text-[12px] text-muted">{row.address}</div>
           )}
-          <div className="num text-[11px] text-muted">
-            {row.lat.toFixed(5)}, {row.lon.toFixed(5)}
-          </div>
+          {row.lat !== null && row.lon !== null ? (
+            <>
+              <div className="num text-[11px] text-muted">
+                {row.lat.toFixed(5)}, {row.lon.toFixed(5)}
+              </div>
+              <a
+                className="text-[12px] text-accent"
+                target="_blank"
+                rel="noopener noreferrer"
+                href={`https://www.openstreetmap.org/?mlat=${row.lat}&mlon=${row.lon}#map=17/${row.lat}/${row.lon}`}
+              >
+                preview on map ↗
+              </a>
+            </>
+          ) : (
+            <div className="text-[11px] text-muted">online — no coordinates</div>
+          )}
           {row.acceptedCoinIds.length > 0 && (
             <div className="text-[11px] text-muted mt-1">
               coins: {row.acceptedCoinIds.join(", ")}
             </div>
           )}
-          <a
-            className="text-[12px] text-accent"
-            target="_blank"
-            rel="noopener noreferrer"
-            href={`https://www.openstreetmap.org/?mlat=${row.lat}&mlon=${row.lon}#map=17/${row.lat}/${row.lon}`}
-          >
-            preview on map ↗
-          </a>
         </div>
         {row.status === "PENDING" && (
           <div className="flex flex-col gap-2 shrink-0">

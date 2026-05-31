@@ -455,7 +455,8 @@
       "ATM": "ATM",
       "POS": "POS",
       "SALES_OFFICE": "营业部",
-      "COMPANY": "公司(线上)"
+      "COMPANY": "公司(线上)",
+      "ONLINE": "纯在线服务"
     },
     "status": {
       "PENDING": "审核中",
@@ -491,7 +492,8 @@
       "APPROVED": "已接受",
       "REJECTED": "已拒绝"
     },
-    "rejectionReasonLabel": "拒绝原因"
+    "rejectionReasonLabel": "拒绝原因",
+    "onlineHint": "纯在线服务没有物理位置，因此地图上不会显示标记。"
   },
   "cabinet": {
     "kicker": "板块 · 个人中心",

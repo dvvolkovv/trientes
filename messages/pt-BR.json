@@ -455,7 +455,8 @@
       "ATM": "Caixa eletrônico",
       "POS": "POS",
       "SALES_OFFICE": "Escritório de vendas",
-      "COMPANY": "Empresa (online)"
+      "COMPANY": "Empresa (online)",
+      "ONLINE": "Serviço só online"
     },
     "status": {
       "PENDING": "Pendente",
@@ -491,7 +492,8 @@
       "APPROVED": "Aceita",
       "REJECTED": "Rejeitada"
     },
-    "rejectionReasonLabel": "Motivo da rejeição"
+    "rejectionReasonLabel": "Motivo da rejeição",
+    "onlineHint": "Serviços só online não têm endereço físico — nenhum pino no mapa."
   },
   "cabinet": {
     "kicker": "Seção · Painel",

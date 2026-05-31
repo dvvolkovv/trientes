@@ -1,6 +1,6 @@
 // Pure validation for company profiles and point submissions. No I/O.
 
-const POINT_TYPES = ["SHOP", "ATM", "POS", "SALES_OFFICE", "COMPANY"] as const;
+const POINT_TYPES = ["SHOP", "ATM", "POS", "SALES_OFFICE", "COMPANY", "ONLINE"] as const;
 export type PointTypeStr = (typeof POINT_TYPES)[number];
 
 // Accepts "https://x.com", "http://x.com", "www.x.com", or bare "x.com".
@@ -125,7 +125,9 @@ export type CompanyPointInput = {
   website?: string | null;
 };
 export type ValidatedPoint = {
-  type: PointTypeStr; name: string; description: string | null; lat: number; lon: number;
+  type: PointTypeStr; name: string; description: string | null;
+  // Online-only services skip coords entirely; everything else must have them.
+  lat: number | null; lon: number | null;
   countryCode: string | null; city: string | null; street: string | null;
   houseNumber: string | null; postalCode: string | null;
   address: string | null; acceptedCoinIds: string[]; logoUrl: string | null;
@@ -140,13 +142,22 @@ export function validateCompanyPoint(input: CompanyPointInput): PointResult {
   if (!POINT_TYPES.includes(type)) return { ok: false, reason: "type_invalid" };
   const name = (input.name ?? "").trim();
   if (!name) return { ok: false, reason: "name_required" };
-  if (input.lat == null || input.lon == null) return { ok: false, reason: "coords_invalid" };
-  const lat = Number(input.lat);
-  const lon = Number(input.lon);
-  if (!Number.isFinite(lat) || !Number.isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180)
-    return { ok: false, reason: "coords_invalid" };
-  // Reject (0,0) Null Island — common geocoder failure.
-  if (lat === 0 && lon === 0) return { ok: false, reason: "coords_invalid" };
+
+  // ONLINE-only services have no physical location, so coords are skipped.
+  // Anything physical (shop / ATM / POS / sales office / company HQ) still
+  // needs a valid pair so the navigator can pin it.
+  let lat: number | null = null;
+  let lon: number | null = null;
+  if (type !== "ONLINE") {
+    if (input.lat == null || input.lon == null) return { ok: false, reason: "coords_invalid" };
+    const la = Number(input.lat);
+    const lo = Number(input.lon);
+    if (!Number.isFinite(la) || !Number.isFinite(lo) || Math.abs(la) > 90 || Math.abs(lo) > 180)
+      return { ok: false, reason: "coords_invalid" };
+    if (la === 0 && lo === 0) return { ok: false, reason: "coords_invalid" }; // Null Island
+    lat = la; lon = lo;
+  }
+
   const website = normalizeUrl(input.website);
   if (website === "invalid") return { ok: false, reason: "website_invalid" };
   const logoUrl = normalizeUrl(input.logoUrl);
