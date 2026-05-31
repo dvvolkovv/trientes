@@ -310,7 +310,12 @@
     "showAll": "显示全部 {count}",
     "collapse": "收起",
     "favorite": "加入收藏",
-    "unfavorite": "取消收藏"
+    "unfavorite": "取消收藏",
+    "filterAllTypes": "所有类型",
+    "filterAllCountries": "所有国家",
+    "filterAllRanks": "所有排名",
+    "filterTopN": "前 {n}",
+    "clear": "清除"
   },
   "exchangeCard": {
     "back": "← Back to exchanges",

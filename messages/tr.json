@@ -310,7 +310,12 @@
     "showAll": "Tümünü göster {count}",
     "collapse": "Daralt",
     "favorite": "Favorilere ekle",
-    "unfavorite": "Favorilerden çıkar"
+    "unfavorite": "Favorilerden çıkar",
+    "filterAllTypes": "Tüm türler",
+    "filterAllCountries": "Tüm ülkeler",
+    "filterAllRanks": "Tüm sıralamalar",
+    "filterTopN": "İlk {n}",
+    "clear": "Temizle"
   },
   "exchangeCard": {
     "back": "← Back to exchanges",

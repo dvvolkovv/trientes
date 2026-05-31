@@ -2,13 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import type { Exchange, ExchangeRates } from "@/lib/coingecko";
 import { formatCompactInCurrency, type Currency } from "@/lib/currency";
 import { ExchangeStar } from "@/components/exchange-star";
 
 const VISIBLE = 25; // rows shown before "show all"
+type TypeFilter = "ALL" | "CEX" | "DEX" | "HYBRID";
+type TrustFilter = "ALL" | "10" | "25" | "50" | "100";
 
 function trustBadgeCls(score: number | null): string {
   if (score === null) return "bg-card-alt text-muted";
@@ -36,16 +38,77 @@ export function ExchangesTable({
 }) {
   const t = useTranslations("exchanges");
   const [expanded, setExpanded] = useState(false);
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>("ALL");
+  const [country, setCountry] = useState<string>("");
+  const [trustFilter, setTrustFilter] = useState<TrustFilter>("ALL");
   const watched = new Set(watchedIds);
   const r = rates ?? {};
   const fmtV = (n: number) =>
     n <= 0 ? "—" : rates ? formatCompactInCurrency(n, currency, r) : `$${(n / 1e9).toFixed(2)}B`;
 
-  const shown = collapsible && !expanded ? rows.slice(0, VISIBLE) : rows;
-  const canCollapse = collapsible && rows.length > VISIBLE;
+  const countries = useMemo(() => {
+    const set = new Set<string>();
+    for (const e of rows) if (e.country) set.add(e.country);
+    return Array.from(set).sort();
+  }, [rows]);
+
+  const filtered = useMemo(() => {
+    return rows.filter((e) => {
+      if (typeFilter !== "ALL" && e.exchangeType !== typeFilter) return false;
+      if (country && e.country !== country) return false;
+      if (trustFilter !== "ALL") {
+        const limit = Number(trustFilter);
+        const rank = e.trustScoreRank;
+        if (rank == null || rank > limit) return false;
+      }
+      return true;
+    });
+  }, [rows, typeFilter, country, trustFilter]);
+
+  const shown = collapsible && !expanded ? filtered.slice(0, VISIBLE) : filtered;
+  const canCollapse = collapsible && filtered.length > VISIBLE;
+  const filtersActive = typeFilter !== "ALL" || country !== "" || trustFilter !== "ALL";
+
+  const chipCls = (active: boolean) =>
+    "text-[12px] px-3 py-1.5 rounded-md border transition-all " +
+    (active ? "bg-accent/15 text-accent border-accent/40" : "border-hairline text-muted hover:text-foreground");
 
   return (
     <>
+      {/* Filters */}
+      <div className="flex flex-wrap items-center gap-2 mb-4">
+        <div className="flex gap-1">
+          {(["ALL", "CEX", "DEX", "HYBRID"] as TypeFilter[]).map((tf) => (
+            <button key={tf} type="button" onClick={() => setTypeFilter(tf)} className={chipCls(typeFilter === tf)}>
+              {tf === "ALL" ? t("filterAllTypes") : tf}
+            </button>
+          ))}
+        </div>
+        <select value={country} onChange={(e) => setCountry(e.target.value)}
+          className="text-[12px] px-3 py-1.5 rounded-md border border-hairline bg-card text-foreground">
+          <option value="">{t("filterAllCountries")}</option>
+          {countries.map((c) => <option key={c} value={c}>{c}</option>)}
+        </select>
+        <select value={trustFilter} onChange={(e) => setTrustFilter(e.target.value as TrustFilter)}
+          className="text-[12px] px-3 py-1.5 rounded-md border border-hairline bg-card text-foreground">
+          <option value="ALL">{t("filterAllRanks")}</option>
+          <option value="10">{t("filterTopN", { n: 10 })}</option>
+          <option value="25">{t("filterTopN", { n: 25 })}</option>
+          <option value="50">{t("filterTopN", { n: 50 })}</option>
+          <option value="100">{t("filterTopN", { n: 100 })}</option>
+        </select>
+        {filtersActive && (
+          <button type="button"
+            onClick={() => { setTypeFilter("ALL"); setCountry(""); setTrustFilter("ALL"); }}
+            className="text-[12px] px-3 py-1.5 rounded-md border border-hairline text-muted hover:text-foreground">
+            {t("clear")}
+          </button>
+        )}
+        <span className="text-[11px] text-muted ml-auto">
+          {filtered.length}/{rows.length}
+        </span>
+      </div>
+
       {/* Desktop table */}
       <div className="hidden md:block bg-card border border-hairline rounded-[20px] overflow-hidden overflow-x-auto">
         <table className="w-full">

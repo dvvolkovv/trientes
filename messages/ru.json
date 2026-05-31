@@ -310,7 +310,12 @@
     "showAll": "Показать все {count}",
     "collapse": "Свернуть",
     "favorite": "В избранное",
-    "unfavorite": "Убрать из избранного"
+    "unfavorite": "Убрать из избранного",
+    "filterAllTypes": "Все типы",
+    "filterAllCountries": "Все страны",
+    "filterAllRanks": "Все ранги",
+    "filterTopN": "Топ {n}",
+    "clear": "Сбросить"
   },
   "exchangeCard": {
     "back": "← Назад к биржам",

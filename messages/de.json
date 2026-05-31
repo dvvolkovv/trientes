@@ -310,7 +310,12 @@
     "showAll": "Alle {count} anzeigen",
     "collapse": "Einklappen",
     "favorite": "Zu Favoriten",
-    "unfavorite": "Aus Favoriten entfernen"
+    "unfavorite": "Aus Favoriten entfernen",
+    "filterAllTypes": "Alle Typen",
+    "filterAllCountries": "Alle Länder",
+    "filterAllRanks": "Alle Ränge",
+    "filterTopN": "Top {n}",
+    "clear": "Zurücksetzen"
   },
   "exchangeCard": {
     "back": "← Back to exchanges",

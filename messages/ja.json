@@ -310,7 +310,12 @@
     "showAll": "すべて表示 {count}",
     "collapse": "折りたたむ",
     "favorite": "お気に入りに追加",
-    "unfavorite": "お気に入りから削除"
+    "unfavorite": "お気に入りから削除",
+    "filterAllTypes": "すべての種類",
+    "filterAllCountries": "すべての国",
+    "filterAllRanks": "すべてのランク",
+    "filterTopN": "トップ {n}",
+    "clear": "クリア"
   },
   "exchangeCard": {
     "back": "← Back to exchanges",

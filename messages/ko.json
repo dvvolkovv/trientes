@@ -310,7 +310,12 @@
     "showAll": "전체 {count}개 보기",
     "collapse": "접기",
     "favorite": "즐겨찾기 추가",
-    "unfavorite": "즐겨찾기 제거"
+    "unfavorite": "즐겨찾기 제거",
+    "filterAllTypes": "모든 유형",
+    "filterAllCountries": "모든 국가",
+    "filterAllRanks": "모든 순위",
+    "filterTopN": "상위 {n}",
+    "clear": "지우기"
   },
   "exchangeCard": {
     "back": "← Back to exchanges",
