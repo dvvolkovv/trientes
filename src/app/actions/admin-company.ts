@@ -33,8 +33,9 @@ export async function approveCompany(input: { companyId: string }) {
   });
   void notifyUser({
     userId: company.ownerUserId,
-    text: `✅ Your company "${company.displayName}" was approved on Trientes.`,
+    text: `✅ Your company "${company.displayName}" was approved on Trientes.\nhttps://trientes.org/en/companies/${company.id}`,
     subject: `Company approved: ${company.displayName}`,
+    url: `https://trientes.org/en/companies/${company.id}`,
   }).catch(() => {});
   revalidatePath("/", "layout");
   return { ok: true };
@@ -68,6 +69,7 @@ export async function rejectCompany(input: { companyId: string; rejectionReason:
     userId: company.ownerUserId,
     text: `❌ Your company "${company.displayName}" was not approved.\nReason: ${reason}`,
     subject: `Company not approved: ${company.displayName}`,
+    url: `https://trientes.org/en/business`,
   }).catch(() => {});
   revalidatePath("/", "layout");
   return { ok: true };

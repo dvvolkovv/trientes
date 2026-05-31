@@ -34,8 +34,9 @@ export async function approvePoint(input: { pointId: string }) {
     if (!ownerId) return;
     await notifyUser({
       userId: ownerId,
-      text: `✅ Your point "${point.name}" was approved and is now visible on the navigator.`,
+      text: `✅ Your point "${point.name}" was approved and is now visible on the navigator.\nhttps://trientes.org/en/companies/${point.companyId}`,
       subject: `Point approved: ${point.name}`,
+      url: `https://trientes.org/en/companies/${point.companyId}`,
     });
   })().catch(() => {});
   revalidatePath("/", "layout");
@@ -65,6 +66,7 @@ export async function rejectPoint(input: { pointId: string; rejectReason: string
       userId: ownerId,
       text: `❌ Your point "${point.name}" was not approved.\nReason: ${reason}`,
       subject: `Point not approved: ${point.name}`,
+      url: `https://trientes.org/en/business`,
     });
   })().catch(() => {});
   revalidatePath("/", "layout");

@@ -31,8 +31,9 @@ export async function approveExchange(input: { exchangeId: string }) {
   });
   void notifyUser({
     userId: exchange.ownerUserId,
-    text: `✅ Your exchange "${exchange.displayName}" was approved on Trientes.`,
+    text: `✅ Your exchange "${exchange.displayName}" was approved on Trientes.\nhttps://trientes.org/en/exchanges`,
     subject: `Exchange approved: ${exchange.displayName}`,
+    url: `https://trientes.org/en/exchanges`,
   }).catch(() => {});
   revalidatePath("/", "layout");
   return { ok: true };
@@ -61,6 +62,7 @@ export async function rejectExchange(input: { exchangeId: string; rejectionReaso
     userId: exchange.ownerUserId,
     text: `❌ Your exchange "${exchange.displayName}" was not approved.\nReason: ${reason}`,
     subject: `Exchange not approved: ${exchange.displayName}`,
+    url: `https://trientes.org/en/cabinet/exchanges`,
   }).catch(() => {});
   revalidatePath("/", "layout");
   return { ok: true };

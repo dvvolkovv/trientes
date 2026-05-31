@@ -83,6 +83,7 @@ export async function approveFintech(input: { id: string }) {
       userId: row.ownerUserId,
       text: `✅ Your fintech "${row.displayName}" was approved on Trientes.\nhttps://trientes.org/en/fintech/${row.slug}`,
       subject: `Fintech approved: ${row.displayName}`,
+      url: `https://trientes.org/en/fintech/${row.slug}`,
     }).catch(() => {});
   }
   revalidatePath("/", "layout");
@@ -113,6 +114,7 @@ export async function rejectFintech(input: { id: string; rejectionReason: string
       userId: row.ownerUserId,
       text: `❌ Your fintech "${row.displayName}" was not approved.\nReason: ${reason}`,
       subject: `Fintech not approved: ${row.displayName}`,
+      url: `https://trientes.org/en/business/fintech`,
     }).catch(() => {});
   }
   revalidatePath("/", "layout");
