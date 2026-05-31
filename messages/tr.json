@@ -553,8 +553,12 @@
         "not_found": "Bulunamadı.",
         "already_verified": "Zaten doğrulandı.",
         "unknown": "Bilinmeyen hata"
-      }
-    }
+      },
+      "uploadFile": "Dosya yükle",
+      "uploading": "Yükleniyor…",
+      "uploadHint": "PDF / PNG / JPG — en fazla 8 MB"
+    },
+    "viewPublic": "Genel sayfayı aç"
   },
   "cabinet": {
     "kicker": "Bölüm · Kabin",
@@ -595,6 +599,21 @@
         "password_too_short": "Parola en az 8 karakter olmalı.",
         "password_too_long": "Parola çok uzun.",
         "password_already_set": "Zaten bir parolanız var."
+      },
+      "emailVerify": {
+        "verified": "E-posta doğrulandı",
+        "notVerified": "E-posta doğrulanmadı",
+        "send": "Doğrulama gönder",
+        "sent": "Doğrulama e-postası gönderildi.",
+        "success": "E-posta doğrulandı.",
+        "errors": {
+          "unauth": "Önce giriş yap.",
+          "no_email": "Önce e-posta ekle.",
+          "already_verified": "Zaten doğrulandı.",
+          "send_failed": "Gönderilemedi.",
+          "expired": "Bağlantı süresi doldu.",
+          "invalid": "Geçersiz bağlantı."
+        }
       }
     },
     "settings": {
@@ -856,6 +875,24 @@
       "title": "{country} ülkesinde mevcut",
       "empty": "{country} için henüz fintech hizmeti yok.",
       "loading": "Bu bölgedeki fintechler aranıyor…"
+    }
+  },
+  "companyPublic": {
+    "verified": "Doğrulandı",
+    "website": "Site",
+    "email": "E-posta",
+    "phone": "Telefon",
+    "address": "Adres",
+    "placesTitle": "Kripto kabul eden yerler",
+    "openOnMap": "Haritada aç",
+    "onlineTitle": "Çevrimiçi hizmetler",
+    "pointType": {
+      "SHOP": "Mağaza",
+      "ATM": "ATM",
+      "POS": "POS",
+      "SALES_OFFICE": "Satış ofisi",
+      "COMPANY": "Ofis",
+      "ONLINE": "Çevrimiçi"
     }
   }
 }

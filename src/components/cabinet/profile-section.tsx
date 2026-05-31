@@ -8,6 +8,9 @@ import {
   changePassword,
   setPasswordFirstTime,
 } from "@/app/actions/account";
+import { requestEmailVerification } from "@/app/actions/email-verify";
+import { useLocale } from "next-intl";
+import { useSearchParams } from "next/navigation";
 
 const fieldCls =
   "w-full bg-card border border-hairline rounded-md px-3 py-2 text-sm placeholder:text-muted focus:ring-1 focus:ring-accent outline-none";
@@ -23,10 +26,24 @@ export function ProfileSection({
     phone: string;
     email: string;
     hasPassword: boolean;
+    emailVerified: boolean;
   };
 }) {
   const t = useTranslations("cabinet.profile");
+  const locale = useLocale();
+  const searchParams = useSearchParams();
+  const verifyResult = searchParams.get("verify");
   const [pending, start] = useTransition();
+  const [verifyMsg, setVerifyMsg] = useState<{ ok: boolean; text: string } | null>(null);
+
+  async function onSendVerification() {
+    setVerifyMsg(null);
+    start(async () => {
+      const r = await requestEmailVerification({ locale });
+      if (r.ok) setVerifyMsg({ ok: true, text: t("emailVerify.sent") });
+      else setVerifyMsg({ ok: false, text: t(`emailVerify.errors.${r.reason}`) });
+    });
+  }
   const [username, setUsernameLocal] = useState(initial.username);
   const [firstName, setFirstName] = useState(initial.firstName);
   const [lastName, setLastName] = useState(initial.lastName);
@@ -121,6 +138,39 @@ export function ProfileSection({
           <label>
             <span className={labelCls}>{t("email")}</span>
             <input className={fieldCls} type="email" value={email} onChange={(e) => setEmail(e.target.value)} maxLength={200} />
+            {email ? (
+              <div className="mt-1.5 flex items-center gap-2 text-[11px]">
+                {initial.emailVerified ? (
+                  <span className="text-green-500">✓ {t("emailVerify.verified")}</span>
+                ) : (
+                  <>
+                    <span className="text-yellow-500">⚠ {t("emailVerify.notVerified")}</span>
+                    <button
+                      type="button"
+                      onClick={onSendVerification}
+                      disabled={pending}
+                      className="text-accent underline disabled:opacity-50"
+                    >
+                      {t("emailVerify.send")}
+                    </button>
+                  </>
+                )}
+                {verifyResult === "ok" && !verifyMsg ? (
+                  <span className="text-green-500">{t("emailVerify.success")}</span>
+                ) : null}
+                {verifyResult === "expired" && !verifyMsg ? (
+                  <span className="text-red-500">{t("emailVerify.errors.expired")}</span>
+                ) : null}
+                {verifyResult === "invalid" && !verifyMsg ? (
+                  <span className="text-red-500">{t("emailVerify.errors.invalid")}</span>
+                ) : null}
+                {verifyMsg ? (
+                  <span className={verifyMsg.ok ? "text-green-500" : "text-red-500"}>
+                    {verifyMsg.text}
+                  </span>
+                ) : null}
+              </div>
+            ) : null}
           </label>
           {profileMsg ? (
             <p className={`sm:col-span-2 text-sm ${profileMsg.ok ? "text-green-500" : "text-red-500"}`}>{profileMsg.text}</p>

@@ -54,6 +54,16 @@ export default async function CompanyManagementPage({
           }`}>
             {t(`statusBadge.${company.status}`)}
           </span>
+          {company.status === "APPROVED" ? (
+            <a
+              href={`/${locale}/companies/${company.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[12px] underline text-muted hover:text-foreground"
+            >
+              {t("viewPublic")} ↗
+            </a>
+          ) : null}
         </div>
         <p className="text-muted mb-6">{t("profileIntro")}</p>
         {company.status === "REJECTED" && company.rejectionReason && (

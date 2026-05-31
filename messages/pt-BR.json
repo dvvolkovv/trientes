@@ -553,8 +553,12 @@
         "not_found": "Não encontrado.",
         "already_verified": "Já verificado.",
         "unknown": "Erro desconhecido"
-      }
-    }
+      },
+      "uploadFile": "Enviar arquivo",
+      "uploading": "Enviando…",
+      "uploadHint": "PDF / PNG / JPG — até 8 MB"
+    },
+    "viewPublic": "Ver página pública"
   },
   "cabinet": {
     "kicker": "Seção · Painel",
@@ -595,6 +599,21 @@
         "password_too_short": "A senha deve ter ao menos 8 caracteres.",
         "password_too_long": "A senha é muito longa.",
         "password_already_set": "Você já tem uma senha definida."
+      },
+      "emailVerify": {
+        "verified": "Email verificado",
+        "notVerified": "Email não verificado",
+        "send": "Enviar verificação",
+        "sent": "Email de verificação enviado.",
+        "success": "Email verificado.",
+        "errors": {
+          "unauth": "Entre primeiro.",
+          "no_email": "Adicione um email primeiro.",
+          "already_verified": "Já verificado.",
+          "send_failed": "Falha ao enviar.",
+          "expired": "Link expirado.",
+          "invalid": "Link inválido."
+        }
       }
     },
     "settings": {
@@ -856,6 +875,24 @@
       "title": "Disponível em {country}",
       "empty": "Ainda não há fintechs disponíveis em {country}.",
       "loading": "Procurando fintechs nesta área…"
+    }
+  },
+  "companyPublic": {
+    "verified": "Verificado",
+    "website": "Site",
+    "email": "Email",
+    "phone": "Telefone",
+    "address": "Endereço",
+    "placesTitle": "Locais que aceitam cripto",
+    "openOnMap": "Abrir no mapa",
+    "onlineTitle": "Serviços online",
+    "pointType": {
+      "SHOP": "Loja",
+      "ATM": "Caixa",
+      "POS": "POS",
+      "SALES_OFFICE": "Escritório de vendas",
+      "COMPANY": "Escritório",
+      "ONLINE": "Online"
     }
   }
 }

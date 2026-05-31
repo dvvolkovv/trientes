@@ -3,6 +3,7 @@ import { verifyTelegramAuth } from "@/lib/telegram-auth";
 import { prisma } from "@/lib/prisma";
 import { isAdminWhitelisted, parseAdminWhitelist } from "@/lib/admin-whitelist";
 import { createDatabaseSession } from "@/lib/session";
+import { notifyUser } from "@/lib/notify";
 
 const adminWhitelist = parseAdminWhitelist(process.env.ADMIN_WHITELIST);
 
@@ -66,6 +67,14 @@ export async function POST(req: Request) {
         data: { role: "ADMIN" },
       });
     }
+
+    // First-time signup via Telegram — send a welcome DM. The chat is already
+    // open because they just used the Telegram Login Widget.
+    void notifyUser({
+      userId,
+      text: "👋 Welcome to Trientes! Open your cabinet: https://trientes.org/en/cabinet",
+      subject: "Welcome to Trientes",
+    }).catch(() => {});
   }
 
   // Create a proper database session that Auth.js will recognise.

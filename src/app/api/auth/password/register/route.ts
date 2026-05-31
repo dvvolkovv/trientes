@@ -6,6 +6,9 @@ import { hashPassword } from "@/lib/password";
 import { validateUsername } from "@/lib/username";
 import { checkRegisterRateLimit, recordLoginAttempt } from "@/lib/rate-limit";
 import { createDatabaseSession } from "@/lib/session";
+import { notifyUser } from "@/lib/notify";
+
+const SITE_ORIGIN = process.env.PUBLIC_ORIGIN ?? "https://trientes.org";
 
 const MIN_PASSWORD = 8;
 const MAX_PASSWORD = 200;
@@ -81,6 +84,15 @@ export async function POST(req: Request) {
   }
 
   const cookie = await createDatabaseSession(userId);
+
+  // Welcome message — best-effort, never blocks signup. Goes to email since
+  // Telegram isn't linked at signup time via this path.
+  void notifyUser({
+    userId,
+    text: `👋 Welcome to Trientes!\nYour cabinet: ${SITE_ORIGIN}/${locale}/cabinet`,
+    subject: "Welcome to Trientes",
+  }).catch(() => {});
+
   const res = NextResponse.json({ ok: true, redirect: `/${locale}/cabinet` });
   res.cookies.set(cookie);
   return res;

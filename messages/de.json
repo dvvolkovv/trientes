@@ -553,8 +553,12 @@
         "not_found": "Nicht gefunden.",
         "already_verified": "Bereits verifiziert.",
         "unknown": "Unbekannter Fehler"
-      }
-    }
+      },
+      "uploadFile": "Datei hochladen",
+      "uploading": "Hochladen…",
+      "uploadHint": "PDF / PNG / JPG — bis 8 MB"
+    },
+    "viewPublic": "Öffentliche Seite öffnen"
   },
   "cabinet": {
     "kicker": "Bereich · Kabinett",
@@ -595,6 +599,21 @@
         "password_too_short": "Passwort muss mindestens 8 Zeichen lang sein.",
         "password_too_long": "Passwort ist zu lang.",
         "password_already_set": "Sie haben bereits ein Passwort."
+      },
+      "emailVerify": {
+        "verified": "E-Mail bestätigt",
+        "notVerified": "E-Mail nicht bestätigt",
+        "send": "Bestätigung senden",
+        "sent": "Bestätigungs-E-Mail gesendet.",
+        "success": "E-Mail bestätigt.",
+        "errors": {
+          "unauth": "Bitte anmelden.",
+          "no_email": "Zuerst E-Mail hinzufügen.",
+          "already_verified": "Bereits bestätigt.",
+          "send_failed": "Senden fehlgeschlagen.",
+          "expired": "Link abgelaufen.",
+          "invalid": "Ungültiger Link."
+        }
       }
     },
     "settings": {
@@ -856,6 +875,24 @@
       "title": "Verfügbar in {country}",
       "empty": "In {country} gibt es noch keine Fintech-Dienste.",
       "loading": "Suche Fintechs in dieser Region…"
+    }
+  },
+  "companyPublic": {
+    "verified": "Verifiziert",
+    "website": "Website",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "address": "Adresse",
+    "placesTitle": "Krypto-freundliche Orte",
+    "openOnMap": "Auf Karte öffnen",
+    "onlineTitle": "Online-Dienste",
+    "pointType": {
+      "SHOP": "Shop",
+      "ATM": "Geldautomat",
+      "POS": "POS",
+      "SALES_OFFICE": "Verkaufsbüro",
+      "COMPANY": "Büro",
+      "ONLINE": "Online"
     }
   }
 }

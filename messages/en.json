@@ -553,8 +553,12 @@
         "not_found": "Not found.",
         "already_verified": "Already verified.",
         "unknown": "Unknown error"
-      }
-    }
+      },
+      "uploadFile": "Upload file",
+      "uploading": "Uploading…",
+      "uploadHint": "PDF / PNG / JPG — up to 8 MB"
+    },
+    "viewPublic": "View public page"
   },
   "cabinet": {
     "kicker": "Section · Cabinet",
@@ -595,6 +599,21 @@
         "password_too_short": "Password must be at least 8 characters.",
         "password_too_long": "Password is too long.",
         "password_already_set": "You already have a password."
+      },
+      "emailVerify": {
+        "verified": "Email verified",
+        "notVerified": "Email not verified",
+        "send": "Send verification",
+        "sent": "Verification email sent.",
+        "success": "Email verified.",
+        "errors": {
+          "unauth": "Sign in first.",
+          "no_email": "Add an email first.",
+          "already_verified": "Already verified.",
+          "send_failed": "Could not send — check email setup.",
+          "expired": "Link expired — request a new one.",
+          "invalid": "Invalid link."
+        }
       }
     },
     "settings": {
@@ -856,6 +875,24 @@
       "title": "Available in {country}",
       "empty": "No fintech services available in {country} yet.",
       "loading": "Looking up fintech in this area…"
+    }
+  },
+  "companyPublic": {
+    "verified": "Verified",
+    "website": "Website",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "placesTitle": "Crypto-friendly places",
+    "openOnMap": "Open on map",
+    "onlineTitle": "Online services",
+    "pointType": {
+      "SHOP": "Shop",
+      "ATM": "ATM",
+      "POS": "POS",
+      "SALES_OFFICE": "Sales office",
+      "COMPANY": "Office",
+      "ONLINE": "Online"
     }
   }
 }

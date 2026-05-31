@@ -553,8 +553,12 @@
         "not_found": "Не найдено.",
         "already_verified": "Уже проверено.",
         "unknown": "Неизвестная ошибка"
-      }
-    }
+      },
+      "uploadFile": "Загрузить файл",
+      "uploading": "Загружаю…",
+      "uploadHint": "PDF / PNG / JPG — до 8 МБ"
+    },
+    "viewPublic": "Открыть публичную страницу"
   },
   "cabinet": {
     "kicker": "Раздел · Кабинет",
@@ -595,6 +599,21 @@
         "password_too_short": "Пароль — минимум 8 символов.",
         "password_too_long": "Пароль слишком длинный.",
         "password_already_set": "У вас уже задан пароль."
+      },
+      "emailVerify": {
+        "verified": "Email подтверждён",
+        "notVerified": "Email не подтверждён",
+        "send": "Отправить подтверждение",
+        "sent": "Письмо отправлено.",
+        "success": "Email подтверждён.",
+        "errors": {
+          "unauth": "Сначала войдите.",
+          "no_email": "Сначала укажите email.",
+          "already_verified": "Уже подтверждён.",
+          "send_failed": "Не удалось отправить — проверь настройки email.",
+          "expired": "Ссылка истекла — запроси новую.",
+          "invalid": "Ссылка недействительна."
+        }
       }
     },
     "settings": {
@@ -856,6 +875,24 @@
       "title": "Доступно в {country}",
       "empty": "В стране {country} пока нет доступных финтех-сервисов.",
       "loading": "Ищу финтех в этой зоне…"
+    }
+  },
+  "companyPublic": {
+    "verified": "Проверено",
+    "website": "Сайт",
+    "email": "Email",
+    "phone": "Телефон",
+    "address": "Адрес",
+    "placesTitle": "Точки приёма",
+    "openOnMap": "Открыть на карте",
+    "onlineTitle": "Онлайн-сервисы",
+    "pointType": {
+      "SHOP": "Магазин",
+      "ATM": "Банкомат",
+      "POS": "POS",
+      "SALES_OFFICE": "Офис продаж",
+      "COMPANY": "Офис",
+      "ONLINE": "Онлайн"
     }
   }
 }

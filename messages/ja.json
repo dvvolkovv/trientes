@@ -553,8 +553,12 @@
         "not_found": "見つかりません。",
         "already_verified": "すでに認証済みです。",
         "unknown": "不明なエラー"
-      }
-    }
+      },
+      "uploadFile": "ファイルをアップロード",
+      "uploading": "アップロード中…",
+      "uploadHint": "PDF / PNG / JPG — 最大 8 MB"
+    },
+    "viewPublic": "公開ページを見る"
   },
   "cabinet": {
     "kicker": "セクション · キャビネット",
@@ -595,6 +599,21 @@
         "password_too_short": "パスワードは8文字以上必要です。",
         "password_too_long": "パスワードが長すぎます。",
         "password_already_set": "すでにパスワードが設定されています。"
+      },
+      "emailVerify": {
+        "verified": "メール確認済み",
+        "notVerified": "メール未確認",
+        "send": "確認メール送信",
+        "sent": "確認メールを送信しました。",
+        "success": "メールを確認しました。",
+        "errors": {
+          "unauth": "サインインしてください。",
+          "no_email": "先にメールを追加してください。",
+          "already_verified": "すでに確認済みです。",
+          "send_failed": "送信に失敗しました。",
+          "expired": "リンクが期限切れです。",
+          "invalid": "リンクが無効です。"
+        }
       }
     },
     "settings": {
@@ -856,6 +875,24 @@
       "title": "{country}で利用可能",
       "empty": "{country}で利用可能なフィンテックサービスはまだありません。",
       "loading": "この地域のフィンテックを検索中…"
+    }
+  },
+  "companyPublic": {
+    "verified": "認証済み",
+    "website": "サイト",
+    "email": "メール",
+    "phone": "電話",
+    "address": "住所",
+    "placesTitle": "暗号資産対応スポット",
+    "openOnMap": "地図で開く",
+    "onlineTitle": "オンラインサービス",
+    "pointType": {
+      "SHOP": "店舗",
+      "ATM": "ATM",
+      "POS": "POS",
+      "SALES_OFFICE": "セールスオフィス",
+      "COMPANY": "オフィス",
+      "ONLINE": "オンライン"
     }
   }
 }

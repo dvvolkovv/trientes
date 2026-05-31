@@ -553,8 +553,12 @@
         "not_found": "未找到。",
         "already_verified": "已认证。",
         "unknown": "未知错误"
-      }
-    }
+      },
+      "uploadFile": "上传文件",
+      "uploading": "上传中…",
+      "uploadHint": "PDF / PNG / JPG — 最大 8 MB"
+    },
+    "viewPublic": "查看公开页面"
   },
   "cabinet": {
     "kicker": "板块 · 个人中心",
@@ -595,6 +599,21 @@
         "password_too_short": "密码至少需要 8 个字符。",
         "password_too_long": "密码过长。",
         "password_already_set": "您已设置过密码。"
+      },
+      "emailVerify": {
+        "verified": "邮箱已验证",
+        "notVerified": "邮箱未验证",
+        "send": "发送验证邮件",
+        "sent": "验证邮件已发送。",
+        "success": "邮箱已验证。",
+        "errors": {
+          "unauth": "请先登录。",
+          "no_email": "请先添加邮箱。",
+          "already_verified": "已验证。",
+          "send_failed": "发送失败。",
+          "expired": "链接已过期。",
+          "invalid": "链接无效。"
+        }
       }
     },
     "settings": {
@@ -856,6 +875,24 @@
       "title": "{country} 可用",
       "empty": "目前在 {country} 暂无可用的金融科技服务。",
       "loading": "正在查找该地区的金融科技…"
+    }
+  },
+  "companyPublic": {
+    "verified": "已认证",
+    "website": "网站",
+    "email": "邮箱",
+    "phone": "电话",
+    "address": "地址",
+    "placesTitle": "支持加密货币的场所",
+    "openOnMap": "在地图上打开",
+    "onlineTitle": "在线服务",
+    "pointType": {
+      "SHOP": "商店",
+      "ATM": "ATM",
+      "POS": "POS",
+      "SALES_OFFICE": "销售办公室",
+      "COMPANY": "办公室",
+      "ONLINE": "在线"
     }
   }
 }

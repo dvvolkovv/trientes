@@ -56,6 +56,7 @@ export default async function CabinetPage({
           phone: user.phone ?? "",
           email: user.email ?? "",
           hasPassword: !!user.passwordHash,
+          emailVerified: !!user.emailVerified,
         }}
       />
 
