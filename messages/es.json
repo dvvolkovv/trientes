@@ -493,7 +493,32 @@
       "REJECTED": "Rechazada"
     },
     "rejectionReasonLabel": "Motivo del rechazo",
-    "onlineHint": "Los servicios solo online no tienen ubicación física, por eso no se muestra pin."
+    "onlineHint": "Los servicios solo online no tienen ubicación física, por eso no se muestra pin.",
+    "members": {
+      "title": "Equipo",
+      "subtitleOwner": "Invita compañeros por usuario o email y asigna un rol.",
+      "subtitleViewer": "Tu rol en esta empresa: {role}.",
+      "identifierPlaceholder": "usuario o email",
+      "invite": "Añadir",
+      "inviting": "Añadiendo…",
+      "inviteSuccess": "Miembro añadido.",
+      "remove": "Quitar",
+      "confirmRemove": "¿Quitar a {name} del equipo?",
+      "you": "(tú)",
+      "role": {
+        "OWNER": "Propietario",
+        "EDITOR": "Editor",
+        "VIEWER": "Lector"
+      },
+      "errors": {
+        "unauth": "Inicia sesión.",
+        "forbidden": "Solo propietarios.",
+        "invalid": "Rol inválido.",
+        "user_not_found": "Usuario no encontrado.",
+        "self": "No puedes añadirte a ti mismo.",
+        "last_owner": "Debe quedar al menos un propietario."
+      }
+    }
   },
   "cabinet": {
     "kicker": "Sección · Panel",

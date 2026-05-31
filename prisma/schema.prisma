@@ -45,8 +45,29 @@ model User {
   reviewedFintechs  FintechCompany[]    @relation("FintechReviewer")
   priceAlerts       PriceAlert[]
   geoAlerts         GeoAlert[]
+  companyMemberships CompanyMember[]
   notifyTelegram    Boolean             @default(true)
   notifyEmail       Boolean             @default(false)
+}
+
+enum CompanyRole {
+  OWNER
+  EDITOR
+  VIEWER
+}
+
+model CompanyMember {
+  id          String      @id @default(cuid())
+  companyId   String
+  company     Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role        CompanyRole @default(VIEWER)
+  invitedById String?
+  createdAt   DateTime    @default(now())
+
+  @@unique([companyId, userId])
+  @@index([userId])
 }
 
 enum AlertOp {
@@ -336,6 +357,7 @@ model Company {
   id          String         @id @default(cuid())
   ownerUserId String
   owner       User           @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
+  members     CompanyMember[]
   legalName   String
   displayName String
   logoUrl     String?

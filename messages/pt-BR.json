@@ -493,7 +493,32 @@
       "REJECTED": "Rejeitada"
     },
     "rejectionReasonLabel": "Motivo da rejeição",
-    "onlineHint": "Serviços só online não têm endereço físico — nenhum pino no mapa."
+    "onlineHint": "Serviços só online não têm endereço físico — nenhum pino no mapa.",
+    "members": {
+      "title": "Equipe",
+      "subtitleOwner": "Convide colegas por usuário ou e-mail e atribua uma função.",
+      "subtitleViewer": "Sua função nesta empresa: {role}.",
+      "identifierPlaceholder": "usuário ou e-mail",
+      "invite": "Adicionar",
+      "inviting": "Adicionando…",
+      "inviteSuccess": "Membro adicionado.",
+      "remove": "Remover",
+      "confirmRemove": "Remover {name} da equipe?",
+      "you": "(você)",
+      "role": {
+        "OWNER": "Proprietário",
+        "EDITOR": "Editor",
+        "VIEWER": "Leitor"
+      },
+      "errors": {
+        "unauth": "Entre primeiro.",
+        "forbidden": "Apenas proprietários.",
+        "invalid": "Função inválida.",
+        "user_not_found": "Usuário não encontrado.",
+        "self": "Você não pode adicionar a si mesmo.",
+        "last_owner": "É necessário ao menos um proprietário."
+      }
+    }
   },
   "cabinet": {
     "kicker": "Seção · Painel",

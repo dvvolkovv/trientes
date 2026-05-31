@@ -493,7 +493,32 @@
       "REJECTED": "Abgelehnt"
     },
     "rejectionReasonLabel": "Ablehnungsgrund",
-    "onlineHint": "Reine Online-Dienste haben keinen physischen Standort — keine Karten-Markierung."
+    "onlineHint": "Reine Online-Dienste haben keinen physischen Standort — keine Karten-Markierung.",
+    "members": {
+      "title": "Team",
+      "subtitleOwner": "Lade Kollegen per Benutzername oder E-Mail ein und weise eine Rolle zu.",
+      "subtitleViewer": "Deine Rolle in dieser Firma: {role}.",
+      "identifierPlaceholder": "Benutzername oder E-Mail",
+      "invite": "Hinzufügen",
+      "inviting": "Hinzufügen…",
+      "inviteSuccess": "Mitglied hinzugefügt.",
+      "remove": "Entfernen",
+      "confirmRemove": "{name} aus dem Team entfernen?",
+      "you": "(du)",
+      "role": {
+        "OWNER": "Inhaber",
+        "EDITOR": "Bearbeiter",
+        "VIEWER": "Leser"
+      },
+      "errors": {
+        "unauth": "Bitte anmelden.",
+        "forbidden": "Nur für Inhaber.",
+        "invalid": "Ungültige Rolle.",
+        "user_not_found": "Benutzer nicht gefunden.",
+        "self": "Du kannst dich nicht selbst hinzufügen.",
+        "last_owner": "Mindestens ein Inhaber wird benötigt."
+      }
+    }
   },
   "cabinet": {
     "kicker": "Bereich · Kabinett",

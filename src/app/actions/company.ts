@@ -18,11 +18,21 @@ async function requireUser() {
   return (session?.user as { id?: string } | undefined)?.id ?? null;
 }
 
+async function memberRole(companyId: string, userId: string) {
+  const m = await prisma.companyMember.findUnique({
+    where: { companyId_userId: { companyId, userId } },
+    select: { role: true },
+  });
+  return m?.role ?? null;
+}
+
 export async function createCompany(input: { legalName: string; displayName: string }) {
   const userId = await requireUser();
   if (!userId) return { ok: false as const, reason: "unauth" as const };
   const v = validateCompanyProfile(input);
   if (!v.ok) return { ok: false as const, reason: v.reason };
+  // The creator becomes OWNER both via the legacy ownerUserId field (kept for
+  // moderation lookups) and via CompanyMember (the operational gate).
   const company = await prisma.company.create({
     data: {
       ownerUserId: userId,
@@ -40,6 +50,7 @@ export async function createCompany(input: { legalName: string; displayName: str
       email: v.data.email,
       website: v.data.website,
       logoUrl: v.data.logoUrl,
+      members: { create: { userId, role: "OWNER" } },
     },
   });
   revalidatePath("/", "layout");
@@ -49,8 +60,10 @@ export async function createCompany(input: { legalName: string; displayName: str
 export async function saveCompanyProfile(companyId: string, input: CompanyProfileInput) {
   const userId = await requireUser();
   if (!userId) return { ok: false as const, reason: "unauth" as const };
+  const role = await memberRole(companyId, userId);
+  if (role !== "OWNER" && role !== "EDITOR") return { ok: false as const, reason: "not_found" as const };
   const company = await prisma.company.findUnique({ where: { id: companyId } });
-  if (!company || company.ownerUserId !== userId) return { ok: false as const, reason: "not_found" as const };
+  if (!company) return { ok: false as const, reason: "not_found" as const };
   const v = validateCompanyProfile(input);
   if (!v.ok) return { ok: false as const, reason: v.reason };
   await prisma.company.update({ where: { id: company.id }, data: v.data });
@@ -64,8 +77,10 @@ export async function submitCompanyPoint(
 ) {
   const userId = await requireUser();
   if (!userId) return { ok: false as const, reason: "unauth" as const };
+  const role = await memberRole(companyId, userId);
+  if (role !== "OWNER" && role !== "EDITOR") return { ok: false as const, reason: "not_found" as const };
   const company = await prisma.company.findUnique({ where: { id: companyId } });
-  if (!company || company.ownerUserId !== userId) return { ok: false as const, reason: "not_found" as const };
+  if (!company) return { ok: false as const, reason: "not_found" as const };
   const v = validateCompanyPoint(input);
   if (!v.ok) return { ok: false as const, reason: v.reason };
   const pending = await prisma.companyPoint.count({

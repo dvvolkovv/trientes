@@ -1,11 +1,12 @@
 import { notFound, redirect } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
-import { getViewerCompanyById } from "@/lib/business";
+import { getViewerCompanyById, canEditCompany, canManageMembers } from "@/lib/business";
 import { readTop100 } from "@/lib/snapshot";
 import { CompanyProfileForm } from "@/components/business/company-profile-form";
 import { PointForm } from "@/components/business/point-form";
 import { PointsList, type PointListItem } from "@/components/business/points-list";
+import { MembersSection } from "@/components/business/members-section";
 
 export const dynamic = "force-dynamic";
 
@@ -17,9 +18,11 @@ export default async function CompanyManagementPage({
   const { locale, id } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("business");
-  const { userId, company } = await getViewerCompanyById(id);
+  const { userId, company, role } = await getViewerCompanyById(id);
   if (!userId) redirect(`/${locale}/login`);
   if (!company) notFound();
+  const editable = canEditCompany(role);
+  const canManage = canManageMembers(role);
 
   const [points, coins] = await Promise.all([
     prisma.companyPoint.findMany({
@@ -75,20 +78,24 @@ export default async function CompanyManagementPage({
         <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-4">{t("yourPoints")}</h2>
         <PointsList points={items} />
       </section>
-      <section>
-        <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-4">{t("addPoint")}</h2>
-        <PointForm
-          companyId={company.id}
-          coins={coinOpts}
-          companyAddress={{
-            countryCode: company.countryCode ?? "",
-            city: company.city ?? "",
-            street: company.street ?? "",
-            houseNumber: company.houseNumber ?? "",
-            postalCode: company.postalCode ?? "",
-          }}
-        />
-      </section>
+      {editable ? (
+        <section>
+          <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-4">{t("addPoint")}</h2>
+          <PointForm
+            companyId={company.id}
+            coins={coinOpts}
+            companyAddress={{
+              countryCode: company.countryCode ?? "",
+              city: company.city ?? "",
+              street: company.street ?? "",
+              houseNumber: company.houseNumber ?? "",
+              postalCode: company.postalCode ?? "",
+            }}
+          />
+        </section>
+      ) : null}
+
+      <MembersSection companyId={company.id} viewerId={userId} canManage={canManage} viewerRole={role} />
     </main>
   );
 }

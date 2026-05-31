@@ -493,7 +493,32 @@
       "REJECTED": "Rejected"
     },
     "rejectionReasonLabel": "Rejection reason",
-    "onlineHint": "Online-only services have no physical location, so no map pin is shown."
+    "onlineHint": "Online-only services have no physical location, so no map pin is shown.",
+    "members": {
+      "title": "Team",
+      "subtitleOwner": "Invite teammates by username or email and assign a role.",
+      "subtitleViewer": "You are a {role} on this company.",
+      "identifierPlaceholder": "username or email",
+      "invite": "Add",
+      "inviting": "Adding…",
+      "inviteSuccess": "Member added.",
+      "remove": "Remove",
+      "confirmRemove": "Remove {name} from the team?",
+      "you": "(you)",
+      "role": {
+        "OWNER": "Owner",
+        "EDITOR": "Editor",
+        "VIEWER": "Viewer"
+      },
+      "errors": {
+        "unauth": "Sign in first.",
+        "forbidden": "Owners only.",
+        "invalid": "Invalid role.",
+        "user_not_found": "User not found.",
+        "self": "Cannot add yourself.",
+        "last_owner": "There must be at least one owner."
+      }
+    }
   },
   "cabinet": {
     "kicker": "Section · Cabinet",

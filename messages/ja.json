@@ -493,7 +493,32 @@
       "REJECTED": "却下"
     },
     "rejectionReasonLabel": "却下理由",
-    "onlineHint": "オンライン専用サービスは物理的な店舗がないため、地図にピンは表示されません。"
+    "onlineHint": "オンライン専用サービスは物理的な店舗がないため、地図にピンは表示されません。",
+    "members": {
+      "title": "チーム",
+      "subtitleOwner": "ユーザー名またはメールでメンバーを招待し、ロールを割り当てます。",
+      "subtitleViewer": "この会社でのあなたのロール: {role}",
+      "identifierPlaceholder": "ユーザー名またはメール",
+      "invite": "追加",
+      "inviting": "追加中…",
+      "inviteSuccess": "メンバーを追加しました。",
+      "remove": "削除",
+      "confirmRemove": "{name} をチームから削除しますか？",
+      "you": "（あなた）",
+      "role": {
+        "OWNER": "オーナー",
+        "EDITOR": "エディター",
+        "VIEWER": "ビューワー"
+      },
+      "errors": {
+        "unauth": "サインインしてください。",
+        "forbidden": "オーナーのみ。",
+        "invalid": "ロールが無効です。",
+        "user_not_found": "ユーザーが見つかりません。",
+        "self": "自分は追加できません。",
+        "last_owner": "オーナーが少なくとも1人必要です。"
+      }
+    }
   },
   "cabinet": {
     "kicker": "セクション · キャビネット",

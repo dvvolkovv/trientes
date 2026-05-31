@@ -493,7 +493,32 @@
       "REJECTED": "已拒绝"
     },
     "rejectionReasonLabel": "拒绝原因",
-    "onlineHint": "纯在线服务没有物理位置，因此地图上不会显示标记。"
+    "onlineHint": "纯在线服务没有物理位置，因此地图上不会显示标记。",
+    "members": {
+      "title": "团队",
+      "subtitleOwner": "通过用户名或邮箱邀请队友并指派角色。",
+      "subtitleViewer": "你在该公司中的角色：{role}",
+      "identifierPlaceholder": "用户名或邮箱",
+      "invite": "添加",
+      "inviting": "添加中…",
+      "inviteSuccess": "成员已添加。",
+      "remove": "移除",
+      "confirmRemove": "把 {name} 从团队中移除？",
+      "you": "（你）",
+      "role": {
+        "OWNER": "所有者",
+        "EDITOR": "编辑者",
+        "VIEWER": "查看者"
+      },
+      "errors": {
+        "unauth": "请先登录。",
+        "forbidden": "仅限所有者。",
+        "invalid": "角色无效。",
+        "user_not_found": "未找到用户。",
+        "self": "不能添加自己。",
+        "last_owner": "至少需要一个所有者。"
+      }
+    }
   },
   "cabinet": {
     "kicker": "板块 · 个人中心",

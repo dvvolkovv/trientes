@@ -493,7 +493,32 @@
       "REJECTED": "Reddedildi"
     },
     "rejectionReasonLabel": "Red nedeni",
-    "onlineHint": "Yalnızca çevrimiçi hizmetlerin fiziksel adresi yoktur — haritaya iğne eklenmez."
+    "onlineHint": "Yalnızca çevrimiçi hizmetlerin fiziksel adresi yoktur — haritaya iğne eklenmez.",
+    "members": {
+      "title": "Takım",
+      "subtitleOwner": "Takım arkadaşlarını kullanıcı adı veya e-posta ile davet et ve rol ata.",
+      "subtitleViewer": "Bu şirketteki rolün: {role}.",
+      "identifierPlaceholder": "kullanıcı adı veya e-posta",
+      "invite": "Ekle",
+      "inviting": "Ekleniyor…",
+      "inviteSuccess": "Üye eklendi.",
+      "remove": "Kaldır",
+      "confirmRemove": "{name} takımdan kaldırılsın mı?",
+      "you": "(sen)",
+      "role": {
+        "OWNER": "Sahip",
+        "EDITOR": "Editör",
+        "VIEWER": "İzleyici"
+      },
+      "errors": {
+        "unauth": "Önce giriş yap.",
+        "forbidden": "Yalnızca sahipler.",
+        "invalid": "Geçersiz rol.",
+        "user_not_found": "Kullanıcı bulunamadı.",
+        "self": "Kendini ekleyemezsin.",
+        "last_owner": "En az bir sahip olmalı."
+      }
+    }
   },
   "cabinet": {
     "kicker": "Bölüm · Kabin",

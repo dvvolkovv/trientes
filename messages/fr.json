@@ -493,7 +493,32 @@
       "REJECTED": "Refusée"
     },
     "rejectionReasonLabel": "Motif du refus",
-    "onlineHint": "Les services en ligne uniquement n'ont pas de localisation physique, pas de point sur la carte."
+    "onlineHint": "Les services en ligne uniquement n'ont pas de localisation physique, pas de point sur la carte.",
+    "members": {
+      "title": "Équipe",
+      "subtitleOwner": "Invite des coéquipiers par nom d'utilisateur ou email et attribue un rôle.",
+      "subtitleViewer": "Ton rôle dans cette entreprise : {role}.",
+      "identifierPlaceholder": "nom d'utilisateur ou email",
+      "invite": "Ajouter",
+      "inviting": "Ajout…",
+      "inviteSuccess": "Membre ajouté.",
+      "remove": "Retirer",
+      "confirmRemove": "Retirer {name} de l'équipe ?",
+      "you": "(toi)",
+      "role": {
+        "OWNER": "Propriétaire",
+        "EDITOR": "Éditeur",
+        "VIEWER": "Lecteur"
+      },
+      "errors": {
+        "unauth": "Connecte-toi d'abord.",
+        "forbidden": "Réservé aux propriétaires.",
+        "invalid": "Rôle invalide.",
+        "user_not_found": "Utilisateur introuvable.",
+        "self": "Tu ne peux pas t'ajouter toi-même.",
+        "last_owner": "Au moins un propriétaire est requis."
+      }
+    }
   },
   "cabinet": {
     "kicker": "Section · Espace personnel",
