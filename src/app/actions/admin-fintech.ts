@@ -12,6 +12,7 @@ import {
 } from "@/lib/fintech";
 import { redis } from "@/lib/redis";
 import { notifyGeoForFintech } from "@/lib/geo-alerts-notify";
+import { notifyUser } from "@/lib/notify";
 
 async function bustAvailabilityCache(countryCodes: string[]) {
   try {
@@ -69,6 +70,13 @@ export async function approveFintech(input: { id: string }) {
   void notifyGeoForFintech({
     id: row.id, slug: row.slug, displayName: row.displayName, availableIn: row.availableIn,
   }).catch(() => {});
+  if (row.ownerUserId) {
+    void notifyUser({
+      userId: row.ownerUserId,
+      text: `✅ Your fintech "${row.displayName}" was approved on Trientes.\nhttps://trientes.org/en/fintech/${row.slug}`,
+      subject: `Fintech approved: ${row.displayName}`,
+    }).catch(() => {});
+  }
   revalidatePath("/", "layout");
   return { ok: true as const };
 }
@@ -92,6 +100,13 @@ export async function rejectFintech(input: { id: string; rejectionReason: string
     details: { reason },
   });
   await bustAvailabilityCache(row.availableIn);
+  if (row.ownerUserId) {
+    void notifyUser({
+      userId: row.ownerUserId,
+      text: `❌ Your fintech "${row.displayName}" was not approved.\nReason: ${reason}`,
+      subject: `Fintech not approved: ${row.displayName}`,
+    }).catch(() => {});
+  }
   revalidatePath("/", "layout");
   return { ok: true as const };
 }

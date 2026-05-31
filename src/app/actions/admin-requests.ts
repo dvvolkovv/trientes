@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { checkAdmin } from "@/lib/is-admin";
 import { approveRequestCore } from "@/lib/admin/approve-request";
 import { logAdminAction } from "@/lib/admin/audit";
-import { sendEmail } from "@/lib/email";
+import { notifyUser } from "@/lib/notify";
 
 export async function approveRequest(input: { requestId: string; coingeckoIdOverride?: string }) {
   const admin = await checkAdmin();
@@ -23,21 +23,22 @@ export async function approveRequest(input: { requestId: string; coingeckoIdOver
       targetId: input.requestId,
       details: { coinId: res.coinId },
     });
-    // Notify requestor (best-effort, never blocks the action).
+    // Notify requestor (best-effort, never blocks the action). Goes to
+    // whichever channel(s) the user opted into (Telegram and/or email).
     try {
       const r = await prisma.coinRequest.findUnique({
         where: { id: input.requestId },
-        include: { user: { select: { email: true } } },
+        select: { userId: true, symbol: true, name: true },
       });
-      if (r?.user?.email) {
-        void sendEmail({
-          to: r.user.email,
-          subject: `Your coin request was approved: ${r.symbol}`,
-          text: `Good news — your request to add ${r.name} (${r.symbol}) was approved. It will appear on trientes.org within ~30 minutes once price data syncs.`,
+      if (r) {
+        void notifyUser({
+          userId: r.userId,
+          text: `✅ Your coin request "${r.name} (${r.symbol})" was approved. It should appear on trientes.org within ~30 minutes.`,
+          subject: `Coin request approved: ${r.symbol}`,
         });
       }
     } catch (err) {
-      console.error("[admin-requests] approve email lookup failed:", err);
+      console.error("[admin-requests] approve notify failed:", err);
     }
     revalidatePath("/", "layout");
   }
@@ -70,21 +71,16 @@ export async function rejectRequest(input: { requestId: string; rejectReason: st
     targetId: req.id,
     details: { reason },
   });
-  // Notify requestor (best-effort, never blocks the action).
+  // Notify requestor (best-effort, never blocks the action). Goes to
+  // whichever channel(s) the user opted into (Telegram and/or email).
   try {
-    const u = await prisma.user.findUnique({
-      where: { id: req.userId },
-      select: { email: true },
+    void notifyUser({
+      userId: req.userId,
+      text: `❌ Your coin request "${req.name} (${req.symbol})" was not approved.\nReason: ${reason}\nYou can submit a new request with updated info if needed.`,
+      subject: `Coin request not approved: ${req.symbol}`,
     });
-    if (u?.email) {
-      void sendEmail({
-        to: u.email,
-        subject: `Your coin request was not approved: ${req.symbol}`,
-        text: `Your request to add ${req.name} (${req.symbol}) was not approved.\n\nReason: ${reason}\n\nYou can submit a new request with updated info if needed.`,
-      });
-    }
   } catch (err) {
-    console.error("[admin-requests] reject email lookup failed:", err);
+    console.error("[admin-requests] reject notify failed:", err);
   }
   revalidatePath("/", "layout");
   return { ok: true };

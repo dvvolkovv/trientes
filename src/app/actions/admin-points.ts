@@ -5,6 +5,12 @@ import { prisma } from "@/lib/prisma";
 import { checkAdmin } from "@/lib/is-admin";
 import { logAdminAction } from "@/lib/admin/audit";
 import { notifyGeoForPoint } from "@/lib/geo-alerts-notify";
+import { notifyUser } from "@/lib/notify";
+
+async function ownerIdOfPoint(companyId: string): Promise<string | null> {
+  const c = await prisma.company.findUnique({ where: { id: companyId }, select: { ownerUserId: true } });
+  return c?.ownerUserId ?? null;
+}
 
 export async function approvePoint(input: { pointId: string }) {
   const admin = await checkAdmin();
@@ -23,6 +29,15 @@ export async function approvePoint(input: { pointId: string }) {
   void notifyGeoForPoint({
     id: point.id, name: point.name, countryCode: point.countryCode, companyId: point.companyId,
   }).catch(() => {});
+  void (async () => {
+    const ownerId = await ownerIdOfPoint(point.companyId);
+    if (!ownerId) return;
+    await notifyUser({
+      userId: ownerId,
+      text: `✅ Your point "${point.name}" was approved and is now visible on the navigator.`,
+      subject: `Point approved: ${point.name}`,
+    });
+  })().catch(() => {});
   revalidatePath("/", "layout");
   return { ok: true };
 }
@@ -43,6 +58,15 @@ export async function rejectPoint(input: { pointId: string; rejectReason: string
     actorId: admin.userId, action: "REJECT_POINT", targetType: "CompanyPoint", targetId: point.id,
     details: { reason },
   });
+  void (async () => {
+    const ownerId = await ownerIdOfPoint(point.companyId);
+    if (!ownerId) return;
+    await notifyUser({
+      userId: ownerId,
+      text: `❌ Your point "${point.name}" was not approved.\nReason: ${reason}`,
+      subject: `Point not approved: ${point.name}`,
+    });
+  })().catch(() => {});
   revalidatePath("/", "layout");
   return { ok: true };
 }

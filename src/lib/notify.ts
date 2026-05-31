@@ -3,6 +3,7 @@
 // skip it and report which channels actually delivered.
 
 import { prisma } from "@/lib/prisma";
+import { sendEmail as sendEmailViaResend } from "@/lib/email";
 
 export type NotifyChannel = "telegram" | "email";
 
@@ -42,46 +43,8 @@ async function sendTelegram(chatId: string, text: string): Promise<{ ok: boolean
   }
 }
 
-// Send a transactional email via Resend. Silently no-ops if RESEND_API_KEY is
-// not configured (matches the convention used elsewhere in the codebase).
-async function sendEmail(
-  to: string,
-  subject: string,
-  text: string,
-  html: string | undefined,
-): Promise<{ ok: boolean; reason?: string }> {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return { ok: false, reason: "no_key" };
-  const from = process.env.RESEND_FROM_EMAIL ?? "notifications@trientes.org";
-  try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        from,
-        to: [to],
-        subject,
-        text,
-        html: html ?? `<pre style="font-family:system-ui;white-space:pre-wrap">${escapeHtml(text)}</pre>`,
-      }),
-      cache: "no-store",
-    });
-    if (!res.ok) {
-      const body = await res.text().catch(() => "");
-      return { ok: false, reason: `resend_http_${res.status}: ${body.slice(0, 120)}` };
-    }
-    return { ok: true };
-  } catch (e) {
-    return { ok: false, reason: e instanceof Error ? e.message : "fetch_error" };
-  }
-}
-
-function escapeHtml(s: string): string {
-  return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
-}
+// Email goes through the shared src/lib/email.ts wrapper (Resend SDK). That
+// helper already no-ops silently when RESEND_API_KEY is unset.
 
 // Resolve the Telegram chat ID for a user from their linked Account (Telegram
 // Login Widget stores it as providerAccountId). Returns null if not linked.
@@ -121,7 +84,7 @@ export async function notifyUser(input: NotifyInput): Promise<NotifyResult> {
       skipped.push({ channel: "email", reason: "no_address" });
     } else {
       const subject = input.subject ?? input.text.split("\n", 1)[0]!.slice(0, 120);
-      const r = await sendEmail(user.email, subject, input.text, input.html);
+      const r = await sendEmailViaResend({ to: user.email, subject, text: input.text, html: input.html });
       if (r.ok) delivered.push("email");
       else skipped.push({ channel: "email", reason: r.reason ?? "unknown" });
     }

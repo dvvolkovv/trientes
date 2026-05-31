@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { checkAdmin } from "@/lib/is-admin";
 import { logAdminAction } from "@/lib/admin/audit";
+import { notifyUser } from "@/lib/notify";
 
 export async function approveExchange(input: { exchangeId: string }) {
   const admin = await checkAdmin();
@@ -22,6 +23,11 @@ export async function approveExchange(input: { exchangeId: string }) {
     targetId: exchange.id,
     details: { displayName: exchange.displayName },
   });
+  void notifyUser({
+    userId: exchange.ownerUserId,
+    text: `✅ Your exchange "${exchange.displayName}" was approved on Trientes.`,
+    subject: `Exchange approved: ${exchange.displayName}`,
+  }).catch(() => {});
   revalidatePath("/", "layout");
   return { ok: true };
 }
@@ -45,6 +51,11 @@ export async function rejectExchange(input: { exchangeId: string; rejectionReaso
     targetId: exchange.id,
     details: { reason },
   });
+  void notifyUser({
+    userId: exchange.ownerUserId,
+    text: `❌ Your exchange "${exchange.displayName}" was not approved.\nReason: ${reason}`,
+    subject: `Exchange not approved: ${exchange.displayName}`,
+  }).catch(() => {});
   revalidatePath("/", "layout");
   return { ok: true };
 }

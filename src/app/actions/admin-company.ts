@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { checkAdmin } from "@/lib/is-admin";
 import { logAdminAction } from "@/lib/admin/audit";
+import { notifyUser } from "@/lib/notify";
 
 export async function approveCompany(input: { companyId: string }) {
   const admin = await checkAdmin();
@@ -27,6 +28,11 @@ export async function approveCompany(input: { companyId: string }) {
     targetId: company.id,
     details: { displayName: company.displayName, legalName: company.legalName },
   });
+  void notifyUser({
+    userId: company.ownerUserId,
+    text: `✅ Your company "${company.displayName}" was approved on Trientes.`,
+    subject: `Company approved: ${company.displayName}`,
+  }).catch(() => {});
   revalidatePath("/", "layout");
   return { ok: true };
 }
@@ -55,6 +61,11 @@ export async function rejectCompany(input: { companyId: string; rejectionReason:
     targetId: company.id,
     details: { reason },
   });
+  void notifyUser({
+    userId: company.ownerUserId,
+    text: `❌ Your company "${company.displayName}" was not approved.\nReason: ${reason}`,
+    subject: `Company not approved: ${company.displayName}`,
+  }).catch(() => {});
   revalidatePath("/", "layout");
   return { ok: true };
 }
