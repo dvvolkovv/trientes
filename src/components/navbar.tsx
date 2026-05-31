@@ -5,6 +5,7 @@ import { auth, signOut } from "@/auth";
 import { LocaleSwitcher } from "./locale-switcher";
 import { CurrencySwitcher } from "./currency-switcher";
 import { MobileNav } from "./mobile-nav";
+import { GlobalSearch } from "./global-search";
 import { getCurrency } from "@/lib/get-currency";
 
 export async function Navbar() {
@@ -228,6 +229,7 @@ export async function Navbar() {
         </nav>
 
         <div className="ml-auto hidden md:flex items-center gap-2">
+          <GlobalSearch />
           <CurrencySwitcher current={currency} />
           <LocaleSwitcher />
           {session?.user ? (

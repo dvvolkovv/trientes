@@ -20,7 +20,10 @@
     "cabinet": "Kabinett",
     "fintech": "Fintech",
     "companies": "Unternehmen",
-    "services": "Dienste"
+    "services": "Dienste",
+    "searchPlaceholder": "Suchen…",
+    "searching": "Suche…",
+    "noResults": "Keine Ergebnisse"
   },
   "home": {
     "title": "Willkommen",

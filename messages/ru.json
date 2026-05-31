@@ -20,7 +20,10 @@
     "cabinet": "Кабинет",
     "fintech": "Финтех",
     "companies": "Компании",
-    "services": "Сервисы"
+    "services": "Сервисы",
+    "searchPlaceholder": "Поиск…",
+    "searching": "Ищем…",
+    "noResults": "Ничего не найдено"
   },
   "home": {
     "title": "Добро пожаловать",

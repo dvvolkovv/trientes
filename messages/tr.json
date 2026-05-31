@@ -20,7 +20,10 @@
     "cabinet": "Kabin",
     "fintech": "Fintech",
     "companies": "Şirketler",
-    "services": "Hizmetler"
+    "services": "Hizmetler",
+    "searchPlaceholder": "Ara…",
+    "searching": "Aranıyor…",
+    "noResults": "Sonuç yok"
   },
   "home": {
     "title": "Hoş geldiniz",

@@ -20,7 +20,10 @@
     "cabinet": "Espace personnel",
     "fintech": "Fintech",
     "companies": "Entreprises",
-    "services": "Services"
+    "services": "Services",
+    "searchPlaceholder": "Rechercher…",
+    "searching": "Recherche…",
+    "noResults": "Aucun résultat"
   },
   "home": {
     "title": "Bienvenue",

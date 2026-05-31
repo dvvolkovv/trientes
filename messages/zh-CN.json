@@ -20,7 +20,10 @@
     "cabinet": "个人中心",
     "fintech": "Fintech",
     "companies": "公司",
-    "services": "在线服务"
+    "services": "在线服务",
+    "searchPlaceholder": "搜索…",
+    "searching": "搜索中…",
+    "noResults": "无结果"
   },
   "home": {
     "title": "欢迎",

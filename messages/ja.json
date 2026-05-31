@@ -20,7 +20,10 @@
     "cabinet": "キャビネット",
     "fintech": "Fintech",
     "companies": "企業",
-    "services": "サービス"
+    "services": "サービス",
+    "searchPlaceholder": "検索…",
+    "searching": "検索中…",
+    "noResults": "結果なし"
   },
   "home": {
     "title": "ようこそ",

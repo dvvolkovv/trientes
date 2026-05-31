@@ -20,7 +20,10 @@
     "cabinet": "Painel",
     "fintech": "Fintech",
     "companies": "Empresas",
-    "services": "Serviços"
+    "services": "Serviços",
+    "searchPlaceholder": "Buscar…",
+    "searching": "Buscando…",
+    "noResults": "Sem resultados"
   },
   "home": {
     "title": "Bem-vindo",
