@@ -656,7 +656,10 @@
         "email": "メール",
         "telegramNotLinked": "Telegram でログインすると有効化できます。",
         "emailNotSet": "プロフィールにメールを追加すると有効化できます。",
-        "emailNotVerified": "有効化するには先にメールを確認してください。"
+        "emailNotVerified": "有効化するには先にメールを確認してください。",
+        "webpush": "ブラウザプッシュ",
+        "webpushUnsupported": "ブラウザがプッシュに対応していません。",
+        "webpushDenied": "ブロック中 — ブラウザの設定で変更してください。"
       },
       "errors": {
         "unauth": "先にサインインしてください。",

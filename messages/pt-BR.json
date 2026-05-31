@@ -656,7 +656,10 @@
         "email": "E-mail",
         "telegramNotLinked": "Entre uma vez via Telegram para ativar.",
         "emailNotSet": "Adicione um e-mail no perfil para ativar.",
-        "emailNotVerified": "Verifique seu email primeiro para ativar."
+        "emailNotVerified": "Verifique seu email primeiro para ativar.",
+        "webpush": "Push do navegador",
+        "webpushUnsupported": "Navegador não suporta push.",
+        "webpushDenied": "Bloqueado — altere nas configurações do navegador."
       },
       "errors": {
         "unauth": "Entre primeiro.",

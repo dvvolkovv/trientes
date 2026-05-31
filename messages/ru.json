@@ -656,7 +656,10 @@
         "email": "Email",
         "telegramNotLinked": "Войди через Telegram, чтобы включить.",
         "emailNotSet": "Укажи email в профиле, чтобы включить.",
-        "emailNotVerified": "Сначала подтверди email, чтобы включить."
+        "emailNotVerified": "Сначала подтверди email, чтобы включить.",
+        "webpush": "Браузерные пуши",
+        "webpushUnsupported": "Браузер не поддерживает пуши.",
+        "webpushDenied": "Заблокировано — измени в настройках браузера."
       },
       "errors": {
         "unauth": "Сначала войдите.",

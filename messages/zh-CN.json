@@ -656,7 +656,10 @@
         "email": "邮件",
         "telegramNotLinked": "使用 Telegram 登录一次以启用。",
         "emailNotSet": "在个人资料中添加邮箱以启用。",
-        "emailNotVerified": "请先验证邮箱以启用。"
+        "emailNotVerified": "请先验证邮箱以启用。",
+        "webpush": "浏览器推送",
+        "webpushUnsupported": "浏览器不支持推送。",
+        "webpushDenied": "已被屏蔽 — 请在浏览器设置中更改。"
       },
       "errors": {
         "unauth": "请先登录。",

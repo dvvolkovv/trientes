@@ -656,7 +656,10 @@
         "email": "Email",
         "telegramNotLinked": "Inicia sesión con Telegram para activar.",
         "emailNotSet": "Añade un email en tu perfil para activar.",
-        "emailNotVerified": "Verifica tu email primero para activar."
+        "emailNotVerified": "Verifica tu email primero para activar.",
+        "webpush": "Push del navegador",
+        "webpushUnsupported": "El navegador no admite push.",
+        "webpushDenied": "Bloqueado — cámbialo en la configuración del navegador."
       },
       "errors": {
         "unauth": "Inicia sesión primero.",

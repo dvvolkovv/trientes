@@ -4,14 +4,16 @@
 
 import { prisma } from "@/lib/prisma";
 import { sendEmail as sendEmailViaResend } from "@/lib/email";
+import { sendWebPushToUser } from "@/lib/notify-web-push";
 
-export type NotifyChannel = "telegram" | "email";
+export type NotifyChannel = "telegram" | "email" | "webpush";
 
 export type NotifyInput = {
   userId: string;
   text: string;        // plain text body (also used as Telegram message)
   subject?: string;    // email subject; falls back to first line of `text`
   html?: string;       // optional rich HTML for email; falls back to <pre>text</pre>
+  url?: string;        // deep link used by the web-push notification onclick
 };
 
 export type NotifyResult = {
@@ -59,7 +61,10 @@ async function telegramChatIdForUser(userId: string): Promise<string | null> {
 export async function notifyUser(input: NotifyInput): Promise<NotifyResult> {
   const user = await prisma.user.findUnique({
     where: { id: input.userId },
-    select: { email: true, emailVerified: true, notifyTelegram: true, notifyEmail: true },
+    select: {
+      email: true, emailVerified: true,
+      notifyTelegram: true, notifyEmail: true, notifyWebPush: true,
+    },
   });
   if (!user) return { delivered: [], skipped: [{ channel: "telegram", reason: "no_user" }] };
 
@@ -94,6 +99,20 @@ export async function notifyUser(input: NotifyInput): Promise<NotifyResult> {
     }
   } else {
     skipped.push({ channel: "email", reason: "opted_out" });
+  }
+
+  if (user.notifyWebPush) {
+    const subject = input.subject ?? input.text.split("\n", 1)[0]!.slice(0, 120);
+    const r = await sendWebPushToUser(input.userId, {
+      title: subject,
+      body: input.text.slice(0, 480),
+      url: input.url,
+      tag: input.subject,
+    });
+    if (r.sent > 0) delivered.push("webpush");
+    else skipped.push({ channel: "webpush", reason: r.pruned > 0 ? "all_expired" : "no_subscriptions" });
+  } else {
+    skipped.push({ channel: "webpush", reason: "opted_out" });
   }
 
   return { delivered, skipped };

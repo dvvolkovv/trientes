@@ -656,7 +656,10 @@
         "email": "E-posta",
         "telegramNotLinked": "Aktifleştirmek için Telegram ile giriş yap.",
         "emailNotSet": "Aktifleştirmek için profile e-posta ekle.",
-        "emailNotVerified": "Etkinleştirmek için önce e-postanı doğrula."
+        "emailNotVerified": "Etkinleştirmek için önce e-postanı doğrula.",
+        "webpush": "Tarayıcı push",
+        "webpushUnsupported": "Tarayıcı push'u desteklemiyor.",
+        "webpushDenied": "Engellendi — tarayıcı ayarlarından değiştir."
       },
       "errors": {
         "unauth": "Önce giriş yap.",

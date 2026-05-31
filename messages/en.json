@@ -656,7 +656,10 @@
         "email": "Email",
         "telegramNotLinked": "Sign in once via Telegram to enable.",
         "emailNotSet": "Add an email in your profile to enable.",
-        "emailNotVerified": "Verify your email first to enable."
+        "emailNotVerified": "Verify your email first to enable.",
+        "webpush": "Browser push",
+        "webpushUnsupported": "Browser doesn't support push.",
+        "webpushDenied": "Blocked — change in browser settings to re-enable."
       },
       "errors": {
         "unauth": "Sign in first.",

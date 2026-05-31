@@ -46,8 +46,24 @@ model User {
   priceAlerts       PriceAlert[]
   geoAlerts         GeoAlert[]
   companyMemberships CompanyMember[]
+  pushSubscriptions PushSubscription[]
   notifyTelegram    Boolean             @default(true)
   notifyEmail       Boolean             @default(false)
+  notifyWebPush     Boolean             @default(false)
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint  String   @unique @db.Text
+  p256dh    String   @db.Text
+  auth      String   @db.Text
+  userAgent String?  @db.Text
+  createdAt DateTime @default(now())
+  lastSeen  DateTime @default(now())
+
+  @@index([userId])
 }
 
 enum CompanyRole {

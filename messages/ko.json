@@ -656,7 +656,10 @@
         "email": "이메일",
         "telegramNotLinked": "Telegram으로 한 번 로그인하면 활성화됩니다.",
         "emailNotSet": "프로필에 이메일을 추가하면 활성화됩니다.",
-        "emailNotVerified": "활성화하려면 먼저 이메일을 인증하세요."
+        "emailNotVerified": "활성화하려면 먼저 이메일을 인증하세요.",
+        "webpush": "브라우저 푸시",
+        "webpushUnsupported": "브라우저가 푸시를 지원하지 않습니다.",
+        "webpushDenied": "차단됨 — 브라우저 설정에서 변경하세요."
       },
       "errors": {
         "unauth": "먼저 로그인하세요.",
