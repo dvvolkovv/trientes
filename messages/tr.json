@@ -241,7 +241,12 @@
       "empty": "Burada bir şey yok.",
       "scope": {
         "companies": "Şirketler",
-        "points": "Noktalar"
+        "points": "Noktalar",
+        "kyb": "KYB"
+      },
+      "kyb": {
+        "title": "KYB kuyruğu",
+        "subtitle": "İşletme doğrulama başvurularını onayla veya reddet."
       }
     },
     "exchanges": {
@@ -517,6 +522,37 @@
         "user_not_found": "Kullanıcı bulunamadı.",
         "self": "Kendini ekleyemezsin.",
         "last_owner": "En az bir sahip olmalı."
+      }
+    },
+    "kyb": {
+      "title": "İşletme doğrulaması (KYB)",
+      "subtitle": "İsteğe bağlı. Kayıt belgelerini gönder ve profilinde Doğrulanmış rozeti göster.",
+      "addDocument": "Belge ekle",
+      "urlPlaceholder": "https://… (belgeye açık link)",
+      "labelPlaceholder": "etiket (isteğe bağlı)",
+      "submit": "Doğrulamaya gönder",
+      "resubmit": "Tekrar gönder",
+      "submitting": "Gönderiliyor…",
+      "withdraw": "Geri çek",
+      "status": {
+        "NONE": "Gönderilmedi",
+        "PENDING": "İncelemede",
+        "APPROVED": "Doğrulandı",
+        "REJECTED": "Reddedildi"
+      },
+      "kind": {
+        "REGISTRATION_CERT": "Tescil",
+        "TAX_CERT": "Vergi belgesi",
+        "ID": "Kimlik belgesi",
+        "OTHER": "Diğer"
+      },
+      "errors": {
+        "unauth": "Önce giriş yap.",
+        "forbidden": "Yalnızca sahipler.",
+        "invalid": "Değerleri kontrol et.",
+        "not_found": "Bulunamadı.",
+        "already_verified": "Zaten doğrulandı.",
+        "unknown": "Bilinmeyen hata"
       }
     }
   },

@@ -241,7 +241,12 @@
       "empty": "暂无。",
       "scope": {
         "companies": "公司",
-        "points": "网点"
+        "points": "网点",
+        "kyb": "KYB"
+      },
+      "kyb": {
+        "title": "KYB 队列",
+        "subtitle": "审核企业认证申请。"
       }
     },
     "exchanges": {
@@ -517,6 +522,37 @@
         "user_not_found": "未找到用户。",
         "self": "不能添加自己。",
         "last_owner": "至少需要一个所有者。"
+      }
+    },
+    "kyb": {
+      "title": "企业认证 (KYB)",
+      "subtitle": "可选。提交登记证件以在公开页面显示已认证徽章。",
+      "addDocument": "添加文件",
+      "urlPlaceholder": "https://…（文件公开链接）",
+      "labelPlaceholder": "名称（可选）",
+      "submit": "提交审核",
+      "resubmit": "重新提交",
+      "submitting": "提交中…",
+      "withdraw": "撤回",
+      "status": {
+        "NONE": "未提交",
+        "PENDING": "审核中",
+        "APPROVED": "已认证",
+        "REJECTED": "已拒绝"
+      },
+      "kind": {
+        "REGISTRATION_CERT": "登记证",
+        "TAX_CERT": "税务证书",
+        "ID": "身份证件",
+        "OTHER": "其他"
+      },
+      "errors": {
+        "unauth": "请先登录。",
+        "forbidden": "仅限所有者。",
+        "invalid": "请检查输入。",
+        "not_found": "未找到。",
+        "already_verified": "已认证。",
+        "unknown": "未知错误"
       }
     }
   },

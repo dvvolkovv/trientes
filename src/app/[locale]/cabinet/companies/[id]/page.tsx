@@ -7,6 +7,7 @@ import { CompanyProfileForm } from "@/components/business/company-profile-form";
 import { PointForm } from "@/components/business/point-form";
 import { PointsList, type PointListItem } from "@/components/business/points-list";
 import { MembersSection } from "@/components/business/members-section";
+import { KybSection } from "@/components/business/kyb-section";
 
 export const dynamic = "force-dynamic";
 
@@ -96,6 +97,14 @@ export default async function CompanyManagementPage({
       ) : null}
 
       <MembersSection companyId={company.id} viewerId={userId} canManage={canManage} viewerRole={role} />
+
+      <KybSection
+        companyId={company.id}
+        status={company.kybStatus}
+        documents={company.kybDocuments}
+        rejectionReason={company.kybRejectionReason}
+        canManage={canManage}
+      />
     </main>
   );
 }

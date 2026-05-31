@@ -241,7 +241,12 @@
       "empty": "Nothing here.",
       "scope": {
         "companies": "Companies",
-        "points": "Points"
+        "points": "Points",
+        "kyb": "KYB"
+      },
+      "kyb": {
+        "title": "KYB queue",
+        "subtitle": "Approve or reject company verification submissions."
       }
     },
     "exchanges": {
@@ -517,6 +522,37 @@
         "user_not_found": "User not found.",
         "self": "Cannot add yourself.",
         "last_owner": "There must be at least one owner."
+      }
+    },
+    "kyb": {
+      "title": "Business verification (KYB)",
+      "subtitle": "Optional. Submit registration docs to display a Verified badge on your public profile.",
+      "addDocument": "Add document",
+      "urlPlaceholder": "https://… (public link to the document)",
+      "labelPlaceholder": "label (optional)",
+      "submit": "Submit for verification",
+      "resubmit": "Resubmit for review",
+      "submitting": "Submitting…",
+      "withdraw": "Withdraw",
+      "status": {
+        "NONE": "Not submitted",
+        "PENDING": "Under review",
+        "APPROVED": "Verified",
+        "REJECTED": "Rejected"
+      },
+      "kind": {
+        "REGISTRATION_CERT": "Registration",
+        "TAX_CERT": "Tax certificate",
+        "ID": "ID document",
+        "OTHER": "Other"
+      },
+      "errors": {
+        "unauth": "Sign in first.",
+        "forbidden": "Owners only.",
+        "invalid": "Check the values.",
+        "not_found": "Not found.",
+        "already_verified": "Already verified.",
+        "unknown": "Unknown error"
       }
     }
   },

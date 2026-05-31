@@ -241,7 +241,12 @@
       "empty": "Rien ici.",
       "scope": {
         "companies": "Entreprises",
-        "points": "Points"
+        "points": "Points",
+        "kyb": "KYB"
+      },
+      "kyb": {
+        "title": "File KYB",
+        "subtitle": "Approuve ou rejette les demandes de vérification."
       }
     },
     "exchanges": {
@@ -517,6 +522,37 @@
         "user_not_found": "Utilisateur introuvable.",
         "self": "Tu ne peux pas t'ajouter toi-même.",
         "last_owner": "Au moins un propriétaire est requis."
+      }
+    },
+    "kyb": {
+      "title": "Vérification d'entreprise (KYB)",
+      "subtitle": "Optionnel. Soumets les documents d'enregistrement pour afficher un badge Vérifié.",
+      "addDocument": "Ajouter un document",
+      "urlPlaceholder": "https://… (lien public vers le document)",
+      "labelPlaceholder": "libellé (facultatif)",
+      "submit": "Soumettre pour vérification",
+      "resubmit": "Resoumettre",
+      "submitting": "Envoi…",
+      "withdraw": "Retirer",
+      "status": {
+        "NONE": "Non soumis",
+        "PENDING": "En examen",
+        "APPROVED": "Vérifié",
+        "REJECTED": "Rejeté"
+      },
+      "kind": {
+        "REGISTRATION_CERT": "Enregistrement",
+        "TAX_CERT": "Certificat fiscal",
+        "ID": "Pièce d'identité",
+        "OTHER": "Autre"
+      },
+      "errors": {
+        "unauth": "Connecte-toi.",
+        "forbidden": "Propriétaires uniquement.",
+        "invalid": "Vérifie les valeurs.",
+        "not_found": "Introuvable.",
+        "already_verified": "Déjà vérifié.",
+        "unknown": "Erreur inconnue"
       }
     }
   },

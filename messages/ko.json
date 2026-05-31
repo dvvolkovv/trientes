@@ -241,7 +241,12 @@
       "empty": "비어 있습니다.",
       "scope": {
         "companies": "회사",
-        "points": "지점"
+        "points": "지점",
+        "kyb": "KYB"
+      },
+      "kyb": {
+        "title": "KYB 대기열",
+        "subtitle": "기업 인증 신청을 승인 또는 거부합니다."
       }
     },
     "exchanges": {
@@ -517,6 +522,37 @@
         "user_not_found": "사용자를 찾을 수 없습니다.",
         "self": "자기 자신을 추가할 수 없습니다.",
         "last_owner": "최소 한 명의 소유자가 필요합니다."
+      }
+    },
+    "kyb": {
+      "title": "사업자 인증 (KYB)",
+      "subtitle": "선택 사항. 등록 서류를 제출하면 프로필에 인증 배지가 표시됩니다.",
+      "addDocument": "서류 추가",
+      "urlPlaceholder": "https://… (서류 공개 링크)",
+      "labelPlaceholder": "라벨 (선택)",
+      "submit": "인증 요청",
+      "resubmit": "재제출",
+      "submitting": "전송 중…",
+      "withdraw": "취소",
+      "status": {
+        "NONE": "미제출",
+        "PENDING": "검토 중",
+        "APPROVED": "인증됨",
+        "REJECTED": "거부됨"
+      },
+      "kind": {
+        "REGISTRATION_CERT": "등록",
+        "TAX_CERT": "세무 증명",
+        "ID": "신분증",
+        "OTHER": "기타"
+      },
+      "errors": {
+        "unauth": "먼저 로그인하세요.",
+        "forbidden": "소유자만 가능합니다.",
+        "invalid": "값을 확인하세요.",
+        "not_found": "찾을 수 없습니다.",
+        "already_verified": "이미 인증되었습니다.",
+        "unknown": "알 수 없는 오류"
       }
     }
   },

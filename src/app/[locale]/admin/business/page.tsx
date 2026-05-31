@@ -3,10 +3,11 @@ import { prisma } from "@/lib/prisma";
 import { AdminNav } from "@/components/admin/nav";
 import { PointRow, type PointRowData } from "@/components/admin/point-row";
 import { CompanyRow, type CompanyRowData } from "@/components/admin/company-row";
+import { KybRow } from "@/components/admin/kyb-row";
 
 export const dynamic = "force-dynamic";
 
-type Scope = "companies" | "points";
+type Scope = "companies" | "points" | "kyb";
 
 export default async function AdminBusinessPage({
   params,
@@ -20,14 +21,14 @@ export default async function AdminBusinessPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("admin");
-  const scope: Scope = scopeParam === "points" ? "points" : "companies";
+  const scope: Scope = scopeParam === "points" ? "points" : scopeParam === "kyb" ? "kyb" : "companies";
   const status =
     tab === "approved" ? "APPROVED" : tab === "rejected" ? "REJECTED" : "PENDING";
 
   const tabsRow = (
     <div className="flex flex-wrap items-center gap-2 mb-6">
       <div className="flex gap-2">
-        {(["companies", "points"] as const).map((s) => {
+        {(["companies", "points", "kyb"] as const).map((s) => {
           const active = scope === s;
           const href = s === "companies" ? "?" : `?scope=${s}`;
           return (
@@ -63,6 +64,49 @@ export default async function AdminBusinessPage({
       </div>
     </div>
   );
+
+  if (scope === "kyb") {
+    const kybStatus =
+      tab === "approved" ? "APPROVED" : tab === "rejected" ? "REJECTED" : "PENDING";
+    const companies = await prisma.company.findMany({
+      where: { kybStatus },
+      orderBy: { kybSubmittedAt: "desc" },
+      take: 100,
+      include: { owner: { select: { username: true, email: true } } },
+    });
+    return (
+      <>
+        <AdminNav locale={locale} active="business" />
+        <header className="mb-8">
+          <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-3">Admin</div>
+          <h1 className="text-[40px] md:text-[48px] font-bold tracking-[-0.03em] mb-2">{t("business.kyb.title")}</h1>
+          <p className="text-muted">{t("business.kyb.subtitle")}</p>
+        </header>
+        {tabsRow}
+        {companies.length === 0 ? (
+          <div className="bg-card border border-hairline rounded-[20px] p-8 text-center text-muted">
+            {t("business.empty")}
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {companies.map((c) => (
+              <KybRow
+                key={c.id}
+                companyId={c.id}
+                displayName={c.displayName}
+                legalName={c.legalName}
+                ownerHandle={c.owner.username ?? c.owner.email ?? "—"}
+                status={c.kybStatus}
+                documents={c.kybDocuments}
+                submittedAt={c.kybSubmittedAt ? c.kybSubmittedAt.toISOString() : null}
+                rejectionReason={c.kybRejectionReason}
+              />
+            ))}
+          </div>
+        )}
+      </>
+    );
+  }
 
   if (scope === "points") {
     const points = await prisma.companyPoint.findMany({

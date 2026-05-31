@@ -241,7 +241,12 @@
       "empty": "ありません。",
       "scope": {
         "companies": "会社",
-        "points": "拠点"
+        "points": "拠点",
+        "kyb": "KYB"
+      },
+      "kyb": {
+        "title": "KYBキュー",
+        "subtitle": "事業者認証の申請を承認・却下します。"
       }
     },
     "exchanges": {
@@ -517,6 +522,37 @@
         "user_not_found": "ユーザーが見つかりません。",
         "self": "自分は追加できません。",
         "last_owner": "オーナーが少なくとも1人必要です。"
+      }
+    },
+    "kyb": {
+      "title": "事業者認証（KYB）",
+      "subtitle": "任意。登録書類を提出すると公開プロフィールに認証バッジが表示されます。",
+      "addDocument": "書類を追加",
+      "urlPlaceholder": "https://…（書類への公開リンク）",
+      "labelPlaceholder": "ラベル（任意）",
+      "submit": "認証申請を送信",
+      "resubmit": "再申請",
+      "submitting": "送信中…",
+      "withdraw": "取り下げ",
+      "status": {
+        "NONE": "未提出",
+        "PENDING": "審査中",
+        "APPROVED": "認証済み",
+        "REJECTED": "却下"
+      },
+      "kind": {
+        "REGISTRATION_CERT": "登記簿",
+        "TAX_CERT": "納税証明",
+        "ID": "本人確認書類",
+        "OTHER": "その他"
+      },
+      "errors": {
+        "unauth": "サインインしてください。",
+        "forbidden": "オーナーのみ。",
+        "invalid": "値を確認してください。",
+        "not_found": "見つかりません。",
+        "already_verified": "すでに認証済みです。",
+        "unknown": "不明なエラー"
       }
     }
   },

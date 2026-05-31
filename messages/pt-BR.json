@@ -241,7 +241,12 @@
       "empty": "Nada aqui.",
       "scope": {
         "companies": "Empresas",
-        "points": "Pontos"
+        "points": "Pontos",
+        "kyb": "KYB"
+      },
+      "kyb": {
+        "title": "Fila KYB",
+        "subtitle": "Aprove ou rejeite verificações de empresas."
       }
     },
     "exchanges": {
@@ -517,6 +522,37 @@
         "user_not_found": "Usuário não encontrado.",
         "self": "Você não pode adicionar a si mesmo.",
         "last_owner": "É necessário ao menos um proprietário."
+      }
+    },
+    "kyb": {
+      "title": "Verificação empresarial (KYB)",
+      "subtitle": "Opcional. Envie documentos de registro para exibir um selo Verificado.",
+      "addDocument": "Adicionar documento",
+      "urlPlaceholder": "https://… (link público para o documento)",
+      "labelPlaceholder": "rótulo (opcional)",
+      "submit": "Enviar para verificação",
+      "resubmit": "Reenviar",
+      "submitting": "Enviando…",
+      "withdraw": "Retirar",
+      "status": {
+        "NONE": "Não enviado",
+        "PENDING": "Em análise",
+        "APPROVED": "Verificado",
+        "REJECTED": "Rejeitado"
+      },
+      "kind": {
+        "REGISTRATION_CERT": "Registro",
+        "TAX_CERT": "Certificado fiscal",
+        "ID": "Documento de ID",
+        "OTHER": "Outro"
+      },
+      "errors": {
+        "unauth": "Entre primeiro.",
+        "forbidden": "Apenas proprietários.",
+        "invalid": "Confira os valores.",
+        "not_found": "Não encontrado.",
+        "already_verified": "Já verificado.",
+        "unknown": "Erro desconhecido"
       }
     }
   },

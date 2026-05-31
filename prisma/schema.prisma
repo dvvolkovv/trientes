@@ -56,6 +56,13 @@ enum CompanyRole {
   VIEWER
 }
 
+enum KybStatus {
+  NONE
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model CompanyMember {
   id          String      @id @default(cuid())
   companyId   String
@@ -382,8 +389,15 @@ model Company {
   updatedAt   DateTime       @updatedAt
   points      CompanyPoint[]
 
+  kybStatus           KybStatus  @default(NONE)
+  kybDocuments        Json?      // [{ kind, url, label }]
+  kybSubmittedAt      DateTime?
+  kybReviewedAt       DateTime?
+  kybRejectionReason  String?
+
   @@index([ownerUserId])
   @@index([status, createdAt])
+  @@index([kybStatus])
 }
 
 model CompanyPoint {

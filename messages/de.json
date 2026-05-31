@@ -241,7 +241,12 @@
       "empty": "Nichts hier.",
       "scope": {
         "companies": "Firmen",
-        "points": "Standorte"
+        "points": "Standorte",
+        "kyb": "KYB"
+      },
+      "kyb": {
+        "title": "KYB-Warteschlange",
+        "subtitle": "Verifizierungsanträge prüfen und entscheiden."
       }
     },
     "exchanges": {
@@ -517,6 +522,37 @@
         "user_not_found": "Benutzer nicht gefunden.",
         "self": "Du kannst dich nicht selbst hinzufügen.",
         "last_owner": "Mindestens ein Inhaber wird benötigt."
+      }
+    },
+    "kyb": {
+      "title": "Geschäftsprüfung (KYB)",
+      "subtitle": "Optional. Reiche Registrierungsunterlagen ein, um ein Verifiziert-Abzeichen zu erhalten.",
+      "addDocument": "Dokument hinzufügen",
+      "urlPlaceholder": "https://… (öffentlicher Link zum Dokument)",
+      "labelPlaceholder": "Bezeichnung (optional)",
+      "submit": "Zur Prüfung einreichen",
+      "resubmit": "Erneut einreichen",
+      "submitting": "Senden…",
+      "withdraw": "Zurückziehen",
+      "status": {
+        "NONE": "Nicht eingereicht",
+        "PENDING": "In Prüfung",
+        "APPROVED": "Verifiziert",
+        "REJECTED": "Abgelehnt"
+      },
+      "kind": {
+        "REGISTRATION_CERT": "Registrierung",
+        "TAX_CERT": "Steuerbescheinigung",
+        "ID": "Ausweisdokument",
+        "OTHER": "Sonstiges"
+      },
+      "errors": {
+        "unauth": "Bitte anmelden.",
+        "forbidden": "Nur Inhaber.",
+        "invalid": "Werte prüfen.",
+        "not_found": "Nicht gefunden.",
+        "already_verified": "Bereits verifiziert.",
+        "unknown": "Unbekannter Fehler"
       }
     }
   },
