@@ -9,7 +9,7 @@ import {
   type CompanyProfileInput,
   type CompanyPointInput,
 } from "@/lib/company";
-import { type PointType } from "@prisma/client";
+import { type PointType, type Prisma } from "@prisma/client";
 
 const MAX_PENDING_POINTS = 20;
 
@@ -103,6 +103,7 @@ export async function submitCompanyPoint(
       address: v.data.address,
       acceptedCoinIds: v.data.acceptedCoinIds,
       logoUrl: v.data.logoUrl,
+      photos: v.data.photos.length ? (v.data.photos as unknown as Prisma.InputJsonValue) : undefined,
       openingHours: v.data.openingHours,
       phone: v.data.phone,
       website: v.data.website,

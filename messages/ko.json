@@ -494,7 +494,13 @@
       "name_required": "이름이 필요합니다",
       "coords_invalid": "지도에 지점을 배치하세요",
       "too_many_pending": "검토 중인 지점이 너무 많습니다",
-      "generic": "문제가 발생했습니다"
+      "generic": "문제가 발생했습니다",
+      "too_large": "파일이 너무 큽니다",
+      "bad_type": "지원되지 않는 형식",
+      "no_file": "파일이 없습니다",
+      "company_required": "회사가 필요합니다",
+      "forbidden": "허용되지 않음",
+      "bad_form": "잘못된 요청"
     },
     "websiteHint": "https://, http:// 또는 그냥 www.example.com 모두 가능",
     "addressSection": "주소",
@@ -572,7 +578,9 @@
       "uploading": "업로드 중…",
       "uploadHint": "PDF / PNG / JPG — 최대 8 MB"
     },
-    "viewPublic": "공개 페이지 보기"
+    "viewPublic": "공개 페이지 보기",
+    "photos": "매장 사진",
+    "photo": "사진"
   },
   "cabinet": {
     "kicker": "섹션 · 캐비닛",

@@ -120,10 +120,12 @@ export type CompanyPointInput = {
   address?: string | null;
   acceptedCoinIds?: string[] | null;
   logoUrl?: string | null;
+  photos?: { url: string; label?: string | null }[] | null;
   openingHours?: string | null;
   phone?: string | null;
   website?: string | null;
 };
+export type PointPhoto = { url: string; label: string | null };
 export type ValidatedPoint = {
   type: PointTypeStr; name: string; description: string | null;
   // Online-only services skip coords entirely; everything else must have them.
@@ -131,8 +133,36 @@ export type ValidatedPoint = {
   countryCode: string | null; city: string | null; street: string | null;
   houseNumber: string | null; postalCode: string | null;
   address: string | null; acceptedCoinIds: string[]; logoUrl: string | null;
+  photos: PointPhoto[];
   openingHours: string | null; phone: string | null; website: string | null;
 };
+
+// Storefront photos: keep first 5, drop any URL that isn't http(s) or a local
+// /uploads/ path. Label trimmed to 80 chars to keep popups tidy.
+export function sanitizePointPhotos(raw: unknown): PointPhoto[] {
+  if (!Array.isArray(raw)) return [];
+  const out: PointPhoto[] = [];
+  for (const item of raw) {
+    if (out.length >= 5) break;
+    if (!item || typeof item !== "object") continue;
+    const url = (item as { url?: unknown }).url;
+    const label = (item as { label?: unknown }).label;
+    if (typeof url !== "string" || !url.trim()) continue;
+    const trimmed = url.trim();
+    let ok = false;
+    if (trimmed.startsWith("/uploads/")) ok = true;
+    else {
+      try {
+        const u = new URL(trimmed);
+        ok = u.protocol === "http:" || u.protocol === "https:";
+      } catch { ok = false; }
+    }
+    if (!ok) continue;
+    const cleanLabel = typeof label === "string" && label.trim() ? label.trim().slice(0, 80) : null;
+    out.push({ url: trimmed, label: cleanLabel });
+  }
+  return out;
+}
 export type PointResult =
   | { ok: true; data: ValidatedPoint }
   | { ok: false; reason: "type_invalid" | "name_required" | "coords_invalid" | "website_invalid" | "logo_invalid" };
@@ -175,7 +205,9 @@ export function validateCompanyPoint(input: CompanyPointInput): PointResult {
     ok: true,
     data: {
       type, name, description: t(input.description), lat, lon, ...structured, address,
-      acceptedCoinIds, logoUrl, openingHours: t(input.openingHours), phone: t(input.phone), website,
+      acceptedCoinIds, logoUrl,
+      photos: sanitizePointPhotos(input.photos),
+      openingHours: t(input.openingHours), phone: t(input.phone), website,
     },
   };
 }

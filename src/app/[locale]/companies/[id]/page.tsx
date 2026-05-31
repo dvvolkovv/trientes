@@ -50,7 +50,7 @@ export default async function PublicCompanyPage({
         take: 100,
         select: {
           id: true, type: true, name: true, address: true, lat: true, lon: true,
-          city: true, countryCode: true, openingHours: true, website: true,
+          city: true, countryCode: true, openingHours: true, website: true, photos: true,
         },
       },
     },
@@ -152,21 +152,33 @@ export default async function PublicCompanyPage({
         <section>
           <h2 className="text-[20px] font-semibold mb-3">{t("placesTitle")}</h2>
           <ul className="space-y-2">
-            {physicalPoints.map((p) => (
-              <li key={p.id} className="border border-hairline rounded-md px-3 py-2.5">
-                <div className="font-medium">{p.name}</div>
-                <div className="text-xs text-muted">{p.address ?? "—"}</div>
-                <div className="text-[11px] text-muted mt-1 flex flex-wrap gap-x-3">
-                  <span>{t(`pointType.${p.type}`)}</span>
-                  {p.openingHours ? <span>{p.openingHours}</span> : null}
-                  {p.lat !== null && p.lon !== null ? (
-                    <Link href={`/${locale}/coin/bitcoin`} className="text-accent underline">
-                      {t("openOnMap")} →
-                    </Link>
+            {physicalPoints.map((p) => {
+              const photos = Array.isArray(p.photos) ? (p.photos as { url?: unknown }[]).filter((x) => typeof x?.url === "string") : [];
+              return (
+                <li key={p.id} className="border border-hairline rounded-md px-3 py-2.5">
+                  <div className="font-medium">{p.name}</div>
+                  <div className="text-xs text-muted">{p.address ?? "—"}</div>
+                  <div className="text-[11px] text-muted mt-1 flex flex-wrap gap-x-3">
+                    <span>{t(`pointType.${p.type}`)}</span>
+                    {p.openingHours ? <span>{p.openingHours}</span> : null}
+                    {p.lat !== null && p.lon !== null ? (
+                      <Link href={`/${locale}/coin/bitcoin`} className="text-accent underline">
+                        {t("openOnMap")} →
+                      </Link>
+                    ) : null}
+                  </div>
+                  {photos.length > 0 ? (
+                    <div className="mt-2 flex gap-1.5 overflow-x-auto">
+                      {photos.map((ph, i) => (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img key={i} src={String((ph as { url: string }).url)} alt=""
+                          className="h-20 w-20 rounded-md object-cover flex-shrink-0 border border-hairline" />
+                      ))}
+                    </div>
                   ) : null}
-                </div>
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         </section>
       ) : null}

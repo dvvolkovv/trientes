@@ -494,7 +494,13 @@
       "name_required": "El nombre es obligatorio",
       "coords_invalid": "Sitúa el punto en el mapa",
       "too_many_pending": "Demasiados puntos pendientes",
-      "generic": "Algo salió mal"
+      "generic": "Algo salió mal",
+      "too_large": "Archivo demasiado grande",
+      "bad_type": "Tipo de archivo no admitido",
+      "no_file": "Sin archivo",
+      "company_required": "Empresa requerida",
+      "forbidden": "No permitido",
+      "bad_form": "Solicitud no válida"
     },
     "websiteHint": "Con https://, http:// o simplemente www.example.com — todo vale",
     "addressSection": "Dirección",
@@ -572,7 +578,9 @@
       "uploading": "Subiendo…",
       "uploadHint": "PDF / PNG / JPG — hasta 8 MB"
     },
-    "viewPublic": "Ver página pública"
+    "viewPublic": "Ver página pública",
+    "photos": "Fotos del local",
+    "photo": "Foto"
   },
   "cabinet": {
     "kicker": "Sección · Panel",

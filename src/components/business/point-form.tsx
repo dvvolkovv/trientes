@@ -50,6 +50,8 @@ export function PointForm({
   const [addr, setAddr] = useState<Addr>(EMPTY_ADDR);
   const [useCompanyAddr, setUseCompanyAddr] = useState(false);
   const [accepted, setAccepted] = useState<string[]>([]);
+  const [photos, setPhotos] = useState<{ url: string; label: string | null }[]>([]);
+  const [uploading, setUploading] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [geoStatus, setGeoStatus] = useState<"idle" | "loading" | "ok" | "fail">("idle");
   const [pending, start] = useTransition();
@@ -119,15 +121,38 @@ export function PointForm({
     if (useCompanyAddr && !addrEqual(next, companyAddress)) setUseCompanyAddr(false);
   }
 
+  async function uploadPhoto(file: File) {
+    if (photos.length >= 5) return;
+    setUploading(true);
+    setMsg(null);
+    try {
+      const fd = new FormData();
+      fd.append("companyId", companyId);
+      fd.append("file", file);
+      const res = await fetch("/api/business/point/upload", { method: "POST", body: fd });
+      const j = (await res.json()) as { ok?: boolean; url?: string; error?: string };
+      if (res.ok && j.url) {
+        setPhotos((p) => [...p, { url: j.url!, label: null }]);
+      } else {
+        setMsg(t(`err.${j.error ?? "generic"}`) ?? t("err.generic"));
+      }
+    } catch {
+      setMsg(t("err.generic"));
+    } finally {
+      setUploading(false);
+    }
+  }
+
   function save() {
     setMsg(null);
     start(async () => {
       const res = await submitCompanyPoint(companyId, {
         type, name, ...addr, lat: pos?.[1] ?? null, lon: pos?.[0] ?? null, acceptedCoinIds: accepted,
+        photos,
       });
       if (res.ok) {
         setMsg(t("pointSubmitted"));
-        setName(""); setAddr(EMPTY_ADDR); setAccepted([]); setUseCompanyAddr(false);
+        setName(""); setAddr(EMPTY_ADDR); setAccepted([]); setUseCompanyAddr(false); setPhotos([]);
         if (markerRef.current) { markerRef.current.remove(); markerRef.current = null; }
         setPos(null);
         router.refresh();
@@ -204,6 +229,29 @@ export function PointForm({
           );
         })}
       </div>
+      <div className="text-[12px] text-muted">{t("photos")} <span className="opacity-60">({photos.length}/5)</span></div>
+      <div className="flex flex-wrap gap-2">
+        {photos.map((p, i) => (
+          <div key={p.url} className="relative w-16 h-16 rounded-md overflow-hidden border border-hairline">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={p.url} alt="" className="w-full h-full object-cover" />
+            <button type="button"
+              onClick={() => setPhotos((arr) => arr.filter((_, idx) => idx !== i))}
+              className="absolute top-0 right-0 bg-black/60 text-white text-[10px] w-4 h-4 leading-4 text-center">
+              ×
+            </button>
+          </div>
+        ))}
+        {photos.length < 5 && (
+          <label className="w-16 h-16 rounded-md border border-dashed border-hairline flex items-center justify-center text-[11px] text-muted cursor-pointer hover:bg-bg-tint">
+            {uploading ? "↻" : "+ " + t("photo")}
+            <input type="file" accept="image/png,image/jpeg,image/webp" disabled={uploading}
+              onChange={(e) => { const f = e.target.files?.[0]; if (f) void uploadPhoto(f); e.target.value = ""; }}
+              className="hidden" />
+          </label>
+        )}
+      </div>
+
       <button type="button" disabled={pending || !name.trim() || (type !== "ONLINE" && !pos)} onClick={save}
         className="text-[13px] px-4 py-2 rounded-md font-medium bg-accent text-accent-foreground disabled:opacity-50">
         {t("submitPoint")}

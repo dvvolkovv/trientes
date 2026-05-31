@@ -45,6 +45,9 @@ export function companyPointToPoi(p: PointWithCompany, coinId: string): Poi {
   // Caller (fetchApprovedPointsInBbox) already filters by lat/lon bounds, which
   // implicitly excludes ONLINE-type points (their coords are null). The non-null
   // assertion here is documented by that invariant.
+  const firstPhoto = Array.isArray(p.photos)
+    ? (p.photos.find((ph) => ph && typeof ph === "object" && typeof (ph as { url?: unknown }).url === "string") as { url?: string } | undefined)
+    : undefined;
   return {
     id: `company/${p.id}`,
     lat: p.lat!,
@@ -60,7 +63,8 @@ export function companyPointToPoi(p: PointWithCompany, coinId: string): Poi {
     phone: p.phone ?? p.company.phone ?? null,
     email: p.company.email ?? null,
     socials: pointSocials.length ? pointSocials : asSocials(p.company.socials),
-    image: p.logoUrl ?? p.company.logoUrl ?? null,
+    // Storefront photo wins over generic logo for navigator-popup imagery.
+    image: firstPhoto?.url ?? p.logoUrl ?? p.company.logoUrl ?? null,
     description: p.description ?? p.company.description ?? null,
   };
 }

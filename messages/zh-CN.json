@@ -494,7 +494,13 @@
       "name_required": "请填写名称",
       "coords_invalid": "请在地图上标记地点",
       "too_many_pending": "审核中的地点过多",
-      "generic": "出错了"
+      "generic": "出错了",
+      "too_large": "文件过大",
+      "bad_type": "不支持的文件类型",
+      "no_file": "未选择文件",
+      "company_required": "需要公司",
+      "forbidden": "不允许",
+      "bad_form": "请求无效"
     },
     "websiteHint": "支持 https://、http:// 或直接 www.example.com",
     "addressSection": "地址",
@@ -572,7 +578,9 @@
       "uploading": "上传中…",
       "uploadHint": "PDF / PNG / JPG — 最大 8 MB"
     },
-    "viewPublic": "查看公开页面"
+    "viewPublic": "查看公开页面",
+    "photos": "店面照片",
+    "photo": "照片"
   },
   "cabinet": {
     "kicker": "板块 · 个人中心",

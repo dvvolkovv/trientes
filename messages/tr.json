@@ -494,7 +494,13 @@
       "name_required": "Ad gerekli",
       "coords_invalid": "Noktayı haritada yerleştirin",
       "too_many_pending": "Beklemede çok fazla nokta var",
-      "generic": "Bir şeyler ters gitti"
+      "generic": "Bir şeyler ters gitti",
+      "too_large": "Dosya çok büyük",
+      "bad_type": "Desteklenmeyen dosya türü",
+      "no_file": "Dosya yok",
+      "company_required": "Şirket gerekli",
+      "forbidden": "İzin yok",
+      "bad_form": "Geçersiz istek"
     },
     "websiteHint": "https://, http:// veya sadece www.example.com — hepsi geçerli",
     "addressSection": "Adres",
@@ -572,7 +578,9 @@
       "uploading": "Yükleniyor…",
       "uploadHint": "PDF / PNG / JPG — en fazla 8 MB"
     },
-    "viewPublic": "Genel sayfayı aç"
+    "viewPublic": "Genel sayfayı aç",
+    "photos": "İşyeri fotoğrafları",
+    "photo": "Fotoğraf"
   },
   "cabinet": {
     "kicker": "Bölüm · Kabin",

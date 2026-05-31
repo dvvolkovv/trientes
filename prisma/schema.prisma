@@ -450,6 +450,7 @@ model CompanyPoint {
   address         String?
   acceptedCoinIds String[]
   logoUrl         String?
+  photos          Json?         // [{ url, label? }], max 5
   openingHours    String?
   phone           String?
   website         String?

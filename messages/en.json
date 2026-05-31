@@ -494,7 +494,13 @@
       "name_required": "Name is required",
       "coords_invalid": "Place the point on the map",
       "too_many_pending": "Too many pending points",
-      "generic": "Something went wrong"
+      "generic": "Something went wrong",
+      "too_large": "File too large",
+      "bad_type": "Unsupported file type",
+      "no_file": "No file selected",
+      "company_required": "Company required",
+      "forbidden": "Not allowed",
+      "bad_form": "Invalid request"
     },
     "websiteHint": "https://, http://, or just www.example.com — all work",
     "addressSection": "Address",
@@ -572,7 +578,9 @@
       "uploading": "Uploading…",
       "uploadHint": "PDF / PNG / JPG — up to 8 MB"
     },
-    "viewPublic": "View public page"
+    "viewPublic": "View public page",
+    "photos": "Storefront photos",
+    "photo": "Photo"
   },
   "cabinet": {
     "kicker": "Section · Cabinet",

@@ -494,7 +494,13 @@
       "name_required": "Le nom est requis",
       "coords_invalid": "Placez le point sur la carte",
       "too_many_pending": "Trop de points en attente",
-      "generic": "Une erreur est survenue"
+      "generic": "Une erreur est survenue",
+      "too_large": "Fichier trop volumineux",
+      "bad_type": "Type de fichier non pris en charge",
+      "no_file": "Aucun fichier",
+      "company_required": "Entreprise requise",
+      "forbidden": "Interdit",
+      "bad_form": "Requête invalide"
     },
     "websiteHint": "Avec https://, http:// ou juste www.example.com — tout fonctionne",
     "addressSection": "Adresse",
@@ -572,7 +578,9 @@
       "uploading": "Téléversement…",
       "uploadHint": "PDF / PNG / JPG — jusqu'à 8 Mo"
     },
-    "viewPublic": "Voir la page publique"
+    "viewPublic": "Voir la page publique",
+    "photos": "Photos du lieu",
+    "photo": "Photo"
   },
   "cabinet": {
     "kicker": "Section · Espace personnel",

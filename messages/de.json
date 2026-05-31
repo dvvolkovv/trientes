@@ -494,7 +494,13 @@
       "name_required": "Name erforderlich",
       "coords_invalid": "Standort auf der Karte setzen",
       "too_many_pending": "Zu viele wartende Standorte",
-      "generic": "Etwas ist schiefgelaufen"
+      "generic": "Etwas ist schiefgelaufen",
+      "too_large": "Datei zu groß",
+      "bad_type": "Dateityp nicht unterstützt",
+      "no_file": "Keine Datei",
+      "company_required": "Firma erforderlich",
+      "forbidden": "Nicht erlaubt",
+      "bad_form": "Ungültige Anfrage"
     },
     "websiteHint": "Mit https://, http:// oder einfach www.example.com — alles möglich",
     "addressSection": "Adresse",
@@ -572,7 +578,9 @@
       "uploading": "Hochladen…",
       "uploadHint": "PDF / PNG / JPG — bis 8 MB"
     },
-    "viewPublic": "Öffentliche Seite öffnen"
+    "viewPublic": "Öffentliche Seite öffnen",
+    "photos": "Foto-Galerie",
+    "photo": "Foto"
   },
   "cabinet": {
     "kicker": "Bereich · Kabinett",

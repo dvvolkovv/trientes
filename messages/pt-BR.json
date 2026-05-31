@@ -494,7 +494,13 @@
       "name_required": "Nome é obrigatório",
       "coords_invalid": "Posicione o ponto no mapa",
       "too_many_pending": "Pontos pendentes demais",
-      "generic": "Algo deu errado"
+      "generic": "Algo deu errado",
+      "too_large": "Arquivo muito grande",
+      "bad_type": "Tipo de arquivo não suportado",
+      "no_file": "Sem arquivo",
+      "company_required": "Empresa obrigatória",
+      "forbidden": "Não permitido",
+      "bad_form": "Requisição inválida"
     },
     "websiteHint": "Com https://, http:// ou apenas www.example.com — tudo funciona",
     "addressSection": "Endereço",
@@ -572,7 +578,9 @@
       "uploading": "Enviando…",
       "uploadHint": "PDF / PNG / JPG — até 8 MB"
     },
-    "viewPublic": "Ver página pública"
+    "viewPublic": "Ver página pública",
+    "photos": "Fotos do local",
+    "photo": "Foto"
   },
   "cabinet": {
     "kicker": "Seção · Painel",

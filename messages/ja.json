@@ -494,7 +494,13 @@
       "name_required": "名前は必須です",
       "coords_invalid": "地図上に拠点を配置してください",
       "too_many_pending": "審査中の拠点が多すぎます",
-      "generic": "問題が発生しました"
+      "generic": "問題が発生しました",
+      "too_large": "ファイルが大きすぎます",
+      "bad_type": "サポート外の形式",
+      "no_file": "ファイル未選択",
+      "company_required": "会社が必要",
+      "forbidden": "許可されていません",
+      "bad_form": "不正なリクエスト"
     },
     "websiteHint": "https://、http://、または www.example.com の形式でOK",
     "addressSection": "住所",
@@ -572,7 +578,9 @@
       "uploading": "アップロード中…",
       "uploadHint": "PDF / PNG / JPG — 最大 8 MB"
     },
-    "viewPublic": "公開ページを見る"
+    "viewPublic": "公開ページを見る",
+    "photos": "店舗写真",
+    "photo": "写真"
   },
   "cabinet": {
     "kicker": "セクション · キャビネット",
