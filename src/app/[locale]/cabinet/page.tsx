@@ -71,6 +71,7 @@ export default async function CabinetPage({
         notifyTelegram={user.notifyTelegram}
         notifyEmail={user.notifyEmail}
         hasEmail={!!user.email}
+        emailVerified={!!user.emailVerified}
         hasTelegramLinked={!!telegramAccount}
         locale={locale}
       />

@@ -18,7 +18,8 @@
     "markets": "市場",
     "business": "ビジネス",
     "cabinet": "キャビネット",
-    "fintech": "Fintech"
+    "fintech": "Fintech",
+    "companies": "企業"
   },
   "home": {
     "title": "ようこそ",
@@ -641,7 +642,8 @@
         "telegram": "Telegram",
         "email": "メール",
         "telegramNotLinked": "Telegram でログインすると有効化できます。",
-        "emailNotSet": "プロフィールにメールを追加すると有効化できます。"
+        "emailNotSet": "プロフィールにメールを追加すると有効化できます。",
+        "emailNotVerified": "有効化するには先にメールを確認してください。"
       },
       "errors": {
         "unauth": "先にサインインしてください。",
@@ -894,5 +896,16 @@
       "COMPANY": "オフィス",
       "ONLINE": "オンライン"
     }
+  },
+  "companiesDirectory": {
+    "kicker": "ディレクトリ",
+    "title": "企業一覧",
+    "subtitle": "Trientes に登録された暗号資産対応の企業。",
+    "searchPlaceholder": "名前で検索",
+    "countryPlaceholder": "ISO-2",
+    "search": "検索",
+    "clear": "クリア",
+    "empty": "一致する企業はありません。",
+    "pageOf": "{pages} ページ中 {page}"
   }
 }

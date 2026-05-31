@@ -11,6 +11,7 @@ type Props = {
   notifyTelegram: boolean;
   notifyEmail: boolean;
   hasEmail: boolean;
+  emailVerified: boolean;
   hasTelegramLinked: boolean;
   locale: string;
 };
@@ -20,6 +21,7 @@ export async function AlertsSection({
   notifyTelegram,
   notifyEmail,
   hasEmail,
+  emailVerified,
   hasTelegramLinked,
   locale,
 }: Props) {
@@ -52,6 +54,7 @@ export async function AlertsSection({
         notifyTelegram={notifyTelegram}
         notifyEmail={notifyEmail}
         hasEmail={hasEmail}
+        emailVerified={emailVerified}
         hasTelegramLinked={hasTelegramLinked}
       />
 

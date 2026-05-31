@@ -47,6 +47,12 @@ export async function Navbar() {
             >
               {t("fintech")}
             </Link>
+            <Link
+              href={`/${locale}/companies`}
+              className="block py-3 text-base text-foreground hover:text-accent border-b border-hairline transition-colors"
+            >
+              {t("companies")}
+            </Link>
             {showCabinetLink ? (
               <Link
                 href={cabinetHref}
@@ -165,6 +171,12 @@ export async function Navbar() {
             className="hover:text-foreground transition-colors"
           >
             {t("fintech")}
+          </Link>
+          <Link
+            href={`/${locale}/companies`}
+            className="hover:text-foreground transition-colors"
+          >
+            {t("companies")}
           </Link>
           {showCabinetLink ? (
             <Link

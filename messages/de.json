@@ -18,7 +18,8 @@
     "markets": "Märkte",
     "business": "Business",
     "cabinet": "Kabinett",
-    "fintech": "Fintech"
+    "fintech": "Fintech",
+    "companies": "Unternehmen"
   },
   "home": {
     "title": "Willkommen",
@@ -641,7 +642,8 @@
         "telegram": "Telegram",
         "email": "E-Mail",
         "telegramNotLinked": "Einmal über Telegram anmelden zum Aktivieren.",
-        "emailNotSet": "E-Mail im Profil hinzufügen, um zu aktivieren."
+        "emailNotSet": "E-Mail im Profil hinzufügen, um zu aktivieren.",
+        "emailNotVerified": "E-Mail zuerst bestätigen, um zu aktivieren."
       },
       "errors": {
         "unauth": "Bitte zuerst anmelden.",
@@ -894,5 +896,16 @@
       "COMPANY": "Büro",
       "ONLINE": "Online"
     }
+  },
+  "companiesDirectory": {
+    "kicker": "Verzeichnis",
+    "title": "Unternehmen",
+    "subtitle": "Krypto-freundliche Unternehmen auf Trientes.",
+    "searchPlaceholder": "Nach Name suchen",
+    "countryPlaceholder": "ISO-2",
+    "search": "Suchen",
+    "clear": "Leeren",
+    "empty": "Keine Treffer.",
+    "pageOf": "Seite {page} von {pages}"
   }
 }

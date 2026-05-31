@@ -18,7 +18,8 @@
     "markets": "Markets",
     "business": "Business",
     "cabinet": "Cabinet",
-    "fintech": "Fintech"
+    "fintech": "Fintech",
+    "companies": "Companies"
   },
   "home": {
     "title": "Welcome",
@@ -641,7 +642,8 @@
         "telegram": "Telegram",
         "email": "Email",
         "telegramNotLinked": "Sign in once via Telegram to enable.",
-        "emailNotSet": "Add an email in your profile to enable."
+        "emailNotSet": "Add an email in your profile to enable.",
+        "emailNotVerified": "Verify your email first to enable."
       },
       "errors": {
         "unauth": "Sign in first.",
@@ -894,5 +896,16 @@
       "COMPANY": "Office",
       "ONLINE": "Online"
     }
+  },
+  "companiesDirectory": {
+    "kicker": "Directory",
+    "title": "Companies",
+    "subtitle": "Crypto-friendly businesses on Trientes.",
+    "searchPlaceholder": "Search by name",
+    "countryPlaceholder": "ISO-2",
+    "search": "Search",
+    "clear": "Clear",
+    "empty": "No companies match.",
+    "pageOf": "Page {page} of {pages}"
   }
 }

@@ -59,7 +59,7 @@ async function telegramChatIdForUser(userId: string): Promise<string | null> {
 export async function notifyUser(input: NotifyInput): Promise<NotifyResult> {
   const user = await prisma.user.findUnique({
     where: { id: input.userId },
-    select: { email: true, notifyTelegram: true, notifyEmail: true },
+    select: { email: true, emailVerified: true, notifyTelegram: true, notifyEmail: true },
   });
   if (!user) return { delivered: [], skipped: [{ channel: "telegram", reason: "no_user" }] };
 
@@ -82,6 +82,10 @@ export async function notifyUser(input: NotifyInput): Promise<NotifyResult> {
   if (user.notifyEmail) {
     if (!user.email) {
       skipped.push({ channel: "email", reason: "no_address" });
+    } else if (!user.emailVerified) {
+      // Hard gate: never send to an unverified address — protects us from being
+      // weaponised to spam strangers whose addresses someone put in their profile.
+      skipped.push({ channel: "email", reason: "not_verified" });
     } else {
       const subject = input.subject ?? input.text.split("\n", 1)[0]!.slice(0, 120);
       const r = await sendEmailViaResend({ to: user.email, subject, text: input.text, html: input.html });

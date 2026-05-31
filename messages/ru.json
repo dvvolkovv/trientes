@@ -18,7 +18,8 @@
     "markets": "Рынки",
     "business": "Бизнес",
     "cabinet": "Кабинет",
-    "fintech": "Финтех"
+    "fintech": "Финтех",
+    "companies": "Компании"
   },
   "home": {
     "title": "Добро пожаловать",
@@ -641,7 +642,8 @@
         "telegram": "Telegram",
         "email": "Email",
         "telegramNotLinked": "Войди через Telegram, чтобы включить.",
-        "emailNotSet": "Укажи email в профиле, чтобы включить."
+        "emailNotSet": "Укажи email в профиле, чтобы включить.",
+        "emailNotVerified": "Сначала подтверди email, чтобы включить."
       },
       "errors": {
         "unauth": "Сначала войдите.",
@@ -894,5 +896,16 @@
       "COMPANY": "Офис",
       "ONLINE": "Онлайн"
     }
+  },
+  "companiesDirectory": {
+    "kicker": "Каталог",
+    "title": "Компании",
+    "subtitle": "Бизнесы, принимающие криптовалюту, на Trientes.",
+    "searchPlaceholder": "Поиск по названию",
+    "countryPlaceholder": "ISO-2",
+    "search": "Найти",
+    "clear": "Сброс",
+    "empty": "По фильтрам ничего нет.",
+    "pageOf": "Стр. {page} из {pages}"
   }
 }

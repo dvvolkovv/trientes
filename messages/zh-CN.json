@@ -18,7 +18,8 @@
     "markets": "市场",
     "business": "企业",
     "cabinet": "个人中心",
-    "fintech": "Fintech"
+    "fintech": "Fintech",
+    "companies": "公司"
   },
   "home": {
     "title": "欢迎",
@@ -641,7 +642,8 @@
         "telegram": "Telegram",
         "email": "邮件",
         "telegramNotLinked": "使用 Telegram 登录一次以启用。",
-        "emailNotSet": "在个人资料中添加邮箱以启用。"
+        "emailNotSet": "在个人资料中添加邮箱以启用。",
+        "emailNotVerified": "请先验证邮箱以启用。"
       },
       "errors": {
         "unauth": "请先登录。",
@@ -894,5 +896,16 @@
       "COMPANY": "办公室",
       "ONLINE": "在线"
     }
+  },
+  "companiesDirectory": {
+    "kicker": "目录",
+    "title": "公司",
+    "subtitle": "在 Trientes 上接受加密货币的企业。",
+    "searchPlaceholder": "按名称搜索",
+    "countryPlaceholder": "ISO-2",
+    "search": "搜索",
+    "clear": "清除",
+    "empty": "暂无匹配。",
+    "pageOf": "第 {page} 页（共 {pages} 页）"
   }
 }

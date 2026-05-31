@@ -18,7 +18,8 @@
     "markets": "Marchés",
     "business": "Entreprises",
     "cabinet": "Espace personnel",
-    "fintech": "Fintech"
+    "fintech": "Fintech",
+    "companies": "Entreprises"
   },
   "home": {
     "title": "Bienvenue",
@@ -641,7 +642,8 @@
         "telegram": "Telegram",
         "email": "Email",
         "telegramNotLinked": "Connecte-toi via Telegram pour activer.",
-        "emailNotSet": "Ajoute un email dans ton profil pour activer."
+        "emailNotSet": "Ajoute un email dans ton profil pour activer.",
+        "emailNotVerified": "Vérifie ton email d'abord pour activer."
       },
       "errors": {
         "unauth": "Connecte-toi d'abord.",
@@ -894,5 +896,16 @@
       "COMPANY": "Bureau",
       "ONLINE": "En ligne"
     }
+  },
+  "companiesDirectory": {
+    "kicker": "Annuaire",
+    "title": "Entreprises",
+    "subtitle": "Entreprises acceptant les crypto sur Trientes.",
+    "searchPlaceholder": "Recherche par nom",
+    "countryPlaceholder": "ISO-2",
+    "search": "Rechercher",
+    "clear": "Effacer",
+    "empty": "Aucun résultat.",
+    "pageOf": "Page {page} sur {pages}"
   }
 }

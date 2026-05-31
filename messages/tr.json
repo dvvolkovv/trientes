@@ -18,7 +18,8 @@
     "markets": "Piyasalar",
     "business": "İşletme",
     "cabinet": "Kabin",
-    "fintech": "Fintech"
+    "fintech": "Fintech",
+    "companies": "Şirketler"
   },
   "home": {
     "title": "Hoş geldiniz",
@@ -641,7 +642,8 @@
         "telegram": "Telegram",
         "email": "E-posta",
         "telegramNotLinked": "Aktifleştirmek için Telegram ile giriş yap.",
-        "emailNotSet": "Aktifleştirmek için profile e-posta ekle."
+        "emailNotSet": "Aktifleştirmek için profile e-posta ekle.",
+        "emailNotVerified": "Etkinleştirmek için önce e-postanı doğrula."
       },
       "errors": {
         "unauth": "Önce giriş yap.",
@@ -894,5 +896,16 @@
       "COMPANY": "Ofis",
       "ONLINE": "Çevrimiçi"
     }
+  },
+  "companiesDirectory": {
+    "kicker": "Dizin",
+    "title": "Şirketler",
+    "subtitle": "Trientes üzerinde kripto kabul eden işletmeler.",
+    "searchPlaceholder": "Ada göre ara",
+    "countryPlaceholder": "ISO-2",
+    "search": "Ara",
+    "clear": "Temizle",
+    "empty": "Eşleşen sonuç yok.",
+    "pageOf": "{pages} sayfadan {page}"
   }
 }

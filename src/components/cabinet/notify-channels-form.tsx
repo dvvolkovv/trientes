@@ -9,11 +9,13 @@ export function NotifyChannelsForm({
   notifyTelegram,
   notifyEmail,
   hasEmail,
+  emailVerified,
   hasTelegramLinked,
 }: {
   notifyTelegram: boolean;
   notifyEmail: boolean;
   hasEmail: boolean;
+  emailVerified: boolean;
   hasTelegramLinked: boolean;
 }) {
   const t = useTranslations("cabinet.alerts.channels");
@@ -58,12 +60,14 @@ export function NotifyChannelsForm({
           <div>{t("email")}</div>
           {!hasEmail ? (
             <p className="text-[11px] text-yellow-500 mt-0.5">{t("emailNotSet")}</p>
+          ) : !emailVerified ? (
+            <p className="text-[11px] text-yellow-500 mt-0.5">{t("emailNotVerified")}</p>
           ) : null}
         </div>
         <input
           type="checkbox"
           checked={em}
-          disabled={pending || !hasEmail}
+          disabled={pending || !hasEmail || !emailVerified}
           onChange={(e) => commit({ em: e.target.checked })}
           className="h-4 w-4"
         />
