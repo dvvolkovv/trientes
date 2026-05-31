@@ -127,6 +127,7 @@ export default function CryptoNavigator({
     fintech: true,
   });
   const [counts, setCounts] = useState<Record<PoiLayer, number>>({ merchant: 0, atm: 0, financial: 0, fintech: 0 });
+  const [coinOnly, setCoinOnly] = useState(false);
   const [tooFar, setTooFar] = useState(false);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
@@ -493,6 +494,20 @@ export default function CryptoNavigator({
     map.setLayoutProperty(`poi-${layer}`, "visibility", next ? "visible" : "none");
   }
 
+  function toggleCoinOnly() {
+    const map = mapRef.current;
+    const next = !coinOnly;
+    setCoinOnly(next);
+    if (!map) return;
+    (["merchant", "atm", "financial", "fintech"] as PoiLayer[]).forEach((layer) => {
+      const base: maplibregl.FilterSpecification = ["==", ["get", "layer"], layer];
+      const filter: maplibregl.FilterSpecification = next
+        ? (["all", base, ["==", ["get", "coinSpecific"], true]] as maplibregl.FilterSpecification)
+        : base;
+      map.setFilter(`poi-${layer}`, filter);
+    });
+  }
+
   function submitSearch(e: React.FormEvent) {
     e.preventDefault();
     const q = query.trim();
@@ -701,6 +716,19 @@ export default function CryptoNavigator({
 
       {/* Legend + counts */}
       <div className="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={toggleCoinOnly}
+          title={t("coinOnlyHint")}
+          className={
+            "text-[12px] px-3 py-1.5 rounded-md border transition-all " +
+            (coinOnly
+              ? "bg-accent/15 text-accent border-accent/40"
+              : "border-hairline text-muted hover:text-foreground")
+          }
+        >
+          {coinOnly ? "✓ " : ""}{symbol.toUpperCase()} {t("coinOnly")}
+        </button>
         {(["merchant", "atm", "financial", "fintech"] as PoiLayer[]).map((layer) => (
           <button
             key={layer}

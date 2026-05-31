@@ -427,7 +427,9 @@
     "arrived": "Has llegado",
     "permissionDenied": "Geolocalización bloqueada. Actívala en los ajustes del navegador para seguir la ruta.",
     "startOnlyWalk": "Disponible solo para rutas a pie",
-    "navStarting": "Solicitando GPS…"
+    "navStarting": "Solicitando GPS…",
+    "coinOnly": "solo",
+    "coinOnlyHint": "Mostrar solo puntos que aceptan esta moneda"
   },
   "markets": {
     "title": "Mercados",

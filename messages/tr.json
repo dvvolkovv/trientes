@@ -427,7 +427,9 @@
     "arrived": "Hedefe ulaştınız",
     "permissionDenied": "Konum erişimi engellendi. Yönlendirme için tarayıcı ayarlarından etkinleştirin.",
     "startOnlyWalk": "Yalnızca yürüyüş rotaları için kullanılabilir",
-    "navStarting": "GPS isteniyor…"
+    "navStarting": "GPS isteniyor…",
+    "coinOnly": "sadece",
+    "coinOnlyHint": "Yalnızca bu coini kabul eden noktaları göster"
   },
   "markets": {
     "title": "Piyasalar",

@@ -427,7 +427,9 @@
     "arrived": "您已到达",
     "permissionDenied": "位置访问已被阻止。请在浏览器设置中开启以进行导航。",
     "startOnlyWalk": "仅适用于步行路线",
-    "navStarting": "正在请求 GPS…"
+    "navStarting": "正在请求 GPS…",
+    "coinOnly": "仅",
+    "coinOnlyHint": "仅显示接受该币的地点"
   },
   "markets": {
     "title": "市场",

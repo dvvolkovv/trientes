@@ -427,7 +427,9 @@
     "arrived": "Sie sind am Ziel",
     "permissionDenied": "Standortzugriff blockiert. Aktivieren Sie ihn in den Browsereinstellungen, um geführt zu werden.",
     "startOnlyWalk": "Nur für Fußrouten verfügbar",
-    "navStarting": "GPS wird angefordert…"
+    "navStarting": "GPS wird angefordert…",
+    "coinOnly": "nur",
+    "coinOnlyHint": "Nur Punkte zeigen, die diese Münze akzeptieren"
   },
   "markets": {
     "title": "Märkte",

@@ -427,7 +427,9 @@
     "arrived": "目的地に到着しました",
     "permissionDenied": "位置情報がブロックされています。ブラウザの設定で有効にしてください。",
     "startOnlyWalk": "徒歩ルートでのみ利用可能",
-    "navStarting": "GPS を要求中…"
+    "navStarting": "GPS を要求中…",
+    "coinOnly": "のみ",
+    "coinOnlyHint": "このコインを受け付けるポイントのみ表示"
   },
   "markets": {
     "title": "市場",
