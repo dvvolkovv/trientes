@@ -1,9 +1,37 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
+
+const SITE = process.env.PUBLIC_ORIGIN ?? "https://trientes.org";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; id: string }>;
+}): Promise<Metadata> {
+  const { locale, id } = await params;
+  const row = await prisma.company.findUnique({
+    where: { id },
+    select: { displayName: true, legalName: true, description: true, logoUrl: true, country: true, city: true, status: true, kybStatus: true },
+  });
+  if (!row || row.status !== "APPROVED") return {};
+  const verifiedPrefix = row.kybStatus === "APPROVED" ? "✓ " : "";
+  const title = `${verifiedPrefix}${row.displayName} — crypto-friendly business`;
+  const location = [row.city, row.country].filter(Boolean).join(", ");
+  const description = row.description?.slice(0, 200)
+    ?? `${row.displayName}${location ? ` (${location})` : ""} accepts crypto. Verified profile on Trientes.`;
+  const canonical = `${SITE}/${locale}/companies/${id}`;
+  return {
+    title, description,
+    alternates: { canonical },
+    openGraph: { title, description, url: canonical, images: row.logoUrl ? [{ url: row.logoUrl }] : undefined },
+    twitter: { card: "summary", title, description, images: row.logoUrl ? [row.logoUrl] : undefined },
+  };
+}
 
 export default async function PublicCompanyPage({
   params,

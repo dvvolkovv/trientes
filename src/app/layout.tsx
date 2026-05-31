@@ -17,9 +17,37 @@ const jetbrains = JetBrains_Mono({
   display: "swap",
 });
 
+const SITE = process.env.PUBLIC_ORIGIN ?? "https://trientes.org";
+
 export const metadata: Metadata = {
-  title: "Trientes — the ledger of digital coinage",
-  description: "Live ledger of top Layer-1 cryptocurrencies.",
+  metadataBase: new URL(SITE),
+  title: {
+    default: "Trientes — the ledger of digital coinage",
+    template: "%s · Trientes",
+  },
+  description:
+    "Live prices, exchanges, fintech directory and an on-the-ground crypto navigator across 10 languages.",
+  applicationName: "Trientes",
+  openGraph: {
+    type: "website",
+    siteName: "Trientes",
+    title: "Trientes — the ledger of digital coinage",
+    description:
+      "Live prices, exchanges, fintech directory and an on-the-ground crypto navigator.",
+    url: SITE,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Trientes",
+    description:
+      "Live prices, exchanges, fintech directory and crypto navigator.",
+  },
+  alternates: { canonical: SITE },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
 };
 
 export default function RootLayout({

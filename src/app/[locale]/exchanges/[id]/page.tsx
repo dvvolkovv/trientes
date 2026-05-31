@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
@@ -16,6 +17,30 @@ import { resolveCpId } from "@/lib/coinpaprika";
 import type { Exchange } from "@/lib/coingecko";
 
 export const revalidate = 60;
+
+const SITE = process.env.PUBLIC_ORIGIN ?? "https://trientes.org";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; id: string }>;
+}): Promise<Metadata> {
+  const { locale, id } = await params;
+  const row = await prisma.exchange.findUnique({
+    where: { id },
+    select: { name: true, logoUrl: true, country: true },
+  });
+  if (!row) return {};
+  const title = `${row.name} — exchange info, volume, trust score`;
+  const description = `${row.name}${row.country ? ` (${row.country})` : ""} on Trientes — trust score, 24h volume, trading pairs and listed coins.`;
+  const canonical = `${SITE}/${locale}/exchanges/${id}`;
+  return {
+    title, description,
+    alternates: { canonical },
+    openGraph: { title, description, url: canonical, images: row.logoUrl ? [{ url: row.logoUrl }] : undefined },
+    twitter: { card: "summary", title, description, images: row.logoUrl ? [row.logoUrl] : undefined },
+  };
+}
 
 export default async function ExchangeDetailPage({
   params,

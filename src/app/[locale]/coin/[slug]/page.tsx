@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
@@ -20,6 +21,44 @@ import { LivePrices } from "@/components/live-prices";
 import type { MarketRow } from "@/lib/coingecko";
 
 export const revalidate = 3600;
+
+const SITE = process.env.PUBLIC_ORIGIN ?? "https://trientes.org";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const coin = await prisma.coin.findUnique({
+    where: { slug },
+    select: { id: true, symbol: true, name: true, logoUrl: true },
+  });
+  if (!coin) return {};
+  const title = `${coin.name} (${coin.symbol.toUpperCase()}) price, chart & market data`;
+  const description = `Live ${coin.name} (${coin.symbol.toUpperCase()}) price, market cap, 24h volume, supply, exchanges and on-chain stats on Trientes.`;
+  const canonical = `${SITE}/${locale}/coin/${slug}`;
+
+  const languages: Record<string, string> = {};
+  for (const l of ["en","ru","de","es","fr","ja","ko","pt-BR","tr","zh-CN"]) {
+    languages[l] = `${SITE}/${l}/coin/${slug}`;
+  }
+
+  return {
+    title,
+    description,
+    alternates: { canonical, languages },
+    openGraph: {
+      title, description, url: canonical, type: "website",
+      images: coin.logoUrl ? [{ url: coin.logoUrl }] : undefined,
+    },
+    twitter: {
+      card: "summary",
+      title, description,
+      images: coin.logoUrl ? [coin.logoUrl] : undefined,
+    },
+  };
+}
 
 export default async function CoinDetailPage({
   params,
@@ -87,8 +126,32 @@ export default async function CoinDetailPage({
   const listed = listedAdapterExchanges(tickers);
   const availableExchanges = EXCHANGES.filter((e) => listed.has(e.id)).map((e) => e.id);
 
+  // JSON-LD: emit a Product-with-offers describing the coin so search engines
+  // can show price snippets. Crypto has no native schema.org type, so the
+  // industry convention is Product + offers in USD.
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: `${coin.name} (${coin.symbol.toUpperCase()})`,
+    image: coin.logoUrl ?? undefined,
+    description: `Live ${coin.name} (${coin.symbol.toUpperCase()}) market data on Trientes.`,
+    brand: { "@type": "Brand", name: coin.name },
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "USD",
+      price: row.priceUsd,
+      availability: "https://schema.org/InStock",
+      url: `${SITE}/${locale}/coin/${coin.slug ?? coin.id}`,
+    },
+  };
+
   return (
     <main className="max-w-[1600px] mx-auto px-4 md:px-12 xl:px-20 py-12 space-y-12 scroll-smooth">
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <LivePrices currency={currency} rates={rates} />
       <CoinHeader
         row={row}

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
@@ -5,6 +6,30 @@ import { sanitizeFintechSocials } from "@/lib/fintech";
 import { safeHttpUrl } from "@/lib/crypto-map";
 
 export const dynamic = "force-dynamic";
+
+const SITE = process.env.PUBLIC_ORIGIN ?? "https://trientes.org";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const row = await prisma.fintechCompany.findUnique({
+    where: { slug },
+    select: { displayName: true, description: true, logoUrl: true, status: true },
+  });
+  if (!row || row.status !== "APPROVED") return {};
+  const title = `${row.displayName} — fintech profile`;
+  const description = row.description?.slice(0, 200) ?? `${row.displayName} on Trientes — services, supported currencies, and where it's available.`;
+  const canonical = `${SITE}/${locale}/fintech/${slug}`;
+  return {
+    title, description,
+    alternates: { canonical },
+    openGraph: { title, description, url: canonical, images: row.logoUrl ? [{ url: row.logoUrl }] : undefined },
+    twitter: { card: "summary", title, description, images: row.logoUrl ? [row.logoUrl] : undefined },
+  };
+}
 
 export default async function FintechDetail({
   params,
