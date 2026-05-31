@@ -740,8 +740,14 @@
         "not_found": "Not found.",
         "not_pending": "Already reviewed.",
         "reason_too_short": "Reason is too short.",
-        "unknown": "Unknown error"
+        "unknown": "Unknown error",
+        "rate_limited": "24 saat içinde çok fazla gönderim — daha sonra tekrar deneyin."
       }
+    },
+    "panel": {
+      "title": "{country} ülkesinde mevcut",
+      "empty": "{country} için henüz fintech hizmeti yok.",
+      "loading": "Bu bölgedeki fintechler aranıyor…"
     }
   }
 }

@@ -11,9 +11,29 @@ import {
 } from "@/lib/fintech";
 import { redis } from "@/lib/redis";
 
+// Re-uses the LoginAttempt audit table to throttle saves per owner; keeps the
+// audit trail consistent with login/register without a 2nd table.
+const FINTECH_SAVE_WINDOW_MS = 24 * 60 * 60 * 1000;
+const FINTECH_SAVE_MAX_PER_USER = 10;
+const FINTECH_SAVE_IDENTIFIER = "__fintech_save__";
+
 async function requireUser(): Promise<string | null> {
   const session = await auth();
   return (session?.user as { id?: string } | undefined)?.id ?? null;
+}
+
+async function checkFintechSaveLimit(userId: string): Promise<{ blocked: boolean }> {
+  const since = new Date(Date.now() - FINTECH_SAVE_WINDOW_MS);
+  const count = await prisma.loginAttempt.count({
+    where: { userId, identifier: FINTECH_SAVE_IDENTIFIER, createdAt: { gte: since } },
+  });
+  return { blocked: count >= FINTECH_SAVE_MAX_PER_USER };
+}
+
+async function recordFintechSave(userId: string): Promise<void> {
+  await prisma.loginAttempt.create({
+    data: { ip: "server-action", identifier: FINTECH_SAVE_IDENTIFIER, success: true, userId },
+  });
 }
 
 async function bustAvailabilityCache(countryCodes: string[]) {
@@ -30,12 +50,17 @@ export async function saveOwnFintech(input: unknown) {
   const userId = await requireUser();
   if (!userId) return { ok: false as const, reason: "unauth" as const };
 
+  const limit = await checkFintechSaveLimit(userId);
+  if (limit.blocked) return { ok: false as const, reason: "rate_limited" as const };
+
   const parsed = fintechCreateSchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false as const, reason: "invalid" as const, details: parsed.error.flatten() };
   }
   const data: FintechCreateInput = parsed.data;
   const socials = data.socials ? sanitizeFintechSocials(data.socials) : null;
+
+  await recordFintechSave(userId);
 
   const baseData = {
     slug: data.slug,

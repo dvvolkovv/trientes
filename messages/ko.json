@@ -740,8 +740,14 @@
         "not_found": "Not found.",
         "not_pending": "Already reviewed.",
         "reason_too_short": "Reason is too short.",
-        "unknown": "Unknown error"
+        "unknown": "Unknown error",
+        "rate_limited": "24시간 동안 너무 많이 제출했습니다. 나중에 다시 시도해 주세요."
       }
+    },
+    "panel": {
+      "title": "{country}에서 이용 가능",
+      "empty": "{country}에서 이용할 수 있는 핀테크 서비스가 아직 없습니다.",
+      "loading": "이 지역의 핀테크 서비스를 찾는 중…"
     }
   }
 }

@@ -14,7 +14,8 @@ async function reverse(latRaw: string, lonRaw: string) {
   if (!Number.isFinite(lat) || !Number.isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180) {
     return NextResponse.json({ result: null }, { status: 400 });
   }
-  const cacheKey = `cmap:rgeo:${lat.toFixed(4)},${lon.toFixed(4)}`;
+  // v2 bumps the key after we started returning countryCode in the result body.
+  const cacheKey = `cmap:rgeo:v2:${lat.toFixed(4)},${lon.toFixed(4)}`;
   try {
     if (redis.status === "wait" || redis.status === "end") await redis.connect();
     const cached = await redis.get(cacheKey);

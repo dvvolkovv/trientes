@@ -740,8 +740,14 @@
         "not_found": "Not found.",
         "not_pending": "Already reviewed.",
         "reason_too_short": "Reason is too short.",
-        "unknown": "Unknown error"
+        "unknown": "Unknown error",
+        "rate_limited": "Too many submissions in 24h — please try again later."
       }
+    },
+    "panel": {
+      "title": "Available in {country}",
+      "empty": "No fintech services available in {country} yet.",
+      "loading": "Looking up fintech in this area…"
     }
   }
 }

@@ -740,8 +740,14 @@
         "not_found": "Not found.",
         "not_pending": "Already reviewed.",
         "reason_too_short": "Reason is too short.",
-        "unknown": "Unknown error"
+        "unknown": "Unknown error",
+        "rate_limited": "24小时内提交次数过多，请稍后再试。"
       }
+    },
+    "panel": {
+      "title": "{country} 可用",
+      "empty": "目前在 {country} 暂无可用的金融科技服务。",
+      "loading": "正在查找该地区的金融科技…"
     }
   }
 }

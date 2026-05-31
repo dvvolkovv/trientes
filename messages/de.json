@@ -740,8 +740,14 @@
         "not_found": "Not found.",
         "not_pending": "Already reviewed.",
         "reason_too_short": "Reason is too short.",
-        "unknown": "Unknown error"
+        "unknown": "Unknown error",
+        "rate_limited": "Zu viele Übermittlungen in 24 Stunden — bitte später erneut versuchen."
       }
+    },
+    "panel": {
+      "title": "Verfügbar in {country}",
+      "empty": "In {country} gibt es noch keine Fintech-Dienste.",
+      "loading": "Suche Fintechs in dieser Region…"
     }
   }
 }

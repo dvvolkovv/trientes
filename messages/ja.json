@@ -740,8 +740,14 @@
         "not_found": "Not found.",
         "not_pending": "Already reviewed.",
         "reason_too_short": "Reason is too short.",
-        "unknown": "Unknown error"
+        "unknown": "Unknown error",
+        "rate_limited": "24時間で送信回数が多すぎます — 後でもう一度お試しください。"
       }
+    },
+    "panel": {
+      "title": "{country}で利用可能",
+      "empty": "{country}で利用可能なフィンテックサービスはまだありません。",
+      "loading": "この地域のフィンテックを検索中…"
     }
   }
 }

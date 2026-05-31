@@ -218,7 +218,7 @@ export function parseOverpassElements(raw: unknown, coinTags: string[]): Poi[] {
   return out;
 }
 
-export type GeoResult = { label: string; lat: number; lon: number };
+export type GeoResult = { label: string; lat: number; lon: number; countryCode?: string };
 
 export function parseNominatim(raw: unknown): GeoResult[] {
   if (!Array.isArray(raw)) return [];
@@ -243,7 +243,11 @@ export function parseReverseGeocode(raw: unknown): GeoResult | null {
   const lon = Number(r.lon);
   const label = String(r.display_name ?? "").trim();
   if (!Number.isFinite(lat) || !Number.isFinite(lon) || !label) return null;
-  return { label, lat, lon };
+  // Nominatim with addressdetails=1 returns address.country_code as lower-case ISO-2.
+  const address = r.address as Record<string, unknown> | undefined;
+  const ccRaw = address && typeof address.country_code === "string" ? address.country_code.trim() : "";
+  const countryCode = /^[a-z]{2}$/i.test(ccRaw) ? ccRaw.toUpperCase() : undefined;
+  return { label, lat, lon, countryCode };
 }
 
 export type RouteMode = "walk" | "car" | "transit";
@@ -569,7 +573,7 @@ export async function fetchReverseGeocode(
   timeoutMs = 8000,
 ): Promise<GeoResult | null> {
   return withTimeout(timeoutMs, async (signal) => {
-    const url = `${NOMINATIM_REVERSE_URL}?format=jsonv2&lat=${lat}&lon=${lon}`;
+    const url = `${NOMINATIM_REVERSE_URL}?format=jsonv2&addressdetails=1&lat=${lat}&lon=${lon}`;
     const res = await fetch(url, {
       headers: { accept: "application/json", "user-agent": UA },
       cache: "no-store",

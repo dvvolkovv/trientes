@@ -17,6 +17,7 @@ import { StreetViewOverlay } from "@/components/coin-detail/street-view-overlay"
 import { CURATED_POIS, type CuratedPoi } from "@/lib/curated-pois";
 import { NavigationController, type NavigationCallbacks } from "./navigation-controller";
 import { haversineMeters } from "@/lib/route-geometry";
+import { AvailableFintechPanel } from "@/components/fintech/available-fintech-panel";
 
 // MapLibre flattens non-primitive feature properties to JSON strings, so `socials`
 // rides through the GeoJSON source as a string and is parsed back when a popup opens.
@@ -147,6 +148,8 @@ export default function CryptoNavigator({
   const [navError, setNavError] = useState<string | null>(null);
   const [pendingStart, setPendingStart] = useState(false);
   const navControllerRef = useRef<NavigationController | null>(null);
+  // Tracked map center for the AvailableFintechPanel — debounced inside the panel.
+  const [mapCenter, setMapCenter] = useState<{ lat: number; lon: number } | null>(null);
 
   // ---- POI loading for the current viewport ----
   const loadPois = useCallback(() => {
@@ -444,6 +447,8 @@ export default function CryptoNavigator({
     const onMoveEnd = () => {
       if (moveTimer.current) clearTimeout(moveTimer.current);
       moveTimer.current = setTimeout(loadPois, 500);
+      const c = map.getCenter();
+      setMapCenter({ lat: c.lat, lon: c.lng });
     };
     map.on("moveend", onMoveEnd);
 
@@ -691,6 +696,7 @@ export default function CryptoNavigator({
             {t("loading")}
           </div>
         )}
+        <AvailableFintechPanel center={mapCenter} />
       </div>
 
       {/* Legend + counts */}
