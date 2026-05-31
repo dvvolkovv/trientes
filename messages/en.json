@@ -538,13 +538,36 @@
       "title": "Preferences"
     },
     "alerts": {
-      "title": "Favorites & alerts",
-      "watchlistKicker": "Watchlist",
-      "watchlistTitle": "Favorite coins",
-      "watchlistBody": "Open your watchlist to manage coins you follow.",
-      "alertsKicker": "Coming soon",
-      "alertsTitle": "Price alerts",
-      "alertsBody": "Notifications for price and geo triggers — shipping in the next slice."
+      "title": "Price alerts",
+      "subtitle": "Get a notification the moment a coin crosses your threshold.",
+      "add": "Add alert",
+      "submit": "Add",
+      "submitting": "Adding…",
+      "coinSearchPlaceholder": "Search coin (e.g. BTC)",
+      "thresholdPlaceholder": "USD price",
+      "pickedHint": "{symbol} — {name}",
+      "triggered": "Fired",
+      "paused": "Paused",
+      "pause": "Pause",
+      "resume": "Resume",
+      "delete": "Delete",
+      "confirmDelete": "Delete this alert?",
+      "empty": "No alerts yet. Add one above.",
+      "watchlistLink": "Want to follow coins without alerts? Use your watchlist.",
+      "channels": {
+        "title": "Delivery channels",
+        "telegram": "Telegram",
+        "email": "Email",
+        "telegramNotLinked": "Sign in once via Telegram to enable.",
+        "emailNotSet": "Add an email in your profile to enable."
+      },
+      "errors": {
+        "unauth": "Sign in first.",
+        "invalid": "Check the values.",
+        "too_many": "You have reached the alert limit.",
+        "unknown_coin": "Unknown coin.",
+        "not_found": "Alert not found."
+      }
     },
     "companies": {
       "title": "My companies",

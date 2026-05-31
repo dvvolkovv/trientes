@@ -538,13 +538,36 @@
       "title": "設定"
     },
     "alerts": {
-      "title": "お気に入りとアラート",
-      "watchlistKicker": "ウォッチリスト",
-      "watchlistTitle": "お気に入りのコイン",
-      "watchlistBody": "ウォッチリストを開いて、フォロー中のコインを管理します。",
-      "alertsKicker": "近日公開",
-      "alertsTitle": "価格アラート",
-      "alertsBody": "価格や位置情報のトリガー通知 — 次のスライスで提供予定です。"
+      "title": "価格アラート",
+      "subtitle": "しきい値を超えた瞬間に通知します。",
+      "add": "アラート追加",
+      "submit": "追加",
+      "submitting": "追加中…",
+      "coinSearchPlaceholder": "コインを検索 (例: BTC)",
+      "thresholdPlaceholder": "USD 価格",
+      "pickedHint": "{symbol} — {name}",
+      "triggered": "発火済み",
+      "paused": "停止中",
+      "pause": "停止",
+      "resume": "再開",
+      "delete": "削除",
+      "confirmDelete": "このアラートを削除しますか？",
+      "empty": "アラートはまだありません。上から追加してください。",
+      "watchlistLink": "コインを追うだけならウォッチリストへ。",
+      "channels": {
+        "title": "配信チャネル",
+        "telegram": "Telegram",
+        "email": "メール",
+        "telegramNotLinked": "Telegram でログインすると有効化できます。",
+        "emailNotSet": "プロフィールにメールを追加すると有効化できます。"
+      },
+      "errors": {
+        "unauth": "先にサインインしてください。",
+        "invalid": "値を確認してください。",
+        "too_many": "アラート上限に達しました。",
+        "unknown_coin": "未知のコインです。",
+        "not_found": "アラートが見つかりません。"
+      }
     },
     "companies": {
       "title": "マイカンパニー",

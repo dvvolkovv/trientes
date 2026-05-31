@@ -538,13 +538,36 @@
       "title": "Настройки"
     },
     "alerts": {
-      "title": "Избранное и уведомления",
-      "watchlistKicker": "Избранное",
-      "watchlistTitle": "Любимые монеты",
-      "watchlistBody": "Откройте избранное, чтобы управлять отслеживаемыми монетами.",
-      "alertsKicker": "Скоро",
-      "alertsTitle": "Уведомления о ценах",
-      "alertsBody": "Уведомления по цене и геолокации — в следующем срезе."
+      "title": "Ценовые алерты",
+      "subtitle": "Уведомление как только цена пересекает порог.",
+      "add": "Добавить алерт",
+      "submit": "Добавить",
+      "submitting": "Добавляю…",
+      "coinSearchPlaceholder": "Найти монету (напр. BTC)",
+      "thresholdPlaceholder": "Цена в USD",
+      "pickedHint": "{symbol} — {name}",
+      "triggered": "Сработал",
+      "paused": "На паузе",
+      "pause": "Пауза",
+      "resume": "Включить",
+      "delete": "Удалить",
+      "confirmDelete": "Удалить этот алерт?",
+      "empty": "Алертов пока нет. Добавь выше.",
+      "watchlistLink": "Хочешь просто следить за монетами — есть избранное.",
+      "channels": {
+        "title": "Каналы доставки",
+        "telegram": "Telegram",
+        "email": "Email",
+        "telegramNotLinked": "Войди через Telegram, чтобы включить.",
+        "emailNotSet": "Укажи email в профиле, чтобы включить."
+      },
+      "errors": {
+        "unauth": "Сначала войдите.",
+        "invalid": "Проверьте значения.",
+        "too_many": "Достигнут лимит алертов.",
+        "unknown_coin": "Монета не найдена.",
+        "not_found": "Алерт не найден."
+      }
     },
     "companies": {
       "title": "Мои компании",

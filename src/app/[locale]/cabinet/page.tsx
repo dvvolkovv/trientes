@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { ensureUsername } from "@/lib/ensure-username";
 import { ProfileSection } from "@/components/cabinet/profile-section";
 import { SettingsSection } from "@/components/cabinet/settings-section";
-import { AlertsStub } from "@/components/cabinet/alerts-stub";
+import { AlertsSection } from "@/components/cabinet/alerts-section";
 import { CompaniesSection } from "@/components/cabinet/companies-section";
 import { ExchangesSection } from "@/components/cabinet/exchanges-section";
 
@@ -28,6 +28,11 @@ export default async function CabinetPage({
     user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) redirect(`/${locale}/login`);
   }
+
+  const telegramAccount = await prisma.account.findFirst({
+    where: { userId, provider: "telegram" },
+    select: { id: true },
+  });
 
   const t = await getTranslations("cabinet");
 
@@ -60,7 +65,14 @@ export default async function CabinetPage({
         initialTheme={user.preferredTheme}
       />
 
-      <AlertsStub locale={locale} />
+      <AlertsSection
+        userId={user.id}
+        notifyTelegram={user.notifyTelegram}
+        notifyEmail={user.notifyEmail}
+        hasEmail={!!user.email}
+        hasTelegramLinked={!!telegramAccount}
+        locale={locale}
+      />
 
       <CompaniesSection locale={locale} />
 

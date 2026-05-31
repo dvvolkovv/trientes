@@ -43,6 +43,35 @@ model User {
   loginAttempts     LoginAttempt[]
   ownedFintech      FintechCompany?     @relation("FintechOwner")
   reviewedFintechs  FintechCompany[]    @relation("FintechReviewer")
+  priceAlerts       PriceAlert[]
+  notifyTelegram    Boolean             @default(true)
+  notifyEmail       Boolean             @default(false)
+}
+
+enum AlertOp {
+  GTE
+  LTE
+}
+
+model PriceAlert {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  coinId      String   // CoinGecko id (e.g. "bitcoin")
+  symbol      String   // denormalized for fast display in cabinet + notification
+  op          AlertOp
+  threshold   Float    // USD
+
+  enabled     Boolean  @default(true)
+  triggered   Boolean  @default(false)   // re-arms with 3% hysteresis
+  lastFiredAt DateTime?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId, enabled])
+  @@index([enabled, coinId])
 }
 
 model Account {

@@ -538,13 +538,36 @@
       "title": "Einstellungen"
     },
     "alerts": {
-      "title": "Favoriten & Benachrichtigungen",
-      "watchlistKicker": "Watchlist",
-      "watchlistTitle": "Lieblings-Coins",
-      "watchlistBody": "Öffnen Sie Ihre Watchlist, um beobachtete Coins zu verwalten.",
-      "alertsKicker": "Demnächst",
-      "alertsTitle": "Preis-Benachrichtigungen",
-      "alertsBody": "Benachrichtigungen für Preis- und Geo-Trigger – kommen in der nächsten Phase."
+      "title": "Preis-Alerts",
+      "subtitle": "Bekomme eine Benachrichtigung, sobald ein Coin deinen Schwellenwert kreuzt.",
+      "add": "Alert hinzufügen",
+      "submit": "Hinzufügen",
+      "submitting": "Hinzufügen…",
+      "coinSearchPlaceholder": "Coin suchen (z. B. BTC)",
+      "thresholdPlaceholder": "USD-Preis",
+      "pickedHint": "{symbol} — {name}",
+      "triggered": "Ausgelöst",
+      "paused": "Pausiert",
+      "pause": "Pausieren",
+      "resume": "Fortsetzen",
+      "delete": "Löschen",
+      "confirmDelete": "Diesen Alert löschen?",
+      "empty": "Noch keine Alerts. Füge oben einen hinzu.",
+      "watchlistLink": "Nur Coins beobachten? Nutze deine Watchlist.",
+      "channels": {
+        "title": "Versandkanäle",
+        "telegram": "Telegram",
+        "email": "E-Mail",
+        "telegramNotLinked": "Einmal über Telegram anmelden zum Aktivieren.",
+        "emailNotSet": "E-Mail im Profil hinzufügen, um zu aktivieren."
+      },
+      "errors": {
+        "unauth": "Bitte zuerst anmelden.",
+        "invalid": "Bitte Werte prüfen.",
+        "too_many": "Alert-Limit erreicht.",
+        "unknown_coin": "Unbekannter Coin.",
+        "not_found": "Alert nicht gefunden."
+      }
     },
     "companies": {
       "title": "Meine Unternehmen",

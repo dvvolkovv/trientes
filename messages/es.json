@@ -538,13 +538,36 @@
       "title": "Preferencias"
     },
     "alerts": {
-      "title": "Favoritos y alertas",
-      "watchlistKicker": "Favoritos",
-      "watchlistTitle": "Monedas favoritas",
-      "watchlistBody": "Abre tus favoritos para gestionar las monedas que sigues.",
-      "alertsKicker": "Próximamente",
-      "alertsTitle": "Alertas de precio",
-      "alertsBody": "Notificaciones por precio y geolocalización — llegan en la siguiente entrega."
+      "title": "Alertas de precio",
+      "subtitle": "Recibe un aviso en cuanto el precio cruce tu umbral.",
+      "add": "Añadir alerta",
+      "submit": "Añadir",
+      "submitting": "Añadiendo…",
+      "coinSearchPlaceholder": "Buscar moneda (p. ej. BTC)",
+      "thresholdPlaceholder": "Precio en USD",
+      "pickedHint": "{symbol} — {name}",
+      "triggered": "Disparada",
+      "paused": "Pausada",
+      "pause": "Pausar",
+      "resume": "Reanudar",
+      "delete": "Eliminar",
+      "confirmDelete": "¿Eliminar esta alerta?",
+      "empty": "Aún no hay alertas. Añade una arriba.",
+      "watchlistLink": "¿Solo quieres seguir monedas? Usa tu lista.",
+      "channels": {
+        "title": "Canales de entrega",
+        "telegram": "Telegram",
+        "email": "Email",
+        "telegramNotLinked": "Inicia sesión con Telegram para activar.",
+        "emailNotSet": "Añade un email en tu perfil para activar."
+      },
+      "errors": {
+        "unauth": "Inicia sesión primero.",
+        "invalid": "Revisa los valores.",
+        "too_many": "Has alcanzado el límite de alertas.",
+        "unknown_coin": "Moneda desconocida.",
+        "not_found": "Alerta no encontrada."
+      }
     },
     "companies": {
       "title": "Mis empresas",

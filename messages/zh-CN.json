@@ -538,13 +538,36 @@
       "title": "偏好设置"
     },
     "alerts": {
-      "title": "收藏与提醒",
-      "watchlistKicker": "收藏",
-      "watchlistTitle": "收藏的币种",
-      "watchlistBody": "打开收藏夹管理您关注的币种。",
-      "alertsKicker": "即将推出",
-      "alertsTitle": "价格提醒",
-      "alertsBody": "价格与位置触发的通知 — 将在下一个版本推出。"
+      "title": "价格提醒",
+      "subtitle": "当代币越过你的阈值时立即收到通知。",
+      "add": "添加提醒",
+      "submit": "添加",
+      "submitting": "添加中…",
+      "coinSearchPlaceholder": "搜索代币（如 BTC）",
+      "thresholdPlaceholder": "USD 价格",
+      "pickedHint": "{symbol} — {name}",
+      "triggered": "已触发",
+      "paused": "已暂停",
+      "pause": "暂停",
+      "resume": "恢复",
+      "delete": "删除",
+      "confirmDelete": "删除该提醒？",
+      "empty": "暂无提醒，请在上方添加。",
+      "watchlistLink": "只想关注币种？使用你的关注列表。",
+      "channels": {
+        "title": "投递渠道",
+        "telegram": "Telegram",
+        "email": "邮件",
+        "telegramNotLinked": "使用 Telegram 登录一次以启用。",
+        "emailNotSet": "在个人资料中添加邮箱以启用。"
+      },
+      "errors": {
+        "unauth": "请先登录。",
+        "invalid": "请检查数值。",
+        "too_many": "已达到提醒上限。",
+        "unknown_coin": "未知的代币。",
+        "not_found": "未找到提醒。"
+      }
     },
     "companies": {
       "title": "我的公司",

@@ -10,6 +10,7 @@ import { fetchFearGreed } from "../src/lib/fear-greed";
 import { fetchMarkets } from "../src/lib/markets";
 import { syncPrices, syncGlobal, syncExchangeRates, syncCoinMetadata, syncExchanges, syncAdminAddedPrices, syncNews, syncFearGreed, syncMarkets, syncCoinPaprikaExchanges } from "../src/lib/sync/orchestrator";
 import { fetchCoinPaprikaExchanges, fetchCoinPaprikaExchangeDetail } from "../src/lib/coinpaprika";
+import { runAlertsEval } from "../src/lib/alerts-eval";
 import { startBinance, stopBinance } from "./binance";
 
 async function runPriceSync() {
@@ -174,6 +175,23 @@ async function runAdminAddedSync() {
   }
 }
 
+let alertsEvalRunning = false;
+async function runAlerts() {
+  if (alertsEvalRunning) return; // prior tick still running; skip silently
+  alertsEvalRunning = true;
+  const t0 = Date.now();
+  try {
+    const s = await runAlertsEval({ prisma: prisma as never, redis: redis as never });
+    if (s.fired > 0 || s.rearmed > 0) {
+      console.log(`[worker] alerts-eval ok: scanned=${s.scanned} fired=${s.fired} rearmed=${s.rearmed} skipped=${s.skipped} in ${Date.now() - t0}ms`);
+    }
+  } catch (err) {
+    console.error("[worker] alerts-eval failed:", err);
+  } finally {
+    alertsEvalRunning = false;
+  }
+}
+
 async function runCleanup() {
   const t0 = Date.now();
   try {
@@ -235,6 +253,9 @@ async function main() {
 
   // Daily kick; staleMs in syncCoinMetadata skips coins fetched within 7 days.
   cron.schedule("30 3 * * *", () => void runMetadataSync());
+
+  // Price alerts — every minute. Reads cached prices, no upstream API calls.
+  cron.schedule("* * * * *", () => void runAlerts());
 
   // Daily at 04:00 server time — runs after metadata-sync (03:30) so we don't
   // race with that job's read of latest snapshots.

@@ -538,13 +538,36 @@
       "title": "Tercihler"
     },
     "alerts": {
-      "title": "Favoriler ve uyarılar",
-      "watchlistKicker": "İzleme listesi",
-      "watchlistTitle": "Favori coinler",
-      "watchlistBody": "Takip ettiğiniz coinleri yönetmek için izleme listenizi açın.",
-      "alertsKicker": "Yakında",
-      "alertsTitle": "Fiyat uyarıları",
-      "alertsBody": "Fiyat ve konum tetikleyicileri için bildirimler — bir sonraki aşamada gelecek."
+      "title": "Fiyat uyarıları",
+      "subtitle": "Eşiği aştığı anda bildirim al.",
+      "add": "Uyarı ekle",
+      "submit": "Ekle",
+      "submitting": "Ekleniyor…",
+      "coinSearchPlaceholder": "Coin ara (örn. BTC)",
+      "thresholdPlaceholder": "USD fiyat",
+      "pickedHint": "{symbol} — {name}",
+      "triggered": "Tetiklendi",
+      "paused": "Duraklatıldı",
+      "pause": "Duraklat",
+      "resume": "Devam et",
+      "delete": "Sil",
+      "confirmDelete": "Bu uyarı silinsin mi?",
+      "empty": "Henüz uyarı yok. Yukarıdan ekle.",
+      "watchlistLink": "Sadece takip etmek mi istiyorsun? İzleme listeni kullan.",
+      "channels": {
+        "title": "Bildirim kanalları",
+        "telegram": "Telegram",
+        "email": "E-posta",
+        "telegramNotLinked": "Aktifleştirmek için Telegram ile giriş yap.",
+        "emailNotSet": "Aktifleştirmek için profile e-posta ekle."
+      },
+      "errors": {
+        "unauth": "Önce giriş yap.",
+        "invalid": "Değerleri kontrol et.",
+        "too_many": "Uyarı limitine ulaşıldı.",
+        "unknown_coin": "Bilinmeyen coin.",
+        "not_found": "Uyarı bulunamadı."
+      }
     },
     "companies": {
       "title": "Şirketlerim",
