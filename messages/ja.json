@@ -602,6 +602,28 @@
         "APPROVED": "承認済み",
         "REJECTED": "却下"
       }
+    },
+    "geoAlerts": {
+      "title": "ジオアラート",
+      "subtitle": "ウォッチ中の国に新しいフィンテックや暗号スポットが登場したら通知します。",
+      "submit": "追跡",
+      "submitting": "保存中…",
+      "countryPlaceholder": "ISO-2",
+      "notifyFintech": "フィンテック",
+      "notifyPoints": "スポット",
+      "empty": "まだ追跡している国はありません。",
+      "paused": "停止中",
+      "pause": "停止",
+      "resume": "再開",
+      "delete": "削除",
+      "confirmDelete": "この国の追跡を解除しますか？",
+      "errors": {
+        "unauth": "先にサインイン。",
+        "invalid": "コードが無効です。",
+        "duplicate": "すでに追跡中。",
+        "too_many": "上限に達しました。",
+        "no_channels": "1つ以上選んでください。"
+      }
     }
   },
   "register": {

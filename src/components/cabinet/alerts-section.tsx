@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { CreateAlertForm } from "@/components/cabinet/create-alert-form";
 import { AlertRow } from "@/components/cabinet/alert-row";
 import { NotifyChannelsForm } from "@/components/cabinet/notify-channels-form";
+import { GeoAlertsBlock } from "@/components/cabinet/geo-alerts-block";
 
 type Props = {
   userId: string;
@@ -83,6 +84,8 @@ export async function AlertsSection({
           {t("watchlistLink")}
         </Link>
       </p>
+
+      <GeoAlertsBlock userId={userId} />
     </section>
   );
 }

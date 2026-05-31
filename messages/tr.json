@@ -602,6 +602,28 @@
         "APPROVED": "Onaylandı",
         "REJECTED": "Reddedildi"
       }
+    },
+    "geoAlerts": {
+      "title": "Coğrafi uyarılar",
+      "subtitle": "Takip ettiğin ülkelerde yeni fintech veya kripto noktası çıktığında uyarı al.",
+      "submit": "Takip et",
+      "submitting": "Kaydediliyor…",
+      "countryPlaceholder": "ISO-2",
+      "notifyFintech": "Fintech",
+      "notifyPoints": "Noktalar",
+      "empty": "Henüz takip edilen ülke yok.",
+      "paused": "Duraklatıldı",
+      "pause": "Duraklat",
+      "resume": "Devam et",
+      "delete": "Sil",
+      "confirmDelete": "Bu ülkeyi takipten çıkar?",
+      "errors": {
+        "unauth": "Önce giriş yap.",
+        "invalid": "Geçersiz kod.",
+        "duplicate": "Zaten takipte.",
+        "too_many": "Limit doldu.",
+        "no_channels": "En az birini seç."
+      }
     }
   },
   "register": {

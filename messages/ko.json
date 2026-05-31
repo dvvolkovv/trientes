@@ -602,6 +602,28 @@
         "APPROVED": "승인됨",
         "REJECTED": "거부됨"
       }
+    },
+    "geoAlerts": {
+      "title": "지오 알림",
+      "subtitle": "관심 국가에 새 핀테크나 크립토 스팟이 등장하면 알려드립니다.",
+      "submit": "추적",
+      "submitting": "저장 중…",
+      "countryPlaceholder": "ISO-2",
+      "notifyFintech": "핀테크",
+      "notifyPoints": "장소",
+      "empty": "아직 추적 중인 국가가 없습니다.",
+      "paused": "일시정지",
+      "pause": "일시정지",
+      "resume": "재개",
+      "delete": "삭제",
+      "confirmDelete": "이 국가 추적을 중단할까요?",
+      "errors": {
+        "unauth": "먼저 로그인하세요.",
+        "invalid": "잘못된 코드입니다.",
+        "duplicate": "이미 추적 중입니다.",
+        "too_many": "한도에 도달했습니다.",
+        "no_channels": "최소 하나를 선택하세요."
+      }
     }
   },
   "register": {

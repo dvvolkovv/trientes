@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { checkAdmin } from "@/lib/is-admin";
 import { logAdminAction } from "@/lib/admin/audit";
+import { notifyGeoForPoint } from "@/lib/geo-alerts-notify";
 
 export async function approvePoint(input: { pointId: string }) {
   const admin = await checkAdmin();
@@ -19,6 +20,9 @@ export async function approvePoint(input: { pointId: string }) {
     actorId: admin.userId, action: "APPROVE_POINT", targetType: "CompanyPoint", targetId: point.id,
     details: { name: point.name, companyId: point.companyId },
   });
+  void notifyGeoForPoint({
+    id: point.id, name: point.name, countryCode: point.countryCode, companyId: point.companyId,
+  }).catch(() => {});
   revalidatePath("/", "layout");
   return { ok: true };
 }

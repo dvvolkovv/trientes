@@ -602,6 +602,28 @@
         "APPROVED": "Genehmigt",
         "REJECTED": "Abgelehnt"
       }
+    },
+    "geoAlerts": {
+      "title": "Geo-Alerts",
+      "subtitle": "Bekomme einen Hinweis, wenn ein Fintech oder Krypto-Ort in deinen Ländern erscheint.",
+      "submit": "Beobachten",
+      "submitting": "Speichern…",
+      "countryPlaceholder": "ISO-2",
+      "notifyFintech": "Fintech",
+      "notifyPoints": "Orte",
+      "empty": "Noch keine Länder beobachtet.",
+      "paused": "Pausiert",
+      "pause": "Pausieren",
+      "resume": "Fortsetzen",
+      "delete": "Löschen",
+      "confirmDelete": "Land entfernen?",
+      "errors": {
+        "unauth": "Bitte anmelden.",
+        "invalid": "Ungültiger Code.",
+        "duplicate": "Bereits beobachtet.",
+        "too_many": "Limit erreicht.",
+        "no_channels": "Mindestens eine Option wählen."
+      }
     }
   },
   "register": {

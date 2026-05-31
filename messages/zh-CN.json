@@ -602,6 +602,28 @@
         "APPROVED": "已通过",
         "REJECTED": "已拒绝"
       }
+    },
+    "geoAlerts": {
+      "title": "地理提醒",
+      "subtitle": "当你关注国家出现新的金融科技或加密场所时收到提醒。",
+      "submit": "关注",
+      "submitting": "保存中…",
+      "countryPlaceholder": "ISO-2",
+      "notifyFintech": "金融科技",
+      "notifyPoints": "场所",
+      "empty": "尚未关注任何国家。",
+      "paused": "已暂停",
+      "pause": "暂停",
+      "resume": "恢复",
+      "delete": "删除",
+      "confirmDelete": "取消关注此国家？",
+      "errors": {
+        "unauth": "请先登录。",
+        "invalid": "代码无效。",
+        "duplicate": "已在关注。",
+        "too_many": "已达上限。",
+        "no_channels": "请至少选择一种。"
+      }
     }
   },
   "register": {

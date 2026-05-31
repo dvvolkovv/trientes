@@ -11,6 +11,7 @@ import {
   type FintechCreateInput,
 } from "@/lib/fintech";
 import { redis } from "@/lib/redis";
+import { notifyGeoForFintech } from "@/lib/geo-alerts-notify";
 
 async function bustAvailabilityCache(countryCodes: string[]) {
   try {
@@ -64,6 +65,10 @@ export async function approveFintech(input: { id: string }) {
     details: { displayName: row.displayName, slug: row.slug },
   });
   await bustAvailabilityCache(row.availableIn);
+  // Fan out to GeoAlert subscribers (PENDING → APPROVED is the trigger edge).
+  void notifyGeoForFintech({
+    id: row.id, slug: row.slug, displayName: row.displayName, availableIn: row.availableIn,
+  }).catch(() => {});
   revalidatePath("/", "layout");
   return { ok: true as const };
 }
@@ -108,6 +113,9 @@ export async function createCuratedFintech(input: unknown) {
       details: { displayName: row.displayName, slug: row.slug },
     });
     await bustAvailabilityCache(parsed.data.availableIn);
+    void notifyGeoForFintech({
+      id: row.id, slug: row.slug, displayName: row.displayName, availableIn: row.availableIn,
+    }).catch(() => {});
     revalidatePath("/", "layout");
     return { ok: true as const, id: row.id };
   } catch (e) {

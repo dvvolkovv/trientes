@@ -602,6 +602,28 @@
         "APPROVED": "Approuvé",
         "REJECTED": "Refusé"
       }
+    },
+    "geoAlerts": {
+      "title": "Alertes géo",
+      "subtitle": "Sois notifié quand un fintech ou un lieu crypto arrive dans les pays que tu suis.",
+      "submit": "Suivre",
+      "submitting": "Enregistrement…",
+      "countryPlaceholder": "ISO-2",
+      "notifyFintech": "Fintech",
+      "notifyPoints": "Lieux",
+      "empty": "Aucun pays suivi.",
+      "paused": "En pause",
+      "pause": "Mettre en pause",
+      "resume": "Reprendre",
+      "delete": "Supprimer",
+      "confirmDelete": "Ne plus suivre ce pays ?",
+      "errors": {
+        "unauth": "Connecte-toi d'abord.",
+        "invalid": "Code invalide.",
+        "duplicate": "Déjà suivi.",
+        "too_many": "Limite atteinte.",
+        "no_channels": "Choisis au moins un canal."
+      }
     }
   },
   "register": {

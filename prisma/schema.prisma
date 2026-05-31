@@ -44,6 +44,7 @@ model User {
   ownedFintech      FintechCompany?     @relation("FintechOwner")
   reviewedFintechs  FintechCompany[]    @relation("FintechReviewer")
   priceAlerts       PriceAlert[]
+  geoAlerts         GeoAlert[]
   notifyTelegram    Boolean             @default(true)
   notifyEmail       Boolean             @default(false)
 }
@@ -72,6 +73,23 @@ model PriceAlert {
 
   @@index([userId, enabled])
   @@index([enabled, coinId])
+}
+
+model GeoAlert {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  countryCode   String   // ISO-3166-1 alpha-2
+
+  enabled       Boolean  @default(true)
+  notifyFintech Boolean  @default(true)
+  notifyPoints  Boolean  @default(true)
+
+  createdAt     DateTime @default(now())
+
+  @@unique([userId, countryCode])
+  @@index([countryCode, enabled])
 }
 
 model Account {
