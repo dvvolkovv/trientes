@@ -89,3 +89,13 @@ Downloads land at:
 - `https://trientes.org/downloads/` — autoindex listing
 
 Builds keep on disk the newest 20 versioned APKs (~80 MB ceiling).
+
+# Future project — «Нигингур» (global legal marketplace)
+
+Working name: **Нигингур** (Nigingur) — from the Sumerian concept of a lawkeeper / righteous judge (see the memory file for the etymology caveat: this exact form isn't attested; the documented Sumerian legal terms are `di-ku5` = judge, `níĝ-si-sá` = justice/equity, `níĝ-gi-na` = truth). Brand chosen anyway for uniqueness and mythic weight.
+
+**Vision:** an "Uber for lawyers" — a global marketplace where any lawyer, notary, or legal consultant can register, fill in a professional card, and be matched in real time to citizens who submit a legal request through a web form. Client submits problem → system routes to available lawyers by jurisdiction / specialty / language → instant online consultation (chat/video/call) → payment flows through platform.
+
+**Not yet built.** Currently a concept only. Save further design decisions, roadmap, and iteration notes under the `project_nigingur_legal_marketplace` memory file, not in this CLAUDE.md.
+
+**Brand & logo direction:** ancient Sumerian symbol of law rendered as a **chromed metal medallion**. Anchored on the historically authentic **rod-and-ring** symbol (the ancient Mesopotamian emblem of divine law — seen on the Hammurabi and Ur-Nammu stelae) plus the **rayed sun disc of Utu/Shamash** (Sumerian god of justice, patron of judges). Simple, memorable, symmetrical, ceremonial.

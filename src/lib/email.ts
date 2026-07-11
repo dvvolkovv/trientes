@@ -1,10 +1,17 @@
 import { Resend } from "resend";
 
 let client: Resend | null = null;
+let warned = false;
 
 function getClient(): Resend | null {
   const key = process.env.RESEND_API_KEY;
-  if (!key) return null;
+  if (!key) {
+    if (!warned) {
+      console.warn("[email] RESEND_API_KEY missing — email sending disabled");
+      warned = true;
+    }
+    return null;
+  }
   if (!client) client = new Resend(key);
   return client;
 }
