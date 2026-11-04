@@ -61,10 +61,37 @@ describe("exchange Binance responses", () => {
     }
   });
 
+  it("accepts decimal numeric strings only", () => {
+    for (const bad of ["0x10", "0b10", "0o10", "NaN", "Infinity", "1e", "12abc"]) {
+      expect(statusOf(() => parseTicker({ lastPrice: "1", priceChangePercent: bad, volume: "2", quoteVolume: "3" }))).toBe(502);
+    }
+    expect(parseTicker({ lastPrice: " +1.25e-2 ", priceChangePercent: "-1.5E+1", volume: ".5", quoteVolume: "2." })).toEqual({
+      lastPrice: 0.0125,
+      priceChangePercent: -15,
+      volume: 0.5,
+      quoteVolume: 2,
+    });
+  });
+
+  it("requires safe nonnegative integer candle milliseconds", () => {
+    for (const bad of [1_793_799_600_000.5, -1, Number.MAX_VALUE]) {
+      expect(statusOf(() => parseKlines([[bad, "1", "2", "0.5", "1.5", "4"]]))).toBe(502);
+    }
+  });
+
   it("maps an unknown pair to 404 and upstream failures to 502/503", async () => {
     const missing = async () => new Response(JSON.stringify({ code: -1121, msg: "Invalid symbol." }), { status: 400 });
     await expect(fetchExchangeKlines("NOSUCHPAIR", "1h", 10, missing as typeof fetch)).rejects.toMatchObject({ status: 404, code: "pair_unavailable" });
     const limited = async () => new Response("rate limited", { status: 429 });
     await expect(fetchExchangeTicker("ETHBTC", limited as typeof fetch)).rejects.toMatchObject({ status: 503 });
+  });
+
+  it.each([
+    { upstream: "418 response", status: 503, code: "upstream_rate_limited", fetcher: async () => new Response("banned", { status: 418 }) },
+    { upstream: "500 response", status: 502, code: "upstream_unavailable", fetcher: async () => new Response("broken", { status: 500 }) },
+    { upstream: "rejected fetch", status: 502, code: "upstream_unavailable", fetcher: async () => { throw new Error("offline"); } },
+    { upstream: "malformed JSON", status: 502, code: "upstream_shape", fetcher: async () => new Response("{", { status: 200 }) },
+  ])("maps $upstream to $status", async ({ fetcher, status, code }) => {
+    await expect(fetchExchangeTicker("ETHBTC", fetcher as typeof fetch)).rejects.toMatchObject({ status, code });
   });
 });

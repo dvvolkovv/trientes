@@ -35,12 +35,17 @@ export function parseLimit(value: string | null): number {
   return limit;
 }
 
+const DECIMAL_NUMBER = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/;
+
 const finite = (value: unknown): number => {
-  if ((typeof value !== "number" && typeof value !== "string") ||
-      (typeof value === "string" && value.trim() === "")) {
+  let n: number;
+  if (typeof value === "number") {
+    n = value;
+  } else if (typeof value === "string" && DECIMAL_NUMBER.test(value.trim())) {
+    n = Number(value.trim());
+  } else {
     throw new ExchangeApiError(502, "upstream_shape");
   }
-  const n = Number(value);
   if (!Number.isFinite(n)) throw new ExchangeApiError(502, "upstream_shape");
   return n;
 };
@@ -50,8 +55,10 @@ export function parseKlines(raw: unknown): OHLCV[] {
   let previous = -1;
   return raw.map((item) => {
     if (!Array.isArray(item) || item.length < 6) throw new ExchangeApiError(502, "upstream_shape");
+    const milliseconds = finite(item[0]);
+    if (!Number.isSafeInteger(milliseconds) || milliseconds < 0) throw new ExchangeApiError(502, "upstream_shape");
     const candle = {
-      time: Math.floor(finite(item[0]) / 1000),
+      time: Math.floor(milliseconds / 1000),
       open: finite(item[1]),
       high: finite(item[2]),
       low: finite(item[3]),
