@@ -164,12 +164,12 @@ export async function Navbar() {
 
         <a
           href={exchangeHref}
-          className="hidden md:block 2xl:hidden hover:text-foreground transition-colors text-sm text-muted whitespace-nowrap shrink-0"
+          className="hidden md:block min-[1800px]:hidden hover:text-foreground transition-colors text-sm text-muted whitespace-nowrap shrink-0"
         >
           {t("exchange")}
         </a>
 
-        <nav className="hidden 2xl:flex items-center gap-1 text-sm text-muted whitespace-nowrap shrink-0">
+        <nav className="hidden min-[1800px]:flex items-center gap-1 text-sm text-muted whitespace-nowrap shrink-0">
           <Link
             href={`/${locale}`}
             className="hover:text-foreground transition-colors"
@@ -247,7 +247,7 @@ export async function Navbar() {
         </nav>
 
         <div className="ml-auto hidden md:flex items-center gap-2 shrink-0 whitespace-nowrap">
-          <div className="w-[214px] 2xl:w-[150px] shrink-0">
+          <div className="w-[214px] min-[1800px]:w-[150px] shrink-0">
             <GlobalSearch />
           </div>
           <div className="hidden lg:flex items-center gap-2">
