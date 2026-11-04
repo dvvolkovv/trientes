@@ -162,7 +162,14 @@ export async function Navbar() {
           </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-6 text-sm text-muted">
+        <a
+          href={exchangeHref}
+          className="hidden md:block xl:hidden hover:text-foreground transition-colors text-sm text-muted"
+        >
+          {t("exchange")}
+        </a>
+
+        <nav className="hidden xl:flex items-center gap-3 text-sm text-muted">
           <Link
             href={`/${locale}`}
             className="hover:text-foreground transition-colors"
@@ -186,19 +193,19 @@ export async function Navbar() {
           </a>
           <Link
             href={`/${locale}/fintech`}
-            className="hover:text-foreground transition-colors"
+            className="hidden 2xl:block hover:text-foreground transition-colors"
           >
             {t("fintech")}
           </Link>
           <Link
             href={`/${locale}/companies`}
-            className="hover:text-foreground transition-colors"
+            className="hidden 2xl:block hover:text-foreground transition-colors"
           >
             {t("companies")}
           </Link>
           <Link
             href={`/${locale}/services`}
-            className="hover:text-foreground transition-colors"
+            className="hidden 2xl:block hover:text-foreground transition-colors"
           >
             {t("services")}
           </Link>
@@ -225,7 +232,7 @@ export async function Navbar() {
           </Link>
           <Link
             href={`/${locale}/request`}
-            className="hover:text-foreground transition-colors"
+            className="hidden 2xl:block hover:text-foreground transition-colors"
           >
             {t("request")}
           </Link>
