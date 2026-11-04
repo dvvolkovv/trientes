@@ -122,3 +122,8 @@ export async function fetchExchangeTicker(symbol: string, fetcher: typeof fetch 
 export function klinesTtl(interval: string): number {
   return ({ "1s": 2, "1m": 5, "5m": 10, "15m": 15, "1h": 60, "4h": 300, "1d": 600, "1w": 1800, "1M": 3600 } as Record<string, number>)[interval] ?? 5;
 }
+
+export function exchangeErrorStatus(error: unknown): { status: number; code: string } {
+  if (error instanceof ExchangeApiError) return { status: error.status, code: error.code };
+  return { status: 502, code: "upstream_unavailable" };
+}

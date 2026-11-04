@@ -1,0 +1,43 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+const mocks = vi.hoisted(() => ({
+  get: vi.fn(),
+  set: vi.fn(),
+  klines: vi.fn(),
+  ticker: vi.fn(),
+}));
+vi.mock("@/lib/exchange-cache", () => ({ cacheGet: mocks.get, cacheSet: mocks.set }));
+vi.mock("@/lib/exchange-binance", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/exchange-binance")>();
+  return { ...actual, fetchExchangeKlines: mocks.klines, fetchExchangeTicker: mocks.ticker };
+});
+
+import { GET as klinesGET } from "@/app/api/exchange/klines/route";
+import { GET as tickerGET } from "@/app/api/exchange/ticker/route";
+
+beforeEach(() => vi.clearAllMocks());
+
+describe("exchange routes", () => {
+  it("rejects malformed input before cache or upstream", async () => {
+    const response = await klinesGET(new Request("https://trientes.org/api/exchange/klines?symbol=ETH%2FBTC"));
+    expect(response.status).toBe(400);
+    expect(mocks.get).not.toHaveBeenCalled();
+    expect(mocks.klines).not.toHaveBeenCalled();
+  });
+
+  it("serves a cached klines response with x-cache: hit", async () => {
+    mocks.get.mockResolvedValue({ source: "binance", symbol: "ETHBTC", interval: "1h", fetchedAt: 1, candles: [] });
+    const response = await klinesGET(new Request("https://trientes.org/api/exchange/klines?symbol=ETHBTC&interval=1h&limit=720"));
+    expect(response.status).toBe(200);
+    expect(response.headers.get("x-cache")).toBe("hit");
+    expect(mocks.klines).not.toHaveBeenCalled();
+  });
+
+  it("fetches and caches a ticker on a miss", async () => {
+    mocks.get.mockResolvedValue(null);
+    mocks.ticker.mockResolvedValue({ source: "binance", symbol: "ETHBTC", fetchedAt: 1, lastPrice: 0.0358, priceChangePercent: 1.24, volume: 10, quoteVolume: 0.358 });
+    const response = await tickerGET(new Request("https://trientes.org/api/exchange/ticker?symbol=ETHBTC"));
+    expect(response.status).toBe(200);
+    expect(mocks.set).toHaveBeenCalledWith("exchange:ticker:ETHBTC", expect.anything(), 5);
+  });
+});
