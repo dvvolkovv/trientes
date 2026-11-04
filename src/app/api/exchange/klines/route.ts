@@ -4,10 +4,10 @@ import {
   exchangeErrorStatus,
   fetchExchangeKlines,
   klinesTtl,
+  parseCachedKlines,
   parseInterval,
   parseLimit,
   parseSymbol,
-  type KlinesResult,
 } from "@/lib/exchange-binance";
 
 export const dynamic = "force-dynamic";
@@ -19,7 +19,7 @@ export async function GET(req: Request) {
     const interval = parseInterval(query.get("interval"));
     const limit = parseLimit(query.get("limit"));
     const key = `exchange:klines:${symbol}:${interval}:${limit}`;
-    const cached = await cacheGet<KlinesResult>(key);
+    const cached = parseCachedKlines(await cacheGet<unknown>(key), symbol, interval);
     if (cached) return NextResponse.json(cached, { headers: { "x-cache": "hit" } });
     const result = await fetchExchangeKlines(symbol, interval, limit);
     await cacheSet(key, result, klinesTtl(interval));

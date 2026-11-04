@@ -123,6 +123,40 @@ export function klinesTtl(interval: string): number {
   return ({ "1s": 2, "1m": 5, "5m": 10, "15m": 15, "1h": 60, "4h": 300, "1d": 600, "1w": 1800, "1M": 3600 } as Record<string, number>)[interval] ?? 5;
 }
 
+const isFiniteNumber = (value: unknown): value is number => typeof value === "number" && Number.isFinite(value);
+const isSafeTimestamp = (value: unknown): value is number => Number.isSafeInteger(value) && (value as number) >= 0;
+
+export function parseCachedKlines(value: unknown, symbol: string, interval: string): KlinesResult | null {
+  if (typeof value !== "object" || value === null) return null;
+  const cached = value as Record<string, unknown>;
+  if (cached.source !== "binance" || cached.symbol !== symbol || cached.interval !== interval ||
+      !isSafeTimestamp(cached.fetchedAt) || !Array.isArray(cached.candles)) return null;
+  const candles: OHLCV[] = [];
+  let previous = -1;
+  for (const item of cached.candles) {
+    if (typeof item !== "object" || item === null) return null;
+    const candle = item as Record<string, unknown>;
+    const { time, open, high, low, close, volume } = candle;
+    if (!Number.isSafeInteger(time) || (time as number) < 0 || (time as number) <= previous ||
+        !isFiniteNumber(open) || !isFiniteNumber(high) || !isFiniteNumber(low) ||
+        !isFiniteNumber(close) || !isFiniteNumber(volume) || open <= 0 || close <= 0 || low <= 0 ||
+        high < Math.max(open, close, low) || low > Math.min(open, close, high) || volume < 0) return null;
+    candles.push({ time: time as number, open, high, low, close, volume });
+    previous = time as number;
+  }
+  return { source: "binance", symbol, interval, fetchedAt: cached.fetchedAt, candles };
+}
+
+export function parseCachedTicker(value: unknown, symbol: string): TickerResult | null {
+  if (typeof value !== "object" || value === null) return null;
+  const cached = value as Record<string, unknown>;
+  const { fetchedAt, lastPrice, priceChangePercent, volume, quoteVolume } = cached;
+  if (cached.source !== "binance" || cached.symbol !== symbol || !isSafeTimestamp(fetchedAt) ||
+      !isFiniteNumber(lastPrice) || !isFiniteNumber(priceChangePercent) || !isFiniteNumber(volume) ||
+      !isFiniteNumber(quoteVolume) || lastPrice <= 0 || volume < 0 || quoteVolume < 0) return null;
+  return { source: "binance", symbol, fetchedAt, lastPrice, priceChangePercent, volume, quoteVolume };
+}
+
 export function exchangeErrorStatus(error: unknown): { status: number; code: string } {
   if (error instanceof ExchangeApiError) return { status: error.status, code: error.code };
   return { status: 502, code: "upstream_unavailable" };
