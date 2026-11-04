@@ -36,6 +36,10 @@ export function parseLimit(value: string | null): number {
 }
 
 const finite = (value: unknown): number => {
+  if ((typeof value !== "number" && typeof value !== "string") ||
+      (typeof value === "string" && value.trim() === "")) {
+    throw new ExchangeApiError(502, "upstream_shape");
+  }
   const n = Number(value);
   if (!Number.isFinite(n)) throw new ExchangeApiError(502, "upstream_shape");
   return n;

@@ -52,6 +52,15 @@ describe("exchange Binance responses", () => {
     expect(statusOf(() => parseKlines([[1_793_799_600_000, "1", "2", "0.5", "NaN", "4"]]))).toBe(502);
   });
 
+  it("rejects non-numeric coercions in candle time, volume and ticker fields", () => {
+    for (const bad of [null, "", " ", false, []]) {
+      expect(statusOf(() => parseKlines([[bad, "1", "2", "0.5", "1.5", "4"]]))).toBe(502);
+      expect(statusOf(() => parseKlines([[1_793_799_600_000, "1", "2", "0.5", "1.5", bad]]))).toBe(502);
+      expect(statusOf(() => parseTicker({ lastPrice: "1", priceChangePercent: bad, volume: "2", quoteVolume: "3" }))).toBe(502);
+      expect(statusOf(() => parseTicker({ lastPrice: "1", priceChangePercent: "1", volume: "2", quoteVolume: bad }))).toBe(502);
+    }
+  });
+
   it("maps an unknown pair to 404 and upstream failures to 502/503", async () => {
     const missing = async () => new Response(JSON.stringify({ code: -1121, msg: "Invalid symbol." }), { status: 400 });
     await expect(fetchExchangeKlines("NOSUCHPAIR", "1h", 10, missing as typeof fetch)).rejects.toMatchObject({ status: 404, code: "pair_unavailable" });
