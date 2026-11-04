@@ -23,7 +23,7 @@ export async function Navbar() {
 
   return (
     <header className="sticky top-0 z-30 backdrop-blur-md bg-[rgba(22,22,22,0.85)] border-b border-hairline">
-      <div className="max-w-[1600px] mx-auto px-6 md:px-12 xl:px-20 h-16 flex items-center gap-4">
+      <div className="max-w-[1600px] mx-auto px-6 md:px-6 xl:px-6 h-16 flex items-center gap-2 xl:gap-4">
         <MobileNav>
           <nav className="flex flex-col mt-2 mb-6">
             <Link
@@ -143,7 +143,7 @@ export async function Navbar() {
 
         <Link
           href={`/${locale}`}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 shrink-0 whitespace-nowrap"
           aria-label={t("appName")}
         >
           <Image
@@ -164,12 +164,12 @@ export async function Navbar() {
 
         <a
           href={exchangeHref}
-          className="hidden md:block xl:hidden hover:text-foreground transition-colors text-sm text-muted"
+          className="hidden md:block 2xl:hidden hover:text-foreground transition-colors text-sm text-muted whitespace-nowrap shrink-0"
         >
           {t("exchange")}
         </a>
 
-        <nav className="hidden xl:flex items-center gap-3 text-sm text-muted">
+        <nav className="hidden 2xl:flex items-center gap-1 text-sm text-muted whitespace-nowrap shrink-0">
           <Link
             href={`/${locale}`}
             className="hover:text-foreground transition-colors"
@@ -193,19 +193,19 @@ export async function Navbar() {
           </a>
           <Link
             href={`/${locale}/fintech`}
-            className="hidden 2xl:block hover:text-foreground transition-colors"
+            className="hover:text-foreground transition-colors"
           >
             {t("fintech")}
           </Link>
           <Link
             href={`/${locale}/companies`}
-            className="hidden 2xl:block hover:text-foreground transition-colors"
+            className="hover:text-foreground transition-colors"
           >
             {t("companies")}
           </Link>
           <Link
             href={`/${locale}/services`}
-            className="hidden 2xl:block hover:text-foreground transition-colors"
+            className="hover:text-foreground transition-colors"
           >
             {t("services")}
           </Link>
@@ -232,7 +232,7 @@ export async function Navbar() {
           </Link>
           <Link
             href={`/${locale}/request`}
-            className="hidden 2xl:block hover:text-foreground transition-colors"
+            className="hover:text-foreground transition-colors"
           >
             {t("request")}
           </Link>
@@ -246,32 +246,38 @@ export async function Navbar() {
           )}
         </nav>
 
-        <div className="ml-auto hidden md:flex items-center gap-2">
-          <GlobalSearch />
-          <CurrencySwitcher current={currency} />
-          <LocaleSwitcher />
-          {session?.user ? (
-            <form
-              action={async () => {
-                "use server";
-                await signOut({ redirectTo: `/${locale}` });
-              }}
-            >
-              <button
-                type="submit"
-                className="text-xs px-3 py-1.5 rounded-md font-medium uppercase tracking-wider text-muted hover:text-foreground transition-colors"
+        <div className="ml-auto hidden md:flex items-center gap-2 shrink-0 whitespace-nowrap">
+          <div className="w-[214px] 2xl:w-[150px] shrink-0">
+            <GlobalSearch />
+          </div>
+          <div className="hidden lg:flex items-center gap-2">
+            <CurrencySwitcher current={currency} />
+            <LocaleSwitcher />
+          </div>
+          <div className="hidden lg:flex items-center">
+            {session?.user ? (
+              <form
+                action={async () => {
+                  "use server";
+                  await signOut({ redirectTo: `/${locale}` });
+                }}
               >
-                {t("signOut")}
-              </button>
-            </form>
-          ) : (
-            <Link
-              href={`/${locale}/login`}
-              className="ml-2 text-xs px-4 py-1.5 rounded-full font-semibold uppercase tracking-wider bg-blue text-blue-foreground transition-all hover:brightness-110"
-            >
-              {t("signIn")}
-            </Link>
-          )}
+                <button
+                  type="submit"
+                  className="text-xs px-3 py-1.5 rounded-md font-medium uppercase tracking-wider text-muted hover:text-foreground transition-colors"
+                >
+                  {t("signOut")}
+                </button>
+              </form>
+            ) : (
+              <Link
+                href={`/${locale}/login`}
+                className="ml-2 text-xs px-4 py-1.5 rounded-full font-semibold uppercase tracking-wider bg-blue text-blue-foreground transition-all hover:brightness-110 whitespace-nowrap shrink-0"
+              >
+                {t("signIn")}
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </header>

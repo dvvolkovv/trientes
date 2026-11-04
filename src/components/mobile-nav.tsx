@@ -27,12 +27,12 @@ export function MobileNav({ children }: { children: React.ReactNode }) {
   const drawer = open && (
     <>
       <div
-        className="md:hidden fixed inset-0 bg-black/60 z-40"
+        className="2xl:hidden fixed inset-0 bg-black/60 z-40"
         onClick={() => setOpen(false)}
         aria-hidden
       />
       <div
-        className="md:hidden fixed left-0 top-0 h-dvh w-80 max-w-[85vw] bg-bg-tint border-r border-hairline z-50 p-6 overflow-y-auto flex flex-col"
+        className="2xl:hidden fixed left-0 top-0 h-dvh w-80 max-w-[85vw] bg-bg-tint border-r border-hairline z-50 p-6 overflow-y-auto flex flex-col"
         role="dialog"
         aria-modal="true"
         style={{
@@ -85,7 +85,7 @@ export function MobileNav({ children }: { children: React.ReactNode }) {
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Open menu"
-        className="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-md text-muted hover:text-foreground hover:bg-card-alt transition-colors"
+        className="2xl:hidden inline-flex shrink-0 items-center justify-center w-9 h-9 rounded-md text-muted hover:text-foreground hover:bg-card-alt transition-colors"
       >
         <svg
           width="20"
