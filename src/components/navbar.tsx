@@ -7,12 +7,14 @@ import { CurrencySwitcher } from "./currency-switcher";
 import { MobileNav } from "./mobile-nav";
 import { GlobalSearch } from "./global-search";
 import { getCurrency } from "@/lib/get-currency";
+import { dexHref } from "@/lib/dex-link";
 
 export async function Navbar() {
   const session = await auth();
   const locale = await getLocale();
   const t = await getTranslations("common");
   const currency = await getCurrency();
+  const exchangeHref = dexHref(locale);
   const isAdmin =
     (session?.user as { role?: string } | undefined)?.role === "ADMIN";
   const cabinetHref = `/${locale}/cabinet`;
@@ -42,6 +44,12 @@ export async function Navbar() {
             >
               {t("markets")}
             </Link>
+            <a
+              href={exchangeHref}
+              className="block py-3 text-base text-foreground hover:text-accent border-b border-hairline transition-colors"
+            >
+              {t("exchange")}
+            </a>
             <Link
               href={`/${locale}/fintech`}
               className="block py-3 text-base text-foreground hover:text-accent border-b border-hairline transition-colors"
@@ -173,6 +181,9 @@ export async function Navbar() {
           >
             {t("markets")}
           </Link>
+          <a href={exchangeHref} className="hover:text-foreground transition-colors">
+            {t("exchange")}
+          </a>
           <Link
             href={`/${locale}/fintech`}
             className="hover:text-foreground transition-colors"
