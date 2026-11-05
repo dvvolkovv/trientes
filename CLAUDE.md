@@ -2,7 +2,7 @@
 
 # Always-on behaviors
 
-- **Audio reply every turn.** Generate a Russian voice summary (OpenAI TTS → mp3) and emit `📎 attach: <abs-path>` in the reply so the Telegram bot sends it. No exceptions, even for short answers or errors — the user reads with difficulty and voice is the primary channel ([[feedback_audio_summaries]]).
+- **Audio reply every turn.** Generate a Russian voice summary (OpenAI TTS → mp3) and emit `📎 attach: <abs-path>` in the reply (write the mp3 to `/home/dv/trientes-artifacts/audio/`, not the repo root) so the Telegram bot sends it. No exceptions, even for short answers or errors — the user reads with difficulty and voice is the primary channel ([[feedback_audio_summaries]]).
 - **Persist the session across bot restarts.** Whenever `trientes-bot` is restarted (manually or after a 143/SIGTERM timeout), the next invocation must resume the prior Claude Code session (`claude --resume` / saved session id) instead of starting fresh — never lose conversation state on restart.
 
 # Project history (server only)
@@ -43,6 +43,22 @@ Shipped 2026-05-24. Lets INDIVIDUAL users register with username + password, man
 - **Navbar:** for logged-in users the Business link is replaced by **Cabinet** (INDIVIDUAL) or **Business** (COMPANY) based on `accountType`; logged-out users still see the generic Business link.
 - **i18n:** `common.cabinet`, full `cabinet.*` and `register.*` namespaces across all 10 locales.
 - **Worker:** not touched — none of the new files under `src/lib` (`username`, `password`, `rate-limit`, `session`, `client-ip`, `ensure-username`) are imported by `trientes-worker`. Web-only restart sufficed.
+
+# Phase 10 — остальные слайсы (кратко)
+
+Всё ниже уже в проде; подробности — в спеках и планах под `docs/superpowers/`.
+
+- **Unified cabinet + exchange foundation** (слайс 2) — plan `2026-05-25-unified-cabinet-and-exchange-foundation.md`.
+- **Карточка биржи + синк CoinPaprika** (слайс 3) — `/{locale}/exchanges/[slug]`, plan `2026-05-26-exchange-card-and-cp-sync.md`.
+- **Алерты по цене и гео** (слайсы 5/6) — `worker/index.ts` гоняет `runAlerts()` каждую минуту (`cron.schedule("* * * * *")`), логика в `src/lib/alerts-eval.ts`; каналы Telegram → email → web-push (`src/lib/notify.ts`).
+- **Фин-тех каталог** (слайс 7) — `/{locale}/fintech`, spec+plan `2026-05-30-fintech-directory*`; HQ-пины домешиваются в POI-фид навигатора.
+- **Главная:** бегущая строка под шапкой + зверь настроения рынка (бык/медведь, обводка по фото). **`/{locale}/compare`** — сравнение монет, ссылка есть в бургер- и десктоп-меню и в `sitemap.xml`.
+
+**Известные дыры (нужно решение владельца, не код):**
+- `RESEND_API_KEY` не задан → письма не уходят. `src/lib/email.ts` аккуратно no-op'ит (`email_not_configured`), Telegram и web-push работают. Нужен ключ Resend + верифицированный домен-отправитель.
+- **Командные аккаунты** (несколько сотрудников у одной компании) не делались вовсе: моделей в схеме нет, у `Company` один `ownerUserId`. Это отдельный слайс, а не хвост.
+
+**Гигиена репозитория:** голосовые отчёты и скриншоты ассистента в корне НЕ хранятся — писать их в `/home/dv/trientes-artifacts/{audio,screens}/` (туда же убран архив прежних 181 файла). Корневые `*.png` / `*.mp3` на всякий случай в `.gitignore`.
 
 # Deploy & push (server only)
 

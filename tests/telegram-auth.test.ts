@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createHash, createHmac } from "node:crypto";
 import { verifyTelegramAuth } from "@/lib/telegram-auth";
 
-function makeSignedPayload(botToken: string, fields: Record<string, string>) {
+function makeSignedPayload(botToken: string, fields: Record<string, string>): Record<string, string> {
   const secret = createHash("sha256").update(botToken).digest();
   const dataCheckString = Object.keys(fields)
     .sort()

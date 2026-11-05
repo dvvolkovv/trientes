@@ -53,3 +53,9 @@ next-env.d.ts
 /bot/logs/
 incoming/
 .next-preview
+
+# assistant work artifacts (voice reports, screenshots) — archived in
+# /home/dv/trientes-artifacts/, never part of the site
+/otchet-*.mp3
+/*.png
+/*.mp3
