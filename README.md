@@ -174,15 +174,17 @@ Errors always use `{ "error": "<code>" }`:
 | Status | Codes | Meaning |
 |---:|---|---|
 | 400 | `invalid_symbol`, `invalid_interval`, `invalid_limit` | Invalid query input |
-| 404 | `pair_unavailable` | Binance rejected the requested market with HTTP 400 |
-| 502 | `upstream_unavailable` | Fetch failure/timeout, another unsuccessful Binance status, or an unexpected failure |
+| 404 | `pair_unavailable` | Binance returned HTTP 400 with a parsed JSON body containing `code: -1121` |
+| 502 | `upstream_unavailable` | Fetch failure/timeout, any other HTTP 400 body (including non-JSON/WAF), another unsuccessful Binance status, or an unexpected failure |
 | 502 | `upstream_shape` | Invalid JSON, response shape, numeric values, timestamps, OHLC or volume |
 | 503 | `upstream_rate_limited` | Binance returned HTTP 418 or 429 |
 
-Redis is only a cache. Cached payloads are fully validated again; malformed entries become misses. Every Redis
-read/write has a 250 ms best-effort deadline, so Redis timeout or failure falls back to Binance and a failed cache
-write is ignored. Kline TTLs range from 2 seconds (`1s`) to 3600 seconds (`1M`); ticker TTL is 5 seconds. Binance
-requests have an 8-second timeout.
+Redis is only a cache. Cached payloads are fully validated again. Every Redis read/write has a 250 ms deadline
+and uses a dedicated client with its offline queue disabled. A transport timeout or failure disconnects that client,
+opens a 5-second circuit and falls back to Binance; a failed cache write is ignored. Malformed cached JSON is only a
+miss: it neither disconnects the client nor opens the circuit, so a subsequent cache write can replace the bad entry.
+Kline TTLs range from 2 seconds (`1s`) to 3600 seconds (`1M`); ticker TTL is 5 seconds. Binance requests have an
+8-second timeout.
 
 ### Backups
 

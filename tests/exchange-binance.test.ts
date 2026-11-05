@@ -79,9 +79,22 @@ describe("exchange Binance responses", () => {
     }
   });
 
-  it("maps an unknown pair to 404 and upstream failures to 502/503", async () => {
+  it("maps only Binance error -1121 to pair_unavailable", async () => {
     const missing = async () => new Response(JSON.stringify({ code: -1121, msg: "Invalid symbol." }), { status: 400 });
     await expect(fetchExchangeKlines("NOSUCHPAIR", "1h", 10, missing as typeof fetch)).rejects.toMatchObject({ status: 404, code: "pair_unavailable" });
+  });
+
+  it.each([
+    { upstream: "another Binance 400 code", body: JSON.stringify({ code: -1100, msg: "Illegal characters" }) },
+    { upstream: "non-JSON WAF 400", body: "<html>secret WAF response</html>" },
+  ])("maps $upstream to 502 without treating it as a missing pair", async ({ body }) => {
+    const badRequest = async () => new Response(body, { status: 400 });
+    const error = await fetchExchangeTicker("ETHBTC", badRequest as typeof fetch).catch((caught: unknown) => caught);
+    expect(error).toMatchObject({ status: 502, code: "upstream_unavailable", message: "upstream_unavailable" });
+    expect(String(error)).not.toContain("secret WAF");
+  });
+
+  it("maps upstream rate limiting to 503", async () => {
     const limited = async () => new Response("rate limited", { status: 429 });
     await expect(fetchExchangeTicker("ETHBTC", limited as typeof fetch)).rejects.toMatchObject({ status: 503 });
   });

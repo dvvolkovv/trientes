@@ -99,7 +99,18 @@ async function getJson(path: string, fetcher: typeof fetch): Promise<unknown> {
   } catch {
     throw new ExchangeApiError(502, "upstream_unavailable");
   }
-  if (response.status === 400) throw new ExchangeApiError(404, "pair_unavailable");
+  if (response.status === 400) {
+    let body: unknown;
+    try {
+      body = await response.json();
+    } catch {
+      throw new ExchangeApiError(502, "upstream_unavailable");
+    }
+    if (typeof body === "object" && body !== null && (body as Record<string, unknown>).code === -1121) {
+      throw new ExchangeApiError(404, "pair_unavailable");
+    }
+    throw new ExchangeApiError(502, "upstream_unavailable");
+  }
   if (response.status === 418 || response.status === 429) throw new ExchangeApiError(503, "upstream_rate_limited");
   if (!response.ok) throw new ExchangeApiError(502, "upstream_unavailable");
   try {

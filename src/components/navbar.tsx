@@ -164,7 +164,7 @@ export async function Navbar() {
 
         <a
           href={exchangeHref}
-          className="hidden md:block min-[1800px]:hidden hover:text-foreground transition-colors text-sm text-muted whitespace-nowrap shrink-0"
+          className="hidden md:max-[1800px]:block hover:text-foreground transition-colors text-sm text-muted whitespace-nowrap shrink-0"
         >
           {t("exchange")}
         </a>
