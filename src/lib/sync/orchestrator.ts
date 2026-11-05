@@ -28,6 +28,7 @@ type PrismaLike = {
       update: Record<string, unknown>;
       create: Record<string, unknown>;
     }): Promise<unknown>;
+    findUnique?(args: { where: { id: number } }): Promise<{ total24hVolumeUsd?: unknown } | null>;
   };
 };
 
@@ -94,6 +95,14 @@ export async function syncGlobal(deps: {
   prisma: PrismaLike;
 }): Promise<void> {
   const snap = await deps.fetchGlobalSnap();
+  // CoinGecko's /global intermittently answers with total_volume.usd = 0 while
+  // it recomputes. Zero is never a real 24h turnover, and writing it blanks the
+  // homepage ticker for the next half hour — keep the last known good number.
+  if (!(snap.total24hVolumeUsd > 0)) {
+    const prev = await deps.prisma.globalStats.findUnique?.({ where: { id: 1 } });
+    const prevVolume = Number(prev?.total24hVolumeUsd ?? 0);
+    if (prevVolume > 0) snap.total24hVolumeUsd = prevVolume;
+  }
   await deps.redis.set(KEYS.globalStats, JSON.stringify(snap), "EX", TTL.globalStats);
   await deps.prisma.globalStats.upsert({
     where: { id: 1 },

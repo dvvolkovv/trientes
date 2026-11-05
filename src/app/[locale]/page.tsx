@@ -8,7 +8,7 @@ import { HomeTicker, type TickerItem } from "@/components/home-ticker";
 import { MarketMoodAnimal } from "@/components/market-mood-animal";
 import { getCurrency } from "@/lib/get-currency";
 import { readUserWatchedIds, isAuthenticated } from "@/lib/watchlist";
-import { formatCompactInCurrency } from "@/lib/currency";
+import { formatCompactInCurrency, formatPriceInCurrency } from "@/lib/currency";
 import { computeMarketMood } from "@/lib/market-mood";
 
 export const revalidate = 60;
@@ -45,26 +45,58 @@ export default async function Home({
     ? (phrasesRaw as unknown[]).filter((x): x is string => typeof x === "string")
     : [];
 
-  const statItems: TickerItem[] = [];
+  // Groups keep related items side by side: everything inside one group runs
+  // without a phrase between the entries.
+  const statGroups: TickerItem[][] = [];
+  const btc = rows.find((r) => r.id === "bitcoin") ?? rows.find((r) => r.symbol === "BTC");
   if (stats && rates) {
-    statItems.push({
-      kind: "stat",
-      label: tlist("globalMarketCap"),
-      value: formatCompactInCurrency(stats.totalMarketCapUsd, currency, rates),
-      href: `/${locale}/markets`,
+    statGroups.push([
+      {
+        kind: "stat",
+        label: tlist("globalMarketCap"),
+        value: formatCompactInCurrency(stats.totalMarketCapUsd, currency, rates),
+        href: `/${locale}/markets`,
+      },
+    ]);
+  }
+  // BTC with its 7-day chart, followed immediately by the aggregate 24h
+  // turnover of all crypto across all exchanges.
+  const btcGroup: TickerItem[] = [];
+  if (btc && rates) {
+    // The 7-day series has ~168 hourly points; thinned down it reads as a
+    // line instead of noise at the ticker's 132px width.
+    const raw = btc.sparkline7d;
+    const step = raw && raw.length > 56 ? Math.ceil(raw.length / 56) : 1;
+    const points = raw ? raw.filter((_, i) => i % step === 0 || i === raw.length - 1) : null;
+    btcGroup.push({
+      kind: "chart",
+      label: btc.symbol,
+      value: formatPriceInCurrency(btc.priceUsd, currency, rates),
+      points,
+      href: `/${locale}/coin/${btc.id}`,
+      ariaLabel: `${btc.name} ${formatPriceInCurrency(btc.priceUsd, currency, rates)}`,
     });
-    statItems.push({
+  }
+  // Zero means CoinGecko's /global briefly lost the number — skip the entry
+  // rather than advertise a $0.00 market.
+  if (stats && rates && stats.total24hVolumeUsd > 0) {
+    btcGroup.push({
       kind: "stat",
       label: tlist("globalVolume"),
       value: formatCompactInCurrency(stats.total24hVolumeUsd, currency, rates),
       href: `/${locale}/markets`,
     });
-    statItems.push({
-      kind: "stat",
-      label: tlist("btcDominance"),
-      value: `${stats.btcDominancePct.toFixed(1)}%`,
-      href: `/${locale}/markets`,
-    });
+  }
+  if (btcGroup.length > 0) statGroups.push(btcGroup);
+  if (stats && rates) {
+    statGroups.push([
+      {
+        kind: "stat",
+        label: tlist("btcDominance"),
+        value: `${stats.btcDominancePct.toFixed(1)}%`,
+        href: `/${locale}/markets`,
+      },
+    ]);
   }
   if (fearGreed) {
     const fngKey =
@@ -76,22 +108,25 @@ export default async function Home({
         "extreme greed": "fng.extremeGreed",
       }[fearGreed.classification.toLowerCase()] ?? null;
     const fngLabel = fngKey ? tlist(fngKey) : fearGreed.classification;
-    statItems.push({
-      kind: "stat",
-      label: tlist("fearGreed"),
-      value: `${fearGreed.value} · ${fngLabel}`,
-      href: `/${locale}/markets`,
-    });
+    statGroups.push([
+      {
+        kind: "stat",
+        label: tlist("fearGreed"),
+        value: `${fearGreed.value} · ${fngLabel}`,
+        href: `/${locale}/markets`,
+      },
+    ]);
   }
 
-  // Interleave: phrase, stat, phrase, stat, ... — phrases cycle if shorter.
+  // Interleave: phrase, stat group, phrase, stat group, ... — phrases cycle if
+  // shorter than the number of groups.
   const tickerItems: TickerItem[] = [];
-  const maxLen = Math.max(phrases.length, statItems.length);
+  const maxLen = Math.max(phrases.length, statGroups.length);
   for (let i = 0; i < maxLen; i++) {
     if (phrases.length > 0) {
       tickerItems.push({ kind: "phrase", text: phrases[i % phrases.length] });
     }
-    if (statItems[i]) tickerItems.push(statItems[i]);
+    if (statGroups[i]) tickerItems.push(...statGroups[i]);
   }
 
   return (

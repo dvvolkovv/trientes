@@ -2,10 +2,18 @@ export function Sparkline({
   points,
   width = 120,
   height = 36,
+  gradientId,
+  stroke = "var(--color-accent)",
+  strokeWidth = 1.5,
 }: {
   points: number[] | null | undefined;
   width?: number;
   height?: number;
+  // Pass a stable id inside client components — a random one differs between
+  // the server and the client render and trips hydration.
+  gradientId?: string;
+  stroke?: string;
+  strokeWidth?: number;
 }) {
   if (!points || points.length < 2) {
     return <div style={{ width, height }} className="opacity-30" />;
@@ -23,7 +31,7 @@ export function Sparkline({
     .join(" ");
   // Closed path for gradient fill (line, then down to baseline, then close).
   const fillPath = `${linePath} L${width.toFixed(2)},${height.toFixed(2)} L0,${height.toFixed(2)} Z`;
-  const uid = `spark-${Math.random().toString(36).slice(2, 8)}`;
+  const uid = gradientId ?? `spark-${Math.random().toString(36).slice(2, 8)}`;
   return (
     <svg
       width={width}
@@ -34,16 +42,16 @@ export function Sparkline({
     >
       <defs>
         <linearGradient id={uid} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--color-accent)" stopOpacity="0.24" />
-          <stop offset="100%" stopColor="var(--color-accent)" stopOpacity="0" />
+          <stop offset="0%" stopColor={stroke} stopOpacity="0.24" />
+          <stop offset="100%" stopColor={stroke} stopOpacity="0" />
         </linearGradient>
       </defs>
       <path d={fillPath} fill={`url(#${uid})`} />
       <path
         d={linePath}
         fill="none"
-        stroke="var(--color-accent)"
-        strokeWidth="1.5"
+        stroke={stroke}
+        strokeWidth={strokeWidth}
         strokeLinecap="round"
         strokeLinejoin="round"
       />

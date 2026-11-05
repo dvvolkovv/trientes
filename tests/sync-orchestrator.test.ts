@@ -125,6 +125,42 @@ describe("syncGlobal", () => {
     });
     expect(fakePrisma.globalStats.upsert).toHaveBeenCalled();
   });
+
+  it("keeps the previous volume when CoinGecko reports zero", async () => {
+    const { redisStore, fakeRedis, fakePrisma } = makeFakes();
+    (fakePrisma as any).globalStats.findUnique = vi.fn(async () => ({
+      total24hVolumeUsd: "9.1e10",
+    }));
+    await syncGlobal({
+      fetchGlobalSnap: async () => ({ ...snap, total24hVolumeUsd: 0 }),
+      redis: fakeRedis as never,
+      prisma: fakePrisma as never,
+    });
+    expect(JSON.parse(redisStore.get(KEYS.globalStats)!).total24hVolumeUsd).toBe(9.1e10);
+  });
+
+  it("writes zero only when there is no previous value either", async () => {
+    const { redisStore, fakeRedis, fakePrisma } = makeFakes();
+    (fakePrisma as any).globalStats.findUnique = vi.fn(async () => null);
+    await syncGlobal({
+      fetchGlobalSnap: async () => ({ ...snap, total24hVolumeUsd: 0 }),
+      redis: fakeRedis as never,
+      prisma: fakePrisma as never,
+    });
+    expect(JSON.parse(redisStore.get(KEYS.globalStats)!).total24hVolumeUsd).toBe(0);
+  });
+
+  it("does not consult the previous row when the fetch is healthy", async () => {
+    const { fakeRedis, fakePrisma } = makeFakes();
+    const findUnique = vi.fn(async () => ({ total24hVolumeUsd: "1" }));
+    (fakePrisma as any).globalStats.findUnique = findUnique;
+    await syncGlobal({
+      fetchGlobalSnap: async () => snap,
+      redis: fakeRedis as never,
+      prisma: fakePrisma as never,
+    });
+    expect(findUnique).not.toHaveBeenCalled();
+  });
 });
 
 describe("syncFearGreed", () => {
