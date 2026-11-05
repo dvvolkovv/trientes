@@ -441,26 +441,12 @@ select:focus-visible {
 }
 /* Both traces are near-square, so they share a cap and read at the same scale. */
 .mood-art--bull,
-.mood-art--bear { max-width: 580px; }
-/* The bull has an outline to draw on first; the bear is all ink, so he starts sooner. */
-.mood-art--bear .mood-ink { animation-delay: 0.2s; }
+.mood-art--bear { max-width: 522px; }
 .mood-art path {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: mood-draw 2.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: mood-draw 2.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
-.mood-art .mood-ink {
-  stroke-dasharray: none;
-  stroke-dashoffset: 0;
-  opacity: 0;
-  animation: mood-ink-in 1.4s ease-out 1.1s forwards;
-}
-@keyframes mood-ink-in {
-  to { opacity: 1; }
-}
-.mood-art path:nth-child(2n) { animation-delay: 0.18s; }
-.mood-art path:nth-child(3n) { animation-delay: 0.34s; }
-.mood-art path:nth-child(5n) { animation-delay: 0.52s; }
 @keyframes mood-draw {
   to { stroke-dashoffset: 0; }
 }
@@ -476,9 +462,5 @@ select:focus-visible {
   .mood-art path {
     animation: none;
     stroke-dashoffset: 0;
-  }
-  .mood-art .mood-ink {
-    animation: none;
-    opacity: 1;
   }
 }
