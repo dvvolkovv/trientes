@@ -24,7 +24,8 @@
     "services": "在线服务",
     "searchPlaceholder": "搜索…",
     "searching": "搜索中…",
-    "noResults": "无结果"
+    "noResults": "无结果",
+    "compare": "对比"
   },
   "home": {
     "title": "欢迎",
@@ -966,5 +967,25 @@
     "empty": "暂无内容。",
     "pageOf": "第 {page} 页，共 {pages} 页",
     "visit": "打开"
+  },
+  "compare": {
+    "kicker": "并排对比",
+    "title": "对比币种",
+    "subtitle": "最多选择四个币种，在同一张表里查看数据。",
+    "slotRequired": "币种",
+    "slotOptional": "其他币种",
+    "submit": "对比",
+    "notFound": "未找到",
+    "empty": "请至少选择一个币种进行对比。",
+    "rank": "排名",
+    "price": "价格",
+    "change1h": "1小时 %",
+    "change24h": "24小时 %",
+    "change7d": "7天 %",
+    "marketCap": "市值",
+    "volume24h": "成交量（24小时）",
+    "circulating": "流通量",
+    "totalSupply": "总供应量",
+    "maxSupply": "最大供应量"
   }
 }

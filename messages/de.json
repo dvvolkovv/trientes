@@ -24,7 +24,8 @@
     "services": "Dienste",
     "searchPlaceholder": "Suchen…",
     "searching": "Suche…",
-    "noResults": "Keine Ergebnisse"
+    "noResults": "Keine Ergebnisse",
+    "compare": "Vergleichen"
   },
   "home": {
     "title": "Willkommen",
@@ -966,5 +967,25 @@
     "empty": "Noch nichts hier.",
     "pageOf": "Seite {page} von {pages}",
     "visit": "Öffnen"
+  },
+  "compare": {
+    "kicker": "Nebeneinander",
+    "title": "Coins vergleichen",
+    "subtitle": "Wählen Sie bis zu vier Coins und lesen Sie ihre Kennzahlen in einer Tabelle.",
+    "slotRequired": "Coin",
+    "slotOptional": "Weiterer Coin",
+    "submit": "Vergleichen",
+    "notFound": "Nicht gefunden",
+    "empty": "Wählen Sie mindestens einen Coin zum Vergleich.",
+    "rank": "Rang",
+    "price": "Preis",
+    "change1h": "1 Std. %",
+    "change24h": "24 Std. %",
+    "change7d": "7 T. %",
+    "marketCap": "Marktkapitalisierung",
+    "volume24h": "Volumen (24 Std.)",
+    "circulating": "Umlaufmenge",
+    "totalSupply": "Gesamtmenge",
+    "maxSupply": "Maximale Menge"
   }
 }

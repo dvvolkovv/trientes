@@ -24,7 +24,8 @@
     "services": "サービス",
     "searchPlaceholder": "検索…",
     "searching": "検索中…",
-    "noResults": "結果なし"
+    "noResults": "結果なし",
+    "compare": "比較"
   },
   "home": {
     "title": "ようこそ",
@@ -966,5 +967,25 @@
     "empty": "まだ何もありません。",
     "pageOf": "{page} / {pages}ページ",
     "visit": "開く"
+  },
+  "compare": {
+    "kicker": "並べて比較",
+    "title": "コインを比較",
+    "subtitle": "最大4つのコインを選んで、数値を1つの表で確認できます。",
+    "slotRequired": "コイン",
+    "slotOptional": "他のコイン",
+    "submit": "比較する",
+    "notFound": "見つかりません",
+    "empty": "比較するコインを1つ以上選んでください。",
+    "rank": "ランク",
+    "price": "価格",
+    "change1h": "1時間 %",
+    "change24h": "24時間 %",
+    "change7d": "7日 %",
+    "marketCap": "時価総額",
+    "volume24h": "出来高（24時間）",
+    "circulating": "循環供給量",
+    "totalSupply": "総供給量",
+    "maxSupply": "最大供給量"
   }
 }

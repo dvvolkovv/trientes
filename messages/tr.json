@@ -24,7 +24,8 @@
     "services": "Hizmetler",
     "searchPlaceholder": "Ara…",
     "searching": "Aranıyor…",
-    "noResults": "Sonuç yok"
+    "noResults": "Sonuç yok",
+    "compare": "Karşılaştır"
   },
   "home": {
     "title": "Hoş geldiniz",
@@ -966,5 +967,25 @@
     "empty": "Henüz hiçbir şey yok.",
     "pageOf": "Sayfa {page} / {pages}",
     "visit": "Aç"
+  },
+  "compare": {
+    "kicker": "Yan yana",
+    "title": "Coin karşılaştır",
+    "subtitle": "En fazla dört coin seçin ve rakamlarını tek tabloda görün.",
+    "slotRequired": "Coin",
+    "slotOptional": "Başka coin",
+    "submit": "Karşılaştır",
+    "notFound": "Bulunamadı",
+    "empty": "Karşılaştırmak için en az bir coin seçin.",
+    "rank": "Sıra",
+    "price": "Fiyat",
+    "change1h": "1sa %",
+    "change24h": "24sa %",
+    "change7d": "7g %",
+    "marketCap": "Piyasa değeri",
+    "volume24h": "Hacim (24sa)",
+    "circulating": "Dolaşımdaki arz",
+    "totalSupply": "Toplam arz",
+    "maxSupply": "Maksimum arz"
   }
 }

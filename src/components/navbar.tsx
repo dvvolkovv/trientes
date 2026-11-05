@@ -44,6 +44,12 @@ export async function Navbar() {
             >
               {t("markets")}
             </Link>
+            <Link
+              href={`/${locale}/compare`}
+              className="block py-3 text-base text-foreground hover:text-accent border-b border-hairline transition-colors"
+            >
+              {t("compare")}
+            </Link>
             <a
               href={exchangeHref}
               className="block py-3 text-base text-foreground hover:text-accent border-b border-hairline transition-colors"
@@ -187,6 +193,12 @@ export async function Navbar() {
             className="hover:text-foreground transition-colors"
           >
             {t("markets")}
+          </Link>
+          <Link
+            href={`/${locale}/compare`}
+            className="hover:text-foreground transition-colors"
+          >
+            {t("compare")}
           </Link>
           <a href={exchangeHref} className="hover:text-foreground transition-colors">
             {t("exchange")}

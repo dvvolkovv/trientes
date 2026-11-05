@@ -24,7 +24,7 @@ function withAlternates(path: string, lastModified?: Date): Entry {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
-  const staticPaths = ["", "/exchanges", "/fintech", "/companies", "/markets"];
+  const staticPaths = ["", "/exchanges", "/fintech", "/companies", "/markets", "/compare"];
   const staticEntries = staticPaths.map((p) => withAlternates(p, now));
 
   const [coins, exchanges, fintechs, companies] = await Promise.all([

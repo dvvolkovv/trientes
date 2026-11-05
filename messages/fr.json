@@ -24,7 +24,8 @@
     "services": "Services",
     "searchPlaceholder": "Rechercher…",
     "searching": "Recherche…",
-    "noResults": "Aucun résultat"
+    "noResults": "Aucun résultat",
+    "compare": "Comparer"
   },
   "home": {
     "title": "Bienvenue",
@@ -966,5 +967,25 @@
     "empty": "Rien pour l'instant.",
     "pageOf": "Page {page} sur {pages}",
     "visit": "Ouvrir"
+  },
+  "compare": {
+    "kicker": "Côte à côte",
+    "title": "Comparer les cryptos",
+    "subtitle": "Choisissez jusqu'à quatre cryptos et lisez leurs chiffres dans un seul tableau.",
+    "slotRequired": "Crypto",
+    "slotOptional": "Autre crypto",
+    "submit": "Comparer",
+    "notFound": "Introuvable",
+    "empty": "Choisissez au moins une crypto à comparer.",
+    "rank": "Rang",
+    "price": "Prix",
+    "change1h": "1 h %",
+    "change24h": "24 h %",
+    "change7d": "7 j %",
+    "marketCap": "Capitalisation",
+    "volume24h": "Volume (24 h)",
+    "circulating": "Offre en circulation",
+    "totalSupply": "Offre totale",
+    "maxSupply": "Offre maximale"
   }
 }

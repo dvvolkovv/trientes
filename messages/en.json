@@ -24,7 +24,8 @@
     "services": "Services",
     "searchPlaceholder": "Search…",
     "searching": "Searching…",
-    "noResults": "No results"
+    "noResults": "No results",
+    "compare": "Compare"
   },
   "home": {
     "title": "Welcome",
@@ -966,5 +967,25 @@
     "empty": "Nothing here yet.",
     "pageOf": "Page {page} of {pages}",
     "visit": "Visit"
+  },
+  "compare": {
+    "kicker": "Side by side",
+    "title": "Compare coins",
+    "subtitle": "Pick up to four coins and read their numbers in one table.",
+    "slotRequired": "Coin",
+    "slotOptional": "Another coin",
+    "submit": "Compare",
+    "notFound": "Not found",
+    "empty": "Pick at least one coin to compare.",
+    "rank": "Rank",
+    "price": "Price",
+    "change1h": "1h %",
+    "change24h": "24h %",
+    "change7d": "7d %",
+    "marketCap": "Market cap",
+    "volume24h": "Volume (24h)",
+    "circulating": "Circulating supply",
+    "totalSupply": "Total supply",
+    "maxSupply": "Max supply"
   }
 }

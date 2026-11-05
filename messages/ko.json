@@ -24,7 +24,8 @@
     "services": "서비스",
     "searchPlaceholder": "검색…",
     "searching": "검색 중…",
-    "noResults": "결과 없음"
+    "noResults": "결과 없음",
+    "compare": "비교"
   },
   "home": {
     "title": "환영합니다",
@@ -966,5 +967,25 @@
     "empty": "아직 없습니다.",
     "pageOf": "{page} / {pages}",
     "visit": "열기"
+  },
+  "compare": {
+    "kicker": "나란히 비교",
+    "title": "코인 비교",
+    "subtitle": "최대 4개의 코인을 골라 수치를 한 표에서 확인하세요.",
+    "slotRequired": "코인",
+    "slotOptional": "다른 코인",
+    "submit": "비교하기",
+    "notFound": "찾을 수 없음",
+    "empty": "비교할 코인을 하나 이상 선택하세요.",
+    "rank": "순위",
+    "price": "가격",
+    "change1h": "1시간 %",
+    "change24h": "24시간 %",
+    "change7d": "7일 %",
+    "marketCap": "시가총액",
+    "volume24h": "거래량(24시간)",
+    "circulating": "유통량",
+    "totalSupply": "총 공급량",
+    "maxSupply": "최대 공급량"
   }
 }

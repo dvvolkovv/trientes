@@ -24,7 +24,8 @@
     "services": "Serviços",
     "searchPlaceholder": "Buscar…",
     "searching": "Buscando…",
-    "noResults": "Sem resultados"
+    "noResults": "Sem resultados",
+    "compare": "Comparar"
   },
   "home": {
     "title": "Bem-vindo",
@@ -966,5 +967,25 @@
     "empty": "Nada por aqui ainda.",
     "pageOf": "Página {page} de {pages}",
     "visit": "Abrir"
+  },
+  "compare": {
+    "kicker": "Lado a lado",
+    "title": "Comparar moedas",
+    "subtitle": "Escolha até quatro moedas e veja os números em uma única tabela.",
+    "slotRequired": "Moeda",
+    "slotOptional": "Outra moeda",
+    "submit": "Comparar",
+    "notFound": "Não encontrado",
+    "empty": "Escolha pelo menos uma moeda para comparar.",
+    "rank": "Posição",
+    "price": "Preço",
+    "change1h": "1 h %",
+    "change24h": "24 h %",
+    "change7d": "7 d %",
+    "marketCap": "Capitalização",
+    "volume24h": "Volume (24 h)",
+    "circulating": "Fornecimento circulante",
+    "totalSupply": "Fornecimento total",
+    "maxSupply": "Fornecimento máximo"
   }
 }
