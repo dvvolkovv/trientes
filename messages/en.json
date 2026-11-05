@@ -46,6 +46,10 @@
         "Worldwide crypto navigator",
         "Prices with no delay"
       ]
+    },
+    "mood": {
+      "bull": "Bull market",
+      "bear": "Bear market"
     }
   },
   "listing": {

@@ -46,6 +46,10 @@
         "Dünya çapında kripto navigatörü",
         "Gecikmesiz fiyatlar"
       ]
+    },
+    "mood": {
+      "bull": "Boğa piyasası",
+      "bear": "Ayı piyasası"
     }
   },
   "listing": {

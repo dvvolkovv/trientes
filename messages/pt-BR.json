@@ -46,6 +46,10 @@
         "Navegador cripto mundial",
         "Preços sem atraso"
       ]
+    },
+    "mood": {
+      "bull": "Mercado em alta",
+      "bear": "Mercado em baixa"
     }
   },
   "listing": {

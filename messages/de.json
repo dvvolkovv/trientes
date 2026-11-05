@@ -46,6 +46,10 @@
         "Weltweiter Krypto-Navigator",
         "Preise ohne Verzögerung"
       ]
+    },
+    "mood": {
+      "bull": "Bullenmarkt",
+      "bear": "Bärenmarkt"
     }
   },
   "listing": {

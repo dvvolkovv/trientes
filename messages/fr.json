@@ -46,6 +46,10 @@
         "Navigateur crypto mondial",
         "Prix sans délai"
       ]
+    },
+    "mood": {
+      "bull": "Marché haussier",
+      "bear": "Marché baissier"
     }
   },
   "listing": {
