@@ -450,6 +450,12 @@ select:focus-visible {
   align-items: center;
   margin: 0;
 }
+/* Owner-requested nudge: on wide screens the beast sits 3cm left of the column
+   centre. The column is far wider than the 522px art, so the shift stays inside
+   it; narrow screens keep the figure centred. */
+@media (min-width: 1024px) {
+  .mood-figure { transform: translateX(-3cm); }
+}
 .mood-art {
   width: 100%;
   height: auto;
