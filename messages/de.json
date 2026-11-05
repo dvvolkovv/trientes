@@ -565,6 +565,23 @@
         "user_not_found": "Benutzer nicht gefunden.",
         "self": "Du kannst dich nicht selbst hinzufügen.",
         "last_owner": "Mindestens ein Inhaber wird benötigt."
+      },
+      "invites": {
+        "title": "Einladungslink",
+        "subtitle": "Für Personen ohne Trientes-Konto. Jeder Link gilt einmal und läuft nach 14 Tagen ab.",
+        "create": "Link erstellen",
+        "creating": "Wird erstellt…",
+        "copy": "Kopieren",
+        "copied": "Kopiert",
+        "revoke": "Widerrufen",
+        "expires": "bis {date}",
+        "empty": "Keine aktiven Links.",
+        "errors": {
+          "unauth": "Bitte zuerst anmelden.",
+          "forbidden": "Nur für Eigentümer.",
+          "invalid": "Dieser Link ist nicht mehr aktiv.",
+          "too_many": "Zu viele aktive Links — widerrufe zuerst einen."
+        }
       }
     },
     "kyb": {
@@ -785,6 +802,25 @@
       "password_too_long": "Passwort ist zu lang.",
       "invalid_credentials": "Benutzername oder Passwort ist falsch.",
       "missing_fields": "Bitte beide Felder ausfüllen."
+    }
+  },
+  "invite": {
+    "kicker": "Einladung",
+    "title": "{company} beitreten",
+    "titleInvalid": "Einladung",
+    "roleLine": "Du wurdest als {role} eingeladen.",
+    "signInFirst": "Melde dich an oder erstelle ein Konto, um die Einladung anzunehmen.",
+    "signIn": "Anmelden",
+    "register": "Konto erstellen",
+    "accept": "Team beitreten",
+    "accepting": "Trete bei…",
+    "backHome": "Zur Startseite",
+    "state": {
+      "invalid": "Dieser Einladungslink ist ungültig.",
+      "expired": "Dieser Einladungslink ist abgelaufen.",
+      "accepted": "Dieser Einladungslink wurde bereits verwendet.",
+      "revoked": "Dieser Einladungslink wurde widerrufen.",
+      "unauth": "Bitte zuerst anmelden."
     }
   },
   "exchange": {

@@ -46,6 +46,8 @@ model User {
   priceAlerts       PriceAlert[]
   geoAlerts         GeoAlert[]
   companyMemberships CompanyMember[]
+  companyInvitesCreated  CompanyInvite[] @relation("CompanyInviteCreator")
+  companyInvitesAccepted CompanyInvite[] @relation("CompanyInviteAcceptor")
   pushSubscriptions PushSubscription[]
   notifyTelegram    Boolean             @default(true)
   notifyEmail       Boolean             @default(false)
@@ -108,6 +110,27 @@ model CompanyMember {
 
   @@unique([companyId, userId])
   @@index([userId])
+}
+
+// Shareable invite link. Created by an OWNER when the person being invited has
+// no Trientes account yet (inviteMember() can only add users that already
+// exist). Single-use, expires after INVITE_TTL_DAYS, revocable.
+model CompanyInvite {
+  id           String      @id @default(cuid())
+  companyId    String
+  company      Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  role         CompanyRole @default(VIEWER)
+  token        String      @unique
+  createdById  String
+  createdBy    User        @relation("CompanyInviteCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  expiresAt    DateTime
+  acceptedById String?
+  acceptedBy   User?       @relation("CompanyInviteAcceptor", fields: [acceptedById], references: [id], onDelete: SetNull)
+  acceptedAt   DateTime?
+  revokedAt    DateTime?
+  createdAt    DateTime    @default(now())
+
+  @@index([companyId, createdAt])
 }
 
 enum AlertOp {
@@ -402,6 +425,7 @@ model Company {
   ownerUserId String
   owner       User           @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
   members     CompanyMember[]
+  invites     CompanyInvite[]
   legalName   String
   displayName String
   logoUrl     String?

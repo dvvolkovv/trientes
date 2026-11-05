@@ -565,6 +565,23 @@
         "user_not_found": "Utilisateur introuvable.",
         "self": "Tu ne peux pas t'ajouter toi-même.",
         "last_owner": "Au moins un propriétaire est requis."
+      },
+      "invites": {
+        "title": "Lien d'invitation",
+        "subtitle": "Pour les personnes qui n'ont pas encore de compte Trientes. Chaque lien est à usage unique et expire au bout de 14 jours.",
+        "create": "Créer un lien",
+        "creating": "Création…",
+        "copy": "Copier",
+        "copied": "Copié",
+        "revoke": "Révoquer",
+        "expires": "jusqu'au {date}",
+        "empty": "Aucun lien actif.",
+        "errors": {
+          "unauth": "Connectez-vous d'abord.",
+          "forbidden": "Réservé aux propriétaires.",
+          "invalid": "Ce lien n'est plus actif.",
+          "too_many": "Trop de liens actifs — révoquez-en un d'abord."
+        }
       }
     },
     "kyb": {
@@ -785,6 +802,25 @@
       "password_too_long": "Le mot de passe est trop long.",
       "invalid_credentials": "Nom d'utilisateur ou mot de passe incorrect.",
       "missing_fields": "Veuillez remplir les deux champs."
+    }
+  },
+  "invite": {
+    "kicker": "Invitation",
+    "title": "Rejoindre {company}",
+    "titleInvalid": "Invitation",
+    "roleLine": "Vous êtes invité en tant que {role}.",
+    "signInFirst": "Connectez-vous ou créez un compte pour accepter l'invitation.",
+    "signIn": "Se connecter",
+    "register": "Créer un compte",
+    "accept": "Rejoindre l'équipe",
+    "accepting": "Adhésion…",
+    "backHome": "Retour à l'accueil",
+    "state": {
+      "invalid": "Ce lien d'invitation n'est pas valide.",
+      "expired": "Ce lien d'invitation a expiré.",
+      "accepted": "Ce lien d'invitation a déjà été utilisé.",
+      "revoked": "Ce lien d'invitation a été révoqué.",
+      "unauth": "Connectez-vous d'abord."
     }
   },
   "exchange": {

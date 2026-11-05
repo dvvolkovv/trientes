@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 const fieldCls =
   "w-full bg-card border border-hairline rounded-md px-3 py-2 text-sm placeholder:text-muted focus:ring-1 focus:ring-accent outline-none";
 
-export function RegisterForm({ locale }: { locale: string }) {
+export function RegisterForm({ locale, next }: { locale: string; next?: string }) {
   const t = useTranslations("register");
   const router = useRouter();
   const [username, setUsername] = useState("");
@@ -26,7 +26,7 @@ export function RegisterForm({ locale }: { locale: string }) {
           const res = await fetch("/api/auth/password/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password, email: email || undefined, locale }),
+            body: JSON.stringify({ username, password, email: email || undefined, locale, next }),
           });
           const data = (await res.json().catch(() => ({}))) as { ok?: boolean; redirect?: string; error?: string };
           if (res.ok && data.redirect) {

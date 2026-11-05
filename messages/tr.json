@@ -565,6 +565,23 @@
         "user_not_found": "Kullanıcı bulunamadı.",
         "self": "Kendini ekleyemezsin.",
         "last_owner": "En az bir sahip olmalı."
+      },
+      "invites": {
+        "title": "Davet bağlantısı",
+        "subtitle": "Henüz Trientes hesabı olmayanlar için. Her bağlantı tek kullanımlıktır ve 14 günde sona erer.",
+        "create": "Bağlantı oluştur",
+        "creating": "Oluşturuluyor…",
+        "copy": "Kopyala",
+        "copied": "Kopyalandı",
+        "revoke": "İptal et",
+        "expires": "{date} tarihine kadar",
+        "empty": "Etkin bağlantı yok.",
+        "errors": {
+          "unauth": "Önce giriş yapın.",
+          "forbidden": "Yalnızca sahipler.",
+          "invalid": "Bu bağlantı artık etkin değil.",
+          "too_many": "Çok fazla etkin bağlantı — önce birini iptal edin."
+        }
       }
     },
     "kyb": {
@@ -785,6 +802,25 @@
       "password_too_long": "Parola çok uzun.",
       "invalid_credentials": "Kullanıcı adı veya parola hatalı.",
       "missing_fields": "Lütfen iki alanı da doldurun."
+    }
+  },
+  "invite": {
+    "kicker": "Davet",
+    "title": "{company} ekibine katıl",
+    "titleInvalid": "Davet",
+    "roleLine": "{role} olarak davet edildiniz.",
+    "signInFirst": "Daveti kabul etmek için giriş yapın veya hesap oluşturun.",
+    "signIn": "Giriş yap",
+    "register": "Hesap oluştur",
+    "accept": "Ekibe katıl",
+    "accepting": "Katılıyor…",
+    "backHome": "Ana sayfaya dön",
+    "state": {
+      "invalid": "Bu davet bağlantısı geçerli değil.",
+      "expired": "Bu davet bağlantısının süresi doldu.",
+      "accepted": "Bu davet bağlantısı zaten kullanıldı.",
+      "revoked": "Bu davet bağlantısı iptal edildi.",
+      "unauth": "Önce giriş yapın."
     }
   },
   "exchange": {

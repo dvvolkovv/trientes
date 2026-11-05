@@ -565,6 +565,23 @@
         "user_not_found": "未找到用户。",
         "self": "不能添加自己。",
         "last_owner": "至少需要一个所有者。"
+      },
+      "invites": {
+        "title": "邀请链接",
+        "subtitle": "面向尚未注册 Trientes 的人。每个链接仅可使用一次，14 天后失效。",
+        "create": "创建链接",
+        "creating": "创建中…",
+        "copy": "复制",
+        "copied": "已复制",
+        "revoke": "撤销",
+        "expires": "有效至 {date}",
+        "empty": "没有有效的链接。",
+        "errors": {
+          "unauth": "请先登录。",
+          "forbidden": "仅限所有者。",
+          "invalid": "该链接已失效。",
+          "too_many": "有效链接过多，请先撤销一个。"
+        }
       }
     },
     "kyb": {
@@ -785,6 +802,25 @@
       "password_too_long": "密码过长。",
       "invalid_credentials": "用户名或密码不正确。",
       "missing_fields": "请填写完整两项。"
+    }
+  },
+  "invite": {
+    "kicker": "邀请",
+    "title": "加入 {company}",
+    "titleInvalid": "邀请",
+    "roleLine": "你被邀请为{role}。",
+    "signInFirst": "登录或注册账号以接受邀请。",
+    "signIn": "登录",
+    "register": "注册账号",
+    "accept": "加入团队",
+    "accepting": "加入中…",
+    "backHome": "返回首页",
+    "state": {
+      "invalid": "该邀请链接无效。",
+      "expired": "该邀请链接已过期。",
+      "accepted": "该邀请链接已被使用。",
+      "revoked": "该邀请链接已被撤销。",
+      "unauth": "请先登录。"
     }
   },
   "exchange": {

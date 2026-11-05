@@ -565,6 +565,23 @@
         "user_not_found": "Usuario no encontrado.",
         "self": "No puedes añadirte a ti mismo.",
         "last_owner": "Debe quedar al menos un propietario."
+      },
+      "invites": {
+        "title": "Enlace de invitación",
+        "subtitle": "Para quienes aún no tienen cuenta en Trientes. Cada enlace sirve una vez y caduca a los 14 días.",
+        "create": "Crear enlace",
+        "creating": "Creando…",
+        "copy": "Copiar",
+        "copied": "Copiado",
+        "revoke": "Revocar",
+        "expires": "hasta {date}",
+        "empty": "No hay enlaces activos.",
+        "errors": {
+          "unauth": "Inicia sesión primero.",
+          "forbidden": "Solo para propietarios.",
+          "invalid": "Este enlace ya no está activo.",
+          "too_many": "Demasiados enlaces activos: revoca uno primero."
+        }
       }
     },
     "kyb": {
@@ -785,6 +802,25 @@
       "password_too_long": "La contraseña es demasiado larga.",
       "invalid_credentials": "Usuario o contraseña incorrectos.",
       "missing_fields": "Rellena ambos campos."
+    }
+  },
+  "invite": {
+    "kicker": "Invitación",
+    "title": "Unirse a {company}",
+    "titleInvalid": "Invitación",
+    "roleLine": "Te han invitado como {role}.",
+    "signInFirst": "Inicia sesión o crea una cuenta para aceptar la invitación.",
+    "signIn": "Iniciar sesión",
+    "register": "Crear cuenta",
+    "accept": "Unirse al equipo",
+    "accepting": "Uniéndose…",
+    "backHome": "Volver al inicio",
+    "state": {
+      "invalid": "Este enlace de invitación no es válido.",
+      "expired": "Este enlace de invitación ha caducado.",
+      "accepted": "Este enlace de invitación ya se usó.",
+      "revoked": "Este enlace de invitación fue revocado.",
+      "unauth": "Inicia sesión primero."
     }
   },
   "exchange": {

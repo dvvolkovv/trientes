@@ -565,6 +565,23 @@
         "user_not_found": "Usuário não encontrado.",
         "self": "Você não pode adicionar a si mesmo.",
         "last_owner": "É necessário ao menos um proprietário."
+      },
+      "invites": {
+        "title": "Link de convite",
+        "subtitle": "Para quem ainda não tem conta na Trientes. Cada link vale uma vez e expira em 14 dias.",
+        "create": "Criar link",
+        "creating": "Criando…",
+        "copy": "Copiar",
+        "copied": "Copiado",
+        "revoke": "Revogar",
+        "expires": "até {date}",
+        "empty": "Nenhum link ativo.",
+        "errors": {
+          "unauth": "Entre primeiro.",
+          "forbidden": "Apenas proprietários.",
+          "invalid": "Este link não está mais ativo.",
+          "too_many": "Links ativos demais — revogue um primeiro."
+        }
       }
     },
     "kyb": {
@@ -785,6 +802,25 @@
       "password_too_long": "A senha é muito longa.",
       "invalid_credentials": "Nome de usuário ou senha incorretos.",
       "missing_fields": "Preencha os dois campos."
+    }
+  },
+  "invite": {
+    "kicker": "Convite",
+    "title": "Entrar em {company}",
+    "titleInvalid": "Convite",
+    "roleLine": "Você foi convidado como {role}.",
+    "signInFirst": "Entre ou crie uma conta para aceitar o convite.",
+    "signIn": "Entrar",
+    "register": "Criar conta",
+    "accept": "Entrar na equipe",
+    "accepting": "Entrando…",
+    "backHome": "Voltar ao início",
+    "state": {
+      "invalid": "Este link de convite não é válido.",
+      "expired": "Este link de convite expirou.",
+      "accepted": "Este link de convite já foi usado.",
+      "revoked": "Este link de convite foi revogado.",
+      "unauth": "Entre primeiro."
     }
   },
   "exchange": {

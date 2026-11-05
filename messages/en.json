@@ -565,6 +565,23 @@
         "user_not_found": "User not found.",
         "self": "Cannot add yourself.",
         "last_owner": "There must be at least one owner."
+      },
+      "invites": {
+        "title": "Invite link",
+        "subtitle": "For people who don't have a Trientes account yet. Each link works once and expires in 14 days.",
+        "create": "Create link",
+        "creating": "Creating…",
+        "copy": "Copy",
+        "copied": "Copied",
+        "revoke": "Revoke",
+        "expires": "until {date}",
+        "empty": "No active links.",
+        "errors": {
+          "unauth": "Sign in first.",
+          "forbidden": "Owners only.",
+          "invalid": "This link is no longer active.",
+          "too_many": "Too many active links — revoke one first."
+        }
       }
     },
     "kyb": {
@@ -785,6 +802,25 @@
       "password_too_long": "Password is too long.",
       "invalid_credentials": "Incorrect username or password.",
       "missing_fields": "Please fill in both fields."
+    }
+  },
+  "invite": {
+    "kicker": "Invitation",
+    "title": "Join {company}",
+    "titleInvalid": "Invitation",
+    "roleLine": "You have been invited as {role}.",
+    "signInFirst": "Sign in or create an account to accept the invitation.",
+    "signIn": "Sign in",
+    "register": "Create account",
+    "accept": "Join the team",
+    "accepting": "Joining…",
+    "backHome": "Back to home",
+    "state": {
+      "invalid": "This invitation link is not valid.",
+      "expired": "This invitation link has expired.",
+      "accepted": "This invitation link has already been used.",
+      "revoked": "This invitation link was revoked.",
+      "unauth": "Sign in first."
     }
   },
   "exchange": {

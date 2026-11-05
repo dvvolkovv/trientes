@@ -56,7 +56,19 @@ Shipped 2026-05-24. Lets INDIVIDUAL users register with username + password, man
 
 **Известные дыры (нужно решение владельца, не код):**
 - `RESEND_API_KEY` не задан → письма не уходят. `src/lib/email.ts` аккуратно no-op'ит (`email_not_configured`), Telegram и web-push работают. Нужен ключ Resend + верифицированный домен-отправитель.
-- **Командные аккаунты** (несколько сотрудников у одной компании) не делались вовсе: моделей в схеме нет, у `Company` один `ownerUserId`. Это отдельный слайс, а не хвост.
+
+# Phase 10 — Командные аккаунты
+
+У компании может быть несколько сотрудников. Роли `CompanyRole`: **OWNER** (всё, включая команду и KYB), **EDITOR** (профиль и точки), **VIEWER** (только чтение). Доступ везде решается через `CompanyMember`, а не через `Company.ownerUserId` (поле осталось для модерации и аудита).
+
+- **Где:** `/{locale}/cabinet/companies/[id]` → секция «Команда». Гейты — `src/lib/business.ts` (`getViewerCompanyById`, `canEditCompany`, `canManageMembers`).
+- **Два способа позвать человека:**
+  1. По юзернейму или email — `inviteMember()` в `src/app/actions/company-members.ts`; работает, только если аккаунт уже есть.
+  2. **Ссылка-приглашение** — `src/app/actions/company-invites.ts` + `src/lib/company-invites.ts`; для тех, у кого аккаунта нет. Одноразовая, живёт 14 дней, ≤20 активных на компанию, отзывается владельцем. Приём — `/{locale}/invite/[token]`; у гостя ссылки на `/login?next=…` и `/register?next=…`, после регистрации он возвращается на страницу приглашения. Гонку двух переходов по одной ссылке снимает условный `updateMany` (`acceptedAt: null`) — членство получает только первый.
+- **Защита от потери контроля:** последнего OWNER нельзя ни понизить, ни удалить (`last_owner`).
+- **Редиректы после входа** чистятся через `safeNext()` (`src/lib/safe-next.ts`) — `//evil.com` и `/\evil.com` отбрасываются.
+- **Модель:** `CompanyMember` (миграция `20260531080000_company_members`, бэкфилл владельцев) и `CompanyInvite` (миграция `20261105170000_company_invites`).
+- **Уведомления:** при добавлении и при приёме приглашения владельцам уходит `notifyUser` (Telegram и web-push; email молчит, пока нет `RESEND_API_KEY`).
 
 **Гигиена репозитория:** голосовые отчёты и скриншоты ассистента в корне НЕ хранятся — писать их в `/home/dv/trientes-artifacts/{audio,screens}/` (туда же убран архив прежних 181 файла). Корневые `*.png` / `*.mp3` на всякий случай в `.gitignore`.
 

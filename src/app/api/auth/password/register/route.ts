@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { safeNext } from "@/lib/safe-next";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { clientIp } from "@/lib/client-ip";
@@ -20,7 +21,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   }
 
-  let body: { username?: unknown; password?: unknown; email?: unknown; locale?: unknown };
+  let body: { username?: unknown; password?: unknown; email?: unknown; locale?: unknown; next?: unknown };
   try {
     body = await req.json();
   } catch {
@@ -93,7 +94,7 @@ export async function POST(req: Request) {
     subject: "Welcome to Trientes",
   }).catch(() => {});
 
-  const res = NextResponse.json({ ok: true, redirect: `/${locale}/cabinet` });
+  const res = NextResponse.json({ ok: true, redirect: safeNext(body.next, locale) });
   res.cookies.set(cookie);
   return res;
 }

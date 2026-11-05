@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { safeNext } from "@/lib/safe-next";
 import { prisma } from "@/lib/prisma";
 import { clientIp } from "@/lib/client-ip";
 import { verifyPassword, DUMMY_HASH } from "@/lib/password";
@@ -41,10 +42,7 @@ export async function POST(req: Request) {
   }
 
   const locale = typeof body.locale === "string" ? body.locale : "en";
-  const next =
-    typeof body.next === "string" && body.next.startsWith("/")
-      ? body.next
-      : `/${locale}/cabinet`;
+  const next = safeNext(body.next, locale);
 
   const cookie = await createDatabaseSession(user.id);
   const res = NextResponse.json({ ok: true, redirect: next });

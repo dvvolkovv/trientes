@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { InviteMemberForm } from "@/components/business/invite-member-form";
 import { MemberRow } from "@/components/business/member-row";
+import { InviteLinks, type InviteListItem } from "@/components/business/invite-links";
 
 export async function MembersSection({
   companyId,
@@ -24,14 +25,31 @@ export async function MembersSection({
     },
   });
 
+  // Only owners manage links, so skip the query entirely for everyone else.
+  const invites: InviteListItem[] = canManage
+    ? (
+        await prisma.companyInvite.findMany({
+          where: {
+            companyId,
+            acceptedAt: null,
+            revokedAt: null,
+            expiresAt: { gt: new Date() },
+          },
+          orderBy: { createdAt: "desc" },
+          select: { id: true, token: true, role: true, expiresAt: true },
+        })
+      ).map((i) => ({ ...i, expiresAt: i.expiresAt.toISOString() }))
+    : [];
+
   return (
     <section>
       <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-1">{t("title")}</h2>
       <p className="text-sm text-muted mb-4">
-        {canManage ? t("subtitleOwner") : t("subtitleViewer", { role: viewerRole ?? "" })}
+        {canManage ? t("subtitleOwner") : t("subtitleViewer", { role: viewerRole ? t(`role.${viewerRole}`) : "" })}
       </p>
 
       {canManage ? <InviteMemberForm companyId={companyId} /> : null}
+      {canManage ? <InviteLinks companyId={companyId} invites={invites} /> : null}
 
       <ul className="space-y-2 mt-4">
         {members.map((m) => (

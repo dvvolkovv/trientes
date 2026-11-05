@@ -565,6 +565,23 @@
         "user_not_found": "ユーザーが見つかりません。",
         "self": "自分は追加できません。",
         "last_owner": "オーナーが少なくとも1人必要です。"
+      },
+      "invites": {
+        "title": "招待リンク",
+        "subtitle": "Trientes のアカウントをまだお持ちでない方向けです。各リンクは1回限り有効で、14日で期限切れになります。",
+        "create": "リンクを作成",
+        "creating": "作成中…",
+        "copy": "コピー",
+        "copied": "コピーしました",
+        "revoke": "無効にする",
+        "expires": "{date} まで",
+        "empty": "有効なリンクはありません。",
+        "errors": {
+          "unauth": "先にサインインしてください。",
+          "forbidden": "オーナーのみ可能です。",
+          "invalid": "このリンクは無効になりました。",
+          "too_many": "有効なリンクが多すぎます。まず1つ無効にしてください。"
+        }
       }
     },
     "kyb": {
@@ -785,6 +802,25 @@
       "password_too_long": "パスワードが長すぎます。",
       "invalid_credentials": "ユーザー名またはパスワードが正しくありません。",
       "missing_fields": "両方のフィールドを入力してください。"
+    }
+  },
+  "invite": {
+    "kicker": "招待",
+    "title": "{company} に参加",
+    "titleInvalid": "招待",
+    "roleLine": "{role} として招待されています。",
+    "signInFirst": "招待を受けるにはサインインするか、アカウントを作成してください。",
+    "signIn": "サインイン",
+    "register": "アカウント作成",
+    "accept": "チームに参加",
+    "accepting": "参加中…",
+    "backHome": "ホームに戻る",
+    "state": {
+      "invalid": "この招待リンクは無効です。",
+      "expired": "この招待リンクは期限切れです。",
+      "accepted": "この招待リンクは既に使用されています。",
+      "revoked": "この招待リンクは取り消されました。",
+      "unauth": "先にサインインしてください。"
     }
   },
   "exchange": {
