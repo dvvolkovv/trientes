@@ -24,8 +24,8 @@ Top 100 Layer-1 cryptocurrencies, ranked. Live at [trientes.org](https://triente
 ### Setup
 
 ```bash
-# Install dependencies
-npm install
+# Install the baseline dependencies (see the peer-dependency note below)
+npm ci --legacy-peer-deps
 
 # Create local env file
 cp .env.example .env.local
@@ -37,6 +37,10 @@ npm run db:migrate
 # Start the development server
 npm run dev
 ```
+
+The `--legacy-peer-deps` flag is scoped to this site's baseline install only: the locked `openai@4.104.0` requests
+`zod^3.23.8`, while the root uses `zod4.4.3`. Do not set the flag globally and do not change the manifests to silence
+that baseline peer constraint.
 
 Open [http://localhost:3000](http://localhost:3000) — redirects to `/en`.
 
@@ -85,7 +89,7 @@ The app runs on `85.192.25.242` under PM2:
 ssh dv@85.192.25.242
 
 # Pull latest + rebuild
-cd ~/trientes && git pull && npm ci && npm run build
+cd ~/trientes && git pull && npm ci --legacy-peer-deps && npm run build
 
 # Restart
 pm2 restart trientes-web trientes-worker
@@ -109,6 +113,77 @@ To enable sign-in, register OAuth apps:
 curl https://trientes.org/api/health
 ```
 
+### Exchange market-data APIs
+
+The exchange page at `/exchange/` uses these public read-only Binance proxies for chart data. They do **not** quote or
+create Trientes orders: an order quote comes only from the Trientes chain's `SwapApi.quote`.
+
+#### `GET /api/exchange/klines`
+
+Query parameters:
+
+| Parameter | Default | Validation |
+|---|---|---|
+| `symbol` | required | Trimmed and uppercased, then must match `^[A-Z0-9]{4,30}$` |
+| `interval` | `1h` | One of `1s`, `1m`, `5m`, `15m`, `1h`, `4h`, `1d`, `1w`, `1M` |
+| `limit` | `500` | Decimal integer from 1 through 1000 |
+
+Example: `/api/exchange/klines?symbol=ETHBTC&interval=1h&limit=720`.
+
+A `200` response has `x-cache: hit` or `x-cache: miss` and this shape:
+
+```json
+{
+  "source": "binance",
+  "symbol": "ETHBTC",
+  "interval": "1h",
+  "fetchedAt": 1793800000000,
+  "candles": [
+    { "time": 1793799600, "open": 0.035, "high": 0.036, "low": 0.034, "close": 0.0358, "volume": 123.45 }
+  ]
+}
+```
+
+`fetchedAt` is Unix milliseconds. Candle `time` is Unix seconds; candles have strictly increasing timestamps and
+validated OHLC/volume values.
+
+#### `GET /api/exchange/ticker`
+
+`symbol` is required and follows the same validation rule. Example: `/api/exchange/ticker?symbol=ETHBTC`.
+
+A `200` response has `x-cache: hit` or `x-cache: miss` and this shape:
+
+```json
+{
+  "source": "binance",
+  "symbol": "ETHBTC",
+  "fetchedAt": 1793800000000,
+  "lastPrice": 0.0358,
+  "priceChangePercent": 1.24,
+  "volume": 184209.1,
+  "quoteVolume": 6598.2
+}
+```
+
+`volume` is the 24-hour base-asset volume and `quoteVolume` the quote-asset volume.
+
+#### Error contract
+
+Errors always use `{ "error": "<code>" }`:
+
+| Status | Codes | Meaning |
+|---:|---|---|
+| 400 | `invalid_symbol`, `invalid_interval`, `invalid_limit` | Invalid query input |
+| 404 | `pair_unavailable` | Binance rejected the requested market with HTTP 400 |
+| 502 | `upstream_unavailable` | Fetch failure/timeout, another unsuccessful Binance status, or an unexpected failure |
+| 502 | `upstream_shape` | Invalid JSON, response shape, numeric values, timestamps, OHLC or volume |
+| 503 | `upstream_rate_limited` | Binance returned HTTP 418 or 429 |
+
+Redis is only a cache. Cached payloads are fully validated again; malformed entries become misses. Every Redis
+read/write has a 250 ms best-effort deadline, so Redis timeout or failure falls back to Binance and a failed cache
+write is ignored. Kline TTLs range from 2 seconds (`1s`) to 3600 seconds (`1M`); ticker TTL is 5 seconds. Binance
+requests have an 8-second timeout.
+
 ### Backups
 
 Daily Postgres backups run at 03:00 UTC on the server, stored at `~/backups/pg/`, 14-day retention.
@@ -127,6 +202,7 @@ src/
 │   │   └── request/        # Coin request form (Phase 5)
 │   ├── api/
 │   │   ├── auth/           # Auth.js + Telegram callback
+│   │   ├── exchange/       # Binance klines and 24h ticker for the exchange chart
 │   │   └── health/         # Health check endpoint
 │   └── actions/            # Server actions (auth, settings)
 ├── auth.ts                 # NextAuth full config (Node.js runtime)
