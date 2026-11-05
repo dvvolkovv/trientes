@@ -439,10 +439,11 @@ select:focus-visible {
   color: #ffffff;
   animation: mood-glow 6s ease-in-out infinite;
 }
-/* The traced bull is near-square and the drawn bear is landscape — cap each so both
-   render at roughly the same visual height in the hero. */
-.mood-art--bull { max-width: 580px; }
-.mood-art--bear { max-width: 820px; }
+/* Both traces are near-square, so they share a cap and read at the same scale. */
+.mood-art--bull,
+.mood-art--bear { max-width: 580px; }
+/* The bull has an outline to draw on first; the bear is all ink, so he starts sooner. */
+.mood-art--bear .mood-ink { animation-delay: 0.2s; }
 .mood-art path {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
