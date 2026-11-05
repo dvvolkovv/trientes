@@ -451,13 +451,13 @@ select:focus-visible {
   to { stroke-dashoffset: 0; }
 }
 @keyframes mood-glow {
-  0%, 100% { filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.16)); }
-  50%      { filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.42)); }
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.32)); }
+  50%      { filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.58)); }
 }
 @media (prefers-reduced-motion: reduce) {
   .mood-art {
     animation: none;
-    filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.22));
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.42));
   }
   .mood-art path {
     animation: none;
