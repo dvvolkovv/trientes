@@ -459,7 +459,7 @@
     "futures": "CME futures",
     "metals": "Precious metals",
     "asOf": "As of",
-    "dataNote": "Delayed, indicative data via Stooq — not for trading.",
+    "dataNote": "Delayed, indicative data via CNBC — not for trading.",
     "empty": "Market data is not available right now.",
     "gold": "Gold",
     "silver": "Silver",

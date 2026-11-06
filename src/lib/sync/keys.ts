@@ -20,7 +20,7 @@ export const TTL = {
   adminAddedList: 3600,    // 1h
   news: 7200,              // 2h — outlives the 30 min news-sync + worker restarts
   fearGreed: 21600,        // 6h — index updates ~daily; long TTL survives worker restarts
-  markets: 3600,           // 1h — Stooq quotes are delayed; outlives the 20 min markets-sync
+  markets: 86400,          // 24h — quotes are delayed anyway; survives an upstream outage, board shows its own asOf stamp
   tickers: 900,            // 15 min — bounds CoinGecko /tickers calls on the free tier
 } as const;
 

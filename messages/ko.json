@@ -459,7 +459,7 @@
     "futures": "CME 선물",
     "metals": "귀금속",
     "asOf": "기준:",
-    "dataNote": "Stooq의 지연·참고용 데이터 — 거래용이 아닙니다.",
+    "dataNote": "CNBC의 지연·참고용 데이터 — 거래용이 아닙니다.",
     "empty": "현재 시장 데이터를 사용할 수 없습니다.",
     "gold": "금",
     "silver": "은",

@@ -459,7 +459,7 @@
     "futures": "Futuros de CME",
     "metals": "Metales preciosos",
     "asOf": "Al",
-    "dataNote": "Datos con retraso e indicativos vía Stooq — no aptos para operar.",
+    "dataNote": "Datos con retraso e indicativos vía CNBC — no aptos para operar.",
     "empty": "Los datos de mercado no están disponibles ahora.",
     "gold": "Oro",
     "silver": "Plata",

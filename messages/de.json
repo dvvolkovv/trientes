@@ -459,7 +459,7 @@
     "futures": "CME-Futures",
     "metals": "Edelmetalle",
     "asOf": "Stand",
-    "dataNote": "Verzögerte, indikative Daten über Stooq — nicht zum Handel.",
+    "dataNote": "Verzögerte, indikative Daten über CNBC — nicht zum Handel.",
     "empty": "Marktdaten sind derzeit nicht verfügbar.",
     "gold": "Gold",
     "silver": "Silber",

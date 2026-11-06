@@ -139,10 +139,33 @@ export async function syncFearGreed(deps: {
 
 export async function syncMarkets(deps: {
   fetchMarkets: () => Promise<MarketQuote[]>;
-  redis: RedisLike;
+  redis: RedisLike & { get(key: string): Promise<string | null> };
 }): Promise<{ count: number }> {
   const quotes = await deps.fetchMarkets();
-  await deps.redis.set(KEYS.markets, JSON.stringify(quotes), "EX", TTL.markets);
+  // An empty result means the upstream refused us, not that the markets are gone —
+  // keep the last good snapshot so the board degrades to stale instead of blank.
+  if (quotes.length === 0) return { count: 0 };
+
+  // CNBC occasionally drops a single symbol from an otherwise fine response. Merging
+  // over the previous snapshot keeps that card on the board (stale, with its own
+  // timestamp) instead of making it blink out until the next sync.
+  let previous: MarketQuote[] = [];
+  try {
+    const cached = await deps.redis.get(KEYS.markets);
+    const parsed = cached ? JSON.parse(cached) : null;
+    if (Array.isArray(parsed)) previous = parsed as MarketQuote[];
+  } catch {
+    previous = [];
+  }
+  const fresh = new Map(quotes.map((q) => [q.symbol, q]));
+  // Previous order is the canonical instrument order, so rebuild from it and append
+  // anything newly added to the instrument list.
+  const merged = [
+    ...previous.map((p) => fresh.get(p.symbol) ?? p),
+    ...quotes.filter((q) => !previous.some((p) => p.symbol === q.symbol)),
+  ];
+
+  await deps.redis.set(KEYS.markets, JSON.stringify(merged), "EX", TTL.markets);
   return { count: quotes.length };
 }
 

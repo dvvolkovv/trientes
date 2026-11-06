@@ -12,6 +12,7 @@ function makeFakes() {
       redisStore.set(k, v);
       return "OK";
     }),
+    get: vi.fn(async (k: string) => redisStore.get(k) ?? null),
   };
   const upsertedCoins: Array<{ id: string; rank: number }> = [];
   const createdSnapshots: Array<{ coinId: string; priceUsd: number }> = [];
@@ -200,6 +201,46 @@ describe("syncMarkets", () => {
     });
     expect(result).toEqual({ count: 2 });
     expect(JSON.parse(redisStore.get(KEYS.markets)!)).toHaveLength(2);
+  });
+
+  it("carries a transiently missing instrument over from the previous snapshot", async () => {
+    const { redisStore, fakeRedis } = makeFakes();
+    const prev = [
+      { symbol: ".DJI", name: "Dow Jones", group: "index", unit: "pts", last: 1 },
+      { symbol: "@PA.1", name: "palladium", group: "metal", unit: "usd", last: 1025 },
+    ];
+    redisStore.set(KEYS.markets, JSON.stringify(prev));
+    const result = await syncMarkets({
+      // CNBC dropped @PA.1 from this response
+      fetchMarkets: async () => [{ symbol: ".DJI", name: "Dow Jones", group: "index", unit: "pts", last: 2 }] as never,
+      redis: fakeRedis as never,
+    });
+    expect(result).toEqual({ count: 1 });
+    const stored = JSON.parse(redisStore.get(KEYS.markets)!);
+    expect(stored.map((q: { symbol: string }) => q.symbol)).toEqual([".DJI", "@PA.1"]);
+    expect(stored[0].last).toBe(2);
+    expect(stored[1].last).toBe(1025);
+  });
+
+  it("ignores an unreadable previous snapshot", async () => {
+    const { redisStore, fakeRedis } = makeFakes();
+    redisStore.set(KEYS.markets, "not json");
+    const fresh = [{ symbol: ".DJI", name: "Dow Jones", group: "index", unit: "pts", last: 2 }];
+    const result = await syncMarkets({ fetchMarkets: async () => fresh as never, redis: fakeRedis as never });
+    expect(result).toEqual({ count: 1 });
+    expect(JSON.parse(redisStore.get(KEYS.markets)!)).toHaveLength(1);
+  });
+
+  it("keeps the previous snapshot when the source returns nothing", async () => {
+    const { redisStore, fakeRedis } = makeFakes();
+    redisStore.set(KEYS.markets, JSON.stringify([{ symbol: ".DJI" }]));
+    const result = await syncMarkets({
+      fetchMarkets: async () => [],
+      redis: fakeRedis as never,
+    });
+    expect(result).toEqual({ count: 0 });
+    expect(fakeRedis.set).not.toHaveBeenCalled();
+    expect(JSON.parse(redisStore.get(KEYS.markets)!)).toHaveLength(1);
   });
 });
 

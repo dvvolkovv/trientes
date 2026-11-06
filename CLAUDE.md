@@ -56,6 +56,7 @@ Shipped 2026-05-24. Lets INDIVIDUAL users register with username + password, man
 
 **Известные дыры (нужно решение владельца, не код):**
 - `RESEND_API_KEY` не задан → письма не уходят. `src/lib/email.ts` аккуратно no-op'ит (`email_not_configured`), Telegram и web-push работают. Нужен ключ Resend + верифицированный домен-отправитель.
+- **Рынки держатся на неофициальном фиде CNBC** (`quote.cnbc.com`, без ключа) — см. обновление от 2026-11-06 в `docs/superpowers/specs/2026-05-23-markets-stooq-design.md`. Stooq и Yahoo блокируют IP сервера, CME банит за автоматический доступ (их ToS). Нормальное решение — бесплатный ключ **Twelve Data** (800 запросов/сутки, внутридневные OHLC) или **FRED** (официально, но только дневное закрытие). Нужен ключ от владельца.
 
 # Phase 10 — Командные аккаунты
 

@@ -459,7 +459,7 @@
     "futures": "芝商所期货",
     "metals": "贵金属",
     "asOf": "截至",
-    "dataNote": "经由 Stooq 的延迟、指示性数据 — 不用于交易。",
+    "dataNote": "经由 CNBC 的延迟、指示性数据 — 不用于交易。",
     "empty": "市场数据当前不可用。",
     "gold": "黄金",
     "silver": "白银",

@@ -459,7 +459,7 @@
     "futures": "CME vadeli işlemleri",
     "metals": "Değerli metaller",
     "asOf": "İtibarıyla",
-    "dataNote": "Stooq üzerinden gecikmeli, gösterge niteliğinde veriler — alım satım için değildir.",
+    "dataNote": "CNBC üzerinden gecikmeli, gösterge niteliğinde veriler — alım satım için değildir.",
     "empty": "Piyasa verileri şu anda mevcut değil.",
     "gold": "Altın",
     "silver": "Gümüş",

@@ -459,7 +459,7 @@
     "futures": "CME先物",
     "metals": "貴金属",
     "asOf": "時点:",
-    "dataNote": "Stooq による遅延・参考データ — 取引用ではありません。",
+    "dataNote": "CNBC による遅延・参考データ — 取引用ではありません。",
     "empty": "市場データは現在利用できません。",
     "gold": "金",
     "silver": "銀",

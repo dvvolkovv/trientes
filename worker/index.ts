@@ -75,6 +75,11 @@ async function runMarketsSync() {
   const t0 = Date.now();
   try {
     const { count } = await syncMarkets({ fetchMarkets, redis: redis as never });
+    if (count === 0) {
+      // Upstream refused us — the previous snapshot is kept, but this must not read as "ok".
+      console.error(`[worker] markets-sync empty: upstream returned no quotes in ${Date.now() - t0}ms`);
+      return;
+    }
     console.log(`[worker] markets-sync ok: ${count} in ${Date.now() - t0}ms`);
   } catch (err) {
     console.error(`[worker] markets-sync failed:`, err);
