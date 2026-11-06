@@ -16,6 +16,11 @@ import { SupplyMetrics } from "@/components/coin-detail/supply";
 import { MarketsTable } from "@/components/coin-detail/markets";
 import { CryptoMapSection } from "@/components/coin-detail/crypto-map-section";
 import { SectionNav } from "@/components/coin-detail/section-nav";
+import { getPublicCoinCard } from "@/lib/coin-card-public";
+import { CoinCardHeader } from "@/components/coin-card/card-header";
+import { CoinCardSections } from "@/components/coin-card/card-sections";
+import { TrustPlaque } from "@/components/coin-card/trust-plaque";
+import { CardDescription } from "@/components/coin-card/card-description";
 import { NewsRail } from "@/components/news-rail";
 import { LivePrices } from "@/components/live-prices";
 import type { MarketRow } from "@/lib/coingecko";
@@ -71,6 +76,23 @@ export default async function CoinDetailPage({
       snapshots: { orderBy: { fetchedAt: "desc" }, take: 1 },
     },
   });
+  // A self-listed card has no Coin row and no snapshot behind it — there is no
+  // external feed by design. Serve it as a standalone page under the same
+  // canonical /coin/<slug> URL instead of 404ing.
+  if (!coin) {
+    const only = await getPublicCoinCard(slug);
+    if (only) {
+      return (
+        <main className="max-w-[1600px] mx-auto px-4 md:px-12 xl:px-20 py-8 md:py-12 space-y-10 md:space-y-14">
+          <CoinCardHeader card={only} />
+          <TrustPlaque trust={only.trust} />
+          <CardDescription description={only.description} provenance={only.provenance} />
+          <CoinCardSections card={only} />
+        </main>
+      );
+    }
+  }
+
   if (!coin || !coin.snapshots[0]) {
     // Fall back to Redis list — covers the case where DB has the coin but no snapshot yet.
     const list = await readTop100();
@@ -78,6 +100,9 @@ export default async function CoinDetailPage({
     if (!coin && !fromRedis) notFound();
     if (!fromRedis) notFound();
   }
+
+  // When a Coin already exists, the card is an additive layer on top of it.
+  const card = await getPublicCoinCard(slug);
 
   // Build a MarketRow from coin + latest snapshot.
   const s = coin?.snapshots[0];
@@ -176,6 +201,12 @@ export default async function CoinDetailPage({
       <SupplyMetrics row={row} currency={currency} rates={rates} />
       <Description html={aboutHtml} />
       <CoinLinks coin={coin} />
+      {card && (
+        <>
+          <TrustPlaque trust={card.trust} />
+          <CoinCardSections card={card} />
+        </>
+      )}
       <section id="exchanges" className="scroll-mt-24">
         <MarketsTable exchanges={topExchanges} currency={currency} rates={rates} />
       </section>

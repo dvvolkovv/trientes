@@ -60,3 +60,8 @@ incoming/
 /otchet-*.mp3
 /*.png
 /*.mp3
+
+# user uploads (coin logos, point photos, KYB documents) — runtime data of the
+# live box, never source. The two tracked .gitkeep files stay tracked:
+# .gitignore does not untrack what git already knows about.
+/public/uploads/
