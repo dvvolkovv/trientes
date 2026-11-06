@@ -1279,7 +1279,8 @@
       "marketing": "项目与路线图",
       "links": "链接与社区",
       "acceptance": "哪里可以使用",
-      "payments": "支付概况"
+      "payments": "支付概况",
+      "legal": "法律状态"
     },
     "acceptance": {
       "eyebrow": "实体经济",
@@ -1507,7 +1508,13 @@
         "fee_note_too_long": "The fee note is longer than 200 characters.",
         "integration_incomplete": "An integration needs a name.",
         "integration_url_invalid": "Invalid integration link.",
-        "too_many_integrations": "No more than 20 integrations."
+        "too_many_integrations": "No more than 20 integrations.",
+        "legal_source_required": "A source link is required: a claim about the law without a source is not accepted.",
+        "legal_date_required": "A source date in YYYY-MM-DD is required: the law changes.",
+        "legal_status_invalid": "Unknown legal status.",
+        "legal_note_too_long": "The note is longer than 500 characters.",
+        "country_unknown": "Unknown country code.",
+        "too_many_jurisdictions": "No more than 60 jurisdictions."
       },
       "launchDate": "上线日期",
       "tags": "标签",
@@ -1537,7 +1544,12 @@
       "integrationName": "支付概况",
       "integrationUrl": "URL",
       "refundPolicyUrl": "退款政策",
-      "sourceLocale": "Source language"
+      "sourceLocale": "Source language",
+      "jurisdictionCountry": "Country code (ISO-2)",
+      "jurisdictionStatus": "Status",
+      "jurisdictionNote": "Note",
+      "jurisdictionSource": "Source link",
+      "jurisdictionAsOf": "Source date"
     },
     "manage": {
       "status": {
@@ -1620,7 +1632,13 @@
         "fee_note_too_long": "The fee note is longer than 200 characters.",
         "integration_incomplete": "An integration needs a name.",
         "integration_url_invalid": "Invalid integration link.",
-        "too_many_integrations": "No more than 20 integrations."
+        "too_many_integrations": "No more than 20 integrations.",
+        "legal_source_required": "A source link is required: a claim about the law without a source is not accepted.",
+        "legal_date_required": "A source date in YYYY-MM-DD is required: the law changes.",
+        "legal_status_invalid": "Unknown legal status.",
+        "legal_note_too_long": "The note is longer than 500 characters.",
+        "country_unknown": "Unknown country code.",
+        "too_many_jurisdictions": "No more than 60 jurisdictions."
       }
     },
     "team": {
@@ -1700,7 +1718,13 @@
         "fee_note_too_long": "The fee note is longer than 200 characters.",
         "integration_incomplete": "An integration needs a name.",
         "integration_url_invalid": "Invalid integration link.",
-        "too_many_integrations": "No more than 20 integrations."
+        "too_many_integrations": "No more than 20 integrations.",
+        "legal_source_required": "A source link is required: a claim about the law without a source is not accepted.",
+        "legal_date_required": "A source date in YYYY-MM-DD is required: the law changes.",
+        "legal_status_invalid": "Unknown legal status.",
+        "legal_note_too_long": "The note is longer than 500 characters.",
+        "country_unknown": "Unknown country code.",
+        "too_many_jurisdictions": "No more than 60 jurisdictions."
       },
       "invites": {
         "title": "邀请链接",
@@ -1817,7 +1841,13 @@
         "fee_note_too_long": "The fee note is longer than 200 characters.",
         "integration_incomplete": "An integration needs a name.",
         "integration_url_invalid": "Invalid integration link.",
-        "too_many_integrations": "No more than 20 integrations."
+        "too_many_integrations": "No more than 20 integrations.",
+        "legal_source_required": "A source link is required: a claim about the law without a source is not accepted.",
+        "legal_date_required": "A source date in YYYY-MM-DD is required: the law changes.",
+        "legal_status_invalid": "Unknown legal status.",
+        "legal_note_too_long": "The note is longer than 500 characters.",
+        "country_unknown": "Unknown country code.",
+        "too_many_jurisdictions": "No more than 60 jurisdictions."
       }
     },
     "revision": {
@@ -1892,7 +1922,13 @@
         "fee_note_too_long": "The fee note is longer than 200 characters.",
         "integration_incomplete": "An integration needs a name.",
         "integration_url_invalid": "Invalid integration link.",
-        "too_many_integrations": "No more than 20 integrations."
+        "too_many_integrations": "No more than 20 integrations.",
+        "legal_source_required": "A source link is required: a claim about the law without a source is not accepted.",
+        "legal_date_required": "A source date in YYYY-MM-DD is required: the law changes.",
+        "legal_status_invalid": "Unknown legal status.",
+        "legal_note_too_long": "The note is longer than 500 characters.",
+        "country_unknown": "Unknown country code.",
+        "too_many_jurisdictions": "No more than 60 jurisdictions."
       }
     },
     "history": {
@@ -1949,6 +1985,20 @@
       "countries": "服务国家",
       "fiats": "法币",
       "all": "查看全部金融科技目录"
+    },
+    "legal": {
+      "title": "各司法辖区的法律状态",
+      "disclaimer": "这是项目自己的声明，附有来源和日期，并非 Trientes 的法律意见。在受理支付前，请向相关辖区的律师确认。",
+      "country": "司法辖区",
+      "status": "状态",
+      "note": "备注",
+      "source": "来源",
+      "sourceLink": "来源",
+      "status_ALLOWED": "允许",
+      "status_LICENSED": "需要许可",
+      "status_RESTRICTED": "受限",
+      "status_BANNED": "禁止",
+      "status_UNCLEAR": "不明确"
     }
   },
   "inviteCoin": {

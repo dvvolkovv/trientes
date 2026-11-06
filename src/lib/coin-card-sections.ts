@@ -6,6 +6,7 @@
 import type { CardSection } from "@/lib/coin-card-risk";
 import { normalizeSourceLocale } from "@/lib/prose-fields";
 import { validatePayments } from "@/lib/coin-card-payments";
+import { validateLegal } from "@/lib/coin-card-legal";
 import {
   normalizeHttpUrl,
   validateCardBasics,
@@ -48,6 +49,7 @@ export type CardStateLike = {
   tokenomics: unknown;
   security: unknown;
   payments?: unknown;
+  legal?: unknown;
   teamInfo: unknown;
   marketing: unknown;
   contracts?: ContractRow[];
@@ -80,6 +82,7 @@ export const SECTION_PATHS: Record<CardSection, readonly string[]> = {
   MARKETING: ["marketing"],
   ACCEPTANCE: [],
   PAYMENTS: ["payments"],
+  LEGAL: ["legal"],
 };
 
 function asObject(raw: unknown): Record<string, unknown> {
@@ -167,6 +170,12 @@ export function normalizeSectionPayload(
     const v = validatePayments(payload.payments);
     if (!v.ok) return { ok: false, reason: v.reason };
     return { ok: true, patch: { card: { payments: v.data }, touched: ["payments"] } };
+  }
+
+  if (section === "LEGAL") {
+    const v = validateLegal(payload.legal);
+    if (!v.ok) return { ok: false, reason: v.reason };
+    return { ok: true, patch: { card: { legal: v.data }, touched: ["legal"] } };
   }
 
   if (section === "SECURITY") {

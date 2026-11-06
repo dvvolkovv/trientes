@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { applyCardProse, collectCardProse } from "@/lib/coin-card-prose";
 import {
   collectProse,
   mergeProse,
@@ -62,5 +63,51 @@ describe("normalizeSourceLocale", () => {
     expect(normalizeSourceLocale("klingon")).toBe(null);
     expect(normalizeSourceLocale("")).toBe(null);
     expect(normalizeSourceLocale(null)).toBe(null);
+  });
+});
+
+describe("collectCardProse / applyCardProse", () => {
+  const card = {
+    tagline: "слоган",
+    description: "описание",
+    marketing: { pitch: "питч" },
+    tokenomics: { emission: "эмиссия", burn: "сжигание", total: 100 },
+    payments: { feeNote: "про комиссию", feeUsdTypical: 0.004 },
+    legal: {
+      disclaimer: true,
+      jurisdictions: [
+        { countryCode: "PL", status: "ALLOWED", note: "заметка PL", sourceUrl: "https://x.test", asOf: "2026-11-06" },
+        { countryCode: "AT", status: "UNCLEAR", note: null, sourceUrl: "https://y.test", asOf: "2026-10-15" },
+      ],
+    },
+  };
+
+  it("collects every prose field, including the fee note and jurisdiction notes", () => {
+    const p = collectCardProse(card);
+    expect(p.tagline).toBe("слоган");
+    expect(p.feeNote).toBe("про комиссию");
+    expect(p["legalNote:PL"]).toBe("заметка PL");
+    // Пустая заметка не попадает — переводить нечего.
+    expect(p["legalNote:AT"]).toBeUndefined();
+  });
+
+  it("never collects numbers or urls — they are data, not prose", () => {
+    const p = collectCardProse(card);
+    expect(Object.values(p)).not.toContain(100);
+    expect(JSON.stringify(p)).not.toContain("https://x.test");
+  });
+
+  it("writes the translation back into the right place and keeps the data", () => {
+    const out = applyCardProse(card, {
+      ...collectCardProse(card),
+      feeNote: "about the fee",
+      "legalNote:PL": "PL note",
+    });
+    expect((out.payments as { feeNote: string; feeUsdTypical: number }).feeNote).toBe("about the fee");
+    expect((out.payments as { feeUsdTypical: number }).feeUsdTypical).toBe(0.004);
+    const js = (out.legal as { jurisdictions: { countryCode: string; note: string | null; sourceUrl: string }[] }).jurisdictions;
+    expect(js[0].note).toBe("PL note");
+    expect(js[0].sourceUrl).toBe("https://x.test");
+    expect(js[1].note).toBe(null);
   });
 });

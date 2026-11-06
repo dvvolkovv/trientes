@@ -1,12 +1,12 @@
 export type CardSection =
   | "IDENTITY" | "CONTRACTS" | "TOKENOMICS" | "MARKETS"
-  | "SECURITY" | "TEAM" | "LINKS" | "MARKETING" | "ACCEPTANCE" | "PAYMENTS";
+  | "SECURITY" | "TEAM" | "LINKS" | "MARKETING" | "ACCEPTANCE" | "PAYMENTS" | "LEGAL";
 
 /** Sections where a bad edit can defraud users (wrong contract, fake supply). */
 // PAYMENTS (слайс F2) здесь не случайно: завышенная скорость или заниженная
 // комиссия — это решение продавца, принятое на ложных данных.
 export const HIGH_RISK_SECTIONS: readonly CardSection[] = [
-  "CONTRACTS", "TOKENOMICS", "MARKETS", "SECURITY", "PAYMENTS",
+  "CONTRACTS", "TOKENOMICS", "MARKETS", "SECURITY", "PAYMENTS", "LEGAL",
 ];
 
 /** Low-risk sections — still moderated while the card is UNVERIFIED. */
@@ -33,6 +33,7 @@ const SECTION_BY_ROOT: Record<string, CardSection> = {
   marketing: "MARKETING",
   acceptance: "ACCEPTANCE",
   payments: "PAYMENTS",
+  legal: "LEGAL",
 };
 
 export function isHighRiskSection(section: CardSection): boolean {

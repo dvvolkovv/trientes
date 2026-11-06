@@ -1279,7 +1279,8 @@
       "marketing": "Proje ve yol haritası",
       "links": "Bağlantılar ve topluluk",
       "acceptance": "Nerede kabul ediliyor",
-      "payments": "Ödeme profili"
+      "payments": "Ödeme profili",
+      "legal": "Hukuki durum"
     },
     "acceptance": {
       "eyebrow": "Reel sektör",
@@ -1507,7 +1508,13 @@
         "fee_note_too_long": "The fee note is longer than 200 characters.",
         "integration_incomplete": "An integration needs a name.",
         "integration_url_invalid": "Invalid integration link.",
-        "too_many_integrations": "No more than 20 integrations."
+        "too_many_integrations": "No more than 20 integrations.",
+        "legal_source_required": "A source link is required: a claim about the law without a source is not accepted.",
+        "legal_date_required": "A source date in YYYY-MM-DD is required: the law changes.",
+        "legal_status_invalid": "Unknown legal status.",
+        "legal_note_too_long": "The note is longer than 500 characters.",
+        "country_unknown": "Unknown country code.",
+        "too_many_jurisdictions": "No more than 60 jurisdictions."
       },
       "launchDate": "Lansman tarihi",
       "tags": "Etiketler",
@@ -1537,7 +1544,12 @@
       "integrationName": "Ödeme profili",
       "integrationUrl": "URL",
       "refundPolicyUrl": "İade politikası",
-      "sourceLocale": "Source language"
+      "sourceLocale": "Source language",
+      "jurisdictionCountry": "Country code (ISO-2)",
+      "jurisdictionStatus": "Status",
+      "jurisdictionNote": "Note",
+      "jurisdictionSource": "Source link",
+      "jurisdictionAsOf": "Source date"
     },
     "manage": {
       "status": {
@@ -1620,7 +1632,13 @@
         "fee_note_too_long": "The fee note is longer than 200 characters.",
         "integration_incomplete": "An integration needs a name.",
         "integration_url_invalid": "Invalid integration link.",
-        "too_many_integrations": "No more than 20 integrations."
+        "too_many_integrations": "No more than 20 integrations.",
+        "legal_source_required": "A source link is required: a claim about the law without a source is not accepted.",
+        "legal_date_required": "A source date in YYYY-MM-DD is required: the law changes.",
+        "legal_status_invalid": "Unknown legal status.",
+        "legal_note_too_long": "The note is longer than 500 characters.",
+        "country_unknown": "Unknown country code.",
+        "too_many_jurisdictions": "No more than 60 jurisdictions."
       }
     },
     "team": {
@@ -1700,7 +1718,13 @@
         "fee_note_too_long": "The fee note is longer than 200 characters.",
         "integration_incomplete": "An integration needs a name.",
         "integration_url_invalid": "Invalid integration link.",
-        "too_many_integrations": "No more than 20 integrations."
+        "too_many_integrations": "No more than 20 integrations.",
+        "legal_source_required": "A source link is required: a claim about the law without a source is not accepted.",
+        "legal_date_required": "A source date in YYYY-MM-DD is required: the law changes.",
+        "legal_status_invalid": "Unknown legal status.",
+        "legal_note_too_long": "The note is longer than 500 characters.",
+        "country_unknown": "Unknown country code.",
+        "too_many_jurisdictions": "No more than 60 jurisdictions."
       },
       "invites": {
         "title": "Davet bağlantıları",
@@ -1817,7 +1841,13 @@
         "fee_note_too_long": "The fee note is longer than 200 characters.",
         "integration_incomplete": "An integration needs a name.",
         "integration_url_invalid": "Invalid integration link.",
-        "too_many_integrations": "No more than 20 integrations."
+        "too_many_integrations": "No more than 20 integrations.",
+        "legal_source_required": "A source link is required: a claim about the law without a source is not accepted.",
+        "legal_date_required": "A source date in YYYY-MM-DD is required: the law changes.",
+        "legal_status_invalid": "Unknown legal status.",
+        "legal_note_too_long": "The note is longer than 500 characters.",
+        "country_unknown": "Unknown country code.",
+        "too_many_jurisdictions": "No more than 60 jurisdictions."
       }
     },
     "revision": {
@@ -1892,7 +1922,13 @@
         "fee_note_too_long": "The fee note is longer than 200 characters.",
         "integration_incomplete": "An integration needs a name.",
         "integration_url_invalid": "Invalid integration link.",
-        "too_many_integrations": "No more than 20 integrations."
+        "too_many_integrations": "No more than 20 integrations.",
+        "legal_source_required": "A source link is required: a claim about the law without a source is not accepted.",
+        "legal_date_required": "A source date in YYYY-MM-DD is required: the law changes.",
+        "legal_status_invalid": "Unknown legal status.",
+        "legal_note_too_long": "The note is longer than 500 characters.",
+        "country_unknown": "Unknown country code.",
+        "too_many_jurisdictions": "No more than 60 jurisdictions."
       }
     },
     "history": {
@@ -1949,6 +1985,20 @@
       "countries": "Hizmet verilen ülkeler",
       "fiats": "Fiat para birimleri",
       "all": "Tüm fintek rehberi"
+    },
+    "legal": {
+      "title": "Yargı bölgesine göre hukuki durum",
+      "disclaimer": "Bu, kaynağı ve tarihi olan projenin kendi beyanıdır; Trientes'in hukuki tavsiyesi değildir. Ödeme kabul etmeden önce ilgili yargı bölgesindeki bir avukata danışın.",
+      "country": "Yargı bölgesi",
+      "status": "Durum",
+      "note": "Not",
+      "source": "Kaynak",
+      "sourceLink": "kaynak",
+      "status_ALLOWED": "izinli",
+      "status_LICENSED": "lisans gerekli",
+      "status_RESTRICTED": "kısıtlı",
+      "status_BANNED": "yasak",
+      "status_UNCLEAR": "belirsiz"
     }
   },
   "inviteCoin": {

@@ -298,6 +298,7 @@ enum CoinCardSection {
   MARKETING
   ACCEPTANCE
   PAYMENTS
+  LEGAL
 }
 
 enum CoinCardRole {

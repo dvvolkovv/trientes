@@ -3,6 +3,7 @@ import { ContractsSection } from "./sections/contracts-section";
 import { TokenomicsSection } from "./sections/tokenomics-section";
 import { MarketsSection } from "./sections/markets-section";
 import { AcceptanceSection } from "./sections/acceptance-section";
+import { LegalSection } from "./sections/legal-section";
 import { SecuritySection } from "./sections/security-section";
 import { TeamSection } from "./sections/team-section";
 import { MarketingSection } from "./sections/marketing-section";
@@ -39,6 +40,7 @@ export function CoinCardSections({
         payments={card.payments}
         provenance={card.provenance}
       />
+      <LegalSection legal={card.legal} />
       <SecuritySection security={card.security} />
       <TeamSection teamInfo={card.teamInfo} />
       <MarketingSection marketing={card.marketing} badge={badge} />

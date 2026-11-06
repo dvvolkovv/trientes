@@ -1279,7 +1279,8 @@
       "marketing": "Проект и дорожная карта",
       "links": "Ссылки и сообщество",
       "acceptance": "Где принимается",
-      "payments": "Платёжный профиль"
+      "payments": "Платёжный профиль",
+      "legal": "Правовой статус"
     },
     "acceptance": {
       "eyebrow": "Реальный сектор",
@@ -1507,7 +1508,13 @@
         "fee_note_too_long": "Примечание о комиссии длиннее 200 символов.",
         "integration_incomplete": "У интеграции должно быть название.",
         "integration_url_invalid": "Неверная ссылка интеграции.",
-        "too_many_integrations": "Не больше 20 интеграций."
+        "too_many_integrations": "Не больше 20 интеграций.",
+        "legal_source_required": "Нужна ссылка на источник: утверждение о законе без источника не принимается.",
+        "legal_date_required": "Нужна дата источника в формате ГГГГ-ММ-ДД: закон меняется.",
+        "legal_status_invalid": "Неизвестный правовой статус.",
+        "legal_note_too_long": "Примечание длиннее 500 символов.",
+        "country_unknown": "Неизвестный код страны.",
+        "too_many_jurisdictions": "Не больше 60 юрисдикций."
       },
       "launchDate": "Дата запуска",
       "tags": "Теги",
@@ -1537,7 +1544,12 @@
       "integrationName": "Платёжный профиль",
       "integrationUrl": "URL",
       "refundPolicyUrl": "Политика возврата",
-      "sourceLocale": "Язык исходного текста"
+      "sourceLocale": "Язык исходного текста",
+      "jurisdictionCountry": "Код страны (ISO-2)",
+      "jurisdictionStatus": "Статус",
+      "jurisdictionNote": "Примечание",
+      "jurisdictionSource": "Ссылка на источник",
+      "jurisdictionAsOf": "Дата источника"
     },
     "manage": {
       "status": {
@@ -1620,7 +1632,13 @@
         "fee_note_too_long": "Примечание о комиссии длиннее 200 символов.",
         "integration_incomplete": "У интеграции должно быть название.",
         "integration_url_invalid": "Неверная ссылка интеграции.",
-        "too_many_integrations": "Не больше 20 интеграций."
+        "too_many_integrations": "Не больше 20 интеграций.",
+        "legal_source_required": "Нужна ссылка на источник: утверждение о законе без источника не принимается.",
+        "legal_date_required": "Нужна дата источника в формате ГГГГ-ММ-ДД: закон меняется.",
+        "legal_status_invalid": "Неизвестный правовой статус.",
+        "legal_note_too_long": "Примечание длиннее 500 символов.",
+        "country_unknown": "Неизвестный код страны.",
+        "too_many_jurisdictions": "Не больше 60 юрисдикций."
       }
     },
     "team": {
@@ -1700,7 +1718,13 @@
         "fee_note_too_long": "Примечание о комиссии длиннее 200 символов.",
         "integration_incomplete": "У интеграции должно быть название.",
         "integration_url_invalid": "Неверная ссылка интеграции.",
-        "too_many_integrations": "Не больше 20 интеграций."
+        "too_many_integrations": "Не больше 20 интеграций.",
+        "legal_source_required": "Нужна ссылка на источник: утверждение о законе без источника не принимается.",
+        "legal_date_required": "Нужна дата источника в формате ГГГГ-ММ-ДД: закон меняется.",
+        "legal_status_invalid": "Неизвестный правовой статус.",
+        "legal_note_too_long": "Примечание длиннее 500 символов.",
+        "country_unknown": "Неизвестный код страны.",
+        "too_many_jurisdictions": "Не больше 60 юрисдикций."
       },
       "invites": {
         "title": "Ссылки-приглашения",
@@ -1817,7 +1841,13 @@
         "fee_note_too_long": "Примечание о комиссии длиннее 200 символов.",
         "integration_incomplete": "У интеграции должно быть название.",
         "integration_url_invalid": "Неверная ссылка интеграции.",
-        "too_many_integrations": "Не больше 20 интеграций."
+        "too_many_integrations": "Не больше 20 интеграций.",
+        "legal_source_required": "Нужна ссылка на источник: утверждение о законе без источника не принимается.",
+        "legal_date_required": "Нужна дата источника в формате ГГГГ-ММ-ДД: закон меняется.",
+        "legal_status_invalid": "Неизвестный правовой статус.",
+        "legal_note_too_long": "Примечание длиннее 500 символов.",
+        "country_unknown": "Неизвестный код страны.",
+        "too_many_jurisdictions": "Не больше 60 юрисдикций."
       }
     },
     "revision": {
@@ -1892,7 +1922,13 @@
         "fee_note_too_long": "Примечание о комиссии длиннее 200 символов.",
         "integration_incomplete": "У интеграции должно быть название.",
         "integration_url_invalid": "Неверная ссылка интеграции.",
-        "too_many_integrations": "Не больше 20 интеграций."
+        "too_many_integrations": "Не больше 20 интеграций.",
+        "legal_source_required": "Нужна ссылка на источник: утверждение о законе без источника не принимается.",
+        "legal_date_required": "Нужна дата источника в формате ГГГГ-ММ-ДД: закон меняется.",
+        "legal_status_invalid": "Неизвестный правовой статус.",
+        "legal_note_too_long": "Примечание длиннее 500 символов.",
+        "country_unknown": "Неизвестный код страны.",
+        "too_many_jurisdictions": "Не больше 60 юрисдикций."
       }
     },
     "history": {
@@ -1949,6 +1985,20 @@
       "countries": "Страны обслуживания",
       "fiats": "Фиатные валюты",
       "all": "Весь каталог финтеха"
+    },
+    "legal": {
+      "title": "Правовой статус по юрисдикциям",
+      "disclaimer": "Это заявление проекта со ссылкой на источник и датой, а не юридическая консультация Trientes. Перед приёмом оплаты проверьте актуальность у юриста нужной юрисдикции.",
+      "country": "Юрисдикция",
+      "status": "Статус",
+      "note": "Примечание",
+      "source": "Источник",
+      "sourceLink": "источник",
+      "status_ALLOWED": "разрешено",
+      "status_LICENSED": "нужна лицензия",
+      "status_RESTRICTED": "ограничено",
+      "status_BANNED": "запрещено",
+      "status_UNCLEAR": "неясно"
     }
   },
   "inviteCoin": {

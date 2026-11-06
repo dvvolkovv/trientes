@@ -56,6 +56,14 @@ const ROW_SUBFIELDS: Record<string, FieldSpec[]> = {
     { kind: "text", path: "chain", label: "chain" },
     { kind: "text", path: "poolAddress", label: "poolAddress" },
   ],
+  jurisdiction: [
+    { kind: "text", path: "countryCode", label: "jurisdictionCountry" },
+    { kind: "select", path: "status", label: "jurisdictionStatus",
+      options: ["ALLOWED", "LICENSED", "RESTRICTED", "BANNED", "UNCLEAR"] },
+    { kind: "text", path: "note", label: "jurisdictionNote" },
+    { kind: "url", path: "sourceUrl", label: "jurisdictionSource" },
+    { kind: "date", path: "asOf", label: "jurisdictionAsOf" },
+  ],
   integration: [
     { kind: "select", path: "kind", label: "integrationKind",
       options: ["WOOCOMMERCE", "SHOPIFY", "1C", "POS", "SDK", "OTHER"] },
@@ -140,6 +148,9 @@ export const SECTION_SPECS: Record<CardSection, FieldSpec[]> = {
     { kind: "url", path: "marketing.videoUrl", label: "videoUrl" },
   ],
   ACCEPTANCE: [],
+  LEGAL: [
+    { kind: "rows", path: "legal.jurisdictions", label: "jurisdiction", fields: ROW_SUBFIELDS.jurisdiction },
+  ],
   PAYMENTS: [
     { kind: "number", path: "payments.finalitySeconds", label: "finalitySeconds" },
     { kind: "number", path: "payments.blockSeconds", label: "blockSeconds" },
@@ -157,7 +168,7 @@ export const SECTION_SPECS: Record<CardSection, FieldSpec[]> = {
  *  он агрегируется из базы точек, а не вводится командой. */
 export const EDITABLE_SECTIONS: CardSection[] = [
   "IDENTITY", "CONTRACTS", "TOKENOMICS", "MARKETS",
-  "SECURITY", "TEAM", "LINKS", "MARKETING", "PAYMENTS",
+  "SECURITY", "TEAM", "LINKS", "MARKETING", "PAYMENTS", "LEGAL",
 ];
 
 function scalarToInput(v: unknown): string {

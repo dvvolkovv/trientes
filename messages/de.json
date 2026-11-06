@@ -1279,7 +1279,8 @@
       "marketing": "Projekt & Roadmap",
       "links": "Links & Community",
       "acceptance": "Wo sie akzeptiert wird",
-      "payments": "Zahlungsprofil"
+      "payments": "Zahlungsprofil",
+      "legal": "Rechtsstatus"
     },
     "acceptance": {
       "eyebrow": "Realwirtschaft",
@@ -1507,7 +1508,13 @@
         "fee_note_too_long": "The fee note is longer than 200 characters.",
         "integration_incomplete": "An integration needs a name.",
         "integration_url_invalid": "Invalid integration link.",
-        "too_many_integrations": "No more than 20 integrations."
+        "too_many_integrations": "No more than 20 integrations.",
+        "legal_source_required": "A source link is required: a claim about the law without a source is not accepted.",
+        "legal_date_required": "A source date in YYYY-MM-DD is required: the law changes.",
+        "legal_status_invalid": "Unknown legal status.",
+        "legal_note_too_long": "The note is longer than 500 characters.",
+        "country_unknown": "Unknown country code.",
+        "too_many_jurisdictions": "No more than 60 jurisdictions."
       },
       "launchDate": "Startdatum",
       "tags": "Tags",
@@ -1537,7 +1544,12 @@
       "integrationName": "Zahlungsprofil",
       "integrationUrl": "URL",
       "refundPolicyUrl": "Rückerstattungsregeln",
-      "sourceLocale": "Source language"
+      "sourceLocale": "Source language",
+      "jurisdictionCountry": "Country code (ISO-2)",
+      "jurisdictionStatus": "Status",
+      "jurisdictionNote": "Note",
+      "jurisdictionSource": "Source link",
+      "jurisdictionAsOf": "Source date"
     },
     "manage": {
       "status": {
@@ -1620,7 +1632,13 @@
         "fee_note_too_long": "The fee note is longer than 200 characters.",
         "integration_incomplete": "An integration needs a name.",
         "integration_url_invalid": "Invalid integration link.",
-        "too_many_integrations": "No more than 20 integrations."
+        "too_many_integrations": "No more than 20 integrations.",
+        "legal_source_required": "A source link is required: a claim about the law without a source is not accepted.",
+        "legal_date_required": "A source date in YYYY-MM-DD is required: the law changes.",
+        "legal_status_invalid": "Unknown legal status.",
+        "legal_note_too_long": "The note is longer than 500 characters.",
+        "country_unknown": "Unknown country code.",
+        "too_many_jurisdictions": "No more than 60 jurisdictions."
       }
     },
     "team": {
@@ -1700,7 +1718,13 @@
         "fee_note_too_long": "The fee note is longer than 200 characters.",
         "integration_incomplete": "An integration needs a name.",
         "integration_url_invalid": "Invalid integration link.",
-        "too_many_integrations": "No more than 20 integrations."
+        "too_many_integrations": "No more than 20 integrations.",
+        "legal_source_required": "A source link is required: a claim about the law without a source is not accepted.",
+        "legal_date_required": "A source date in YYYY-MM-DD is required: the law changes.",
+        "legal_status_invalid": "Unknown legal status.",
+        "legal_note_too_long": "The note is longer than 500 characters.",
+        "country_unknown": "Unknown country code.",
+        "too_many_jurisdictions": "No more than 60 jurisdictions."
       },
       "invites": {
         "title": "Einladungslinks",
@@ -1817,7 +1841,13 @@
         "fee_note_too_long": "The fee note is longer than 200 characters.",
         "integration_incomplete": "An integration needs a name.",
         "integration_url_invalid": "Invalid integration link.",
-        "too_many_integrations": "No more than 20 integrations."
+        "too_many_integrations": "No more than 20 integrations.",
+        "legal_source_required": "A source link is required: a claim about the law without a source is not accepted.",
+        "legal_date_required": "A source date in YYYY-MM-DD is required: the law changes.",
+        "legal_status_invalid": "Unknown legal status.",
+        "legal_note_too_long": "The note is longer than 500 characters.",
+        "country_unknown": "Unknown country code.",
+        "too_many_jurisdictions": "No more than 60 jurisdictions."
       }
     },
     "revision": {
@@ -1892,7 +1922,13 @@
         "fee_note_too_long": "The fee note is longer than 200 characters.",
         "integration_incomplete": "An integration needs a name.",
         "integration_url_invalid": "Invalid integration link.",
-        "too_many_integrations": "No more than 20 integrations."
+        "too_many_integrations": "No more than 20 integrations.",
+        "legal_source_required": "A source link is required: a claim about the law without a source is not accepted.",
+        "legal_date_required": "A source date in YYYY-MM-DD is required: the law changes.",
+        "legal_status_invalid": "Unknown legal status.",
+        "legal_note_too_long": "The note is longer than 500 characters.",
+        "country_unknown": "Unknown country code.",
+        "too_many_jurisdictions": "No more than 60 jurisdictions."
       }
     },
     "history": {
@@ -1949,6 +1985,20 @@
       "countries": "Bediente Länder",
       "fiats": "Fiat-Währungen",
       "all": "Das gesamte Fintech-Verzeichnis"
+    },
+    "legal": {
+      "title": "Rechtsstatus nach Jurisdiktion",
+      "disclaimer": "Dies ist die Aussage des Projekts mit Quelle und Datum, keine Rechtsberatung von Trientes. Prüfen Sie es vor der Zahlungsannahme mit einem Anwalt der jeweiligen Jurisdiktion.",
+      "country": "Jurisdiktion",
+      "status": "Status",
+      "note": "Hinweis",
+      "source": "Quelle",
+      "sourceLink": "Quelle",
+      "status_ALLOWED": "erlaubt",
+      "status_LICENSED": "Lizenz erforderlich",
+      "status_RESTRICTED": "eingeschränkt",
+      "status_BANNED": "verboten",
+      "status_UNCLEAR": "unklar"
     }
   },
   "inviteCoin": {

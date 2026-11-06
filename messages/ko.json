@@ -1279,7 +1279,8 @@
       "marketing": "프로젝트와 로드맵",
       "links": "링크와 커뮤니티",
       "acceptance": "사용 가능한 곳",
-      "payments": "결제 프로필"
+      "payments": "결제 프로필",
+      "legal": "법적 상태"
     },
     "acceptance": {
       "eyebrow": "실물 경제",
@@ -1507,7 +1508,13 @@
         "fee_note_too_long": "The fee note is longer than 200 characters.",
         "integration_incomplete": "An integration needs a name.",
         "integration_url_invalid": "Invalid integration link.",
-        "too_many_integrations": "No more than 20 integrations."
+        "too_many_integrations": "No more than 20 integrations.",
+        "legal_source_required": "A source link is required: a claim about the law without a source is not accepted.",
+        "legal_date_required": "A source date in YYYY-MM-DD is required: the law changes.",
+        "legal_status_invalid": "Unknown legal status.",
+        "legal_note_too_long": "The note is longer than 500 characters.",
+        "country_unknown": "Unknown country code.",
+        "too_many_jurisdictions": "No more than 60 jurisdictions."
       },
       "launchDate": "출시일",
       "tags": "태그",
@@ -1537,7 +1544,12 @@
       "integrationName": "결제 프로필",
       "integrationUrl": "URL",
       "refundPolicyUrl": "환불 정책",
-      "sourceLocale": "Source language"
+      "sourceLocale": "Source language",
+      "jurisdictionCountry": "Country code (ISO-2)",
+      "jurisdictionStatus": "Status",
+      "jurisdictionNote": "Note",
+      "jurisdictionSource": "Source link",
+      "jurisdictionAsOf": "Source date"
     },
     "manage": {
       "status": {
@@ -1620,7 +1632,13 @@
         "fee_note_too_long": "The fee note is longer than 200 characters.",
         "integration_incomplete": "An integration needs a name.",
         "integration_url_invalid": "Invalid integration link.",
-        "too_many_integrations": "No more than 20 integrations."
+        "too_many_integrations": "No more than 20 integrations.",
+        "legal_source_required": "A source link is required: a claim about the law without a source is not accepted.",
+        "legal_date_required": "A source date in YYYY-MM-DD is required: the law changes.",
+        "legal_status_invalid": "Unknown legal status.",
+        "legal_note_too_long": "The note is longer than 500 characters.",
+        "country_unknown": "Unknown country code.",
+        "too_many_jurisdictions": "No more than 60 jurisdictions."
       }
     },
     "team": {
@@ -1700,7 +1718,13 @@
         "fee_note_too_long": "The fee note is longer than 200 characters.",
         "integration_incomplete": "An integration needs a name.",
         "integration_url_invalid": "Invalid integration link.",
-        "too_many_integrations": "No more than 20 integrations."
+        "too_many_integrations": "No more than 20 integrations.",
+        "legal_source_required": "A source link is required: a claim about the law without a source is not accepted.",
+        "legal_date_required": "A source date in YYYY-MM-DD is required: the law changes.",
+        "legal_status_invalid": "Unknown legal status.",
+        "legal_note_too_long": "The note is longer than 500 characters.",
+        "country_unknown": "Unknown country code.",
+        "too_many_jurisdictions": "No more than 60 jurisdictions."
       },
       "invites": {
         "title": "초대 링크",
@@ -1817,7 +1841,13 @@
         "fee_note_too_long": "The fee note is longer than 200 characters.",
         "integration_incomplete": "An integration needs a name.",
         "integration_url_invalid": "Invalid integration link.",
-        "too_many_integrations": "No more than 20 integrations."
+        "too_many_integrations": "No more than 20 integrations.",
+        "legal_source_required": "A source link is required: a claim about the law without a source is not accepted.",
+        "legal_date_required": "A source date in YYYY-MM-DD is required: the law changes.",
+        "legal_status_invalid": "Unknown legal status.",
+        "legal_note_too_long": "The note is longer than 500 characters.",
+        "country_unknown": "Unknown country code.",
+        "too_many_jurisdictions": "No more than 60 jurisdictions."
       }
     },
     "revision": {
@@ -1892,7 +1922,13 @@
         "fee_note_too_long": "The fee note is longer than 200 characters.",
         "integration_incomplete": "An integration needs a name.",
         "integration_url_invalid": "Invalid integration link.",
-        "too_many_integrations": "No more than 20 integrations."
+        "too_many_integrations": "No more than 20 integrations.",
+        "legal_source_required": "A source link is required: a claim about the law without a source is not accepted.",
+        "legal_date_required": "A source date in YYYY-MM-DD is required: the law changes.",
+        "legal_status_invalid": "Unknown legal status.",
+        "legal_note_too_long": "The note is longer than 500 characters.",
+        "country_unknown": "Unknown country code.",
+        "too_many_jurisdictions": "No more than 60 jurisdictions."
       }
     },
     "history": {
@@ -1949,6 +1985,20 @@
       "countries": "서비스 국가",
       "fiats": "법정통화",
       "all": "핀테크 디렉터리 전체"
+    },
+    "legal": {
+      "title": "관할별 법적 상태",
+      "disclaimer": "출처와 날짜가 있는 프로젝트 자체의 진술이며 Trientes의 법률 자문이 아닙니다. 결제를 받기 전에 해당 관할의 변호사에게 확인하세요.",
+      "country": "관할",
+      "status": "상태",
+      "note": "비고",
+      "source": "출처",
+      "sourceLink": "출처",
+      "status_ALLOWED": "허용",
+      "status_LICENSED": "라이선스 필요",
+      "status_RESTRICTED": "제한",
+      "status_BANNED": "금지",
+      "status_UNCLEAR": "불명확"
     }
   },
   "inviteCoin": {
