@@ -1,23 +1,12 @@
 import { prisma } from "@/lib/prisma";
-import type { Prisma } from "@prisma/client";
+import type { AdminAction, Prisma } from "@prisma/client";
 
-export type AuditAction =
-  | "APPROVE_REQUEST"
-  | "REJECT_REQUEST"
-  | "ADD_COIN"
-  | "TOGGLE_COIN_ACTIVE"
-  | "SET_USER_ROLE"
-  | "APPROVE_POINT"
-  | "REJECT_POINT"
-  | "APPROVE_EXCHANGE"
-  | "REJECT_EXCHANGE"
-  | "APPROVE_COMPANY"
-  | "REJECT_COMPANY"
-  | "APPROVE_FINTECH"
-  | "REJECT_FINTECH"
-  | "EDIT_FINTECH"
-  | "CREATE_FINTECH"
-  | "DELETE_FINTECH";
+/**
+ * Берётся прямо из enum'а базы: список поддерживался руками и уже отстал от
+ * схемы (значения карточек монет в него не попали), а расхождение здесь — это
+ * действие админа, которое невозможно записать в журнал.
+ */
+export type AuditAction = AdminAction;
 
 export async function logAdminAction(input: {
   actorId: string;
