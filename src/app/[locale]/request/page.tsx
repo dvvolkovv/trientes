@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { isAuthenticated } from "@/lib/watchlist";
-import { CoinRequestForm } from "@/components/coin-request-form";
+import { CoinCardWizard } from "@/components/coin-card-wizard/wizard";
 import { CoinRequestList } from "@/components/coin-request-list";
 
 export const dynamic = "force-dynamic";
@@ -38,7 +38,7 @@ export default async function RequestPage({
           {t("newRequest")}
         </h2>
         <div className="bg-card border border-hairline rounded-[20px] p-6 md:p-8">
-          <CoinRequestForm />
+          <CoinCardWizard />
         </div>
       </section>
 
