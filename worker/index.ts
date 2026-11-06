@@ -11,6 +11,7 @@ import { fetchMarkets } from "../src/lib/markets";
 import { syncPrices, syncGlobal, syncExchangeRates, syncCoinMetadata, syncExchanges, syncAdminAddedPrices, syncNews, syncFearGreed, syncMarkets, syncCoinPaprikaExchanges } from "../src/lib/sync/orchestrator";
 import { fetchCoinPaprikaExchanges, fetchCoinPaprikaExchangeDetail } from "../src/lib/coinpaprika";
 import { runAlertsEval } from "../src/lib/alerts-eval";
+import { syncOsmCryptoPois } from "../src/lib/osm-poi-store";
 import { startBinance, stopBinance } from "./binance";
 
 async function runPriceSync() {
@@ -197,6 +198,18 @@ async function runAlerts() {
   }
 }
 
+async function runOsmPoiSync() {
+  const t0 = Date.now();
+  try {
+    const s = await syncOsmCryptoPois();
+    console.log(
+      `[worker] osm-poi sync ok (${s.incremental ? "incremental" : "full"}): upserted=${s.upserted} deleted=${s.deleted} in ${Date.now() - t0}ms`,
+    );
+  } catch (err) {
+    console.error("[worker] osm-poi sync failed:", err);
+  }
+}
+
 async function runCleanup() {
   const t0 = Date.now();
   try {
@@ -260,6 +273,10 @@ async function main() {
 
   // Daily kick; staleMs in syncCoinMetadata skips coins fetched within 7 days.
   cron.schedule("30 3 * * *", () => void runMetadataSync());
+
+  // Crypto POIs from BTC Map — nightly at 02:40, ahead of the other daily jobs.
+  // After the first full pull each run is incremental (a few dozen changed places).
+  cron.schedule("40 2 * * *", () => void runOsmPoiSync());
 
   // Price alerts — every minute. Reads cached prices, no upstream API calls.
   cron.schedule("* * * * *", () => void runAlerts());

@@ -608,3 +608,21 @@ model FintechCompany {
   @@index([status, displayName])
   @@index([source])
 }
+
+// Local mirror of BTC Map's crypto-POI dump (itself OpenStreetMap data), synced
+// nightly by the worker. Reading the viewport from here instead of querying the
+// public Overpass API live keeps the navigator working while those instances are
+// saturated. `tags` holds the untouched OSM tag map, so the same
+// parseOverpassElements() turns a row back into a Poi — including the per-coin
+// `coinSpecific` flag, which can only be decided at read time.
+model OsmCryptoPoi {
+  id       String   @id // BTC Map id, e.g. "node:9778525869"
+  type     String // node | way | relation
+  osmId    String
+  lat      Float
+  lon      Float
+  tags     Json
+  syncedAt DateTime @default(now())
+
+  @@index([lat, lon])
+}

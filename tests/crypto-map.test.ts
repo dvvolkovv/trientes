@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import {
   parseBbox,
   coinPaymentTags,
-  buildOverpassQuery,
   parseOverpassElements,
   parseNominatim,
   parseReverseGeocode,
@@ -52,18 +51,6 @@ describe("coinPaymentTags", () => {
 
   it("falls back to the generic cryptocurrencies tag for unmapped coins", () => {
     expect(coinPaymentTags("some-new-l1", "NEW")).toEqual(["payment:cryptocurrencies"]);
-  });
-});
-
-describe("buildOverpassQuery", () => {
-  it("emits a bbox-scoped union over the crypto payment tags", () => {
-    const q = buildOverpassQuery({ minLon: 14.4, minLat: 50.07, maxLon: 14.45, maxLat: 50.1 });
-    expect(q).toContain("[out:json]");
-    // Overpass bbox order is (south,west,north,east) = (minLat,minLon,maxLat,maxLon)
-    expect(q).toContain("50.07,14.4,50.1,14.45");
-    expect(q).toContain('"payment:bitcoin"="yes"');
-    expect(q).toContain('"payment:cryptocurrencies"="yes"');
-    expect(q).toContain("out center tags");
   });
 });
 

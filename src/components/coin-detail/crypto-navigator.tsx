@@ -24,7 +24,7 @@ import { AvailableFintechPanel } from "@/components/fintech/available-fintech-pa
 type PoiProps = Omit<Poi, "socials"> & { socials: string };
 type Translator = (key: string) => string;
 
-const MIN_ZOOM = 11; // below this the Overpass bbox would be too wide to query usefully
+const MIN_ZOOM = 11; // below this the bbox is too wide to return a useful number of points
 const PRAGUE: [number, number] = [14.4212535, 50.0874654]; // dense BTCMap coverage — a non-empty default
 
 const LAYER_COLOR: Record<PoiLayer, string> = {

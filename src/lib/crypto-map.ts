@@ -1,7 +1,8 @@
 // Crypto Navigator data layer — places that transact in crypto, around the viewer.
 //
-// All sources are free and key-less: Overpass (OpenStreetMap) for the points,
-// Nominatim for address geocoding, OSRM's public demo for routing. Pure parsing
+// All sources are free and key-less: BTC Map (an OpenStreetMap derivative, mirrored
+// locally — see src/lib/btcmap.ts) for the points, Nominatim for address geocoding,
+// OSRM's public demo for routing. Pure parsing
 // (parseOverpassElements / parseNominatim / parseOsrm / parseBbox / coinPaymentTags)
 // is unit-tested; the fetch* helpers do the network IO and are wrapped so callers
 // can degrade to empty results. Mirrors the fear-greed lib's parse/fetch split.
@@ -55,22 +56,6 @@ export function coinPaymentTags(coinId: string, symbol: string): string[] {
   const id = SYMBOL_TO_ID[symbol.toLowerCase()];
   if (id && COIN_TAGS[id]) return COIN_TAGS[id];
   return ["payment:cryptocurrencies"];
-}
-
-// The tag set that pulls every crypto-accepting place into the query, regardless of coin.
-const QUERY_TAGS = [
-  "payment:bitcoin",
-  "currency:XBT",
-  "payment:lightning",
-  "payment:lightning_contactless",
-  "payment:cryptocurrencies",
-];
-
-export function buildOverpassQuery(b: Bbox): string {
-  // Overpass bbox order: (south,west,north,east) = (minLat,minLon,maxLat,maxLon).
-  const box = `${b.minLat},${b.minLon},${b.maxLat},${b.maxLon}`;
-  const union = QUERY_TAGS.map((t) => `nwr["${t}"="yes"](${box});`).join("");
-  return `[out:json][timeout:25];(${union});out center tags 400;`;
 }
 
 export type PoiLayer = "merchant" | "atm" | "financial" | "fintech";
@@ -180,6 +165,8 @@ export function parseOsmImage(tags: Record<string, string>): string | null {
   return null;
 }
 
+// Still the single decoder for OSM tags: the local BTC Map mirror replays its rows
+// through here as `{ elements: [...] }`, so POI shaping lives in exactly one place.
 export function parseOverpassElements(raw: unknown, coinTags: string[]): Poi[] {
   const elements = (raw as { elements?: OsmElement[] } | null)?.elements;
   if (!Array.isArray(elements)) return [];
@@ -520,7 +507,6 @@ export function assertUrlShape(raw: string): URL {
 // ---- Network helpers (wrapped; callers degrade to empty/null on failure) ----
 
 const UA = "trientes.org crypto-navigator (https://trientes.org)";
-const OVERPASS_URL = "https://overpass-api.de/api/interpreter";
 const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search";
 const NOMINATIM_REVERSE_URL = "https://nominatim.openstreetmap.org/reverse";
 // FOSSGIS OSRM instances are key-less and expose the foot profile (the demo server
@@ -537,20 +523,6 @@ async function withTimeout<T>(ms: number, run: (signal: AbortSignal) => Promise<
   } finally {
     clearTimeout(timer);
   }
-}
-
-export async function fetchPois(bbox: Bbox, coinTags: string[], timeoutMs = 25000): Promise<Poi[]> {
-  return withTimeout(timeoutMs, async (signal) => {
-    const res = await fetch(OVERPASS_URL, {
-      method: "POST",
-      headers: { "content-type": "application/x-www-form-urlencoded", "user-agent": UA },
-      body: "data=" + encodeURIComponent(buildOverpassQuery(bbox)),
-      cache: "no-store",
-      signal,
-    });
-    if (!res.ok) throw new Error(`overpass HTTP ${res.status}`);
-    return parseOverpassElements(await res.json(), coinTags);
-  });
 }
 
 export async function fetchGeocode(q: string, timeoutMs = 8000): Promise<GeoResult[]> {
