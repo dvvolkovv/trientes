@@ -13,6 +13,8 @@ const TYPES = ["SHOP", "ATM", "POS", "SALES_OFFICE", "COMPANY", "ONLINE"] as con
 type PointType = (typeof TYPES)[number];
 
 export type PointFormCoin = { id: string; symbol: string; logoUrl: string | null };
+/** Одобренный собственный листинг — у него нет id CoinGecko, только CoinCard.id. */
+export type PointFormCard = { id: string; symbol: string; name: string; logoUrl: string | null };
 
 type Addr = { countryCode: string; city: string; street: string; houseNumber: string; postalCode: string };
 const EMPTY_ADDR: Addr = { countryCode: "", city: "", street: "", houseNumber: "", postalCode: "" };
@@ -34,10 +36,14 @@ function addrFilledEnough(a: Addr): boolean {
 export function PointForm({
   companyId,
   coins,
+  cards,
+  initialCardIds = [],
   companyAddress,
 }: {
   companyId: string;
   coins: PointFormCoin[];
+  cards: PointFormCard[];
+  initialCardIds?: string[];
   companyAddress: Addr;
 }) {
   const t = useTranslations("business");
@@ -50,6 +56,7 @@ export function PointForm({
   const [addr, setAddr] = useState<Addr>(EMPTY_ADDR);
   const [useCompanyAddr, setUseCompanyAddr] = useState(false);
   const [accepted, setAccepted] = useState<string[]>([]);
+  const [acceptedCards, setAcceptedCards] = useState<string[]>(initialCardIds);
   const [photos, setPhotos] = useState<{ url: string; label: string | null }[]>([]);
   const [uploading, setUploading] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
@@ -148,12 +155,14 @@ export function PointForm({
     setMsg(null);
     start(async () => {
       const res = await submitCompanyPoint(companyId, {
-        type, name, ...addr, lat: pos?.[1] ?? null, lon: pos?.[0] ?? null, acceptedCoinIds: accepted,
+        type, name, ...addr, lat: pos?.[1] ?? null, lon: pos?.[0] ?? null,
+        acceptedCoinIds: accepted, acceptedCardIds: acceptedCards,
         photos,
       });
       if (res.ok) {
         setMsg(t("pointSubmitted"));
-        setName(""); setAddr(EMPTY_ADDR); setAccepted([]); setUseCompanyAddr(false); setPhotos([]);
+        setName(""); setAddr(EMPTY_ADDR); setAccepted([]); setAcceptedCards([]);
+        setUseCompanyAddr(false); setPhotos([]);
         if (markerRef.current) { markerRef.current.remove(); markerRef.current = null; }
         setPos(null);
         router.refresh();
@@ -230,6 +239,27 @@ export function PointForm({
           );
         })}
       </div>
+      {cards.length > 0 && (
+        <>
+          <div className="text-[12px] text-muted">{t("ownListing")}:</div>
+          <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">
+            {cards.map((c) => {
+              const on = acceptedCards.includes(c.id);
+              return (
+                <button key={c.id} type="button" title={c.name}
+                  onClick={() => setAcceptedCards((a) => on ? a.filter((x) => x !== c.id) : [...a, c.id])}
+                  className={`inline-flex items-center gap-1.5 text-[11px] px-2 py-1 rounded-md border ${on ? "bg-accent/15 text-accent border-accent/40" : "border-hairline text-muted"}`}>
+                  {c.logoUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={c.logoUrl} alt="" width={14} height={14} className="rounded-full" />
+                  )}
+                  {c.symbol.toUpperCase()}
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
       <div className="text-[12px] text-muted">{t("photos")} <span className="opacity-60">({photos.length}/5)</span></div>
       <div className="flex flex-wrap gap-2">
         {photos.map((p, i) => (

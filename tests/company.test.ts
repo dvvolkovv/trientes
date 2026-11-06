@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { validateCompanyProfile, validateCompanyPoint } from "@/lib/company";
+import { MAX_ACCEPTED_CARDS, validateCompanyProfile, validateCompanyPoint } from "@/lib/company";
 
 describe("validateCompanyProfile", () => {
   it("accepts a minimal valid profile and trims", () => {
@@ -43,5 +43,36 @@ describe("validateCompanyPoint", () => {
     const r = validateCompanyPoint({ ...base, acceptedCoinIds: ["Bitcoin", "bitcoin", "ETH"] });
     expect(r.ok).toBe(true);
     if (r.ok) expect(r.data.acceptedCoinIds).toEqual(["bitcoin", "eth"]);
+  });
+});
+
+describe("validateCompanyPoint — собственные листинги", () => {
+  const base = { type: "SHOP", name: "Shop", lat: 50.08, lon: 14.42 };
+
+  it("keeps card ids verbatim — a cuid is case-sensitive, unlike a CoinGecko id", () => {
+    const r = validateCompanyPoint({ ...base, acceptedCardIds: ["clzABC234def567"] });
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.data.acceptedCardIds).toEqual(["clzABC234def567"]);
+  });
+
+  it("defaults to an empty array and drops blanks and duplicates", () => {
+    const empty = validateCompanyPoint(base);
+    expect(empty.ok && empty.data.acceptedCardIds).toEqual([]);
+    const r = validateCompanyPoint({
+      ...base,
+      acceptedCardIds: [" clz1abc234def567 ", "clz1abc234def567", "", "   "],
+    });
+    expect(r.ok && r.data.acceptedCardIds).toEqual(["clz1abc234def567"]);
+  });
+
+  it("still lowercases CoinGecko ids, which are case-insensitive by convention", () => {
+    const r = validateCompanyPoint({ ...base, acceptedCoinIds: ["Bitcoin"] });
+    expect(r.ok && r.data.acceptedCoinIds).toEqual(["bitcoin"]);
+  });
+
+  it("caps the card list so one point cannot claim the whole catalogue", () => {
+    const many = Array.from({ length: MAX_ACCEPTED_CARDS + 10 }, (_, i) => `clz1abc234def${i}`);
+    const r = validateCompanyPoint({ ...base, acceptedCardIds: many });
+    expect(r.ok && r.data.acceptedCardIds.length).toBe(MAX_ACCEPTED_CARDS);
   });
 });

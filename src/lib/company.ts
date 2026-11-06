@@ -3,6 +3,9 @@
 const POINT_TYPES = ["SHOP", "ATM", "POS", "SALES_OFFICE", "COMPANY", "ONLINE"] as const;
 export type PointTypeStr = (typeof POINT_TYPES)[number];
 
+/** Потолок на точку: больше — это уже не «что я принимаю», а спам каталогом. */
+export const MAX_ACCEPTED_CARDS = 50;
+
 // Accepts "https://x.com", "http://x.com", "www.x.com", or bare "x.com".
 // Returns the canonical https:// form, or "invalid" if the input is unusable.
 function normalizeUrl(raw: string | null | undefined): string | null | "invalid" {
@@ -119,6 +122,7 @@ export type CompanyPointInput = {
   postalCode?: string | null;
   address?: string | null;
   acceptedCoinIds?: string[] | null;
+  acceptedCardIds?: string[] | null;
   logoUrl?: string | null;
   photos?: { url: string; label?: string | null }[] | null;
   openingHours?: string | null;
@@ -132,7 +136,8 @@ export type ValidatedPoint = {
   lat: number | null; lon: number | null;
   countryCode: string | null; city: string | null; street: string | null;
   houseNumber: string | null; postalCode: string | null;
-  address: string | null; acceptedCoinIds: string[]; logoUrl: string | null;
+  address: string | null; acceptedCoinIds: string[]; acceptedCardIds: string[];
+  logoUrl: string | null;
   photos: PointPhoto[];
   openingHours: string | null; phone: string | null; website: string | null;
 };
@@ -195,6 +200,11 @@ export function validateCompanyPoint(input: CompanyPointInput): PointResult {
   const acceptedCoinIds = Array.from(
     new Set((input.acceptedCoinIds ?? []).map((c) => c.trim().toLowerCase()).filter(Boolean)),
   );
+  // Id карточки — это cuid, регистр значащий. В отличие от id CoinGecko его
+  // нельзя приводить к нижнему регистру: ссылка перестанет совпадать.
+  const acceptedCardIds = Array.from(
+    new Set((input.acceptedCardIds ?? []).map((c) => String(c).trim()).filter(Boolean)),
+  ).slice(0, MAX_ACCEPTED_CARDS);
   const structured: StructuredAddress = {
     countryCode: normalizeCountryCode(input.countryCode),
     city: t(input.city), street: t(input.street),
@@ -205,7 +215,7 @@ export function validateCompanyPoint(input: CompanyPointInput): PointResult {
     ok: true,
     data: {
       type, name, description: t(input.description), lat, lon, ...structured, address,
-      acceptedCoinIds, logoUrl,
+      acceptedCoinIds, acceptedCardIds, logoUrl,
       photos: sanitizePointPhotos(input.photos),
       openingHours: t(input.openingHours), phone: t(input.phone), website,
     },

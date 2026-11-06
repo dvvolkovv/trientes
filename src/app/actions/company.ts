@@ -87,6 +87,17 @@ export async function submitCompanyPoint(
     where: { companyId: company.id, status: "PENDING" },
   });
   if (pending >= MAX_PENDING_POINTS) return { ok: false as const, reason: "too_many_pending" as const };
+
+  // Заявить приём можно только одобренной карточки: иначе точка указывала бы
+  // на листинг, которого публично не существует.
+  if (v.data.acceptedCardIds.length > 0) {
+    const approved = await prisma.coinCard.count({
+      where: { id: { in: v.data.acceptedCardIds }, status: "APPROVED" },
+    });
+    if (approved !== v.data.acceptedCardIds.length) {
+      return { ok: false as const, reason: "coin_not_selectable" as const };
+    }
+  }
   await prisma.companyPoint.create({
     data: {
       companyId: company.id,
@@ -102,6 +113,7 @@ export async function submitCompanyPoint(
       postalCode: v.data.postalCode,
       address: v.data.address,
       acceptedCoinIds: v.data.acceptedCoinIds,
+      acceptedCardIds: v.data.acceptedCardIds,
       logoUrl: v.data.logoUrl,
       photos: v.data.photos.length ? (v.data.photos as unknown as Prisma.InputJsonValue) : undefined,
       openingHours: v.data.openingHours,
