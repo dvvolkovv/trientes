@@ -9,6 +9,7 @@ import { SettingsSection } from "@/components/cabinet/settings-section";
 import { AlertsSection } from "@/components/cabinet/alerts-section";
 import { CompaniesSection } from "@/components/cabinet/companies-section";
 import { ExchangesSection } from "@/components/cabinet/exchanges-section";
+import { CoinsSection } from "@/components/cabinet/coins-section";
 
 export default async function CabinetPage({
   params,
@@ -77,6 +78,8 @@ export default async function CabinetPage({
       />
 
       <CompaniesSection locale={locale} />
+
+      <CoinsSection locale={locale} />
 
       <ExchangesSection locale={locale} />
     </main>
