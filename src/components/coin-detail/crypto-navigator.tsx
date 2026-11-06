@@ -7,7 +7,7 @@ import maplibregl, {
   NavigationControl,
   Marker,
   Popup,
-  type StyleSpecification,
+  type SourceSpecification,
   type GeoJSONSource,
 } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
@@ -57,43 +57,26 @@ function legIcon(mode: string): string {
   return LEG_ICON[mode.toUpperCase()] ?? "🚆";
 }
 
-// Raster-only style (no glyphs needed — we draw circles + DOM popups). Dark base
-// matches the Ledger palette; satellite + terrain are toggled on at runtime.
-const STYLE: StyleSpecification = {
-  version: 8,
-  sources: {
-    dark: {
-      type: "raster",
-      tiles: [
-        "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
-        "https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
-        "https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
-      ],
-      tileSize: 256,
-      attribution: "© OpenStreetMap © CARTO",
-      maxzoom: 20,
-    },
-    satellite: {
-      type: "raster",
-      tiles: [
-        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-      ],
-      tileSize: 256,
-      attribution: "© Esri, Maxar, Earthstar Geographics",
-      maxzoom: 19,
-    },
-    terrain: {
-      type: "raster-dem",
-      tiles: ["https://elevation-tiles-prod.s3.amazonaws.com/terrarium/{z}/{x}/{y}.png"],
-      encoding: "terrarium",
-      tileSize: 256,
-      maxzoom: 15,
-    },
-  },
-  layers: [
-    { id: "dark", type: "raster", source: "dark", layout: { visibility: "visible" } },
-    { id: "satellite", type: "raster", source: "satellite", layout: { visibility: "none" } },
-  ],
+// Dark vector base from OpenFreeMap — key-less and unmetered. (CARTO's keyless
+// raster endpoint started stamping an "API KEY REQUIRED" watermark on every tile
+// in Aug 2026, which is what silently blanked this map: HTTP 200, unusable pixels.)
+const BASE_STYLE_URL = "https://tiles.openfreemap.org/styles/dark";
+
+// Satellite + terrain are grafted onto that style on load and toggled at runtime.
+const SATELLITE_SOURCE: SourceSpecification = {
+  type: "raster",
+  tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
+  tileSize: 256,
+  attribution: "© Esri, Maxar, Earthstar Geographics",
+  maxzoom: 19,
+};
+
+const TERRAIN_SOURCE: SourceSpecification = {
+  type: "raster-dem",
+  tiles: ["https://elevation-tiles-prod.s3.amazonaws.com/terrarium/{z}/{x}/{y}.png"],
+  encoding: "terrarium",
+  tileSize: 256,
+  maxzoom: 15,
 };
 
 type Base = "dark" | "satellite";
@@ -312,7 +295,7 @@ export default function CryptoNavigator({
     if (!containerRef.current) return;
     const map = new maplibregl.Map({
       container: containerRef.current,
-      style: STYLE,
+      style: BASE_STYLE_URL,
       center: PRAGUE,
       zoom: 13,
       pitch: 0,
@@ -338,6 +321,14 @@ export default function CryptoNavigator({
     });
 
     map.on("load", () => {
+      // Graft our two extra sources onto the fetched base style. The satellite
+      // layer goes on first, so it sits above every base layer (an opaque raster
+      // that hides the vector base when toggled on) and below the route/POI
+      // layers added right after.
+      map.addSource("satellite", SATELLITE_SOURCE);
+      map.addSource("terrain", TERRAIN_SOURCE);
+      map.addLayer({ id: "satellite", type: "raster", source: "satellite", layout: { visibility: "none" } });
+
       map.addSource("pois", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
       map.addSource("route", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
 
@@ -468,7 +459,8 @@ export default function CryptoNavigator({
     const map = mapRef.current;
     if (!map) return;
     setBase(next);
-    map.setLayoutProperty("dark", "visibility", next === "dark" ? "visible" : "none");
+    // The satellite raster covers the whole viewport, so showing it is enough to
+    // hide the vector base underneath — no per-base-layer toggling needed.
     map.setLayoutProperty("satellite", "visibility", next === "satellite" ? "visible" : "none");
   }
 

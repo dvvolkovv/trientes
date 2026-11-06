@@ -74,7 +74,8 @@ export function PointForm({
     if (!containerRef.current) return;
     const map = new maplibregl.Map({
       container: containerRef.current,
-      style: { version: 8, sources: { d: { type: "raster", tiles: ["https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"], tileSize: 256, attribution: "© OSM © CARTO" } }, layers: [{ id: "d", type: "raster", source: "d" }] },
+      // Same key-less dark base as the Crypto Navigator (CARTO now watermarks keyless tiles).
+      style: "https://tiles.openfreemap.org/styles/dark",
       center: PRAGUE, zoom: 12,
     });
     mapRef.current = map;
