@@ -58,16 +58,6 @@ export async function POST(req: Request) {
     });
     userId = user.id;
 
-    const matched = isAdminWhitelisted(adminWhitelist, {
-      telegramId: providerAccountId,
-    });
-    if (matched) {
-      await prisma.user.update({
-        where: { id: userId },
-        data: { role: "ADMIN" },
-      });
-    }
-
     // First-time signup via Telegram — send a welcome DM. The chat is already
     // open because they just used the Telegram Login Widget.
     void notifyUser({
@@ -75,6 +65,16 @@ export async function POST(req: Request) {
       text: "👋 Welcome to Trientes! Open your cabinet: https://trientes.org/en/cabinet",
       subject: "Welcome to Trientes",
     }).catch(() => {});
+  }
+
+  // Whitelist is authoritative on every Telegram login, not just signup —
+  // otherwise adding an id to ADMIN_WHITELIST does nothing for someone who
+  // has already signed in once.
+  if (isAdminWhitelisted(adminWhitelist, { telegramId: providerAccountId })) {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { role: "ADMIN" },
+    });
   }
 
   // Create a proper database session that Auth.js will recognise.
