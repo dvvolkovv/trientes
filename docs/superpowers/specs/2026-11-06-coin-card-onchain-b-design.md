@@ -54,7 +54,11 @@ model CoinCardContract {
 
 `onchainFlags`: `MINTABLE | PAUSABLE | BLACKLIST | UPGRADEABLE_PROXY | OWNED`.
 `mismatches`: `SYMBOL | NAME | DECIMALS | TOTAL_SUPPLY`.
-`checkError`: `chain_unsupported | address_invalid | not_a_contract | rpc_unreachable | rpc_error | decode_failed`.
+`checkError`: `chain_unsupported | address_invalid | not_a_contract | not_erc20 | rpc_unreachable | rpc_error | decode_failed`.
+
+`not_a_contract` покрывает и пустой код, и делегацию EIP-7702 (`0xef0100…`):
+кошелёк с делегацией отвечает непустым байткодом, но токеном не является.
+`not_erc20` — контракт есть, но ни один геттер ERC-20 не ответил.
 
 Отдельной модели нет сознательно: это свойства одного контракта, 1:1, и джойн
 ничего бы не дал. Строки вместо enum — чтобы добавление сети и флага не требовало

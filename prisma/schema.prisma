@@ -805,10 +805,22 @@ model CoinCardContract {
   standard    String?
   isCanonical Boolean   @default(false)
   explorerUrl String?
-  verifiedAt  DateTime? // заполняет слайс B после сверки через публичный RPC
+  verifiedAt  DateTime? // ставится слайсом B, только когда факт сошёлся с заявлением
+
+  // Слайс B: что ответил контракт. Заявление проекта остаётся как есть —
+  // расхождение показывается рядом, а не затирает введённое.
+  onchainName        String?
+  onchainSymbol      String?
+  onchainDecimals    Int?
+  onchainTotalSupply String? // десятичная строка: uint256 не влезает в Int
+  onchainFlags       String[]  @default([])
+  mismatches         String[]  @default([])
+  checkedAt          DateTime?
+  checkError         String?
 
   @@unique([cardId, chain, address])
   @@index([chain, address])
+  @@index([checkedAt])
 }
 
 // Где монета торгуется. claimedAt — заявлено проектом, confirmedAt — сверено
