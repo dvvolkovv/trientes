@@ -295,6 +295,7 @@ enum CoinCardSection {
   LINKS
   MARKETING
   ACCEPTANCE
+  PAYMENTS
 }
 
 enum CoinCardRole {
@@ -546,6 +547,10 @@ model CompanyPoint {
   postalCode      String?
   address         String?
   acceptedCoinIds String[]
+  // Собственные листинги (CoinCard.id). Параллельный массив, а не магические
+  // строки "card:<id>" внутри acceptedCoinIds: те тихо сломали бы любой
+  // существующий acceptedCoinIds.includes(coin.id).
+  acceptedCardIds String[]
   logoUrl         String?
   photos          Json? // [{ url, label? }], max 5
   openingHours    String?
@@ -563,6 +568,7 @@ model CompanyPoint {
   @@index([status])
   @@index([companyId])
   @@index([lat, lon])
+  @@index([acceptedCardIds(ops: ArrayOps)], type: Gin)
 }
 
 model LoginAttempt {
@@ -653,6 +659,8 @@ model FintechCompany {
 
   services         FintechService[]
   supportedCoinIds String[]
+  // Заполняется слайсом F3 (путь к фиату); в F1 только создаётся.
+  supportedCardIds String[]
   supportedFiats   String[]
   availableIn      String[]
 
@@ -676,6 +684,7 @@ model FintechCompany {
 
   @@index([status, displayName])
   @@index([source])
+  @@index([supportedCardIds(ops: ArrayOps)], type: Gin)
 }
 
 // Local mirror of BTC Map's crypto-POI dump (itself OpenStreetMap data), synced
@@ -732,6 +741,10 @@ model CoinCard {
   teamInfo      Json?
   marketing     Json?
   security      Json?
+  // Слайс F2 (платёжный профиль) и F4 (правовой статус) — поля создаются одной
+  // миграцией со всем слайсом F, наполняются позже.
+  payments      Json?
+  legal         Json?
   // {"<путь поля>": {kind, source, at}} — откуда взято каждое значение.
   provenance    Json?
   rejectReason  String?
