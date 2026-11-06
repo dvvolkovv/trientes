@@ -1275,7 +1275,8 @@
       "team": "Team & funding",
       "marketing": "Project & roadmap",
       "links": "Links & community",
-      "acceptance": "Where it is accepted"
+      "acceptance": "Where it is accepted",
+      "payments": "Payment profile"
     },
     "acceptance": {
       "eyebrow": "Real economy",
@@ -1496,7 +1497,14 @@
         "revoked": "The link was revoked.",
         "reason_too_short": "Give a reason of at least 3 characters.",
         "not_pending": "This item is no longer pending.",
-        "unknown": "Something went wrong."
+        "unknown": "Something went wrong.",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       },
       "launchDate": "Launch date",
       "tags": "Tags",
@@ -1513,7 +1521,20 @@
       "flagBlacklist": "Address blacklist",
       "flagTransferTax": "Transfer tax",
       "flagProxy": "Upgradeable proxy",
-      "flagLpLocked": "Liquidity locked"
+      "flagLpLocked": "Liquidity locked",
+      "finalitySeconds": "Payment finality",
+      "blockSeconds": "Block time",
+      "tps": "Throughput",
+      "feeUsdTypical": "Typical fee",
+      "feeNote": "Typical fee — note",
+      "reversible": "Refunds",
+      "stablecoins": "Stablecoins on this chain",
+      "integration": "Checkout integrations",
+      "integrationKind": "Checkout integrations",
+      "integrationName": "Payment profile",
+      "integrationUrl": "URL",
+      "refundPolicyUrl": "Refund policy",
+      "sourceLocale": "Source language"
     },
     "manage": {
       "status": {
@@ -1589,7 +1610,14 @@
         "contract_invalid": "That contract address looks wrong for this chain.",
         "decimals_invalid": "Decimals must be between 0 and 36.",
         "not_pending": "This item is no longer pending.",
-        "unknown": "Something went wrong."
+        "unknown": "Something went wrong.",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       }
     },
     "team": {
@@ -1662,7 +1690,14 @@
         "contract_invalid": "That contract address looks wrong for this chain.",
         "decimals_invalid": "Decimals must be between 0 and 36.",
         "not_pending": "This item is no longer pending.",
-        "unknown": "Something went wrong."
+        "unknown": "Something went wrong.",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       },
       "invites": {
         "title": "Invite links",
@@ -1772,7 +1807,14 @@
         "contract_invalid": "That contract address looks wrong for this chain.",
         "decimals_invalid": "Decimals must be between 0 and 36.",
         "not_pending": "This item is no longer pending.",
-        "unknown": "Something went wrong."
+        "unknown": "Something went wrong.",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       }
     },
     "revision": {
@@ -1840,7 +1882,14 @@
         "contract_invalid": "That contract address looks wrong for this chain.",
         "decimals_invalid": "Decimals must be between 0 and 36.",
         "not_pending": "This item is no longer pending.",
-        "unknown": "Something went wrong."
+        "unknown": "Something went wrong.",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       }
     },
     "history": {
@@ -1864,6 +1913,30 @@
         "FORCE_COIN_REVISION": "Applied by a site moderator without the team's signatures",
         "DISABLE_COIN_MULTISIG": "Multisig switched off by a site moderator",
         "TRANSFER_COIN_CARD": "Card ownership transferred by a site moderator"
+      }
+    },
+    "payments": {
+      "title": "Payment profile",
+      "finality": "Payment finality",
+      "blockTime": "Block time",
+      "fee": "Typical fee",
+      "feeFree": "no fee",
+      "tps": "Throughput",
+      "seconds": "{value} s",
+      "tpsValue": "{value} tx/s",
+      "reversible": "Refunds",
+      "reversibleYes": "possible",
+      "reversibleNo": "impossible",
+      "stablecoins": "Stablecoins on this chain",
+      "integrations": "Checkout integrations",
+      "refundPolicy": "Refund policy",
+      "kind": {
+        "WOOCOMMERCE": "WooCommerce",
+        "SHOPIFY": "Shopify",
+        "1C": "1C",
+        "POS": "POS",
+        "SDK": "SDK",
+        "OTHER": "other"
       }
     }
   },

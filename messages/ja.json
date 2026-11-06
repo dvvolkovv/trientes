@@ -1275,7 +1275,8 @@
       "team": "チームと資金調達",
       "marketing": "プロジェクトとロードマップ",
       "links": "リンクとコミュニティ",
-      "acceptance": "利用できる場所"
+      "acceptance": "利用できる場所",
+      "payments": "決済プロファイル"
     },
     "acceptance": {
       "eyebrow": "実体経済",
@@ -1496,7 +1497,14 @@
         "revoked": "リンクは無効化されました。",
         "reason_too_short": "3文字以上の理由を入力してください。",
         "not_pending": "この項目はすでに処理済みです。",
-        "unknown": "問題が発生しました。"
+        "unknown": "問題が発生しました。",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       },
       "launchDate": "ローンチ日",
       "tags": "タグ",
@@ -1513,7 +1521,20 @@
       "flagBlacklist": "アドレスのブラックリスト",
       "flagTransferTax": "送金手数料（税）",
       "flagProxy": "アップグレード可能なプロキシ",
-      "flagLpLocked": "流動性をロック済み"
+      "flagLpLocked": "流動性をロック済み",
+      "finalitySeconds": "決済の確定",
+      "blockSeconds": "ブロック時間",
+      "tps": "処理能力",
+      "feeUsdTypical": "典型的な手数料",
+      "feeNote": "典型的な手数料 — note",
+      "reversible": "返金",
+      "stablecoins": "このチェーンのステーブルコイン",
+      "integration": "レジ連携",
+      "integrationKind": "レジ連携",
+      "integrationName": "決済プロファイル",
+      "integrationUrl": "URL",
+      "refundPolicyUrl": "返金ポリシー",
+      "sourceLocale": "Source language"
     },
     "manage": {
       "status": {
@@ -1589,7 +1610,14 @@
         "contract_invalid": "このチェーンのアドレス形式と一致しません。",
         "decimals_invalid": "decimals は0〜36の範囲にしてください。",
         "not_pending": "この項目はすでに処理済みです。",
-        "unknown": "問題が発生しました。"
+        "unknown": "問題が発生しました。",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       }
     },
     "team": {
@@ -1662,7 +1690,14 @@
         "contract_invalid": "このチェーンのアドレス形式と一致しません。",
         "decimals_invalid": "decimals は0〜36の範囲にしてください。",
         "not_pending": "この項目はすでに処理済みです。",
-        "unknown": "問題が発生しました。"
+        "unknown": "問題が発生しました。",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       },
       "invites": {
         "title": "招待リンク",
@@ -1772,7 +1807,14 @@
         "contract_invalid": "このチェーンのアドレス形式と一致しません。",
         "decimals_invalid": "decimals は0〜36の範囲にしてください。",
         "not_pending": "この項目はすでに処理済みです。",
-        "unknown": "問題が発生しました。"
+        "unknown": "問題が発生しました。",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       }
     },
     "revision": {
@@ -1840,7 +1882,14 @@
         "contract_invalid": "このチェーンのアドレス形式と一致しません。",
         "decimals_invalid": "decimals は0〜36の範囲にしてください。",
         "not_pending": "この項目はすでに処理済みです。",
-        "unknown": "問題が発生しました。"
+        "unknown": "問題が発生しました。",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       }
     },
     "history": {
@@ -1864,6 +1913,30 @@
         "FORCE_COIN_REVISION": "チームの署名なしでサイト運営者が適用",
         "DISABLE_COIN_MULTISIG": "サイト運営者がマルチシグを無効化",
         "TRANSFER_COIN_CARD": "サイト運営者がカードの所有権を移転"
+      }
+    },
+    "payments": {
+      "title": "決済プロファイル",
+      "finality": "決済の確定",
+      "blockTime": "ブロック時間",
+      "fee": "典型的な手数料",
+      "feeFree": "手数料なし",
+      "tps": "処理能力",
+      "seconds": "{value} 秒",
+      "tpsValue": "{value} tx/秒",
+      "reversible": "返金",
+      "reversibleYes": "可能",
+      "reversibleNo": "不可",
+      "stablecoins": "このチェーンのステーブルコイン",
+      "integrations": "レジ連携",
+      "refundPolicy": "返金ポリシー",
+      "kind": {
+        "WOOCOMMERCE": "WooCommerce",
+        "SHOPIFY": "Shopify",
+        "1C": "1C",
+        "POS": "POS",
+        "SDK": "SDK",
+        "OTHER": "その他"
       }
     }
   },

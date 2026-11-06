@@ -1275,7 +1275,8 @@
       "team": "Ekip ve finansman",
       "marketing": "Proje ve yol haritası",
       "links": "Bağlantılar ve topluluk",
-      "acceptance": "Nerede kabul ediliyor"
+      "acceptance": "Nerede kabul ediliyor",
+      "payments": "Ödeme profili"
     },
     "acceptance": {
       "eyebrow": "Reel sektör",
@@ -1496,7 +1497,14 @@
         "revoked": "Bağlantı iptal edildi.",
         "reason_too_short": "En az 3 karakterlik bir gerekçe yazın.",
         "not_pending": "Bu kayıt artık beklemede değil.",
-        "unknown": "Bir şeyler ters gitti."
+        "unknown": "Bir şeyler ters gitti.",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       },
       "launchDate": "Lansman tarihi",
       "tags": "Etiketler",
@@ -1513,7 +1521,20 @@
       "flagBlacklist": "Adres kara listesi",
       "flagTransferTax": "Transfer vergisi",
       "flagProxy": "Güncellenebilir proxy",
-      "flagLpLocked": "Likidite kilitli"
+      "flagLpLocked": "Likidite kilitli",
+      "finalitySeconds": "Ödemenin kesinleşmesi",
+      "blockSeconds": "Blok süresi",
+      "tps": "İşlem kapasitesi",
+      "feeUsdTypical": "Tipik ücret",
+      "feeNote": "Tipik ücret — note",
+      "reversible": "İade",
+      "stablecoins": "Bu zincirdeki stabilcoinler",
+      "integration": "Kasa entegrasyonları",
+      "integrationKind": "Kasa entegrasyonları",
+      "integrationName": "Ödeme profili",
+      "integrationUrl": "URL",
+      "refundPolicyUrl": "İade politikası",
+      "sourceLocale": "Source language"
     },
     "manage": {
       "status": {
@@ -1589,7 +1610,14 @@
         "contract_invalid": "Bu kontrat adresi bu zincire uymuyor.",
         "decimals_invalid": "Ondalık basamak 0 ile 36 arasında olmalı.",
         "not_pending": "Bu kayıt artık beklemede değil.",
-        "unknown": "Bir şeyler ters gitti."
+        "unknown": "Bir şeyler ters gitti.",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       }
     },
     "team": {
@@ -1662,7 +1690,14 @@
         "contract_invalid": "Bu kontrat adresi bu zincire uymuyor.",
         "decimals_invalid": "Ondalık basamak 0 ile 36 arasında olmalı.",
         "not_pending": "Bu kayıt artık beklemede değil.",
-        "unknown": "Bir şeyler ters gitti."
+        "unknown": "Bir şeyler ters gitti.",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       },
       "invites": {
         "title": "Davet bağlantıları",
@@ -1772,7 +1807,14 @@
         "contract_invalid": "Bu kontrat adresi bu zincire uymuyor.",
         "decimals_invalid": "Ondalık basamak 0 ile 36 arasında olmalı.",
         "not_pending": "Bu kayıt artık beklemede değil.",
-        "unknown": "Bir şeyler ters gitti."
+        "unknown": "Bir şeyler ters gitti.",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       }
     },
     "revision": {
@@ -1840,7 +1882,14 @@
         "contract_invalid": "Bu kontrat adresi bu zincire uymuyor.",
         "decimals_invalid": "Ondalık basamak 0 ile 36 arasında olmalı.",
         "not_pending": "Bu kayıt artık beklemede değil.",
-        "unknown": "Bir şeyler ters gitti."
+        "unknown": "Bir şeyler ters gitti.",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       }
     },
     "history": {
@@ -1864,6 +1913,30 @@
         "FORCE_COIN_REVISION": "Ekibin imzaları olmadan site moderatörü tarafından uygulandı",
         "DISABLE_COIN_MULTISIG": "Çoklu imza site moderatörü tarafından kapatıldı",
         "TRANSFER_COIN_CARD": "Kart sahipliği site moderatörü tarafından devredildi"
+      }
+    },
+    "payments": {
+      "title": "Ödeme profili",
+      "finality": "Ödemenin kesinleşmesi",
+      "blockTime": "Blok süresi",
+      "fee": "Tipik ücret",
+      "feeFree": "ücretsiz",
+      "tps": "İşlem kapasitesi",
+      "seconds": "{value} sn",
+      "tpsValue": "{value} tx/sn",
+      "reversible": "İade",
+      "reversibleYes": "mümkün",
+      "reversibleNo": "mümkün değil",
+      "stablecoins": "Bu zincirdeki stabilcoinler",
+      "integrations": "Kasa entegrasyonları",
+      "refundPolicy": "İade politikası",
+      "kind": {
+        "WOOCOMMERCE": "WooCommerce",
+        "SHOPIFY": "Shopify",
+        "1C": "1C",
+        "POS": "POS",
+        "SDK": "SDK",
+        "OTHER": "diğer"
       }
     }
   },

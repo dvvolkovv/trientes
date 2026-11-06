@@ -1275,7 +1275,8 @@
       "team": "팀과 자금 조달",
       "marketing": "프로젝트와 로드맵",
       "links": "링크와 커뮤니티",
-      "acceptance": "사용 가능한 곳"
+      "acceptance": "사용 가능한 곳",
+      "payments": "결제 프로필"
     },
     "acceptance": {
       "eyebrow": "실물 경제",
@@ -1496,7 +1497,14 @@
         "revoked": "링크가 취소되었습니다.",
         "reason_too_short": "3자 이상의 사유를 입력하세요.",
         "not_pending": "이 항목은 더 이상 대기 중이 아닙니다.",
-        "unknown": "문제가 발생했습니다."
+        "unknown": "문제가 발생했습니다.",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       },
       "launchDate": "출시일",
       "tags": "태그",
@@ -1513,7 +1521,20 @@
       "flagBlacklist": "주소 블랙리스트",
       "flagTransferTax": "전송 수수료(세금)",
       "flagProxy": "업그레이드 가능 프록시",
-      "flagLpLocked": "유동성 잠김"
+      "flagLpLocked": "유동성 잠김",
+      "finalitySeconds": "결제 확정",
+      "blockSeconds": "블록 시간",
+      "tps": "처리량",
+      "feeUsdTypical": "일반 수수료",
+      "feeNote": "일반 수수료 — note",
+      "reversible": "환불",
+      "stablecoins": "이 체인의 스테이블코인",
+      "integration": "결제 시스템 연동",
+      "integrationKind": "결제 시스템 연동",
+      "integrationName": "결제 프로필",
+      "integrationUrl": "URL",
+      "refundPolicyUrl": "환불 정책",
+      "sourceLocale": "Source language"
     },
     "manage": {
       "status": {
@@ -1589,7 +1610,14 @@
         "contract_invalid": "이 체인의 주소 형식과 맞지 않습니다.",
         "decimals_invalid": "decimals 는 0~36 이어야 합니다.",
         "not_pending": "이 항목은 더 이상 대기 중이 아닙니다.",
-        "unknown": "문제가 발생했습니다."
+        "unknown": "문제가 발생했습니다.",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       }
     },
     "team": {
@@ -1662,7 +1690,14 @@
         "contract_invalid": "이 체인의 주소 형식과 맞지 않습니다.",
         "decimals_invalid": "decimals 는 0~36 이어야 합니다.",
         "not_pending": "이 항목은 더 이상 대기 중이 아닙니다.",
-        "unknown": "문제가 발생했습니다."
+        "unknown": "문제가 발생했습니다.",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       },
       "invites": {
         "title": "초대 링크",
@@ -1772,7 +1807,14 @@
         "contract_invalid": "이 체인의 주소 형식과 맞지 않습니다.",
         "decimals_invalid": "decimals 는 0~36 이어야 합니다.",
         "not_pending": "이 항목은 더 이상 대기 중이 아닙니다.",
-        "unknown": "문제가 발생했습니다."
+        "unknown": "문제가 발생했습니다.",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       }
     },
     "revision": {
@@ -1840,7 +1882,14 @@
         "contract_invalid": "이 체인의 주소 형식과 맞지 않습니다.",
         "decimals_invalid": "decimals 는 0~36 이어야 합니다.",
         "not_pending": "이 항목은 더 이상 대기 중이 아닙니다.",
-        "unknown": "문제가 발생했습니다."
+        "unknown": "문제가 발생했습니다.",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       }
     },
     "history": {
@@ -1864,6 +1913,30 @@
         "FORCE_COIN_REVISION": "팀 서명 없이 사이트 운영자가 적용",
         "DISABLE_COIN_MULTISIG": "사이트 운영자가 멀티시그를 해제",
         "TRANSFER_COIN_CARD": "사이트 운영자가 카드 소유권을 이전"
+      }
+    },
+    "payments": {
+      "title": "결제 프로필",
+      "finality": "결제 확정",
+      "blockTime": "블록 시간",
+      "fee": "일반 수수료",
+      "feeFree": "수수료 없음",
+      "tps": "처리량",
+      "seconds": "{value}초",
+      "tpsValue": "{value} tx/초",
+      "reversible": "환불",
+      "reversibleYes": "가능",
+      "reversibleNo": "불가",
+      "stablecoins": "이 체인의 스테이블코인",
+      "integrations": "결제 시스템 연동",
+      "refundPolicy": "환불 정책",
+      "kind": {
+        "WOOCOMMERCE": "WooCommerce",
+        "SHOPIFY": "Shopify",
+        "1C": "1C",
+        "POS": "POS",
+        "SDK": "SDK",
+        "OTHER": "기타"
       }
     }
   },

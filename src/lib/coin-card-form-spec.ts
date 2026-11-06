@@ -56,6 +56,12 @@ const ROW_SUBFIELDS: Record<string, FieldSpec[]> = {
     { kind: "text", path: "chain", label: "chain" },
     { kind: "text", path: "poolAddress", label: "poolAddress" },
   ],
+  integration: [
+    { kind: "select", path: "kind", label: "integrationKind",
+      options: ["WOOCOMMERCE", "SHOPIFY", "1C", "POS", "SDK", "OTHER"] },
+    { kind: "text", path: "name", label: "integrationName" },
+    { kind: "url", path: "url", label: "integrationUrl" },
+  ],
   audit: [
     { kind: "text", path: "firm", label: "auditFirm" },
     { kind: "date", path: "date", label: "auditDate" },
@@ -134,14 +140,24 @@ export const SECTION_SPECS: Record<CardSection, FieldSpec[]> = {
     { kind: "url", path: "marketing.videoUrl", label: "videoUrl" },
   ],
   ACCEPTANCE: [],
-  PAYMENTS: [],
+  PAYMENTS: [
+    { kind: "number", path: "payments.finalitySeconds", label: "finalitySeconds" },
+    { kind: "number", path: "payments.blockSeconds", label: "blockSeconds" },
+    { kind: "number", path: "payments.tps", label: "tps" },
+    { kind: "number", path: "payments.feeUsdTypical", label: "feeUsdTypical" },
+    { kind: "text", path: "payments.feeNote", label: "feeNote" },
+    { kind: "bool", path: "payments.reversible", label: "reversible" },
+    { kind: "lines", path: "payments.stablecoins", label: "stablecoins" },
+    { kind: "rows", path: "payments.integrations", label: "integration", fields: ROW_SUBFIELDS.integration },
+    { kind: "url", path: "payments.refundPolicyUrl", label: "refundPolicyUrl" },
+  ],
 };
 
-/** Sections a team can actually edit today. ACCEPTANCE is aggregated from the
- *  point database, PAYMENTS waits for slice F2. */
+/** Sections a team can actually edit today. ACCEPTANCE остаётся вне списка:
+ *  он агрегируется из базы точек, а не вводится командой. */
 export const EDITABLE_SECTIONS: CardSection[] = [
   "IDENTITY", "CONTRACTS", "TOKENOMICS", "MARKETS",
-  "SECURITY", "TEAM", "LINKS", "MARKETING",
+  "SECURITY", "TEAM", "LINKS", "MARKETING", "PAYMENTS",
 ];
 
 function scalarToInput(v: unknown): string {

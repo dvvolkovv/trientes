@@ -32,7 +32,13 @@ export function CoinCardSections({
       <ContractsSection contracts={card.contracts} provenance={card.provenance} />
       <TokenomicsSection tokenomics={card.tokenomics} provenance={card.provenance} badge={badge} />
       <MarketsSection markets={card.markets} provenance={card.provenance} />
-      <AcceptanceSection cardId={card.id} slug={card.slug} symbol={card.symbol} />
+      <AcceptanceSection
+        cardId={card.id}
+        slug={card.slug}
+        symbol={card.symbol}
+        payments={card.payments}
+        provenance={card.provenance}
+      />
       <SecuritySection security={card.security} />
       <TeamSection teamInfo={card.teamInfo} />
       <MarketingSection marketing={card.marketing} badge={badge} />

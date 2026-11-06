@@ -1275,7 +1275,8 @@
       "team": "团队与融资",
       "marketing": "项目与路线图",
       "links": "链接与社区",
-      "acceptance": "哪里可以使用"
+      "acceptance": "哪里可以使用",
+      "payments": "支付概况"
     },
     "acceptance": {
       "eyebrow": "实体经济",
@@ -1496,7 +1497,14 @@
         "revoked": "链接已被撤销。",
         "reason_too_short": "请填写至少 3 个字符的原因。",
         "not_pending": "该条目已不在待处理状态。",
-        "unknown": "出了点问题。"
+        "unknown": "出了点问题。",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       },
       "launchDate": "上线日期",
       "tags": "标签",
@@ -1513,7 +1521,20 @@
       "flagBlacklist": "地址黑名单",
       "flagTransferTax": "转账税",
       "flagProxy": "可升级代理合约",
-      "flagLpLocked": "流动性已锁定"
+      "flagLpLocked": "流动性已锁定",
+      "finalitySeconds": "支付最终性",
+      "blockSeconds": "出块时间",
+      "tps": "吞吐量",
+      "feeUsdTypical": "典型手续费",
+      "feeNote": "典型手续费 — note",
+      "reversible": "退款",
+      "stablecoins": "该链上的稳定币",
+      "integration": "收款系统集成",
+      "integrationKind": "收款系统集成",
+      "integrationName": "支付概况",
+      "integrationUrl": "URL",
+      "refundPolicyUrl": "退款政策",
+      "sourceLocale": "Source language"
     },
     "manage": {
       "status": {
@@ -1589,7 +1610,14 @@
         "contract_invalid": "该合约地址与此链不匹配。",
         "decimals_invalid": "decimals 必须在 0 到 36 之间。",
         "not_pending": "该条目已不在待处理状态。",
-        "unknown": "出了点问题。"
+        "unknown": "出了点问题。",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       }
     },
     "team": {
@@ -1662,7 +1690,14 @@
         "contract_invalid": "该合约地址与此链不匹配。",
         "decimals_invalid": "decimals 必须在 0 到 36 之间。",
         "not_pending": "该条目已不在待处理状态。",
-        "unknown": "出了点问题。"
+        "unknown": "出了点问题。",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       },
       "invites": {
         "title": "邀请链接",
@@ -1772,7 +1807,14 @@
         "contract_invalid": "该合约地址与此链不匹配。",
         "decimals_invalid": "decimals 必须在 0 到 36 之间。",
         "not_pending": "该条目已不在待处理状态。",
-        "unknown": "出了点问题。"
+        "unknown": "出了点问题。",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       }
     },
     "revision": {
@@ -1840,7 +1882,14 @@
         "contract_invalid": "该合约地址与此链不匹配。",
         "decimals_invalid": "decimals 必须在 0 到 36 之间。",
         "not_pending": "该条目已不在待处理状态。",
-        "unknown": "出了点问题。"
+        "unknown": "出了点问题。",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       }
     },
     "history": {
@@ -1864,6 +1913,30 @@
         "FORCE_COIN_REVISION": "站点审核员在没有团队签名的情况下应用",
         "DISABLE_COIN_MULTISIG": "站点审核员关闭了多签",
         "TRANSFER_COIN_CARD": "站点审核员转移了卡片所有权"
+      }
+    },
+    "payments": {
+      "title": "支付概况",
+      "finality": "支付最终性",
+      "blockTime": "出块时间",
+      "fee": "典型手续费",
+      "feeFree": "免手续费",
+      "tps": "吞吐量",
+      "seconds": "{value} 秒",
+      "tpsValue": "{value} 笔/秒",
+      "reversible": "退款",
+      "reversibleYes": "可以",
+      "reversibleNo": "不可以",
+      "stablecoins": "该链上的稳定币",
+      "integrations": "收款系统集成",
+      "refundPolicy": "退款政策",
+      "kind": {
+        "WOOCOMMERCE": "WooCommerce",
+        "SHOPIFY": "Shopify",
+        "1C": "1C",
+        "POS": "POS",
+        "SDK": "SDK",
+        "OTHER": "其他"
       }
     }
   },

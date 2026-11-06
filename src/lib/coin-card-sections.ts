@@ -5,6 +5,7 @@
 
 import type { CardSection } from "@/lib/coin-card-risk";
 import { normalizeSourceLocale } from "@/lib/prose-fields";
+import { validatePayments } from "@/lib/coin-card-payments";
 import {
   normalizeHttpUrl,
   validateCardBasics,
@@ -46,6 +47,7 @@ export type CardStateLike = {
   links: unknown;
   tokenomics: unknown;
   security: unknown;
+  payments?: unknown;
   teamInfo: unknown;
   marketing: unknown;
   contracts?: ContractRow[];
@@ -77,7 +79,7 @@ export const SECTION_PATHS: Record<CardSection, readonly string[]> = {
   LINKS: ["links"],
   MARKETING: ["marketing"],
   ACCEPTANCE: [],
-  PAYMENTS: [],
+  PAYMENTS: ["payments"],
 };
 
 function asObject(raw: unknown): Record<string, unknown> {
@@ -161,6 +163,12 @@ export function normalizeSectionPayload(
     return { ok: true, patch: { card: { links: out }, touched: ["links"] } };
   }
 
+  if (section === "PAYMENTS") {
+    const v = validatePayments(payload.payments);
+    if (!v.ok) return { ok: false, reason: v.reason };
+    return { ok: true, patch: { card: { payments: v.data }, touched: ["payments"] } };
+  }
+
   if (section === "SECURITY") {
     return {
       ok: true,
@@ -232,8 +240,8 @@ export function normalizeSectionPayload(
     return { ok: true, patch: { card, touched } };
   }
 
-  // ACCEPTANCE is aggregated from CompanyPoint, not typed in by the team; PAYMENTS
-  // waits for slice F2. Neither accepts a payload today.
+  // ACCEPTANCE is aggregated from CompanyPoint, not typed in by the team — it
+  // has no payload at all.
   return { ok: false, reason: "section_unsupported" };
 }
 

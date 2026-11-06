@@ -11,6 +11,7 @@ import {
 import { getMerchantCta } from "@/lib/coin-card-merchant-viewer";
 import { countryName } from "@/lib/countries";
 import { ProvenanceBadge } from "../provenance-badge";
+import { PaymentsBlock } from "./payments-block";
 
 const SITE = process.env.PUBLIC_ORIGIN ?? "https://trientes.org";
 
@@ -24,10 +25,14 @@ export async function AcceptanceSection({
   cardId,
   slug,
   symbol,
+  payments,
+  provenance,
 }: {
   cardId: string;
   slug: string;
   symbol: string;
+  payments?: unknown;
+  provenance?: unknown;
 }) {
   const [t, tb, ts, locale] = await Promise.all([
     getTranslations("coinCard.acceptance"),
@@ -138,6 +143,10 @@ export async function AcceptanceSection({
           </div>
         </div>
       )}
+
+      <div className="mt-5">
+        <PaymentsBlock payments={payments} provenance={provenance} />
+      </div>
 
       <div className="mt-5 space-y-2">
         <div className={label}>{t("badgeTitle")}</div>

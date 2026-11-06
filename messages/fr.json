@@ -1275,7 +1275,8 @@
       "team": "Équipe et financement",
       "marketing": "Projet et feuille de route",
       "links": "Liens et communauté",
-      "acceptance": "Où elle est acceptée"
+      "acceptance": "Où elle est acceptée",
+      "payments": "Profil de paiement"
     },
     "acceptance": {
       "eyebrow": "Économie réelle",
@@ -1496,7 +1497,14 @@
         "revoked": "Le lien a été révoqué.",
         "reason_too_short": "Indiquez un motif d'au moins 3 caractères.",
         "not_pending": "Cet élément n'est plus en attente.",
-        "unknown": "Une erreur est survenue."
+        "unknown": "Une erreur est survenue.",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       },
       "launchDate": "Date de lancement",
       "tags": "Étiquettes",
@@ -1513,7 +1521,20 @@
       "flagBlacklist": "Liste noire d'adresses",
       "flagTransferTax": "Taxe de transfert",
       "flagProxy": "Proxy évolutif",
-      "flagLpLocked": "Liquidité verrouillée"
+      "flagLpLocked": "Liquidité verrouillée",
+      "finalitySeconds": "Irréversibilité du paiement",
+      "blockSeconds": "Temps de bloc",
+      "tps": "Débit",
+      "feeUsdTypical": "Frais typiques",
+      "feeNote": "Frais typiques — note",
+      "reversible": "Remboursement",
+      "stablecoins": "Stablecoins sur ce réseau",
+      "integration": "Intégrations de caisse",
+      "integrationKind": "Intégrations de caisse",
+      "integrationName": "Profil de paiement",
+      "integrationUrl": "URL",
+      "refundPolicyUrl": "Politique de remboursement",
+      "sourceLocale": "Source language"
     },
     "manage": {
       "status": {
@@ -1589,7 +1610,14 @@
         "contract_invalid": "Cette adresse de contrat ne correspond pas à cette chaîne.",
         "decimals_invalid": "Les décimales doivent être entre 0 et 36.",
         "not_pending": "Cet élément n'est plus en attente.",
-        "unknown": "Une erreur est survenue."
+        "unknown": "Une erreur est survenue.",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       }
     },
     "team": {
@@ -1662,7 +1690,14 @@
         "contract_invalid": "Cette adresse de contrat ne correspond pas à cette chaîne.",
         "decimals_invalid": "Les décimales doivent être entre 0 et 36.",
         "not_pending": "Cet élément n'est plus en attente.",
-        "unknown": "Une erreur est survenue."
+        "unknown": "Une erreur est survenue.",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       },
       "invites": {
         "title": "Liens d'invitation",
@@ -1772,7 +1807,14 @@
         "contract_invalid": "Cette adresse de contrat ne correspond pas à cette chaîne.",
         "decimals_invalid": "Les décimales doivent être entre 0 et 36.",
         "not_pending": "Cet élément n'est plus en attente.",
-        "unknown": "Une erreur est survenue."
+        "unknown": "Une erreur est survenue.",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       }
     },
     "revision": {
@@ -1840,7 +1882,14 @@
         "contract_invalid": "Cette adresse de contrat ne correspond pas à cette chaîne.",
         "decimals_invalid": "Les décimales doivent être entre 0 et 36.",
         "not_pending": "Cet élément n'est plus en attente.",
-        "unknown": "Une erreur est survenue."
+        "unknown": "Une erreur est survenue.",
+        "finality_invalid": "Finality and block time must be positive numbers of seconds.",
+        "tps_invalid": "Throughput must be a positive number.",
+        "fee_invalid": "The fee cannot be negative.",
+        "fee_note_too_long": "The fee note is longer than 200 characters.",
+        "integration_incomplete": "An integration needs a name.",
+        "integration_url_invalid": "Invalid integration link.",
+        "too_many_integrations": "No more than 20 integrations."
       }
     },
     "history": {
@@ -1864,6 +1913,30 @@
         "FORCE_COIN_REVISION": "Appliqué par un modérateur du site sans les signatures de l'équipe",
         "DISABLE_COIN_MULTISIG": "Multisignature désactivée par un modérateur du site",
         "TRANSFER_COIN_CARD": "Propriété de la fiche transférée par un modérateur du site"
+      }
+    },
+    "payments": {
+      "title": "Profil de paiement",
+      "finality": "Irréversibilité du paiement",
+      "blockTime": "Temps de bloc",
+      "fee": "Frais typiques",
+      "feeFree": "sans frais",
+      "tps": "Débit",
+      "seconds": "{value} s",
+      "tpsValue": "{value} tx/s",
+      "reversible": "Remboursement",
+      "reversibleYes": "possible",
+      "reversibleNo": "impossible",
+      "stablecoins": "Stablecoins sur ce réseau",
+      "integrations": "Intégrations de caisse",
+      "refundPolicy": "Politique de remboursement",
+      "kind": {
+        "WOOCOMMERCE": "WooCommerce",
+        "SHOPIFY": "Shopify",
+        "1C": "1C",
+        "POS": "POS",
+        "SDK": "SDK",
+        "OTHER": "autre"
       }
     }
   },
