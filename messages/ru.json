@@ -114,7 +114,7 @@
     "loading": "Загрузка…",
     "website": "Сайт",
     "explorer": "Эксплорер",
-    "whitepaper": "Whitepaper",
+    "whitepaper": "Вайтпейпер",
     "github": "GitHub",
     "twitter": "Twitter",
     "reddit": "Reddit",
@@ -132,7 +132,7 @@
     "macd": "MACD",
     "high": "Макс",
     "low": "Мин",
-    "live": "Live",
+    "live": "В реальном времени",
     "jumpNavigator": "Навигатор",
     "jumpExchanges": "Топ биржи",
     "jumpNews": "Новости"
@@ -199,53 +199,53 @@
     "approve": "Принять",
     "reject": "Отклонить",
     "confirmReject": "Подтвердить отказ",
-    "rejectReasonPlaceholder": "Why are you rejecting?",
-    "rejectReasonLabel": "Rejection reason",
+    "rejectReasonPlaceholder": "Почему отклоняете?",
+    "rejectReasonLabel": "Причина отклонения",
     "requests": {
-      "title": "Coin requests",
-      "subtitle": "Review and act on user-submitted coin requests.",
-      "empty": "No requests in this view."
+      "title": "Заявки на монеты",
+      "subtitle": "Разбирайте заявки на монеты, присланные пользователями.",
+      "empty": "В этой выборке заявок нет."
     },
     "coins": {
-      "title": "Coins",
-      "subtitle": "Manage tracked coins. Disable to hide from public listings.",
-      "name": "Name",
-      "source": "Source",
-      "metadata": "Metadata fetched",
+      "title": "Монеты",
+      "subtitle": "Управляйте отслеживаемыми монетами. Отключение убирает их из публичных списков.",
+      "name": "Название",
+      "source": "Источник",
+      "metadata": "Метаданные получены",
       "status": "Status"
     },
     "addCoin": {
-      "heading": "Add a coin manually",
+      "heading": "Добавить монету вручную",
       "coingeckoId": "CoinGecko ID",
-      "symbol": "Symbol",
-      "name": "Name",
+      "symbol": "Тикер",
+      "name": "Название",
       "add": "Добавить",
-      "adding": "Adding…",
-      "added": "Coin added."
+      "adding": "Добавление…",
+      "added": "Монета добавлена."
     },
     "users": {
-      "title": "Users",
-      "subtitle": "Manage roles for registered users.",
+      "title": "Пользователи",
+      "subtitle": "Управляйте ролями зарегистрированных пользователей.",
       "email": "Email",
-      "name": "Name",
-      "providers": "Providers",
-      "role": "Role",
-      "action": "Action",
+      "name": "Название",
+      "providers": "Провайдеры",
+      "role": "Роль",
+      "action": "Действие",
       "searchPlaceholder": "Поиск по email или имени…"
     },
     "errors": {
-      "unauth": "Sign in required.",
-      "not_admin": "Admin role required.",
-      "not_found": "Not found.",
-      "not_pending": "Already processed.",
-      "no_coingecko_id": "CoinGecko ID is required.",
-      "coin_exists": "A coin with this ID already exists.",
-      "reason_too_short": "Reason must be at least 3 characters.",
-      "invalid_id": "Invalid ID format.",
-      "invalid_symbol": "Invalid symbol.",
-      "invalid_name": "Invalid name.",
-      "last_admin": "Cannot demote the last admin.",
-      "unknown_error": "Something went wrong."
+      "unauth": "Нужен вход в аккаунт.",
+      "not_admin": "Нужны права администратора.",
+      "not_found": "Не найдено.",
+      "not_pending": "Уже обработано.",
+      "no_coingecko_id": "Нужен ID CoinGecko.",
+      "coin_exists": "Монета с таким ID уже есть.",
+      "reason_too_short": "Причина должна быть не короче 3 символов.",
+      "invalid_id": "Неверный формат ID.",
+      "invalid_symbol": "Неверный тикер.",
+      "invalid_name": "Неверное название.",
+      "last_admin": "Нельзя понизить последнего администратора.",
+      "unknown_error": "Что-то пошло не так."
     },
     "audit": {
       "title": "Журнал действий",
@@ -473,7 +473,7 @@
     "country": "Страна",
     "founded": "Основана",
     "volume24h": "Объём (24ч)",
-    "empty": "No exchanges data yet.",
+    "empty": "Данных по биржам пока нет.",
     "showAll": "Показать все {count}",
     "collapse": "Свернуть",
     "favorite": "В избранное",
@@ -499,7 +499,7 @@
     "metrics": {
       "title": "Торговые метрики",
       "volume24h": "Объём 24ч",
-      "trustScore": "Trust score"
+      "trustScore": "Оценка доверия"
     },
     "description": {
       "title": "О бирже",
@@ -1086,8 +1086,8 @@
       "EXCHANGE": "Обмен",
       "CUSTODY": "Кастоди",
       "PAYMENTS": "Платежи",
-      "ONRAMP": "On-ramp",
-      "OFFRAMP": "Off-ramp"
+      "ONRAMP": "Ввод с фиата",
+      "OFFRAMP": "Вывод в фиат"
     },
     "kyc": {
       "NONE": "Без KYC",
@@ -1150,8 +1150,8 @@
       "hqLat": "Широта HQ",
       "hqLon": "Долгота HQ",
       "feesSummary": "Сводка комиссий",
-      "appStoreUrl": "App Store URL",
-      "playStoreUrl": "Play Store URL",
+      "appStoreUrl": "Ссылка в App Store",
+      "playStoreUrl": "Ссылка в Play Store",
       "submit": "Сохранить",
       "submitting": "Сохраняем…",
       "submitted": "Сохранено — ждёт модерации.",
