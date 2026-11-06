@@ -58,6 +58,8 @@ model User {
   coinCardInvitesMade    CoinCardInvite[]     @relation("CoinCardInviteCreator")
   coinCardInvitesGot     CoinCardInvite[]     @relation("CoinCardInviteAcceptor")
   coinCardRevisions      CoinCardRevision[]   @relation("CoinCardRevisionAuthor")
+  companyDeletionRequests  CompanyDeletionRequest[]  @relation("CompanyDeletionRequester")
+  companyDeletionApprovals CompanyDeletionApproval[] @relation("CompanyDeletionVoter")
 }
 
 model PushSubscription {
@@ -394,6 +396,8 @@ enum AdminAction {
   FORCE_COIN_REVISION
   DISABLE_COIN_MULTISIG
   TRANSFER_COIN_CARD
+  DELETE_COMPANY
+  DELETE_POINT
 }
 
 model AdminAuditLog {
@@ -526,9 +530,18 @@ model Company {
 
   coinCards CoinCard[]
 
+  // Мягкое удаление: данные остаются, но объект выпадает из всех выборок.
+  // Жёсткий каскад снёс бы точки, членства, приглашения и KYB-документы и
+  // оставил бы висячие targetId в журнале админа.
+  deletedAt   DateTime?
+  deletedById String?
+
+  deletionRequests CompanyDeletionRequest[]
+
   @@index([ownerUserId])
   @@index([status, createdAt])
   @@index([kybStatus])
+  @@index([deletedAt])
 }
 
 model CompanyPoint {
@@ -562,6 +575,10 @@ model CompanyPoint {
   reviewer        User?         @relation("PointReviewer", fields: [reviewedById], references: [id])
   reviewedAt      DateTime?
   rejectReason    String?
+  // Мягкое удаление, как у компании.
+  deletedAt       DateTime?
+  deletedById     String?
+
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 
@@ -569,6 +586,7 @@ model CompanyPoint {
   @@index([companyId])
   @@index([lat, lon])
   @@index([acceptedCardIds(ops: ArrayOps)], type: Gin)
+  @@index([deletedAt])
 }
 
 model LoginAttempt {
@@ -898,4 +916,61 @@ model CoinCardApproval {
 
   @@unique([revisionId, memberId])
   @@index([revisionId])
+}
+
+enum CompanyDeletionKind {
+  COMPANY
+  POINT
+}
+
+enum CompanyDeletionStatus {
+  PENDING
+  APPLIED
+  REJECTED
+  WITHDRAWN
+  EXPIRED
+}
+
+enum CompanyDeletionVote {
+  APPROVE
+  REJECT
+}
+
+// Узкая мультиподпись: только про удаление и только голосами владельцев.
+// Конвейер ревизий карточки монеты сюда не тащим — там решается другая задача.
+// thresholdAt/ownerCountAt — снимок на момент подачи: без него уход владельца
+// на ходу меняет исход идущего голосования.
+model CompanyDeletionRequest {
+  id            String                @id @default(cuid())
+  companyId     String
+  company       Company               @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  kind          CompanyDeletionKind
+  pointId       String? // только при kind = POINT
+  requestedById String
+  requestedBy   User                  @relation("CompanyDeletionRequester", fields: [requestedById], references: [id], onDelete: Cascade)
+  reason        String?               @db.Text
+  status        CompanyDeletionStatus @default(PENDING)
+  thresholdAt   Int
+  ownerCountAt  Int
+  expiresAt     DateTime
+  decidedAt     DateTime?
+  createdAt     DateTime              @default(now())
+
+  approvals CompanyDeletionApproval[]
+
+  @@index([companyId, status])
+  @@index([status, expiresAt])
+  @@index([pointId])
+}
+
+model CompanyDeletionApproval {
+  id        String                 @id @default(cuid())
+  requestId String
+  request   CompanyDeletionRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User                   @relation("CompanyDeletionVoter", fields: [userId], references: [id], onDelete: Cascade)
+  vote      CompanyDeletionVote
+  createdAt DateTime               @default(now())
+
+  @@unique([requestId, userId])
 }
