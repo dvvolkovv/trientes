@@ -13,45 +13,51 @@ enum Role {
 }
 
 model User {
-  id                String              @id @default(cuid())
-  email             String?             @unique
-  name              String?
-  image             String?
-  username          String?             @unique
-  passwordHash      String?
-  firstName         String?
-  lastName          String?
-  phone             String?
-  role              Role                @default(USER)
-  preferredLocale   String              @default("en")
-  preferredCurrency String              @default("USD")
-  preferredTheme    String              @default("system")
-  emailVerified     DateTime?
-  createdAt         DateTime            @default(now())
-  accounts          Account[]
-  sessions          Session[]
-  watchlist         Watchlist[]
-  exchangeWatchlist ExchangeWatchlist[]
-  coinRequests      CoinRequest[]
-  adminAddedCoins   Coin[]              @relation("AdminCoinAdditions")
-  reviewedRequests  CoinRequest[]       @relation("RequestReviewer")
-  auditLogs         AdminAuditLog[]     @relation("AdminAuditActor")
-  companies         Company[]
-  registeredExchanges RegisteredExchange[]
-  reviewedPoints    CompanyPoint[]      @relation("PointReviewer")
-  reviewedCompanies Company[]           @relation("CompanyReviewer")
-  loginAttempts     LoginAttempt[]
-  ownedFintech      FintechCompany?     @relation("FintechOwner")
-  reviewedFintechs  FintechCompany[]    @relation("FintechReviewer")
-  priceAlerts       PriceAlert[]
-  geoAlerts         GeoAlert[]
-  companyMemberships CompanyMember[]
-  companyInvitesCreated  CompanyInvite[] @relation("CompanyInviteCreator")
-  companyInvitesAccepted CompanyInvite[] @relation("CompanyInviteAcceptor")
-  pushSubscriptions PushSubscription[]
-  notifyTelegram    Boolean             @default(true)
-  notifyEmail       Boolean             @default(false)
-  notifyWebPush     Boolean             @default(false)
+  id                     String               @id @default(cuid())
+  email                  String?              @unique
+  name                   String?
+  image                  String?
+  username               String?              @unique
+  passwordHash           String?
+  firstName              String?
+  lastName               String?
+  phone                  String?
+  role                   Role                 @default(USER)
+  preferredLocale        String               @default("en")
+  preferredCurrency      String               @default("USD")
+  preferredTheme         String               @default("system")
+  emailVerified          DateTime?
+  createdAt              DateTime             @default(now())
+  accounts               Account[]
+  sessions               Session[]
+  watchlist              Watchlist[]
+  exchangeWatchlist      ExchangeWatchlist[]
+  coinRequests           CoinRequest[]
+  adminAddedCoins        Coin[]               @relation("AdminCoinAdditions")
+  reviewedRequests       CoinRequest[]        @relation("RequestReviewer")
+  auditLogs              AdminAuditLog[]      @relation("AdminAuditActor")
+  companies              Company[]
+  registeredExchanges    RegisteredExchange[]
+  reviewedPoints         CompanyPoint[]       @relation("PointReviewer")
+  reviewedCompanies      Company[]            @relation("CompanyReviewer")
+  loginAttempts          LoginAttempt[]
+  ownedFintech           FintechCompany?      @relation("FintechOwner")
+  reviewedFintechs       FintechCompany[]     @relation("FintechReviewer")
+  priceAlerts            PriceAlert[]
+  geoAlerts              GeoAlert[]
+  companyMemberships     CompanyMember[]
+  companyInvitesCreated  CompanyInvite[]      @relation("CompanyInviteCreator")
+  companyInvitesAccepted CompanyInvite[]      @relation("CompanyInviteAcceptor")
+  pushSubscriptions      PushSubscription[]
+  notifyTelegram         Boolean              @default(true)
+  notifyEmail            Boolean              @default(false)
+  notifyWebPush          Boolean              @default(false)
+  coinCardsStewarded     CoinCard[]           @relation("CoinCardSteward")
+  coinCardsReviewed      CoinCard[]           @relation("CoinCardReviewer")
+  coinCardMemberships    CoinCardMember[]     @relation("CoinCardMemberUser")
+  coinCardInvitesMade    CoinCardInvite[]     @relation("CoinCardInviteCreator")
+  coinCardInvitesGot     CoinCardInvite[]     @relation("CoinCardInviteAcceptor")
+  coinCardRevisions      CoinCardRevision[]   @relation("CoinCardRevisionAuthor")
 }
 
 model PushSubscription {
@@ -76,12 +82,12 @@ enum CompanyRole {
 
 model PageView {
   id        String   @id @default(cuid())
-  path      String   // canonical path including locale, e.g. "/en/coin/bitcoin"
-  locale    String?  // extracted from path for fast aggregation
-  sessionId String?  // anonymous 30-day rolling cookie (UUID); null for prerendered bot hits
-  userId    String?  // populated when the viewer is signed in
-  referrer  String?  // document.referrer at hit time; null for direct
-  country   String?  // ISO-2 from CF-IPCountry header when present
+  path      String // canonical path including locale, e.g. "/en/coin/bitcoin"
+  locale    String? // extracted from path for fast aggregation
+  sessionId String? // anonymous 30-day rolling cookie (UUID); null for prerendered bot hits
+  userId    String? // populated when the viewer is signed in
+  referrer  String? // document.referrer at hit time; null for direct
+  country   String? // ISO-2 from CF-IPCountry header when present
   isBot     Boolean  @default(false)
   createdAt DateTime @default(now())
 
@@ -139,38 +145,38 @@ enum AlertOp {
 }
 
 model PriceAlert {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  coinId      String   // CoinGecko id (e.g. "bitcoin")
-  symbol      String   // denormalized for fast display in cabinet + notification
-  op          AlertOp
-  threshold   Float    // USD
+  coinId    String // CoinGecko id (e.g. "bitcoin")
+  symbol    String // denormalized for fast display in cabinet + notification
+  op        AlertOp
+  threshold Float // USD
 
-  enabled     Boolean  @default(true)
-  triggered   Boolean  @default(false)   // re-arms with 3% hysteresis
+  enabled     Boolean   @default(true)
+  triggered   Boolean   @default(false) // re-arms with 3% hysteresis
   lastFiredAt DateTime?
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([userId, enabled])
   @@index([enabled, coinId])
 }
 
 model GeoAlert {
-  id            String   @id @default(cuid())
-  userId        String
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  countryCode   String   // ISO-3166-1 alpha-2
+  countryCode String // ISO-3166-1 alpha-2
 
-  enabled       Boolean  @default(true)
-  notifyFintech Boolean  @default(true)
-  notifyPoints  Boolean  @default(true)
+  enabled       Boolean @default(true)
+  notifyFintech Boolean @default(true)
+  notifyPoints  Boolean @default(true)
 
-  createdAt     DateTime @default(now())
+  createdAt DateTime @default(now())
 
   @@unique([userId, countryCode])
   @@index([countryCode, enabled])
@@ -240,6 +246,7 @@ model Coin {
   approvedFromRequest   CoinRequest?   @relation("CoinRequestApproved", fields: [approvedFromRequestId], references: [id])
   snapshots             CoinSnapshot[]
   watchedBy             Watchlist[]
+  card                  CoinCard?      @relation("CoinCardCoin")
 }
 
 model CoinSnapshot {
@@ -276,6 +283,59 @@ enum RequestStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+enum CoinCardSection {
+  IDENTITY
+  CONTRACTS
+  TOKENOMICS
+  MARKETS
+  SECURITY
+  TEAM
+  LINKS
+  MARKETING
+  ACCEPTANCE
+}
+
+enum CoinCardRole {
+  OWNER
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+enum CoinCardTrust {
+  UNVERIFIED
+  CONTRACT_VERIFIED
+  PROJECT_CLAIMED
+  FULLY_VERIFIED
+}
+
+enum ProvenanceKind {
+  SELF_REPORTED
+  VERIFIED_ONCHAIN
+  AGGREGATED
+  ADMIN_SET
+}
+
+enum CoinCardVote {
+  APPROVE
+  REJECT
+}
+
+enum CoinCardRevisionKind {
+  CONTENT
+  POLICY
+}
+
+enum CoinCardRevisionStatus {
+  DRAFT
+  PENDING_SIGNERS
+  PENDING_ADMIN
+  APPLIED
+  REJECTED
+  EXPIRED
+  WITHDRAWN
 }
 
 model Watchlist {
@@ -326,6 +386,13 @@ enum AdminAction {
   EDIT_FINTECH
   CREATE_FINTECH
   DELETE_FINTECH
+  APPROVE_COIN_CARD
+  REJECT_COIN_CARD
+  APPLY_COIN_REVISION
+  REJECT_COIN_REVISION
+  FORCE_COIN_REVISION
+  DISABLE_COIN_MULTISIG
+  TRANSFER_COIN_CARD
 }
 
 model AdminAuditLog {
@@ -355,19 +422,19 @@ model Exchange {
   url                 String?
   hasTradingIncentive Boolean             @default(false)
   description         String?             @db.Text
-  exchangeType        String?             // "CEX" | "DEX" | "HYBRID" | "OTHER"
+  exchangeType        String? // "CEX" | "DEX" | "HYBRID" | "OTHER"
   currencies          Int?
   pairsCount          Int?
   fiats               String[]            @default([])
   socials             Json?
   source              String              @default("cg") // "cg" | "cp" | "curated"
-  makerFeePercent     Float?              // standard spot maker fee, e.g. 0.10
-  takerFeePercent     Float?              // standard spot taker fee
-  feesNote            String?             // tier disclaimer ("VIP / BNB tiers reduce further")
-  feesUrl             String?             // link to official fee schedule
+  makerFeePercent     Float? // standard spot maker fee, e.g. 0.10
+  takerFeePercent     Float? // standard spot taker fee
+  feesNote            String? // tier disclaimer ("VIP / BNB tiers reduce further")
+  feesUrl             String? // link to official fee schedule
   fetchedAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
-  marketsFetchedAt    DateTime?           // last successful per-pair sync
+  marketsFetchedAt    DateTime? // last successful per-pair sync
   watchedBy           ExchangeWatchlist[]
   markets             ExchangeMarket[]
 
@@ -376,24 +443,24 @@ model Exchange {
 }
 
 model ExchangeMarket {
-  id              String   @id // "{exchangeId}:{base}:{quote}:{category}"
+  id              String    @id // "{exchangeId}:{base}:{quote}:{category}"
   exchangeId      String
-  pair            String   // display label, e.g. "BTC/USDT"
+  pair            String // display label, e.g. "BTC/USDT"
   baseSymbol      String
   quoteSymbol     String
-  baseCurrencyId  String?  // CoinPaprika id, e.g. "btc-bitcoin"
+  baseCurrencyId  String? // CoinPaprika id, e.g. "btc-bitcoin"
   quoteCurrencyId String?
-  category        String?  // "spot" | "perpetual" | "futures" | "other"
+  category        String? // "spot" | "perpetual" | "futures" | "other"
   priceUsd        Float?
   volumeUsd24h    Float?
-  volumeSharePct  Float?   // adjusted_volume_share from CoinPaprika
-  outlier         Boolean  @default(false)
+  volumeSharePct  Float? // adjusted_volume_share from CoinPaprika
+  outlier         Boolean   @default(false)
   marketUrl       String?
   lastTradedAt    DateTime?
-  firstSeenAt     DateTime @default(now())
-  lastSeenAt      DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  exchange        Exchange @relation(fields: [exchangeId], references: [id], onDelete: Cascade)
+  firstSeenAt     DateTime  @default(now())
+  lastSeenAt      DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  exchange        Exchange  @relation(fields: [exchangeId], references: [id], onDelete: Cascade)
 
   @@index([exchangeId, volumeUsd24h(sort: Desc)])
   @@index([exchangeId, firstSeenAt(sort: Desc)])
@@ -421,40 +488,42 @@ enum PointType {
 }
 
 model Company {
-  id          String         @id @default(cuid())
-  ownerUserId String
-  owner       User           @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
-  members     CompanyMember[]
-  invites     CompanyInvite[]
-  legalName   String
-  displayName String
-  logoUrl     String?
-  description String?        @db.Text
-  country     String?
-  countryCode String?
-  city        String?
-  street      String?
-  houseNumber String?
-  postalCode  String?
-  address     String?
-  phone       String?
-  email       String?
-  website     String?
-  socials     Json?
-  status          RequestStatus @default(PENDING)
+  id              String          @id @default(cuid())
+  ownerUserId     String
+  owner           User            @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
+  members         CompanyMember[]
+  invites         CompanyInvite[]
+  legalName       String
+  displayName     String
+  logoUrl         String?
+  description     String?         @db.Text
+  country         String?
+  countryCode     String?
+  city            String?
+  street          String?
+  houseNumber     String?
+  postalCode      String?
+  address         String?
+  phone           String?
+  email           String?
+  website         String?
+  socials         Json?
+  status          RequestStatus   @default(PENDING)
   rejectionReason String?
   reviewedById    String?
-  reviewer        User?         @relation("CompanyReviewer", fields: [reviewedById], references: [id])
+  reviewer        User?           @relation("CompanyReviewer", fields: [reviewedById], references: [id])
   reviewedAt      DateTime?
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
-  points      CompanyPoint[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  points          CompanyPoint[]
 
-  kybStatus           KybStatus  @default(NONE)
-  kybDocuments        Json?      // [{ kind, url, label }]
-  kybSubmittedAt      DateTime?
-  kybReviewedAt       DateTime?
-  kybRejectionReason  String?
+  kybStatus          KybStatus @default(NONE)
+  kybDocuments       Json? // [{ kind, url, label }]
+  kybSubmittedAt     DateTime?
+  kybReviewedAt      DateTime?
+  kybRejectionReason String?
+
+  coinCards CoinCard[]
 
   @@index([ownerUserId])
   @@index([status, createdAt])
@@ -478,7 +547,7 @@ model CompanyPoint {
   address         String?
   acceptedCoinIds String[]
   logoUrl         String?
-  photos          Json?         // [{ url, label? }], max 5
+  photos          Json? // [{ url, label? }], max 5
   openingHours    String?
   phone           String?
   website         String?
@@ -519,26 +588,26 @@ enum ExchangeStatus {
 // NOTE: The existing "Exchange" model is the CoinGecko catalog (public exchange data).
 // This model is named "RegisteredExchange" to avoid collision with that table.
 model RegisteredExchange {
-  id              String         @id @default(cuid())
-  ownerUserId     String
-  owner           User           @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
+  id          String @id @default(cuid())
+  ownerUserId String
+  owner       User   @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
 
-  legalName       String
-  displayName     String
-  logoUrl         String?
-  description     String?
-  website         String
-  country         String
-  email           String
-  phone           String?
-  address         String?
-  socials         Json?
+  legalName   String
+  displayName String
+  logoUrl     String?
+  description String?
+  website     String
+  country     String
+  email       String
+  phone       String?
+  address     String?
+  socials     Json?
 
   status          ExchangeStatus @default(PENDING)
   rejectionReason String?
 
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([ownerUserId])
   @@index([status, createdAt])
@@ -566,44 +635,44 @@ enum FintechKyc {
 }
 
 model FintechCompany {
-  id              String           @id @default(cuid())
-  slug            String           @unique
-  displayName     String
-  legalName       String?
-  logoUrl         String?
-  description     String?          @db.Text
-  website         String
-  socials         Json?
-  foundedYear     Int?
+  id          String  @id @default(cuid())
+  slug        String  @unique
+  displayName String
+  legalName   String?
+  logoUrl     String?
+  description String? @db.Text
+  website     String
+  socials     Json?
+  foundedYear Int?
 
-  countryCode     String?
-  city            String?
-  address         String?
-  hqLat           Float?
-  hqLon           Float?
+  countryCode String?
+  city        String?
+  address     String?
+  hqLat       Float?
+  hqLon       Float?
 
   services         FintechService[]
   supportedCoinIds String[]
   supportedFiats   String[]
   availableIn      String[]
 
-  kycLevel        FintechKyc?
-  feesSummary     String?          @db.Text
-  appStoreUrl     String?
-  playStoreUrl    String?
+  kycLevel     FintechKyc?
+  feesSummary  String?     @db.Text
+  appStoreUrl  String?
+  playStoreUrl String?
 
-  source          String           @default("curated")
-  ownerUserId     String?          @unique
-  owner           User?            @relation("FintechOwner", fields: [ownerUserId], references: [id], onDelete: Cascade)
+  source      String  @default("curated")
+  ownerUserId String? @unique
+  owner       User?   @relation("FintechOwner", fields: [ownerUserId], references: [id], onDelete: Cascade)
 
-  status          RequestStatus    @default(APPROVED)
+  status          RequestStatus @default(APPROVED)
   rejectionReason String?
   reviewedById    String?
-  reviewer        User?            @relation("FintechReviewer", fields: [reviewedById], references: [id])
+  reviewer        User?         @relation("FintechReviewer", fields: [reviewedById], references: [id])
   reviewedAt      DateTime?
 
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([status, displayName])
   @@index([source])
@@ -625,4 +694,195 @@ model OsmCryptoPoi {
   syncedAt DateTime @default(now())
 
   @@index([lat, lon])
+}
+
+// ---------------------------------------------------------------------------
+// Собственный листинг монет (слайс A). Карточка намеренно отвязана от
+// Coin.id = CoinGecko id: у неё свой cuid и свой slug, поэтому проект можно
+// залистинговать, когда его нет ни в одном внешнем фиде. Связь с Coin
+// необязательная — для монет, которые у нас уже есть.
+// Спека: docs/superpowers/specs/2026-11-06-coin-card-listing-design.md
+// ---------------------------------------------------------------------------
+
+model CoinCard {
+  id            String        @id @default(cuid())
+  slug          String        @unique
+  coinId        String?       @unique
+  coin          Coin?         @relation("CoinCardCoin", fields: [coinId], references: [id], onDelete: SetNull)
+  companyId     String?
+  company       Company?      @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  // Первый подавший карточку. Владеет ею как куратор, пока проект не докажет
+  // права (слайс D) — тогда вытесняется. Защита от сквоттинга листингов.
+  stewardUserId String?
+  steward       User?         @relation("CoinCardSteward", fields: [stewardUserId], references: [id], onDelete: SetNull)
+  trust         CoinCardTrust @default(UNVERIFIED)
+  status        RequestStatus @default(PENDING)
+  completeness  Int           @default(0)
+  name          String
+  symbol        String
+  tagline       String?
+  description   String?       @db.Text
+  logoUrl       String?
+  launchDate    DateTime?
+  tags          String[]      @default([])
+  consensus     String?
+  hashAlgo      String?
+  links         Json?
+  tokenomics    Json?
+  teamInfo      Json?
+  marketing     Json?
+  security      Json?
+  // {"<путь поля>": {kind, source, at}} — откуда взято каждое значение.
+  provenance    Json?
+  rejectReason  String?
+  reviewedById  String?
+  reviewer      User?         @relation("CoinCardReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  reviewedAt    DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  contracts CoinCardContract[]
+  markets   CoinCardMarket[]
+  members   CoinCardMember[]
+  invites   CoinCardInvite[]
+  revisions CoinCardRevision[]
+  policy    CoinCardPolicy?
+
+  @@index([status, createdAt])
+  @@index([trust])
+}
+
+// Адрес контракта в конкретной сети. Без него настоящий токен не отличить от
+// подделки с тем же тикером — поэтому раздел высокорисковый.
+model CoinCardContract {
+  id          String    @id @default(cuid())
+  cardId      String
+  card        CoinCard  @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  chain       String
+  address     String
+  decimals    Int?
+  standard    String?
+  isCanonical Boolean   @default(false)
+  explorerUrl String?
+  verifiedAt  DateTime? // заполняет слайс B после сверки через публичный RPC
+
+  @@unique([cardId, chain, address])
+  @@index([chain, address])
+}
+
+// Где монета торгуется. claimedAt — заявлено проектом, confirmedAt — сверено
+// нашим агрегатором (слайс C). priceUsd/volumeUsd24h в слайсе A всегда null.
+model CoinCardMarket {
+  id           String    @id @default(cuid())
+  cardId       String
+  card         CoinCard  @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  kind         String // "CEX" | "DEX"
+  exchangeId   String? // мягкая ссылка на Exchange.id, без FK
+  exchangeName String
+  pair         String
+  tradeUrl     String?
+  chain        String?
+  poolAddress  String?
+  priceUsd     Float?
+  volumeUsd24h Float?
+  claimedAt    DateTime  @default(now())
+  confirmedAt  DateTime?
+
+  @@unique([cardId, kind, exchangeName, pair])
+  @@index([cardId])
+}
+
+// Участник команды карточки. Образец — CompanyMember.
+model CoinCardMember {
+  id          String            @id @default(cuid())
+  cardId      String
+  card        CoinCard          @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User              @relation("CoinCardMemberUser", fields: [userId], references: [id], onDelete: Cascade)
+  role        CoinCardRole      @default(VIEWER)
+  sections    CoinCardSection[] @default([]) // значимо только для EDITOR
+  isSigner    Boolean           @default(false) // входит в группу мультиподписи
+  invitedById String?
+  createdAt   DateTime          @default(now())
+
+  approvals CoinCardApproval[]
+
+  @@unique([cardId, userId])
+  @@index([userId])
+}
+
+// Одноразовая ссылка-приглашение для тех, у кого ещё нет аккаунта.
+// Образец — CompanyInvite.
+model CoinCardInvite {
+  id           String            @id @default(cuid())
+  cardId       String
+  card         CoinCard          @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  role         CoinCardRole      @default(VIEWER)
+  sections     CoinCardSection[] @default([])
+  isSigner     Boolean           @default(false)
+  token        String            @unique
+  createdById  String
+  createdBy    User              @relation("CoinCardInviteCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  expiresAt    DateTime
+  acceptedById String?
+  acceptedBy   User?             @relation("CoinCardInviteAcceptor", fields: [acceptedById], references: [id], onDelete: SetNull)
+  acceptedAt   DateTime?
+  revokedAt    DateTime?
+  createdAt    DateTime          @default(now())
+
+  @@index([cardId, createdAt])
+}
+
+// Политика мультиподписи. Пустой sections = применяется ко всем изменениям.
+model CoinCardPolicy {
+  cardId    String            @id
+  card      CoinCard          @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  multisig  Boolean           @default(false)
+  threshold Int               @default(1) // M из N подписантов
+  sections  CoinCardSection[] @default([])
+  updatedAt DateTime          @updatedAt
+}
+
+// Пакет изменений. thresholdAt/signerCountAt — снимок на момент подачи: без
+// него смена состава подписантов на ходу меняет исход идущего голосования.
+model CoinCardRevision {
+  id            String                 @id @default(cuid())
+  cardId        String
+  card          CoinCard               @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  kind          CoinCardRevisionKind   @default(CONTENT)
+  section       CoinCardSection? // null только при kind = POLICY
+  authorId      String
+  author        User                   @relation("CoinCardRevisionAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  status        CoinCardRevisionStatus @default(DRAFT)
+  highRisk      Boolean                @default(false)
+  diff          Json // [{path, before, after}]
+  thresholdAt   Int?
+  signerCountAt Int?
+  expiresAt     DateTime?
+  adminId       String?
+  adminNote     String?
+  decidedAt     DateTime?
+  appliedAt     DateTime?
+  createdAt     DateTime               @default(now())
+
+  approvals CoinCardApproval[]
+
+  @@index([cardId, createdAt])
+  @@index([status, createdAt])
+}
+
+// Один подписант — один голос (@@unique). Отказ закрывает ревизию, только
+// когда порог становится арифметически недостижим — права вето ни у кого нет.
+model CoinCardApproval {
+  id         String           @id @default(cuid())
+  revisionId String
+  revision   CoinCardRevision @relation(fields: [revisionId], references: [id], onDelete: Cascade)
+  memberId   String
+  member     CoinCardMember   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  decision   CoinCardVote
+  comment    String?
+  createdAt  DateTime         @default(now())
+
+  @@unique([revisionId, memberId])
+  @@index([revisionId])
 }
