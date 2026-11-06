@@ -88,6 +88,10 @@
       "kicker": "Bölüm · Kendi listelemesi",
       "title": "Ekiplerin kendi listelediği coinler",
       "subtitle": "Kartını projelerin kendisinin doldurup yürüttüğü coinler. Henüz toplulaştırılmış piyasa fiyatları yok — ama her değer kaynağını belirtiyor."
+    },
+    "tabs": {
+      "all": "Tüm coinler",
+      "selfListed": "Kendi listelemesi"
     }
   },
   "detail": {

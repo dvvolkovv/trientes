@@ -3,6 +3,8 @@ import { readTop100, readGlobalStats, readExchangeRates, readNews, readFearGreed
 import { GlobalStatsHero } from "@/components/global-stats-hero";
 import { CoinListClient } from "@/components/coin-list-client";
 import { SelfListedRail } from "@/components/self-listed-rail";
+import { ListingTabs } from "@/components/listing-tabs";
+import { countSelfListedCards } from "@/lib/coin-card-directory";
 import { NewsRail } from "@/components/news-rail";
 import { LivePrices } from "@/components/live-prices";
 import { HomeTicker, type TickerItem } from "@/components/home-ticker";
@@ -24,7 +26,8 @@ export default async function Home({
   const tl = await getTranslations("listing");
   const th = await getTranslations("home");
 
-  const [rows, stats, rates, currency, watchedSet, isAuthed, news, fearGreed] = await Promise.all([
+  const [rows, stats, rates, currency, watchedSet, isAuthed, news, fearGreed, selfListedCount] =
+    await Promise.all([
     readTop100(),
     readGlobalStats(),
     readExchangeRates(),
@@ -33,6 +36,7 @@ export default async function Home({
     isAuthenticated(),
     readNews(),
     readFearGreed(),
+    countSelfListedCards(),
   ]);
 
   const tlist = await getTranslations("listing");
@@ -173,21 +177,27 @@ export default async function Home({
             Top Layer-1.
           </h2>
           <LivePrices currency={currency} rates={rates} />
-          {rows.length > 0 ? (
-            <CoinListClient
-              rows={rows}
-              currency={currency}
-              rates={rates}
-              locale={locale}
-              watchedSet={watchedSet}
-              isAuthed={isAuthed}
-            />
-          ) : (
-            <p className="text-muted">{tl("loadingFallback")}</p>
-          )}
+          <ListingTabs
+            marketLabel={tl("tabs.all")}
+            selfLabel={tl("tabs.selfListed")}
+            selfCount={selfListedCount}
+            market={
+              rows.length > 0 ? (
+                <CoinListClient
+                  rows={rows}
+                  currency={currency}
+                  rates={rates}
+                  locale={locale}
+                  watchedSet={watchedSet}
+                  isAuthed={isAuthed}
+                />
+              ) : (
+                <p className="text-muted">{tl("loadingFallback")}</p>
+              )
+            }
+            self={<SelfListedRail locale={locale} />}
+          />
         </section>
-
-        <SelfListedRail locale={locale} />
       </div>
     </main>
   );

@@ -12,7 +12,8 @@ const TRUST_TONE: Record<string, string> = {
 /**
  * Coins listed by their own teams rather than pulled from a market feed. No
  * price column: these have no aggregated market yet, and an empty number
- * would read as a zero.
+ * would read as a zero. A card earns a row in the ranked table only once a
+ * real price exists for it (slice C).
  */
 export async function SelfListedRail({ locale }: { locale: string }) {
   const t = await getTranslations("listing.selfListed");
@@ -21,13 +22,7 @@ export async function SelfListedRail({ locale }: { locale: string }) {
   if (cards.length === 0) return null;
 
   return (
-    <section className="py-12 border-t border-hairline">
-      <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
-        {t("kicker")}
-      </div>
-      <h2 className="text-[28px] md:text-[36px] font-bold tracking-[-0.03em] mb-2">
-        {t("title")}
-      </h2>
+    <div>
       <p className="text-muted mb-6 max-w-[640px]">{t("subtitle")}</p>
 
       <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -71,6 +66,6 @@ export async function SelfListedRail({ locale }: { locale: string }) {
           </li>
         ))}
       </ul>
-    </section>
+    </div>
   );
 }

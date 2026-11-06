@@ -88,6 +88,10 @@
       "kicker": "Sección · Listado propio",
       "title": "Listadas por sus propios equipos",
       "subtitle": "Monedas cuyas tarjetas rellenan y mantienen los propios proyectos. Todavía no tienen precio de mercado agregado, pero cada valor indica de dónde sale."
+    },
+    "tabs": {
+      "all": "Todas las monedas",
+      "selfListed": "Listado propio"
     }
   },
   "detail": {

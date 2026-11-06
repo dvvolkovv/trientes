@@ -88,6 +88,10 @@
       "kicker": "Section · Listing propre",
       "title": "Référencées par leurs équipes",
       "subtitle": "Des monnaies dont la fiche est remplie et tenue par les projets eux-mêmes. Pas encore de prix de marché agrégé — en revanche chaque valeur indique sa source."
+    },
+    "tabs": {
+      "all": "Toutes les monnaies",
+      "selfListed": "Listing propre"
     }
   },
   "detail": {

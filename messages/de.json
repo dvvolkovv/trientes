@@ -88,6 +88,10 @@
       "kicker": "Bereich · Eigenes Listing",
       "title": "Von den Teams selbst gelistet",
       "subtitle": "Münzen, deren Karten die Projekte selbst pflegen. Einen aggregierten Marktpreis gibt es noch nicht — dafür nennt jeder Wert seine Quelle."
+    },
+    "tabs": {
+      "all": "Alle Münzen",
+      "selfListed": "Eigenes Listing"
     }
   },
   "detail": {

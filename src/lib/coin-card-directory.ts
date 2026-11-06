@@ -27,3 +27,8 @@ export async function listSelfListedCards(limit = 24): Promise<SelfListedCard[]>
     },
   });
 }
+
+/** Count for the listing tab badge — cheaper than loading the rows. */
+export async function countSelfListedCards(): Promise<number> {
+  return prisma.coinCard.count({ where: { status: "APPROVED", coinId: null } });
+}
