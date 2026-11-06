@@ -4,6 +4,8 @@ import Link from "next/link";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { NOT_DELETED } from "@/lib/soft-delete";
+import { localizedProse } from "@/lib/localized-prose";
+import { TranslatedBadge } from "@/components/coin-card/translated-badge";
 
 export const dynamic = "force-dynamic";
 
@@ -36,10 +38,13 @@ export async function generateMetadata({
 
 export default async function PublicCompanyPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string; id: string }>;
+  searchParams: Promise<{ orig?: string }>;
 }) {
   const { locale, id } = await params;
+  const { orig } = await searchParams;
   setRequestLocale(locale);
 
   const company = await prisma.company.findFirst({
@@ -81,6 +86,16 @@ export default async function PublicCompanyPage({
     description: company.description ?? undefined,
     address: company.address ? { "@type": "PostalAddress", streetAddress: company.address } : undefined,
   } : null;
+
+  // Описание компании пишет сама компания — показываем его на языке интерфейса.
+  const about = await localizedProse({
+    ns: "company",
+    id,
+    locale,
+    sourceLocale: null,
+    fields: { description: company.description },
+    original: orig === "1",
+  });
 
   return (
     <main className="max-w-[860px] mx-auto px-4 md:px-12 py-12 space-y-10">
@@ -126,9 +141,14 @@ export default async function PublicCompanyPage({
         </div>
       </header>
 
-      {company.description ? (
+      {about.fields.description ? (
         <section>
-          <p className="whitespace-pre-wrap text-sm md:text-base">{company.description}</p>
+          <p className="whitespace-pre-wrap text-sm md:text-base">{about.fields.description}</p>
+          {about.translated ? (
+            <p className="mt-1">
+              <TranslatedBadge originalHref={`/${locale}/companies/${id}?orig=1`} />
+            </p>
+          ) : null}
         </section>
       ) : null}
 

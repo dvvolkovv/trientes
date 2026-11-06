@@ -32,7 +32,9 @@
       "exchange": "取引所",
       "fintech": "フィンテック",
       "company": "企業"
-    }
+    },
+    "machineTranslated": "機械翻訳",
+    "showOriginal": "原文"
   },
   "home": {
     "title": "ようこそ",

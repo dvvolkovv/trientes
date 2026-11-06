@@ -32,7 +32,9 @@
       "exchange": "Plateforme",
       "fintech": "Fintech",
       "company": "Entreprise"
-    }
+    },
+    "machineTranslated": "traduction automatique",
+    "showOriginal": "original"
   },
   "home": {
     "title": "Bienvenue",

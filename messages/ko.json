@@ -32,7 +32,9 @@
       "exchange": "거래소",
       "fintech": "핀테크",
       "company": "기업"
-    }
+    },
+    "machineTranslated": "기계 번역",
+    "showOriginal": "원문"
   },
   "home": {
     "title": "환영합니다",

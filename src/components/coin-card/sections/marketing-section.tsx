@@ -9,7 +9,13 @@ type Marketing = {
   videoUrl?: string | null;
 };
 
-export async function MarketingSection({ marketing }: { marketing: unknown }) {
+export async function MarketingSection({
+  marketing,
+  badge = null,
+}: {
+  marketing: unknown;
+  badge?: React.ReactNode;
+}) {
   const t = await getTranslations("coinCard");
   const d = (marketing ?? {}) as Marketing;
   const roadmap = (d.roadmap ?? []).filter((r) => r.title);
@@ -19,6 +25,7 @@ export async function MarketingSection({ marketing }: { marketing: unknown }) {
     <section id="card-about" className="scroll-mt-24">
       <h2 className="text-[24px] md:text-[28px] font-bold tracking-[-0.025em] mb-4">
         {t("sections.marketing")}
+        {badge}
       </h2>
       {d.pitch && <p className="text-sm leading-relaxed mb-6 max-w-[70ch]">{d.pitch}</p>}
       {roadmap.length > 0 && (

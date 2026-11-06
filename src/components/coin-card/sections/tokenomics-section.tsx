@@ -8,6 +8,9 @@ type Tokenomics = {
   max?: number | null;
   excludedAddresses?: string[] | null;
   emission?: string | null;
+  // Форма пишет `burn`; `burnMechanism` остался в старых записях. Читаем оба —
+  // иначе заполненный проектом текст про сжигание просто не отображается.
+  burn?: string | null;
   burnMechanism?: string | null;
 };
 
@@ -17,9 +20,11 @@ const fmt = (n: number | null | undefined) =>
 export async function TokenomicsSection({
   tokenomics,
   provenance,
+  badge = null,
 }: {
   tokenomics: unknown;
   provenance: unknown;
+  badge?: React.ReactNode;
 }) {
   const t = await getTranslations("coinCard");
   const d = (tokenomics ?? {}) as Tokenomics;
@@ -29,14 +34,16 @@ export async function TokenomicsSection({
     [t("supply.max"), fmt(d.max), "tokenomics.max"],
   ].filter((r) => r[1] !== null) as Array<[string, string, string]>;
 
+  const burn = d.burn ?? d.burnMechanism ?? null;
   const hasMethod =
-    (d.excludedAddresses?.length ?? 0) > 0 || Boolean(d.emission) || Boolean(d.burnMechanism);
+    (d.excludedAddresses?.length ?? 0) > 0 || Boolean(d.emission) || Boolean(burn);
   if (rows.length === 0 && !hasMethod) return null;
 
   return (
     <section id="tokenomics" className="scroll-mt-24">
       <h2 className="text-[24px] md:text-[28px] font-bold tracking-[-0.025em] mb-4">
         {t("sections.tokenomics")}
+        {badge}
       </h2>
       {rows.length > 0 && (
         <dl className="grid sm:grid-cols-3 gap-4 mb-6">
@@ -57,7 +64,7 @@ export async function TokenomicsSection({
             {t("supply.methodology")}
           </h3>
           {d.emission && <p className="text-sm">{t("supply.emission")}: {d.emission}</p>}
-          {d.burnMechanism && <p className="text-sm">{t("supply.burn")}: {d.burnMechanism}</p>}
+          {burn && <p className="text-sm">{t("supply.burn")}: {burn}</p>}
           {(d.excludedAddresses?.length ?? 0) > 0 && (
             <div>
               <p className="text-sm text-muted mb-1">{t("supply.excluded")}</p>

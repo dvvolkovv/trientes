@@ -32,7 +32,9 @@
       "exchange": "Exchange",
       "fintech": "Fintech",
       "company": "Company"
-    }
+    },
+    "machineTranslated": "machine translation",
+    "showOriginal": "original"
   },
   "home": {
     "title": "Welcome",

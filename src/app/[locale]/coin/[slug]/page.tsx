@@ -17,6 +17,8 @@ import { MarketsTable } from "@/components/coin-detail/markets";
 import { CryptoMapSection } from "@/components/coin-detail/crypto-map-section";
 import { SectionNav } from "@/components/coin-detail/section-nav";
 import { getPublicCoinCard } from "@/lib/coin-card-public";
+import { localizeCoinCard } from "@/lib/coin-card-prose";
+import { TranslatedBadge } from "@/components/coin-card/translated-badge";
 import { CoinCardHeader } from "@/components/coin-card/card-header";
 import { CoinCardSections } from "@/components/coin-card/card-sections";
 import { TrustPlaque } from "@/components/coin-card/trust-plaque";
@@ -28,6 +30,24 @@ import type { MarketRow } from "@/lib/coingecko";
 export const revalidate = 3600;
 
 const SITE = process.env.PUBLIC_ORIGIN ?? "https://trientes.org";
+
+/**
+ * Определённый язык источника запоминается, чтобы не определять его снова, и
+ * чтобы проект мог его поправить в секции IDENTITY. Запись без ожидания:
+ * страница не должна её ждать, а промах просто повторится.
+ */
+async function persistCardSourceLocale(
+  cardId: string,
+  stored: string | null,
+  detected: string | null,
+): Promise<void> {
+  if (stored || !detected) return;
+  try {
+    await prisma.coinCard.update({ where: { id: cardId }, data: { sourceLocale: detected } });
+  } catch {
+    // не критично: определится снова на следующем рендере
+  }
+}
 
 export async function generateMetadata({
   params,
@@ -63,10 +83,15 @@ export async function generateMetadata({
 
 export default async function CoinDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string; slug: string }>;
+  searchParams: Promise<{ orig?: string }>;
 }) {
   const { locale, slug } = await params;
+  const { orig } = await searchParams;
+  // ?orig=1 — показать ровно то, что ввёл проект, без машинного перевода.
+  const wantsOriginal = orig === "1";
   setRequestLocale(locale);
   const t = await getTranslations("detail");
 
@@ -82,12 +107,26 @@ export default async function CoinDetailPage({
   if (!coin) {
     const only = await getPublicCoinCard(slug);
     if (only) {
+      // Проза карточки введена проектом на одном языке; посетителю она
+      // показывается на языке интерфейса с пометкой о машинном переводе.
+      const loc = await localizeCoinCard(only, locale, wantsOriginal);
+      void persistCardSourceLocale(only.id, only.sourceLocale, loc.sourceLocale);
+      const originalHref = `/${locale}/coin/${slug}?orig=1#card-description`;
+      const badge = loc.translated ? <TranslatedBadge originalHref={originalHref} /> : null;
       return (
         <main className="max-w-[1600px] mx-auto px-4 md:px-12 xl:px-20 py-8 md:py-12 space-y-10 md:space-y-14">
-          <CoinCardHeader card={only} />
-          <TrustPlaque trust={only.trust} />
-          <CardDescription description={only.description} provenance={only.provenance} />
-          <CoinCardSections card={only} />
+          <CoinCardHeader card={loc.card} />
+          <TrustPlaque trust={loc.card.trust} />
+          <CardDescription
+            description={loc.card.description}
+            provenance={loc.card.provenance}
+            badge={badge}
+          />
+          <CoinCardSections
+            card={loc.card}
+            translated={loc.translated}
+            originalHref={originalHref}
+          />
         </main>
       );
     }
@@ -102,7 +141,14 @@ export default async function CoinDetailPage({
   }
 
   // When a Coin already exists, the card is an additive layer on top of it.
-  const card = await getPublicCoinCard(slug);
+  const rawCard = await getPublicCoinCard(slug);
+  const localizedCard = rawCard
+    ? await localizeCoinCard(rawCard, locale, wantsOriginal)
+    : null;
+  if (rawCard && localizedCard) {
+    void persistCardSourceLocale(rawCard.id, rawCard.sourceLocale, localizedCard.sourceLocale);
+  }
+  const card = localizedCard?.card ?? null;
 
   // Build a MarketRow from coin + latest snapshot.
   const s = coin?.snapshots[0];
@@ -204,7 +250,11 @@ export default async function CoinDetailPage({
       {card && (
         <>
           <TrustPlaque trust={card.trust} />
-          <CoinCardSections card={card} />
+          <CoinCardSections
+            card={card}
+            translated={localizedCard?.translated ?? false}
+            originalHref={`/${locale}/coin/${slug}?orig=1#tokenomics`}
+          />
         </>
       )}
       <section id="exchanges" className="scroll-mt-24">

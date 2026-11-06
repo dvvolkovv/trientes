@@ -32,7 +32,9 @@
       "exchange": "Borsa",
       "fintech": "Fintek",
       "company": "Şirket"
-    }
+    },
+    "machineTranslated": "makine çevirisi",
+    "showOriginal": "özgün metin"
   },
   "home": {
     "title": "Hoş geldiniz",

@@ -32,7 +32,9 @@
       "exchange": "Corretora",
       "fintech": "Fintech",
       "company": "Empresa"
-    }
+    },
+    "machineTranslated": "tradução automática",
+    "showOriginal": "original"
   },
   "home": {
     "title": "Bem-vindo",

@@ -14,6 +14,7 @@ import { runAlertsEval } from "../src/lib/alerts-eval";
 import { syncOsmCryptoPois } from "../src/lib/osm-poi-store";
 import { expireStaleRevisions } from "../src/lib/coin-card-expiry";
 import { expireStaleDeletionRequests } from "../src/lib/company-deletion-expiry";
+import { warmProseTranslations } from "../src/lib/prose-warmup";
 import { startBinance, stopBinance } from "./binance";
 
 async function runPriceSync() {
@@ -236,6 +237,18 @@ async function runDeletionRequestExpiry() {
   }
 }
 
+async function runProseWarmup() {
+  const t0 = Date.now();
+  try {
+    const count = await warmProseTranslations(prisma);
+    if (count > 0) {
+      console.log(`[worker] prose warmup ok: ${count} translations in ${Date.now() - t0}ms`);
+    }
+  } catch (err) {
+    console.error("[worker] prose warmup failed:", err);
+  }
+}
+
 async function runCleanup() {
   const t0 = Date.now();
   try {
@@ -311,6 +324,9 @@ async function main() {
   // race with that job's read of latest snapshots.
   cron.schedule("50 * * * *", () => void runRevisionExpiry());
   cron.schedule("55 * * * *", () => void runDeletionRequestExpiry());
+  // Прогрев переводов: дважды в сутки, чтобы правка карточки доехала до всех
+  // локалей раньше, чем в неё зайдёт первый посетитель или робот.
+  cron.schedule("25 3,15 * * *", () => void runProseWarmup());
   cron.schedule("0 4 * * *", () => void runCleanup());
 
   // Live price feed via Binance WebSocket — top 20 coins.

@@ -8,22 +8,34 @@ import { TeamSection } from "./sections/team-section";
 import { MarketingSection } from "./sections/marketing-section";
 import { CardLinksSection } from "./sections/links-section";
 import { CardHistorySection } from "./history-section";
+import { TranslatedBadge } from "./translated-badge";
 
 /**
  * The project-supplied half of a coin page. Mounted both on top of an
  * existing Coin page and standalone, for cards that have no external feed
  * behind them at all.
  */
-export function CoinCardSections({ card }: { card: PublicCoinCard }) {
+export function CoinCardSections({
+  card,
+  translated = false,
+  originalHref,
+}: {
+  card: PublicCoinCard;
+  translated?: boolean;
+  originalHref?: string;
+}) {
+  const badge = translated && originalHref
+    ? <TranslatedBadge originalHref={originalHref} />
+    : null;
   return (
     <>
       <ContractsSection contracts={card.contracts} provenance={card.provenance} />
-      <TokenomicsSection tokenomics={card.tokenomics} provenance={card.provenance} />
+      <TokenomicsSection tokenomics={card.tokenomics} provenance={card.provenance} badge={badge} />
       <MarketsSection markets={card.markets} provenance={card.provenance} />
       <AcceptanceSection cardId={card.id} slug={card.slug} symbol={card.symbol} />
       <SecuritySection security={card.security} />
       <TeamSection teamInfo={card.teamInfo} />
-      <MarketingSection marketing={card.marketing} />
+      <MarketingSection marketing={card.marketing} badge={badge} />
       <CardLinksSection links={card.links} />
       <CardHistorySection cardId={card.id} />
     </>

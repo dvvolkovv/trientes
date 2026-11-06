@@ -4,6 +4,8 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { sanitizeFintechSocials } from "@/lib/fintech";
 import { safeHttpUrl } from "@/lib/crypto-map";
+import { localizedProse } from "@/lib/localized-prose";
+import { TranslatedBadge } from "@/components/coin-card/translated-badge";
 
 export const dynamic = "force-dynamic";
 
@@ -33,15 +35,28 @@ export async function generateMetadata({
 
 export default async function FintechDetail({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string; slug: string }>;
+  searchParams: Promise<{ orig?: string }>;
 }) {
   const { locale, slug } = await params;
+  const { orig } = await searchParams;
   setRequestLocale(locale);
   const t = await getTranslations("fintech");
 
   const row = await prisma.fintechCompany.findUnique({ where: { slug } });
   if (!row || row.status !== "APPROVED") notFound();
+
+  // Описание и сводку комиссий пишет сам сервис — показываем на языке интерфейса.
+  const about = await localizedProse({
+    ns: "fintech",
+    id: row.id,
+    locale,
+    sourceLocale: null,
+    fields: { description: row.description, feesSummary: row.feesSummary },
+    original: orig === "1",
+  });
 
   const socials = sanitizeFintechSocials(row.socials);
   const website = safeHttpUrl(row.website);
@@ -82,9 +97,14 @@ export default async function FintechDetail({
           </div>
         </header>
 
-        {row.description ? (
+        {about.fields.description ? (
           <section className="mb-10">
-            <p className="text-[16px] leading-[1.6] text-foreground/90 whitespace-pre-line">{row.description}</p>
+            <p className="text-[16px] leading-[1.6] text-foreground/90 whitespace-pre-line">{about.fields.description}</p>
+            {about.translated ? (
+              <p className="mt-1">
+                <TranslatedBadge originalHref={`/${locale}/fintech/${slug}?orig=1`} />
+              </p>
+            ) : null}
           </section>
         ) : null}
 
@@ -137,7 +157,7 @@ export default async function FintechDetail({
 
           {row.feesSummary ? (
             <Section title={t("sections.fees")}>
-              <p className="text-sm whitespace-pre-line">{row.feesSummary}</p>
+              <p className="text-sm whitespace-pre-line">{about.fields.feesSummary}</p>
             </Section>
           ) : null}
 

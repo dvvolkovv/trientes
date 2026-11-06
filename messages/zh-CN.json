@@ -32,7 +32,9 @@
       "exchange": "交易所",
       "fintech": "金融科技",
       "company": "公司"
-    }
+    },
+    "machineTranslated": "机器翻译",
+    "showOriginal": "原文"
   },
   "home": {
     "title": "欢迎",

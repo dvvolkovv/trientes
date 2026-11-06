@@ -32,7 +32,9 @@
       "exchange": "Биржа",
       "fintech": "Финтех",
       "company": "Компания"
-    }
+    },
+    "machineTranslated": "машинный перевод",
+    "showOriginal": "оригинал"
   },
   "home": {
     "title": "Добро пожаловать",
