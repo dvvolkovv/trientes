@@ -5,10 +5,11 @@ import { PointRow, type PointRowData } from "@/components/admin/point-row";
 import { CompanyRow, type CompanyRowData } from "@/components/admin/company-row";
 import { KybRow } from "@/components/admin/kyb-row";
 import { LIVE_POINT, NOT_DELETED } from "@/lib/soft-delete";
+import { RestoreRow } from "@/components/admin/restore-row";
 
 export const dynamic = "force-dynamic";
 
-type Scope = "companies" | "points" | "kyb";
+type Scope = "companies" | "points" | "kyb" | "deleted";
 
 export default async function AdminBusinessPage({
   params,
@@ -22,14 +23,18 @@ export default async function AdminBusinessPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("admin");
-  const scope: Scope = scopeParam === "points" ? "points" : scopeParam === "kyb" ? "kyb" : "companies";
+  const scope: Scope =
+    scopeParam === "points" ? "points"
+    : scopeParam === "kyb" ? "kyb"
+    : scopeParam === "deleted" ? "deleted"
+    : "companies";
   const status =
     tab === "approved" ? "APPROVED" : tab === "rejected" ? "REJECTED" : "PENDING";
 
   const tabsRow = (
     <div className="flex flex-wrap items-center gap-2 mb-6">
       <div className="flex gap-2">
-        {(["companies", "points", "kyb"] as const).map((s) => {
+        {(["companies", "points", "kyb", "deleted"] as const).map((s) => {
           const active = scope === s;
           const href = s === "companies" ? "?" : `?scope=${s}`;
           return (
@@ -65,6 +70,53 @@ export default async function AdminBusinessPage({
       </div>
     </div>
   );
+
+  if (scope === "deleted") {
+    // Мягко удалённые записи: данные в базе, но нигде не показываются.
+    const [companies, points] = await Promise.all([
+      prisma.company.findMany({
+        where: { deletedAt: { not: null } },
+        orderBy: { deletedAt: "desc" },
+        take: 100,
+        select: { id: true, displayName: true, legalName: true, deletedAt: true },
+      }),
+      prisma.companyPoint.findMany({
+        where: { deletedAt: { not: null } },
+        orderBy: { deletedAt: "desc" },
+        take: 100,
+        select: { id: true, name: true, address: true, deletedAt: true, company: { select: { displayName: true } } },
+      }),
+    ]);
+    const restore = t("business.restore");
+    return (
+      <main className="max-w-[1100px] mx-auto px-4 md:px-12 py-12">
+        <h1 className="text-[32px] font-bold tracking-[-0.03em] mb-1">{t("business.title")}</h1>
+        <p className="text-muted mb-6">{t("business.deletedSubtitle")}</p>
+        {tabsRow}
+        {companies.length === 0 && points.length === 0 ? (
+          <p className="text-muted">{t("business.deletedEmpty")}</p>
+        ) : (
+          <div className="space-y-3">
+            {companies.map((c) => (
+              <RestoreRow
+                key={c.id} kind="company" id={c.id} title={c.displayName}
+                subtitle={c.legalName} label={restore}
+                deletedAt={c.deletedAt!.toISOString().slice(0, 16).replace("T", " ")}
+              />
+            ))}
+            {points.map((p) => (
+              <RestoreRow
+                key={p.id} kind="point" id={p.id} title={p.name}
+                subtitle={[p.company.displayName, p.address].filter(Boolean).join(" · ")}
+                label={restore}
+                deletedAt={p.deletedAt!.toISOString().slice(0, 16).replace("T", " ")}
+              />
+            ))}
+          </div>
+        )}
+      </main>
+    );
+  }
 
   if (scope === "kyb") {
     const kybStatus =

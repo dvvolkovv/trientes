@@ -398,6 +398,8 @@ enum AdminAction {
   TRANSFER_COIN_CARD
   DELETE_COMPANY
   DELETE_POINT
+  RESTORE_COMPANY
+  RESTORE_POINT
 }
 
 model AdminAuditLog {

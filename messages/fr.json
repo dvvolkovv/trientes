@@ -273,12 +273,16 @@
       "scope": {
         "companies": "Entreprises",
         "points": "Points",
-        "kyb": "KYB"
+        "kyb": "KYB",
+        "deleted": "Supprimés"
       },
       "kyb": {
         "title": "File KYB",
         "subtitle": "Approuve ou rejette les demandes de vérification."
-      }
+      },
+      "deletedSubtitle": "Restaurer les entreprises et points supprimés en douceur.",
+      "deletedEmpty": "Aucun enregistrement supprimé.",
+      "restore": "Restaurer"
     },
     "exchanges": {
       "title": "Plateformes",
@@ -819,7 +823,14 @@
         "undefined": "Une erreur est survenue.",
         "generic": "Une erreur est survenue."
       }
-    }
+    },
+    "edit": "Modifier",
+    "editPoint": "Modifier le point",
+    "savePoint": "Enregistrer le point",
+    "pointSaved": "Point enregistré.",
+    "pointBackToModeration": "Enregistré et renvoyé en validation : le lieu ou les cryptos acceptées ont changé.",
+    "editPointHint": "Vous modifiez un point existant.",
+    "cancelEdit": "annuler la modification"
   },
   "cabinet": {
     "kicker": "Section · Espace personnel",

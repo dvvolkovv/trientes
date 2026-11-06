@@ -273,12 +273,16 @@
       "scope": {
         "companies": "Firmen",
         "points": "Standorte",
-        "kyb": "KYB"
+        "kyb": "KYB",
+        "deleted": "Gelöscht"
       },
       "kyb": {
         "title": "KYB-Warteschlange",
         "subtitle": "Verifizierungsanträge prüfen und entscheiden."
-      }
+      },
+      "deletedSubtitle": "Weich gelöschte Unternehmen und Standorte wiederherstellen.",
+      "deletedEmpty": "Keine gelöschten Einträge.",
+      "restore": "Wiederherstellen"
     },
     "exchanges": {
       "title": "Börsen",
@@ -819,7 +823,14 @@
         "undefined": "Etwas ist schiefgelaufen.",
         "generic": "Etwas ist schiefgelaufen."
       }
-    }
+    },
+    "edit": "Bearbeiten",
+    "editPoint": "Standort bearbeiten",
+    "savePoint": "Standort speichern",
+    "pointSaved": "Standort gespeichert.",
+    "pointBackToModeration": "Gespeichert und erneut zur Prüfung geschickt: Ort oder akzeptierte Coins haben sich geändert.",
+    "editPointHint": "Sie bearbeiten einen bestehenden Standort.",
+    "cancelEdit": "Bearbeitung abbrechen"
   },
   "cabinet": {
     "kicker": "Bereich · Kabinett",

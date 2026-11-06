@@ -323,3 +323,41 @@ export async function withdrawDeletion(input: { requestId: string }): Promise<Re
   revalidatePath("/", "layout");
   return { ok: true, applied: false };
 }
+
+/**
+ * Восстановление удалённого — только админ сайта. Данные при мягком удалении
+ * остаются в базе, и до этого слайса вернуть их можно было лишь руками через
+ * SQL. Запись в журнал обязательна: восстановление так же значимо, как
+ * удаление.
+ */
+export async function adminRestoreCompany(input: { companyId: string }): Promise<Result> {
+  const admin = await checkAdmin();
+  if (!admin.ok) return { ok: false, reason: admin.reason };
+  const r = await prisma.company.updateMany({
+    where: { id: input.companyId, deletedAt: { not: null } },
+    data: { deletedAt: null, deletedById: null },
+  });
+  if (r.count === 0) return { ok: false, reason: "not_found" };
+  await logAdminAction({
+    actorId: admin.userId, action: "RESTORE_COMPANY", targetType: "Company",
+    targetId: input.companyId, details: {},
+  });
+  revalidatePath("/", "layout");
+  return { ok: true, applied: true };
+}
+
+export async function adminRestorePoint(input: { pointId: string }): Promise<Result> {
+  const admin = await checkAdmin();
+  if (!admin.ok) return { ok: false, reason: admin.reason };
+  const r = await prisma.companyPoint.updateMany({
+    where: { id: input.pointId, deletedAt: { not: null } },
+    data: { deletedAt: null, deletedById: null },
+  });
+  if (r.count === 0) return { ok: false, reason: "not_found" };
+  await logAdminAction({
+    actorId: admin.userId, action: "RESTORE_POINT", targetType: "CompanyPoint",
+    targetId: input.pointId, details: {},
+  });
+  revalidatePath("/", "layout");
+  return { ok: true, applied: true };
+}

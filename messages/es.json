@@ -273,12 +273,16 @@
       "scope": {
         "companies": "Empresas",
         "points": "Puntos",
-        "kyb": "KYB"
+        "kyb": "KYB",
+        "deleted": "Eliminados"
       },
       "kyb": {
         "title": "Cola KYB",
         "subtitle": "Aprueba o rechaza las verificaciones de empresas."
-      }
+      },
+      "deletedSubtitle": "Restaura empresas y puntos eliminados de forma suave.",
+      "deletedEmpty": "No hay registros eliminados.",
+      "restore": "Restaurar"
     },
     "exchanges": {
       "title": "Exchanges",
@@ -819,7 +823,14 @@
         "undefined": "Algo salió mal.",
         "generic": "Algo salió mal."
       }
-    }
+    },
+    "edit": "Editar",
+    "editPoint": "Editar el punto",
+    "savePoint": "Guardar el punto",
+    "pointSaved": "Punto guardado.",
+    "pointBackToModeration": "Guardado y enviado a revisión de nuevo: cambió el lugar o las monedas aceptadas.",
+    "editPointHint": "Estás editando un punto existente.",
+    "cancelEdit": "cancelar la edición"
   },
   "cabinet": {
     "kicker": "Sección · Panel",

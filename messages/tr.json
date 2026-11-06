@@ -273,12 +273,16 @@
       "scope": {
         "companies": "Şirketler",
         "points": "Noktalar",
-        "kyb": "KYB"
+        "kyb": "KYB",
+        "deleted": "Silinenler"
       },
       "kyb": {
         "title": "KYB kuyruğu",
         "subtitle": "İşletme doğrulama başvurularını onayla veya reddet."
-      }
+      },
+      "deletedSubtitle": "Yumuşak silinen şirketleri ve noktaları geri getirin.",
+      "deletedEmpty": "Silinmiş kayıt yok.",
+      "restore": "Geri getir"
     },
     "exchanges": {
       "title": "Borsalar",
@@ -819,7 +823,14 @@
         "undefined": "Bir şeyler ters gitti.",
         "generic": "Bir şeyler ters gitti."
       }
-    }
+    },
+    "edit": "Düzenle",
+    "editPoint": "Noktayı düzenle",
+    "savePoint": "Noktayı kaydet",
+    "pointSaved": "Nokta kaydedildi.",
+    "pointBackToModeration": "Kaydedildi ve yeniden incelemeye gönderildi: yer ya da kabul edilen coinler değişti.",
+    "editPointHint": "Var olan bir noktayı düzenliyorsunuz.",
+    "cancelEdit": "düzenlemeyi iptal et"
   },
   "cabinet": {
     "kicker": "Bölüm · Kabin",

@@ -7,10 +7,13 @@ export async function PointsList({
   points,
   canDelete = false,
   canDeleteOutright = false,
+  editHrefBase,
 }: {
   points: PointListItem[];
   canDelete?: boolean;
   canDeleteOutright?: boolean;
+  /** Задан — у каждой точки появляется ссылка на правку той же формой. */
+  editHrefBase?: string;
 }) {
   const t = await getTranslations("business");
   if (points.length === 0) return <p className="text-muted text-[13px]">{t("noPoints")}</p>;
@@ -28,6 +31,14 @@ export async function PointsList({
             <span className={`num text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-sm font-medium ${badge(p.status)}`}>
               {t(`status.${p.status}`)}
             </span>
+            {editHrefBase && (
+              <a
+                href={`${editHrefBase}?edit=${p.id}#add-point`}
+                className="text-[11px] px-2 py-1 rounded-md border border-hairline text-muted hover:border-accent hover:text-accent"
+              >
+                {t("edit")}
+              </a>
+            )}
             {canDelete && <DeletePointButton pointId={p.id} canDeleteOutright={canDeleteOutright} />}
           </div>
         </div>

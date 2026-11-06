@@ -273,12 +273,16 @@
       "scope": {
         "companies": "公司",
         "points": "网点",
-        "kyb": "KYB"
+        "kyb": "KYB",
+        "deleted": "已删除"
       },
       "kyb": {
         "title": "KYB 队列",
         "subtitle": "审核企业认证申请。"
-      }
+      },
+      "deletedSubtitle": "恢复被软删除的公司与网点。",
+      "deletedEmpty": "没有已删除的记录。",
+      "restore": "恢复"
     },
     "exchanges": {
       "title": "交易所",
@@ -819,7 +823,14 @@
         "undefined": "出了点问题。",
         "generic": "出了点问题。"
       }
-    }
+    },
+    "edit": "编辑",
+    "editPoint": "编辑网点",
+    "savePoint": "保存网点",
+    "pointSaved": "网点已保存。",
+    "pointBackToModeration": "已保存并重新提交审核：地点或受理币种发生了变化。",
+    "editPointHint": "您正在编辑一个已有网点。",
+    "cancelEdit": "取消编辑"
   },
   "cabinet": {
     "kicker": "板块 · 个人中心",

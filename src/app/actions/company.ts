@@ -10,8 +10,9 @@ import {
   type CompanyPointInput,
 } from "@/lib/company";
 import { checkCompanyLimits } from "@/lib/company-limits";
+import { pointEditNeedsModeration } from "@/lib/point-edit";
 import { type PointType, type Prisma } from "@prisma/client";
-import { NOT_DELETED } from "@/lib/soft-delete";
+import { LIVE_POINT, NOT_DELETED } from "@/lib/soft-delete";
 
 const MAX_PENDING_POINTS = 20;
 
@@ -139,4 +140,84 @@ export async function submitCompanyPoint(
   });
   revalidatePath("/", "layout");
   return { ok: true as const };
+}
+
+/**
+ * Правка существующей точки. Контактные поля меняются молча; смена типа,
+ * названия, адреса, координат или набора принимаемых монет возвращает точку в
+ * очередь модерации — иначе одобренную точку можно было бы переписать во
+ * что угодно уже после проверки.
+ */
+export async function updateCompanyPoint(
+  pointId: string,
+  input: CompanyPointInput & { socials?: { network: string; url: string }[] },
+) {
+  const userId = await requireUser();
+  if (!userId) return { ok: false as const, reason: "unauth" as const };
+
+  const point = await prisma.companyPoint.findFirst({
+    where: { id: pointId, ...LIVE_POINT },
+  });
+  if (!point) return { ok: false as const, reason: "not_found" as const };
+
+  const role = await memberRole(point.companyId, userId);
+  if (role !== "OWNER" && role !== "EDITOR") return { ok: false as const, reason: "not_found" as const };
+
+  const v = validateCompanyPoint(input);
+  if (!v.ok) return { ok: false as const, reason: v.reason };
+
+  if (v.data.acceptedCardIds.length > 0) {
+    const approved = await prisma.coinCard.count({
+      where: { id: { in: v.data.acceptedCardIds }, status: "APPROVED" },
+    });
+    if (approved !== v.data.acceptedCardIds.length) {
+      return { ok: false as const, reason: "coin_not_selectable" as const };
+    }
+  }
+
+  const needsModeration = pointEditNeedsModeration(
+    {
+      type: point.type, name: point.name, countryCode: point.countryCode, city: point.city,
+      street: point.street, houseNumber: point.houseNumber, postalCode: point.postalCode,
+      lat: point.lat, lon: point.lon,
+      acceptedCoinIds: point.acceptedCoinIds, acceptedCardIds: point.acceptedCardIds,
+    },
+    {
+      type: v.data.type, name: v.data.name, countryCode: v.data.countryCode, city: v.data.city,
+      street: v.data.street, houseNumber: v.data.houseNumber, postalCode: v.data.postalCode,
+      lat: v.data.lat, lon: v.data.lon,
+      acceptedCoinIds: v.data.acceptedCoinIds, acceptedCardIds: v.data.acceptedCardIds,
+    },
+  );
+
+  await prisma.companyPoint.update({
+    where: { id: point.id },
+    data: {
+      type: v.data.type as PointType,
+      name: v.data.name,
+      description: v.data.description,
+      lat: v.data.lat,
+      lon: v.data.lon,
+      countryCode: v.data.countryCode,
+      city: v.data.city,
+      street: v.data.street,
+      houseNumber: v.data.houseNumber,
+      postalCode: v.data.postalCode,
+      address: v.data.address,
+      acceptedCoinIds: v.data.acceptedCoinIds,
+      acceptedCardIds: v.data.acceptedCardIds,
+      logoUrl: v.data.logoUrl,
+      photos: v.data.photos.length ? (v.data.photos as unknown as Prisma.InputJsonValue) : undefined,
+      openingHours: v.data.openingHours,
+      phone: v.data.phone,
+      website: v.data.website,
+      socials: Array.isArray(input.socials) ? input.socials : undefined,
+      // Возврат на модерацию стирает прежнее решение: оно относилось к другой точке.
+      ...(needsModeration
+        ? { status: "PENDING" as const, reviewedById: null, reviewedAt: null, rejectReason: null }
+        : {}),
+    },
+  });
+  revalidatePath("/", "layout");
+  return { ok: true as const, moderated: needsModeration };
 }

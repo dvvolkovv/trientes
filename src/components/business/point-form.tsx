@@ -5,7 +5,7 @@ import maplibregl, { Marker } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { submitCompanyPoint } from "@/app/actions/company";
+import { submitCompanyPoint, updateCompanyPoint } from "@/app/actions/company";
 import { COUNTRIES, countryName } from "@/lib/countries";
 
 const PRAGUE: [number, number] = [14.4212535, 50.0874654];
@@ -15,6 +15,18 @@ type PointType = (typeof TYPES)[number];
 export type PointFormCoin = { id: string; symbol: string; logoUrl: string | null };
 /** Одобренный собственный листинг — у него нет id CoinGecko, только CoinCard.id. */
 export type PointFormCard = { id: string; symbol: string; name: string; logoUrl: string | null };
+
+/** Существующая точка для правки. Та же форма, другой серверный вызов. */
+export type PointFormInitial = {
+  id: string;
+  type: PointType;
+  name: string;
+  countryCode: string; city: string; street: string; houseNumber: string; postalCode: string;
+  lat: number | null; lon: number | null;
+  acceptedCoinIds: string[];
+  acceptedCardIds: string[];
+  photos: { url: string; label: string | null }[];
+};
 
 type Addr = { countryCode: string; city: string; street: string; houseNumber: string; postalCode: string };
 const EMPTY_ADDR: Addr = { countryCode: "", city: "", street: "", houseNumber: "", postalCode: "" };
@@ -40,6 +52,7 @@ export function PointForm({
   cards,
   initialCardIds = [],
   companyAddress,
+  editing,
 }: {
   companyId: string;
   companyStatus: "PENDING" | "APPROVED" | "REJECTED";
@@ -47,19 +60,31 @@ export function PointForm({
   cards: PointFormCard[];
   initialCardIds?: string[];
   companyAddress: Addr;
+  editing?: PointFormInitial;
 }) {
   const t = useTranslations("business");
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markerRef = useRef<Marker | null>(null);
-  const [pos, setPos] = useState<[number, number] | null>(null);
-  const [type, setType] = useState<PointType>("SHOP");
-  const [name, setName] = useState("");
-  const [addr, setAddr] = useState<Addr>(EMPTY_ADDR);
+  const [pos, setPos] = useState<[number, number] | null>(
+    editing?.lat != null && editing?.lon != null ? [editing.lon, editing.lat] : null,
+  );
+  const [type, setType] = useState<PointType>(editing?.type ?? "SHOP");
+  const [name, setName] = useState(editing?.name ?? "");
+  const [addr, setAddr] = useState<Addr>(
+    editing
+      ? {
+          countryCode: editing.countryCode, city: editing.city, street: editing.street,
+          houseNumber: editing.houseNumber, postalCode: editing.postalCode,
+        }
+      : EMPTY_ADDR,
+  );
   const [useCompanyAddr, setUseCompanyAddr] = useState(false);
-  const [accepted, setAccepted] = useState<string[]>([]);
-  const [acceptedCards, setAcceptedCards] = useState<string[]>(initialCardIds);
-  const [photos, setPhotos] = useState<{ url: string; label: string | null }[]>([]);
+  const [accepted, setAccepted] = useState<string[]>(editing?.acceptedCoinIds ?? []);
+  const [acceptedCards, setAcceptedCards] = useState<string[]>(
+    editing ? editing.acceptedCardIds : initialCardIds,
+  );
+  const [photos, setPhotos] = useState<{ url: string; label: string | null }[]>(editing?.photos ?? []);
   const [uploading, setUploading] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [geoStatus, setGeoStatus] = useState<"idle" | "loading" | "ok" | "fail">("idle");
@@ -89,6 +114,10 @@ export function PointForm({
     });
     mapRef.current = map;
     map.on("click", (e) => placeMarker(e.lngLat.lng, e.lngLat.lat));
+    // При правке сразу показываем, где точка стоит сейчас.
+    if (editing?.lat != null && editing?.lon != null) {
+      map.once("load", () => placeMarker(editing.lon!, editing.lat!));
+    }
     return () => { map.remove(); mapRef.current = null; markerRef.current = null; };
   }, []);
 
@@ -99,7 +128,11 @@ export function PointForm({
   }
 
   // Auto-geocode the structured address (debounced).
+  const addrTouchedRef = useRef(!editing);
   useEffect(() => {
+    // При открытии формы правки адрес уже заполнен — геокодер не должен
+    // немедленно сдвинуть точку, которую владелец поставил руками.
+    if (!addrTouchedRef.current) return;
     if (!addrFilledEnough(addr)) { setGeoStatus("idle"); return; }
     const q = addrToQuery(addr);
     if (!q) return;
@@ -126,6 +159,7 @@ export function PointForm({
 
   // If user edits address fields after toggling 'use company address', untick.
   function setAddrField<K extends keyof Addr>(k: K, v: string) {
+    addrTouchedRef.current = true;
     const next = { ...addr, [k]: v };
     setAddr(next);
     if (useCompanyAddr && !addrEqual(next, companyAddress)) setUseCompanyAddr(false);
@@ -156,6 +190,21 @@ export function PointForm({
   function save() {
     setMsg(null);
     start(async () => {
+      const payload = {
+        type, name, ...addr, lat: pos?.[1] ?? null, lon: pos?.[0] ?? null,
+        acceptedCoinIds: accepted, acceptedCardIds: acceptedCards,
+        photos,
+      };
+      if (editing) {
+        const res = await updateCompanyPoint(editing.id, payload);
+        if (res.ok) {
+          setMsg(res.moderated ? t("pointBackToModeration") : t("pointSaved"));
+          router.refresh();
+        } else {
+          setMsg(t(`err.${res.reason}`) ?? t("err.generic"));
+        }
+        return;
+      }
       const res = await submitCompanyPoint(companyId, {
         type, name, ...addr, lat: pos?.[1] ?? null, lon: pos?.[0] ?? null,
         acceptedCoinIds: accepted, acceptedCardIds: acceptedCards,
@@ -293,7 +342,7 @@ export function PointForm({
 
       <button type="button" disabled={pending || !name.trim() || (type !== "ONLINE" && !pos)} onClick={save}
         className="text-[13px] px-4 py-2 rounded-md font-medium bg-accent text-accent-foreground disabled:opacity-50">
-        {t("submitPoint")}
+        {editing ? t("savePoint") : t("submitPoint")}
       </button>
       {msg && <p className="text-[13px] text-accent">{msg}</p>}
     </div>

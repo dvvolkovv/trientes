@@ -273,12 +273,16 @@
       "scope": {
         "companies": "Companies",
         "points": "Points",
-        "kyb": "KYB"
+        "kyb": "KYB",
+        "deleted": "Deleted"
       },
       "kyb": {
         "title": "KYB queue",
         "subtitle": "Approve or reject company verification submissions."
-      }
+      },
+      "deletedSubtitle": "Restore soft-deleted companies and locations.",
+      "deletedEmpty": "No deleted records.",
+      "restore": "Restore"
     },
     "exchanges": {
       "title": "Exchanges",
@@ -819,7 +823,14 @@
         "undefined": "Something went wrong.",
         "generic": "Something went wrong."
       }
-    }
+    },
+    "edit": "Edit",
+    "editPoint": "Edit location",
+    "savePoint": "Save location",
+    "pointSaved": "Location saved.",
+    "pointBackToModeration": "Saved and sent back for review: the place or the accepted coins changed.",
+    "editPointHint": "You are editing an existing location.",
+    "cancelEdit": "cancel editing"
   },
   "cabinet": {
     "kicker": "Section · Cabinet",

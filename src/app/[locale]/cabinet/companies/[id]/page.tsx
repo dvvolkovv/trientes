@@ -5,7 +5,7 @@ import { getViewerCompanyById, canEditCompany, canManageMembers } from "@/lib/bu
 import { readTop100 } from "@/lib/snapshot";
 import { listSelfListedCards } from "@/lib/coin-card-directory";
 import { CompanyProfileForm } from "@/components/business/company-profile-form";
-import { PointForm } from "@/components/business/point-form";
+import { PointForm, type PointFormInitial } from "@/components/business/point-form";
 import { PointsList, type PointListItem } from "@/components/business/points-list";
 import { MembersSection } from "@/components/business/members-section";
 import { DeletionRequestsSection } from "@/components/business/deletion-requests-section";
@@ -20,10 +20,10 @@ export default async function CompanyManagementPage({
   searchParams,
 }: {
   params: Promise<{ locale: string; id: string }>;
-  searchParams: Promise<{ card?: string }>;
+  searchParams: Promise<{ card?: string; edit?: string }>;
 }) {
   const { locale, id } = await params;
-  const { card: cardParam } = await searchParams;
+  const { card: cardParam, edit: editParam } = await searchParams;
   setRequestLocale(locale);
   const t = await getTranslations("business");
   const { userId, company, role } = await getViewerCompanyById(id);
@@ -56,6 +56,29 @@ export default async function CompanyManagementPage({
   // Префилл приходит по ссылке с карточки монеты. Непонятный id молча
   // игнорируется — иначе кнопка «я принимаю» могла бы проставить что угодно.
   const prefillCards = cardParam && cardOpts.some((c) => c.id === cardParam) ? [cardParam] : [];
+
+  // Правка существующей точки идёт той же формой: ?edit=<id> наполняет её
+  // текущими значениями. Чужой или удалённый id молча игнорируется.
+  const editingRow = editParam ? points.find((p) => p.id === editParam) : undefined;
+  const editing: PointFormInitial | undefined = editingRow
+    ? {
+        id: editingRow.id,
+        type: editingRow.type,
+        name: editingRow.name,
+        countryCode: editingRow.countryCode ?? "",
+        city: editingRow.city ?? "",
+        street: editingRow.street ?? "",
+        houseNumber: editingRow.houseNumber ?? "",
+        postalCode: editingRow.postalCode ?? "",
+        lat: editingRow.lat,
+        lon: editingRow.lon,
+        acceptedCoinIds: editingRow.acceptedCoinIds,
+        acceptedCardIds: editingRow.acceptedCardIds,
+        photos: Array.isArray(editingRow.photos)
+          ? (editingRow.photos as { url: string; label: string | null }[])
+          : [],
+      }
+    : undefined;
 
   return (
     <main className="max-w-[860px] mx-auto px-4 md:px-12 py-12 space-y-12">
@@ -102,17 +125,33 @@ export default async function CompanyManagementPage({
       </section>
       <section id="your-points" className="scroll-mt-24">
         <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-4">{t("yourPoints")}</h2>
-        <PointsList points={items} canDelete={editable} canDeleteOutright={role === "OWNER"} />
+        <PointsList
+          points={items}
+          canDelete={editable}
+          canDeleteOutright={role === "OWNER"}
+          editHrefBase={editable ? `/${locale}/cabinet/companies/${company.id}` : undefined}
+        />
       </section>
       {editable ? (
         <section id="add-point" className="scroll-mt-24">
-          <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-4">{t("addPoint")}</h2>
+          <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-4">
+            {editing ? t("editPoint") : t("addPoint")}
+          </h2>
+          {editing ? (
+            <p className="text-[12px] text-muted mb-3">
+              {t("editPointHint")}{" "}
+              <a href={`/${locale}/cabinet/companies/${company.id}#add-point`} className="underline">
+                {t("cancelEdit")}
+              </a>
+            </p>
+          ) : null}
           <PointForm
             companyId={company.id}
             companyStatus={company.status}
             coins={coinOpts}
             cards={cardOpts}
             initialCardIds={prefillCards}
+            editing={editing}
             companyAddress={{
               countryCode: company.countryCode ?? "",
               city: company.city ?? "",

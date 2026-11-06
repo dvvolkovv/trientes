@@ -273,12 +273,16 @@
       "scope": {
         "companies": "회사",
         "points": "지점",
-        "kyb": "KYB"
+        "kyb": "KYB",
+        "deleted": "삭제됨"
       },
       "kyb": {
         "title": "KYB 대기열",
         "subtitle": "기업 인증 신청을 승인 또는 거부합니다."
-      }
+      },
+      "deletedSubtitle": "소프트 삭제된 회사와 지점을 복원합니다.",
+      "deletedEmpty": "삭제된 레코드가 없습니다.",
+      "restore": "복원"
     },
     "exchanges": {
       "title": "거래소",
@@ -819,7 +823,14 @@
         "undefined": "문제가 발생했습니다.",
         "generic": "문제가 발생했습니다."
       }
-    }
+    },
+    "edit": "수정",
+    "editPoint": "지점 수정",
+    "savePoint": "지점 저장",
+    "pointSaved": "지점을 저장했습니다.",
+    "pointBackToModeration": "저장하고 재심사로 보냈습니다: 위치 또는 취급 코인이 변경되었습니다.",
+    "editPointHint": "기존 지점을 수정하고 있습니다.",
+    "cancelEdit": "수정 취소"
   },
   "cabinet": {
     "kicker": "섹션 · 캐비닛",

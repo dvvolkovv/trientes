@@ -273,12 +273,16 @@
       "scope": {
         "companies": "会社",
         "points": "拠点",
-        "kyb": "KYB"
+        "kyb": "KYB",
+        "deleted": "削除済み"
       },
       "kyb": {
         "title": "KYBキュー",
         "subtitle": "事業者認証の申請を承認・却下します。"
-      }
+      },
+      "deletedSubtitle": "論理削除された会社と拠点を復元します。",
+      "deletedEmpty": "削除されたレコードはありません。",
+      "restore": "復元"
     },
     "exchanges": {
       "title": "取引所",
@@ -819,7 +823,14 @@
         "undefined": "問題が発生しました。",
         "generic": "問題が発生しました。"
       }
-    }
+    },
+    "edit": "編集",
+    "editPoint": "拠点を編集",
+    "savePoint": "拠点を保存",
+    "pointSaved": "拠点を保存しました。",
+    "pointBackToModeration": "保存し、再審査に回しました：場所または取扱銘柄が変わりました。",
+    "editPointHint": "既存の拠点を編集しています。",
+    "cancelEdit": "編集をやめる"
   },
   "cabinet": {
     "kicker": "セクション · キャビネット",
