@@ -1127,7 +1127,11 @@
         "PENDING": "Wartet auf Prüfung",
         "APPROVED": "Freigegeben — öffentlich",
         "REJECTED": "Abgelehnt"
-      }
+      },
+      "mine": "Meine Fintech-Dienste",
+      "edit": "Bearbeiten",
+      "addAnother": "Weiteren Dienst hinzufügen",
+      "addAnotherHint": "Unten das Formular für einen neuen Dienst. Zum Ändern eines bestehenden auf „Bearbeiten“ klicken."
     },
     "admin": {
       "title": "Fintech-Moderation",
@@ -1173,11 +1177,13 @@
         "invalid": "Einige Felder sehen fehlerhaft aus.",
         "slug_taken": "Dieser Slug ist bereits belegt.",
         "already_registered": "Sie haben bereits ein Fintech.",
-        "not_found": "Nicht gefunden.",
+        "not_found": "Dienst nicht gefunden.",
         "not_pending": "Bereits geprüft.",
         "reason_too_short": "Der Grund ist zu kurz.",
         "unknown": "Unbekannter Fehler",
-        "rate_limited": "Zu viele Übermittlungen in 24 Stunden — bitte später erneut versuchen."
+        "rate_limited": "Zu viele Übermittlungen in 24 Stunden — bitte später erneut versuchen.",
+        "too_many_fintechs": "Grenze erreicht: maximal 5 Dienste pro Konto.",
+        "too_many_pending_fintechs": "Zwei Dienste warten schon auf die Prüfung — warten Sie deren Entscheidung ab."
       }
     },
     "panel": {

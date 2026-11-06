@@ -41,7 +41,7 @@ model User {
   reviewedPoints         CompanyPoint[]       @relation("PointReviewer")
   reviewedCompanies      Company[]            @relation("CompanyReviewer")
   loginAttempts          LoginAttempt[]
-  ownedFintech           FintechCompany?      @relation("FintechOwner")
+  ownedFintechs          FintechCompany[]     @relation("FintechOwner")
   reviewedFintechs       FintechCompany[]     @relation("FintechReviewer")
   priceAlerts            PriceAlert[]
   geoAlerts              GeoAlert[]
@@ -690,7 +690,10 @@ model FintechCompany {
   playStoreUrl String?
 
   source      String  @default("curated")
-  ownerUserId String? @unique
+  // Один аккаунт может владеть несколькими сервисами — как и несколькими
+  // компаниями (миграция 20261106200000_company_multi_owner). Ограничение
+  // держал уникальный индекс, теперь его заменяют явные лимиты.
+  ownerUserId String?
   owner       User?   @relation("FintechOwner", fields: [ownerUserId], references: [id], onDelete: Cascade)
 
   status          RequestStatus @default(APPROVED)
@@ -705,6 +708,7 @@ model FintechCompany {
   @@index([status, displayName])
   @@index([source])
   @@index([supportedCardIds(ops: ArrayOps)], type: Gin)
+  @@index([ownerUserId])
 }
 
 // Local mirror of BTC Map's crypto-POI dump (itself OpenStreetMap data), synced

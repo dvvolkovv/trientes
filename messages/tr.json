@@ -1127,7 +1127,11 @@
         "PENDING": "İnceleme bekliyor",
         "APPROVED": "Onaylandı — yayında",
         "REJECTED": "Reddedildi"
-      }
+      },
+      "mine": "Fintek hizmetlerim",
+      "edit": "Düzenle",
+      "addAnother": "Başka bir hizmet ekle",
+      "addAnotherHint": "Aşağıda yeni bir hizmetin formu var. Var olanı değiştirmek için Düzenle'ye basın."
     },
     "admin": {
       "title": "Fintek moderasyonu",
@@ -1173,11 +1177,13 @@
         "invalid": "Bazı alanlar hatalı görünüyor.",
         "slug_taken": "Bu slug kullanılıyor.",
         "already_registered": "Zaten bir fintek kaydınız var.",
-        "not_found": "Bulunamadı.",
+        "not_found": "Hizmet bulunamadı.",
         "not_pending": "Zaten incelendi.",
         "reason_too_short": "Gerekçe çok kısa.",
         "unknown": "Bilinmeyen hata",
-        "rate_limited": "24 saat içinde çok fazla gönderim — daha sonra tekrar deneyin."
+        "rate_limited": "24 saat içinde çok fazla gönderim — daha sonra tekrar deneyin.",
+        "too_many_fintechs": "Sınıra ulaşıldı: hesap başına en fazla 5 hizmet.",
+        "too_many_pending_fintechs": "İki hizmet zaten incelemeyi bekliyor — onların kararını bekleyin."
       }
     },
     "panel": {

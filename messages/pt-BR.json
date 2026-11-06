@@ -1127,7 +1127,11 @@
         "PENDING": "Aguardando análise",
         "APPROVED": "Aprovado — publicado",
         "REJECTED": "Rejeitado"
-      }
+      },
+      "mine": "Meus serviços fintech",
+      "edit": "Editar",
+      "addAnother": "Adicionar outro serviço",
+      "addAnotherHint": "Abaixo está o formulário de um novo serviço. Para alterar um existente, clique em Editar."
     },
     "admin": {
       "title": "Moderação de fintechs",
@@ -1173,11 +1177,13 @@
         "invalid": "Alguns campos parecem incorretos.",
         "slug_taken": "Esse slug já está em uso.",
         "already_registered": "Você já tem uma fintech.",
-        "not_found": "Não encontrado.",
+        "not_found": "Serviço não encontrado.",
         "not_pending": "Já analisado.",
         "reason_too_short": "O motivo é curto demais.",
         "unknown": "Erro desconhecido",
-        "rate_limited": "Muitos envios em 24h — tente novamente mais tarde."
+        "rate_limited": "Muitos envios em 24h — tente novamente mais tarde.",
+        "too_many_fintechs": "Limite atingido: no máximo 5 serviços por conta.",
+        "too_many_pending_fintechs": "Dois serviços já aguardam análise — espere a decisão sobre eles."
       }
     },
     "panel": {

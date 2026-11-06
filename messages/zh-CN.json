@@ -1127,7 +1127,11 @@
         "PENDING": "等待审核",
         "APPROVED": "已通过——已上线",
         "REJECTED": "已拒绝"
-      }
+      },
+      "mine": "我的金融科技服务",
+      "edit": "编辑",
+      "addAnother": "再添加一个服务",
+      "addAnotherHint": "下面是新服务的表单。要修改已有服务，请点击“编辑”。"
     },
     "admin": {
       "title": "金融科技审核",
@@ -1173,11 +1177,13 @@
         "invalid": "部分字段有误。",
         "slug_taken": "该 slug 已被占用。",
         "already_registered": "您已拥有一个金融科技条目。",
-        "not_found": "未找到。",
+        "not_found": "未找到该服务。",
         "not_pending": "已审核。",
         "reason_too_short": "理由太短。",
         "unknown": "未知错误",
-        "rate_limited": "24小时内提交次数过多，请稍后再试。"
+        "rate_limited": "24小时内提交次数过多，请稍后再试。",
+        "too_many_fintechs": "已达上限：每个账号最多 5 个服务。",
+        "too_many_pending_fintechs": "已有 2 个服务在等待审核，请先等待结果。"
       }
     },
     "panel": {

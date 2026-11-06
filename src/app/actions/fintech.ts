@@ -10,6 +10,7 @@ import {
   type FintechCreateInput,
 } from "@/lib/fintech";
 import { redis } from "@/lib/redis";
+import { checkFintechLimits } from "@/lib/company-limits";
 
 // Re-uses the LoginAttempt audit table to throttle saves per owner; keeps the
 // audit trail consistent with login/register without a 2nd table.
@@ -43,10 +44,15 @@ async function bustAvailabilityCache(countryCodes: string[]) {
   } catch { /* best-effort */ }
 }
 
-// Single owner-facing entrypoint: creates the user's FintechCompany if none
-// exists, otherwise patches the existing row. Status always reverts to PENDING
-// after an owner edit so admin re-review is required.
-export async function saveOwnFintech(input: unknown) {
+/**
+ * Единственная точка входа для владельца. Без `id` создаёт новый сервис (в
+ * пределах лимитов), с `id` правит свой существующий. Статус после правки
+ * всегда возвращается в PENDING — модератор должен увидеть изменения.
+ *
+ * Раньше запись находилась по ownerUserId, потому что сервис был один на
+ * аккаунт; уникальный индекс снят миграцией 20261106250000.
+ */
+export async function saveOwnFintech(input: unknown, fintechId?: string) {
   const userId = await requireUser();
   if (!userId) return { ok: false as const, reason: "unauth" as const };
 
@@ -87,7 +93,21 @@ export async function saveOwnFintech(input: unknown) {
   };
 
   try {
-    const existing = await prisma.fintechCompany.findUnique({ where: { ownerUserId: userId } });
+    // Правим только свою запись: id из запроса сверяется с владельцем.
+    const existing = fintechId
+      ? await prisma.fintechCompany.findFirst({ where: { id: fintechId, ownerUserId: userId } })
+      : null;
+    if (fintechId && !existing) return { ok: false as const, reason: "not_found" as const };
+
+    if (!existing) {
+      const [owned, pending] = await Promise.all([
+        prisma.fintechCompany.count({ where: { ownerUserId: userId } }),
+        prisma.fintechCompany.count({ where: { ownerUserId: userId, status: "PENDING" } }),
+      ]);
+      const limit = checkFintechLimits({ owned, pending });
+      if (!limit.ok) return { ok: false as const, reason: limit.reason };
+    }
+
     if (existing) {
       const row = await prisma.fintechCompany.update({
         where: { id: existing.id },
@@ -118,7 +138,7 @@ export async function saveOwnFintech(input: unknown) {
     if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
       const target = (e.meta?.target as string[] | undefined)?.join(",") ?? "";
       if (target.includes("slug")) return { ok: false as const, reason: "slug_taken" as const };
-      if (target.includes("ownerUserId")) return { ok: false as const, reason: "already_registered" as const };
+      // ownerUserId больше не уникален — ветка оставлена бы мёртвой, поэтому убрана.
     }
     throw e;
   }

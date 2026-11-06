@@ -9,10 +9,13 @@ export const dynamic = "force-dynamic";
 
 export default async function BusinessFintech({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ id?: string }>;
 }) {
   const { locale } = await params;
+  const { id: editId } = await searchParams;
   setRequestLocale(locale);
   const t = await getTranslations("fintech");
 
@@ -20,7 +23,14 @@ export default async function BusinessFintech({
   const userId = (session?.user as { id?: string } | undefined)?.id;
   if (!userId) redirect(`/${locale}/login?next=/${locale}/business/fintech`);
 
-  const existing = await prisma.fintechCompany.findUnique({ where: { ownerUserId: userId } });
+  // Сервисов у аккаунта может быть несколько: без ?id — форма создания и
+  // список своих, с ?id — правка конкретного (только своего).
+  const mine = await prisma.fintechCompany.findMany({
+    where: { ownerUserId: userId },
+    orderBy: { createdAt: "asc" },
+  });
+  const existing = editId ? mine.find((f) => f.id === editId) : undefined;
+  if (editId && !existing) redirect(`/${locale}/business/fintech`);
 
   const initial = existing
     ? {
@@ -69,7 +79,55 @@ export default async function BusinessFintech({
             </div>
           ) : null}
         </header>
-        <FintechForm initial={initial} submit={async (payload) => await saveOwnFintech(payload)} />
+        {mine.length > 0 ? (
+          <section className="mb-10">
+            <h2 className="text-[20px] font-bold tracking-[-0.02em] mb-3">{t("business.mine")}</h2>
+            <ul className="space-y-2">
+              {mine.map((f) => (
+                <li
+                  key={f.id}
+                  className="border border-hairline rounded-md p-3 flex items-center justify-between gap-3"
+                >
+                  <div className="min-w-0">
+                    <div className="font-medium truncate">{f.displayName}</div>
+                    <div className="text-xs text-muted truncate">/{f.slug}</div>
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <span
+                      className={
+                        f.status === "APPROVED" ? "text-up text-xs"
+                        : f.status === "REJECTED" ? "text-red-400 text-xs"
+                        : "text-amber-400 text-xs"
+                      }
+                    >
+                      {t(`business.statuses.${f.status}`)}
+                    </span>
+                    <a
+                      href={`/${locale}/business/fintech?id=${f.id}`}
+                      className="text-[12px] px-2 py-1 rounded-md border border-hairline text-muted hover:border-accent hover:text-accent"
+                    >
+                      {t("business.edit")}
+                    </a>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            {!editId ? (
+              <p className="text-[12px] text-muted mt-3">{t("business.addAnotherHint")}</p>
+            ) : (
+              <p className="text-[12px] text-muted mt-3">
+                <a href={`/${locale}/business/fintech`} className="underline">
+                  {t("business.addAnother")}
+                </a>
+              </p>
+            )}
+          </section>
+        ) : null}
+        <FintechForm
+          key={existing?.id ?? "new"}
+          initial={initial}
+          submit={async (payload) => await saveOwnFintech(payload, existing?.id)}
+        />
       </div>
     </main>
   );

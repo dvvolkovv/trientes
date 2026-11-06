@@ -6,6 +6,11 @@
 export const MAX_COMPANIES_PER_USER = 10;
 export const MAX_PENDING_COMPANIES_PER_USER = 3;
 
+/** Финтех-сервисов на аккаунт. Меньше, чем компаний: сервис — это продукт, а
+ *  не юрлицо, и десяток продуктов у одного человека выглядит как спам. */
+export const MAX_FINTECH_PER_USER = 5;
+export const MAX_PENDING_FINTECH_PER_USER = 2;
+
 export type CompanyLimitResult =
   | { ok: true }
   | { ok: false; reason: "too_many_companies" | "too_many_pending_companies" };
@@ -24,6 +29,21 @@ export function checkCompanyLimits(input: { owned: number; pending: number }): C
   }
   if (input.pending >= MAX_PENDING_COMPANIES_PER_USER) {
     return { ok: false, reason: "too_many_pending_companies" };
+  }
+  return { ok: true };
+}
+
+export type FintechLimitResult =
+  | { ok: true }
+  | { ok: false; reason: "too_many_fintechs" | "too_many_pending_fintechs" };
+
+/** Та же арифметика, что у компаний, но свои пределы и свои коды ошибок. */
+export function checkFintechLimits(input: { owned: number; pending: number }): FintechLimitResult {
+  if (input.owned >= MAX_FINTECH_PER_USER) {
+    return { ok: false, reason: "too_many_fintechs" };
+  }
+  if (input.pending >= MAX_PENDING_FINTECH_PER_USER) {
+    return { ok: false, reason: "too_many_pending_fintechs" };
   }
   return { ok: true };
 }

@@ -1127,7 +1127,11 @@
         "PENDING": "審査待ち",
         "APPROVED": "承認済み — 公開中",
         "REJECTED": "却下"
-      }
+      },
+      "mine": "自分のフィンテックサービス",
+      "edit": "編集",
+      "addAnother": "別のサービスを追加",
+      "addAnotherHint": "下は新規サービスの入力欄です。既存のものを直すには「編集」を押してください。"
     },
     "admin": {
       "title": "フィンテックの審査",
@@ -1173,11 +1177,13 @@
         "invalid": "入力内容に誤りがあります。",
         "slug_taken": "その slug は使用されています。",
         "already_registered": "すでにフィンテックを登録済みです。",
-        "not_found": "見つかりません。",
+        "not_found": "サービスが見つかりません。",
         "not_pending": "すでに審査済みです。",
         "reason_too_short": "理由が短すぎます。",
         "unknown": "不明なエラー",
-        "rate_limited": "24時間で送信回数が多すぎます — 後でもう一度お試しください。"
+        "rate_limited": "24時間で送信回数が多すぎます — 後でもう一度お試しください。",
+        "too_many_fintechs": "上限に達しました。1 アカウントにつきサービスは 5 件までです。",
+        "too_many_pending_fintechs": "すでに 2 件が審査待ちです。結果をお待ちください。"
       }
     },
     "panel": {

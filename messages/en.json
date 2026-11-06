@@ -1127,7 +1127,11 @@
         "PENDING": "Pending review",
         "APPROVED": "Approved — live",
         "REJECTED": "Rejected"
-      }
+      },
+      "mine": "My fintech services",
+      "edit": "Edit",
+      "addAnother": "Add another service",
+      "addAnotherHint": "Below is the form for a new service. To change an existing one, press Edit."
     },
     "admin": {
       "title": "Fintech moderation",
@@ -1173,11 +1177,13 @@
         "invalid": "Some fields look off.",
         "slug_taken": "That slug is taken.",
         "already_registered": "You already have a fintech.",
-        "not_found": "Not found.",
+        "not_found": "Service not found.",
         "not_pending": "Already reviewed.",
         "reason_too_short": "Reason is too short.",
         "unknown": "Unknown error",
-        "rate_limited": "Too many submissions in 24h — please try again later."
+        "rate_limited": "Too many submissions in 24h — please try again later.",
+        "too_many_fintechs": "Limit reached: no more than 5 services per account.",
+        "too_many_pending_fintechs": "Two services are already awaiting review — wait for a decision on those."
       }
     },
     "panel": {
