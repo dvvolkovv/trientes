@@ -209,8 +209,8 @@ export function normalizeSectionPayload(
         .slice(0, MAX_TAGS);
       touched.push("tags");
     }
-    if (typeof payload.launchDate === "string") {
-      if (payload.launchDate) {
+    if ("launchDate" in payload) {
+      if (typeof payload.launchDate === "string" && payload.launchDate) {
         const d = new Date(payload.launchDate);
         if (Number.isNaN(d.getTime())) return { ok: false, reason: "date_invalid" };
         card.launchDate = d;
