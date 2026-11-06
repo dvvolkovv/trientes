@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { saveOwnFintech } from "@/app/actions/fintech";
 import { FintechForm } from "@/components/fintech/fintech-form";
+import { listSelectableCards } from "@/lib/card-fiat-routes";
 
 export const dynamic = "force-dynamic";
 
@@ -30,6 +31,7 @@ export default async function BusinessFintech({
     orderBy: { createdAt: "asc" },
   });
   const existing = editId ? mine.find((f) => f.id === editId) : undefined;
+  const cards = await listSelectableCards();
   if (editId && !existing) redirect(`/${locale}/business/fintech`);
 
   const initial = existing
@@ -48,6 +50,7 @@ export default async function BusinessFintech({
         services: existing.services as string[],
         availableIn: existing.availableIn.join(", "),
         supportedCoinIds: existing.supportedCoinIds.join(", "),
+        supportedCardIds: existing.supportedCardIds,
         supportedFiats: existing.supportedFiats.join(", "),
         kycLevel: existing.kycLevel ?? "",
         feesSummary: existing.feesSummary ?? "",
@@ -126,6 +129,7 @@ export default async function BusinessFintech({
         <FintechForm
           key={existing?.id ?? "new"}
           initial={initial}
+          cards={cards}
           submit={async (payload) => await saveOwnFintech(payload, existing?.id)}
         />
       </div>

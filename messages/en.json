@@ -1183,8 +1183,11 @@
         "unknown": "Unknown error",
         "rate_limited": "Too many submissions in 24h — please try again later.",
         "too_many_fintechs": "Limit reached: no more than 5 services per account.",
-        "too_many_pending_fintechs": "Two services are already awaiting review — wait for a decision on those."
-      }
+        "too_many_pending_fintechs": "Two services are already awaiting review — wait for a decision on those.",
+        "coin_not_selectable": "This coin card is not approved, so it cannot be selected."
+      },
+      "supportedCards": "Self-listed coins",
+      "supportedCardsHint": "Tick the Trientes self-listed coins your service supports."
     },
     "panel": {
       "title": "Available in {country}",
@@ -1938,6 +1941,14 @@
         "SDK": "SDK",
         "OTHER": "other"
       }
+    },
+    "fiat": {
+      "title": "How to accept it and cash out",
+      "source": "from the Trientes directory",
+      "empty": "No acceptance or cash-out services for this coin yet. If your service supports it, add the coin in your fintech card.",
+      "countries": "Countries served",
+      "fiats": "Fiat currencies",
+      "all": "The whole fintech directory"
     }
   },
   "inviteCoin": {

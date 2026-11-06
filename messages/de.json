@@ -1183,8 +1183,11 @@
         "unknown": "Unbekannter Fehler",
         "rate_limited": "Zu viele Übermittlungen in 24 Stunden — bitte später erneut versuchen.",
         "too_many_fintechs": "Grenze erreicht: maximal 5 Dienste pro Konto.",
-        "too_many_pending_fintechs": "Zwei Dienste warten schon auf die Prüfung — warten Sie deren Entscheidung ab."
-      }
+        "too_many_pending_fintechs": "Zwei Dienste warten schon auf die Prüfung — warten Sie deren Entscheidung ab.",
+        "coin_not_selectable": "This coin card is not approved, so it cannot be selected."
+      },
+      "supportedCards": "Eigene Listings",
+      "supportedCardsHint": "Markieren Sie die selbst gelisteten Trientes-Münzen, die Ihr Dienst unterstützt."
     },
     "panel": {
       "title": "Verfügbar in {country}",
@@ -1938,6 +1941,14 @@
         "SDK": "SDK",
         "OTHER": "andere"
       }
+    },
+    "fiat": {
+      "title": "Annehmen und in Geld auszahlen",
+      "source": "aus dem Trientes-Verzeichnis",
+      "empty": "Noch keine Annahme- oder Auszahlungsdienste für diese Münze. Wenn Ihr Dienst sie unterstützt, fügen Sie die Münze in Ihrem Fintech-Eintrag hinzu.",
+      "countries": "Bediente Länder",
+      "fiats": "Fiat-Währungen",
+      "all": "Das gesamte Fintech-Verzeichnis"
     }
   },
   "inviteCoin": {

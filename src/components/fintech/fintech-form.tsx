@@ -20,6 +20,7 @@ type FormValue = {
   services: string[];
   availableIn: string;
   supportedCoinIds: string;
+  supportedCardIds: string[];
   supportedFiats: string;
   kycLevel: string;
   feesSummary: string;
@@ -28,8 +29,12 @@ type FormValue = {
   foundedYear: string;
 };
 
+/** Одобренный собственный листинг, который сервис может поддерживать. */
+export type FintechFormCard = { id: string; name: string; symbol: string; logoUrl: string | null };
+
 export type FintechFormProps = {
   initial?: Partial<FormValue>;
+  cards?: FintechFormCard[];
   // null result means success; string is a reason key to render.
   submit: (payload: unknown) => Promise<{ ok: true; id?: string } | { ok: false; reason: string; details?: unknown }>;
   redirectTo?: string;
@@ -38,11 +43,11 @@ export type FintechFormProps = {
 const EMPTY: FormValue = {
   slug: "", displayName: "", legalName: "", logoUrl: "", website: "", description: "",
   countryCode: "", city: "", address: "", hqLat: "", hqLon: "",
-  services: [], availableIn: "", supportedCoinIds: "", supportedFiats: "",
+  services: [], availableIn: "", supportedCoinIds: "", supportedCardIds: [], supportedFiats: "",
   kycLevel: "", feesSummary: "", appStoreUrl: "", playStoreUrl: "", foundedYear: "",
 };
 
-export function FintechForm({ initial, submit, redirectTo }: FintechFormProps) {
+export function FintechForm({ initial, cards = [], submit, redirectTo }: FintechFormProps) {
   const t = useTranslations("fintech");
   const router = useRouter();
   const [v, setV] = useState<FormValue>({ ...EMPTY, ...initial } as FormValue);
@@ -85,6 +90,7 @@ export function FintechForm({ initial, submit, redirectTo }: FintechFormProps) {
       hqLon: v.hqLon ? Number(v.hqLon) : null,
       services: v.services,
       supportedCoinIds: splitCsv(v.supportedCoinIds),
+      supportedCardIds: v.supportedCardIds,
       supportedFiats: splitCsv(v.supportedFiats, true),
       availableIn: splitCsv(v.availableIn, true),
       kycLevel: v.kycLevel || null,
@@ -164,6 +170,36 @@ export function FintechForm({ initial, submit, redirectTo }: FintechFormProps) {
           <input className={input} value={v.supportedCoinIds} onChange={(e) => set("supportedCoinIds", e.target.value)} placeholder="bitcoin, ethereum" />
         </Field>
       </div>
+
+      {cards.length > 0 && (
+        <Field label={t("form.supportedCards")} hint={t("form.supportedCardsHint")}>
+          <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">
+            {cards.map((c) => {
+              const on = v.supportedCardIds.includes(c.id);
+              return (
+                <button
+                  key={c.id} type="button" title={c.name}
+                  onClick={() =>
+                    set(
+                      "supportedCardIds",
+                      on
+                        ? v.supportedCardIds.filter((x) => x !== c.id)
+                        : [...v.supportedCardIds, c.id],
+                    )
+                  }
+                  className={`inline-flex items-center gap-1.5 text-[11px] px-2 py-1 rounded-md border ${on ? "bg-accent/15 text-accent border-accent/40" : "border-hairline text-muted"}`}
+                >
+                  {c.logoUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={c.logoUrl} alt="" width={14} height={14} className="rounded-full" />
+                  )}
+                  {c.symbol.toUpperCase()}
+                </button>
+              );
+            })}
+          </div>
+        </Field>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Field label={t("form.kycLevel")}>

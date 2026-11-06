@@ -106,6 +106,9 @@ export const fintechCreateSchema = z
 
     services: z.array(z.enum(FINTECH_SERVICES)).max(FINTECH_SERVICES.length),
     supportedCoinIds: z.array(z.string().min(1).max(60)).max(30),
+    // Собственные листинги (CoinCard.id): у них нет id CoinGecko, поэтому
+    // отдельный массив, как и у точек приёма.
+    supportedCardIds: z.array(z.string().min(1).max(60)).max(30).optional(),
     supportedFiats: z.array(z.string().refine(isValidFiat, "unknown fiat")).max(20),
     availableIn: z.array(z.string().refine(isValidCountryCode, "unknown country")).max(30),
 

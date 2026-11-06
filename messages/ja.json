@@ -1183,8 +1183,11 @@
         "unknown": "不明なエラー",
         "rate_limited": "24時間で送信回数が多すぎます — 後でもう一度お試しください。",
         "too_many_fintechs": "上限に達しました。1 アカウントにつきサービスは 5 件までです。",
-        "too_many_pending_fintechs": "すでに 2 件が審査待ちです。結果をお待ちください。"
-      }
+        "too_many_pending_fintechs": "すでに 2 件が審査待ちです。結果をお待ちください。",
+        "coin_not_selectable": "This coin card is not approved, so it cannot be selected."
+      },
+      "supportedCards": "独自上場の銘柄",
+      "supportedCardsHint": "対応している Trientes 独自上場の銘柄にチェックを入れてください。"
     },
     "panel": {
       "title": "{country}で利用可能",
@@ -1938,6 +1941,14 @@
         "SDK": "SDK",
         "OTHER": "その他"
       }
+    },
+    "fiat": {
+      "title": "受け取って現金化する方法",
+      "source": "Trientes のカタログより",
+      "empty": "このコインの受取・出金サービスはまだありません。対応しているなら、自社のフィンテックカードで追加してください。",
+      "countries": "対応国",
+      "fiats": "法定通貨",
+      "all": "フィンテック一覧をすべて見る"
     }
   },
   "inviteCoin": {

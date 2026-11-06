@@ -1183,8 +1183,11 @@
         "unknown": "알 수 없는 오류",
         "rate_limited": "24시간 동안 너무 많이 제출했습니다. 나중에 다시 시도해 주세요.",
         "too_many_fintechs": "한도에 도달했습니다. 계정당 서비스는 최대 5개입니다.",
-        "too_many_pending_fintechs": "이미 2개 서비스가 심사를 기다리고 있습니다. 결과를 기다려 주세요."
-      }
+        "too_many_pending_fintechs": "이미 2개 서비스가 심사를 기다리고 있습니다. 결과를 기다려 주세요.",
+        "coin_not_selectable": "This coin card is not approved, so it cannot be selected."
+      },
+      "supportedCards": "자체 상장 코인",
+      "supportedCardsHint": "서비스가 지원하는 Trientes 자체 상장 코인을 선택하세요."
     },
     "panel": {
       "title": "{country}에서 이용 가능",
@@ -1938,6 +1941,14 @@
         "SDK": "SDK",
         "OTHER": "기타"
       }
+    },
+    "fiat": {
+      "title": "받아서 현금화하는 방법",
+      "source": "Trientes 디렉터리 기준",
+      "empty": "이 코인의 수취·출금 서비스가 아직 없습니다. 지원한다면 내 핀테크 카드에서 코인을 추가하세요.",
+      "countries": "서비스 국가",
+      "fiats": "법정통화",
+      "all": "핀테크 디렉터리 전체"
     }
   },
   "inviteCoin": {

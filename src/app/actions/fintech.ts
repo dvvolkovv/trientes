@@ -66,6 +66,18 @@ export async function saveOwnFintech(input: unknown, fintechId?: string) {
   const data: FintechCreateInput = parsed.data;
   const socials = data.socials ? sanitizeFintechSocials(data.socials) : null;
 
+  // Указать можно только одобренную карточку: иначе сервис ссылался бы на
+  // листинг, которого публично не существует.
+  const cardIds = data.supportedCardIds ?? [];
+  if (cardIds.length > 0) {
+    const approved = await prisma.coinCard.count({
+      where: { id: { in: cardIds }, status: "APPROVED" },
+    });
+    if (approved !== cardIds.length) {
+      return { ok: false as const, reason: "coin_not_selectable" as const };
+    }
+  }
+
   await recordFintechSave(userId);
 
   const baseData = {
@@ -84,6 +96,7 @@ export async function saveOwnFintech(input: unknown, fintechId?: string) {
     hqLon: data.hqLon ?? null,
     services: data.services,
     supportedCoinIds: data.supportedCoinIds,
+    supportedCardIds: data.supportedCardIds ?? [],
     supportedFiats: data.supportedFiats,
     availableIn: data.availableIn,
     kycLevel: data.kycLevel ?? null,

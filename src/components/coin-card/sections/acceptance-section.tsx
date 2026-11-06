@@ -12,6 +12,7 @@ import { getMerchantCta } from "@/lib/coin-card-merchant-viewer";
 import { countryName } from "@/lib/countries";
 import { ProvenanceBadge } from "../provenance-badge";
 import { PaymentsBlock } from "./payments-block";
+import { FiatRoutesBlock } from "./fiat-routes-block";
 
 const SITE = process.env.PUBLIC_ORIGIN ?? "https://trientes.org";
 
@@ -144,8 +145,9 @@ export async function AcceptanceSection({
         </div>
       )}
 
-      <div className="mt-5">
+      <div className="mt-5 space-y-5">
         <PaymentsBlock payments={payments} provenance={provenance} />
+        <FiatRoutesBlock cardId={cardId} />
       </div>
 
       <div className="mt-5 space-y-2">

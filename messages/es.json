@@ -1183,8 +1183,11 @@
         "unknown": "Error desconocido",
         "rate_limited": "Demasiados envíos en 24 h: inténtalo más tarde.",
         "too_many_fintechs": "Límite alcanzado: no más de 5 servicios por cuenta.",
-        "too_many_pending_fintechs": "Ya hay dos servicios esperando revisión: espera la decisión sobre ellos."
-      }
+        "too_many_pending_fintechs": "Ya hay dos servicios esperando revisión: espera la decisión sobre ellos.",
+        "coin_not_selectable": "This coin card is not approved, so it cannot be selected."
+      },
+      "supportedCards": "Listados propios",
+      "supportedCardsHint": "Marca las monedas de listado propio de Trientes que admite tu servicio."
     },
     "panel": {
       "title": "Disponible en {country}",
@@ -1938,6 +1941,14 @@
         "SDK": "SDK",
         "OTHER": "otra"
       }
+    },
+    "fiat": {
+      "title": "Cómo aceptarla y convertirla en dinero",
+      "source": "según el directorio de Trientes",
+      "empty": "Todavía no hay servicios de aceptación o retiro para esta moneda. Si tu servicio la admite, añádela en tu ficha fintech.",
+      "countries": "Países atendidos",
+      "fiats": "Monedas fiat",
+      "all": "Todo el directorio fintech"
     }
   },
   "inviteCoin": {

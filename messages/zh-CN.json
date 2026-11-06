@@ -1183,8 +1183,11 @@
         "unknown": "未知错误",
         "rate_limited": "24小时内提交次数过多，请稍后再试。",
         "too_many_fintechs": "已达上限：每个账号最多 5 个服务。",
-        "too_many_pending_fintechs": "已有 2 个服务在等待审核，请先等待结果。"
-      }
+        "too_many_pending_fintechs": "已有 2 个服务在等待审核，请先等待结果。",
+        "coin_not_selectable": "This coin card is not approved, so it cannot be selected."
+      },
+      "supportedCards": "自主上架币种",
+      "supportedCardsHint": "勾选您的服务支持的 Trientes 自主上架币种。"
     },
     "panel": {
       "title": "{country} 可用",
@@ -1938,6 +1941,14 @@
         "SDK": "SDK",
         "OTHER": "其他"
       }
+    },
+    "fiat": {
+      "title": "如何受理并换成现金",
+      "source": "来自 Trientes 目录",
+      "empty": "该币暂无受理或提现服务。如果您的服务支持它，请在您的金融科技条目中添加该币。",
+      "countries": "服务国家",
+      "fiats": "法币",
+      "all": "查看全部金融科技目录"
     }
   },
   "inviteCoin": {
