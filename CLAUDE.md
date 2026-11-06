@@ -73,6 +73,21 @@ Shipped 2026-05-24. Lets INDIVIDUAL users register with username + password, man
 
 **Гигиена репозитория:** голосовые отчёты и скриншоты ассистента в корне НЕ хранятся — писать их в `/home/dv/trientes-artifacts/{audio,screens}/` (туда же убран архив прежних 181 файла). Корневые `*.png` / `*.mp3` на всякий случай в `.gitignore`.
 
+# Загрузки пользователей (важно)
+
+Next.js запекает содержимое `public/` в сборку, поэтому файлы, записанные туда
+**после** `npm run build`, отдаются как 404 — это ломало логотипы карточек монет,
+фото точек и KYB-документы (баг жил незамеченным, потому что до 2026-11-06 ни
+одной загрузки в проде не было).
+
+Решение: файлы лежат в `/var/www/trientes-uploads/{coin-cards,points}` и отдаются
+напрямую nginx (`location ~ ^/uploads/(coin-cards|points)/`). Корни заданы в `.env`:
+`COIN_CARD_LOGO_ROOT` и `POINT_PHOTOS_ROOT`. KYB-документы сознательно **не**
+попадают под это правило — они приватные и по URL недоступны.
+
+При переносе проекта на другую машину эти два каталога и блок nginx нужно
+воссоздать, иначе загрузки снова начнут отдавать 404.
+
 # Deploy & push (server only)
 
 This `/home/dv/trientes` checkout **IS the live production box** (trientes.org), not a clone. There is no separate deploy step over the wire — the site serves straight from this directory via PM2.
