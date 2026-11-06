@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { canEditSection, canEditCardNow, canManageMembers, canManagePolicy } from "@/lib/coin-card-access";
-
-const card = (over: Partial<{ status: "PENDING" | "APPROVED" | "REJECTED"; stewardUserId: string | null }> = {}) => ({
-  status: "PENDING" as const,
-  stewardUserId: "u1" as string | null,
-  ...over,
-});
+import {
+  canEditSection,
+  canEditCardDirectly,
+  canManageMembers,
+  canManagePolicy,
+  canAssignRole,
+  canVote,
+} from "@/lib/coin-card-access";
 
 describe("canEditSection", () => {
   it("lets OWNER edit anything", () => {
@@ -48,32 +49,61 @@ describe("canManageMembers / canManagePolicy", () => {
   });
 });
 
-describe("canEditCardNow", () => {
-  it("lets the steward edit a pending card", () => {
-    expect(canEditCardNow(card(), "u1", false)).toBe(true);
+describe("canEditCardDirectly", () => {
+  const pending = { status: "PENDING" as const, stewardUserId: "u1" };
+  const approved = { status: "APPROVED" as const, stewardUserId: "u1" };
+  const owner = { role: "OWNER" as const, sections: [] };
+
+  it("lets an owner write straight to a card that is not public yet", () => {
+    expect(canEditCardDirectly(pending, owner, "CONTRACTS", false)).toBe(true);
   });
 
-  it("stops the steward once the card is approved (edits need A2 revisions)", () => {
-    expect(canEditCardNow(card({ status: "APPROVED" }), "u1", false)).toBe(false);
+  it("lets a rejected card be fixed in place", () => {
+    expect(
+      canEditCardDirectly({ status: "REJECTED", stewardUserId: "u1" }, owner, "IDENTITY", false),
+    ).toBe(true);
   });
 
-  it("stops a stranger", () => {
-    expect(canEditCardNow(card(), "u2", false)).toBe(false);
+  it("closes direct writes once the card is published — revisions only", () => {
+    expect(canEditCardDirectly(approved, owner, "CONTRACTS", false)).toBe(false);
   });
 
-  it("stops an anonymous visitor", () => {
-    expect(canEditCardNow(card(), null, false)).toBe(false);
+  it("still lets a site admin write to a published card", () => {
+    expect(canEditCardDirectly(approved, null, "CONTRACTS", true)).toBe(true);
   });
 
-  it("lets a site admin edit regardless of status", () => {
-    expect(canEditCardNow(card({ status: "APPROVED" }), "admin", true)).toBe(true);
+  it("respects section grants for an EDITOR", () => {
+    const m = { role: "EDITOR" as const, sections: ["MARKETS" as const] };
+    expect(canEditCardDirectly(pending, m, "MARKETS", false)).toBe(true);
+    expect(canEditCardDirectly(pending, m, "CONTRACTS", false)).toBe(false);
   });
 
-  it("allows editing a rejected card so the author can fix it", () => {
-    expect(canEditCardNow(card({ status: "REJECTED" }), "u1", false)).toBe(true);
+  it("denies a stranger", () => {
+    expect(canEditCardDirectly(pending, null, "IDENTITY", false)).toBe(false);
+  });
+});
+
+describe("canAssignRole", () => {
+  it("lets an OWNER hand out any role", () => {
+    expect(canAssignRole({ role: "OWNER", sections: [] }, "OWNER")).toBe(true);
+    expect(canAssignRole({ role: "OWNER", sections: [] }, "VIEWER")).toBe(true);
   });
 
-  it("stops everyone on an orphaned card with no steward", () => {
-    expect(canEditCardNow(card({ stewardUserId: null }), "u1", false)).toBe(false);
+  it("stops an ADMIN from minting or touching an OWNER", () => {
+    expect(canAssignRole({ role: "ADMIN", sections: [] }, "OWNER")).toBe(false);
+    expect(canAssignRole({ role: "ADMIN", sections: [] }, "EDITOR")).toBe(true);
+  });
+
+  it("denies EDITOR and VIEWER entirely", () => {
+    expect(canAssignRole({ role: "EDITOR", sections: [] }, "VIEWER")).toBe(false);
+    expect(canAssignRole({ role: "VIEWER", sections: [] }, "VIEWER")).toBe(false);
+  });
+});
+
+describe("canVote", () => {
+  it("is exactly the signer flag", () => {
+    expect(canVote({ role: "VIEWER", sections: [], isSigner: true })).toBe(true);
+    expect(canVote({ role: "OWNER", sections: [], isSigner: false })).toBe(false);
+    expect(canVote(null)).toBe(false);
   });
 });

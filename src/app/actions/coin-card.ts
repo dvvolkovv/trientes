@@ -4,21 +4,15 @@ import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import {
-  validateCardBasics,
-  validateContract,
-  validateTokenomics,
-  normalizeHttpUrl,
-} from "@/lib/coin-card-validate";
+import { validateCardBasics } from "@/lib/coin-card-validate";
 import { buildSlugCandidates } from "@/lib/coin-card-slug";
 import { computeCompleteness, missingFields } from "@/lib/coin-card-completeness";
 import { markSelfReported } from "@/lib/coin-card-provenance";
-import { canEditCardNow } from "@/lib/coin-card-access";
+import { canEditCardDirectly } from "@/lib/coin-card-access";
+import { normalizeSectionPayload } from "@/lib/coin-card-sections";
 import type { CardSection } from "@/lib/coin-card-risk";
 
 const MAX_PENDING_PER_USER = 3;
-const MAX_CONTRACTS = 20;
-const MAX_MARKETS = 200;
 
 export type CreateResult =
   | { ok: true; cardId: string; slug: string }
@@ -116,108 +110,37 @@ export async function saveCoinCardSection(input: {
       tagline: true, description: true, logoUrl: true, launchDate: true, tags: true,
       links: true, tokenomics: true, security: true, teamInfo: true, marketing: true,
       provenance: true,
+      members: { select: { userId: true, role: true, sections: true } },
     },
   });
   if (!card) return { ok: false, reason: "not_found" };
-  if (!canEditCardNow(card, userId, user?.role === "ADMIN")) {
+
+  const member = card.members.find((m) => m.userId === userId) ?? null;
+  if (!canEditCardDirectly(card, member, input.section, user?.role === "ADMIN")) {
     return { ok: false, reason: "forbidden" };
   }
 
-  const now = new Date();
-  const data: Record<string, unknown> = {};
-  const touched: string[] = [];
+  const norm = normalizeSectionPayload(input.section, input.payload, card);
+  if (!norm.ok) return { ok: false, reason: norm.reason };
+  const { patch } = norm;
 
-  if (input.section === "CONTRACTS") {
-    const raw = Array.isArray(input.payload.contracts) ? input.payload.contracts : [];
-    if (raw.length > MAX_CONTRACTS) return { ok: false, reason: "too_many_contracts" };
-    const rows = [];
-    for (const c of raw) {
-      const v = validateContract(c as Record<string, string>);
-      if (!v.ok) return { ok: false, reason: v.reason };
-      rows.push({ ...v.data, isCanonical: Boolean((c as { isCanonical?: boolean }).isCanonical) });
-    }
+  if (patch.contracts) {
     await prisma.$transaction([
       prisma.coinCardContract.deleteMany({ where: { cardId: card.id } }),
       prisma.coinCardContract.createMany({
-        data: rows.map((r) => ({ ...r, cardId: card.id })),
+        data: patch.contracts.map((r) => ({ ...r, cardId: card.id })),
         skipDuplicates: true,
       }),
     ]);
-    touched.push("contracts");
-  } else if (input.section === "TOKENOMICS") {
-    const t = (input.payload.tokenomics ?? {}) as Record<string, unknown>;
-    const v = validateTokenomics(t as Record<string, number | null>);
-    if (!v.ok) return { ok: false, reason: v.reason };
-    data.tokenomics = t;
-    touched.push("tokenomics.circulating", "tokenomics.total", "tokenomics.max");
-  } else if (input.section === "MARKETS") {
-    const raw = Array.isArray(input.payload.markets) ? input.payload.markets : [];
-    if (raw.length > MAX_MARKETS) return { ok: false, reason: "too_many_markets" };
-    const rows = [];
-    for (const m of raw as Array<Record<string, string>>) {
-      const kind = m.kind === "DEX" ? "DEX" : "CEX";
-      const exchangeName = (m.exchangeName ?? "").trim();
-      const pair = (m.pair ?? "").trim().toUpperCase();
-      if (!exchangeName || !pair) return { ok: false, reason: "market_incomplete" };
-      const tradeUrl = normalizeHttpUrl(m.tradeUrl);
-      if (tradeUrl === "invalid") return { ok: false, reason: "url_invalid" };
-      rows.push({
-        cardId: card.id, kind, exchangeName, pair, tradeUrl,
-        chain: (m.chain ?? "").trim() || null,
-        poolAddress: (m.poolAddress ?? "").trim() || null,
-      });
-    }
+  }
+  if (patch.markets) {
     await prisma.$transaction([
       prisma.coinCardMarket.deleteMany({ where: { cardId: card.id } }),
-      prisma.coinCardMarket.createMany({ data: rows, skipDuplicates: true }),
+      prisma.coinCardMarket.createMany({
+        data: patch.markets.map((r) => ({ ...r, cardId: card.id })),
+        skipDuplicates: true,
+      }),
     ]);
-    touched.push("markets");
-  } else if (input.section === "LINKS") {
-    const incoming = (input.payload.links ?? {}) as Record<string, string>;
-    const out: Record<string, string> = {};
-    for (const [k, val] of Object.entries(incoming)) {
-      const u = normalizeHttpUrl(val);
-      if (u === "invalid") return { ok: false, reason: "url_invalid" };
-      if (u) out[k] = u;
-      touched.push(`links.${k}`);
-    }
-    if (!out.website) return { ok: false, reason: "website_required" };
-    data.links = out;
-  } else if (input.section === "SECURITY") {
-    data.security = input.payload.security ?? {};
-    touched.push("security");
-  } else if (input.section === "TEAM") {
-    data.teamInfo = input.payload.teamInfo ?? {};
-    touched.push("teamInfo");
-  } else if (input.section === "MARKETING") {
-    data.marketing = input.payload.marketing ?? {};
-    touched.push("marketing");
-  } else if (input.section === "IDENTITY") {
-    const v = validateCardBasics({
-      name: (input.payload.name as string) ?? card.name,
-      symbol: (input.payload.symbol as string) ?? card.symbol,
-      tagline: (input.payload.tagline as string) ?? card.tagline,
-      description: (input.payload.description as string) ?? card.description,
-      website: (card.links as Record<string, string> | null)?.website ?? "",
-    });
-    if (!v.ok) return { ok: false, reason: v.reason };
-    data.name = v.data.name;
-    data.symbol = v.data.symbol;
-    data.tagline = v.data.tagline;
-    data.description = v.data.description;
-    if (typeof input.payload.logoUrl === "string") data.logoUrl = input.payload.logoUrl;
-    if (Array.isArray(input.payload.tags)) {
-      data.tags = (input.payload.tags as string[])
-        .map((s) => s.trim()).filter(Boolean).slice(0, 10);
-    }
-    if (typeof input.payload.launchDate === "string" && input.payload.launchDate) {
-      const d = new Date(input.payload.launchDate);
-      if (Number.isNaN(d.getTime())) return { ok: false, reason: "date_invalid" };
-      data.launchDate = d;
-    }
-    touched.push("name", "symbol", "tagline", "description", "logoUrl", "tags", "launchDate");
-  } else {
-    return { ok: false, reason: "section_unsupported" };
   }
 
   // Child rows live in their own tables, so count them for the score rather
@@ -228,7 +151,7 @@ export async function saveCoinCardSection(input: {
   ]);
   const forScore = {
     ...(card as Record<string, unknown>),
-    ...data,
+    ...patch.card,
     contracts: new Array(contracts).fill(null),
     markets: new Array(markets).fill(null),
   };
@@ -238,9 +161,9 @@ export async function saveCoinCardSection(input: {
   await prisma.coinCard.update({
     where: { id: card.id },
     data: {
-      ...data,
+      ...patch.card,
       completeness,
-      provenance: markSelfReported(card.provenance, touched, now),
+      provenance: markSelfReported(card.provenance, patch.touched, new Date()),
     },
   });
 

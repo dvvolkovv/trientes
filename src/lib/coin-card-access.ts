@@ -36,18 +36,39 @@ export type CardLike = {
   stewardUserId: string | null;
 };
 
+export type SignerLike = MemberLike & { isSigner: boolean };
+
+/** Only a signer votes. Role is irrelevant — a VIEWER lawyer can be a signer. */
+export function canVote(member: SignerLike | null | undefined): boolean {
+  return Boolean(member?.isSigner);
+}
+
 /**
- * Slice A1 gate for direct writes to the card itself: only before the card
- * goes public. Once APPROVED, edits must go through the A2 revision pipeline
- * so a moderator sees the diff. Site admins bypass this.
+ * An ADMIN runs the team but may neither create, change nor remove an OWNER —
+ * otherwise "admin" is a silent path to taking the card over.
  */
-export function canEditCardNow(
+export function canAssignRole(
+  actor: MemberLike | null | undefined,
+  targetRole: CardRole,
+): boolean {
+  if (!actor) return false;
+  if (actor.role === "OWNER") return true;
+  if (actor.role === "ADMIN") return targetRole !== "OWNER";
+  return false;
+}
+
+/**
+ * Direct writes to the card are allowed only before it goes public. Once
+ * APPROVED, every change must become a reviewable revision — that is the whole
+ * point of the pipeline. Site admins bypass it (they are the review).
+ */
+export function canEditCardDirectly(
   card: CardLike,
-  userId: string | null | undefined,
+  member: MemberLike | null | undefined,
+  section: CardSection,
   isSiteAdmin: boolean,
 ): boolean {
   if (isSiteAdmin) return true;
-  if (!userId) return false;
-  if (!card.stewardUserId || card.stewardUserId !== userId) return false;
-  return card.status === "PENDING" || card.status === "REJECTED";
+  if (card.status === "APPROVED") return false;
+  return canEditSection(member, section);
 }
