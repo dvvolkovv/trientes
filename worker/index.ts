@@ -12,6 +12,7 @@ import { syncPrices, syncGlobal, syncExchangeRates, syncCoinMetadata, syncExchan
 import { fetchCoinPaprikaExchanges, fetchCoinPaprikaExchangeDetail } from "../src/lib/coinpaprika";
 import { runAlertsEval } from "../src/lib/alerts-eval";
 import { syncOsmCryptoPois } from "../src/lib/osm-poi-store";
+import { expireStaleRevisions } from "../src/lib/coin-card-expiry";
 import { startBinance, stopBinance } from "./binance";
 
 async function runPriceSync() {
@@ -210,6 +211,18 @@ async function runOsmPoiSync() {
   }
 }
 
+async function runRevisionExpiry() {
+  const t0 = Date.now();
+  try {
+    const count = await expireStaleRevisions(prisma);
+    if (count > 0) {
+      console.log(`[worker] coin revision expiry ok: ${count} expired in ${Date.now() - t0}ms`);
+    }
+  } catch (err) {
+    console.error("[worker] coin revision expiry failed:", err);
+  }
+}
+
 async function runCleanup() {
   const t0 = Date.now();
   try {
@@ -283,6 +296,7 @@ async function main() {
 
   // Daily at 04:00 server time — runs after metadata-sync (03:30) so we don't
   // race with that job's read of latest snapshots.
+  cron.schedule("50 * * * *", () => void runRevisionExpiry());
   cron.schedule("0 4 * * *", () => void runCleanup());
 
   // Live price feed via Binance WebSocket — top 20 coins.

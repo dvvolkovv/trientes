@@ -6,6 +6,7 @@ import { SecuritySection } from "./sections/security-section";
 import { TeamSection } from "./sections/team-section";
 import { MarketingSection } from "./sections/marketing-section";
 import { CardLinksSection } from "./sections/links-section";
+import { CardHistorySection } from "./history-section";
 
 /**
  * The project-supplied half of a coin page. Mounted both on top of an
@@ -22,6 +23,7 @@ export function CoinCardSections({ card }: { card: PublicCoinCard }) {
       <TeamSection teamInfo={card.teamInfo} />
       <MarketingSection marketing={card.marketing} />
       <CardLinksSection links={card.links} />
+      <CardHistorySection cardId={card.id} />
     </>
   );
 }
