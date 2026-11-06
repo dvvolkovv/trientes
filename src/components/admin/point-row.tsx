@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { approvePoint, rejectPoint } from "@/app/actions/admin-points";
+import { requestOrDeletePoint } from "@/app/actions/company-deletion";
 
 export type PointRowData = {
   id: string;
@@ -93,6 +94,16 @@ export function PointRow({ row }: { row: PointRowData }) {
               className="text-[12px] px-3 py-1.5 rounded-md bg-down/15 text-down font-medium"
             >
               Reject
+            </button>
+            <button
+              type="button"
+              disabled={pending || reason.trim().length < 3}
+              onClick={() =>
+                act(() => requestOrDeletePoint({ pointId: row.id, reason, asAdmin: true }))
+              }
+              className="text-[12px] px-3 py-1.5 rounded-md border border-down text-down font-medium"
+            >
+              Delete
             </button>
           </div>
         )}

@@ -8,6 +8,8 @@ import { CompanyProfileForm } from "@/components/business/company-profile-form";
 import { PointForm } from "@/components/business/point-form";
 import { PointsList, type PointListItem } from "@/components/business/points-list";
 import { MembersSection } from "@/components/business/members-section";
+import { DeletionRequestsSection } from "@/components/business/deletion-requests-section";
+import { DeleteCompanyBlock } from "@/components/business/delete-buttons";
 import { KybSection } from "@/components/business/kyb-section";
 import { NOT_DELETED } from "@/lib/soft-delete";
 
@@ -100,7 +102,7 @@ export default async function CompanyManagementPage({
       </section>
       <section id="your-points" className="scroll-mt-24">
         <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-4">{t("yourPoints")}</h2>
-        <PointsList points={items} />
+        <PointsList points={items} canDelete={editable} canDeleteOutright={role === "OWNER"} />
       </section>
       {editable ? (
         <section id="add-point" className="scroll-mt-24">
@@ -123,6 +125,16 @@ export default async function CompanyManagementPage({
       ) : null}
 
       <MembersSection companyId={company.id} viewerId={userId} canManage={canManage} viewerRole={role} />
+
+      <DeletionRequestsSection companyId={company.id} viewerId={userId} viewerRole={role} />
+
+      {editable ? (
+        <DeleteCompanyBlock
+          companyId={company.id}
+          displayName={company.displayName}
+          canDeleteOutright={role === "OWNER"}
+        />
+      ) : null}
 
       <KybSection
         companyId={company.id}

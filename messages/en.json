@@ -308,7 +308,8 @@
         "not_pending": "Not pending.",
         "reason_too_short": "Reason must be at least 3 chars.",
         "generic": "Something went wrong."
-      }
+      },
+      "delete": "Delete"
     },
     "analytics": {
       "title": "Analytics",
@@ -780,7 +781,43 @@
     "photos": "Storefront photos",
     "photo": "Photo",
     "ownListing": "Self-listed",
-    "pointHiddenUntilCompanyApproved": "This company is still under review: the location will not appear on the map or in the counter until the company is approved."
+    "pointHiddenUntilCompanyApproved": "This company is still under review: the location will not appear on the map or in the counter until the company is approved.",
+    "delete": {
+      "point": "Delete",
+      "requestPoint": "Request deletion",
+      "confirmPoint": "Delete this location? It will disappear from the map and from the counters.",
+      "confirmRequestPoint": "Send the owners a request to delete this location?",
+      "companyTitle": "Delete company",
+      "requestCompanyTitle": "Request company deletion",
+      "companyHint": "The company and all its locations will disappear from the site. The data stays in the database — an administrator can restore it.",
+      "requestCompanyHint": "Only an owner can delete a company. Your request goes to the owners for confirmation.",
+      "typeName": "To confirm, type the name: {name}",
+      "company": "Delete company",
+      "requestCompany": "Request deletion",
+      "requestsTitle": "Deletion requests",
+      "targetCompany": "The whole company",
+      "targetPoint": "Location",
+      "votes": "Confirmations: {have} of {need}",
+      "requestedBy": "Requested by {who}",
+      "expires": "expires {date}",
+      "approve": "Confirm deletion",
+      "reject": "Decline",
+      "withdraw": "Withdraw request",
+      "err": {
+        "unauth": "Sign in first.",
+        "not_found": "Not found.",
+        "forbidden": "Not enough permissions.",
+        "already_deleted": "Already deleted.",
+        "last_owner_company": "You are the only owner and other members remain. Transfer ownership or remove the members first.",
+        "reason_too_long": "The reason is too long.",
+        "request_exists": "A deletion request already exists.",
+        "already_voted": "You have already voted.",
+        "not_pending": "This request is already decided.",
+        "reason_required": "Give a reason (at least 3 characters).",
+        "undefined": "Something went wrong.",
+        "generic": "Something went wrong."
+      }
+    }
   },
   "cabinet": {
     "kicker": "Section · Cabinet",

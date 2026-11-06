@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { approveCompany, rejectCompany } from "@/app/actions/admin-company";
+import { requestOrDeleteCompany } from "@/app/actions/company-deletion";
 import type { RequestStatus } from "@prisma/client";
 
 export type CompanyRowData = {
@@ -89,6 +90,19 @@ export function CompanyRow({ row }: { row: CompanyRowData }) {
           <button onClick={onReject} disabled={pending}
             className="text-xs uppercase tracking-wider px-3 py-1.5 rounded-md bg-red-500 text-white disabled:opacity-50">
             {t("reject")}
+          </button>
+          <button
+            onClick={() =>
+              startTransition(async () => {
+                setError(null);
+                const r = await requestOrDeleteCompany({ companyId: row.id, reason, asAdmin: true });
+                if (r.ok) router.refresh();
+                else setError(r.reason ?? "unknown_error");
+              })
+            }
+            disabled={pending || reason.trim().length < 3}
+            className="ml-2 text-xs uppercase tracking-wider px-3 py-1.5 rounded-md border border-red-500 text-red-400 disabled:opacity-50">
+            {t("delete")}
           </button>
         </div>
       )}

@@ -13,6 +13,7 @@ import { fetchCoinPaprikaExchanges, fetchCoinPaprikaExchangeDetail } from "../sr
 import { runAlertsEval } from "../src/lib/alerts-eval";
 import { syncOsmCryptoPois } from "../src/lib/osm-poi-store";
 import { expireStaleRevisions } from "../src/lib/coin-card-expiry";
+import { expireStaleDeletionRequests } from "../src/lib/company-deletion-expiry";
 import { startBinance, stopBinance } from "./binance";
 
 async function runPriceSync() {
@@ -223,6 +224,18 @@ async function runRevisionExpiry() {
   }
 }
 
+async function runDeletionRequestExpiry() {
+  const t0 = Date.now();
+  try {
+    const count = await expireStaleDeletionRequests(prisma);
+    if (count > 0) {
+      console.log(`[worker] deletion request expiry ok: ${count} expired in ${Date.now() - t0}ms`);
+    }
+  } catch (err) {
+    console.error("[worker] deletion request expiry failed:", err);
+  }
+}
+
 async function runCleanup() {
   const t0 = Date.now();
   try {
@@ -297,6 +310,7 @@ async function main() {
   // Daily at 04:00 server time — runs after metadata-sync (03:30) so we don't
   // race with that job's read of latest snapshots.
   cron.schedule("50 * * * *", () => void runRevisionExpiry());
+  cron.schedule("55 * * * *", () => void runDeletionRequestExpiry());
   cron.schedule("0 4 * * *", () => void runCleanup());
 
   // Live price feed via Binance WebSocket — top 20 coins.

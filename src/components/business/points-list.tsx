@@ -1,8 +1,17 @@
 import { getTranslations } from "next-intl/server";
+import { DeletePointButton } from "@/components/business/delete-buttons";
 
 export type PointListItem = { id: string; name: string; type: string; status: string; rejectReason: string | null };
 
-export async function PointsList({ points }: { points: PointListItem[] }) {
+export async function PointsList({
+  points,
+  canDelete = false,
+  canDeleteOutright = false,
+}: {
+  points: PointListItem[];
+  canDelete?: boolean;
+  canDeleteOutright?: boolean;
+}) {
   const t = await getTranslations("business");
   if (points.length === 0) return <p className="text-muted text-[13px]">{t("noPoints")}</p>;
   const badge = (s: string) =>
@@ -15,9 +24,12 @@ export async function PointsList({ points }: { points: PointListItem[] }) {
             <div className="font-medium truncate">{p.name} <span className="num text-[11px] text-muted">· {t(`type.${p.type}`)}</span></div>
             {p.status === "REJECTED" && p.rejectReason && <div className="text-[12px] text-down">{p.rejectReason}</div>}
           </div>
-          <span className={`num text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-sm font-medium ${badge(p.status)}`}>
-            {t(`status.${p.status}`)}
-          </span>
+          <div className="flex items-center gap-2 shrink-0">
+            <span className={`num text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-sm font-medium ${badge(p.status)}`}>
+              {t(`status.${p.status}`)}
+            </span>
+            {canDelete && <DeletePointButton pointId={p.id} canDeleteOutright={canDeleteOutright} />}
+          </div>
         </div>
       ))}
     </div>

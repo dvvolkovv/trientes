@@ -89,6 +89,8 @@ const SITE = process.env.PUBLIC_ORIGIN ?? "https://trientes.org";
 export async function requestOrDeleteCompany(input: {
   companyId: string;
   reason?: string | null;
+  /** Нажато из админки: тогда причина обязательна, как при отклонении. */
+  asAdmin?: boolean;
 }): Promise<Result> {
   const userId = await viewerId();
   if (!userId) return { ok: false, reason: "unauth" };
@@ -105,6 +107,10 @@ export async function requestOrDeleteCompany(input: {
   const [role, admin] = await Promise.all([roleIn(company.id, userId), isSiteAdmin()]);
   const route = routeDeletion({ role, isSiteAdmin: admin });
   if (route === "forbidden") return { ok: false, reason: "forbidden" };
+  // Модератор удаляет чужое — причина обязательна, как при отклонении.
+  if (input.asAdmin && (!admin || !reason.reason || reason.reason.length < 3)) {
+    return { ok: false, reason: admin ? "reason_required" : "forbidden" };
+  }
 
   const owners = await ownersOf(company.id);
 
@@ -166,6 +172,7 @@ export async function requestOrDeleteCompany(input: {
 export async function requestOrDeletePoint(input: {
   pointId: string;
   reason?: string | null;
+  asAdmin?: boolean;
 }): Promise<Result> {
   const userId = await viewerId();
   if (!userId) return { ok: false, reason: "unauth" };
@@ -182,6 +189,9 @@ export async function requestOrDeletePoint(input: {
   const [role, admin] = await Promise.all([roleIn(point.companyId, userId), isSiteAdmin()]);
   const route = routeDeletion({ role, isSiteAdmin: admin });
   if (route === "forbidden") return { ok: false, reason: "forbidden" };
+  if (input.asAdmin && (!admin || !reason.reason || reason.reason.length < 3)) {
+    return { ok: false, reason: admin ? "reason_required" : "forbidden" };
+  }
 
   const owners = await ownersOf(point.companyId);
 

@@ -308,7 +308,8 @@
         "not_pending": "不在待审核状态。",
         "reason_too_short": "原因至少 3 个字符。",
         "generic": "出错了。"
-      }
+      },
+      "delete": "Delete"
     },
     "analytics": {
       "title": "分析",
@@ -780,7 +781,43 @@
     "photos": "店面照片",
     "photo": "照片",
     "ownListing": "自主上架",
-    "pointHiddenUntilCompanyApproved": "该公司仍在审核中：通过审核前，网点不会出现在地图和计数中。"
+    "pointHiddenUntilCompanyApproved": "该公司仍在审核中：通过审核前，网点不会出现在地图和计数中。",
+    "delete": {
+      "point": "Delete",
+      "requestPoint": "Request deletion",
+      "confirmPoint": "Delete this location? It will disappear from the map and from the counters.",
+      "confirmRequestPoint": "Send the owners a request to delete this location?",
+      "companyTitle": "Delete company",
+      "requestCompanyTitle": "Request company deletion",
+      "companyHint": "The company and all its locations will disappear from the site. The data stays in the database — an administrator can restore it.",
+      "requestCompanyHint": "Only an owner can delete a company. Your request goes to the owners for confirmation.",
+      "typeName": "To confirm, type the name: {name}",
+      "company": "Delete company",
+      "requestCompany": "Request deletion",
+      "requestsTitle": "Deletion requests",
+      "targetCompany": "The whole company",
+      "targetPoint": "Location",
+      "votes": "Confirmations: {have} of {need}",
+      "requestedBy": "Requested by {who}",
+      "expires": "expires {date}",
+      "approve": "Confirm deletion",
+      "reject": "Decline",
+      "withdraw": "Withdraw request",
+      "err": {
+        "unauth": "Sign in first.",
+        "not_found": "Not found.",
+        "forbidden": "Not enough permissions.",
+        "already_deleted": "Already deleted.",
+        "last_owner_company": "You are the only owner and other members remain. Transfer ownership or remove the members first.",
+        "reason_too_long": "The reason is too long.",
+        "request_exists": "A deletion request already exists.",
+        "already_voted": "You have already voted.",
+        "not_pending": "This request is already decided.",
+        "reason_required": "Give a reason (at least 3 characters).",
+        "undefined": "Something went wrong.",
+        "generic": "Something went wrong."
+      }
+    }
   },
   "cabinet": {
     "kicker": "板块 · 个人中心",
