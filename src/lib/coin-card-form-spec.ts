@@ -115,6 +115,7 @@ export const SECTION_SPECS: Record<CardSection, FieldSpec[]> = {
   ],
   LINKS: [
     { kind: "url", path: "links.website", label: "website" },
+    { kind: "url", path: "links.explorer", label: "links.explorer" },
     { kind: "url", path: "links.docs", label: "links.docs" },
     { kind: "url", path: "links.whitepaper", label: "links.whitepaper" },
     { kind: "url", path: "links.github", label: "links.github" },

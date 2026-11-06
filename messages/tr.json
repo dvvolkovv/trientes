@@ -387,6 +387,64 @@
         "not_pending": "Bu kayıt artık beklemede değil.",
         "unknown": "Bir şeyler ters gitti."
       }
+    },
+    "coinOwnership": {
+      "title": "Kart sahipliği ve çoklu imza",
+      "subtitle": "Bir kartı gerçek projeye devredin ya da imzacıları kaybolmuş çoklu imzayı kapatın. İkisi de denetime yazılır ve kartın herkese açık geçmişinde görünür.",
+      "empty": "Yayınlanmış kart yok.",
+      "steward": "küratör: {steward}",
+      "multisigOn": "çoklu imza {n} içinden {m}",
+      "multisigOff": "çoklu imza yok",
+      "identifierPlaceholder": "yeni sahibin kullanıcı adı veya e-postası",
+      "reasonPlaceholder": "Gerekçe (zorunlu)",
+      "transfer": "Sahipliği devret",
+      "disableMultisig": "Çoklu imzayı kapat",
+      "done": {
+        "transferred": "Sahiplik devredildi.",
+        "multisigDisabled": "Çoklu imza kapatıldı."
+      },
+      "errors": {
+        "unauth": "Önce giriş yapın.",
+        "forbidden": "Bunun için yetkiniz yok.",
+        "not_found": "Bulunamadı.",
+        "invalid": "Geçersiz veri.",
+        "no_changes": "Değişiklik yok.",
+        "revision_closed": "Bu değişiklik zaten kapandı.",
+        "not_a_signer": "Yalnızca imzacılar oy verir.",
+        "already_voted": "Zaten oy verdiniz.",
+        "last_owner": "Kartta en az bir sahip kalmalı.",
+        "threshold_unreachable": "Önce imza eşiğini düşürün, aksi halde ulaşılamaz olur.",
+        "threshold_out_of_range": "Eşik 1 ile imzacı sayısı arasında olmalı.",
+        "user_not_found": "Kullanıcı bulunamadı.",
+        "self": "Bu sizsiniz.",
+        "too_many": "Çok fazla etkin bağlantı var.",
+        "accepted": "Bağlantı daha önce kullanıldı.",
+        "expired": "Bağlantının süresi doldu.",
+        "revoked": "Bağlantı iptal edildi.",
+        "reason_too_short": "En az 3 karakterlik bir gerekçe yazın.",
+        "section_unsupported": "Bu bölüm henüz düzenlenemiyor.",
+        "too_many_contracts": "Çok fazla kontrat.",
+        "too_many_markets": "Çok fazla pazar.",
+        "market_incomplete": "Bir pazar için borsa ve parite gerekir.",
+        "url_invalid": "Geçerli bir http(s) adresi değil.",
+        "website_required": "Web sitesi zorunlu.",
+        "supply_inconsistent": "Dolaşımdaki arz toplamı, toplam da maksimumu geçemez.",
+        "supply_negative": "Arz negatif olamaz.",
+        "date_invalid": "Geçersiz tarih.",
+        "symbol_required": "Sembol zorunlu.",
+        "symbol_too_long": "Sembol çok uzun.",
+        "symbol_invalid": "Sembolde yalnızca harf ve rakam olabilir.",
+        "name_required": "İsim zorunlu.",
+        "name_too_long": "İsim çok uzun.",
+        "tagline_too_long": "Slogan çok uzun.",
+        "description_too_long": "Açıklama çok uzun.",
+        "chain_unknown": "Desteklenmeyen zincir.",
+        "contract_required": "Kontrat adresi zorunlu.",
+        "contract_invalid": "Bu kontrat adresi bu zincire uymuyor.",
+        "decimals_invalid": "Ondalık basamak 0 ile 36 arasında olmalı.",
+        "not_pending": "Bu kayıt artık beklemede değil.",
+        "unknown": "Bir şeyler ters gitti."
+      }
     }
   },
   "exchanges": {
@@ -1175,7 +1233,8 @@
       "telegram": "Telegram",
       "discord": "Discord",
       "reddit": "Reddit",
-      "youtube": "YouTube"
+      "youtube": "YouTube",
+      "explorer": "Gezgin"
     },
     "provenance": {
       "SELF_REPORTED": "Projenin kendi bildirimi",
@@ -1275,7 +1334,8 @@
         "telegram": "Telegram",
         "discord": "Discord",
         "reddit": "Reddit",
-        "youtube": "YouTube"
+        "youtube": "YouTube",
+        "explorer": "Gezgin"
       },
       "next": "Devam",
       "finish": "İncelemeye gönder",

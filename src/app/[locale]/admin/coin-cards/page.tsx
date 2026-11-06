@@ -4,6 +4,7 @@ import { AdminNav } from "@/components/admin/nav";
 import { CoinCardRow } from "@/components/admin/coin-card-row";
 import { CoinRevisionRow, type AdminRevision } from "@/components/admin/coin-revision-row";
 import type { DiffEntry } from "@/lib/coin-card-diff";
+import { CoinCardOwnershipRow, type OwnershipCard } from "@/components/admin/coin-card-ownership";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,7 @@ export default async function AdminCoinCardsPage({
   setRequestLocale(locale);
   const t = await getTranslations("admin.coinCards");
   const tr = await getTranslations("admin.coinRevisions");
+  const to = await getTranslations("admin.coinOwnership");
 
   // The ADMIN gate lives in admin/layout.tsx — no second check needed here.
   const cards = await prisma.coinCard.findMany({
@@ -54,6 +56,35 @@ export default async function AdminCoinCardsPage({
     authorLabel: r.author.username ?? r.author.email ?? r.author.name ?? r.authorId.slice(0, 6),
   }));
 
+  // Published cards, for the two admin-only levers: transfer and kill-multisig.
+  const published = await prisma.coinCard.findMany({
+    where: { status: "APPROVED" },
+    orderBy: { createdAt: "desc" },
+    take: 100,
+    include: {
+      steward: { select: { username: true, email: true } },
+      policy: true,
+      _count: { select: { members: true } },
+    },
+  });
+  const signerCounts = await prisma.coinCardMember.groupBy({
+    by: ["cardId"],
+    where: { isSigner: true, cardId: { in: published.map((c) => c.id) } },
+    _count: { _all: true },
+  });
+  const signersByCard = new Map(signerCounts.map((s) => [s.cardId, s._count._all]));
+  const ownershipRows: OwnershipCard[] = published.map((c) => ({
+    id: c.id,
+    name: c.name,
+    symbol: c.symbol,
+    slug: c.slug,
+    steward: c.steward?.username ?? c.steward?.email ?? null,
+    trust: c.trust,
+    multisig: c.policy?.multisig ?? false,
+    threshold: c.policy?.threshold ?? 1,
+    signers: signersByCard.get(c.id) ?? 0,
+  }));
+
   return (
     <div>
       <AdminNav locale={locale} active="coinCards" />
@@ -65,6 +96,18 @@ export default async function AdminCoinCardsPage({
         <div className="space-y-4">
           {cards.map((c) => (
             <CoinCardRow key={c.id} card={JSON.parse(JSON.stringify(c))} />
+          ))}
+        </div>
+      )}
+
+      <h2 className="text-xl font-semibold mt-12 mb-1">{to("title")}</h2>
+      <p className="text-muted text-sm mb-6">{to("subtitle")}</p>
+      {ownershipRows.length === 0 ? (
+        <p className="text-muted text-sm">{to("empty")}</p>
+      ) : (
+        <div className="space-y-4">
+          {ownershipRows.map((c) => (
+            <CoinCardOwnershipRow key={c.id} card={c} />
           ))}
         </div>
       )}

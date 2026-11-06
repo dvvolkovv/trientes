@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { ExternalLink } from "../external-link";
 
 const ORDER = [
-  "website", "docs", "whitepaper", "github", "x",
+  "website", "explorer", "docs", "whitepaper", "github", "x",
   "telegram", "discord", "reddit", "blog", "youtube",
 ] as const;
 

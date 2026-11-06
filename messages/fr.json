@@ -387,6 +387,64 @@
         "not_pending": "Cet élément n'est plus en attente.",
         "unknown": "Une erreur est survenue."
       }
+    },
+    "coinOwnership": {
+      "title": "Propriété de la fiche et multisignature",
+      "subtitle": "Confier une fiche au vrai projet, ou désactiver une multisignature dont les signataires ont disparu. Les deux sont journalisés et visibles dans l'historique public.",
+      "empty": "Aucune fiche publiée.",
+      "steward": "curateur : {steward}",
+      "multisigOn": "multisignature {m} sur {n}",
+      "multisigOff": "sans multisignature",
+      "identifierPlaceholder": "nom d'utilisateur ou e-mail du nouveau propriétaire",
+      "reasonPlaceholder": "Motif (obligatoire)",
+      "transfer": "Transférer la propriété",
+      "disableMultisig": "Désactiver la multisignature",
+      "done": {
+        "transferred": "Propriété transférée.",
+        "multisigDisabled": "Multisignature désactivée."
+      },
+      "errors": {
+        "unauth": "Connectez-vous d'abord.",
+        "forbidden": "Vous n'avez pas les droits.",
+        "not_found": "Introuvable.",
+        "invalid": "Données invalides.",
+        "no_changes": "Aucun changement.",
+        "revision_closed": "Cette modification est déjà clôturée.",
+        "not_a_signer": "Seuls les signataires votent.",
+        "already_voted": "Vous avez déjà voté.",
+        "last_owner": "La fiche doit garder au moins un propriétaire.",
+        "threshold_unreachable": "Baissez d'abord le seuil de signatures, sinon il devient inatteignable.",
+        "threshold_out_of_range": "Le seuil doit être entre 1 et le nombre de signataires.",
+        "user_not_found": "Utilisateur introuvable.",
+        "self": "C'est vous.",
+        "too_many": "Trop de liens actifs.",
+        "accepted": "Le lien a déjà été utilisé.",
+        "expired": "Le lien a expiré.",
+        "revoked": "Le lien a été révoqué.",
+        "reason_too_short": "Indiquez un motif d'au moins 3 caractères.",
+        "section_unsupported": "Cette section n'est pas encore modifiable.",
+        "too_many_contracts": "Trop de contrats.",
+        "too_many_markets": "Trop de marchés.",
+        "market_incomplete": "Un marché exige une plateforme et une paire.",
+        "url_invalid": "Ce n'est pas une adresse http(s) valide.",
+        "website_required": "Le site web est obligatoire.",
+        "supply_inconsistent": "Le circulant ne dépasse pas le total, ni le total le maximum.",
+        "supply_negative": "L'offre ne peut pas être négative.",
+        "date_invalid": "Date invalide.",
+        "symbol_required": "Le ticker est obligatoire.",
+        "symbol_too_long": "Le ticker est trop long.",
+        "symbol_invalid": "Le ticker n'accepte que lettres et chiffres.",
+        "name_required": "Le nom est obligatoire.",
+        "name_too_long": "Le nom est trop long.",
+        "tagline_too_long": "L'accroche est trop longue.",
+        "description_too_long": "La description est trop longue.",
+        "chain_unknown": "Chaîne non prise en charge.",
+        "contract_required": "L'adresse du contrat est obligatoire.",
+        "contract_invalid": "Cette adresse de contrat ne correspond pas à cette chaîne.",
+        "decimals_invalid": "Les décimales doivent être entre 0 et 36.",
+        "not_pending": "Cet élément n'est plus en attente.",
+        "unknown": "Une erreur est survenue."
+      }
     }
   },
   "exchanges": {
@@ -1175,7 +1233,8 @@
       "telegram": "Telegram",
       "discord": "Discord",
       "reddit": "Reddit",
-      "youtube": "YouTube"
+      "youtube": "YouTube",
+      "explorer": "Explorateur"
     },
     "provenance": {
       "SELF_REPORTED": "Déclaré par le projet lui-même",
@@ -1275,7 +1334,8 @@
         "telegram": "Telegram",
         "discord": "Discord",
         "reddit": "Reddit",
-        "youtube": "YouTube"
+        "youtube": "YouTube",
+        "explorer": "Explorateur"
       },
       "next": "Continuer",
       "finish": "Soumettre pour examen",

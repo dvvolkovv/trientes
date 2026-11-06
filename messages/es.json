@@ -387,6 +387,64 @@
         "not_pending": "Este elemento ya no está pendiente.",
         "unknown": "Algo ha ido mal."
       }
+    },
+    "coinOwnership": {
+      "title": "Propiedad de la tarjeta y multifirma",
+      "subtitle": "Entrega una tarjeta al proyecto real o desactiva una multifirma cuyos firmantes han desaparecido. Ambas acciones quedan en auditoría y en el historial público.",
+      "empty": "No hay tarjetas publicadas.",
+      "steward": "curador: {steward}",
+      "multisigOn": "multifirma {m} de {n}",
+      "multisigOff": "sin multifirma",
+      "identifierPlaceholder": "usuario o correo del nuevo propietario",
+      "reasonPlaceholder": "Motivo (obligatorio)",
+      "transfer": "Transferir propiedad",
+      "disableMultisig": "Desactivar multifirma",
+      "done": {
+        "transferred": "Propiedad transferida.",
+        "multisigDisabled": "Multifirma desactivada."
+      },
+      "errors": {
+        "unauth": "Inicia sesión primero.",
+        "forbidden": "No tienes permisos para esto.",
+        "not_found": "No encontrado.",
+        "invalid": "Datos no válidos.",
+        "no_changes": "No hay cambios.",
+        "revision_closed": "Este cambio ya está cerrado.",
+        "not_a_signer": "Solo los firmantes pueden votar.",
+        "already_voted": "Ya has votado.",
+        "last_owner": "La tarjeta debe conservar al menos un propietario.",
+        "threshold_unreachable": "Baja primero el umbral de firmas; de lo contrario sería inalcanzable.",
+        "threshold_out_of_range": "El umbral debe estar entre 1 y el número de firmantes.",
+        "user_not_found": "Usuario no encontrado.",
+        "self": "Eres tú.",
+        "too_many": "Demasiados enlaces activos.",
+        "accepted": "El enlace ya se ha usado.",
+        "expired": "El enlace ha caducado.",
+        "revoked": "El enlace fue revocado.",
+        "reason_too_short": "Indica un motivo de al menos 3 caracteres.",
+        "section_unsupported": "Esta sección aún no se puede editar.",
+        "too_many_contracts": "Demasiados contratos.",
+        "too_many_markets": "Demasiados mercados.",
+        "market_incomplete": "Un mercado necesita exchange y par.",
+        "url_invalid": "No es una dirección http(s) válida.",
+        "website_required": "El sitio web es obligatorio.",
+        "supply_inconsistent": "El circulante no puede superar el total, ni el total el máximo.",
+        "supply_negative": "El suministro no puede ser negativo.",
+        "date_invalid": "Fecha no válida.",
+        "symbol_required": "El ticker es obligatorio.",
+        "symbol_too_long": "El ticker es demasiado largo.",
+        "symbol_invalid": "El ticker solo admite letras y dígitos.",
+        "name_required": "El nombre es obligatorio.",
+        "name_too_long": "El nombre es demasiado largo.",
+        "tagline_too_long": "El eslogan es demasiado largo.",
+        "description_too_long": "La descripción es demasiado larga.",
+        "chain_unknown": "Red no admitida.",
+        "contract_required": "La dirección del contrato es obligatoria.",
+        "contract_invalid": "Esa dirección de contrato no encaja con esta red.",
+        "decimals_invalid": "Los decimales deben estar entre 0 y 36.",
+        "not_pending": "Este elemento ya no está pendiente.",
+        "unknown": "Algo ha ido mal."
+      }
     }
   },
   "exchanges": {
@@ -1175,7 +1233,8 @@
       "discord": "Discord",
       "reddit": "Reddit",
       "youtube": "YouTube",
-      "blog": "Blog"
+      "blog": "Blog",
+      "explorer": "Explorador"
     },
     "provenance": {
       "SELF_REPORTED": "Declarado por el propio proyecto",
@@ -1275,7 +1334,8 @@
         "discord": "Discord",
         "reddit": "Reddit",
         "youtube": "YouTube",
-        "blog": "Blog"
+        "blog": "Blog",
+        "explorer": "Explorador"
       },
       "next": "Continuar",
       "finish": "Enviar a revisión",

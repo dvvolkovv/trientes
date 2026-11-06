@@ -387,6 +387,64 @@
         "not_pending": "この項目はすでに処理済みです。",
         "unknown": "問題が発生しました。"
       }
+    },
+    "coinOwnership": {
+      "title": "カードの所有権とマルチシグ",
+      "subtitle": "カードを本来のプロジェクトに引き渡す、あるいは署名者が不在のマルチシグを解除します。どちらも監査に記録され、公開履歴に表示されます。",
+      "empty": "公開中のカードはありません。",
+      "steward": "管理者: {steward}",
+      "multisigOn": "マルチシグ {n} 中 {m}",
+      "multisigOff": "マルチシグなし",
+      "identifierPlaceholder": "新しい所有者のユーザー名またはメール",
+      "reasonPlaceholder": "理由（必須）",
+      "transfer": "所有権を移転",
+      "disableMultisig": "マルチシグを解除",
+      "done": {
+        "transferred": "所有権を移転しました。",
+        "multisigDisabled": "マルチシグを解除しました。"
+      },
+      "errors": {
+        "unauth": "先にログインしてください。",
+        "forbidden": "この操作の権限がありません。",
+        "not_found": "見つかりません。",
+        "invalid": "入力が不正です。",
+        "no_changes": "変更はありません。",
+        "revision_closed": "この変更はすでに終了しています。",
+        "not_a_signer": "投票できるのは署名者だけです。",
+        "already_voted": "すでに投票済みです。",
+        "last_owner": "カードにはオーナーが少なくとも1人必要です。",
+        "threshold_unreachable": "先に署名のしきい値を下げてください。そのままでは到達不能になります。",
+        "threshold_out_of_range": "しきい値は1以上、署名者数以下にしてください。",
+        "user_not_found": "ユーザーが見つかりません。",
+        "self": "それはあなた自身です。",
+        "too_many": "有効なリンクが多すぎます。",
+        "accepted": "このリンクはすでに使用されています。",
+        "expired": "リンクの有効期限が切れています。",
+        "revoked": "リンクは無効化されました。",
+        "reason_too_short": "3文字以上の理由を入力してください。",
+        "section_unsupported": "このセクションはまだ編集できません。",
+        "too_many_contracts": "コントラクトが多すぎます。",
+        "too_many_markets": "市場が多すぎます。",
+        "market_incomplete": "市場には取引所とペアが必要です。",
+        "url_invalid": "有効な http(s) アドレスではありません。",
+        "website_required": "ウェブサイトは必須です。",
+        "supply_inconsistent": "循環量は総量以下、総量は最大量以下にしてください。",
+        "supply_negative": "供給量を負の値にはできません。",
+        "date_invalid": "日付が不正です。",
+        "symbol_required": "ティッカーは必須です。",
+        "symbol_too_long": "ティッカーが長すぎます。",
+        "symbol_invalid": "ティッカーに使えるのは英数字だけです。",
+        "name_required": "名称は必須です。",
+        "name_too_long": "名称が長すぎます。",
+        "tagline_too_long": "キャッチコピーが長すぎます。",
+        "description_too_long": "説明が長すぎます。",
+        "chain_unknown": "未対応のチェーンです。",
+        "contract_required": "コントラクトアドレスは必須です。",
+        "contract_invalid": "このチェーンのアドレス形式と一致しません。",
+        "decimals_invalid": "decimals は0〜36の範囲にしてください。",
+        "not_pending": "この項目はすでに処理済みです。",
+        "unknown": "問題が発生しました。"
+      }
     }
   },
   "exchanges": {
@@ -1175,7 +1233,8 @@
       "telegram": "Telegram",
       "discord": "Discord",
       "reddit": "Reddit",
-      "youtube": "YouTube"
+      "youtube": "YouTube",
+      "explorer": "エクスプローラ"
     },
     "provenance": {
       "SELF_REPORTED": "プロジェクトの自己申告",
@@ -1275,7 +1334,8 @@
         "telegram": "Telegram",
         "discord": "Discord",
         "reddit": "Reddit",
-        "youtube": "YouTube"
+        "youtube": "YouTube",
+        "explorer": "エクスプローラ"
       },
       "next": "次へ",
       "finish": "審査に提出",

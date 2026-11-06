@@ -39,7 +39,7 @@ export async function CardTeamSection({
     : [];
 
   return (
-    <section id="team">
+    <section id="members">
       <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-1">{t("title")}</h2>
       <p className="text-sm text-muted mb-4">
         {canManage ? t("subtitleManager") : t("subtitleViewer", { role: t(`role.${viewerRole}`) })}

@@ -387,6 +387,64 @@
         "not_pending": "该条目已不在待处理状态。",
         "unknown": "出了点问题。"
       }
+    },
+    "coinOwnership": {
+      "title": "卡片所有权与多签",
+      "subtitle": "把卡片交给真正的项目方，或关闭签名人已失联的多签。两者都会记入审计并显示在公开历史中。",
+      "empty": "没有已发布的卡片。",
+      "steward": "维护者：{steward}",
+      "multisigOn": "多签 {n} 取 {m}",
+      "multisigOff": "未启用多签",
+      "identifierPlaceholder": "新所有者的用户名或邮箱",
+      "reasonPlaceholder": "原因（必填）",
+      "transfer": "转移所有权",
+      "disableMultisig": "关闭多签",
+      "done": {
+        "transferred": "所有权已转移。",
+        "multisigDisabled": "多签已关闭。"
+      },
+      "errors": {
+        "unauth": "请先登录。",
+        "forbidden": "你没有权限。",
+        "not_found": "未找到。",
+        "invalid": "数据无效。",
+        "no_changes": "没有任何改动。",
+        "revision_closed": "该修改已经结束。",
+        "not_a_signer": "只有签名人可以投票。",
+        "already_voted": "你已经投过票了。",
+        "last_owner": "卡片必须至少保留一位所有者。",
+        "threshold_unreachable": "请先降低签名阈值，否则将无法达成。",
+        "threshold_out_of_range": "阈值必须在 1 到签名人数之间。",
+        "user_not_found": "未找到该用户。",
+        "self": "那是你自己。",
+        "too_many": "有效链接过多。",
+        "accepted": "链接已被使用。",
+        "expired": "链接已过期。",
+        "revoked": "链接已被撤销。",
+        "reason_too_short": "请填写至少 3 个字符的原因。",
+        "section_unsupported": "该板块暂时无法编辑。",
+        "too_many_contracts": "合约太多。",
+        "too_many_markets": "市场太多。",
+        "market_incomplete": "市场需要交易所和交易对。",
+        "url_invalid": "这不是有效的 http(s) 地址。",
+        "website_required": "官网为必填项。",
+        "supply_inconsistent": "流通量不得超过总量，总量不得超过最大供应量。",
+        "supply_negative": "供应量不能为负。",
+        "date_invalid": "日期无效。",
+        "symbol_required": "代号为必填项。",
+        "symbol_too_long": "代号过长。",
+        "symbol_invalid": "代号只能包含字母和数字。",
+        "name_required": "名称为必填项。",
+        "name_too_long": "名称过长。",
+        "tagline_too_long": "标语过长。",
+        "description_too_long": "描述过长。",
+        "chain_unknown": "不支持该链。",
+        "contract_required": "合约地址为必填项。",
+        "contract_invalid": "该合约地址与此链不匹配。",
+        "decimals_invalid": "decimals 必须在 0 到 36 之间。",
+        "not_pending": "该条目已不在待处理状态。",
+        "unknown": "出了点问题。"
+      }
     }
   },
   "exchanges": {
@@ -1175,7 +1233,8 @@
       "telegram": "Telegram",
       "discord": "Discord",
       "reddit": "Reddit",
-      "youtube": "YouTube"
+      "youtube": "YouTube",
+      "explorer": "区块浏览器"
     },
     "provenance": {
       "SELF_REPORTED": "项目方自行申报",
@@ -1275,7 +1334,8 @@
         "telegram": "Telegram",
         "discord": "Discord",
         "reddit": "Reddit",
-        "youtube": "YouTube"
+        "youtube": "YouTube",
+        "explorer": "区块浏览器"
       },
       "next": "继续",
       "finish": "提交审核",
