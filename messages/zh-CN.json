@@ -25,7 +25,14 @@
     "searchPlaceholder": "搜索…",
     "searching": "搜索中…",
     "noResults": "无结果",
-    "compare": "对比"
+    "compare": "对比",
+    "searchKind": {
+      "coin": "代币",
+      "coinCard": "自主上架",
+      "exchange": "交易所",
+      "fintech": "金融科技",
+      "company": "公司"
+    }
   },
   "home": {
     "title": "欢迎",
@@ -76,7 +83,12 @@
       "extremeGreed": "极度贪婪"
     },
     "sparkline7d": "7天图",
-    "search": "按名称或符号搜索…"
+    "search": "按名称或符号搜索…",
+    "selfListed": {
+      "kicker": "板块 · 自主上架",
+      "title": "由项目方自己上架",
+      "subtitle": "卡片由项目方自己填写和维护的代币。它们尚无聚合市场价格，但每个数值都标明了来源。"
+    }
   },
   "detail": {
     "about": "关于",

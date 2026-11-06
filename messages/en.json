@@ -25,7 +25,14 @@
     "searchPlaceholder": "Search…",
     "searching": "Searching…",
     "noResults": "No results",
-    "compare": "Compare"
+    "compare": "Compare",
+    "searchKind": {
+      "coin": "Coin",
+      "coinCard": "Self-listed",
+      "exchange": "Exchange",
+      "fintech": "Fintech",
+      "company": "Company"
+    }
   },
   "home": {
     "title": "Welcome",
@@ -76,7 +83,12 @@
       "extremeGreed": "Extreme Greed"
     },
     "sparkline7d": "7d chart",
-    "search": "Search by name or symbol…"
+    "search": "Search by name or symbol…",
+    "selfListed": {
+      "kicker": "Section · Self-listed",
+      "title": "Listed by their own teams",
+      "subtitle": "Coins whose cards are filled in and maintained by the projects themselves. They have no aggregated market price yet — every value states where it came from."
+    }
   },
   "detail": {
     "about": "About",

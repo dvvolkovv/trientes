@@ -5,19 +5,12 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 
 type Hit = {
-  kind: "coin" | "exchange" | "fintech" | "company";
+  kind: "coin" | "coinCard" | "exchange" | "fintech" | "company";
   id: string;
   title: string;
   subtitle: string | null;
   logoUrl: string | null;
   href: string;
-};
-
-const KIND_LABEL: Record<Hit["kind"], string> = {
-  coin: "Coin",
-  exchange: "Exchange",
-  fintech: "Fintech",
-  company: "Company",
 };
 
 export function GlobalSearch() {
@@ -105,7 +98,7 @@ export function GlobalSearch() {
                       ) : null}
                     </div>
                     <span className="text-[10px] uppercase tracking-wider text-muted/60 flex-shrink-0">
-                      {KIND_LABEL[h.kind]}
+                      {t(`searchKind.${h.kind}`)}
                     </span>
                   </Link>
                 </li>

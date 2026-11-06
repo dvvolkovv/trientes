@@ -25,7 +25,14 @@
     "searchPlaceholder": "검색…",
     "searching": "검색 중…",
     "noResults": "결과 없음",
-    "compare": "비교"
+    "compare": "비교",
+    "searchKind": {
+      "coin": "코인",
+      "coinCard": "자체 등록",
+      "exchange": "거래소",
+      "fintech": "핀테크",
+      "company": "기업"
+    }
   },
   "home": {
     "title": "환영합니다",
@@ -76,7 +83,12 @@
       "extremeGreed": "극단적 탐욕"
     },
     "sparkline7d": "7일 차트",
-    "search": "이름/심볼로 검색…"
+    "search": "이름/심볼로 검색…",
+    "selfListed": {
+      "kicker": "섹션 · 자체 등록",
+      "title": "프로젝트가 직접 등록한 코인",
+      "subtitle": "카드를 프로젝트가 직접 작성하고 관리하는 코인입니다. 아직 집계된 시장가는 없지만, 모든 값에 출처가 표시됩니다."
+    }
   },
   "detail": {
     "about": "소개",

@@ -25,7 +25,14 @@
     "searchPlaceholder": "検索…",
     "searching": "検索中…",
     "noResults": "結果なし",
-    "compare": "比較"
+    "compare": "比較",
+    "searchKind": {
+      "coin": "コイン",
+      "coinCard": "自己掲載",
+      "exchange": "取引所",
+      "fintech": "フィンテック",
+      "company": "企業"
+    }
   },
   "home": {
     "title": "ようこそ",
@@ -76,7 +83,12 @@
       "extremeGreed": "極度の強欲"
     },
     "sparkline7d": "7日チャート",
-    "search": "名前/シンボルで検索…"
+    "search": "名前/シンボルで検索…",
+    "selfListed": {
+      "kicker": "セクション · 自己掲載",
+      "title": "プロジェクト自身による掲載",
+      "subtitle": "カードをプロジェクト自身が記入・管理しているコインです。集計された市場価格はまだありませんが、各項目には出所が明記されています。"
+    }
   },
   "detail": {
     "about": "概要",

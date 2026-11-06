@@ -25,7 +25,14 @@
     "searchPlaceholder": "Suchen…",
     "searching": "Suche…",
     "noResults": "Keine Ergebnisse",
-    "compare": "Vergleichen"
+    "compare": "Vergleichen",
+    "searchKind": {
+      "coin": "Münze",
+      "coinCard": "Eigenes Listing",
+      "exchange": "Börse",
+      "fintech": "Fintech",
+      "company": "Unternehmen"
+    }
   },
   "home": {
     "title": "Willkommen",
@@ -76,7 +83,12 @@
       "extremeGreed": "Extreme Gier"
     },
     "sparkline7d": "7T-Verlauf",
-    "search": "Nach Name oder Symbol suchen…"
+    "search": "Nach Name oder Symbol suchen…",
+    "selfListed": {
+      "kicker": "Bereich · Eigenes Listing",
+      "title": "Von den Teams selbst gelistet",
+      "subtitle": "Münzen, deren Karten die Projekte selbst pflegen. Einen aggregierten Marktpreis gibt es noch nicht — dafür nennt jeder Wert seine Quelle."
+    }
   },
   "detail": {
     "about": "Über",

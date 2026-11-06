@@ -25,7 +25,14 @@
     "searchPlaceholder": "Buscar…",
     "searching": "Buscando…",
     "noResults": "Sin resultados",
-    "compare": "Comparar"
+    "compare": "Comparar",
+    "searchKind": {
+      "coin": "Moneda",
+      "coinCard": "Listado propio",
+      "exchange": "Exchange",
+      "fintech": "Fintech",
+      "company": "Empresa"
+    }
   },
   "home": {
     "title": "Bienvenido",
@@ -76,7 +83,12 @@
       "extremeGreed": "Codicia extrema"
     },
     "sparkline7d": "Gráfico 7d",
-    "search": "Buscar por nombre o símbolo…"
+    "search": "Buscar por nombre o símbolo…",
+    "selfListed": {
+      "kicker": "Sección · Listado propio",
+      "title": "Listadas por sus propios equipos",
+      "subtitle": "Monedas cuyas tarjetas rellenan y mantienen los propios proyectos. Todavía no tienen precio de mercado agregado, pero cada valor indica de dónde sale."
+    }
   },
   "detail": {
     "about": "Acerca",

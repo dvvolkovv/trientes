@@ -25,7 +25,14 @@
     "searchPlaceholder": "Buscar…",
     "searching": "Buscando…",
     "noResults": "Sem resultados",
-    "compare": "Comparar"
+    "compare": "Comparar",
+    "searchKind": {
+      "coin": "Moeda",
+      "coinCard": "Listagem própria",
+      "exchange": "Corretora",
+      "fintech": "Fintech",
+      "company": "Empresa"
+    }
   },
   "home": {
     "title": "Bem-vindo",
@@ -76,7 +83,12 @@
       "extremeGreed": "Ganância extrema"
     },
     "sparkline7d": "Gráfico 7d",
-    "search": "Buscar por nome ou símbolo…"
+    "search": "Buscar por nome ou símbolo…",
+    "selfListed": {
+      "kicker": "Seção · Listagem própria",
+      "title": "Listadas pelas próprias equipes",
+      "subtitle": "Moedas cujos cartões são preenchidos e mantidos pelos próprios projetos. Ainda não têm preço de mercado agregado — mas cada valor diz de onde veio."
+    }
   },
   "detail": {
     "about": "Sobre",

@@ -2,6 +2,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { readTop100, readGlobalStats, readExchangeRates, readNews, readFearGreed } from "@/lib/snapshot";
 import { GlobalStatsHero } from "@/components/global-stats-hero";
 import { CoinListClient } from "@/components/coin-list-client";
+import { SelfListedRail } from "@/components/self-listed-rail";
 import { NewsRail } from "@/components/news-rail";
 import { LivePrices } from "@/components/live-prices";
 import { HomeTicker, type TickerItem } from "@/components/home-ticker";
@@ -185,6 +186,8 @@ export default async function Home({
             <p className="text-muted">{tl("loadingFallback")}</p>
           )}
         </section>
+
+        <SelfListedRail locale={locale} />
       </div>
     </main>
   );

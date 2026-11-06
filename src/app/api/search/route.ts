@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 type Hit = {
-  kind: "coin" | "exchange" | "fintech" | "company";
+  kind: "coin" | "coinCard" | "exchange" | "fintech" | "company";
   id: string;
   title: string;
   subtitle: string | null;
@@ -20,7 +20,7 @@ export async function GET(req: Request) {
   const locale = (url.searchParams.get("locale") ?? "en").trim() || "en";
   if (q.length < 2) return NextResponse.json({ hits: [] satisfies Hit[] });
 
-  const [coins, exchanges, fintechs, companies] = await Promise.all([
+  const [coins, cards, exchanges, fintechs, companies] = await Promise.all([
     prisma.coin.findMany({
       where: {
         isActive: true,
@@ -32,6 +32,23 @@ export async function GET(req: Request) {
       },
       select: { id: true, name: true, symbol: true, slug: true, logoUrl: true, rank: true },
       orderBy: [{ rank: "asc" }],
+      take: PER_GROUP,
+    }),
+    // Self-listed cards live outside the CoinGecko-backed Coin table. A card
+    // bound to an existing Coin (coinId set) is already represented by that
+    // coin's hit, so only unbound cards are searched here.
+    prisma.coinCard.findMany({
+      where: {
+        status: "APPROVED",
+        coinId: null,
+        OR: [
+          { name: { contains: q, mode: "insensitive" } },
+          { symbol: { contains: q, mode: "insensitive" } },
+          { slug: { contains: q, mode: "insensitive" } },
+        ],
+      },
+      select: { id: true, name: true, symbol: true, slug: true, logoUrl: true },
+      orderBy: [{ completeness: "desc" }],
       take: PER_GROUP,
     }),
     prisma.exchange.findMany({
@@ -74,6 +91,14 @@ export async function GET(req: Request) {
   const hits: Hit[] = [
     ...coins.map((c) => ({
       kind: "coin" as const,
+      id: c.id,
+      title: c.name,
+      subtitle: c.symbol.toUpperCase(),
+      logoUrl: c.logoUrl,
+      href: `/${locale}/coin/${c.slug}`,
+    })),
+    ...cards.map((c) => ({
+      kind: "coinCard" as const,
       id: c.id,
       title: c.name,
       subtitle: c.symbol.toUpperCase(),

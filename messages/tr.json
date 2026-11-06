@@ -25,7 +25,14 @@
     "searchPlaceholder": "Ara…",
     "searching": "Aranıyor…",
     "noResults": "Sonuç yok",
-    "compare": "Karşılaştır"
+    "compare": "Karşılaştır",
+    "searchKind": {
+      "coin": "Coin",
+      "coinCard": "Kendi listelemesi",
+      "exchange": "Borsa",
+      "fintech": "Fintek",
+      "company": "Şirket"
+    }
   },
   "home": {
     "title": "Hoş geldiniz",
@@ -76,7 +83,12 @@
       "extremeGreed": "Aşırı açgözlülük"
     },
     "sparkline7d": "7g grafik",
-    "search": "İsim veya sembolle ara…"
+    "search": "İsim veya sembolle ara…",
+    "selfListed": {
+      "kicker": "Bölüm · Kendi listelemesi",
+      "title": "Ekiplerin kendi listelediği coinler",
+      "subtitle": "Kartını projelerin kendisinin doldurup yürüttüğü coinler. Henüz toplulaştırılmış piyasa fiyatları yok — ama her değer kaynağını belirtiyor."
+    }
   },
   "detail": {
     "about": "Hakkında",

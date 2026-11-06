@@ -25,7 +25,14 @@
     "searchPlaceholder": "Rechercher…",
     "searching": "Recherche…",
     "noResults": "Aucun résultat",
-    "compare": "Comparer"
+    "compare": "Comparer",
+    "searchKind": {
+      "coin": "Monnaie",
+      "coinCard": "Listing propre",
+      "exchange": "Plateforme",
+      "fintech": "Fintech",
+      "company": "Entreprise"
+    }
   },
   "home": {
     "title": "Bienvenue",
@@ -76,7 +83,12 @@
       "extremeGreed": "Avidité extrême"
     },
     "sparkline7d": "Graph. 7j",
-    "search": "Recherche par nom ou symbole…"
+    "search": "Recherche par nom ou symbole…",
+    "selfListed": {
+      "kicker": "Section · Listing propre",
+      "title": "Référencées par leurs équipes",
+      "subtitle": "Des monnaies dont la fiche est remplie et tenue par les projets eux-mêmes. Pas encore de prix de marché agrégé — en revanche chaque valeur indique sa source."
+    }
   },
   "detail": {
     "about": "À propos",

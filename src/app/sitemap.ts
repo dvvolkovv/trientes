@@ -27,12 +27,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPaths = ["", "/exchanges", "/fintech", "/companies", "/markets", "/compare"];
   const staticEntries = staticPaths.map((p) => withAlternates(p, now));
 
-  const [coins, exchanges, fintechs, companies] = await Promise.all([
+  const [coins, cards, exchanges, fintechs, companies] = await Promise.all([
     prisma.coin.findMany({
       where: { isActive: true },
       orderBy: { rank: "asc" },
       take: 500,
       select: { id: true, updatedAt: true },
+    }),
+    // Self-listed cards have their own slugs and are not in the Coin table.
+    prisma.coinCard.findMany({
+      where: { status: "APPROVED", coinId: null },
+      orderBy: { completeness: "desc" },
+      take: 500,
+      select: { slug: true, updatedAt: true },
     }),
     prisma.exchange.findMany({
       orderBy: { trustScoreRank: "asc" },
@@ -55,6 +62,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const dynamic: Entry[] = [
     ...coins.map((c) => withAlternates(`/coin/${c.id}`, c.updatedAt)),
+    ...cards.map((c) => withAlternates(`/coin/${c.slug}`, c.updatedAt)),
     ...exchanges.map((e) => withAlternates(`/exchanges/${e.id}`, e.updatedAt)),
     ...fintechs.map((f) => withAlternates(`/fintech/${f.slug}`, f.updatedAt)),
     ...companies.map((c) => withAlternates(`/companies/${c.id}`, c.updatedAt)),
