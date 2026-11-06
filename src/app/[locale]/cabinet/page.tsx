@@ -13,10 +13,13 @@ import { CoinsSection } from "@/components/cabinet/coins-section";
 
 export default async function CabinetPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ card?: string }>;
 }) {
   const { locale } = await params;
+  const { card: cardParam } = await searchParams;
   setRequestLocale(locale);
   const session = await auth();
   const userId = (session?.user as { id?: string } | undefined)?.id;
@@ -77,7 +80,7 @@ export default async function CabinetPage({
         locale={locale}
       />
 
-      <CompaniesSection locale={locale} />
+      <CompaniesSection locale={locale} cardParam={cardParam} />
 
       <CoinsSection locale={locale} />
 

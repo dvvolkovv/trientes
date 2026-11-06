@@ -9,7 +9,7 @@ const STATUS_CLASS: Record<string, string> = {
   REJECTED: "bg-red-500/15 text-red-500",
 };
 
-export async function CompaniesSection({ locale }: { locale: string }) {
+export async function CompaniesSection({ locale, cardParam }: { locale: string; cardParam?: string }) {
   const { companies } = await listViewerCompanies();
   const t = await getTranslations("cabinet.companies");
   return (
@@ -40,7 +40,7 @@ export async function CompaniesSection({ locale }: { locale: string }) {
           ))}
         </ul>
       )}
-      <CreateCompanyForm />
+      <CreateCompanyForm nextCard={cardParam} />
     </section>
   );
 }

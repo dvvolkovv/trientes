@@ -779,7 +779,8 @@
     "viewPublic": "Открыть публичную страницу",
     "photos": "Фото витрины",
     "photo": "Фото",
-    "ownListing": "Свой листинг"
+    "ownListing": "Свой листинг",
+    "pointHiddenUntilCompanyApproved": "Компания ещё на модерации: точка не появится на карте и в счётчике, пока компанию не одобрят."
   },
   "cabinet": {
     "kicker": "Раздел · Кабинет",
@@ -894,7 +895,9 @@
         "legal_name_required": "Укажите юридическое название.",
         "display_name_required": "Укажите отображаемое название.",
         "country_required": "Укажите страну.",
-        "generic": "Что-то пошло не так."
+        "generic": "Что-то пошло не так.",
+        "too_many_companies": "Достигнут предел: не больше 10 компаний на аккаунт.",
+        "too_many_pending_companies": "Уже 3 компании ждут модерации — дождитесь решения по ним."
       }
     },
     "exchanges": {
@@ -1238,7 +1241,14 @@
       "badgeTitle": "Бейдж для вашего сайта",
       "badgeHint": "Вставьте этот код. Бейдж обновляется сам, телеметрии в нём нет.",
       "badgeLabel": "Принимаем",
-      "badgeAlt": "Принимаем {symbol}"
+      "badgeAlt": "Принимаем {symbol}",
+      "addPointTo": "Добавить точку в",
+      "orNewCompany": "…или оформить новую компанию",
+      "moreCompanies": "Все мои компании",
+      "companyStatus": {
+        "PENDING": "на модерации",
+        "REJECTED": "отклонена"
+      }
     },
     "supply": {
       "circulating": "В обращении",

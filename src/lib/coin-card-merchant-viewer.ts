@@ -4,11 +4,15 @@
 
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import type { MerchantCta } from "@/lib/coin-card-merchant-cta";
+import {
+  pickMerchantCompanies,
+  type MerchantCompany,
+  type MerchantCta,
+} from "@/lib/coin-card-merchant-cta";
 
 /**
- * Запросная часть. Без кеша — состояние зависит от сессии, а число точек
- * должно обновляться сразу после одобрения модератором.
+ * Без кеша — состояние зависит от сессии, а число точек должно обновляться
+ * сразу после одобрения модератором.
  */
 export async function getMerchantCta(cardId: string): Promise<MerchantCta> {
   const session = await auth();
@@ -16,16 +20,27 @@ export async function getMerchantCta(cardId: string): Promise<MerchantCta> {
   if (!userId) return { kind: "login" };
 
   // Права на точки даёт членство, а не Company.ownerUserId (командные аккаунты).
-  const membership = await prisma.companyMember.findFirst({
+  const memberships = await prisma.companyMember.findMany({
     where: { userId, role: { in: ["OWNER", "EDITOR"] } },
     orderBy: { createdAt: "asc" },
-    select: { companyId: true },
+    select: { company: { select: { id: true, displayName: true, status: true } } },
   });
-  if (!membership) return { kind: "register_company" };
+  if (memberships.length === 0) return { kind: "register_company" };
 
-  const points = await prisma.companyPoint.count({
-    where: { companyId: membership.companyId, acceptedCardIds: { has: cardId } },
+  const companyIds = memberships.map((m) => m.company.id);
+  // Одним запросом: сколько точек каждой компании уже принимают эту карточку.
+  const grouped = await prisma.companyPoint.groupBy({
+    by: ["companyId"],
+    where: { companyId: { in: companyIds }, acceptedCardIds: { has: cardId } },
+    _count: { _all: true },
   });
-  if (points > 0) return { kind: "already", companyId: membership.companyId, points };
-  return { kind: "add_point", companyId: membership.companyId };
+  const byCompany = new Map(grouped.map((g) => [g.companyId, g._count._all]));
+
+  const rows: MerchantCompany[] = memberships.map((m) => ({
+    id: m.company.id,
+    displayName: m.company.displayName,
+    status: m.company.status,
+    acceptedPoints: byCompany.get(m.company.id) ?? 0,
+  }));
+  return { kind: "choose", ...pickMerchantCompanies(rows) };
 }

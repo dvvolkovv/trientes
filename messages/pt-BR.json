@@ -779,7 +779,8 @@
     "viewPublic": "Ver página pública",
     "photos": "Fotos do local",
     "photo": "Foto",
-    "ownListing": "Listagem própria"
+    "ownListing": "Listagem própria",
+    "pointHiddenUntilCompanyApproved": "A empresa ainda está em análise: o ponto não aparecerá no mapa nem no contador até ela ser aprovada."
   },
   "cabinet": {
     "kicker": "Seção · Painel",
@@ -889,7 +890,9 @@
         "legal_name_required": "A razão social é obrigatória.",
         "display_name_required": "O nome de exibição é obrigatório.",
         "country_required": "O país é obrigatório.",
-        "generic": "Algo deu errado."
+        "generic": "Algo deu errado.",
+        "too_many_companies": "Limite atingido: no máximo 10 empresas por conta.",
+        "too_many_pending_companies": "Três empresas já aguardam análise — espere a decisão sobre elas."
       },
       "status": {
         "PENDING": "Em processamento",
@@ -1238,7 +1241,14 @@
       "badgeTitle": "Selo para o seu site",
       "badgeHint": "Cole este código. O selo se atualiza sozinho e não carrega telemetria.",
       "badgeLabel": "Aceitamos",
-      "badgeAlt": "Aceitamos {symbol}"
+      "badgeAlt": "Aceitamos {symbol}",
+      "addPointTo": "Adicionar um ponto em",
+      "orNewCompany": "…ou registrar outra empresa",
+      "moreCompanies": "Todas as minhas empresas",
+      "companyStatus": {
+        "PENDING": "em análise",
+        "REJECTED": "rejeitada"
+      }
     },
     "supply": {
       "circulating": "Oferta circulante",

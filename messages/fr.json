@@ -779,7 +779,8 @@
     "viewPublic": "Voir la page publique",
     "photos": "Photos du lieu",
     "photo": "Photo",
-    "ownListing": "Listing propre"
+    "ownListing": "Listing propre",
+    "pointHiddenUntilCompanyApproved": "L'entreprise est encore en validation : le point n'apparaîtra ni sur la carte ni dans le compteur avant son approbation."
   },
   "cabinet": {
     "kicker": "Section · Espace personnel",
@@ -889,7 +890,9 @@
         "legal_name_required": "La raison sociale est requise.",
         "display_name_required": "Le nom affiché est requis.",
         "country_required": "Le pays est requis.",
-        "generic": "Une erreur s'est produite."
+        "generic": "Une erreur s'est produite.",
+        "too_many_companies": "Limite atteinte : pas plus de 10 entreprises par compte.",
+        "too_many_pending_companies": "Trois entreprises attendent déjà la validation — attendez leur décision."
       },
       "status": {
         "PENDING": "En traitement",
@@ -1238,7 +1241,14 @@
       "badgeTitle": "Badge pour votre site",
       "badgeHint": "Collez ce code. Le badge se met à jour seul et ne contient aucune télémétrie.",
       "badgeLabel": "Nous acceptons",
-      "badgeAlt": "Nous acceptons {symbol}"
+      "badgeAlt": "Nous acceptons {symbol}",
+      "addPointTo": "Ajouter un point à",
+      "orNewCompany": "…ou enregistrer une autre entreprise",
+      "moreCompanies": "Toutes mes entreprises",
+      "companyStatus": {
+        "PENDING": "en cours de validation",
+        "REJECTED": "refusée"
+      }
     },
     "supply": {
       "circulating": "Offre en circulation",

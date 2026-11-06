@@ -779,7 +779,8 @@
     "viewPublic": "공개 페이지 보기",
     "photos": "매장 사진",
     "photo": "사진",
-    "ownListing": "자체 상장"
+    "ownListing": "자체 상장",
+    "pointHiddenUntilCompanyApproved": "이 회사는 아직 심사 중입니다. 승인될 때까지 지점은 지도와 집계에 표시되지 않습니다."
   },
   "cabinet": {
     "kicker": "섹션 · 캐비닛",
@@ -889,7 +890,9 @@
         "legal_name_required": "법인명은 필수입니다.",
         "display_name_required": "표시 이름은 필수입니다.",
         "country_required": "국가는 필수입니다.",
-        "generic": "문제가 발생했습니다."
+        "generic": "문제가 발생했습니다.",
+        "too_many_companies": "한도에 도달했습니다. 계정당 회사는 최대 10개입니다.",
+        "too_many_pending_companies": "이미 3개 회사가 심사를 기다리고 있습니다. 결과를 기다려 주세요."
       },
       "status": {
         "PENDING": "처리 중",
@@ -1238,7 +1241,14 @@
       "badgeTitle": "사이트용 배지",
       "badgeHint": "이 코드를 붙여 넣으세요. 배지는 자동으로 갱신되며 텔레메트리가 없습니다.",
       "badgeLabel": "취급 중",
-      "badgeAlt": "{symbol} 취급 중"
+      "badgeAlt": "{symbol} 취급 중",
+      "addPointTo": "지점을 추가할 회사",
+      "orNewCompany": "…또는 다른 회사 등록",
+      "moreCompanies": "내 회사 전체 보기",
+      "companyStatus": {
+        "PENDING": "심사 중",
+        "REJECTED": "거절됨"
+      }
     },
     "supply": {
       "circulating": "유통 공급량",

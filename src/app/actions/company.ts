@@ -9,6 +9,7 @@ import {
   type CompanyProfileInput,
   type CompanyPointInput,
 } from "@/lib/company";
+import { checkCompanyLimits } from "@/lib/company-limits";
 import { type PointType, type Prisma } from "@prisma/client";
 
 const MAX_PENDING_POINTS = 20;
@@ -31,6 +32,19 @@ export async function createCompany(input: { legalName: string; displayName: str
   if (!userId) return { ok: false as const, reason: "unauth" as const };
   const v = validateCompanyProfile(input);
   if (!v.ok) return { ok: false as const, reason: v.reason };
+
+  // Одна компания на аккаунт больше не ограничение базы, поэтому спам держат
+  // явные лимиты. Считаем по членству с ролью OWNER: переданное владение чужой
+  // компанией тоже расходует лимит.
+  const [owned, pending] = await Promise.all([
+    prisma.companyMember.count({ where: { userId, role: "OWNER" } }),
+    prisma.companyMember.count({
+      where: { userId, role: "OWNER", company: { status: "PENDING" } },
+    }),
+  ]);
+  const limit = checkCompanyLimits({ owned, pending });
+  if (!limit.ok) return { ok: false as const, reason: limit.reason };
+
   // The creator becomes OWNER both via the legacy ownerUserId field (kept for
   // moderation lookups) and via CompanyMember (the operational gate).
   const company = await prisma.company.create({

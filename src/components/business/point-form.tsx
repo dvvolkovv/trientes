@@ -35,12 +35,14 @@ function addrFilledEnough(a: Addr): boolean {
 
 export function PointForm({
   companyId,
+  companyStatus,
   coins,
   cards,
   initialCardIds = [],
   companyAddress,
 }: {
   companyId: string;
+  companyStatus: "PENDING" | "APPROVED" | "REJECTED";
   coins: PointFormCoin[];
   cards: PointFormCard[];
   initialCardIds?: string[];
@@ -282,6 +284,12 @@ export function PointForm({
           </label>
         )}
       </div>
+
+      {companyStatus !== "APPROVED" && (
+        <p className="text-[12px] text-yellow-500 border border-yellow-500/30 bg-yellow-500/10 rounded-md px-3 py-2">
+          {t("pointHiddenUntilCompanyApproved")}
+        </p>
+      )}
 
       <button type="button" disabled={pending || !name.trim() || (type !== "ONLINE" && !pos)} onClick={save}
         className="text-[13px] px-4 py-2 rounded-md font-medium bg-accent text-accent-foreground disabled:opacity-50">

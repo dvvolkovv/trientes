@@ -106,6 +106,7 @@ export default async function CompanyManagementPage({
           <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-4">{t("addPoint")}</h2>
           <PointForm
             companyId={company.id}
+            companyStatus={company.status}
             coins={coinOpts}
             cards={cardOpts}
             initialCardIds={prefillCards}

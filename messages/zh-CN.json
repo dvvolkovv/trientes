@@ -779,7 +779,8 @@
     "viewPublic": "查看公开页面",
     "photos": "店面照片",
     "photo": "照片",
-    "ownListing": "自主上架"
+    "ownListing": "自主上架",
+    "pointHiddenUntilCompanyApproved": "该公司仍在审核中：通过审核前，网点不会出现在地图和计数中。"
   },
   "cabinet": {
     "kicker": "板块 · 个人中心",
@@ -889,7 +890,9 @@
         "legal_name_required": "法定名称为必填项。",
         "display_name_required": "显示名称为必填项。",
         "country_required": "国家/地区为必填项。",
-        "generic": "出现错误。"
+        "generic": "出现错误。",
+        "too_many_companies": "已达上限：每个账号最多 10 家公司。",
+        "too_many_pending_companies": "已有 3 家公司在等待审核，请先等待结果。"
       },
       "status": {
         "PENDING": "处理中",
@@ -1238,7 +1241,14 @@
       "badgeTitle": "网站徽章",
       "badgeHint": "粘贴这段代码。徽章会自动更新，且不含任何遥测。",
       "badgeLabel": "我们接受",
-      "badgeAlt": "我们接受 {symbol}"
+      "badgeAlt": "我们接受 {symbol}",
+      "addPointTo": "将网点添加到",
+      "orNewCompany": "…或注册另一家公司",
+      "moreCompanies": "我的全部公司",
+      "companyStatus": {
+        "PENDING": "审核中",
+        "REJECTED": "已拒绝"
+      }
     },
     "supply": {
       "circulating": "流通供应量",

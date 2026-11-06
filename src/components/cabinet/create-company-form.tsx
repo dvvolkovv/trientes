@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { createCompany } from "@/app/actions/company";
 
-export function CreateCompanyForm() {
+export function CreateCompanyForm({ nextCard }: { nextCard?: string }) {
   const t = useTranslations("cabinet.companies");
   const router = useRouter();
   const { locale } = useParams<{ locale: string }>();
@@ -22,7 +22,15 @@ export function CreateCompanyForm() {
         setError(null);
         startTransition(async () => {
           const r = await createCompany({ legalName, displayName });
-          if (r.ok) router.push(`/${locale}/cabinet/companies/${r.id}`);
+          if (r.ok) {
+            // Человек пришёл с карточки монеты — не теряем её по пути:
+            // сразу открываем форму точки с уже отмеченной монетой.
+            router.push(
+              nextCard
+                ? `/${locale}/cabinet/companies/${r.id}?card=${encodeURIComponent(nextCard)}#add-point`
+                : `/${locale}/cabinet/companies/${r.id}`,
+            );
+          }
           else setError(r.reason);
         });
       }}

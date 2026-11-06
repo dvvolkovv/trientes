@@ -1,6 +1,13 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { getAcceptanceSummary } from "@/lib/coin-card-acceptance";
-import { ctaHref } from "@/lib/coin-card-merchant-cta";
+import {
+  addPointHref,
+  ctaHref,
+  manageHref,
+  newCompanyHref,
+  type CtaContext,
+  type MerchantCta,
+} from "@/lib/coin-card-merchant-cta";
 import { getMerchantCta } from "@/lib/coin-card-merchant-viewer";
 import { countryName } from "@/lib/countries";
 import { ProvenanceBadge } from "../provenance-badge";
@@ -33,13 +40,14 @@ export async function AcceptanceSection({
     getMerchantCta(cardId),
   ]);
 
-  const href = ctaHref(cta, { locale, slug, cardId });
-  const ctaLabel =
+  const ctx = { locale, slug, cardId };
+  // Система не выбирает компанию за человека: при любом числе компаний он видит
+  // список и решает сам. Один вариант остаётся только когда компаний нет вовсе.
+  const simpleHref = cta.kind === "choose" ? null : ctaHref(cta, ctx);
+  const simpleLabel =
     cta.kind === "login" ? t("loginToAccept")
-    : cta.kind === "register_company" ? t("registerCompany")
-    : cta.kind === "already" ? t("managePoints")
-    : summary.total === 0 ? t("becomeFirst")
-    : t("iAccept");
+    : cta.kind === "register_company" ? (summary.total === 0 ? t("becomeFirst") : t("registerCompany"))
+    : null;
 
   const mapHref = `/${locale}/crypto-map?coin=${encodeURIComponent(`card:${cardId}`)}`;
   const badgeAlt = t("badgeAlt", { symbol: symbol.toUpperCase() });
@@ -60,9 +68,7 @@ export async function AcceptanceSection({
         <div className="border border-hairline rounded-md p-5 space-y-3">
           <p className="text-[15px]">{t("zero")}</p>
           <p className="text-muted text-[13px] max-w-[620px]">{t("zeroHint")}</p>
-          <a href={href} className="inline-block text-[13px] px-4 py-2 rounded-md font-medium bg-accent text-accent-foreground">
-            {ctaLabel}
-          </a>
+          <MerchantActions cta={cta} ctx={ctx} t={t} simpleHref={simpleHref} simpleLabel={simpleLabel} primary />
         </div>
       ) : (
         <div className="border border-hairline rounded-md p-5 space-y-5">
@@ -124,16 +130,11 @@ export async function AcceptanceSection({
             </ul>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="space-y-3">
             <a href={mapHref} className="inline-block text-[13px] px-4 py-2 rounded-md font-medium bg-accent text-accent-foreground">
               {t("openMap")}
             </a>
-            <a href={href} className="inline-block text-[13px] px-4 py-2 rounded-md border border-hairline hover:border-accent">
-              {ctaLabel}
-            </a>
-            {cta.kind === "already" && (
-              <span className="text-[13px] text-muted">{t("youAccept", { points: cta.points })}</span>
-            )}
+            <MerchantActions cta={cta} ctx={ctx} t={t} simpleHref={simpleHref} simpleLabel={simpleLabel} />
           </div>
         </div>
       )}
@@ -150,5 +151,72 @@ export async function AcceptanceSection({
         <p className="text-[12px] text-muted">{t("badgeHint")}</p>
       </div>
     </section>
+  );
+}
+
+/**
+ * Кнопки продавца. Если компания есть хотя бы одна, показывается список «от
+ * чьего имени», а не угаданная за человека компания, и рядом — возможность
+ * оформить ещё одну. Компания на модерации остаётся в списке с пометкой:
+ * прятать от человека его же компанию хуже, чем показать её статус.
+ */
+function MerchantActions({
+  cta,
+  ctx,
+  t,
+  simpleHref,
+  simpleLabel,
+  primary = false,
+}: {
+  cta: MerchantCta;
+  ctx: CtaContext;
+  t: (key: string, values?: Record<string, string | number>) => string;
+  simpleHref: string | null;
+  simpleLabel: string | null;
+  primary?: boolean;
+}) {
+  const solid = "inline-block text-[13px] px-4 py-2 rounded-md font-medium bg-accent text-accent-foreground";
+  const outline = "inline-block text-[13px] px-4 py-2 rounded-md border border-hairline hover:border-accent";
+
+  if (cta.kind !== "choose") {
+    if (!simpleHref || !simpleLabel) return null;
+    return <a href={simpleHref} className={primary ? solid : outline}>{simpleLabel}</a>;
+  }
+
+  return (
+    <div className="space-y-2">
+      <div className="text-[12px] uppercase tracking-[0.15em] text-muted">{t("addPointTo")}</div>
+      <div className="flex flex-wrap gap-2">
+        {cta.companies.map((c) => (
+          <a key={c.id} href={addPointHref(c.id, ctx)} className={outline}>
+            {c.displayName}
+            {c.status !== "APPROVED" && (
+              <span className="ml-2 text-[11px] text-muted">{t(`companyStatus.${c.status}`)}</span>
+            )}
+            {c.acceptedPoints > 0 && (
+              <span className="ml-2 text-[11px] text-accent num">{c.acceptedPoints}</span>
+            )}
+          </a>
+        ))}
+      </div>
+      <div className="flex flex-wrap items-center gap-3 text-[13px]">
+        <a href={newCompanyHref(ctx)} className="underline text-muted hover:text-foreground">
+          {t("orNewCompany")}
+        </a>
+        {cta.hasMore && (
+          <a href={`/${ctx.locale}/cabinet#companies`} className="underline text-muted hover:text-foreground">
+            {t("moreCompanies")}
+          </a>
+        )}
+        {cta.acceptedTotal > 0 && (
+          <span className="text-muted">
+            {t("youAccept", { points: cta.acceptedTotal })}{" "}
+            <a href={manageHref(cta.companies[0].id, ctx)} className="underline hover:text-foreground">
+              {t("managePoints")}
+            </a>
+          </span>
+        )}
+      </div>
+    </div>
   );
 }
