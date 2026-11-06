@@ -70,7 +70,8 @@ export function aggregateAcceptance(
 export async function getAcceptanceSummary(cardId: string): Promise<AcceptanceSummary> {
   const where = {
     status: "APPROVED" as const,
-    company: { status: "APPROVED" as const },
+    company: { status: "APPROVED" as const, deletedAt: null },
+    deletedAt: null,
     acceptedCardIds: { has: cardId },
   };
   const [total, rows] = await Promise.all([

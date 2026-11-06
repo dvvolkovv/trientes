@@ -86,7 +86,8 @@ export async function searchApprovedPointsByName(q: string, limit = 5): Promise<
   const rows = await prisma.companyPoint.findMany({
     where: {
       status: "APPROVED",
-      company: { status: "APPROVED" },
+      company: { status: "APPROVED", deletedAt: null },
+      deletedAt: null,
       // Exclude ONLINE-only points — search bar drives a map fly-to, useless
       // without coordinates.
       lat: { not: null },
@@ -124,7 +125,8 @@ export async function fetchApprovedPointsInBbox(
   const rows = await prisma.companyPoint.findMany({
     where: {
       status: "APPROVED",
-      company: { status: "APPROVED" },
+      company: { status: "APPROVED", deletedAt: null },
+      deletedAt: null,
       lat: { gte: bbox.minLat, lte: bbox.maxLat },
       lon: { gte: bbox.minLon, lte: bbox.maxLon },
       ...(selector.kind === "card"

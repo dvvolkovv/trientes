@@ -6,16 +6,17 @@ import { checkAdmin } from "@/lib/is-admin";
 import { logAdminAction } from "@/lib/admin/audit";
 import { notifyGeoForPoint } from "@/lib/geo-alerts-notify";
 import { notifyUser } from "@/lib/notify";
+import { LIVE_POINT, NOT_DELETED } from "@/lib/soft-delete";
 
 async function ownerIdOfPoint(companyId: string): Promise<string | null> {
-  const c = await prisma.company.findUnique({ where: { id: companyId }, select: { ownerUserId: true } });
+  const c = await prisma.company.findFirst({ where: { id: companyId, ...NOT_DELETED }, select: { ownerUserId: true } });
   return c?.ownerUserId ?? null;
 }
 
 export async function approvePoint(input: { pointId: string }) {
   const admin = await checkAdmin();
   if (!admin.ok) return { ok: false, reason: admin.reason };
-  const point = await prisma.companyPoint.findUnique({ where: { id: input.pointId } });
+  const point = await prisma.companyPoint.findFirst({ where: { id: input.pointId, ...LIVE_POINT } });
   if (!point) return { ok: false, reason: "not_found" };
   if (point.status !== "PENDING") return { ok: false, reason: "not_pending" };
   await prisma.companyPoint.update({
@@ -48,7 +49,7 @@ export async function rejectPoint(input: { pointId: string; rejectReason: string
   if (!admin.ok) return { ok: false, reason: admin.reason };
   const reason = input.rejectReason.trim();
   if (reason.length < 3) return { ok: false, reason: "reason_too_short" };
-  const point = await prisma.companyPoint.findUnique({ where: { id: input.pointId } });
+  const point = await prisma.companyPoint.findFirst({ where: { id: input.pointId, ...LIVE_POINT } });
   if (!point) return { ok: false, reason: "not_found" };
   if (point.status !== "PENDING") return { ok: false, reason: "not_pending" };
   await prisma.companyPoint.update({

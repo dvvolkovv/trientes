@@ -11,6 +11,7 @@ import {
 } from "@/lib/company";
 import { checkCompanyLimits } from "@/lib/company-limits";
 import { type PointType, type Prisma } from "@prisma/client";
+import { NOT_DELETED } from "@/lib/soft-delete";
 
 const MAX_PENDING_POINTS = 20;
 
@@ -76,7 +77,7 @@ export async function saveCompanyProfile(companyId: string, input: CompanyProfil
   if (!userId) return { ok: false as const, reason: "unauth" as const };
   const role = await memberRole(companyId, userId);
   if (role !== "OWNER" && role !== "EDITOR") return { ok: false as const, reason: "not_found" as const };
-  const company = await prisma.company.findUnique({ where: { id: companyId } });
+  const company = await prisma.company.findFirst({ where: { id: companyId, ...NOT_DELETED } });
   if (!company) return { ok: false as const, reason: "not_found" as const };
   const v = validateCompanyProfile(input);
   if (!v.ok) return { ok: false as const, reason: v.reason };
@@ -93,12 +94,12 @@ export async function submitCompanyPoint(
   if (!userId) return { ok: false as const, reason: "unauth" as const };
   const role = await memberRole(companyId, userId);
   if (role !== "OWNER" && role !== "EDITOR") return { ok: false as const, reason: "not_found" as const };
-  const company = await prisma.company.findUnique({ where: { id: companyId } });
+  const company = await prisma.company.findFirst({ where: { id: companyId, ...NOT_DELETED } });
   if (!company) return { ok: false as const, reason: "not_found" as const };
   const v = validateCompanyPoint(input);
   if (!v.ok) return { ok: false as const, reason: v.reason };
   const pending = await prisma.companyPoint.count({
-    where: { companyId: company.id, status: "PENDING" },
+    where: { companyId: company.id, status: "PENDING", ...NOT_DELETED },
   });
   if (pending >= MAX_PENDING_POINTS) return { ok: false as const, reason: "too_many_pending" as const };
 

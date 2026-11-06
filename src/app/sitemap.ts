@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { SUPPORTED_LOCALES, DEFAULT_LOCALE } from "@/lib/locales";
+import { NOT_DELETED } from "@/lib/soft-delete";
 
 const SITE = process.env.PUBLIC_ORIGIN ?? "https://trientes.org";
 
@@ -53,7 +54,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       select: { slug: true, updatedAt: true },
     }),
     prisma.company.findMany({
-      where: { status: "APPROVED" },
+      where: { status: "APPROVED", ...NOT_DELETED },
       orderBy: { createdAt: "desc" },
       take: 500,
       select: { id: true, updatedAt: true },

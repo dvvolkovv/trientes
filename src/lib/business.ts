@@ -1,6 +1,7 @@
 import type { CompanyRole } from "@prisma/client";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { NOT_DELETED } from "@/lib/soft-delete";
 
 async function viewerId(): Promise<string | null> {
   const session = await auth();
@@ -12,7 +13,7 @@ export async function listViewerCompanies() {
   if (!userId) return { userId: null as string | null, companies: [] };
   // Any membership (OWNER / EDITOR / VIEWER) shows up in the cabinet list.
   const companies = await prisma.company.findMany({
-    where: { members: { some: { userId } } },
+    where: { members: { some: { userId } }, ...NOT_DELETED },
     orderBy: { createdAt: "asc" },
   });
   return { userId, companies };
@@ -26,7 +27,7 @@ export async function getViewerCompanyById(companyId: string): Promise<ViewerCom
   const userId = await viewerId();
   if (!userId) return { userId: null, company: null, role: null };
   const [company, membership] = await Promise.all([
-    prisma.company.findUnique({ where: { id: companyId } }),
+    prisma.company.findFirst({ where: { id: companyId, ...NOT_DELETED } }),
     prisma.companyMember.findUnique({
       where: { companyId_userId: { companyId, userId } },
       select: { role: true },

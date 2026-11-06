@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
+import { NOT_DELETED } from "@/lib/soft-delete";
 
 export const dynamic = "force-dynamic";
 
@@ -14,8 +15,8 @@ export async function generateMetadata({
   params: Promise<{ locale: string; id: string }>;
 }): Promise<Metadata> {
   const { locale, id } = await params;
-  const row = await prisma.company.findUnique({
-    where: { id },
+  const row = await prisma.company.findFirst({
+    where: { id, ...NOT_DELETED },
     select: { displayName: true, legalName: true, description: true, logoUrl: true, country: true, city: true, status: true, kybStatus: true },
   });
   if (!row || row.status !== "APPROVED") return {};
@@ -41,11 +42,11 @@ export default async function PublicCompanyPage({
   const { locale, id } = await params;
   setRequestLocale(locale);
 
-  const company = await prisma.company.findUnique({
-    where: { id },
+  const company = await prisma.company.findFirst({
+    where: { id, ...NOT_DELETED },
     include: {
       points: {
-        where: { status: "APPROVED" },
+        where: { status: "APPROVED", ...NOT_DELETED },
         orderBy: { createdAt: "desc" },
         take: 100,
         select: {

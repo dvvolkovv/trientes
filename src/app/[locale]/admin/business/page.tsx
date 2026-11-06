@@ -4,6 +4,7 @@ import { AdminNav } from "@/components/admin/nav";
 import { PointRow, type PointRowData } from "@/components/admin/point-row";
 import { CompanyRow, type CompanyRowData } from "@/components/admin/company-row";
 import { KybRow } from "@/components/admin/kyb-row";
+import { LIVE_POINT, NOT_DELETED } from "@/lib/soft-delete";
 
 export const dynamic = "force-dynamic";
 
@@ -69,7 +70,7 @@ export default async function AdminBusinessPage({
     const kybStatus =
       tab === "approved" ? "APPROVED" : tab === "rejected" ? "REJECTED" : "PENDING";
     const companies = await prisma.company.findMany({
-      where: { kybStatus },
+      where: { kybStatus, ...NOT_DELETED },
       orderBy: { kybSubmittedAt: "desc" },
       take: 100,
       include: { owner: { select: { username: true, email: true } } },
@@ -110,7 +111,7 @@ export default async function AdminBusinessPage({
 
   if (scope === "points") {
     const points = await prisma.companyPoint.findMany({
-      where: { status }, orderBy: { createdAt: "desc" }, take: 50,
+      where: { status, ...LIVE_POINT }, orderBy: { createdAt: "desc" }, take: 50,
       include: { company: { select: { displayName: true } } },
     });
     const rows: PointRowData[] = points.map((p) => ({
@@ -141,7 +142,7 @@ export default async function AdminBusinessPage({
   }
 
   const companies = await prisma.company.findMany({
-    where: { status }, orderBy: { createdAt: "desc" }, take: 100,
+    where: { status, ...NOT_DELETED }, orderBy: { createdAt: "desc" }, take: 100,
     include: { owner: { select: { username: true } } },
   });
   const rows: CompanyRowData[] = companies.map((c) => ({

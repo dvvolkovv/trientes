@@ -9,6 +9,7 @@ import { PointForm } from "@/components/business/point-form";
 import { PointsList, type PointListItem } from "@/components/business/points-list";
 import { MembersSection } from "@/components/business/members-section";
 import { KybSection } from "@/components/business/kyb-section";
+import { NOT_DELETED } from "@/lib/soft-delete";
 
 export const dynamic = "force-dynamic";
 
@@ -31,7 +32,7 @@ export default async function CompanyManagementPage({
 
   const [points, coins, cards] = await Promise.all([
     prisma.companyPoint.findMany({
-      where: { companyId: company.id },
+      where: { companyId: company.id, ...NOT_DELETED },
       orderBy: { createdAt: "desc" },
       take: 100,
     }),

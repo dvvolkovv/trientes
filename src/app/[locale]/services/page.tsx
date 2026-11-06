@@ -29,7 +29,8 @@ export default async function OnlineServicesDirectory({
   const where: Prisma.CompanyPointWhereInput = {
     status: "APPROVED",
     type: "ONLINE",
-    company: { status: "APPROVED" },
+    company: { status: "APPROVED", deletedAt: null },
+    deletedAt: null,
   };
   if (q.length >= 2) {
     where.OR = [
@@ -37,6 +38,8 @@ export default async function OnlineServicesDirectory({
       { company: { displayName: { contains: q, mode: "insensitive" } } },
     ];
   }
+  // Сохраняем deletedAt: null из начального where — иначе фильтр по стране
+  // незаметно открыл бы удалённые компании.
   if (/^[A-Z]{2}$/.test(cc)) where.company = { ...(where.company as object), countryCode: cc };
   if (coin) where.acceptedCoinIds = { has: coin };
 

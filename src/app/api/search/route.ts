@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { NOT_DELETED } from "@/lib/soft-delete";
 
 export const dynamic = "force-dynamic";
 
@@ -77,6 +78,7 @@ export async function GET(req: Request) {
     prisma.company.findMany({
       where: {
         status: "APPROVED",
+        ...NOT_DELETED,
         OR: [
           { displayName: { contains: q, mode: "insensitive" } },
           { legalName: { contains: q, mode: "insensitive" } },

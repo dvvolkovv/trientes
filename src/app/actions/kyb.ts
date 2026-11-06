@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { logAdminAction } from "@/lib/admin/audit";
 import { checkAdmin } from "@/lib/is-admin";
 import { notifyUser } from "@/lib/notify";
+import { NOT_DELETED } from "@/lib/soft-delete";
 
 const KYB_KINDS = ["REGISTRATION_CERT", "TAX_CERT", "ID", "OTHER"] as const;
 
@@ -43,8 +44,8 @@ export async function submitKyb(input: unknown) {
     return { ok: false as const, reason: "forbidden" as const };
   }
 
-  const company = await prisma.company.findUnique({
-    where: { id: parsed.data.companyId },
+  const company = await prisma.company.findFirst({
+    where: { id: parsed.data.companyId, ...NOT_DELETED },
     select: { kybStatus: true },
   });
   if (!company) return { ok: false as const, reason: "not_found" as const };
@@ -89,8 +90,8 @@ export async function withdrawKyb(input: { companyId: string }) {
 export async function approveKyb(input: { companyId: string }) {
   const admin = await checkAdmin();
   if (!admin.ok) return { ok: false as const, reason: admin.reason };
-  const company = await prisma.company.findUnique({
-    where: { id: input.companyId },
+  const company = await prisma.company.findFirst({
+    where: { id: input.companyId, ...NOT_DELETED },
     select: { ownerUserId: true, displayName: true, kybStatus: true },
   });
   if (!company) return { ok: false as const, reason: "not_found" as const };
@@ -117,8 +118,8 @@ export async function rejectKyb(input: { companyId: string; reason: string }) {
   if (!admin.ok) return { ok: false as const, reason: admin.reason };
   const reason = input.reason.trim();
   if (reason.length < 3) return { ok: false as const, reason: "reason_too_short" as const };
-  const company = await prisma.company.findUnique({
-    where: { id: input.companyId },
+  const company = await prisma.company.findFirst({
+    where: { id: input.companyId, ...NOT_DELETED },
     select: { ownerUserId: true, displayName: true, kybStatus: true },
   });
   if (!company) return { ok: false as const, reason: "not_found" as const };

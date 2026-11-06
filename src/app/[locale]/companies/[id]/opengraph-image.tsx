@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { prisma } from "@/lib/prisma";
+import { NOT_DELETED } from "@/lib/soft-delete";
 
 export const runtime = "nodejs";
 export const alt = "Trientes company card";
@@ -8,8 +9,8 @@ export const contentType = "image/png";
 
 export default async function Image({ params }: { params: Promise<{ locale: string; id: string }> }) {
   const { id } = await params;
-  const row = await prisma.company.findUnique({
-    where: { id },
+  const row = await prisma.company.findFirst({
+    where: { id, ...NOT_DELETED },
     select: {
       displayName: true, logoUrl: true, country: true, city: true,
       status: true, kybStatus: true,

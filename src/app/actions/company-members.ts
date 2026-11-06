@@ -5,6 +5,7 @@ import type { CompanyRole } from "@prisma/client";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { notifyUser } from "@/lib/notify";
+import { NOT_DELETED } from "@/lib/soft-delete";
 
 const ROLES: CompanyRole[] = ["OWNER", "EDITOR", "VIEWER"];
 
@@ -48,8 +49,8 @@ export async function inviteMember(input: { companyId: string; identifier: strin
     update: { role: input.role },
   });
 
-  const company = await prisma.company.findUnique({
-    where: { id: input.companyId },
+  const company = await prisma.company.findFirst({
+    where: { id: input.companyId, ...NOT_DELETED },
     select: { displayName: true },
   });
   void notifyUser({

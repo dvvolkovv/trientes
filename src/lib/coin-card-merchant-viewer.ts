@@ -9,6 +9,7 @@ import {
   type MerchantCompany,
   type MerchantCta,
 } from "@/lib/coin-card-merchant-cta";
+import { NOT_DELETED } from "@/lib/soft-delete";
 
 /**
  * Без кеша — состояние зависит от сессии, а число точек должно обновляться
@@ -21,7 +22,7 @@ export async function getMerchantCta(cardId: string): Promise<MerchantCta> {
 
   // Права на точки даёт членство, а не Company.ownerUserId (командные аккаунты).
   const memberships = await prisma.companyMember.findMany({
-    where: { userId, role: { in: ["OWNER", "EDITOR"] } },
+    where: { userId, role: { in: ["OWNER", "EDITOR"] }, company: NOT_DELETED },
     orderBy: { createdAt: "asc" },
     select: { company: { select: { id: true, displayName: true, status: true } } },
   });
@@ -31,7 +32,7 @@ export async function getMerchantCta(cardId: string): Promise<MerchantCta> {
   // Одним запросом: сколько точек каждой компании уже принимают эту карточку.
   const grouped = await prisma.companyPoint.groupBy({
     by: ["companyId"],
-    where: { companyId: { in: companyIds }, acceptedCardIds: { has: cardId } },
+    where: { companyId: { in: companyIds }, acceptedCardIds: { has: cardId }, ...NOT_DELETED },
     _count: { _all: true },
   });
   const byCompany = new Map(grouped.map((g) => [g.companyId, g._count._all]));
