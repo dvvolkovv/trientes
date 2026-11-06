@@ -680,7 +680,8 @@
       "no_file": "Keine Datei",
       "company_required": "Firma erforderlich",
       "forbidden": "Nicht erlaubt",
-      "bad_form": "Ungültige Anfrage"
+      "bad_form": "Ungültige Anfrage",
+      "coin_not_selectable": "Diese Münzkarte ist nicht freigegeben und kann nicht ausgewählt werden."
     },
     "websiteHint": "Mit https://, http:// oder einfach www.example.com — alles möglich",
     "addressSection": "Adresse",
@@ -777,7 +778,8 @@
     },
     "viewPublic": "Öffentliche Seite öffnen",
     "photos": "Foto-Galerie",
-    "photo": "Foto"
+    "photo": "Foto",
+    "ownListing": "Eigenes Listing"
   },
   "cabinet": {
     "kicker": "Bereich · Kabinett",
@@ -1213,7 +1215,30 @@
       "security": "Sicherheit & Audits",
       "team": "Team & Finanzierung",
       "marketing": "Projekt & Roadmap",
-      "links": "Links & Community"
+      "links": "Links & Community",
+      "acceptance": "Wo sie akzeptiert wird"
+    },
+    "acceptance": {
+      "eyebrow": "Realwirtschaft",
+      "source": "aus der Trientes-Datenbank",
+      "points": "Akzeptanzstellen",
+      "countries": "Länder",
+      "byType": "Nach Typ",
+      "topCountries": "Länder",
+      "nearby": "Genau wo",
+      "openMap": "Auf der Karte öffnen",
+      "zero": "Diese Münze wird bisher nirgends akzeptiert.",
+      "zeroHint": "Wenn Sie sie in Ihrem Betrieb annehmen, seien Sie der Erste: Ihr Standort erscheint hier und auf der Karte, sobald ein Moderator ihn freigibt.",
+      "iAccept": "Ich akzeptiere diese Münze",
+      "becomeFirst": "Der Erste sein",
+      "loginToAccept": "Anmelden, um Akzeptanz zu melden",
+      "registerCompany": "Unternehmen registrieren",
+      "youAccept": "Sie akzeptieren diese Münze an Ihren Standorten: {points}",
+      "managePoints": "Standorte verwalten",
+      "badgeTitle": "Badge für Ihre Website",
+      "badgeHint": "Fügen Sie diesen Code ein. Das Badge aktualisiert sich selbst und enthält keine Telemetrie.",
+      "badgeLabel": "Wir akzeptieren",
+      "badgeAlt": "Wir akzeptieren {symbol}"
     },
     "supply": {
       "circulating": "Umlaufmenge",

@@ -680,7 +680,8 @@
       "no_file": "Dosya yok",
       "company_required": "Şirket gerekli",
       "forbidden": "İzin yok",
-      "bad_form": "Geçersiz istek"
+      "bad_form": "Geçersiz istek",
+      "coin_not_selectable": "Bu coin kartı onaylı değil, bu yüzden seçilemez."
     },
     "websiteHint": "https://, http:// veya sadece www.example.com — hepsi geçerli",
     "addressSection": "Adres",
@@ -777,7 +778,8 @@
     },
     "viewPublic": "Genel sayfayı aç",
     "photos": "İşyeri fotoğrafları",
-    "photo": "Fotoğraf"
+    "photo": "Fotoğraf",
+    "ownListing": "Kendi listelemesi"
   },
   "cabinet": {
     "kicker": "Bölüm · Kabin",
@@ -1213,7 +1215,30 @@
       "security": "Güvenlik ve denetimler",
       "team": "Ekip ve finansman",
       "marketing": "Proje ve yol haritası",
-      "links": "Bağlantılar ve topluluk"
+      "links": "Bağlantılar ve topluluk",
+      "acceptance": "Nerede kabul ediliyor"
+    },
+    "acceptance": {
+      "eyebrow": "Reel sektör",
+      "source": "Trientes veritabanına göre",
+      "points": "Kabul noktası",
+      "countries": "Ülke",
+      "byType": "Türe göre",
+      "topCountries": "Ülkeler",
+      "nearby": "Tam olarak nerede",
+      "openMap": "Haritada aç",
+      "zero": "Bu coin henüz hiçbir yerde kabul edilmiyor.",
+      "zeroHint": "Kendi işletmenizde kabul ediyorsanız ilk siz olun: noktanız moderatör onayından sonra burada ve haritada görünür.",
+      "iAccept": "Bu coini kabul ediyorum",
+      "becomeFirst": "İlk olun",
+      "loginToAccept": "Kabul bildirmek için giriş yapın",
+      "registerCompany": "Şirket kaydet",
+      "youAccept": "Bu coini kabul ettiğiniz nokta sayısı: {points}",
+      "managePoints": "Noktaları yönet",
+      "badgeTitle": "Siteniz için rozet",
+      "badgeHint": "Bu kodu yapıştırın. Rozet kendini günceller ve telemetri içermez.",
+      "badgeLabel": "Kabul ediyoruz",
+      "badgeAlt": "{symbol} kabul ediyoruz"
     },
     "supply": {
       "circulating": "Dolaşımdaki arz",

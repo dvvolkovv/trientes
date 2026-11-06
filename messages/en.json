@@ -680,7 +680,8 @@
       "no_file": "No file selected",
       "company_required": "Company required",
       "forbidden": "Not allowed",
-      "bad_form": "Invalid request"
+      "bad_form": "Invalid request",
+      "coin_not_selectable": "This coin card is not approved, so it cannot be selected."
     },
     "websiteHint": "https://, http://, or just www.example.com — all work",
     "addressSection": "Address",
@@ -777,7 +778,8 @@
     },
     "viewPublic": "View public page",
     "photos": "Storefront photos",
-    "photo": "Photo"
+    "photo": "Photo",
+    "ownListing": "Self-listed"
   },
   "cabinet": {
     "kicker": "Section · Cabinet",
@@ -1213,7 +1215,30 @@
       "security": "Security & audits",
       "team": "Team & funding",
       "marketing": "Project & roadmap",
-      "links": "Links & community"
+      "links": "Links & community",
+      "acceptance": "Where it is accepted"
+    },
+    "acceptance": {
+      "eyebrow": "Real economy",
+      "source": "from the Trientes database",
+      "points": "Accepting locations",
+      "countries": "Countries",
+      "byType": "By type",
+      "topCountries": "Countries",
+      "nearby": "Exactly where",
+      "openMap": "Open on the map",
+      "zero": "Nobody accepts this coin yet.",
+      "zeroHint": "If you take it at your own business, be the first: your location shows up here and on the map once a moderator approves it.",
+      "iAccept": "I accept this coin",
+      "becomeFirst": "Be the first",
+      "loginToAccept": "Sign in to claim acceptance",
+      "registerCompany": "Register a company",
+      "youAccept": "You accept this coin at your locations: {points}",
+      "managePoints": "Manage locations",
+      "badgeTitle": "Badge for your site",
+      "badgeHint": "Paste this snippet. The badge updates itself and carries no telemetry.",
+      "badgeLabel": "We accept",
+      "badgeAlt": "We accept {symbol}"
     },
     "supply": {
       "circulating": "Circulating supply",

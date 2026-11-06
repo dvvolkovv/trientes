@@ -680,7 +680,8 @@
       "no_file": "Sem arquivo",
       "company_required": "Empresa obrigatória",
       "forbidden": "Não permitido",
-      "bad_form": "Requisição inválida"
+      "bad_form": "Requisição inválida",
+      "coin_not_selectable": "Esta ficha de moeda não está aprovada, portanto não pode ser selecionada."
     },
     "websiteHint": "Com https://, http:// ou apenas www.example.com — tudo funciona",
     "addressSection": "Endereço",
@@ -777,7 +778,8 @@
     },
     "viewPublic": "Ver página pública",
     "photos": "Fotos do local",
-    "photo": "Foto"
+    "photo": "Foto",
+    "ownListing": "Listagem própria"
   },
   "cabinet": {
     "kicker": "Seção · Painel",
@@ -1213,7 +1215,30 @@
       "security": "Segurança e auditorias",
       "team": "Equipe e financiamento",
       "marketing": "Projeto e roadmap",
-      "links": "Links e comunidade"
+      "links": "Links e comunidade",
+      "acceptance": "Onde é aceita"
+    },
+    "acceptance": {
+      "eyebrow": "Economia real",
+      "source": "pela base da Trientes",
+      "points": "Pontos de aceitação",
+      "countries": "Países",
+      "byType": "Por tipo",
+      "topCountries": "Países",
+      "nearby": "Onde exatamente",
+      "openMap": "Abrir no mapa",
+      "zero": "Ninguém aceita esta moeda ainda.",
+      "zeroHint": "Se você aceita no seu negócio, seja o primeiro: seu ponto aparece aqui e no mapa assim que um moderador aprovar.",
+      "iAccept": "Eu aceito esta moeda",
+      "becomeFirst": "Ser o primeiro",
+      "loginToAccept": "Entre para declarar a aceitação",
+      "registerCompany": "Registrar uma empresa",
+      "youAccept": "Você aceita esta moeda nos seus pontos: {points}",
+      "managePoints": "Gerenciar pontos",
+      "badgeTitle": "Selo para o seu site",
+      "badgeHint": "Cole este código. O selo se atualiza sozinho e não carrega telemetria.",
+      "badgeLabel": "Aceitamos",
+      "badgeAlt": "Aceitamos {symbol}"
     },
     "supply": {
       "circulating": "Oferta circulante",

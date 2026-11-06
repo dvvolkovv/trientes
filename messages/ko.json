@@ -680,7 +680,8 @@
       "no_file": "파일이 없습니다",
       "company_required": "회사가 필요합니다",
       "forbidden": "허용되지 않음",
-      "bad_form": "잘못된 요청"
+      "bad_form": "잘못된 요청",
+      "coin_not_selectable": "승인되지 않은 코인 카드여서 선택할 수 없습니다."
     },
     "websiteHint": "https://, http:// 또는 그냥 www.example.com 모두 가능",
     "addressSection": "주소",
@@ -777,7 +778,8 @@
     },
     "viewPublic": "공개 페이지 보기",
     "photos": "매장 사진",
-    "photo": "사진"
+    "photo": "사진",
+    "ownListing": "자체 상장"
   },
   "cabinet": {
     "kicker": "섹션 · 캐비닛",
@@ -1213,7 +1215,30 @@
       "security": "보안과 감사",
       "team": "팀과 자금 조달",
       "marketing": "프로젝트와 로드맵",
-      "links": "링크와 커뮤니티"
+      "links": "링크와 커뮤니티",
+      "acceptance": "사용 가능한 곳"
+    },
+    "acceptance": {
+      "eyebrow": "실물 경제",
+      "source": "Trientes 데이터베이스 기준",
+      "points": "취급 지점",
+      "countries": "국가",
+      "byType": "유형별",
+      "topCountries": "국가",
+      "nearby": "정확한 위치",
+      "openMap": "지도에서 열기",
+      "zero": "아직 이 코인을 받는 곳이 없습니다.",
+      "zeroHint": "직접 운영하는 매장에서 받는다면 첫 번째가 되어 보세요. 운영자 승인 후 이곳과 지도에 표시됩니다.",
+      "iAccept": "이 코인을 받습니다",
+      "becomeFirst": "첫 번째가 되기",
+      "loginToAccept": "취급을 알리려면 로그인하세요",
+      "registerCompany": "회사 등록",
+      "youAccept": "내 지점에서 이 코인을 받는 곳: {points}",
+      "managePoints": "지점 관리",
+      "badgeTitle": "사이트용 배지",
+      "badgeHint": "이 코드를 붙여 넣으세요. 배지는 자동으로 갱신되며 텔레메트리가 없습니다.",
+      "badgeLabel": "취급 중",
+      "badgeAlt": "{symbol} 취급 중"
     },
     "supply": {
       "circulating": "유통 공급량",

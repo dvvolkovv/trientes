@@ -680,7 +680,8 @@
       "no_file": "Aucun fichier",
       "company_required": "Entreprise requise",
       "forbidden": "Interdit",
-      "bad_form": "Requête invalide"
+      "bad_form": "Requête invalide",
+      "coin_not_selectable": "Cette fiche de monnaie n'est pas approuvée, elle ne peut pas être sélectionnée."
     },
     "websiteHint": "Avec https://, http:// ou juste www.example.com — tout fonctionne",
     "addressSection": "Adresse",
@@ -777,7 +778,8 @@
     },
     "viewPublic": "Voir la page publique",
     "photos": "Photos du lieu",
-    "photo": "Photo"
+    "photo": "Photo",
+    "ownListing": "Listing propre"
   },
   "cabinet": {
     "kicker": "Section · Espace personnel",
@@ -1213,7 +1215,30 @@
       "security": "Sécurité et audits",
       "team": "Équipe et financement",
       "marketing": "Projet et feuille de route",
-      "links": "Liens et communauté"
+      "links": "Liens et communauté",
+      "acceptance": "Où elle est acceptée"
+    },
+    "acceptance": {
+      "eyebrow": "Économie réelle",
+      "source": "d'après la base Trientes",
+      "points": "Points d'acceptation",
+      "countries": "Pays",
+      "byType": "Par type",
+      "topCountries": "Pays",
+      "nearby": "Où exactement",
+      "openMap": "Ouvrir sur la carte",
+      "zero": "Personne n'accepte encore cette monnaie.",
+      "zeroHint": "Si vous l'acceptez chez vous, soyez le premier : votre point apparaîtra ici et sur la carte dès qu'un modérateur l'aura validé.",
+      "iAccept": "J'accepte cette monnaie",
+      "becomeFirst": "Être le premier",
+      "loginToAccept": "Connectez-vous pour déclarer l'acceptation",
+      "registerCompany": "Enregistrer une entreprise",
+      "youAccept": "Vous acceptez cette monnaie dans vos points : {points}",
+      "managePoints": "Gérer les points",
+      "badgeTitle": "Badge pour votre site",
+      "badgeHint": "Collez ce code. Le badge se met à jour seul et ne contient aucune télémétrie.",
+      "badgeLabel": "Nous acceptons",
+      "badgeAlt": "Nous acceptons {symbol}"
     },
     "supply": {
       "circulating": "Offre en circulation",

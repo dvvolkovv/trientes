@@ -680,7 +680,8 @@
       "no_file": "未选择文件",
       "company_required": "需要公司",
       "forbidden": "不允许",
-      "bad_form": "请求无效"
+      "bad_form": "请求无效",
+      "coin_not_selectable": "该币种卡片未通过审核，无法选择。"
     },
     "websiteHint": "支持 https://、http:// 或直接 www.example.com",
     "addressSection": "地址",
@@ -777,7 +778,8 @@
     },
     "viewPublic": "查看公开页面",
     "photos": "店面照片",
-    "photo": "照片"
+    "photo": "照片",
+    "ownListing": "自主上架"
   },
   "cabinet": {
     "kicker": "板块 · 个人中心",
@@ -1213,7 +1215,30 @@
       "security": "安全与审计",
       "team": "团队与融资",
       "marketing": "项目与路线图",
-      "links": "链接与社区"
+      "links": "链接与社区",
+      "acceptance": "哪里可以使用"
+    },
+    "acceptance": {
+      "eyebrow": "实体经济",
+      "source": "来自 Trientes 数据库",
+      "points": "受理网点",
+      "countries": "国家",
+      "byType": "按类型",
+      "topCountries": "国家",
+      "nearby": "具体位置",
+      "openMap": "在地图上打开",
+      "zero": "目前还没有商家接受这种币。",
+      "zeroHint": "如果您的店铺接受它，就做第一家：通过审核后，您的网点会显示在这里和地图上。",
+      "iAccept": "我接受这种币",
+      "becomeFirst": "成为第一家",
+      "loginToAccept": "登录后申报受理",
+      "registerCompany": "注册公司",
+      "youAccept": "您接受该币的网点数量：{points}",
+      "managePoints": "管理网点",
+      "badgeTitle": "网站徽章",
+      "badgeHint": "粘贴这段代码。徽章会自动更新，且不含任何遥测。",
+      "badgeLabel": "我们接受",
+      "badgeAlt": "我们接受 {symbol}"
     },
     "supply": {
       "circulating": "流通供应量",

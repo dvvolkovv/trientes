@@ -680,7 +680,8 @@
       "no_file": "ファイル未選択",
       "company_required": "会社が必要",
       "forbidden": "許可されていません",
-      "bad_form": "不正なリクエスト"
+      "bad_form": "不正なリクエスト",
+      "coin_not_selectable": "このコインカードは未承認のため選択できません。"
     },
     "websiteHint": "https://、http://、または www.example.com の形式でOK",
     "addressSection": "住所",
@@ -777,7 +778,8 @@
     },
     "viewPublic": "公開ページを見る",
     "photos": "店舗写真",
-    "photo": "写真"
+    "photo": "写真",
+    "ownListing": "独自上場"
   },
   "cabinet": {
     "kicker": "セクション · キャビネット",
@@ -1213,7 +1215,30 @@
       "security": "セキュリティと監査",
       "team": "チームと資金調達",
       "marketing": "プロジェクトとロードマップ",
-      "links": "リンクとコミュニティ"
+      "links": "リンクとコミュニティ",
+      "acceptance": "利用できる場所"
+    },
+    "acceptance": {
+      "eyebrow": "実体経済",
+      "source": "Trientes のデータベースより",
+      "points": "取扱拠点",
+      "countries": "国",
+      "byType": "種類別",
+      "topCountries": "国",
+      "nearby": "具体的な場所",
+      "openMap": "地図で開く",
+      "zero": "このコインはまだどこでも利用できません。",
+      "zeroHint": "ご自身の店舗で受け付けているなら、最初の一軒になってください。モデレーターの承認後、ここと地図に表示されます。",
+      "iAccept": "このコインを受け付けています",
+      "becomeFirst": "最初の一軒になる",
+      "loginToAccept": "受付を申請するにはログイン",
+      "registerCompany": "会社を登録する",
+      "youAccept": "あなたの拠点での取扱数: {points}",
+      "managePoints": "拠点を管理",
+      "badgeTitle": "サイト用バッジ",
+      "badgeHint": "このコードを貼り付けてください。バッジは自動更新され、テレメトリは含まれません。",
+      "badgeLabel": "取扱中",
+      "badgeAlt": "{symbol} 取扱中"
     },
     "supply": {
       "circulating": "流通供給量",

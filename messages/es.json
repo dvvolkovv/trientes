@@ -680,7 +680,8 @@
       "no_file": "Sin archivo",
       "company_required": "Empresa requerida",
       "forbidden": "No permitido",
-      "bad_form": "Solicitud no válida"
+      "bad_form": "Solicitud no válida",
+      "coin_not_selectable": "Esta ficha de moneda no está aprobada, así que no se puede seleccionar."
     },
     "websiteHint": "Con https://, http:// o simplemente www.example.com — todo vale",
     "addressSection": "Dirección",
@@ -777,7 +778,8 @@
     },
     "viewPublic": "Ver página pública",
     "photos": "Fotos del local",
-    "photo": "Foto"
+    "photo": "Foto",
+    "ownListing": "Listado propio"
   },
   "cabinet": {
     "kicker": "Sección · Panel",
@@ -1213,7 +1215,30 @@
       "security": "Seguridad y auditorías",
       "team": "Equipo y financiación",
       "marketing": "Proyecto y hoja de ruta",
-      "links": "Enlaces y comunidad"
+      "links": "Enlaces y comunidad",
+      "acceptance": "Dónde se acepta"
+    },
+    "acceptance": {
+      "eyebrow": "Economía real",
+      "source": "según la base de Trientes",
+      "points": "Puntos de aceptación",
+      "countries": "Países",
+      "byType": "Por tipo",
+      "topCountries": "Países",
+      "nearby": "Dónde exactamente",
+      "openMap": "Abrir en el mapa",
+      "zero": "Todavía nadie acepta esta moneda.",
+      "zeroHint": "Si la aceptas en tu negocio, sé el primero: tu punto aparecerá aquí y en el mapa cuando lo apruebe un moderador.",
+      "iAccept": "Acepto esta moneda",
+      "becomeFirst": "Ser el primero",
+      "loginToAccept": "Inicia sesión para declarar la aceptación",
+      "registerCompany": "Registrar una empresa",
+      "youAccept": "Aceptas esta moneda en tus puntos: {points}",
+      "managePoints": "Gestionar puntos",
+      "badgeTitle": "Insignia para tu sitio",
+      "badgeHint": "Pega este código. La insignia se actualiza sola y no lleva telemetría.",
+      "badgeLabel": "Aceptamos",
+      "badgeAlt": "Aceptamos {symbol}"
     },
     "supply": {
       "circulating": "Suministro circulante",
