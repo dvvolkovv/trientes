@@ -3,6 +3,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { getViewerCompanyById, canEditCompany, canManageMembers } from "@/lib/business";
 import { readTop100 } from "@/lib/snapshot";
+import { listSelfListedCards } from "@/lib/coin-card-directory";
 import { CompanyProfileForm } from "@/components/business/company-profile-form";
 import { PointForm } from "@/components/business/point-form";
 import { PointsList, type PointListItem } from "@/components/business/points-list";
@@ -13,10 +14,13 @@ export const dynamic = "force-dynamic";
 
 export default async function CompanyManagementPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string; id: string }>;
+  searchParams: Promise<{ card?: string }>;
 }) {
   const { locale, id } = await params;
+  const { card: cardParam } = await searchParams;
   setRequestLocale(locale);
   const t = await getTranslations("business");
   const { userId, company, role } = await getViewerCompanyById(id);
@@ -25,13 +29,15 @@ export default async function CompanyManagementPage({
   const editable = canEditCompany(role);
   const canManage = canManageMembers(role);
 
-  const [points, coins] = await Promise.all([
+  const [points, coins, cards] = await Promise.all([
     prisma.companyPoint.findMany({
       where: { companyId: company.id },
       orderBy: { createdAt: "desc" },
       take: 100,
     }),
     readTop100(),
+    // Все одобренные собственные листинги — их пока десятки, не сотни.
+    listSelfListedCards(200),
   ]);
   const items: PointListItem[] = points.map((p) => ({
     id: p.id,
@@ -41,6 +47,12 @@ export default async function CompanyManagementPage({
     rejectReason: p.rejectReason,
   }));
   const coinOpts = coins.map((c) => ({ id: c.id, symbol: c.symbol, logoUrl: c.logoUrl }));
+  const cardOpts = cards.map((c) => ({
+    id: c.id, symbol: c.symbol, name: c.name, logoUrl: c.logoUrl,
+  }));
+  // Префилл приходит по ссылке с карточки монеты. Непонятный id молча
+  // игнорируется — иначе кнопка «я принимаю» могла бы проставить что угодно.
+  const prefillCards = cardParam && cardOpts.some((c) => c.id === cardParam) ? [cardParam] : [];
 
   return (
     <main className="max-w-[860px] mx-auto px-4 md:px-12 py-12 space-y-12">
@@ -85,16 +97,18 @@ export default async function CompanyManagementPage({
           }}
         />
       </section>
-      <section>
+      <section id="your-points" className="scroll-mt-24">
         <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-4">{t("yourPoints")}</h2>
         <PointsList points={items} />
       </section>
       {editable ? (
-        <section>
+        <section id="add-point" className="scroll-mt-24">
           <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-4">{t("addPoint")}</h2>
           <PointForm
             companyId={company.id}
             coins={coinOpts}
+            cards={cardOpts}
+            initialCardIds={prefillCards}
             companyAddress={{
               countryCode: company.countryCode ?? "",
               city: company.city ?? "",
