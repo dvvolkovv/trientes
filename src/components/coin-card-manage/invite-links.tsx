@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import type { CoinCardRole } from "@prisma/client";
@@ -33,16 +33,16 @@ export function CardInviteLinks({
   const [signer, setSigner] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
-  // Rendered on the server too, where window is absent — fill in after mount.
-  const [origin, setOrigin] = useState("");
-  useEffect(() => setOrigin(window.location.origin), []);
 
-  const urlFor = (token: string) =>
-    origin ? buildCardInviteUrl(origin, locale, token) : `/${locale}/invite/coin/${token}`;
+  // The path renders identically on server and client; the absolute URL is
+  // built at click time, where window actually exists.
+  const pathFor = (token: string) => `/${locale}/invite/coin/${token}`;
 
   async function copy(token: string) {
     try {
-      await navigator.clipboard.writeText(urlFor(token));
+      await navigator.clipboard.writeText(
+        buildCardInviteUrl(window.location.origin, locale, token),
+      );
       setCopied(token);
       setTimeout(() => setCopied(null), 2000);
     } catch {
@@ -103,8 +103,8 @@ export function CardInviteLinks({
                 {tr(`role.${inv.role}`)}
               </span>
               {inv.isSigner ? <span className="text-accent">{tr("signer")}</span> : null}
-              <code className="flex-1 min-w-[160px] truncate" title={urlFor(inv.token)}>
-                {urlFor(inv.token)}
+              <code className="flex-1 min-w-[160px] truncate" title={pathFor(inv.token)}>
+                {pathFor(inv.token)}
               </code>
               <span className="text-muted whitespace-nowrap">
                 {t("expires", { date: new Date(inv.expiresAt).toLocaleDateString(locale) })}
