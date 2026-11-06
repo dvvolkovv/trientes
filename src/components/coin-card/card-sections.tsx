@@ -2,6 +2,7 @@ import type { PublicCoinCard } from "@/lib/coin-card-public";
 import { ContractsSection } from "./sections/contracts-section";
 import { TokenomicsSection } from "./sections/tokenomics-section";
 import { MarketsSection } from "./sections/markets-section";
+import { AcceptanceSection } from "./sections/acceptance-section";
 import { SecuritySection } from "./sections/security-section";
 import { TeamSection } from "./sections/team-section";
 import { MarketingSection } from "./sections/marketing-section";
@@ -19,6 +20,7 @@ export function CoinCardSections({ card }: { card: PublicCoinCard }) {
       <ContractsSection contracts={card.contracts} provenance={card.provenance} />
       <TokenomicsSection tokenomics={card.tokenomics} provenance={card.provenance} />
       <MarketsSection markets={card.markets} provenance={card.provenance} />
+      <AcceptanceSection cardId={card.id} slug={card.slug} symbol={card.symbol} />
       <SecuritySection security={card.security} />
       <TeamSection teamInfo={card.teamInfo} />
       <MarketingSection marketing={card.marketing} />
