@@ -83,6 +83,7 @@ export const SECTION_SPECS: Record<CardSection, FieldSpec[]> = {
     { kind: "logo", path: "logoUrl", label: "logo" },
     { kind: "date", path: "launchDate", label: "launchDate" },
     { kind: "tags", path: "tags", label: "tags" },
+    { kind: "text", path: "sourceLocale", label: "sourceLocale" },
   ],
   CONTRACTS: [
     { kind: "rows", path: "contracts", label: "contract", fields: ROW_SUBFIELDS.contract },

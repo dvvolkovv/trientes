@@ -4,6 +4,7 @@
 // anyone decides to apply it.
 
 import type { CardSection } from "@/lib/coin-card-risk";
+import { normalizeSourceLocale } from "@/lib/prose-fields";
 import {
   normalizeHttpUrl,
   validateCardBasics,
@@ -40,6 +41,7 @@ export type CardStateLike = {
   description: string | null;
   logoUrl: string | null;
   launchDate: Date | string | null;
+  sourceLocale?: string | null;
   tags: string[];
   links: unknown;
   tokenomics: unknown;
@@ -66,7 +68,7 @@ export type NormalizeResult =
 
 /** Which card paths a section owns. Used for diffing and for `sectionValues`. */
 export const SECTION_PATHS: Record<CardSection, readonly string[]> = {
-  IDENTITY: ["name", "symbol", "tagline", "description", "logoUrl", "tags", "launchDate"],
+  IDENTITY: ["name", "symbol", "tagline", "description", "logoUrl", "tags", "launchDate", "sourceLocale"],
   CONTRACTS: ["contracts"],
   TOKENOMICS: ["tokenomics"],
   MARKETS: ["markets"],
@@ -209,6 +211,13 @@ export function normalizeSectionPayload(
         .filter(Boolean)
         .slice(0, MAX_TAGS);
       touched.push("tags");
+    }
+    if ("sourceLocale" in payload) {
+      // Пустое значение допустимо: тогда язык определится автоматически.
+      const raw = typeof payload.sourceLocale === "string" ? payload.sourceLocale.trim() : "";
+      if (raw && !normalizeSourceLocale(raw)) return { ok: false, reason: "source_locale_invalid" };
+      card.sourceLocale = raw ? normalizeSourceLocale(raw) : null;
+      touched.push("sourceLocale");
     }
     if ("launchDate" in payload) {
       if (typeof payload.launchDate === "string" && payload.launchDate) {

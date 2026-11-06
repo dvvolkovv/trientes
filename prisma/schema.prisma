@@ -752,6 +752,9 @@ model CoinCard {
   logoUrl       String?
   launchDate    DateTime?
   tags          String[]      @default([])
+  // Язык, на котором проект ввёл прозу. Пусто → определяется один раз
+  // автоматически при первом публичном рендере и сохраняется.
+  sourceLocale  String?
   consensus     String?
   hashAlgo      String?
   links         Json?
