@@ -70,7 +70,7 @@
 - Create: `src/lib/invite-tokens.ts`
 - Modify: `src/lib/company-invites.ts`
 
-- [ ] **Step 1: Создать `src/lib/invite-tokens.ts`**
+- [x] **Step 1: Создать `src/lib/invite-tokens.ts`**
 
 ```ts
 // Generic one-time invite-link primitives. Shared by company teams and coin
@@ -113,7 +113,7 @@ export function isInviteUsable(invite: InviteLifecycle, now: Date = new Date()):
 }
 ```
 
-- [ ] **Step 2: Переписать `src/lib/company-invites.ts` на реэкспорт**
+- [x] **Step 2: Переписать `src/lib/company-invites.ts` на реэкспорт**
 
 Полное новое содержимое файла (вызывающий код не меняется — имена те же):
 
@@ -138,12 +138,12 @@ export function buildInviteUrl(origin: string, locale: string, token: string): s
 }
 ```
 
-- [ ] **Step 3: Проверить, что ничего не отвалилось**
+- [x] **Step 3: Проверить, что ничего не отвалилось**
 
 Run: `npx tsc --noEmit && npm test -- --run company` (если тестов на company-invites нет, достаточно tsc)
 Expected: tsc без ошибок.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/lib/invite-tokens.ts src/lib/company-invites.ts
@@ -165,7 +165,7 @@ git commit -m "refactor(invites): вынести жизненный цикл т�
 сравнивает с «было», и только потом (возможно, через дни и подписи) применяется.
 Поэтому нормализация выносится в чистую функцию.
 
-- [ ] **Step 1: Написать падающий тест `tests/coin-card-sections.test.ts`**
+- [x] **Step 1: Написать падающий тест `tests/coin-card-sections.test.ts`**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -260,12 +260,12 @@ describe("sectionValues", () => {
 });
 ```
 
-- [ ] **Step 2: Запустить тест и убедиться, что он падает**
+- [x] **Step 2: Запустить тест и убедиться, что он падает**
 
 Run: `npm test -- --run tests/coin-card-sections.test.ts`
 Expected: FAIL — `Failed to resolve import "@/lib/coin-card-sections"`.
 
-- [ ] **Step 3: Создать `src/lib/coin-card-sections.ts`**
+- [x] **Step 3: Создать `src/lib/coin-card-sections.ts`**
 
 ```ts
 // One normalizer for a section payload, used twice: by the direct write path
@@ -508,12 +508,12 @@ export function patchValues(patch: SectionPatch): Record<string, unknown> {
 }
 ```
 
-- [ ] **Step 4: Запустить тест — должен проходить**
+- [x] **Step 4: Запустить тест — должен проходить**
 
 Run: `npm test -- --run tests/coin-card-sections.test.ts`
 Expected: PASS (8 тестов).
 
-- [ ] **Step 5: Перевести `saveCoinCardSection` на новый нормализатор**
+- [x] **Step 5: Перевести `saveCoinCardSection` на новый нормализатор**
 
 В `src/app/actions/coin-card.ts` заменить импорты валидаторов и весь блок
 нормализации (строки с `const data: Record<string, unknown> = {}` и далее до
@@ -619,7 +619,7 @@ import type { CardSection } from "@/lib/coin-card-risk";
 исполнитель идёт строго по порядку, то Step 6 этой задачи выполняется после
 Task 5.
 
-- [ ] **Step 6: Проверка и коммит (после Task 5)**
+- [x] **Step 6: Проверка и коммит (после Task 5)**
 
 Run: `npx tsc --noEmit && npm test -- --run`
 Expected: tsc чисто, все тесты зелёные.
@@ -637,7 +637,7 @@ git commit -m "refactor(coin-card): единый нормализатор сек
 - Create: `src/lib/coin-card-diff.ts`
 - Create: `tests/coin-card-diff.test.ts`
 
-- [ ] **Step 1: Написать падающий тест `tests/coin-card-diff.test.ts`**
+- [x] **Step 1: Написать падающий тест `tests/coin-card-diff.test.ts`**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -699,12 +699,12 @@ describe("diffToCardUpdate", () => {
 });
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падает**
+- [x] **Step 2: Запустить и убедиться, что падает**
 
 Run: `npm test -- --run tests/coin-card-diff.test.ts`
 Expected: FAIL — модуль не найден.
 
-- [ ] **Step 3: Создать `src/lib/coin-card-diff.ts`**
+- [x] **Step 3: Создать `src/lib/coin-card-diff.ts`**
 
 ```ts
 // A revision is a diff, not a form submission: it is stored, shown to signers
@@ -788,12 +788,12 @@ export function diffToCardUpdate(diff: readonly DiffEntry[]): CardUpdate {
 }
 ```
 
-- [ ] **Step 4: Тест должен проходить**
+- [x] **Step 4: Тест должен проходить**
 
 Run: `npm test -- --run tests/coin-card-diff.test.ts`
 Expected: PASS (8 тестов).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/lib/coin-card-diff.ts tests/coin-card-diff.test.ts
@@ -813,7 +813,7 @@ git commit -m "feat(coin-card): движок diff для ревизий"
 на момент подачи обязательны, иначе смена состава подписантов на ходу меняет
 исход уже идущего голосования.
 
-- [ ] **Step 1: Написать падающий тест `tests/coin-card-multisig.test.ts`**
+- [x] **Step 1: Написать падающий тест `tests/coin-card-multisig.test.ts`**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -957,12 +957,12 @@ describe("revisionExpiry", () => {
 });
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падает**
+- [x] **Step 2: Запустить и убедиться, что падает**
 
 Run: `npm test -- --run tests/coin-card-multisig.test.ts`
 Expected: FAIL — модуль не найден.
 
-- [ ] **Step 3: Создать `src/lib/coin-card-multisig.ts`**
+- [x] **Step 3: Создать `src/lib/coin-card-multisig.ts`**
 
 ```ts
 // Off-chain M-of-N approval over Trientes accounts (wallet-bound signers are
@@ -1070,12 +1070,12 @@ export function revisionExpiry(now: Date = new Date()): Date {
 }
 ```
 
-- [ ] **Step 4: Тест должен проходить**
+- [x] **Step 4: Тест должен проходить**
 
 Run: `npm test -- --run tests/coin-card-multisig.test.ts`
 Expected: PASS (17 тестов).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/lib/coin-card-multisig.ts tests/coin-card-multisig.test.ts
@@ -1095,7 +1095,7 @@ git commit -m "feat(coin-card): ядро мультиподписи — марш
 который знал только куратора), `canAssignRole`, `canVote` и две асинхронные
 выборки для страниц кабинета.
 
-- [ ] **Step 1: Дописать тесты в `tests/coin-card-access.test.ts`**
+- [x] **Step 1: Дописать тесты в `tests/coin-card-access.test.ts`**
 
 Добавить в конец файла:
 
@@ -1162,12 +1162,12 @@ describe("canVote", () => {
 });
 ```
 
-- [ ] **Step 2: Запустить — упадёт на отсутствующих экспортах**
+- [x] **Step 2: Запустить — упадёт на отсутствующих экспортах**
 
 Run: `npm test -- --run tests/coin-card-access.test.ts`
 Expected: FAIL — `canEditCardDirectly is not a function`.
 
-- [ ] **Step 3: Дописать `src/lib/coin-card-access.ts`**
+- [x] **Step 3: Дописать `src/lib/coin-card-access.ts`**
 
 Удалить функцию `canEditCardNow` (её заменяет `canEditCardDirectly`) и
 дописать в конец файла:
@@ -1267,7 +1267,7 @@ export async function getViewerCard(cardId: string): Promise<ViewerCardResult> {
 }
 ```
 
-- [ ] **Step 4: Тесты должны пройти**
+- [x] **Step 4: Тесты должны пройти**
 
 Run: `npm test -- --run tests/coin-card-access.test.ts`
 Expected: PASS. Если vitest ругается на импорт `@/auth` внутри теста —
@@ -1276,7 +1276,7 @@ Expected: PASS. Если vitest ругается на импорт `@/auth` вн
 в отдельный файл `src/lib/coin-card-cards.ts` и в тесте импортировать только
 чистые гейты. Проверить фактическим запуском, не угадывать.
 
-- [ ] **Step 5: Запустить всё и закоммитить вместе с Task 2 Step 5**
+- [x] **Step 5: Запустить всё и закоммитить вместе с Task 2 Step 5**
 
 Run: `npx tsc --noEmit && npm test -- --run`
 Expected: чисто.
@@ -1296,7 +1296,7 @@ git commit -m "feat(coin-card): права участника — прямая �
 Коды ошибок — в едином стиле со спекой: `unauth`, `forbidden`, `not_found`,
 `no_changes`, `revision_closed`, `not_a_signer`, `already_voted`.
 
-- [ ] **Step 1: Создать `src/app/actions/coin-card-revisions.ts`**
+- [x] **Step 1: Создать `src/app/actions/coin-card-revisions.ts`**
 
 ```ts
 "use server";
@@ -1639,13 +1639,13 @@ export async function withdrawRevision(input: {
 }
 ```
 
-- [ ] **Step 2: Проверить типы**
+- [x] **Step 2: Проверить типы**
 
 Run: `npx tsc --noEmit`
 Expected: чисто. Если Prisma ругается на тип `data` в `createMany` — оставить
 приведение `as never`, оно там именно для этого (строки собраны из JSONB).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/app/actions/coin-card-revisions.ts
@@ -1664,7 +1664,7 @@ git commit -m "feat(coin-card): конвейер ревизий — подача
 `OWNER` (`forbidden`); `sections` обнуляются для не-`EDITOR`; снятие флага
 подписанта, после которого `N < threshold`, блокируется (`threshold_unreachable`).
 
-- [ ] **Step 1: Создать `src/app/actions/coin-card-members.ts`**
+- [x] **Step 1: Создать `src/app/actions/coin-card-members.ts`**
 
 ```ts
 "use server";
@@ -1838,7 +1838,7 @@ export async function removeCardMember(input: {
 }
 ```
 
-- [ ] **Step 2: Проверить типы и закоммитить**
+- [x] **Step 2: Проверить типы и закоммитить**
 
 Run: `npx tsc --noEmit`
 Expected: чисто.
@@ -1862,7 +1862,7 @@ git commit -m "feat(coin-card): участники карточки — роли
 `/{locale}/invite/[token]`: у них разная глубина сегментов. Токены лежат в
 разных таблицах, поэтому одна ссылка никогда не попадёт не в тот обработчик.
 
-- [ ] **Step 1: Создать `src/lib/coin-card-invites.ts`**
+- [x] **Step 1: Создать `src/lib/coin-card-invites.ts`**
 
 ```ts
 // Invite links for coin card teams. The token lifecycle is shared with company
@@ -1884,7 +1884,7 @@ export function buildCardInviteUrl(origin: string, locale: string, token: string
 }
 ```
 
-- [ ] **Step 2: Создать `src/app/actions/coin-card-invites.ts`**
+- [x] **Step 2: Создать `src/app/actions/coin-card-invites.ts`**
 
 ```ts
 "use server";
@@ -2031,7 +2031,7 @@ export async function acceptCardInvite(input: { token: string }) {
 }
 ```
 
-- [ ] **Step 3: Создать `src/components/coin-card-manage/accept-invite-button.tsx`**
+- [x] **Step 3: Создать `src/components/coin-card-manage/accept-invite-button.tsx`**
 
 ```tsx
 "use client";
@@ -2076,7 +2076,7 @@ export function AcceptCardInviteButton({
 }
 ```
 
-- [ ] **Step 4: Создать `src/app/[locale]/invite/coin/[token]/page.tsx`**
+- [x] **Step 4: Создать `src/app/[locale]/invite/coin/[token]/page.tsx`**
 
 ```tsx
 import Link from "next/link";
@@ -2161,7 +2161,7 @@ export default async function CoinCardInvitePage({
 }
 ```
 
-- [ ] **Step 5: Проверить типы и закоммитить**
+- [x] **Step 5: Проверить типы и закоммитить**
 
 Run: `npx tsc --noEmit`
 Expected: чисто (ключи i18n появятся в Task 14 — tsc их не проверяет).
@@ -2185,7 +2185,7 @@ git commit -m "feat(coin-card): ссылки-приглашения в кома�
 внутреннее дело команды. Включение мультисига с нуля — обычное действие
 владельца: обходить ещё нечего.
 
-- [ ] **Step 1: Создать `src/app/actions/coin-card-policy.ts`**
+- [x] **Step 1: Создать `src/app/actions/coin-card-policy.ts`**
 
 ```ts
 "use server";
@@ -2294,7 +2294,7 @@ export async function updateCardPolicy(input: {
 }
 ```
 
-- [ ] **Step 2: Применение POLICY-ревизии в `applyRevisionNow`**
+- [x] **Step 2: Применение POLICY-ревизии в `applyRevisionNow`**
 
 В `src/app/actions/coin-card-revisions.ts` функция `applyRevisionNow` пока
 умеет только `CONTENT`. Дописать в её начало, сразу после загрузки `rev`:
@@ -2356,7 +2356,7 @@ async function finishAfterSigners(
 В `voteOnRevision` в выборку `select` добавить `kind: true` и передать его в
 `finishAfterSigners(rev.id, rev.cardId, rev.highRisk, rev.card.trust as CardTrust, rev.kind)`.
 
-- [ ] **Step 3: Проверить типы и закоммитить**
+- [x] **Step 3: Проверить типы и закоммитить**
 
 Run: `npx tsc --noEmit`
 Expected: чисто.
@@ -2380,7 +2380,7 @@ git commit -m "feat(coin-card): политика мультисига и её и
 законные действия админа по обращению владельца, но оба пишутся в
 `AdminAuditLog` и **видны в публичной истории** (Task 12). Тихого обхода нет.
 
-- [ ] **Step 1: Создать `src/app/actions/admin-coin-revisions.ts`**
+- [x] **Step 1: Создать `src/app/actions/admin-coin-revisions.ts`**
 
 ```ts
 "use server";
@@ -2603,7 +2603,7 @@ export async function transferCoinCard(input: {
 }
 ```
 
-- [ ] **Step 2: Создать `src/components/coin-card-manage/diff-view.tsx`**
+- [x] **Step 2: Создать `src/components/coin-card-manage/diff-view.tsx`**
 
 ```tsx
 import type { DiffEntry } from "@/lib/coin-card-diff";
@@ -2634,7 +2634,7 @@ export function DiffView({ diff }: { diff: readonly DiffEntry[] }) {
 }
 ```
 
-- [ ] **Step 3: Создать `src/components/admin/coin-revision-row.tsx`**
+- [x] **Step 3: Создать `src/components/admin/coin-revision-row.tsx`**
 
 ```tsx
 "use client";
@@ -2757,7 +2757,7 @@ export function CoinRevisionRow({ revision }: { revision: AdminRevision }) {
 }
 ```
 
-- [ ] **Step 4: Дописать очередь ревизий в `src/app/[locale]/admin/coin-cards/page.tsx`**
+- [x] **Step 4: Дописать очередь ревизий в `src/app/[locale]/admin/coin-cards/page.tsx`**
 
 Добавить импорты:
 
@@ -2819,7 +2819,7 @@ import type { DiffEntry } from "@/lib/coin-card-diff";
 REJECT — в админке важен сам факт, что команда подписала; разбор голосов живёт
 в кабинете.
 
-- [ ] **Step 5: Проверить типы и закоммитить**
+- [x] **Step 5: Проверить типы и закоммитить**
 
 Run: `npx tsc --noEmit`
 Expected: чисто.
@@ -2845,7 +2845,7 @@ git commit -m "feat(coin-card): модерация ревизий, аварий�
 поэтому поля описываются декларативно, а рендер один. Чистые функции
 (`specToInitial`, `stateToPayload`, `getPath`, `setPath`) тестируются без DOM.
 
-- [ ] **Step 1: Написать падающий тест `tests/coin-card-form-spec.test.ts`**
+- [x] **Step 1: Написать падающий тест `tests/coin-card-form-spec.test.ts`**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -2938,12 +2938,12 @@ describe("stateToPayload", () => {
 });
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падает**
+- [x] **Step 2: Запустить и убедиться, что падает**
 
 Run: `npm test -- --run tests/coin-card-form-spec.test.ts`
 Expected: FAIL — модуль не найден.
 
-- [ ] **Step 3: Создать `src/lib/coin-card-form-spec.ts`**
+- [x] **Step 3: Создать `src/lib/coin-card-form-spec.ts`**
 
 ```ts
 // Declarative description of the editable fields of every card section. One
@@ -3177,13 +3177,13 @@ export function stateToPayload(
 }
 ```
 
-- [ ] **Step 4: Тест должен пройти**
+- [x] **Step 4: Тест должен пройти**
 
 Run: `npm test -- --run tests/coin-card-form-spec.test.ts`
 Expected: PASS (9 тестов). `tokenomics.total` в payload ожидается `null`, а
 `validateTokenomics` трактует `null` как «не задано» — поведение совпадает.
 
-- [ ] **Step 5: Создать `src/components/coin-card-manage/section-editor.tsx`**
+- [x] **Step 5: Создать `src/components/coin-card-manage/section-editor.tsx`**
 
 ```tsx
 "use client";
@@ -3404,7 +3404,7 @@ export function SectionEditor({
 }
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/lib/coin-card-form-spec.ts tests/coin-card-form-spec.test.ts \
@@ -3427,7 +3427,7 @@ git commit -m "feat(coin-card): декларативный редактор се
 - Create: `src/app/[locale]/cabinet/coins/[id]/page.tsx`
 - Modify: `src/app/[locale]/cabinet/page.tsx`
 
-- [ ] **Step 1: Список карточек в кабинете — `src/components/cabinet/coins-section.tsx`**
+- [x] **Step 1: Список карточек в кабинете — `src/components/cabinet/coins-section.tsx`**
 
 ```tsx
 import Link from "next/link";
@@ -3488,7 +3488,7 @@ export async function CoinsSection({ locale }: { locale: string }) {
 `import { CoinsSection } from "@/components/cabinet/coins-section";` и
 отрендерить `<CoinsSection locale={locale} />` сразу после `<CompaniesSection …/>`.
 
-- [ ] **Step 2: Строка участника — `src/components/coin-card-manage/member-row.tsx`**
+- [x] **Step 2: Строка участника — `src/components/coin-card-manage/member-row.tsx`**
 
 ```tsx
 "use client";
@@ -3653,7 +3653,7 @@ export function CardMemberRow({
 }
 ```
 
-- [ ] **Step 3: Приглашение по хэндлу — `src/components/coin-card-manage/invite-member-form.tsx`**
+- [x] **Step 3: Приглашение по хэндлу — `src/components/coin-card-manage/invite-member-form.tsx`**
 
 ```tsx
 "use client";
@@ -3728,7 +3728,7 @@ export function CardInviteMemberForm({
 }
 ```
 
-- [ ] **Step 4: Ссылки-приглашения — `src/components/coin-card-manage/invite-links.tsx`**
+- [x] **Step 4: Ссылки-приглашения — `src/components/coin-card-manage/invite-links.tsx`**
 
 ```tsx
 "use client";
@@ -3873,7 +3873,7 @@ export function CardInviteLinks({
 }
 ```
 
-- [ ] **Step 5: Серверная секция команды — `src/components/coin-card-manage/team-section.tsx`**
+- [x] **Step 5: Серверная секция команды — `src/components/coin-card-manage/team-section.tsx`**
 
 ```tsx
 import { getTranslations } from "next-intl/server";
@@ -3956,7 +3956,7 @@ export async function CardTeamSection({
 }
 ```
 
-- [ ] **Step 6: Политика мультисига — `src/components/coin-card-manage/policy-section.tsx`**
+- [x] **Step 6: Политика мультисига — `src/components/coin-card-manage/policy-section.tsx`**
 
 ```tsx
 "use client";
@@ -4093,7 +4093,7 @@ export function PolicySection({
 }
 ```
 
-- [ ] **Step 7: Ревизии и голосование — `src/components/coin-card-manage/revisions-section.tsx`**
+- [x] **Step 7: Ревизии и голосование — `src/components/coin-card-manage/revisions-section.tsx`**
 
 ```tsx
 "use client";
@@ -4237,7 +4237,7 @@ export function RevisionsSection({
 }
 ```
 
-- [ ] **Step 8: Страница управления — `src/app/[locale]/cabinet/coins/[id]/page.tsx`**
+- [x] **Step 8: Страница управления — `src/app/[locale]/cabinet/coins/[id]/page.tsx`**
 
 ```tsx
 import { notFound, redirect } from "next/navigation";
@@ -4394,12 +4394,12 @@ export default async function CoinCardManagePage({
 }
 ```
 
-- [ ] **Step 9: Проверить типы и собрать**
+- [x] **Step 9: Проверить типы и собрать**
 
 Run: `npx tsc --noEmit`
 Expected: чисто.
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add src/components/cabinet/coins-section.tsx src/components/coin-card-manage \
@@ -4420,7 +4420,7 @@ git commit -m "feat(coin-card): кабинет карточки — секции
 домешиваются в ту же ленту из `AdminAuditLog` — именно поэтому «тихого обхода
 не существует».
 
-- [ ] **Step 1: Создать `src/lib/coin-card-history.ts`**
+- [x] **Step 1: Создать `src/lib/coin-card-history.ts`**
 
 ```ts
 import { prisma } from "@/lib/prisma";
@@ -4501,7 +4501,7 @@ export async function getPublicCardHistory(
 }
 ```
 
-- [ ] **Step 2: Создать `src/components/coin-card/history-section.tsx`**
+- [x] **Step 2: Создать `src/components/coin-card/history-section.tsx`**
 
 ```tsx
 import { getTranslations } from "next-intl/server";
@@ -4573,13 +4573,13 @@ export async function CardHistorySection({ cardId }: { cardId: string }) {
 }
 ```
 
-- [ ] **Step 3: Подключить историю в `src/components/coin-card/card-sections.tsx`**
+- [x] **Step 3: Подключить историю в `src/components/coin-card/card-sections.tsx`**
 
 Добавить импорт `import { CardHistorySection } from "./history-section";` и
 вставить `<CardHistorySection cardId={card.id} />` последним элементом внутри
 фрагмента, после `<CardLinksSection links={card.links} />`.
 
-- [ ] **Step 4: Проверить типы и закоммитить**
+- [x] **Step 4: Проверить типы и закоммитить**
 
 Run: `npx tsc --noEmit`
 Expected: чисто.
@@ -4599,7 +4599,7 @@ git commit -m "feat(coin-card): публичная история изменен
 - Create: `tests/coin-card-expiry.test.ts`
 - Modify: `worker/index.ts`
 
-- [ ] **Step 1: Написать падающий тест `tests/coin-card-expiry.test.ts`**
+- [x] **Step 1: Написать падающий тест `tests/coin-card-expiry.test.ts`**
 
 ```ts
 import { describe, expect, it, vi } from "vitest";
@@ -4620,12 +4620,12 @@ describe("expireStaleRevisions", () => {
 });
 ```
 
-- [ ] **Step 2: Запустить и убедиться, что падает**
+- [x] **Step 2: Запустить и убедиться, что падает**
 
 Run: `npm test -- --run tests/coin-card-expiry.test.ts`
 Expected: FAIL — модуль не найден.
 
-- [ ] **Step 3: Создать `src/lib/coin-card-expiry.ts`**
+- [x] **Step 3: Создать `src/lib/coin-card-expiry.ts`**
 
 ```ts
 // A revision nobody signed within REVISION_TTL_DAYS is stale, not pending —
@@ -4653,12 +4653,12 @@ export async function expireStaleRevisions(
 }
 ```
 
-- [ ] **Step 4: Тест должен пройти**
+- [x] **Step 4: Тест должен пройти**
 
 Run: `npm test -- --run tests/coin-card-expiry.test.ts`
 Expected: PASS.
 
-- [ ] **Step 5: Подключить в `worker/index.ts`**
+- [x] **Step 5: Подключить в `worker/index.ts`**
 
 Добавить импорт рядом с остальными:
 
@@ -4689,7 +4689,7 @@ async function runRevisionExpiry() {
   cron.schedule("50 * * * *", () => void runRevisionExpiry());
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/lib/coin-card-expiry.ts tests/coin-card-expiry.test.ts worker/index.ts
@@ -4735,7 +4735,7 @@ git commit -m "feat(coin-card): воркер закрывает неподпис
 `name_too_long`, `tagline_too_long`, `description_too_long`, `chain_unknown`,
 `contract_required`, `contract_invalid`, `decimals_invalid`, `unknown`.
 
-- [ ] **Step 1: Написать блок ключей для `messages/en.json`**
+- [x] **Step 1: Написать блок ключей для `messages/en.json`**
 
 Это текстовая работа, механически одинаковая для всех локалей. Порядок:
 сначала полный блок на английском, затем перевод на остальные девять. Значения
@@ -4743,7 +4743,7 @@ git commit -m "feat(coin-card): воркер закрывает неподпис
 `{count}`, `{author}`, `{approvals}`, `{threshold}`, `{rejections}`,
 `{signers}`, `{date}`, `{note}`, `{coin}`, `{name}`).
 
-- [ ] **Step 2: Проверить, что все 10 файлов — валидный JSON и ключи совпадают**
+- [x] **Step 2: Проверить, что все 10 файлов — валидный JSON и ключи совпадают**
 
 ```bash
 node -e '
@@ -4762,7 +4762,7 @@ for(const f of fs.readdirSync("messages")){
 
 Expected: `ok` для всех десяти файлов.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add messages
@@ -4775,23 +4775,23 @@ git commit -m "i18n(coin-card): переводы команды, политик�
 
 **Files:** —
 
-- [ ] **Step 1: Весь набор тестов**
+- [x] **Step 1: Весь набор тестов**
 
 Run: `npm test -- --run`
 Expected: PASS, включая новые `coin-card-{sections,diff,multisig,access,form-spec,expiry}`.
 
-- [ ] **Step 2: Типы и линт**
+- [x] **Step 2: Типы и линт**
 
 Run: `npx tsc --noEmit && npm run lint`
 Expected: чисто.
 
-- [ ] **Step 3: Прод-сборка**
+- [x] **Step 3: Прод-сборка**
 
 Run: `npm run build`
 Expected: сборка без ошибок; в списке маршрутов должны появиться
 `/[locale]/cabinet/coins/[id]` и `/[locale]/invite/coin/[token]`.
 
-- [ ] **Step 4: Рестарт процессов**
+- [x] **Step 4: Рестарт процессов**
 
 ```bash
 pm2 restart trientes-web
@@ -4799,7 +4799,7 @@ pm2 restart trientes-worker   # worker импортирует новый src/lib
 pm2 save
 ```
 
-- [ ] **Step 5: Дымовой тест в проде**
+- [x] **Step 5: Дымовой тест в проде**
 
 ```bash
 curl -s -o /dev/null -w '%{http_code} ' https://trientes.org/ru/cabinet
@@ -4811,7 +4811,7 @@ Expected: `/cabinet` и `/admin/coin-cards` отдают 200 либо 307 на `
 (зависит от cookie), страница приглашения с мусорным токеном — 200 с текстом
 «ссылка недействительна» (она рендерит состояние `invalid`, а не 404).
 
-- [ ] **Step 6: Push**
+- [x] **Step 6: Push**
 
 ```bash
 git push origin main
@@ -4848,3 +4848,42 @@ git push origin main
 разлоков (E), автосвязка с POI (F), донаты (G). Гонка двух переходов по одной
 ссылке проверяется условным `updateMany` в коде (Task 8), интеграционного теста
 с живой базой в этом слайсе нет — как и в слайсе с `company-invites`.
+
+---
+
+## Факт исполнения (2026-11-06)
+
+Слайс сдан целиком: `npm test` — 575 тестов зелёные, `npx tsc --noEmit` чисто,
+`npm run build` собирается, новые маршруты `/[locale]/cabinet/coins/[id]` и
+`/[locale]/invite/coin/[token]` в билде есть, `trientes-web` и
+`trientes-worker` перезапущены, коммиты в `origin/main`.
+
+Отклонения от плана — все сознательные, принятые по ходу:
+
+1. **`getViewerCard` / `listViewerCards` живут в новом `src/lib/coin-card-viewer.ts`**,
+   а не в `coin-card-access.ts`. Причина ровно та, что была предусмотрена в Task 5
+   Step 4: гейты должны оставаться чистыми, иначе модульный тест тянет `@/auth`
+   и Prisma. Проверено запуском, не угадано.
+2. **`src/app/api/coin-card/logo/upload/route.ts` переведён на `canEditSection`**
+   (раздел `IDENTITY`) вместо удалённого `canEditCardNow`. На опубликованной
+   карточке загрузка больше не пишет `logoUrl` напрямую: URL возвращается
+   редактору и доезжает до карточки ревизией, как любое другое изменение.
+   Иначе логотип был бы единственным полем в обход конвейера.
+3. **В `FieldSpec` добавлен вид `logo`** — иначе на опубликованной карточке
+   логотип нельзя было бы заменить вообще. Рендерится переиспользованным
+   `LogoUpload` из визарда A1.
+4. **Метки полей в `SECTION_SPECS` переиспользуют существующие ключи A1**
+   (`isCanonical`, `exchangeName`, `excludedAddresses`, `burnMechanism`,
+   `links.*`), новых добавлено только 16 — вместо дублирования словаря.
+5. **`normalizeSectionPayload` трактует `"launchDate" in payload`**, а не
+   `typeof === "string"`: иначе дату запуска нельзя было бы очистить.
+6. **`invite-links.tsx` строит абсолютную ссылку в момент копирования**, а не
+   через `useEffect(setState)`: правило `react-hooks/set-state-in-effect`
+   считает это ошибкой, а заодно так нет расхождения разметки при гидратации.
+   (Аналогичный файл `business/invite-links.tsx` этот лин­тер тоже ругает — это
+   предсуществующая проблема, не трогалась.)
+7. **Закрыта предсуществующая дыра i18n из A1**: в девяти неанглийских локалях
+   отсутствовали `coinCard.links.{github,x,telegram,discord,reddit,youtube}` и
+   те же ключи под `coinCard.wizard.links`. Редактор раздела `LINKS` их
+   использует, поэтому они заполнены во всех локалях (бренды как есть, `blog` —
+   переводом).
