@@ -74,29 +74,11 @@ export function routeAfterSigners(
   return { status: "APPLIED" };
 }
 
-export type TallyOutcome = "WAITING" | "PASSED" | "FAILED";
-
-/**
- * Uses the snapshots taken at submit time, never the live signer set: moving
- * people in and out of the signer group must not change a vote in flight.
- * FAILED is arithmetic, not a veto right — the threshold became unreachable.
- */
-export function tally(input: {
-  thresholdAt: number;
-  signerCountAt: number;
-  approvals: number;
-  rejections: number;
-}): { outcome: TallyOutcome } {
-  if (input.approvals >= input.thresholdAt) return { outcome: "PASSED" };
-  const maxPossible = input.signerCountAt - input.rejections;
-  if (maxPossible < input.thresholdAt) return { outcome: "FAILED" };
-  return { outcome: "WAITING" };
-}
-
-/** 1 <= M <= N. Explicit refusal beats silently lowering someone's threshold. */
-export function thresholdReachable(threshold: number, signerCount: number): boolean {
-  return Number.isInteger(threshold) && threshold >= 1 && threshold <= signerCount;
-}
+export {
+  tally,
+  thresholdReachable,
+  type TallyOutcome,
+} from "@/lib/multisig";
 
 export function revisionExpiry(now: Date = new Date()): Date {
   return new Date(now.getTime() + REVISION_TTL_DAYS * 24 * 60 * 60 * 1000);
