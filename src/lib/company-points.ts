@@ -1,6 +1,6 @@
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import type { Bbox, Poi, PoiLayer, Social } from "@/lib/crypto-map";
+import type { Bbox, CoinSelector, Poi, PoiLayer, Social } from "@/lib/crypto-map";
 
 // Shape returned by the prisma query in fetchApprovedPointsInBbox (point + its company).
 export type PointWithCompany = Prisma.CompanyPointGetPayload<{
@@ -40,7 +40,7 @@ function asSocials(raw: unknown): Social[] {
 // Convert a company-submitted point into the same Poi shape OSM points use, so the
 // existing navigator card/markers render it unchanged. Company-level fields are the
 // fallback when the point omits its own (point description first, then company about).
-export function companyPointToPoi(p: PointWithCompany, coinId: string): Poi {
+export function companyPointToPoi(p: PointWithCompany, selector: CoinSelector): Poi {
   const pointSocials = asSocials(p.socials);
   // Caller (fetchApprovedPointsInBbox) already filters by lat/lon bounds, which
   // implicitly excludes ONLINE-type points (their coords are null). The non-null
@@ -57,7 +57,12 @@ export function companyPointToPoi(p: PointWithCompany, coinId: string): Poi {
     category: p.company.displayName,
     address: p.address,
     lightning: false,
-    coinSpecific: p.acceptedCoinIds.includes(coinId.toLowerCase()),
+    // Своя карточка и монета CoinGecko живут в разных пространствах id, поэтому
+    // сверяются с разными массивами и никогда не путаются между собой.
+    coinSpecific:
+      selector.kind === "card"
+        ? (p.acceptedCardIds ?? []).includes(selector.cardId)
+        : (p.acceptedCoinIds ?? []).includes(selector.coinId.toLowerCase()),
     website: p.website ?? p.company.website ?? null,
     openingHours: p.openingHours,
     phone: p.phone ?? p.company.phone ?? null,
@@ -109,13 +114,22 @@ export async function searchApprovedPointsByName(q: string, limit = 5): Promise<
 // Approved company points whose coordinates fall inside the viewport bbox.
 // Defense-in-depth: the parent Company must also be APPROVED — a rejected company
 // shouldn't leak its previously-approved points onto the public map.
-export async function fetchApprovedPointsInBbox(bbox: Bbox, coinId: string): Promise<Poi[]> {
+//
+// В режиме карточки фид дополнительно фильтруется по acceptedCardIds: для своего
+// листинга «все точки с флажком» бесполезны — его принимают единицы.
+export async function fetchApprovedPointsInBbox(
+  bbox: Bbox,
+  selector: CoinSelector,
+): Promise<Poi[]> {
   const rows = await prisma.companyPoint.findMany({
     where: {
       status: "APPROVED",
       company: { status: "APPROVED" },
       lat: { gte: bbox.minLat, lte: bbox.maxLat },
       lon: { gte: bbox.minLon, lte: bbox.maxLon },
+      ...(selector.kind === "card"
+        ? { acceptedCardIds: { has: selector.cardId } }
+        : {}),
     },
     take: 500,
     include: {
@@ -127,5 +141,5 @@ export async function fetchApprovedPointsInBbox(bbox: Bbox, coinId: string): Pro
       },
     },
   });
-  return rows.map((r) => companyPointToPoi(r, coinId));
+  return rows.map((r) => companyPointToPoi(r, selector));
 }

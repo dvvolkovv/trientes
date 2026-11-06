@@ -50,12 +50,38 @@ const SYMBOL_TO_ID: Record<string, string> = {
   zec: "zcash",
 };
 
+/** Общий крипто-тег OSM: всё, что мы не знаем по имени, и любой свой листинг. */
+export const GENERIC_CRYPTO_TAGS = ["payment:cryptocurrencies"];
+
 export function coinPaymentTags(coinId: string, symbol: string): string[] {
   const byId = COIN_TAGS[coinId.toLowerCase()];
   if (byId) return byId;
   const id = SYMBOL_TO_ID[symbol.toLowerCase()];
   if (id && COIN_TAGS[id]) return COIN_TAGS[id];
-  return ["payment:cryptocurrencies"];
+  return [...GENERIC_CRYPTO_TAGS];
+}
+
+/**
+ * Что выбрано в навигаторе: монета из фида CoinGecko или собственная карточка.
+ * Карточки живут в отдельном пространстве id (CoinCard.id — cuid), поэтому в
+ * query-параметре они приходят с префиксом `card:`.
+ */
+export type CoinSelector =
+  | { kind: "coin"; coinId: string }
+  | { kind: "card"; cardId: string };
+
+const CUID_RE = /^[a-z0-9]{10,40}$/i;
+
+export function parseCoinSelector(raw: string | null | undefined): CoinSelector {
+  const s = (raw ?? "").trim();
+  if (!s) return { kind: "coin", coinId: "bitcoin" };
+  if (s.toLowerCase().startsWith("card:")) {
+    const cardId = s.slice("card:".length).trim();
+    // Мусорный id не подменяется биткоином: показать «не та монета» хуже, чем
+    // показать пусто. Пустой cardId ни с чем не совпадёт в запросе.
+    return { kind: "card", cardId: CUID_RE.test(cardId) ? cardId : "" };
+  }
+  return { kind: "coin", coinId: s.toLowerCase() };
 }
 
 export type PoiLayer = "merchant" | "atm" | "financial" | "fintech";

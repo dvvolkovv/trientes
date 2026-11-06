@@ -133,9 +133,11 @@ export const SECTION_SPECS: Record<CardSection, FieldSpec[]> = {
     { kind: "url", path: "marketing.videoUrl", label: "videoUrl" },
   ],
   ACCEPTANCE: [],
+  PAYMENTS: [],
 };
 
-/** Sections a team can actually edit today. ACCEPTANCE waits for slice F. */
+/** Sections a team can actually edit today. ACCEPTANCE is aggregated from the
+ *  point database, PAYMENTS waits for slice F2. */
 export const EDITABLE_SECTIONS: CardSection[] = [
   "IDENTITY", "CONTRACTS", "TOKENOMICS", "MARKETS",
   "SECURITY", "TEAM", "LINKS", "MARKETING",

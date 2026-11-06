@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
-import { parseBbox, coinPaymentTags, type Poi } from "@/lib/crypto-map";
+import {
+  GENERIC_CRYPTO_TAGS,
+  coinPaymentTags,
+  parseBbox,
+  parseCoinSelector,
+  type Poi,
+} from "@/lib/crypto-map";
 import { fetchOsmPoisInBbox } from "@/lib/osm-poi-store";
 import { fetchApprovedPointsInBbox } from "@/lib/company-points";
 import { fetchApprovedFintechHqInBbox } from "@/lib/fintech-pois";
@@ -9,13 +15,19 @@ export const dynamic = "force-dynamic";
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const bboxParam = url.searchParams.get("bbox");
-  const coin = url.searchParams.get("coin") ?? "bitcoin";
+  const selector = parseCoinSelector(url.searchParams.get("coin"));
   const symbol = url.searchParams.get("symbol") ?? "btc";
 
   const bbox = parseBbox(bboxParam);
   if (!bbox) return NextResponse.json({ error: "invalid bbox" }, { status: 400 });
 
-  const coinTags = coinPaymentTags(coin, symbol);
+  // В зеркале BTC Map собственных карточек заведомо нет, и притворяться, что
+  // есть, нельзя: для карточки берём общий крипто-тег, а фильтр по карточке
+  // применяем только к нашим точкам.
+  const coinTags =
+    selector.kind === "card"
+      ? [...GENERIC_CRYPTO_TAGS]
+      : coinPaymentTags(selector.coinId, symbol);
 
   // OSM points come from our own nightly BTC Map mirror rather than a live
   // Overpass query, so a saturated upstream can't blank the map mid-request.
@@ -30,7 +42,7 @@ export async function GET(req: Request) {
 
   let company: Poi[] = [];
   try {
-    company = await fetchApprovedPointsInBbox(bbox, coin);
+    company = await fetchApprovedPointsInBbox(bbox, selector);
   } catch {
     // DB hiccup — degrade to OSM only.
   }

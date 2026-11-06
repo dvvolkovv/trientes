@@ -75,6 +75,7 @@ export const SECTION_PATHS: Record<CardSection, readonly string[]> = {
   LINKS: ["links"],
   MARKETING: ["marketing"],
   ACCEPTANCE: [],
+  PAYMENTS: [],
 };
 
 function asObject(raw: unknown): Record<string, unknown> {
@@ -222,7 +223,8 @@ export function normalizeSectionPayload(
     return { ok: true, patch: { card, touched } };
   }
 
-  // ACCEPTANCE has no editable fields until slice F wires it to CompanyPoint.
+  // ACCEPTANCE is aggregated from CompanyPoint, not typed in by the team; PAYMENTS
+  // waits for slice F2. Neither accepts a payload today.
   return { ok: false, reason: "section_unsupported" };
 }
 
