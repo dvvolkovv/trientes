@@ -30,7 +30,12 @@ export function CoinCardSections({
     : null;
   return (
     <>
-      <ContractsSection contracts={card.contracts} provenance={card.provenance} />
+      <ContractsSection
+        contracts={card.contracts}
+        provenance={card.provenance}
+        cardName={card.name}
+        cardSymbol={card.symbol}
+      />
       <TokenomicsSection tokenomics={card.tokenomics} provenance={card.provenance} badge={badge} />
       <MarketsSection markets={card.markets} provenance={card.provenance} />
       <AcceptanceSection

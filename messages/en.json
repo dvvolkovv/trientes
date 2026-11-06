@@ -1999,6 +1999,46 @@
       "status_RESTRICTED": "restricted",
       "status_BANNED": "banned",
       "status_UNCLEAR": "unclear"
+    },
+    "onchain": {
+      "title": "On-chain check",
+      "manageSubtitle": "We read name, symbol, decimals and total supply straight from the chain and compare them with what you claimed. Automatic once a day.",
+      "never": "not checked yet",
+      "matches": "matches the claim",
+      "supply": "Supply on chain",
+      "flags": "The code contains",
+      "recheck": "Check now",
+      "rechecking": "Checking…",
+      "result": "Checked {checked}, matched {verified}, mismatched {mismatched}, failed {failed}",
+      "mismatchCount": "mismatches: {count}",
+      "mismatch": {
+        "SYMBOL": "symbol on chain: {onchain}, claimed: {claimed}",
+        "NAME": "name on chain: {onchain}, claimed: {claimed}",
+        "DECIMALS": "decimals on chain: {onchain}, claimed: {claimed}",
+        "TOTAL_SUPPLY": "total supply on chain: {onchain} — differs from the claim"
+      },
+      "flag": {
+        "MINTABLE": "minting of new coins",
+        "PAUSABLE": "pausing of transfers",
+        "BLACKLIST": "address blacklist",
+        "UPGRADEABLE_PROXY": "upgradeable proxy",
+        "OWNED": "a contract owner"
+      },
+      "error": {
+        "chain_unsupported": "we cannot read this chain yet",
+        "address_invalid": "this is not a valid EVM address",
+        "not_a_contract": "there is no contract at this address",
+        "not_erc20": "the contract does not answer as an ERC-20 token",
+        "rpc_unreachable": "the node was unreachable, we will retry",
+        "rpc_error": "the node returned an error, we will retry",
+        "decode_failed": "the answer from the chain could not be parsed"
+      },
+      "reason": {
+        "too_soon": "Just checked — try again in a few minutes",
+        "no_contracts": "The card has no contract addresses",
+        "forbidden": "You cannot edit the contracts section",
+        "card_not_found": "Card not found"
+      }
     }
   },
   "inviteCoin": {

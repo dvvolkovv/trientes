@@ -1999,6 +1999,46 @@
       "status_RESTRICTED": "ограничено",
       "status_BANNED": "запрещено",
       "status_UNCLEAR": "неясно"
+    },
+    "onchain": {
+      "title": "Сверка с сетью",
+      "manageSubtitle": "Читаем имя, тикер, decimals и выпуск прямо из сети и сравниваем с тем, что заявлено. Автоматически раз в сутки.",
+      "never": "ещё не сверялось",
+      "matches": "сошлось с заявлением",
+      "supply": "Выпуск в сети",
+      "flags": "В коде есть",
+      "recheck": "Сверить сейчас",
+      "rechecking": "Сверяем…",
+      "result": "Сверено {checked}, сошлось {verified}, расхождений {mismatched}, сбоев {failed}",
+      "mismatchCount": "расхождений: {count}",
+      "mismatch": {
+        "SYMBOL": "тикер в сети: {onchain}, заявлено: {claimed}",
+        "NAME": "имя в сети: {onchain}, заявлено: {claimed}",
+        "DECIMALS": "decimals в сети: {onchain}, заявлено: {claimed}",
+        "TOTAL_SUPPLY": "выпуск в сети: {onchain} — расходится с заявленным"
+      },
+      "flag": {
+        "MINTABLE": "выпуск новых монет",
+        "PAUSABLE": "пауза переводов",
+        "BLACKLIST": "чёрный список адресов",
+        "UPGRADEABLE_PROXY": "обновляемый прокси",
+        "OWNED": "владелец контракта"
+      },
+      "error": {
+        "chain_unsupported": "эту сеть мы пока не читаем",
+        "address_invalid": "это не адрес EVM",
+        "not_a_contract": "по этому адресу в сети нет контракта",
+        "not_erc20": "контракт не отвечает как токен ERC-20",
+        "rpc_unreachable": "узел сети был недоступен, повторим",
+        "rpc_error": "узел сети вернул ошибку, повторим",
+        "decode_failed": "ответ сети не удалось разобрать"
+      },
+      "reason": {
+        "too_soon": "Сверка была только что — попробуйте через несколько минут",
+        "no_contracts": "В карточке нет адресов контрактов",
+        "forbidden": "Нет прав на раздел контрактов",
+        "card_not_found": "Карточка не найдена"
+      }
     }
   },
   "inviteCoin": {

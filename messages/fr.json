@@ -1999,6 +1999,46 @@
       "status_RESTRICTED": "restreint",
       "status_BANNED": "interdit",
       "status_UNCLEAR": "incertain"
+    },
+    "onchain": {
+      "title": "Vérification sur la chaîne",
+      "manageSubtitle": "Nous lisons le nom, le symbole, les decimals et l'offre directement sur la chaîne et les comparons à ce qui est déclaré. Automatique une fois par jour.",
+      "never": "pas encore vérifié",
+      "matches": "correspond à la déclaration",
+      "supply": "Offre sur la chaîne",
+      "flags": "Le code contient",
+      "recheck": "Vérifier maintenant",
+      "rechecking": "Vérification…",
+      "result": "Vérifiés {checked}, conformes {verified}, écarts {mismatched}, échecs {failed}",
+      "mismatchCount": "écarts : {count}",
+      "mismatch": {
+        "SYMBOL": "symbole sur la chaîne : {onchain}, déclaré : {claimed}",
+        "NAME": "nom sur la chaîne : {onchain}, déclaré : {claimed}",
+        "DECIMALS": "decimals sur la chaîne : {onchain}, déclaré : {claimed}",
+        "TOTAL_SUPPLY": "offre sur la chaîne : {onchain} — diffère de la déclaration"
+      },
+      "flag": {
+        "MINTABLE": "émission de nouvelles pièces",
+        "PAUSABLE": "mise en pause des transferts",
+        "BLACKLIST": "liste noire d'adresses",
+        "UPGRADEABLE_PROXY": "proxy évolutif",
+        "OWNED": "un propriétaire du contrat"
+      },
+      "error": {
+        "chain_unsupported": "nous ne lisons pas encore cette chaîne",
+        "address_invalid": "ce n'est pas une adresse EVM valide",
+        "not_a_contract": "aucun contrat à cette adresse",
+        "not_erc20": "le contrat ne répond pas comme un jeton ERC-20",
+        "rpc_unreachable": "le nœud était injoignable, nous réessaierons",
+        "rpc_error": "le nœud a renvoyé une erreur, nous réessaierons",
+        "decode_failed": "la réponse de la chaîne est illisible"
+      },
+      "reason": {
+        "too_soon": "Vérification tout juste effectuée — réessayez dans quelques minutes",
+        "no_contracts": "La fiche n'a aucune adresse de contrat",
+        "forbidden": "Pas de droits sur la section contrats",
+        "card_not_found": "Fiche introuvable"
+      }
     }
   },
   "inviteCoin": {

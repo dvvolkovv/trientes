@@ -53,7 +53,7 @@ function fakeNode(opts: {
     }
     let result = "0x";
     if (body.method === "eth_getCode") result = opts.code ?? "0x6080604052";
-    if (body.method === "eth_getStorageAt") result = opts.slot ?? uintWord(0n);
+    if (body.method === "eth_getStorageAt") result = opts.slot ?? uintWord(BigInt(0));
     if (body.method === "eth_call") {
       const data = (body.params[0] as { data: string }).data;
       if (data === SELECTORS.name) result = opts.name ? stringWord(opts.name) : "0x";
@@ -190,8 +190,8 @@ describe("readContractFacts", () => {
     const { fetchImpl } = fakeNode({
       name: "USD Coin",
       symbol: "USDC",
-      decimals: 6n,
-      totalSupply: 1_000_000_000_000n,
+      decimals: BigInt(6),
+      totalSupply: BigInt(1_000_000_000_000),
     });
     const f = await readContractFacts({ chain: "Ethereum", address: ADDRESS }, { fetchImpl, env: {} });
     expect(f).toMatchObject({
@@ -243,7 +243,7 @@ describe("readContractFacts", () => {
   });
 
   it("нестандартный токен без name читается частично", async () => {
-    const { fetchImpl } = fakeNode({ symbol: "TAL", decimals: 10n });
+    const { fetchImpl } = fakeNode({ symbol: "TAL", decimals: BigInt(10) });
     const f = await readContractFacts({ chain: "ethereum", address: ADDRESS }, { fetchImpl, env: {} });
     expect(f).toMatchObject({ name: null, symbol: "TAL", decimals: 10, error: null });
   });
@@ -291,8 +291,8 @@ describe("verifyCardContracts", () => {
     const { fetchImpl } = fakeNode({
       name: "USD Coin",
       symbol: "USDC",
-      decimals: 6n,
-      totalSupply: 1_000_000_000_000n,
+      decimals: BigInt(6),
+      totalSupply: BigInt(1_000_000_000_000),
     });
     const f = fakePrisma([row]);
     const stats = await verifyCardContracts({ prisma: f.prisma as never, fetchImpl, now });
@@ -310,7 +310,7 @@ describe("verifyCardContracts", () => {
   });
 
   it("расхождение снимает прежнее проверено и не правит токеномику", async () => {
-    const { fetchImpl } = fakeNode({ name: "Tether USD", symbol: "USDT", decimals: 6n });
+    const { fetchImpl } = fakeNode({ name: "Tether USD", symbol: "USDT", decimals: BigInt(6) });
     const f = fakePrisma([row]);
     const stats = await verifyCardContracts({ prisma: f.prisma as never, fetchImpl });
 
@@ -337,8 +337,8 @@ describe("verifyCardContracts", () => {
     const { fetchImpl } = fakeNode({
       name: "USD Coin",
       symbol: "USDC",
-      decimals: 6n,
-      totalSupply: 1_000_000_000_000n,
+      decimals: BigInt(6),
+      totalSupply: BigInt(1_000_000_000_000),
     });
     const f = fakePrisma([{ ...row, isCanonical: false }]);
     await verifyCardContracts({ prisma: f.prisma as never, fetchImpl });

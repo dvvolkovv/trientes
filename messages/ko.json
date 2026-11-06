@@ -1999,6 +1999,46 @@
       "status_RESTRICTED": "제한",
       "status_BANNED": "금지",
       "status_UNCLEAR": "불명확"
+    },
+    "onchain": {
+      "title": "체인 대조",
+      "manageSubtitle": "이름, 심볼, decimals, 총발행량을 체인에서 직접 읽어 신고 내용과 대조합니다. 하루에 한 번 자동 실행됩니다.",
+      "never": "아직 대조하지 않음",
+      "matches": "신고 내용과 일치",
+      "supply": "체인상 발행량",
+      "flags": "코드에 포함된 기능",
+      "recheck": "지금 대조",
+      "rechecking": "대조 중…",
+      "result": "대조 {checked}건, 일치 {verified}건, 불일치 {mismatched}건, 실패 {failed}건",
+      "mismatchCount": "불일치: {count}",
+      "mismatch": {
+        "SYMBOL": "체인상 심볼: {onchain}, 신고: {claimed}",
+        "NAME": "체인상 이름: {onchain}, 신고: {claimed}",
+        "DECIMALS": "체인상 decimals: {onchain}, 신고: {claimed}",
+        "TOTAL_SUPPLY": "체인상 발행량: {onchain} — 신고와 다름"
+      },
+      "flag": {
+        "MINTABLE": "신규 발행",
+        "PAUSABLE": "전송 일시 중지",
+        "BLACKLIST": "주소 블랙리스트",
+        "UPGRADEABLE_PROXY": "업그레이드 가능한 프록시",
+        "OWNED": "계약 소유자"
+      },
+      "error": {
+        "chain_unsupported": "이 체인은 아직 읽지 못합니다",
+        "address_invalid": "EVM 주소가 아닙니다",
+        "not_a_contract": "이 주소에는 계약이 없습니다",
+        "not_erc20": "계약이 ERC-20 토큰으로 응답하지 않습니다",
+        "rpc_unreachable": "노드에 연결할 수 없었습니다. 다시 시도합니다",
+        "rpc_error": "노드가 오류를 반환했습니다. 다시 시도합니다",
+        "decode_failed": "체인 응답을 해석할 수 없습니다"
+      },
+      "reason": {
+        "too_soon": "방금 대조했습니다. 몇 분 후에 다시 시도하세요",
+        "no_contracts": "카드에 계약 주소가 없습니다",
+        "forbidden": "계약 섹션 편집 권한이 없습니다",
+        "card_not_found": "카드를 찾을 수 없습니다"
+      }
     }
   },
   "inviteCoin": {

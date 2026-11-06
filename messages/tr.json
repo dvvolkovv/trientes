@@ -1999,6 +1999,46 @@
       "status_RESTRICTED": "kısıtlı",
       "status_BANNED": "yasak",
       "status_UNCLEAR": "belirsiz"
+    },
+    "onchain": {
+      "title": "Ağ ile karşılaştırma",
+      "manageSubtitle": "Adı, sembolü, decimals ve toplam arzı doğrudan ağdan okuyup bildirilenle karşılaştırıyoruz. Günde bir kez otomatik.",
+      "never": "henüz karşılaştırılmadı",
+      "matches": "bildirimle uyuşuyor",
+      "supply": "Ağdaki arz",
+      "flags": "Kodda şunlar var",
+      "recheck": "Şimdi karşılaştır",
+      "rechecking": "Karşılaştırılıyor…",
+      "result": "Kontrol {checked}, uyumlu {verified}, uyuşmayan {mismatched}, başarısız {failed}",
+      "mismatchCount": "uyuşmazlık: {count}",
+      "mismatch": {
+        "SYMBOL": "ağdaki sembol: {onchain}, bildirilen: {claimed}",
+        "NAME": "ağdaki ad: {onchain}, bildirilen: {claimed}",
+        "DECIMALS": "ağdaki decimals: {onchain}, bildirilen: {claimed}",
+        "TOTAL_SUPPLY": "ağdaki arz: {onchain} — bildirilenden farklı"
+      },
+      "flag": {
+        "MINTABLE": "yeni coin basımı",
+        "PAUSABLE": "transferlerin duraklatılması",
+        "BLACKLIST": "adres kara listesi",
+        "UPGRADEABLE_PROXY": "güncellenebilir proxy",
+        "OWNED": "sözleşme sahibi"
+      },
+      "error": {
+        "chain_unsupported": "bu ağı henüz okuyamıyoruz",
+        "address_invalid": "bu geçerli bir EVM adresi değil",
+        "not_a_contract": "bu adreste sözleşme yok",
+        "not_erc20": "sözleşme ERC-20 token gibi yanıt vermiyor",
+        "rpc_unreachable": "düğüme ulaşılamadı, yeniden deneyeceğiz",
+        "rpc_error": "düğüm hata döndürdü, yeniden deneyeceğiz",
+        "decode_failed": "ağın yanıtı çözümlenemedi"
+      },
+      "reason": {
+        "too_soon": "Az önce karşılaştırıldı — birkaç dakika sonra deneyin",
+        "no_contracts": "Kartta sözleşme adresi yok",
+        "forbidden": "Sözleşmeler bölümü için yetki yok",
+        "card_not_found": "Kart bulunamadı"
+      }
     }
   },
   "inviteCoin": {

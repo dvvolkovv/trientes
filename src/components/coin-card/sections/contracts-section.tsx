@@ -2,8 +2,9 @@ import { getTranslations } from "next-intl/server";
 import { getProvenance } from "@/lib/coin-card-provenance";
 import { ProvenanceBadge } from "../provenance-badge";
 import { ExternalLink } from "../external-link";
+import { OnchainSummary, type OnchainContract } from "../onchain-summary";
 
-type Contract = {
+type Contract = OnchainContract & {
   id: string;
   chain: string;
   address: string;
@@ -17,9 +18,13 @@ type Contract = {
 export async function ContractsSection({
   contracts,
   provenance,
+  cardName,
+  cardSymbol,
 }: {
   contracts: Contract[];
   provenance: unknown;
+  cardName: string;
+  cardSymbol: string;
 }) {
   const t = await getTranslations("coinCard");
   if (contracts.length === 0) return null;
@@ -48,6 +53,7 @@ export async function ContractsSection({
             <ExternalLink href={c.explorerUrl} className="text-accent text-xs mt-1 inline-block">
               {t("openInExplorer")}
             </ExternalLink>
+            <OnchainSummary contract={c} claimedName={cardName} claimedSymbol={cardSymbol} />
           </div>
         ))}
       </div>

@@ -15,6 +15,7 @@ import { syncOsmCryptoPois } from "../src/lib/osm-poi-store";
 import { expireStaleRevisions } from "../src/lib/coin-card-expiry";
 import { expireStaleDeletionRequests } from "../src/lib/company-deletion-expiry";
 import { warmProseTranslations } from "../src/lib/prose-warmup";
+import { verifyCardContracts } from "../src/lib/coin-card-onchain";
 import { startBinance, stopBinance } from "./binance";
 
 async function runPriceSync() {
@@ -249,6 +250,26 @@ async function runProseWarmup() {
   }
 }
 
+/**
+ * Слайс B: сверка заявленных контрактов с сетью. Раз в сутки и не больше 50
+ * контрактов за прогон — очередь идёт от самых давно не проверенных, а
+ * публичные RPC не для обстрела.
+ */
+async function runContractVerify() {
+  const t0 = Date.now();
+  try {
+    const s = await verifyCardContracts({ prisma: prisma as never, limit: 50 });
+    if (s.checked > 0) {
+      console.log(
+        `[worker] contract verify ok: ${s.checked} checked, ${s.verified} verified, ` +
+          `${s.mismatched} mismatched, ${s.failed} failed in ${Date.now() - t0}ms`,
+      );
+    }
+  } catch (err) {
+    console.error("[worker] contract verify failed:", err);
+  }
+}
+
 async function runCleanup() {
   const t0 = Date.now();
   try {
@@ -327,6 +348,7 @@ async function main() {
   // Прогрев переводов: дважды в сутки, чтобы правка карточки доехала до всех
   // локалей раньше, чем в неё зайдёт первый посетитель или робот.
   cron.schedule("25 3,15 * * *", () => void runProseWarmup());
+  cron.schedule("10 5 * * *", () => void runContractVerify());
   cron.schedule("0 4 * * *", () => void runCleanup());
 
   // Live price feed via Binance WebSocket — top 20 coins.

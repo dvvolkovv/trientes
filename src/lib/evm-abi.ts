@@ -96,7 +96,7 @@ export function decodeUint(hex: string): string {
 /** decimals — uint8; всё, что больше 255, это не decimals, а мусор. */
 export function decodeUint8(hex: string): number {
   const v = BigInt(decodeUint(hex));
-  if (v > 255n) throw new DecodeError();
+  if (v > BigInt(255)) throw new DecodeError();
   return Number(v);
 }
 

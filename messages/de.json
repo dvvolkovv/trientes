@@ -1999,6 +1999,46 @@
       "status_RESTRICTED": "eingeschränkt",
       "status_BANNED": "verboten",
       "status_UNCLEAR": "unklar"
+    },
+    "onchain": {
+      "title": "Abgleich mit der Chain",
+      "manageSubtitle": "Wir lesen Name, Symbol, Decimals und Gesamtmenge direkt aus der Chain und vergleichen sie mit Ihren Angaben. Automatisch einmal täglich.",
+      "never": "noch nicht geprüft",
+      "matches": "stimmt mit der Angabe überein",
+      "supply": "Menge in der Chain",
+      "flags": "Im Code enthalten",
+      "recheck": "Jetzt prüfen",
+      "rechecking": "Prüfung läuft…",
+      "result": "Geprüft {checked}, übereinstimmend {verified}, abweichend {mismatched}, fehlgeschlagen {failed}",
+      "mismatchCount": "Abweichungen: {count}",
+      "mismatch": {
+        "SYMBOL": "Symbol in der Chain: {onchain}, angegeben: {claimed}",
+        "NAME": "Name in der Chain: {onchain}, angegeben: {claimed}",
+        "DECIMALS": "Decimals in der Chain: {onchain}, angegeben: {claimed}",
+        "TOTAL_SUPPLY": "Gesamtmenge in der Chain: {onchain} — weicht von der Angabe ab"
+      },
+      "flag": {
+        "MINTABLE": "Ausgabe neuer Coins",
+        "PAUSABLE": "Anhalten von Transfers",
+        "BLACKLIST": "Adress-Blacklist",
+        "UPGRADEABLE_PROXY": "aktualisierbarer Proxy",
+        "OWNED": "ein Vertragsinhaber"
+      },
+      "error": {
+        "chain_unsupported": "diese Chain lesen wir noch nicht",
+        "address_invalid": "das ist keine gültige EVM-Adresse",
+        "not_a_contract": "unter dieser Adresse liegt kein Vertrag",
+        "not_erc20": "der Vertrag antwortet nicht als ERC-20-Token",
+        "rpc_unreachable": "der Knoten war nicht erreichbar, wir versuchen es erneut",
+        "rpc_error": "der Knoten lieferte einen Fehler, wir versuchen es erneut",
+        "decode_failed": "die Antwort der Chain war nicht lesbar"
+      },
+      "reason": {
+        "too_soon": "Gerade erst geprüft — versuchen Sie es in einigen Minuten",
+        "no_contracts": "Die Karte enthält keine Vertragsadressen",
+        "forbidden": "Keine Rechte für den Bereich Verträge",
+        "card_not_found": "Karte nicht gefunden"
+      }
     }
   },
   "inviteCoin": {

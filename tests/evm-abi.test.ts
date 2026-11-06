@@ -58,7 +58,7 @@ describe("decodeString", () => {
 describe("decodeUint", () => {
   it("читает максимальный uint256 без потери точности", () => {
     const max = "0x" + "f".repeat(64);
-    expect(decodeUint(max)).toBe((2n ** 256n - 1n).toString());
+    expect(decodeUint(max)).toBe((BigInt(2) ** BigInt(256) - BigInt(1)).toString());
   });
 
   it("читает ноль", () => {

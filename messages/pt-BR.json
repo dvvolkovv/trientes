@@ -1999,6 +1999,46 @@
       "status_RESTRICTED": "restrito",
       "status_BANNED": "proibido",
       "status_UNCLEAR": "sem clareza"
+    },
+    "onchain": {
+      "title": "Verificação na rede",
+      "manageSubtitle": "Lemos nome, símbolo, decimals e oferta direto da rede e comparamos com o que foi declarado. Automático uma vez por dia.",
+      "never": "ainda não verificado",
+      "matches": "confere com o declarado",
+      "supply": "Oferta na rede",
+      "flags": "O código contém",
+      "recheck": "Verificar agora",
+      "rechecking": "Verificando…",
+      "result": "Verificados {checked}, conferem {verified}, divergências {mismatched}, falhas {failed}",
+      "mismatchCount": "divergências: {count}",
+      "mismatch": {
+        "SYMBOL": "símbolo na rede: {onchain}, declarado: {claimed}",
+        "NAME": "nome na rede: {onchain}, declarado: {claimed}",
+        "DECIMALS": "decimals na rede: {onchain}, declarado: {claimed}",
+        "TOTAL_SUPPLY": "oferta na rede: {onchain} — difere do declarado"
+      },
+      "flag": {
+        "MINTABLE": "emissão de novas moedas",
+        "PAUSABLE": "pausa de transferências",
+        "BLACKLIST": "lista negra de endereços",
+        "UPGRADEABLE_PROXY": "proxy atualizável",
+        "OWNED": "um proprietário do contrato"
+      },
+      "error": {
+        "chain_unsupported": "ainda não lemos esta rede",
+        "address_invalid": "não é um endereço EVM válido",
+        "not_a_contract": "não existe contrato neste endereço",
+        "not_erc20": "o contrato não responde como token ERC-20",
+        "rpc_unreachable": "o nó estava inacessível, tentaremos de novo",
+        "rpc_error": "o nó retornou erro, tentaremos de novo",
+        "decode_failed": "não foi possível interpretar a resposta da rede"
+      },
+      "reason": {
+        "too_soon": "A verificação acabou de ocorrer — tente em alguns minutos",
+        "no_contracts": "O cartão não tem endereços de contrato",
+        "forbidden": "Sem permissão na seção de contratos",
+        "card_not_found": "Cartão não encontrado"
+      }
     }
   },
   "inviteCoin": {

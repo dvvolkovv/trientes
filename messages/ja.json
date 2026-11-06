@@ -1999,6 +1999,46 @@
       "status_RESTRICTED": "制限あり",
       "status_BANNED": "禁止",
       "status_UNCLEAR": "不明"
+    },
+    "onchain": {
+      "title": "チェーンとの照合",
+      "manageSubtitle": "名称・シンボル・decimals・総供給量をチェーンから直接読み取り、申告内容と照合します。1日1回自動で実行されます。",
+      "never": "未照合",
+      "matches": "申告と一致",
+      "supply": "チェーン上の供給量",
+      "flags": "コードに含まれる機能",
+      "recheck": "今すぐ照合",
+      "rechecking": "照合中…",
+      "result": "照合 {checked}、一致 {verified}、不一致 {mismatched}、失敗 {failed}",
+      "mismatchCount": "不一致: {count}",
+      "mismatch": {
+        "SYMBOL": "チェーン上のシンボル: {onchain}、申告: {claimed}",
+        "NAME": "チェーン上の名称: {onchain}、申告: {claimed}",
+        "DECIMALS": "チェーン上の decimals: {onchain}、申告: {claimed}",
+        "TOTAL_SUPPLY": "チェーン上の総供給量: {onchain} — 申告と相違"
+      },
+      "flag": {
+        "MINTABLE": "新規発行",
+        "PAUSABLE": "送金の一時停止",
+        "BLACKLIST": "アドレスのブラックリスト",
+        "UPGRADEABLE_PROXY": "アップグレード可能なプロキシ",
+        "OWNED": "コントラクト所有者"
+      },
+      "error": {
+        "chain_unsupported": "このチェーンはまだ読み取れません",
+        "address_invalid": "EVM アドレスではありません",
+        "not_a_contract": "このアドレスにコントラクトはありません",
+        "not_erc20": "コントラクトが ERC-20 トークンとして応答しません",
+        "rpc_unreachable": "ノードに接続できませんでした。再試行します",
+        "rpc_error": "ノードがエラーを返しました。再試行します",
+        "decode_failed": "チェーンの応答を解析できませんでした"
+      },
+      "reason": {
+        "too_soon": "直前に照合済みです。数分後にお試しください",
+        "no_contracts": "カードにコントラクトアドレスがありません",
+        "forbidden": "コントラクト欄の編集権限がありません",
+        "card_not_found": "カードが見つかりません"
+      }
     }
   },
   "inviteCoin": {

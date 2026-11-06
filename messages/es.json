@@ -1999,6 +1999,46 @@
       "status_RESTRICTED": "restringido",
       "status_BANNED": "prohibido",
       "status_UNCLEAR": "sin claridad"
+    },
+    "onchain": {
+      "title": "Verificación en la red",
+      "manageSubtitle": "Leemos nombre, símbolo, decimals y suministro directamente de la red y los comparamos con lo declarado. Automático una vez al día.",
+      "never": "aún sin verificar",
+      "matches": "coincide con lo declarado",
+      "supply": "Suministro en la red",
+      "flags": "El código contiene",
+      "recheck": "Verificar ahora",
+      "rechecking": "Verificando…",
+      "result": "Verificados {checked}, coinciden {verified}, discrepancias {mismatched}, fallos {failed}",
+      "mismatchCount": "discrepancias: {count}",
+      "mismatch": {
+        "SYMBOL": "símbolo en la red: {onchain}, declarado: {claimed}",
+        "NAME": "nombre en la red: {onchain}, declarado: {claimed}",
+        "DECIMALS": "decimals en la red: {onchain}, declarado: {claimed}",
+        "TOTAL_SUPPLY": "suministro en la red: {onchain} — difiere de lo declarado"
+      },
+      "flag": {
+        "MINTABLE": "emisión de nuevas monedas",
+        "PAUSABLE": "pausa de transferencias",
+        "BLACKLIST": "lista negra de direcciones",
+        "UPGRADEABLE_PROXY": "proxy actualizable",
+        "OWNED": "un propietario del contrato"
+      },
+      "error": {
+        "chain_unsupported": "esta red todavía no la leemos",
+        "address_invalid": "no es una dirección EVM válida",
+        "not_a_contract": "en esta dirección no hay contrato",
+        "not_erc20": "el contrato no responde como token ERC-20",
+        "rpc_unreachable": "el nodo no respondió, lo repetiremos",
+        "rpc_error": "el nodo devolvió un error, lo repetiremos",
+        "decode_failed": "no se pudo interpretar la respuesta de la red"
+      },
+      "reason": {
+        "too_soon": "Acaba de verificarse — inténtelo en unos minutos",
+        "no_contracts": "La ficha no tiene direcciones de contrato",
+        "forbidden": "Sin permisos sobre la sección de contratos",
+        "card_not_found": "Ficha no encontrada"
+      }
     }
   },
   "inviteCoin": {

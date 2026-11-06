@@ -14,6 +14,7 @@ import type { DiffEntry } from "@/lib/coin-card-diff";
 import { SectionEditor } from "@/components/coin-card-manage/section-editor";
 import { CardTeamSection } from "@/components/coin-card-manage/team-section";
 import { PolicySection } from "@/components/coin-card-manage/policy-section";
+import { OnchainRecheck } from "@/components/coin-card-manage/onchain-recheck";
 import {
   RevisionsSection,
   type RevisionItem,
@@ -127,6 +128,20 @@ export default async function CoinCardManagePage({
           </section>
         ))
       )}
+
+      <OnchainRecheck
+        cardId={card.id}
+        canEdit={canEditSection(member, "CONTRACTS")}
+        contracts={card.contracts.map((c) => ({
+          id: c.id,
+          chain: c.chain,
+          address: c.address,
+          checkedAt: c.checkedAt ? c.checkedAt.toISOString().slice(0, 10) : null,
+          checkError: c.checkError,
+          mismatches: c.mismatches,
+          verified: c.verifiedAt != null,
+        }))}
+      />
 
       <RevisionsSection revisions={revisionItems} canVote={canVote(member)} />
 
