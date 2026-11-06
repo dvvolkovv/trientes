@@ -1,0 +1,56 @@
+import { getTranslations } from "next-intl/server";
+import { getProvenance } from "@/lib/coin-card-provenance";
+import { ProvenanceBadge } from "../provenance-badge";
+import { ExternalLink } from "../external-link";
+
+type Contract = {
+  id: string;
+  chain: string;
+  address: string;
+  decimals: number | null;
+  standard: string | null;
+  explorerUrl: string | null;
+  isCanonical: boolean;
+  verifiedAt: Date | string | null;
+};
+
+export async function ContractsSection({
+  contracts,
+  provenance,
+}: {
+  contracts: Contract[];
+  provenance: unknown;
+}) {
+  const t = await getTranslations("coinCard");
+  if (contracts.length === 0) return null;
+
+  return (
+    <section id="contracts" className="scroll-mt-24">
+      <h2 className="text-[24px] md:text-[28px] font-bold tracking-[-0.025em] mb-4">
+        {t("sections.contracts")}
+        <ProvenanceBadge entry={getProvenance(provenance, "contracts")} />
+      </h2>
+      <div className="space-y-3">
+        {contracts.map((c) => (
+          <div key={c.id} className="border border-hairline rounded-md p-3 bg-card">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-[12px] uppercase tracking-[0.15em] text-muted">{c.chain}</span>
+              {c.isCanonical && (
+                <span className="text-[10px] uppercase tracking-[0.12em] px-1.5 py-0.5 rounded border border-accent/40 text-accent">
+                  {t("canonical")}
+                </span>
+              )}
+              {c.standard && <span className="text-muted text-xs">{c.standard}</span>}
+              {c.decimals != null && <span className="text-muted text-xs">dec {c.decimals}</span>}
+              {c.verifiedAt && <span className="text-up text-xs">{t("contractVerified")}</span>}
+            </div>
+            <p className="font-mono text-xs break-all mt-2">{c.address}</p>
+            <ExternalLink href={c.explorerUrl} className="text-accent text-xs mt-1 inline-block">
+              {t("openInExplorer")}
+            </ExternalLink>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
