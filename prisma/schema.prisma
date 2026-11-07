@@ -13,51 +13,51 @@ enum Role {
 }
 
 model User {
-  id                     String               @id @default(cuid())
-  email                  String?              @unique
-  name                   String?
-  image                  String?
-  username               String?              @unique
-  passwordHash           String?
-  firstName              String?
-  lastName               String?
-  phone                  String?
-  role                   Role                 @default(USER)
-  preferredLocale        String               @default("en")
-  preferredCurrency      String               @default("USD")
-  preferredTheme         String               @default("system")
-  emailVerified          DateTime?
-  createdAt              DateTime             @default(now())
-  accounts               Account[]
-  sessions               Session[]
-  watchlist              Watchlist[]
-  exchangeWatchlist      ExchangeWatchlist[]
-  coinRequests           CoinRequest[]
-  adminAddedCoins        Coin[]               @relation("AdminCoinAdditions")
-  reviewedRequests       CoinRequest[]        @relation("RequestReviewer")
-  auditLogs              AdminAuditLog[]      @relation("AdminAuditActor")
-  companies              Company[]
-  registeredExchanges    RegisteredExchange[]
-  reviewedPoints         CompanyPoint[]       @relation("PointReviewer")
-  reviewedCompanies      Company[]            @relation("CompanyReviewer")
-  loginAttempts          LoginAttempt[]
-  ownedFintechs          FintechCompany[]     @relation("FintechOwner")
-  reviewedFintechs       FintechCompany[]     @relation("FintechReviewer")
-  priceAlerts            PriceAlert[]
-  geoAlerts              GeoAlert[]
-  companyMemberships     CompanyMember[]
-  companyInvitesCreated  CompanyInvite[]      @relation("CompanyInviteCreator")
-  companyInvitesAccepted CompanyInvite[]      @relation("CompanyInviteAcceptor")
-  pushSubscriptions      PushSubscription[]
-  notifyTelegram         Boolean              @default(true)
-  notifyEmail            Boolean              @default(false)
-  notifyWebPush          Boolean              @default(false)
-  coinCardsStewarded     CoinCard[]           @relation("CoinCardSteward")
-  coinCardsReviewed      CoinCard[]           @relation("CoinCardReviewer")
-  coinCardMemberships    CoinCardMember[]     @relation("CoinCardMemberUser")
-  coinCardInvitesMade    CoinCardInvite[]     @relation("CoinCardInviteCreator")
-  coinCardInvitesGot     CoinCardInvite[]     @relation("CoinCardInviteAcceptor")
-  coinCardRevisions      CoinCardRevision[]   @relation("CoinCardRevisionAuthor")
+  id                       String                    @id @default(cuid())
+  email                    String?                   @unique
+  name                     String?
+  image                    String?
+  username                 String?                   @unique
+  passwordHash             String?
+  firstName                String?
+  lastName                 String?
+  phone                    String?
+  role                     Role                      @default(USER)
+  preferredLocale          String                    @default("en")
+  preferredCurrency        String                    @default("USD")
+  preferredTheme           String                    @default("system")
+  emailVerified            DateTime?
+  createdAt                DateTime                  @default(now())
+  accounts                 Account[]
+  sessions                 Session[]
+  watchlist                Watchlist[]
+  exchangeWatchlist        ExchangeWatchlist[]
+  coinRequests             CoinRequest[]
+  adminAddedCoins          Coin[]                    @relation("AdminCoinAdditions")
+  reviewedRequests         CoinRequest[]             @relation("RequestReviewer")
+  auditLogs                AdminAuditLog[]           @relation("AdminAuditActor")
+  companies                Company[]
+  registeredExchanges      RegisteredExchange[]
+  reviewedPoints           CompanyPoint[]            @relation("PointReviewer")
+  reviewedCompanies        Company[]                 @relation("CompanyReviewer")
+  loginAttempts            LoginAttempt[]
+  ownedFintechs            FintechCompany[]          @relation("FintechOwner")
+  reviewedFintechs         FintechCompany[]          @relation("FintechReviewer")
+  priceAlerts              PriceAlert[]
+  geoAlerts                GeoAlert[]
+  companyMemberships       CompanyMember[]
+  companyInvitesCreated    CompanyInvite[]           @relation("CompanyInviteCreator")
+  companyInvitesAccepted   CompanyInvite[]           @relation("CompanyInviteAcceptor")
+  pushSubscriptions        PushSubscription[]
+  notifyTelegram           Boolean                   @default(true)
+  notifyEmail              Boolean                   @default(false)
+  notifyWebPush            Boolean                   @default(false)
+  coinCardsStewarded       CoinCard[]                @relation("CoinCardSteward")
+  coinCardsReviewed        CoinCard[]                @relation("CoinCardReviewer")
+  coinCardMemberships      CoinCardMember[]          @relation("CoinCardMemberUser")
+  coinCardInvitesMade      CoinCardInvite[]          @relation("CoinCardInviteCreator")
+  coinCardInvitesGot       CoinCardInvite[]          @relation("CoinCardInviteAcceptor")
+  coinCardRevisions        CoinCardRevision[]        @relation("CoinCardRevisionAuthor")
   companyDeletionRequests  CompanyDeletionRequest[]  @relation("CompanyDeletionRequester")
   companyDeletionApprovals CompanyDeletionApproval[] @relation("CompanyDeletionVoter")
 }
@@ -582,8 +582,8 @@ model CompanyPoint {
   deletedAt       DateTime?
   deletedById     String?
 
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([status])
   @@index([companyId])
@@ -789,6 +789,9 @@ model CoinCard {
   revisions CoinCardRevision[]
   policy    CoinCardPolicy?
 
+  priceIndex  CoinCardPriceIndex?
+  pricePoints CoinCardPricePoint[]
+
   @@index([status, createdAt])
   @@index([trust])
 }
@@ -840,6 +843,13 @@ model CoinCardMarket {
   volumeUsd24h Float?
   claimedAt    DateTime  @default(now())
   confirmedAt  DateTime?
+  // Слайс C: результат сверки с публичным API биржи.
+  nativeSymbol String? // символ пары на бирже, как он найден в снимке тикеров
+  quote        String? // нормализованная котировка: USDT, BTC, ...
+  change24h    Float?
+  isOutlier    Boolean   @default(false) // виден в таблице, но не в индексе
+  checkedAt    DateTime?
+  checkError   String?
 
   @@unique([cardId, kind, exchangeName, pair])
   @@index([cardId])
@@ -894,6 +904,39 @@ model CoinCardPolicy {
   threshold Int               @default(1) // M из N подписантов
   sections  CoinCardSection[] @default([])
   updatedAt DateTime          @updatedAt
+}
+
+// Слайс C. Наш собственный ценовой индекс карточки: медиана цены по весу
+// суточного объёма подтверждённых рынков. Отдельная модель, а не поля в
+// CoinCard, потому что это вычисленное значение со своей методикой — ревизии
+// и диффы карточки (coin-card-diff.ts) его не касаются.
+model CoinCardPriceIndex {
+  id           String   @id @default(cuid())
+  cardId       String   @unique
+  card         CoinCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  priceUsd     Float
+  change24h    Float?
+  volumeUsd24h Float
+  marketCount  Int
+  spreadPct    Float?
+  confidence   String // HIGH | MEDIUM | LOW
+  method       String   @default("VWMEDIAN_V1")
+  computedAt   DateTime
+}
+
+// Часовая история индекса. График — не этот слайс, но историю нельзя добрать
+// потом, поэтому точки копятся с первого прогона. Хранение — 90 дней.
+model CoinCardPricePoint {
+  id           String   @id @default(cuid())
+  cardId       String
+  card         CoinCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  priceUsd     Float
+  volumeUsd24h Float
+  marketCount  Int
+  at           DateTime // округлено до часа
+
+  @@unique([cardId, at])
+  @@index([cardId, at])
 }
 
 // Пакет изменений. thresholdAt/signerCountAt — снимок на момент подачи: без
