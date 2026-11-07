@@ -111,6 +111,23 @@ describe("ss58Decode", () => {
     expect(ss58Decode(null)).toBeNull();
   });
 
+  // Двухбайтовый префикс — ветка, по которой идёт Taler (10960). Вектор снят с
+  // живой цепи: счёт существует в `System.Account`, и чтение по ключу,
+  // собранному из этого адреса, дало тот же баланс, что чтение по сырому ключу
+  // узла. Поэтому это golden-вектор, а не зеркало собственного кодировщика.
+  it("разбирает двухбайтовый префикс Taler", () => {
+    const TALER = "tAKn2xQpLJBbMi9w8xf1LwmN9kQQfhQ834ULQuiGPwrD9yomn";
+    const r = ss58Decode(TALER);
+    expect(r).not.toBeNull();
+    expect(r!.prefix).toBe(10960);
+    expect(toHex(r!.pubkey)).toBe(
+      "b02ad12d18dff63aed0f7aa2f8a92cda155f8d94af0998f7783141eebb35e072",
+    );
+    // Адрес Taler не должен считаться адресом Polkadot и наоборот.
+    expect(isSs58Address(TALER, 10960)).toBe(true);
+    expect(isSs58Address(TALER, 0)).toBe(false);
+  });
+
   it("isSs58Address проверяет префикс сети", () => {
     expect(isSs58Address(ALICE_POLKADOT, 0)).toBe(true);
     expect(isSs58Address(ALICE_POLKADOT, 10960)).toBe(false);

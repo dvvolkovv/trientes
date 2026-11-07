@@ -197,9 +197,10 @@ export function ss58Decode(address: string | null | undefined): Ss58Parts | null
     prefix = raw[0];
     offset = 1;
   } else if (raw[0] < 128) {
-    const lower = ((raw[0] & 0b0000_0011) << 6) | (raw[1] >> 2);
-    const upper = (raw[1] & 0b0000_0011) | ((raw[0] & 0b0011_1111) << 2);
-    prefix = lower | (upper << 8);
+    // Обращение формулы кодирования из спеки SS58: первый байт несёт биты 2..7
+    // идентификатора, второй — старший байт и два младших бита. Taler с
+    // префиксом 10960 проходит именно по этой ветке.
+    prefix = ((raw[1] & 0b0011_1111) << 8) | ((raw[0] & 0b0011_1111) << 2) | (raw[1] >> 6);
     offset = 2;
   } else {
     return null;
