@@ -28,12 +28,14 @@ describe("specToInitial", () => {
     const init = specToInitial(SECTION_SPECS.TOKENOMICS, {
       tokenomics: {
         circulating: 1000,
-        excludedAddresses: ["0xa", "0xb"],
+        excluded: [{ address: "0xa", label: "treasury" }],
         emission: "fixed",
       },
     });
     expect(init["tokenomics.circulating"]).toBe("1000");
-    expect(init["tokenomics.excludedAddresses"]).toBe("0xa\n0xb");
+    expect(
+      (init["tokenomics.excluded"] as Record<string, unknown>[])[0],
+    ).toEqual({ address: "0xa", label: "treasury" });
     expect(init["tokenomics.emission"]).toBe("fixed");
   });
 
@@ -55,13 +57,17 @@ describe("stateToPayload", () => {
     const p = stateToPayload(SECTION_SPECS.TOKENOMICS, {
       "tokenomics.circulating": "1000",
       "tokenomics.total": "",
-      "tokenomics.excludedAddresses": "0xa\n\n0xb",
+      "tokenomics.excluded": [
+        { address: " 0xa ", label: "treasury" },
+        { address: "", label: "" },
+      ],
       "tokenomics.emission": " fixed ",
     });
     const t = (p.tokenomics ?? {}) as Record<string, unknown>;
     expect(t.circulating).toBe(1000);
     expect(t.total).toBeNull();
-    expect(t.excludedAddresses).toEqual(["0xa", "0xb"]);
+    // Пустая строка формы отбрасывается ещё на уровне payload.
+    expect(t.excluded).toEqual([{ address: "0xa", label: "treasury" }]);
     expect(t.emission).toBe("fixed");
   });
 

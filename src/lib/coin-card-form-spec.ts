@@ -86,6 +86,25 @@ const ROW_SUBFIELDS: Record<string, FieldSpec[]> = {
     { kind: "text", path: "date", label: "milestoneDate" },
     { kind: "text", path: "status", label: "milestoneStatus" },
   ],
+  // Слайс E: адрес без подписи считать можно, но читателю он ничего не говорит.
+  excluded: [
+    { kind: "text", path: "address", label: "excludedAddress" },
+    { kind: "text", path: "label", label: "excludedLabel" },
+  ],
+  allocation: [
+    { kind: "text", path: "label", label: "allocationLabel" },
+    { kind: "number", path: "pct", label: "allocationPct" },
+    { kind: "number", path: "cliffMonths", label: "allocationCliff" },
+    { kind: "number", path: "vestingMonths", label: "allocationVesting" },
+    { kind: "text", path: "address", label: "allocationAddress" },
+  ],
+  unlock: [
+    { kind: "date", path: "date", label: "unlockDate" },
+    { kind: "text", path: "label", label: "unlockLabel" },
+    { kind: "number", path: "amount", label: "unlockAmount" },
+    { kind: "number", path: "pct", label: "unlockPct" },
+    { kind: "url", path: "source", label: "unlockSource" },
+  ],
 };
 
 export const SECTION_SPECS: Record<CardSection, FieldSpec[]> = {
@@ -106,7 +125,12 @@ export const SECTION_SPECS: Record<CardSection, FieldSpec[]> = {
     { kind: "number", path: "tokenomics.circulating", label: "circulating" },
     { kind: "number", path: "tokenomics.total", label: "totalSupply" },
     { kind: "number", path: "tokenomics.max", label: "maxSupply" },
-    { kind: "lines", path: "tokenomics.excludedAddresses", label: "excludedAddresses" },
+    // Слайс E: адреса исключений стали строками с подписями — по ним считается
+    // проверенный выпуск. Старый список строк `excludedAddresses` остаётся в
+    // базе и читается наравне с новым, но новая запись идёт сюда.
+    { kind: "rows", path: "tokenomics.excluded", label: "excluded", fields: ROW_SUBFIELDS.excluded },
+    { kind: "rows", path: "tokenomics.allocation", label: "allocation", fields: ROW_SUBFIELDS.allocation },
+    { kind: "rows", path: "tokenomics.unlocks", label: "unlock", fields: ROW_SUBFIELDS.unlock },
     { kind: "text", path: "tokenomics.emission", label: "emission" },
     { kind: "text", path: "tokenomics.burn", label: "burnMechanism" },
   ],

@@ -43,8 +43,8 @@ const CHECKS: ReadonlyArray<{
   { key: "name", weight: 4, test: (c) => filled(c.name) },
   { key: "symbol", weight: 4, test: (c) => filled(c.symbol) },
   { key: "tagline", weight: 4, test: (c) => filled(c.tagline) },
-  { key: "description", weight: 8, test: (c) => (c.description ?? "").trim().length >= MIN_DESCRIPTION },
-  { key: "logoUrl", weight: 8, test: (c) => filled(c.logoUrl) },
+  { key: "description", weight: 7, test: (c) => (c.description ?? "").trim().length >= MIN_DESCRIPTION },
+  { key: "logoUrl", weight: 7, test: (c) => filled(c.logoUrl) },
   { key: "launchDate", weight: 3, test: (c) => filled(c.launchDate) },
   { key: "tags", weight: 3, test: (c) => filled(c.tags) },
   { key: "links.website", weight: 6, test: (c) => filled(sub(c.links, "website")) },
@@ -52,9 +52,14 @@ const CHECKS: ReadonlyArray<{
   { key: "links.whitepaper", weight: 4, test: (c) => filled(sub(c.links, "whitepaper")) },
   { key: "links.github", weight: 4, test: (c) => filled(sub(c.links, "github")) },
   { key: "links.social", weight: 4, test: (c) => filled(sub(c.links, "x")) || filled(sub(c.links, "telegram")) },
-  { key: "contracts", weight: 10, test: (c) => filled(c.contracts) },
-  { key: "tokenomics.supply", weight: 6, test: (c) => filled(sub(c.tokenomics, "circulating")) || filled(sub(c.tokenomics, "total")) },
-  { key: "tokenomics.method", weight: 4, test: (c) => filled(sub(c.tokenomics, "excludedAddresses")) || filled(sub(c.tokenomics, "emission")) },
+  { key: "contracts", weight: 9, test: (c) => filled(c.contracts) },
+  { key: "tokenomics.supply", weight: 5, test: (c) => filled(sub(c.tokenomics, "circulating")) || filled(sub(c.tokenomics, "total")) },
+  // Слайс E: адреса исключений считаются заполненными и в новом виде (строки с
+  // подписями), и в старом (список строк) — иначе у заполненных карточек
+  // показатель полноты просел бы на ровном месте.
+  { key: "tokenomics.method", weight: 3, test: (c) => filled(sub(c.tokenomics, "excluded")) || filled(sub(c.tokenomics, "excludedAddresses")) || filled(sub(c.tokenomics, "emission")) },
+  { key: "tokenomics.allocation", weight: 3, test: (c) => filled(sub(c.tokenomics, "allocation")) },
+  { key: "tokenomics.unlocks", weight: 2, test: (c) => filled(sub(c.tokenomics, "unlocks")) },
   { key: "markets", weight: 6, test: (c) => filled(c.markets) },
   { key: "security.audits", weight: 6, test: (c) => filled(sub(c.security, "audits")) },
   { key: "security.entity", weight: 3, test: (c) => filled(sub(c.security, "legalEntity")) },

@@ -20,7 +20,11 @@ const FULL = {
     whitepaper: "https://foobar.org/wp.pdf", github: "https://github.com/foobar",
     x: "https://x.com/foobar", telegram: "https://t.me/foobar",
   },
-  tokenomics: { circulating: 1, total: 2, max: 3, excludedAddresses: ["0x1"], emission: "fixed" },
+  tokenomics: {
+    circulating: 1, total: 2, max: 3, excludedAddresses: ["0x1"], emission: "fixed",
+    allocation: [{ label: "Команда", pct: 20 }],
+    unlocks: [{ date: "2026-12-01", label: "Транш 1", pct: 2 }],
+  },
   security: {
     audits: [{ firm: "Zellic", reportUrl: "https://z.io/r" }],
     riskFlags: { mintable: false }, teamDoxxed: true, legalEntity: "Foobar Labs OU",

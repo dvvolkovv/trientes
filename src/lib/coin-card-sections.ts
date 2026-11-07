@@ -13,6 +13,14 @@ import {
   validateContract,
   validateTokenomics,
 } from "@/lib/coin-card-validate";
+import { isEvmAddress, normalizeAddress } from "@/lib/evm-abi";
+import { MAX_EXCLUDED } from "@/lib/coin-card-supply";
+import {
+  validateAllocation,
+  validateUnlocks,
+  type AllocationInput,
+  type UnlockInput,
+} from "@/lib/coin-card-tokenomics";
 
 export const MAX_CONTRACTS = 20;
 export const MAX_MARKETS = 200;
@@ -85,6 +93,35 @@ export const SECTION_PATHS: Record<CardSection, readonly string[]> = {
   LEGAL: ["legal"],
 };
 
+/**
+ * Адреса исключений: дубликаты и мусор не сохраняем — на этих адресах
+ * считается выпуск, и «почти адрес» там означает молча потерянный баланс.
+ */
+function normalizeExcludedRows(
+  raw: unknown,
+): Array<{ address: string; label: string | null }> | "invalid" {
+  if (!Array.isArray(raw)) return [];
+  const out: Array<{ address: string; label: string | null }> = [];
+  const seen = new Set<string>();
+  for (const row of raw) {
+    if (!row || typeof row !== "object") continue;
+    const r = row as Record<string, unknown>;
+    const rawAddress = typeof r.address === "string" ? r.address.trim() : "";
+    const label = typeof r.label === "string" && r.label.trim() ? r.label.trim() : null;
+    if (!rawAddress) {
+      if (label) return "invalid"; // подпись без адреса считать нечем
+      continue;
+    }
+    if (!isEvmAddress(rawAddress)) return "invalid";
+    const address = normalizeAddress(rawAddress);
+    if (seen.has(address)) continue;
+    seen.add(address);
+    out.push({ address, label });
+  }
+  if (out.length > MAX_EXCLUDED) return "invalid";
+  return out;
+}
+
 function asObject(raw: unknown): Record<string, unknown> {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
   return raw as Record<string, unknown>;
@@ -151,7 +188,25 @@ export function normalizeSectionPayload(
     const t = asObject(payload.tokenomics);
     const v = validateTokenomics(t as Record<string, number | null>);
     if (!v.ok) return { ok: false, reason: v.reason };
-    return { ok: true, patch: { card: { tokenomics: t }, touched: ["tokenomics"] } };
+
+    // Слайс E: три структурных блока внутри той же секции. Адреса исключений
+    // нормализуются до адресов — по ним потом ходит `readSupplyFacts`.
+    const excluded = normalizeExcludedRows(t.excluded);
+    if (excluded === "invalid") return { ok: false, reason: "address_invalid" };
+
+    const allocation = validateAllocation(t.allocation as AllocationInput[] | null);
+    if (!allocation.ok) return { ok: false, reason: allocation.reason };
+
+    const unlocks = validateUnlocks(t.unlocks as UnlockInput[] | null);
+    if (!unlocks.ok) return { ok: false, reason: unlocks.reason };
+
+    const next = {
+      ...t,
+      excluded,
+      allocation: allocation.data,
+      unlocks: unlocks.data,
+    };
+    return { ok: true, patch: { card: { tokenomics: next }, touched: ["tokenomics"] } };
   }
 
   if (section === "LINKS") {

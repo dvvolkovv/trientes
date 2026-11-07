@@ -65,6 +65,75 @@ describe("normalizeSectionPayload", () => {
     expect(r).toEqual({ ok: false, reason: "supply_inconsistent" });
   });
 
+  it("нормализует адреса исключений и отбрасывает дубликаты", () => {
+    const addr = "0x" + "A".repeat(40);
+    const r = normalizeSectionPayload(
+      "TOKENOMICS",
+      {
+        tokenomics: {
+          excluded: [
+            { address: addr, label: " Казна " },
+            { address: addr.toLowerCase(), label: "Она же" },
+          ],
+        },
+      },
+      current,
+    );
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect((r.patch.card.tokenomics as { excluded: unknown }).excluded).toEqual([
+        { address: addr.toLowerCase(), label: "Казна" },
+      ]);
+    }
+  });
+
+  it("не принимает мусор вместо адреса исключения", () => {
+    const r = normalizeSectionPayload(
+      "TOKENOMICS",
+      { tokenomics: { excluded: [{ address: "0x123", label: "Казна" }] } },
+      current,
+    );
+    expect(r).toEqual({ ok: false, reason: "address_invalid" });
+  });
+
+  it("не принимает аллокацию больше ста процентов и битый разлок", () => {
+    expect(
+      normalizeSectionPayload(
+        "TOKENOMICS",
+        { tokenomics: { allocation: [{ label: "Всё", pct: 60 }, { label: "И ещё", pct: 50 }] } },
+        current,
+      ),
+    ).toEqual({ ok: false, reason: "allocation_over_100" });
+
+    expect(
+      normalizeSectionPayload(
+        "TOKENOMICS",
+        { tokenomics: { unlocks: [{ date: "2026-12-01", label: "Без объёма" }] } },
+        current,
+      ),
+    ).toEqual({ ok: false, reason: "unlock_invalid" });
+  });
+
+  it("сохраняет разлоки отсортированными", () => {
+    const r = normalizeSectionPayload(
+      "TOKENOMICS",
+      {
+        tokenomics: {
+          unlocks: [
+            { date: "2027-01-01", label: "Второй", pct: 1 },
+            { date: "2026-12-01", label: "Первый", pct: 1 },
+          ],
+        },
+      },
+      current,
+    );
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      const unlocks = (r.patch.card.tokenomics as { unlocks: Array<{ label: string }> }).unlocks;
+      expect(unlocks.map((u) => u.label)).toEqual(["Первый", "Второй"]);
+    }
+  });
+
   it("requires a website in LINKS and rejects javascript: urls", () => {
     expect(normalizeSectionPayload("LINKS", { links: {} }, current)).toEqual({
       ok: false,
