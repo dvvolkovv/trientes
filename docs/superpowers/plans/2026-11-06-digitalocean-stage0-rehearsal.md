@@ -523,11 +523,12 @@ Expected: секреты/KYB/backups недоступны; внешние под
 
 ```bash
 source /Users/dmitry/.trientes-migration/stage0.env
-ssh -o BatchMode=yes "dv@$NEW_IP" 'curl -fsS https://api.coingecko.com/api/v3/ping >/dev/null && curl -fsS https://api.binance.com/api/v3/ping >/dev/null && curl -fsS https://www.cnbc.com/id/100003114/device/rss/rss.html >/dev/null && curl -fsS https://cointelegraph.com/rss >/dev/null && printf "Outbound HTTP checks passed\n"'
+ssh -o BatchMode=yes "dv@$NEW_IP" 'curl -fsS https://api.coingecko.com/api/v3/ping >/dev/null && curl -fsS https://api.binance.com/api/v3/ping >/dev/null && curl -fsS https://cointelegraph.com/rss >/dev/null && printf "Outbound HTTP checks passed\n"'
+ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && npx tsx -e '"'"'import { fetchMarkets } from "./src/lib/markets"; const rows = await fetchMarkets(); if (rows.length === 0) throw new Error("CNBC markets returned no quotes"); console.log(`CNBC markets quotes: ${rows.length}`)'"'"''
 ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && node -e '"'"'require("dotenv").config(); fetch("https://api.telegram.org/bot"+process.env.TELEGRAM_BOT_TOKEN+"/getMe").then(r=>r.json()).then(j=>{console.log("Telegram getMe ok:",!!j.ok); if(!j.ok)process.exit(1)})'"'"''
 ```
 
-Expected: outbound HTTP и Telegram `getMe ok: true`. Token не выводится; worker по-прежнему не запущен.
+Expected: outbound HTTP и Telegram `getMe ok: true`. Token не выводится; worker по-прежнему не запущен. Фактический `fetchMarkets()` из `src/lib/markets.ts` возвращает хотя бы одну котировку CNBC. Отдельный публичный RSS URL `www.cnbc.com/id/100003114/device/rss/rss.html` не является application dependency: его Akamai 403 на source и target фиксируется только как non-blocking external diagnostic note, а не как сбой rehearsal.
 
 ### Task 8: Зафиксировать rehearsal readiness
 
