@@ -13,13 +13,27 @@ import { RpcError, type FetchLike } from "./json-rpc";
 import { resolveSubstrateChain, substrateRpcUrlFor } from "./substrate-chains";
 import {
   measureBlockSeconds,
+  queryTransferFee,
   readBlockNumbers,
   readChainProperties,
   readGenesisHash,
+  readRuntimeVersion,
 } from "./substrate-rpc";
 
 /** Сколько блоков берём на замер: 100 блоков по 6 с — десять минут истории. */
 export const BLOCK_SAMPLE = 100;
+
+/**
+ * Почему комиссия неизвестна. Отдельно от `checkError`: сбой расчёта комиссии
+ * не отменяет остальных фактов сети, а ноль у комиссии — допустимое значение,
+ * поэтому «нет данных» отличается от «ноль» типом, а не магическим числом.
+ */
+export type TransferFeeError =
+  | "fee_unsupported"
+  | "runtime_changed"
+  | "rpc_unreachable"
+  | "rpc_error"
+  | "decode_failed";
 
 export type ChainFactsError =
   | "chain_unsupported"
@@ -40,6 +54,10 @@ export type ChainFacts = {
   finalizedNumber: number | null;
   finalityLag: number | null;
   finalitySeconds: number | null;
+  /** Комиссия эталонного перевода в наименьших единицах, строкой из RPC. */
+  transferFeePlanck: string | null;
+  transferFeeTokens: number | null;
+  transferFeeError: TransferFeeError | null;
   error: ChainFactsError | null;
 };
 
@@ -54,6 +72,9 @@ const EMPTY = {
   finalizedNumber: null,
   finalityLag: null,
   finalitySeconds: null,
+  transferFeePlanck: null,
+  transferFeeTokens: null,
+  transferFeeError: null,
 };
 
 const errorCode = (err: unknown): ChainFactsError =>
@@ -79,6 +100,7 @@ export async function readChainFacts(args: {
     // Молодая цепь короче выборки: замер делаем по тому, что есть.
     const span = Math.max(1, Math.min(sample, numbers.best - 1));
     const time = await measureBlockSeconds(url, numbers.best, span, opts);
+    const fee = await readTransferFee(url, chain.key, props.decimals, opts);
     return {
       chain: chain.key,
       genesisHash,
@@ -91,6 +113,9 @@ export async function readChainFacts(args: {
       finalizedNumber: numbers.finalized,
       finalityLag: numbers.lag,
       finalitySeconds: Math.round(numbers.lag * time.blockSeconds * 100) / 100,
+      transferFeePlanck: fee.planck,
+      transferFeeTokens: fee.tokens,
+      transferFeeError: fee.error,
       error: null,
     };
   } catch (err) {
@@ -98,7 +123,76 @@ export async function readChainFacts(args: {
   }
 }
 
-export type MismatchCode = "SYMBOL" | "DECIMALS" | "CHAIN_SYMBOL" | "SS58_FORMAT";
+type FeeRead = {
+  planck: string | null;
+  tokens: number | null;
+  error: TransferFeeError | null;
+};
+
+const FEE_UNREAD = { planck: null, tokens: null };
+
+/**
+ * Комиссия эталонного перевода. Сбой здесь не роняет прогон: остальные факты
+ * сети уже прочитаны и полезны сами по себе.
+ *
+ * Версия формата транзакций сверяется с пришпиленной в реестре: сеть бампает её
+ * при смене индексов вызовов, а значит наш собранный экстринсик мог стать
+ * экстринсиком другого вызова. Устаревшее число хуже отсутствующего.
+ */
+async function readTransferFee(
+  url: string,
+  chainKey: string,
+  decimals: number | null,
+  opts: { fetchImpl?: FetchLike; timeoutMs?: number },
+): Promise<FeeRead> {
+  const chain = resolveSubstrateChain(chainKey);
+  if (!chain || chain.balancesPallet == null || decimals == null) {
+    return { ...FEE_UNREAD, error: "fee_unsupported" };
+  }
+  try {
+    const version = await readRuntimeVersion(url, opts);
+    if (version.transactionVersion !== chain.transactionVersion) {
+      return { ...FEE_UNREAD, error: "runtime_changed" };
+    }
+    const fee = await queryTransferFee({
+      url,
+      pallet: chain.balancesPallet,
+      decimals,
+      fetchImpl: opts.fetchImpl,
+      timeoutMs: opts.timeoutMs,
+    });
+    return { planck: fee.planck.toString(), tokens: fee.tokens, error: null };
+  } catch (err) {
+    return {
+      ...FEE_UNREAD,
+      error: err instanceof RpcError ? (err.code as TransferFeeError) : "rpc_error",
+    };
+  }
+}
+
+export type MismatchCode = "SYMBOL" | "DECIMALS" | "CHAIN_SYMBOL" | "SS58_FORMAT" | "FEE_USD";
+
+/** Цент: ниже этой разницы относительные проценты шумят. */
+const FEE_MISMATCH_USD = 0.01;
+/** Та же десятая доля, что и у остальных расхождений карточки. */
+const FEE_MISMATCH_SHARE = 0.1;
+
+/**
+ * Значимо ли расхождение заявленной комиссии с проверенной. Значимым считается
+ * только то, что больше и десяти процентов, и цента: у сети с комиссией в доли
+ * микроцента относительная разница срабатывала бы всегда.
+ */
+export function feeMismatch(args: {
+  declaredUsd: number | null;
+  factTokens: number | null;
+  priceUsd: number | null;
+}): boolean {
+  const { declaredUsd, factTokens, priceUsd } = args;
+  if (declaredUsd == null || factTokens == null || priceUsd == null || priceUsd <= 0) return false;
+  const factUsd = factTokens * priceUsd;
+  const diff = Math.abs(declaredUsd - factUsd);
+  return diff > FEE_MISMATCH_USD && diff > FEE_MISMATCH_SHARE * factUsd;
+}
 
 /**
  * Расхождения двух видов: сеть против карточки (`SYMBOL`, `DECIMALS`) и сеть
@@ -111,6 +205,7 @@ export function chainMismatches(args: {
   cardSymbol: string;
   claimedDecimals: number | null;
   facts: { symbol: string | null; decimals: number | null; ss58Format: number | null };
+  fee?: { declaredUsd: number | null; factTokens: number | null; priceUsd: number | null };
 }): MismatchCode[] {
   const out: MismatchCode[] = [];
   const registry = resolveSubstrateChain(args.chainKey);
@@ -128,6 +223,7 @@ export function chainMismatches(args: {
   if (registry && ss58Format != null && ss58Format !== registry.ss58Format) {
     out.push("SS58_FORMAT");
   }
+  if (args.fee && feeMismatch(args.fee)) out.push("FEE_USD");
   return out;
 }
 
@@ -136,8 +232,10 @@ type CardRow = {
   nativeChain: string | null;
   symbol: string;
   tokenomics: unknown;
+  payments: unknown;
   provenance: unknown;
   chainFacts: { genesisHash: string } | null;
+  priceIndex: { priceUsd: number } | null;
 };
 
 export type ChainFactsPrismaLike = {
@@ -168,8 +266,10 @@ export async function syncChainFacts(args: {
       nativeChain: true,
       symbol: true,
       tokenomics: true,
+      payments: true,
       provenance: true,
       chainFacts: { select: { genesisHash: true } },
+      priceIndex: { select: { priceUsd: true } },
     },
   });
 
@@ -208,6 +308,9 @@ export async function syncChainFacts(args: {
 
     const claimedDecimals =
       (card.tokenomics as { decimals?: number | null } | null)?.decimals ?? null;
+    const declaredFeeUsd =
+      (card.payments as { feeUsdTypical?: number | null } | null)?.feeUsdTypical ?? null;
+    const priceUsd = card.priceIndex?.priceUsd ?? null;
     const mismatches = chainMismatches({
       chainKey: card.nativeChain,
       cardSymbol: card.symbol,
@@ -217,6 +320,7 @@ export async function syncChainFacts(args: {
         decimals: facts.tokenDecimals,
         ss58Format: facts.ss58Format,
       },
+      fee: { declaredUsd: declaredFeeUsd, factTokens: facts.transferFeeTokens, priceUsd },
     });
 
     const data = {
@@ -231,6 +335,9 @@ export async function syncChainFacts(args: {
       finalizedNumber: facts.finalizedNumber,
       finalityLag: facts.finalityLag,
       finalitySeconds: facts.finalitySeconds,
+      transferFeePlanck: facts.transferFeePlanck,
+      transferFeeTokens: facts.transferFeeTokens,
+      transferFeeError: facts.transferFeeError,
       mismatches,
       checkedAt: now,
       checkError: null as string | null,
@@ -242,6 +349,9 @@ export async function syncChainFacts(args: {
     });
 
     const entry = { kind: "VERIFIED_ONCHAIN" as const, source: facts.chain, at: now.toISOString() };
+    // Комиссия подтверждается как USD-число только когда цена известна: без
+    // индекса цены проверенного числа в долларах у нас нет.
+    const feeVerified = facts.transferFeeTokens != null && priceUsd != null;
     await prisma.coinCard.update({
       where: { id: card.id },
       data: {
@@ -250,6 +360,7 @@ export async function syncChainFacts(args: {
           "payments.finalitySeconds": entry,
           "chain.symbol": entry,
           "chain.decimals": entry,
+          ...(feeVerified ? { "payments.feeUsdTypical": entry } : {}),
         }) as never,
       },
     });

@@ -14,6 +14,9 @@ function node(
     finalized?: number;
     stepMs?: number;
     genesis?: string;
+    txVersion?: number;
+    feePlanck?: string;
+    feeFails?: boolean;
   } = {},
 ): FetchLike {
   const best = opts.best ?? 1_000_100;
@@ -42,6 +45,21 @@ function node(
       result = { number: `0x${n.toString(16)}` };
     } else if (method === "chain_getFinalizedHead") {
       result = "0xfinalized";
+    } else if (method === "state_getRuntimeVersion") {
+      result = {
+        specName: "taler",
+        specVersion: 12,
+        transactionVersion: opts.txVersion ?? 2,
+      };
+    } else if (method === "payment_queryInfo") {
+      if (opts.feeFails) {
+        return {
+          ok: true,
+          status: 200,
+          json: async () => ({ error: { message: "Unable to query dispatch info." } }),
+        };
+      }
+      result = { partialFee: opts.feePlanck ?? "2633280" };
     } else if (method === "state_getStorageAt") {
       const number = Number(String(params[1]).replace("0xblock", ""));
       result = le(BigInt(1_700_000_000_000 + number * step), 8);
@@ -228,5 +246,132 @@ describe("syncChainFacts", () => {
     const create = (upserts[0] as { create: Record<string, unknown> }).create;
     expect(create.mismatches).toEqual(["SYMBOL"]);
     expect(create.checkError).toBeNull();
+  });
+});
+
+describe("комиссия перевода (слайс T)", () => {
+  function prismaWith(card: Record<string, unknown>) {
+    const upserts: Array<Record<string, unknown>> = [];
+    const updates: Array<Record<string, unknown>> = [];
+    const prisma = {
+      coinCard: {
+        findMany: async () => [card],
+        update: async (a: Record<string, unknown>) => {
+          updates.push(a);
+          return {};
+        },
+      },
+      coinCardChainFacts: {
+        upsert: async (a: Record<string, unknown>) => {
+          upserts.push(a);
+          return {};
+        },
+      },
+    };
+    return { prisma, upserts, updates };
+  }
+
+  const card = {
+    id: "card1",
+    nativeChain: "taler",
+    symbol: "TAL",
+    tokenomics: {},
+    payments: {},
+    provenance: {},
+    chainFacts: null,
+    priceIndex: null as { priceUsd: number } | null,
+  };
+
+  const run = (prisma: unknown, fetchImpl: FetchLike) =>
+    syncChainFacts({
+      prisma: prisma as never,
+      fetchImpl,
+      now: new Date("2026-11-07T10:00:00Z"),
+    });
+
+  it("читает комиссию и переводит её в монеты", async () => {
+    const f = await readChainFacts({ chain: "taler", fetchImpl: node() });
+    expect(f.transferFeePlanck).toBe("2633280");
+    expect(f.transferFeeTokens).toBeCloseTo(0.00000263328, 12);
+    expect(f.transferFeeError).toBeNull();
+  });
+
+  it("версия транзакций разошлась с пришпиленной — комиссия неизвестна, факты на месте", async () => {
+    const f = await readChainFacts({ chain: "taler", fetchImpl: node({ txVersion: 3 }) });
+    expect(f.transferFeeError).toBe("runtime_changed");
+    expect(f.transferFeePlanck).toBeNull();
+    expect(f.blockSeconds).toBe(6);
+    expect(f.error).toBeNull();
+  });
+
+  it("узел не посчитал комиссию — остальные факты сохраняются", async () => {
+    const f = await readChainFacts({ chain: "taler", fetchImpl: node({ feeFails: true }) });
+    expect(f.transferFeeError).toBe("decode_failed");
+    expect(f.blockSeconds).toBe(6);
+    expect(f.error).toBeNull();
+  });
+
+  it("нулевая комиссия — это ноль, а не отсутствие данных", async () => {
+    const f = await readChainFacts({ chain: "taler", fetchImpl: node({ feePlanck: "0" }) });
+    expect(f.transferFeePlanck).toBe("0");
+    expect(f.transferFeeTokens).toBe(0);
+  });
+
+  it("прогон пишет комиссию в факты сети", async () => {
+    const { prisma, upserts } = prismaWith({ ...card });
+    await run(prisma, node());
+    expect((upserts[0] as { create: Record<string, unknown> }).create).toMatchObject({
+      transferFeePlanck: "2633280",
+      transferFeeError: null,
+    });
+  });
+
+  it("без индекса цены комиссия в USD не считается и провенанс не ставится", async () => {
+    const { prisma, updates } = prismaWith({
+      ...card,
+      payments: { feeUsdTypical: 0.01 },
+      priceIndex: null,
+    });
+    await run(prisma, node());
+    const prov = (updates[0] as { data: { provenance: Record<string, unknown> } }).data.provenance;
+    expect(prov["payments.feeUsdTypical"]).toBeUndefined();
+  });
+
+  it("заявленная комиссия вчетверо выше проверенной — расхождение FEE_USD", async () => {
+    // Факт: 0,00000263328 TAL × $4000 = $0,0105. Заявлено $0,05 — разница
+    // больше и 10 %, и цента.
+    const { prisma, upserts, updates } = prismaWith({
+      ...card,
+      payments: { feeUsdTypical: 0.05 },
+      priceIndex: { priceUsd: 4000 },
+    });
+    await run(prisma, node());
+    const create = (upserts[0] as { create: { mismatches: string[] } }).create;
+    expect(create.mismatches).toContain("FEE_USD");
+    const prov = (updates[0] as { data: { provenance: Record<string, { kind: string }> } }).data
+      .provenance;
+    expect(prov["payments.feeUsdTypical"].kind).toBe("VERIFIED_ONCHAIN");
+  });
+
+  it("разница в доли цента расхождением не считается", async () => {
+    // Факт $0,0105 против заявленных $0,015: относительная разница велика, но
+    // в абсолютных деньгах это полцента — шум, а не обман.
+    const { prisma, upserts } = prismaWith({
+      ...card,
+      payments: { feeUsdTypical: 0.015 },
+      priceIndex: { priceUsd: 4000 },
+    });
+    await run(prisma, node());
+    expect((upserts[0] as { create: { mismatches: string[] } }).create.mismatches).toEqual([]);
+  });
+
+  it("заявленная комиссия в пределах десяти процентов — расхождения нет", async () => {
+    const { prisma, upserts } = prismaWith({
+      ...card,
+      payments: { feeUsdTypical: 0.011 },
+      priceIndex: { priceUsd: 4000 },
+    });
+    await run(prisma, node());
+    expect((upserts[0] as { create: { mismatches: string[] } }).create.mismatches).toEqual([]);
   });
 });
