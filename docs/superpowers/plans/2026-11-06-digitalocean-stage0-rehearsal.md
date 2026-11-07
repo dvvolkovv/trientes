@@ -530,6 +530,7 @@ Expected: outbound HTTP и Telegram `getMe ok: true`. Token не выводит�
 **Files:**
 - Create protected report: `/Users/dmitry/.trientes-migration/stage0-readiness.md`
 - Create protected security handoff: `/Users/dmitry/.trientes-migration/cutover-security-requirements.md`
+- Create protected live-state handoff: `/Users/dmitry/.trientes-migration/cutover-data-delta-requirements.md`
 - Copy protected evidence: `/Users/dmitry/.trientes-migration/postfix-memory.csv`
 - Preserve protected evidence: `/Users/dmitry/.trientes-migration/postfix-pm2.log`
 
@@ -602,3 +603,27 @@ chmod 600 /Users/dmitry/.trientes-migration/cutover-security-requirements.md
 ```
 
 Expected: файл mode 0600 и явно передан в будущий cutover plan. До успешного cutover временные NOPASSWD/root recovery остаются для rehearsal и не отзываются преждевременно.
+
+- [ ] **Step 5: Зафиксировать финальную delta-синхронизацию живого state**
+
+Создать `/Users/dmitry/.trientes-migration/cutover-data-delta-requirements.md` через Write:
+
+```markdown
+# Обязательный final data-delta перед cutover
+
+- [ ] Подтвердить остановку bot, отсутствие Claude processes/deploys и остановку old web/worker.
+- [ ] Сохранить UTC manifest изменений `.claude`, `.claude.json`, artifacts, incoming, `public/uploads` и `/var/www/trientes-*`.
+- [ ] Сохранить защищённую копию target-only entries до любого `--delete`; cold archive не использовать как рабочий checkout.
+- [ ] Выполнить itemized `rsync --dry-run` и отдельно проверить добавления/изменения/удаления без вывода секретов/PII.
+- [ ] Для `.claude` применять `--delete` только после остановки writers и ручной проверки target-only entries; спорные entries архивировать, а не удалять.
+- [ ] Повторно применить directories `0700`, non-executable files `0600`, executable files `0700`, сохранить symlinks/owners.
+- [ ] Проверить SHA-256 изменённых файлов, counts/symlinks, Claude resume state и APK latest symlink.
+- [ ] Cold archive и его broken `.env` symlink не использовать как рабочий checkout.
+- [ ] Выполнить отдельные финальные PostgreSQL dump/restore и Redis SAVE/RDB copy; file delta не заменяет DB snapshots.
+```
+
+```bash
+chmod 600 /Users/dmitry/.trientes-migration/cutover-data-delta-requirements.md
+```
+
+Expected: handoff mode 0600 и передан в будущий cutover plan. `--delete` на живом state до полной остановки writers и itemized dry-run запрещён.
