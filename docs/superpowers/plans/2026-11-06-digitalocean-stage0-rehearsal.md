@@ -269,7 +269,7 @@ rsync -a -e "$SSH" --exclude authorized_keys --exclude known_hosts /home/dv/.ssh
 rsync -a -e "$SSH" /home/dv/.pgpass /home/dv/.trientes-dbpass /home/dv/.trientes-bot-secret /home/dv/.claude.json "dv@$NEW_IP:/home/dv/"
 rsync -a -e "$SSH" /home/dv/.claude/ "dv@$NEW_IP:/home/dv/.claude/"
 rsync -a -e "$SSH" /home/dv/bin/ "dv@$NEW_IP:/home/dv/bin/"
-rsync -a -e "$SSH" --exclude .gradle --exclude build --exclude .cxx /home/dv/trientes-android/ "dv@$NEW_IP:/home/dv/trientes-android/"
+rsync -a -e "$SSH" --exclude /.gradle --exclude /build --exclude /.cxx /home/dv/trientes-android/ "dv@$NEW_IP:/home/dv/trientes-android/"
 rsync -a -e "$SSH" /home/dv/.android/debug.keystore "dv@$NEW_IP:/home/dv/.android/"
 rsync -a -e "$SSH" /home/dv/trientes-artifacts/ "dv@$NEW_IP:/home/dv/trientes-artifacts/"
 chmod 600 /home/dv/trientes/.env /home/dv/.pgpass /home/dv/.trientes-dbpass /home/dv/.trientes-bot-secret /home/dv/.claude.json
@@ -317,6 +317,9 @@ set -euo pipefail
 RSYNC_SSH='ssh -i /home/dv/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=accept-new'
 sudo rsync -aH -e "$RSYNC_SSH" /etc/letsencrypt/ "root@$NEW_IP:/etc/letsencrypt/"
 sudo rsync -aH -e "$RSYNC_SSH" /etc/nginx/sites-available/trientes "root@$NEW_IP:/etc/nginx/sites-available/trientes"
+if sudo test -f /etc/nginx/sites-available/trientes.bak; then
+  sudo rsync -aH -e "$RSYNC_SSH" /etc/nginx/sites-available/trientes.bak "root@$NEW_IP:/etc/nginx/sites-available/trientes.bak"
+fi
 sudo rsync -aH -e "$RSYNC_SSH" /etc/nginx/sites-enabled/trientes "root@$NEW_IP:/etc/nginx/sites-enabled/trientes"
 sudo rsync -aH -e "$RSYNC_SSH" /etc/nginx/conf.d/trientes-exchange.conf "root@$NEW_IP:/etc/nginx/conf.d/trientes-exchange.conf"
 sudo rsync -aH -e "$RSYNC_SSH" /etc/nginx/snippets/trientes-exchange.conf "root@$NEW_IP:/etc/nginx/snippets/trientes-exchange.conf"
@@ -332,10 +335,11 @@ Expected: configs, symlinks, TLS material и static files на target; default n
 
 ```bash
 source /Users/dmitry/.trientes-migration/stage0.env
-ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && test -d .git && git status --short --branch && git rev-parse HEAD && git cat-file -e HEAD^{commit} && stat -c "%a %U:%G %n" .env ~/.pgpass ~/.trientes-dbpass ~/.trientes-bot-secret ~/.claude.json && test -d /var/www/trientes-exchange && test -L /var/www/trientes-downloads/trientes.apk'
+ssh -o BatchMode=yes "dv@$NEW_IP" 'for path in /home/dv/trientes-artifacts /home/dv/trientes-android /home/dv/.claude; do find "$path" -type d -exec chmod 700 {} +; find "$path" -type f -exec sh -c '"'"'for file; do if test -x "$file"; then chmod 700 "$file"; else chmod 600 "$file"; fi; done'"'"' sh {} +; done'
+ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && test -d .git && git status --short --branch && git rev-parse HEAD && git cat-file -e HEAD^{commit} && stat -c "%a %U:%G %n" .env ~/.pgpass ~/.trientes-dbpass ~/.trientes-bot-secret ~/.claude.json && test -x /home/dv/trientes-android/bin/build && test -d /var/www/trientes-exchange && test -L /var/www/trientes-downloads/trientes.apk'
 ```
 
-Expected: standalone `.git` директория, рабочие `git status`/`cat-file`, SHA совпадает с `BASE_SHA`, `.env` и protected files mode 600 владельца `dv`; APK symlink существует. Содержимое файлов не выводится.
+Expected: standalone `.git` директория, рабочие `git status`/`cat-file`, SHA совпадает с `BASE_SHA`, `.env` и protected files mode 600 владельца `dv`; защищённые directories 0700, обычные files 0600, executable files включая `trientes-android/bin/build` 0700; APK symlink существует. Содержимое файлов не выводится.
 
 ### Task 5: Выполнить PostgreSQL и Redis rehearsal
 
