@@ -525,6 +525,7 @@ Expected: outbound HTTP и Telegram `getMe ok: true`. Token не выводит�
 
 **Files:**
 - Create protected report: `/Users/dmitry/.trientes-migration/stage0-readiness.md`
+- Create protected security handoff: `/Users/dmitry/.trientes-migration/cutover-security-requirements.md`
 - Copy protected evidence: `/Users/dmitry/.trientes-migration/postfix-memory.csv`
 - Preserve protected evidence: `/Users/dmitry/.trientes-migration/postfix-pm2.log`
 
@@ -575,3 +576,25 @@ ssh -o BatchMode=yes "dv@$NEW_IP" 'pm2 status && systemctl is-enabled pm2-dv && 
 ```
 
 Expected: только web online; worker/bot не запущены; Droplet сохранён для отдельного DNS delegation plan. Временный Aeza SSH key остаётся ограниченным firewall и будет удалён в финальном cutover plan. Mailcow DNS/app не меняются.
+
+- [ ] **Step 4: Зафиксировать обязательный отзыв временных привилегий**
+
+Создать `/Users/dmitry/.trientes-migration/cutover-security-requirements.md` через Write с содержимым:
+
+```markdown
+# Обязательные действия cutover security
+
+- [ ] Владелец задаёт `dv` сильный пароль интерактивно через `sudo passwd dv`; пароль не передаётся в команды, логи или чат.
+- [ ] В `/etc/sudoers.d/dv` записать обычное правило `dv ALL=(ALL) ALL`, проверить `visudo -cf /etc/sudoers.d/dv` и свежую SSH-сессию с `sudo -k && sudo -v`.
+- [ ] После подтверждения обычного sudo удалить `/etc/sudoers.d/90-dv-migration` с NOPASSWD и снова проверить `visudo` и `sudo -v`.
+- [ ] После проверки независимого admin recovery установить `PermitRootLogin no`, выполнить `sshd -t` и reload SSH.
+- [ ] Удалить временный Aeza public key из `/root/.ssh/authorized_keys` и `/home/dv/.ssh/authorized_keys`, сохранив admin key владельца.
+- [ ] После окончательного вывода Aeza удалить `85.192.25.242/32` из SSH inbound в Cloud Firewall и UFW.
+- [ ] Проверить, что 3000/4100/5432/6379 остаются закрыты, а worker/bot запущены только на новом сервере.
+```
+
+```bash
+chmod 600 /Users/dmitry/.trientes-migration/cutover-security-requirements.md
+```
+
+Expected: файл mode 0600 и явно передан в будущий cutover plan. До успешного cutover временные NOPASSWD/root recovery остаются для rehearsal и не отзываются преждевременно.
