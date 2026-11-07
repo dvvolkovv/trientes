@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { Prisma } from "@prisma/client";
 import type { MarketRow } from "@/lib/coingecko";
 
 const mocks = vi.hoisted(() => ({
@@ -162,13 +163,32 @@ describe("readTop100 cold-cache fallback", () => {
       take: 200,
     });
 
-    const query = mocks.prisma.$queryRaw.mock.calls[0]?.[0] as TemplateStringsArray;
-    const sql = query.join("").replace(/\s+/g, " ").trim();
+    const queryCall = mocks.prisma.$queryRaw.mock.calls[0];
+    const query = queryCall?.[0] as TemplateStringsArray;
+    const idFilter = queryCall?.[1];
+    const sql = query.join("?").replace(/\s+/g, " ").trim();
     expect(sql).toContain('FROM "Coin" AS c');
     expect(sql).toContain("LEFT JOIN LATERAL");
     expect(sql).toContain('snap."coinId" = c.id');
     expect(sql).toMatch(/ORDER BY snap\."fetchedAt" DESC LIMIT 1/);
-    expect(sql).toMatch(/WHERE c\."isActive" = TRUE/);
-    expect(sql).toMatch(/ORDER BY c\."rank" ASC LIMIT 200$/);
+    expect(sql).toContain("WHERE c.id IN (?)");
+    expect(idFilter).toEqual(Prisma.join(coins.map((coin) => coin.id)));
+    expect(sql).not.toContain('WHERE c."isActive" = TRUE');
+    expect(sql).not.toMatch(/\bLIMIT 200\b/);
+    expect(sql).toMatch(/ORDER BY c\."rank" ASC$/);
+  });
+
+  it("skips the snapshot query when the bounded coin list is empty", async () => {
+    mocks.prisma.coin.findMany.mockResolvedValue([]);
+
+    await expect(readTop100()).resolves.toEqual([]);
+
+    expect(mocks.prisma.coin.findMany).toHaveBeenCalledWith({
+      where: { isActive: true },
+      orderBy: { rank: "asc" },
+      take: 200,
+    });
+    expect(mocks.prisma.$queryRaw).not.toHaveBeenCalled();
+    expect(mocks.redis.set).not.toHaveBeenCalled();
   });
 });

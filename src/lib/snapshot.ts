@@ -6,7 +6,7 @@ import { fetchFearGreed, type FearGreed } from "@/lib/fear-greed";
 import { redis } from "@/lib/redis";
 import { prisma } from "@/lib/prisma";
 import { KEYS, TTL } from "@/lib/sync/keys";
-import type { CoinSnapshot } from "@prisma/client";
+import { Prisma, type CoinSnapshot } from "@prisma/client";
 import { mergeCuratedExchanges } from "@/lib/curated-exchanges";
 
 type LatestSnapshotRow = {
@@ -60,6 +60,9 @@ export async function readTop100(): Promise<MarketRow[]> {
     orderBy: { rank: "asc" },
     take: 200,
   });
+  const coinIds = coins.map((c) => c.id);
+  if (coinIds.length === 0) return [];
+
   const snapshots = await prisma.$queryRaw<LatestSnapshotRow[]>`
     SELECT
       s.id,
@@ -83,9 +86,8 @@ export async function readTop100(): Promise<MarketRow[]> {
       ORDER BY snap."fetchedAt" DESC
       LIMIT 1
     ) AS s ON TRUE
-    WHERE c."isActive" = TRUE
+    WHERE c.id IN (${Prisma.join(coinIds)})
     ORDER BY c."rank" ASC
-    LIMIT 200
   `;
   const snapshotsByCoinId = new Map<string, LatestSnapshotRow>();
   for (const snapshot of snapshots) {
