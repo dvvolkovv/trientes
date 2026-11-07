@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { notifyUser } from "@/lib/notify";
 import { websiteDomain } from "@/lib/claim-domain";
+import { transferCardOwnership } from "@/lib/coin-card-claim-transfer";
 import {
   canCheckClaim,
   canStartClaim,
@@ -12,7 +13,6 @@ import {
   claimToken,
   CLAIM_TTL_MS,
   MAX_ATTEMPTS,
-  nextTrust,
   verifyProof,
   type ClaimMethod,
 } from "@/lib/coin-card-claim";
@@ -175,49 +175,16 @@ export async function checkClaim(claimId: string, signature?: string): Promise<C
   });
   if (claimed.count === 0) return { ok: false, reason: "claim_closed" };
 
-  const trust = nextTrust(contract?.verifiedAt != null);
   const previousSteward = claim.card.stewardUserId;
-
-  await prisma.$transaction([
-    prisma.coinCardMember.upsert({
-      where: { cardId_userId: { cardId: claim.cardId, userId: user.id } },
-      create: { cardId: claim.cardId, userId: user.id, role: "OWNER", isSigner: true },
-      update: { role: "OWNER", sections: [], isSigner: true },
-    }),
-    // Куратор понижается, а не удаляется: дальше решает проект.
-    ...(previousSteward && previousSteward !== user.id
-      ? [
-          prisma.coinCardMember.updateMany({
-            where: { cardId: claim.cardId, userId: previousSteward },
-            data: { role: "EDITOR" },
-          }),
-        ]
-      : []),
-    prisma.coinCard.update({
-      where: { id: claim.cardId },
-      data: { stewardUserId: user.id, trust },
-    }),
-    // Остальные открытые заявки больше не нужны: доказательство предъявлено.
-    prisma.coinCardClaim.updateMany({
-      where: { cardId: claim.cardId, status: "PENDING" },
-      data: { status: "CANCELLED" },
-    }),
-    prisma.adminAuditLog.create({
-      data: {
-        actorId: user.id,
-        action: "TRANSFER_COIN_CARD",
-        targetType: "CoinCard",
-        targetId: claim.cardId,
-        details: {
-          toUserId: user.id,
-          fromUserId: previousSteward,
-          method: claim.method,
-          target: proof.target,
-          claim: true,
-        },
-      },
-    }),
-  ]);
+  await transferCardOwnership(prisma as never, {
+    cardId: claim.cardId,
+    claimId: claim.id,
+    newOwnerId: user.id,
+    previousStewardId: previousSteward,
+    method: claim.method as ClaimMethod,
+    target: proof.target,
+    contractVerified: contract?.verifiedAt != null,
+  });
 
   void notifyUser({
     userId: user.id,
