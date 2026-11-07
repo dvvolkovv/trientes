@@ -61,11 +61,11 @@ export function recoverSigner(
   noble.set(bytes.subarray(0, 64), 1);
 
   try {
-    const point = recoverPublicKey(noble, personalMessageHash(text), {
+    // noble отдаёт байты открытого ключа; тип объявлен как Uint8Array.
+    const pub: Uint8Array = recoverPublicKey(noble, personalMessageHash(text), {
       prehash: false,
       isCompressed: false,
     });
-    const pub = point instanceof Uint8Array ? point : point.toBytes(false);
     return { address: addressFromPublicKey(pub), error: null };
   } catch {
     return { address: null, error: "signature_invalid" };
