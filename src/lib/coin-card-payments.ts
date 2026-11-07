@@ -44,6 +44,22 @@ export type Payments = {
   refundPolicyUrl: string | null;
 };
 
+/**
+ * Пустой профиль: проект не заполнил ничего. Нужен рендеру, когда своих данных
+ * у проекта нет, а факты сети уже прочитаны (слайс S).
+ */
+export const EMPTY_PAYMENTS: Payments = {
+  finalitySeconds: null,
+  blockSeconds: null,
+  tps: null,
+  feeUsdTypical: null,
+  feeNote: null,
+  reversible: null,
+  stablecoins: [],
+  integrations: [],
+  refundPolicyUrl: null,
+};
+
 export type PaymentsResult =
   | { ok: true; data: Payments }
   | {

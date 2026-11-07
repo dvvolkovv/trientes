@@ -11,7 +11,7 @@ import {
 import { getMerchantCta } from "@/lib/coin-card-merchant-viewer";
 import { countryName } from "@/lib/countries";
 import { ProvenanceBadge } from "../provenance-badge";
-import { PaymentsBlock } from "./payments-block";
+import { PaymentsBlock, type ChainFactsPayments } from "./payments-block";
 import { FiatRoutesBlock } from "./fiat-routes-block";
 
 const SITE = process.env.PUBLIC_ORIGIN ?? "https://trientes.org";
@@ -28,12 +28,15 @@ export async function AcceptanceSection({
   symbol,
   payments,
   provenance,
+  chainFacts = null,
 }: {
   cardId: string;
   slug: string;
   symbol: string;
   payments?: unknown;
   provenance?: unknown;
+  /** Слайс S: измеренные параметры своей сети — они важнее заявленных. */
+  chainFacts?: ChainFactsPayments | null;
 }) {
   const [t, tb, ts, locale] = await Promise.all([
     getTranslations("coinCard.acceptance"),
@@ -146,7 +149,7 @@ export async function AcceptanceSection({
       )}
 
       <div className="mt-5 space-y-5">
-        <PaymentsBlock payments={payments} provenance={provenance} />
+        <PaymentsBlock payments={payments} provenance={provenance} chainFacts={chainFacts} />
         <FiatRoutesBlock cardId={cardId} />
       </div>
 

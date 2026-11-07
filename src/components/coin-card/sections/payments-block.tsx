@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { getProvenance } from "@/lib/coin-card-provenance";
-import { validatePayments } from "@/lib/coin-card-payments";
+import { EMPTY_PAYMENTS, validatePayments } from "@/lib/coin-card-payments";
 import { ProvenanceBadge } from "../provenance-badge";
 import { ExternalLink } from "../external-link";
 
@@ -12,32 +12,63 @@ import { ExternalLink } from "../external-link";
  * «Возврат средств: невозможен» написано прямо и без смягчения: для продавца
  * это преимущество, для покупателя — риск, и обе стороны должны прочитать
  * одно и то же.
+ *
+ * Слайс S: для нативной монеты своей сети время блока и финальность измерены
+ * на цепи. Факт вытесняет заявление в самой строке, но заявление не исчезает:
+ * при расхождении больше 10% оно показывается рядом — правило слайса B «не
+ * поправлять молча, а показывать расхождение».
  */
+export type ChainFactsPayments = {
+  blockSeconds: number | null;
+  finalitySeconds: number | null;
+  checkError: string | null;
+};
+
 export async function PaymentsBlock({
   payments,
   provenance,
+  chainFacts = null,
 }: {
   payments: unknown;
   provenance: unknown;
+  chainFacts?: ChainFactsPayments | null;
 }) {
   const t = await getTranslations("coinCard.payments");
   const v = validatePayments(payments);
-  if (!v.ok) return null;
-  const d = v.data;
+  const f = chainFacts && !chainFacts.checkError ? chainFacts : null;
+  // Профиль проекта может быть пуст или невалиден — но если факты сети есть,
+  // блок всё равно нужен: это ровно те числа, за которыми пришёл продавец.
+  if (!v.ok && !f) return null;
+  const d = v.ok ? v.data : EMPTY_PAYMENTS;
 
-  const rows: Array<{ label: string; value: string; path: string }> = [];
-  if (d.finalitySeconds !== null) {
+  const differs = (fact: number, claimed: number | null) =>
+    claimed != null && claimed > 0 && Math.abs(fact - claimed) / claimed > 0.1;
+
+  const rows: Array<{ label: string; value: string; path: string; aside: string | null }> = [];
+
+  const finality = f?.finalitySeconds ?? d.finalitySeconds;
+  if (finality !== null) {
     rows.push({
       label: t("finality"),
-      value: t("seconds", { value: d.finalitySeconds }),
+      value: t("seconds", { value: finality }),
       path: "payments.finalitySeconds",
+      aside:
+        f?.finalitySeconds != null && differs(f.finalitySeconds, d.finalitySeconds)
+          ? t("claimedSays", { value: t("seconds", { value: d.finalitySeconds! }) })
+          : null,
     });
   }
-  if (d.blockSeconds !== null) {
+
+  const blockTime = f?.blockSeconds ?? d.blockSeconds;
+  if (blockTime !== null) {
     rows.push({
       label: t("blockTime"),
-      value: t("seconds", { value: d.blockSeconds }),
+      value: t("seconds", { value: blockTime }),
       path: "payments.blockSeconds",
+      aside:
+        f?.blockSeconds != null && differs(f.blockSeconds, d.blockSeconds)
+          ? t("claimedSays", { value: t("seconds", { value: d.blockSeconds! }) })
+          : null,
     });
   }
   if (d.feeUsdTypical !== null) {
@@ -46,16 +77,23 @@ export async function PaymentsBlock({
       // Явный ноль, а не прочерк: сеть без комиссии — это факт, а не пропуск.
       value: d.feeUsdTypical === 0 ? t("feeFree") : `$${d.feeUsdTypical}`,
       path: "payments.feeUsdTypical",
+      aside: null,
     });
   }
   if (d.tps !== null) {
-    rows.push({ label: t("tps"), value: t("tpsValue", { value: d.tps }), path: "payments.tps" });
+    rows.push({
+      label: t("tps"),
+      value: t("tpsValue", { value: d.tps }),
+      path: "payments.tps",
+      aside: null,
+    });
   }
   if (d.reversible !== null) {
     rows.push({
       label: t("reversible"),
       value: d.reversible ? t("reversibleYes") : t("reversibleNo"),
       path: "payments.reversible",
+      aside: null,
     });
   }
   if (d.stablecoins.length > 0) {
@@ -63,6 +101,7 @@ export async function PaymentsBlock({
       label: t("stablecoins"),
       value: d.stablecoins.join(", "),
       path: "payments.stablecoins",
+      aside: null,
     });
   }
 
@@ -80,6 +119,7 @@ export async function PaymentsBlock({
               <dd className="text-[14px] num">
                 {r.value}
                 <ProvenanceBadge entry={getProvenance(provenance, r.path)} />
+                {r.aside && <span className="text-muted text-xs ml-2">{r.aside}</span>}
               </dd>
             </div>
           ))}

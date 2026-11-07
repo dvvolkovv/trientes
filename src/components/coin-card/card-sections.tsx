@@ -35,6 +35,8 @@ export function CoinCardSections({
         provenance={card.provenance}
         cardName={card.name}
         cardSymbol={card.symbol}
+        nativeChain={card.nativeChain}
+        chainFacts={card.chainFacts}
       />
       <TokenomicsSection
         tokenomics={card.tokenomics}
@@ -49,6 +51,7 @@ export function CoinCardSections({
         symbol={card.symbol}
         payments={card.payments}
         provenance={card.provenance}
+        chainFacts={card.chainFacts}
       />
       <LegalSection legal={card.legal} />
       <SecuritySection security={card.security} />

@@ -18,6 +18,7 @@ import { warmProseTranslations } from "../src/lib/prose-warmup";
 import { verifyCardContracts } from "../src/lib/coin-card-onchain";
 import { pruneCardPricePoints, syncCardMarkets } from "../src/lib/coin-card-markets";
 import { expireStaleClaims } from "../src/lib/coin-card-claim";
+import { syncChainFacts } from "../src/lib/coin-card-chain-facts";
 import { syncCardSupply } from "../src/lib/coin-card-supply";
 import { startBinance, stopBinance } from "./binance";
 
@@ -297,6 +298,21 @@ async function runCardMarketSync() {
  * за прогон: на карточку уходит до 21 вызова `eth_call` (общий выпуск плюс
  * двадцать адресов исключений), а выпуск меняется редко.
  */
+async function runChainFactsSweep() {
+  const t0 = Date.now();
+  try {
+    const s = await syncChainFacts({ prisma: prisma as never, limit: 50 });
+    if (s.cards > 0) {
+      console.log(
+        `[worker] chain facts ok: ${s.cards} cards (${s.ok} ok, ${s.failed} failed) ` +
+          `in ${Date.now() - t0}ms`,
+      );
+    }
+  } catch (err) {
+    console.error("[worker] chain facts failed:", err);
+  }
+}
+
 async function runSupplySweep() {
   const t0 = Date.now();
   try {
@@ -409,6 +425,8 @@ async function main() {
   cron.schedule("10 5 * * *", () => void runContractVerify());
   cron.schedule("*/10 * * * *", () => void runCardMarketSync());
   cron.schedule("20 * * * *", () => void runClaimSweep());
+  // Факты сети — на :35, чтобы не толкаться с заявками (:20) и выпуском (:45).
+  cron.schedule("35 * * * *", () => void runChainFactsSweep());
   cron.schedule("45 * * * *", () => void runSupplySweep());
   cron.schedule("0 4 * * *", () => void runCleanup());
 

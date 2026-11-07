@@ -11,6 +11,8 @@ export async function getPublicCoinCard(slug: string) {
       priceIndex: true,
       // Слайс E: циркулирующий выпуск, посчитанный из сети.
       supply: true,
+      // Слайс S: факты собственной сети нативной монеты.
+      chainFacts: true,
     },
   });
 }
