@@ -780,6 +780,9 @@ model CoinCard {
   sourceLocale  String?
   consensus     String?
   hashAlgo      String?
+  /// Ключ сети из substrate-chains, если монета — нативная единица собственной
+  /// сети. Контракта у такой монеты нет: идентичность сети — хэш генезиса.
+  nativeChain   String?
   links         Json?
   tokenomics    Json?
   teamInfo      Json?
@@ -809,6 +812,7 @@ model CoinCard {
   pricePoints CoinCardPricePoint[]
   claims      CoinCardClaim[]
   supply      CoinCardSupply?
+  chainFacts  CoinCardChainFacts?
 
   @@index([status, createdAt])
   @@index([trust])
@@ -984,6 +988,37 @@ model CoinCardSupply {
   claimedDeltaPct Float?
   method          String   @default("ONCHAIN_V1")
   checkedAt       DateTime
+  checkError      String?
+
+  @@index([checkedAt])
+}
+
+// Факты собственной сети нативной монеты (слайс S). Отдельно от
+// CoinCardSupply: выпуск и скорость сети обновляются с разной частотой и
+// читаются разными разделами карточки; одна строка заставляла бы переписывать
+// выпуск при каждом замере времени блока.
+model CoinCardChainFacts {
+  id              String   @id @default(cuid())
+  cardId          String   @unique
+  card            CoinCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  chain           String
+  genesisHash     String
+  tokenSymbol     String?
+  tokenDecimals   Int?
+  ss58Format      Int?
+  // Измерено: (t(N) − t(N−k)) / k. Float, потому что это замер, а не константа.
+  blockSeconds    Float?
+  blockSample     Int?
+  bestNumber      Int?
+  finalizedNumber Int?
+  finalityLag     Int?
+  // finalityLag × blockSeconds. Производное, но хранится: рендер не считает.
+  finalitySeconds Float?
+  // SYMBOL | DECIMALS — расхождение сети с заявленным в карточке;
+  // CHAIN_SYMBOL | SS58_FORMAT — расхождение сети с реестром.
+  mismatches      String[] @default([])
+  checkedAt       DateTime
+  // chain_unsupported | rpc_unreachable | rpc_error | decode_failed | genesis_mismatch
   checkError      String?
 
   @@index([checkedAt])
