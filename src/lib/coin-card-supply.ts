@@ -14,6 +14,14 @@ import { SELECTORS, decodeUint, encodeAddressArg, isEvmAddress, normalizeAddress
 import { resolveEvmChain, rpcUrlFor } from "./evm-chains";
 import { ethCall, RpcError, type FetchLike } from "./evm-rpc";
 import { mergeProvenance } from "./coin-card-provenance";
+import { resolveSubstrateChain, substrateRpcUrlFor } from "./substrate-chains";
+import { isSs58Address } from "./substrate-codec";
+import {
+  readAccountBalance,
+  readChainProperties,
+  readGenesisHash,
+  readTotalIssuance,
+} from "./substrate-rpc";
 
 /** Канонические адреса сжигания: сожжённое оборотом не считает никто. */
 export const BURN_ADDRESSES: readonly string[] = [
@@ -103,19 +111,34 @@ type TokenomicsLike = {
   excludedAddresses?: unknown;
 };
 
+/** Как проверять и приводить адрес: у EVM и Substrate это разные правила. */
+export type AddressRules = {
+  accept: (address: string) => boolean;
+  normalize: (address: string) => string;
+};
+
+const EVM_RULES: AddressRules = { accept: isEvmAddress, normalize: normalizeAddress };
+
 /**
  * Список адресов исключений из токеномики. Читаются оба вида: новые строки
  * `{address,label}` и старый список строк `excludedAddresses` (его писала форма
  * слайса A, и переписывать чужие данные под новую форму незачем).
+ *
+ * Правила адреса передаются снаружи: в Substrate-сети EVM-адрес не адрес вовсе,
+ * а канонические адреса сжигания не существуют — оба отсекаются валидатором, и
+ * отдельной ветки в расчёте для этого не нужно.
  */
-export function parseExcluded(tokenomics: unknown): ExcludedInput[] {
+export function parseExcluded(
+  tokenomics: unknown,
+  rules: AddressRules = EVM_RULES,
+): ExcludedInput[] {
   const t = (tokenomics ?? {}) as TokenomicsLike;
   const out: ExcludedInput[] = [];
   const seen = new Set<string>();
 
   const add = (rawAddress: unknown, rawLabel: unknown) => {
-    if (typeof rawAddress !== "string" || !isEvmAddress(rawAddress)) return;
-    const address = normalizeAddress(rawAddress);
+    if (typeof rawAddress !== "string" || !rules.accept(rawAddress)) return;
+    const address = rules.normalize(rawAddress);
     if (seen.has(address)) return;
     seen.add(address);
     const label = typeof rawLabel === "string" && rawLabel.trim() ? rawLabel.trim() : null;
@@ -271,12 +294,75 @@ export async function readSupplyFacts(args: {
   return { totalUnits, balances, error: null };
 }
 
+export type SubstrateSupplyFacts = SupplyFacts & {
+  decimals: number | null;
+  symbol: string | null;
+  genesisHash: string | null;
+};
+
+/**
+ * Выпуск нативной монеты: общий выпуск из `Balances.TotalIssuance` и по одному
+ * чтению `System.Account` на адрес исключения. Как и в EVM-ветке, сбой общего
+ * выпуска фатален, сбой отдельного адреса переживается как `partial`.
+ *
+ * Знаки после точки берутся из `system_properties`, а не со слов проекта: от
+ * них зависит порядок величины выпуска, то есть и капитализация.
+ */
+export async function readSubstrateSupplyFacts(args: {
+  chain: string;
+  excluded: readonly ExcludedInput[];
+  fetchImpl?: FetchLike;
+  timeoutMs?: number;
+}): Promise<SubstrateSupplyFacts> {
+  const empty = {
+    totalUnits: null,
+    balances: [] as BalanceRow[],
+    decimals: null,
+    symbol: null,
+    genesisHash: null,
+  };
+  const chain = resolveSubstrateChain(args.chain);
+  if (!chain) return { ...empty, error: "chain_unsupported" };
+
+  const url = substrateRpcUrlFor(chain);
+  const opts = { fetchImpl: args.fetchImpl, timeoutMs: args.timeoutMs };
+
+  let decimals: number | null;
+  let symbol: string | null;
+  let prefix: number | null;
+  let genesisHash: string;
+  let totalUnits: string;
+  try {
+    const props = await readChainProperties(url, opts);
+    decimals = props.decimals;
+    symbol = props.symbol;
+    prefix = props.ss58Format ?? chain.ss58Format;
+    genesisHash = await readGenesisHash(url, opts);
+    totalUnits = (await readTotalIssuance(url, opts)).toString();
+  } catch {
+    return { ...empty, error: "supply_unreadable" };
+  }
+
+  const balances: BalanceRow[] = [];
+  for (const row of args.excluded.slice(0, MAX_EXCLUDED)) {
+    try {
+      const units = await readAccountBalance(url, row.address, prefix, opts);
+      balances.push({ ...row, units: units.toString(), error: null });
+    } catch (err) {
+      balances.push({ ...row, units: null, error: rpcErrorCode(err) });
+    }
+  }
+
+  return { totalUnits, balances, decimals, symbol, genesisHash, error: null };
+}
+
 /* ─── прогон по базе ─────────────────────────────────────────────────────── */
 
 type ContractRow = { chain: string; address: string; decimals: number | null; onchainDecimals: number | null };
 
 type CardRow = {
   id: string;
+  nativeChain: string | null;
   tokenomics: unknown;
   provenance: unknown;
   contracts: ContractRow[];
@@ -320,10 +406,16 @@ export async function syncCardSupply(args: {
     ? { id: cardId }
     : {
         status: "APPROVED",
-        contracts: { some: { isCanonical: true, verifiedAt: { not: null } } },
+        // Либо токен с уже сверенным контрактом (слайс B), либо нативная
+        // монета своей сети — у неё контракта нет и сверять нечего.
+        OR: [
+          { contracts: { some: { isCanonical: true, verifiedAt: { not: null } } } },
+          { nativeChain: { not: null } },
+        ],
       };
   const select = {
     id: true,
+    nativeChain: true,
     tokenomics: true,
     provenance: true,
     contracts: {
@@ -357,6 +449,13 @@ export async function syncCardSupply(args: {
   const stats: SupplySyncStats = { cards: 0, ok: 0, partial: 0, failed: 0 };
 
   for (const card of cards) {
+    // Нативная монета своей сети: контракта нет, читаем саму цепь.
+    if (card.nativeChain) {
+      stats.cards++;
+      await syncNativeChainCard({ prisma, card, now, fetchImpl, stats });
+      continue;
+    }
+
     const contract = card.contracts[0];
     if (!contract) continue;
     const decimals = contract.onchainDecimals ?? contract.decimals;
@@ -443,6 +542,110 @@ export async function syncCardSupply(args: {
   }
 
   return stats;
+}
+
+/**
+ * Один проход по нативной монете. Вынесено из `syncCardSupply`: EVM-ветка там
+ * и без этого на сотню строк, а два расчёта в одном цикле читать нельзя.
+ */
+async function syncNativeChainCard(args: {
+  prisma: PrismaLike;
+  card: CardRow;
+  now: Date;
+  fetchImpl?: FetchLike;
+  stats: SupplySyncStats;
+}): Promise<void> {
+  const { prisma, card, now, fetchImpl, stats } = args;
+  const chainKey = card.nativeChain ?? "";
+  const chain = resolveSubstrateChain(chainKey);
+
+  if (!chain) {
+    stats.failed++;
+    await writeSupply({
+      prisma,
+      cardId: card.id,
+      data: {
+        chain: chainKey,
+        address: "",
+        decimals: 0,
+        method: "SUBSTRATE_V1",
+        checkedAt: now,
+        checkError: "chain_unsupported",
+      },
+      createDefaults: true,
+    });
+    return;
+  }
+
+  // Адреса исключений в этой сети — SS58 своего префикса. EVM-адреса и
+  // канонические адреса сжигания отсекаются здесь же: в Substrate их нет.
+  const excluded = parseExcluded(card.tokenomics, {
+    accept: (a) => isSs58Address(a, chain.ss58Format),
+    normalize: (a) => a.trim(),
+  });
+  const facts = await readSubstrateSupplyFacts({ chain: chain.key, excluded, fetchImpl });
+
+  if (facts.error || facts.totalUnits == null || facts.decimals == null) {
+    stats.failed++;
+    await writeSupply({
+      prisma,
+      cardId: card.id,
+      data: {
+        chain: chain.key,
+        address: facts.genesisHash ?? "",
+        decimals: facts.decimals ?? 0,
+        method: "SUBSTRATE_V1",
+        checkedAt: now,
+        checkError:
+          facts.error ?? (facts.decimals == null ? "decimals_unknown" : "supply_unreadable"),
+      },
+      // Прошлые числа не стираются: недоступный узел — не новость о монете.
+      createDefaults: true,
+    });
+    return;
+  }
+
+  const result = computeSupply({
+    totalUnits: facts.totalUnits,
+    decimals: facts.decimals,
+    balances: facts.balances,
+  });
+  const claimed = (card.tokenomics as { circulating?: number | null } | null)?.circulating ?? null;
+
+  await writeSupply({
+    prisma,
+    cardId: card.id,
+    data: {
+      chain: chain.key,
+      address: facts.genesisHash ?? "",
+      decimals: facts.decimals,
+      method: "SUBSTRATE_V1",
+      totalSupply: result.total,
+      excludedTotal: result.excludedTotal,
+      circulating: result.circulating,
+      excluded: result.excluded,
+      partial: result.partial,
+      claimedDeltaPct: claimedDeltaPct(claimed, result.circulating),
+      checkedAt: now,
+      checkError: null,
+    },
+  });
+
+  await prisma.coinCard.update({
+    where: { id: card.id },
+    data: {
+      provenance: mergeProvenance(card.provenance, {
+        "supply.circulating": {
+          kind: "VERIFIED_ONCHAIN",
+          source: chain.key,
+          at: now.toISOString(),
+        },
+      }) as never,
+    },
+  });
+
+  if (result.partial) stats.partial++;
+  else stats.ok++;
 }
 
 async function writeSupply(args: {
