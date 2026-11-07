@@ -1318,7 +1318,33 @@
       "methodology": "Cómo se calculan estas cifras",
       "emission": "Emisión",
       "burn": "Mecanismo de quema",
-      "excluded": "Direcciones excluidas del circulante"
+      "excluded": "Direcciones excluidas del circulante",
+      "manageTitle": "Suministro verificado",
+      "manageSubtitle": "Leemos el suministro total del contrato y restamos los saldos de las direcciones que marcaste como fuera de circulación. Automático una vez por hora.",
+      "never": "aún sin calcular",
+      "recheck": "Recalcular suministro",
+      "rechecking": "Calculando…",
+      "result": "Calculado: {ok} completos, {partial} parciales, {failed} con error",
+      "partial": "cálculo parcial: una dirección no respondió",
+      "calculationTitle": "Cómo se calculó el suministro circulante",
+      "calculation": "{total} total − {excluded} en {count} direcciones excluidas",
+      "claimedSays": "el proyecto declara: {value}",
+      "marketCap": "Capitalización",
+      "fdv": "FDV",
+      "error": {
+        "decimals_unknown": "Los decimales del contrato son desconocidos: no hay con qué convertir a monedas.",
+        "supply_unreadable": "El contrato no respondió a totalSupply.",
+        "rpc_unreachable": "el nodo no respondió",
+        "rpc_error": "el nodo rechazó la llamada",
+        "decode_failed": "respuesta ilegible"
+      },
+      "reason": {
+        "card_not_found": "Ficha no encontrada.",
+        "forbidden": "No tienes permisos para esto.",
+        "no_canonical_contract": "Marca primero un contrato como canónico: el suministro se calcula desde él.",
+        "contract_unverified": "El contrato canónico aún no pasó la verificación en cadena.",
+        "too_soon": "Se acaba de calcular: inténtalo en unos minutos."
+      }
     },
     "market": {
       "exchange": "Exchange",
@@ -1562,7 +1588,22 @@
       "jurisdictionStatus": "Status",
       "jurisdictionNote": "Note",
       "jurisdictionSource": "Source link",
-      "jurisdictionAsOf": "Source date"
+      "jurisdictionAsOf": "Source date",
+      "excluded": "Dirección fuera de circulación",
+      "excludedAddress": "Dirección",
+      "excludedLabel": "Qué es (tesorería, equipo, lock, quema)",
+      "allocation": "Parte de la asignación",
+      "allocationLabel": "Grupo (equipo, inversores, comunidad)",
+      "allocationPct": "Parte, %",
+      "allocationCliff": "Cliff, meses",
+      "allocationVesting": "Vesting, meses",
+      "allocationAddress": "Dirección (opcional)",
+      "unlock": "Desbloqueo",
+      "unlockDate": "Fecha",
+      "unlockLabel": "Qué se desbloquea",
+      "unlockAmount": "Cantidad, monedas",
+      "unlockPct": "Parte del suministro, %",
+      "unlockSource": "Enlace de la fuente"
     },
     "manage": {
       "status": {
@@ -1651,7 +1692,11 @@
         "legal_status_invalid": "Unknown legal status.",
         "legal_note_too_long": "The note is longer than 500 characters.",
         "country_unknown": "Unknown country code.",
-        "too_many_jurisdictions": "No more than 60 jurisdictions."
+        "too_many_jurisdictions": "No more than 60 jurisdictions.",
+        "address_invalid": "Eso no es una dirección EVM válida.",
+        "allocation_over_100": "Las partes de la asignación suman más de 100%.",
+        "allocation_invalid": "Una fila de asignación necesita etiqueta y una parte entre 0 y 100.",
+        "unlock_invalid": "Un desbloqueo necesita fecha, etiqueta y cantidad o parte."
       }
     },
     "team": {
@@ -2127,6 +2172,18 @@
         "well_known_unreachable": "El sitio no respondió, reinténtalo",
         "token_not_found": "No se encontró el token: comprueba que lo copiaste completo"
       }
+    },
+    "allocation": {
+      "title": "Asignación",
+      "unallocated": "Sin asignar",
+      "cliff": "cliff {months} meses",
+      "vesting": "vesting {months} meses"
+    },
+    "unlocks": {
+      "title": "Calendario de desbloqueos",
+      "windows": "{pct30}% del suministro se desbloquea en 30 días, {pct90}% en 90",
+      "more": "{count} más por venir",
+      "past": "{count} ya desbloqueados"
     }
   },
   "inviteCoin": {

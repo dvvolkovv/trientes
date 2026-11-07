@@ -1318,7 +1318,33 @@
       "methodology": "Bu sayılar nasıl hesaplanıyor",
       "emission": "Emisyon",
       "burn": "Yakma mekanizması",
-      "excluded": "Dolaşımdan çıkarılan adresler"
+      "excluded": "Dolaşımdan çıkarılan adresler",
+      "manageTitle": "Doğrulanmış arz",
+      "manageSubtitle": "Toplam arzı sözleşmeden okuyup, dolaşım dışı olarak işaretlediğiniz adreslerin bakiyelerini düşüyoruz. Saatte bir otomatik.",
+      "never": "henüz hesaplanmadı",
+      "recheck": "Arzı yeniden hesapla",
+      "rechecking": "Hesaplanıyor…",
+      "result": "Hesaplandı: {ok} tam, {partial} kısmi, {failed} başarısız",
+      "partial": "kısmi hesap: bir adres yanıt vermedi",
+      "calculationTitle": "Dolaşımdaki arz nasıl hesaplandı",
+      "calculation": "{total} toplam − {count} hariç tutulan adreste {excluded}",
+      "claimedSays": "projenin beyanı: {value}",
+      "marketCap": "Piyasa değeri",
+      "fdv": "FDV",
+      "error": {
+        "decimals_unknown": "Sözleşmenin ondalık basamakları bilinmiyor — coin birimine çevrilemiyor.",
+        "supply_unreadable": "Sözleşme totalSupply çağrısına yanıt vermedi.",
+        "rpc_unreachable": "düğüm yanıt vermedi",
+        "rpc_error": "düğüm çağrıyı reddetti",
+        "decode_failed": "okunamayan yanıt"
+      },
+      "reason": {
+        "card_not_found": "Kart bulunamadı.",
+        "forbidden": "Bunun için yetkiniz yok.",
+        "no_canonical_contract": "Önce bir sözleşmeyi asıl olarak işaretleyin — arz ondan hesaplanır.",
+        "contract_unverified": "Asıl sözleşme henüz zincir üstü doğrulamadan geçmedi.",
+        "too_soon": "Az önce hesaplandı — birkaç dakika sonra deneyin."
+      }
     },
     "market": {
       "exchange": "Borsa",
@@ -1562,7 +1588,22 @@
       "jurisdictionStatus": "Status",
       "jurisdictionNote": "Note",
       "jurisdictionSource": "Source link",
-      "jurisdictionAsOf": "Source date"
+      "jurisdictionAsOf": "Source date",
+      "excluded": "Dolaşım dışı adres",
+      "excludedAddress": "Adres",
+      "excludedLabel": "Ne olduğu (hazine, ekip, kilit, yakma)",
+      "allocation": "Dağıtım payı",
+      "allocationLabel": "Grup (ekip, yatırımcılar, topluluk)",
+      "allocationPct": "Pay, %",
+      "allocationCliff": "Cliff, ay",
+      "allocationVesting": "Vesting, ay",
+      "allocationAddress": "Adres (isteğe bağlı)",
+      "unlock": "Kilit açılışı",
+      "unlockDate": "Tarih",
+      "unlockLabel": "Neyin kilidi açılıyor",
+      "unlockAmount": "Miktar, coin",
+      "unlockPct": "Arza oranı, %",
+      "unlockSource": "Kaynak bağlantısı"
     },
     "manage": {
       "status": {
@@ -1651,7 +1692,11 @@
         "legal_status_invalid": "Unknown legal status.",
         "legal_note_too_long": "The note is longer than 500 characters.",
         "country_unknown": "Unknown country code.",
-        "too_many_jurisdictions": "No more than 60 jurisdictions."
+        "too_many_jurisdictions": "No more than 60 jurisdictions.",
+        "address_invalid": "Bu geçerli bir EVM adresi değil.",
+        "allocation_over_100": "Dağıtım payları toplamı %100'ü aşıyor.",
+        "allocation_invalid": "Dağıtım satırı için etiket ve 0-100 arası bir pay gerekir.",
+        "unlock_invalid": "Kilit açılışı için tarih, etiket ve miktar ya da pay gerekir."
       }
     },
     "team": {
@@ -2127,6 +2172,18 @@
         "well_known_unreachable": "Siteye ulaşılamadı, tekrar deneyin",
         "token_not_found": "Kod bulunamadı — tamamını kopyaladığınızdan emin olun"
       }
+    },
+    "allocation": {
+      "title": "Dağıtım",
+      "unallocated": "Dağıtılmamış",
+      "cliff": "cliff {months} ay",
+      "vesting": "vesting {months} ay"
+    },
+    "unlocks": {
+      "title": "Kilit açılış takvimi",
+      "windows": "30 günde arzın %{pct30}'u, 90 günde %{pct90}'u açılıyor",
+      "more": "{count} tane daha bekliyor",
+      "past": "{count} tanesi zaten açıldı"
     }
   },
   "inviteCoin": {

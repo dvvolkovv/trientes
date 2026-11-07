@@ -1318,7 +1318,33 @@
       "methodology": "Как посчитаны эти числа",
       "emission": "Эмиссия",
       "burn": "Механизм сжигания",
-      "excluded": "Адреса, исключённые из обращения"
+      "excluded": "Адреса, исключённые из обращения",
+      "manageTitle": "Проверенный выпуск",
+      "manageSubtitle": "Читаем общий выпуск из контракта и вычитаем балансы адресов, которые вы отметили как вне оборота. Автоматически раз в час.",
+      "never": "ещё не считали",
+      "recheck": "Пересчитать выпуск",
+      "rechecking": "Считаем…",
+      "result": "Посчитано: {ok} полностью, {partial} частично, {failed} с ошибкой",
+      "partial": "частичный расчёт: адрес не ответил",
+      "calculationTitle": "Как посчитан циркулирующий выпуск",
+      "calculation": "{total} общий − {excluded} на {count} исключённых адресах",
+      "claimedSays": "проект заявляет: {value}",
+      "marketCap": "Капитализация",
+      "fdv": "Полная оценка",
+      "error": {
+        "decimals_unknown": "У контракта неизвестны decimals — переводить в монеты нечем.",
+        "supply_unreadable": "Контракт не ответил на totalSupply.",
+        "rpc_unreachable": "узел не ответил",
+        "rpc_error": "узел отклонил вызов",
+        "decode_failed": "нечитаемый ответ"
+      },
+      "reason": {
+        "card_not_found": "Карточка не найдена.",
+        "forbidden": "Нет прав на это действие.",
+        "no_canonical_contract": "Сначала отметьте один контракт каноническим — выпуск считается по нему.",
+        "contract_unverified": "Канонический контракт ещё не прошёл сверку с сетью.",
+        "too_soon": "Только что считали — попробуйте через несколько минут."
+      }
     },
     "market": {
       "exchange": "Биржа",
@@ -1562,7 +1588,22 @@
       "jurisdictionStatus": "Статус",
       "jurisdictionNote": "Примечание",
       "jurisdictionSource": "Ссылка на источник",
-      "jurisdictionAsOf": "Дата источника"
+      "jurisdictionAsOf": "Дата источника",
+      "excluded": "Адрес вне оборота",
+      "excludedAddress": "Адрес",
+      "excludedLabel": "Что это (казна, команда, лок, сжигание)",
+      "allocation": "Доля аллокации",
+      "allocationLabel": "Группа (команда, инвесторы, сообщество)",
+      "allocationPct": "Доля, %",
+      "allocationCliff": "Клифф, месяцев",
+      "allocationVesting": "Вестинг, месяцев",
+      "allocationAddress": "Адрес (необязательно)",
+      "unlock": "Разлок",
+      "unlockDate": "Дата",
+      "unlockLabel": "Что разлочивается",
+      "unlockAmount": "Объём, монет",
+      "unlockPct": "Доля выпуска, %",
+      "unlockSource": "Ссылка-источник"
     },
     "manage": {
       "status": {
@@ -1651,7 +1692,11 @@
         "legal_status_invalid": "Неизвестный правовой статус.",
         "legal_note_too_long": "Примечание длиннее 500 символов.",
         "country_unknown": "Неизвестный код страны.",
-        "too_many_jurisdictions": "Не больше 60 юрисдикций."
+        "too_many_jurisdictions": "Не больше 60 юрисдикций.",
+        "address_invalid": "Это не похоже на адрес EVM.",
+        "allocation_over_100": "Доли аллокации в сумме больше 100%.",
+        "allocation_invalid": "Строке аллокации нужны подпись и доля от 0 до 100.",
+        "unlock_invalid": "Разлоку нужны дата, подпись и объём либо доля."
       }
     },
     "team": {
@@ -2127,6 +2172,18 @@
         "well_known_unreachable": "Сайт был недоступен, повторите",
         "token_not_found": "Токен не найден — проверьте, что скопировали его полностью"
       }
+    },
+    "allocation": {
+      "title": "Аллокация",
+      "unallocated": "Не распределено",
+      "cliff": "клифф {months} мес.",
+      "vesting": "вестинг {months} мес."
+    },
+    "unlocks": {
+      "title": "Календарь разлоков",
+      "windows": "за 30 дней разлочится {pct30}% выпуска, за 90 — {pct90}%",
+      "more": "ещё {count} впереди",
+      "past": "{count} уже разлочено"
     }
   },
   "inviteCoin": {

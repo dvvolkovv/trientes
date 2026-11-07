@@ -1318,7 +1318,33 @@
       "methodology": "これらの数値の算出方法",
       "emission": "発行",
       "burn": "バーン機構",
-      "excluded": "流通供給量から除外されたアドレス"
+      "excluded": "流通供給量から除外されたアドレス",
+      "manageTitle": "検証済み供給量",
+      "manageSubtitle": "総供給量をコントラクトから読み取り、流通外として指定されたアドレスの残高を差し引きます。1時間に1回自動実行。",
+      "never": "まだ計算されていません",
+      "recheck": "供給量を再計算",
+      "rechecking": "計算中…",
+      "result": "計算完了：完全 {ok}、部分 {partial}、失敗 {failed}",
+      "partial": "部分計算：応答しないアドレスがありました",
+      "calculationTitle": "流通供給量の計算方法",
+      "calculation": "総供給 {total} − 除外 {count} 件のアドレス残高 {excluded}",
+      "claimedSays": "プロジェクトの申告：{value}",
+      "marketCap": "時価総額",
+      "fdv": "完全希薄化評価額",
+      "error": {
+        "decimals_unknown": "コントラクトの decimals が不明で、コイン単位に変換できません。",
+        "supply_unreadable": "コントラクトが totalSupply に応答しませんでした。",
+        "rpc_unreachable": "ノードが応答しませんでした",
+        "rpc_error": "ノードが呼び出しを拒否しました",
+        "decode_failed": "解読できない応答"
+      },
+      "reason": {
+        "card_not_found": "カードが見つかりません。",
+        "forbidden": "この操作の権限がありません。",
+        "no_canonical_contract": "まず1つのコントラクトを正式なものとして指定してください。供給量はそこから計算します。",
+        "contract_unverified": "正式コントラクトはまだオンチェーン照合を通っていません。",
+        "too_soon": "たった今計算しました。数分後にお試しください。"
+      }
     },
     "market": {
       "exchange": "取引所",
@@ -1562,7 +1588,22 @@
       "jurisdictionStatus": "Status",
       "jurisdictionNote": "Note",
       "jurisdictionSource": "Source link",
-      "jurisdictionAsOf": "Source date"
+      "jurisdictionAsOf": "Source date",
+      "excluded": "流通外のアドレス",
+      "excludedAddress": "アドレス",
+      "excludedLabel": "種別（トレジャリー、チーム、ロック、バーン）",
+      "allocation": "配分の内訳",
+      "allocationLabel": "グループ（チーム、投資家、コミュニティ）",
+      "allocationPct": "割合（%）",
+      "allocationCliff": "クリフ（か月）",
+      "allocationVesting": "ベスティング（か月）",
+      "allocationAddress": "アドレス（任意）",
+      "unlock": "アンロック",
+      "unlockDate": "日付",
+      "unlockLabel": "アンロックの対象",
+      "unlockAmount": "数量（コイン）",
+      "unlockPct": "供給量に対する割合（%）",
+      "unlockSource": "出典リンク"
     },
     "manage": {
       "status": {
@@ -1651,7 +1692,11 @@
         "legal_status_invalid": "Unknown legal status.",
         "legal_note_too_long": "The note is longer than 500 characters.",
         "country_unknown": "Unknown country code.",
-        "too_many_jurisdictions": "No more than 60 jurisdictions."
+        "too_many_jurisdictions": "No more than 60 jurisdictions.",
+        "address_invalid": "有効な EVM アドレスではありません。",
+        "allocation_over_100": "配分の合計が100%を超えています。",
+        "allocation_invalid": "配分行にはラベルと0〜100の割合が必要です。",
+        "unlock_invalid": "アンロックには日付・ラベルと、数量または割合が必要です。"
       }
     },
     "team": {
@@ -2127,6 +2172,18 @@
         "well_known_unreachable": "サイトに接続できませんでした。再試行してください",
         "token_not_found": "トークンが見つかりません。全文をコピーしたか確認してください"
       }
+    },
+    "allocation": {
+      "title": "配分",
+      "unallocated": "未配分",
+      "cliff": "クリフ {months} か月",
+      "vesting": "ベスティング {months} か月"
+    },
+    "unlocks": {
+      "title": "アンロック予定",
+      "windows": "30日以内に供給量の {pct30}%、90日以内に {pct90}% がアンロック",
+      "more": "他に {count} 件の予定",
+      "past": "{count} 件はアンロック済み"
     }
   },
   "inviteCoin": {

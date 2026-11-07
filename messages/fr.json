@@ -1318,7 +1318,33 @@
       "methodology": "Comment ces chiffres sont calculés",
       "emission": "Émission",
       "burn": "Mécanisme de burn",
-      "excluded": "Adresses exclues de l'offre en circulation"
+      "excluded": "Adresses exclues de l'offre en circulation",
+      "manageTitle": "Offre vérifiée",
+      "manageSubtitle": "Nous lisons l'offre totale depuis le contrat et retranchons les soldes des adresses que vous avez marquées hors circulation. Automatique une fois par heure.",
+      "never": "pas encore calculé",
+      "recheck": "Recalculer l'offre",
+      "rechecking": "Calcul…",
+      "result": "Calculé : {ok} complets, {partial} partiels, {failed} en échec",
+      "partial": "calcul partiel : une adresse n'a pas répondu",
+      "calculationTitle": "Comment l'offre en circulation a été calculée",
+      "calculation": "{total} au total − {excluded} sur {count} adresses exclues",
+      "claimedSays": "le projet déclare : {value}",
+      "marketCap": "Capitalisation",
+      "fdv": "FDV",
+      "error": {
+        "decimals_unknown": "Les décimales du contrat sont inconnues — impossible de convertir en jetons.",
+        "supply_unreadable": "Le contrat n'a pas répondu à totalSupply.",
+        "rpc_unreachable": "le nœud n'a pas répondu",
+        "rpc_error": "le nœud a refusé l'appel",
+        "decode_failed": "réponse illisible"
+      },
+      "reason": {
+        "card_not_found": "Fiche introuvable.",
+        "forbidden": "Vous n'avez pas les droits pour cela.",
+        "no_canonical_contract": "Marquez d'abord un contrat comme canonique : l'offre en est calculée.",
+        "contract_unverified": "Le contrat canonique n'a pas encore passé la vérification en chaîne.",
+        "too_soon": "Calcul tout juste effectué — réessayez dans quelques minutes."
+      }
     },
     "market": {
       "exchange": "Plateforme",
@@ -1562,7 +1588,22 @@
       "jurisdictionStatus": "Status",
       "jurisdictionNote": "Note",
       "jurisdictionSource": "Source link",
-      "jurisdictionAsOf": "Source date"
+      "jurisdictionAsOf": "Source date",
+      "excluded": "Adresse hors circulation",
+      "excludedAddress": "Adresse",
+      "excludedLabel": "De quoi il s'agit (trésorerie, équipe, lock, burn)",
+      "allocation": "Part de répartition",
+      "allocationLabel": "Groupe (équipe, investisseurs, communauté)",
+      "allocationPct": "Part, %",
+      "allocationCliff": "Cliff, mois",
+      "allocationVesting": "Vesting, mois",
+      "allocationAddress": "Adresse (facultatif)",
+      "unlock": "Déblocage",
+      "unlockDate": "Date",
+      "unlockLabel": "Ce qui se débloque",
+      "unlockAmount": "Quantité, jetons",
+      "unlockPct": "Part de l'offre, %",
+      "unlockSource": "Lien source"
     },
     "manage": {
       "status": {
@@ -1651,7 +1692,11 @@
         "legal_status_invalid": "Unknown legal status.",
         "legal_note_too_long": "The note is longer than 500 characters.",
         "country_unknown": "Unknown country code.",
-        "too_many_jurisdictions": "No more than 60 jurisdictions."
+        "too_many_jurisdictions": "No more than 60 jurisdictions.",
+        "address_invalid": "Ce n'est pas une adresse EVM valide.",
+        "allocation_over_100": "Les parts de répartition dépassent 100%.",
+        "allocation_invalid": "Une ligne de répartition exige un libellé et une part entre 0 et 100.",
+        "unlock_invalid": "Un déblocage exige une date, un libellé et une quantité ou une part."
       }
     },
     "team": {
@@ -2127,6 +2172,18 @@
         "well_known_unreachable": "Le site était injoignable, réessayez",
         "token_not_found": "Jeton introuvable — vérifiez que vous l’avez copié en entier"
       }
+    },
+    "allocation": {
+      "title": "Répartition",
+      "unallocated": "Non répartie",
+      "cliff": "cliff {months} mois",
+      "vesting": "vesting {months} mois"
+    },
+    "unlocks": {
+      "title": "Calendrier de déblocage",
+      "windows": "{pct30}% de l'offre se débloque sous 30 jours, {pct90}% sous 90",
+      "more": "{count} autres à venir",
+      "past": "{count} déjà débloqués"
     }
   },
   "inviteCoin": {

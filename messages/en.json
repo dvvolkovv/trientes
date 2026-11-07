@@ -1318,7 +1318,33 @@
       "methodology": "How these numbers are counted",
       "emission": "Emission",
       "burn": "Burn mechanism",
-      "excluded": "Addresses excluded from circulating supply"
+      "excluded": "Addresses excluded from circulating supply",
+      "manageTitle": "Verified supply",
+      "manageSubtitle": "We read total supply from the contract and subtract the balances of the addresses you marked as out of circulation. Automatic once an hour.",
+      "never": "not counted yet",
+      "recheck": "Recount supply",
+      "rechecking": "Counting…",
+      "result": "Counted: {ok} complete, {partial} partial, {failed} failed",
+      "partial": "partial count: an address did not respond",
+      "calculationTitle": "How circulating supply was counted",
+      "calculation": "{total} total − {excluded} held on {count} excluded addresses",
+      "claimedSays": "project claims: {value}",
+      "marketCap": "Market cap",
+      "fdv": "FDV",
+      "error": {
+        "decimals_unknown": "The contract decimals are unknown — nothing to convert into coins.",
+        "supply_unreadable": "The contract did not answer totalSupply.",
+        "rpc_unreachable": "the node did not respond",
+        "rpc_error": "the node refused the call",
+        "decode_failed": "unreadable answer"
+      },
+      "reason": {
+        "card_not_found": "Card not found.",
+        "forbidden": "You do not have rights for this.",
+        "no_canonical_contract": "Mark one contract as canonical first — supply is counted from it.",
+        "contract_unverified": "The canonical contract has not passed the on-chain check yet.",
+        "too_soon": "Already counted a moment ago — try again in a few minutes."
+      }
     },
     "market": {
       "exchange": "Exchange",
@@ -1562,7 +1588,22 @@
       "jurisdictionStatus": "Status",
       "jurisdictionNote": "Note",
       "jurisdictionSource": "Source link",
-      "jurisdictionAsOf": "Source date"
+      "jurisdictionAsOf": "Source date",
+      "excluded": "Address out of circulation",
+      "excludedAddress": "Address",
+      "excludedLabel": "What it is (treasury, team, lock, burn)",
+      "allocation": "Allocation share",
+      "allocationLabel": "Group (team, investors, community)",
+      "allocationPct": "Share, %",
+      "allocationCliff": "Cliff, months",
+      "allocationVesting": "Vesting, months",
+      "allocationAddress": "Address (optional)",
+      "unlock": "Unlock event",
+      "unlockDate": "Date",
+      "unlockLabel": "What unlocks",
+      "unlockAmount": "Amount, coins",
+      "unlockPct": "Share of supply, %",
+      "unlockSource": "Source link"
     },
     "manage": {
       "status": {
@@ -1651,7 +1692,11 @@
         "legal_status_invalid": "Unknown legal status.",
         "legal_note_too_long": "The note is longer than 500 characters.",
         "country_unknown": "Unknown country code.",
-        "too_many_jurisdictions": "No more than 60 jurisdictions."
+        "too_many_jurisdictions": "No more than 60 jurisdictions.",
+        "address_invalid": "That address is not a valid EVM address.",
+        "allocation_over_100": "The allocation shares add up to more than 100%.",
+        "allocation_invalid": "An allocation row needs a label and a share between 0 and 100.",
+        "unlock_invalid": "An unlock needs a date, a label and either an amount or a share."
       }
     },
     "team": {
@@ -2127,6 +2172,18 @@
         "well_known_unreachable": "The site was unreachable, try again",
         "token_not_found": "The token was not found — check that you copied it fully"
       }
+    },
+    "allocation": {
+      "title": "Allocation",
+      "unallocated": "Unallocated",
+      "cliff": "cliff {months} mo",
+      "vesting": "vesting {months} mo"
+    },
+    "unlocks": {
+      "title": "Unlock schedule",
+      "windows": "{pct30}% of supply unlocks within 30 days, {pct90}% within 90",
+      "more": "{count} more upcoming",
+      "past": "{count} already unlocked"
     }
   },
   "inviteCoin": {

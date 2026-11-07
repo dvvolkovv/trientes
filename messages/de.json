@@ -1318,7 +1318,33 @@
       "methodology": "Wie diese Zahlen gezählt werden",
       "emission": "Emission",
       "burn": "Burn-Mechanismus",
-      "excluded": "Von der Umlaufmenge ausgeschlossene Adressen"
+      "excluded": "Von der Umlaufmenge ausgeschlossene Adressen",
+      "manageTitle": "Geprüfter Umlauf",
+      "manageSubtitle": "Wir lesen den Gesamtbestand aus dem Vertrag und ziehen die Guthaben der Adressen ab, die Sie als nicht im Umlauf markiert haben. Automatisch einmal pro Stunde.",
+      "never": "noch nicht berechnet",
+      "recheck": "Umlauf neu berechnen",
+      "rechecking": "Berechne…",
+      "result": "Berechnet: {ok} vollständig, {partial} teilweise, {failed} fehlgeschlagen",
+      "partial": "Teilberechnung: eine Adresse antwortete nicht",
+      "calculationTitle": "So wurde der umlaufende Bestand berechnet",
+      "calculation": "{total} gesamt − {excluded} auf {count} ausgeschlossenen Adressen",
+      "claimedSays": "Projektangabe: {value}",
+      "marketCap": "Marktkapitalisierung",
+      "fdv": "FDV",
+      "error": {
+        "decimals_unknown": "Die Dezimalstellen des Vertrags sind unbekannt — eine Umrechnung in Coins ist nicht möglich.",
+        "supply_unreadable": "Der Vertrag hat auf totalSupply nicht geantwortet.",
+        "rpc_unreachable": "Knoten antwortete nicht",
+        "rpc_error": "Knoten lehnte den Aufruf ab",
+        "decode_failed": "unlesbare Antwort"
+      },
+      "reason": {
+        "card_not_found": "Karte nicht gefunden.",
+        "forbidden": "Dafür fehlen Ihnen die Rechte.",
+        "no_canonical_contract": "Markieren Sie zuerst einen Vertrag als kanonisch — der Umlauf wird daraus berechnet.",
+        "contract_unverified": "Der kanonische Vertrag hat die On-Chain-Prüfung noch nicht bestanden.",
+        "too_soon": "Gerade erst berechnet — versuchen Sie es in einigen Minuten erneut."
+      }
     },
     "market": {
       "exchange": "Börse",
@@ -1562,7 +1588,22 @@
       "jurisdictionStatus": "Status",
       "jurisdictionNote": "Note",
       "jurisdictionSource": "Source link",
-      "jurisdictionAsOf": "Source date"
+      "jurisdictionAsOf": "Source date",
+      "excluded": "Adresse außerhalb des Umlaufs",
+      "excludedAddress": "Adresse",
+      "excludedLabel": "Was es ist (Treasury, Team, Lock, Burn)",
+      "allocation": "Verteilungsanteil",
+      "allocationLabel": "Gruppe (Team, Investoren, Community)",
+      "allocationPct": "Anteil, %",
+      "allocationCliff": "Cliff, Monate",
+      "allocationVesting": "Vesting, Monate",
+      "allocationAddress": "Adresse (optional)",
+      "unlock": "Freischaltung",
+      "unlockDate": "Datum",
+      "unlockLabel": "Was freigeschaltet wird",
+      "unlockAmount": "Menge, Coins",
+      "unlockPct": "Anteil am Bestand, %",
+      "unlockSource": "Quellenlink"
     },
     "manage": {
       "status": {
@@ -1651,7 +1692,11 @@
         "legal_status_invalid": "Unknown legal status.",
         "legal_note_too_long": "The note is longer than 500 characters.",
         "country_unknown": "Unknown country code.",
-        "too_many_jurisdictions": "No more than 60 jurisdictions."
+        "too_many_jurisdictions": "No more than 60 jurisdictions.",
+        "address_invalid": "Das ist keine gültige EVM-Adresse.",
+        "allocation_over_100": "Die Verteilungsanteile ergeben mehr als 100%.",
+        "allocation_invalid": "Eine Verteilungszeile braucht eine Bezeichnung und einen Anteil zwischen 0 und 100.",
+        "unlock_invalid": "Eine Freischaltung braucht Datum, Bezeichnung und entweder Menge oder Anteil."
       }
     },
     "team": {
@@ -2127,6 +2172,18 @@
         "well_known_unreachable": "Die Website war nicht erreichbar, bitte erneut",
         "token_not_found": "Das Token wurde nicht gefunden — prüfen Sie, ob es vollständig kopiert ist"
       }
+    },
+    "allocation": {
+      "title": "Verteilung",
+      "unallocated": "Nicht verteilt",
+      "cliff": "Cliff {months} Mon.",
+      "vesting": "Vesting {months} Mon."
+    },
+    "unlocks": {
+      "title": "Freischaltungsplan",
+      "windows": "{pct30}% des Bestands werden in 30 Tagen frei, {pct90}% in 90",
+      "more": "{count} weitere stehen an",
+      "past": "{count} bereits freigeschaltet"
     }
   },
   "inviteCoin": {

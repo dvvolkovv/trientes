@@ -1318,7 +1318,33 @@
       "methodology": "이 수치의 산출 방식",
       "emission": "발행",
       "burn": "소각 메커니즘",
-      "excluded": "유통 공급량에서 제외된 주소"
+      "excluded": "유통 공급량에서 제외된 주소",
+      "manageTitle": "검증된 공급량",
+      "manageSubtitle": "총공급량을 컨트랙트에서 읽고, 유통 제외로 표시한 주소들의 잔액을 뺍니다. 1시간에 한 번 자동 실행.",
+      "never": "아직 계산되지 않음",
+      "recheck": "공급량 재계산",
+      "rechecking": "계산 중…",
+      "result": "계산 완료: 완전 {ok}, 부분 {partial}, 실패 {failed}",
+      "partial": "부분 계산: 응답하지 않은 주소가 있습니다",
+      "calculationTitle": "유통 공급량 계산 방법",
+      "calculation": "총 {total} − 제외 주소 {count}곳의 {excluded}",
+      "claimedSays": "프로젝트 신고값: {value}",
+      "marketCap": "시가총액",
+      "fdv": "완전희석가치",
+      "error": {
+        "decimals_unknown": "컨트랙트의 decimals를 알 수 없어 코인 단위로 변환할 수 없습니다.",
+        "supply_unreadable": "컨트랙트가 totalSupply에 응답하지 않았습니다.",
+        "rpc_unreachable": "노드가 응답하지 않음",
+        "rpc_error": "노드가 호출을 거부함",
+        "decode_failed": "해독할 수 없는 응답"
+      },
+      "reason": {
+        "card_not_found": "카드를 찾을 수 없습니다.",
+        "forbidden": "권한이 없습니다.",
+        "no_canonical_contract": "먼저 컨트랙트 하나를 대표로 지정하세요. 공급량은 그 컨트랙트에서 계산됩니다.",
+        "contract_unverified": "대표 컨트랙트가 아직 온체인 검증을 통과하지 않았습니다.",
+        "too_soon": "방금 계산했습니다. 몇 분 후 다시 시도하세요."
+      }
     },
     "market": {
       "exchange": "거래소",
@@ -1562,7 +1588,22 @@
       "jurisdictionStatus": "Status",
       "jurisdictionNote": "Note",
       "jurisdictionSource": "Source link",
-      "jurisdictionAsOf": "Source date"
+      "jurisdictionAsOf": "Source date",
+      "excluded": "유통 제외 주소",
+      "excludedAddress": "주소",
+      "excludedLabel": "용도(트레저리, 팀, 락, 소각)",
+      "allocation": "배분 항목",
+      "allocationLabel": "그룹(팀, 투자자, 커뮤니티)",
+      "allocationPct": "비율, %",
+      "allocationCliff": "클리프, 개월",
+      "allocationVesting": "베스팅, 개월",
+      "allocationAddress": "주소(선택)",
+      "unlock": "언락",
+      "unlockDate": "날짜",
+      "unlockLabel": "언락 대상",
+      "unlockAmount": "수량, 코인",
+      "unlockPct": "공급량 대비 비율, %",
+      "unlockSource": "출처 링크"
     },
     "manage": {
       "status": {
@@ -1651,7 +1692,11 @@
         "legal_status_invalid": "Unknown legal status.",
         "legal_note_too_long": "The note is longer than 500 characters.",
         "country_unknown": "Unknown country code.",
-        "too_many_jurisdictions": "No more than 60 jurisdictions."
+        "too_many_jurisdictions": "No more than 60 jurisdictions.",
+        "address_invalid": "올바른 EVM 주소가 아닙니다.",
+        "allocation_over_100": "배분 비율의 합이 100%를 넘습니다.",
+        "allocation_invalid": "배분 행에는 이름과 0~100 사이의 비율이 필요합니다.",
+        "unlock_invalid": "언락에는 날짜, 이름과 수량 또는 비율이 필요합니다."
       }
     },
     "team": {
@@ -2127,6 +2172,18 @@
         "well_known_unreachable": "사이트에 접속하지 못했습니다. 다시 시도하세요",
         "token_not_found": "토큰을 찾지 못했습니다. 전체를 복사했는지 확인하세요"
       }
+    },
+    "allocation": {
+      "title": "배분",
+      "unallocated": "미배분",
+      "cliff": "클리프 {months}개월",
+      "vesting": "베스팅 {months}개월"
+    },
+    "unlocks": {
+      "title": "언락 일정",
+      "windows": "30일 내 공급량의 {pct30}%, 90일 내 {pct90}% 언락",
+      "more": "예정 {count}건 더",
+      "past": "{count}건은 이미 언락됨"
     }
   },
   "inviteCoin": {

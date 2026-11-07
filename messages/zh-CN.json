@@ -1318,7 +1318,33 @@
       "methodology": "这些数字的统计方式",
       "emission": "发行机制",
       "burn": "销毁机制",
-      "excluded": "已从流通量中排除的地址"
+      "excluded": "已从流通量中排除的地址",
+      "manageTitle": "已核验流通量",
+      "manageSubtitle": "我们从合约读取总供应量，并扣除你标记为不在流通的地址余额。每小时自动运行一次。",
+      "never": "尚未计算",
+      "recheck": "重新计算流通量",
+      "rechecking": "计算中…",
+      "result": "已计算：完整 {ok} 个、部分 {partial} 个、失败 {failed} 个",
+      "partial": "部分计算：有地址未响应",
+      "calculationTitle": "流通量的计算方式",
+      "calculation": "总量 {total} − {count} 个排除地址上的 {excluded}",
+      "claimedSays": "项目方声明：{value}",
+      "marketCap": "市值",
+      "fdv": "完全稀释估值",
+      "error": {
+        "decimals_unknown": "合约的小数位未知，无法换算成代币数量。",
+        "supply_unreadable": "合约未响应 totalSupply。",
+        "rpc_unreachable": "节点未响应",
+        "rpc_error": "节点拒绝了调用",
+        "decode_failed": "无法解析的返回值"
+      },
+      "reason": {
+        "card_not_found": "未找到该卡片。",
+        "forbidden": "你没有此操作的权限。",
+        "no_canonical_contract": "请先将一个合约标记为主合约，流通量按它计算。",
+        "contract_unverified": "主合约尚未通过链上核验。",
+        "too_soon": "刚刚计算过，请几分钟后再试。"
+      }
     },
     "market": {
       "exchange": "交易所",
@@ -1562,7 +1588,22 @@
       "jurisdictionStatus": "Status",
       "jurisdictionNote": "Note",
       "jurisdictionSource": "Source link",
-      "jurisdictionAsOf": "Source date"
+      "jurisdictionAsOf": "Source date",
+      "excluded": "不在流通的地址",
+      "excludedAddress": "地址",
+      "excludedLabel": "用途（金库、团队、锁仓、销毁）",
+      "allocation": "分配份额",
+      "allocationLabel": "群体（团队、投资人、社区）",
+      "allocationPct": "份额，%",
+      "allocationCliff": "锁定期，月",
+      "allocationVesting": "线性释放，月",
+      "allocationAddress": "地址（可选）",
+      "unlock": "解锁事件",
+      "unlockDate": "日期",
+      "unlockLabel": "解锁内容",
+      "unlockAmount": "数量，代币",
+      "unlockPct": "占供应量比例，%",
+      "unlockSource": "来源链接"
     },
     "manage": {
       "status": {
@@ -1651,7 +1692,11 @@
         "legal_status_invalid": "Unknown legal status.",
         "legal_note_too_long": "The note is longer than 500 characters.",
         "country_unknown": "Unknown country code.",
-        "too_many_jurisdictions": "No more than 60 jurisdictions."
+        "too_many_jurisdictions": "No more than 60 jurisdictions.",
+        "address_invalid": "这不是有效的 EVM 地址。",
+        "allocation_over_100": "分配份额合计超过 100%。",
+        "allocation_invalid": "分配行需要名称和 0 到 100 之间的份额。",
+        "unlock_invalid": "解锁需要日期、名称，以及数量或份额。"
       }
     },
     "team": {
@@ -2127,6 +2172,18 @@
         "well_known_unreachable": "网站暂时无法访问，请重试",
         "token_not_found": "没找到验证码——请确认已完整复制"
       }
+    },
+    "allocation": {
+      "title": "份额分配",
+      "unallocated": "未分配",
+      "cliff": "锁定期 {months} 个月",
+      "vesting": "线性释放 {months} 个月"
+    },
+    "unlocks": {
+      "title": "解锁日程",
+      "windows": "未来 30 天解锁供应量的 {pct30}%，90 天内 {pct90}%",
+      "more": "还有 {count} 次待解锁",
+      "past": "已解锁 {count} 次"
     }
   },
   "inviteCoin": {
