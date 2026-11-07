@@ -1327,7 +1327,20 @@
       "price": "Precio",
       "status": "Estado",
       "claimed": "declarado por el proyecto",
-      "confirmed": "confirmado"
+      "confirmed": "confirmado",
+      "change24h": "24 h",
+      "volume24h": "Volumen 24 h",
+      "outlier": "fuera del índice",
+      "outlierHint": "El precio queda demasiado lejos de la mediana ponderada por volumen: el mercado se muestra, pero no entra en el cálculo",
+      "error": {
+        "exchange_unsupported": "todavía no leemos este exchange",
+        "pair_unparsable": "no se pudo interpretar el par",
+        "pair_not_found": "ese par no existe en el exchange",
+        "base_mismatch": "el par no es de esta moneda",
+        "no_usd_route": "esta cotización no se puede llevar a dólares",
+        "exchange_unreachable": "el exchange no respondió, lo repetiremos",
+        "exchange_error": "el exchange respondió algo ilegible, lo repetiremos"
+      }
     },
     "audit": {
       "report": "Leer el informe"
@@ -2038,6 +2051,28 @@
         "no_contracts": "La ficha no tiene direcciones de contrato",
         "forbidden": "Sin permisos sobre la sección de contratos",
         "card_not_found": "Ficha no encontrada"
+      }
+    },
+    "index": {
+      "fromMarkets": "de {count} mercados",
+      "methodology": "El precio es la mediana de los mercados confirmados ponderada por el volumen de 24 h: el valor en el que el volumen acumulado pasa la mitad. Quedan fuera los mercados con menos de 1000 $ de volumen diario y los que se alejan más del 20 % de esa mediana. Las stablecoins (USDT, USDC, DAI y otras) se toman como un dólar; las cotizaciones en BTC, ETH, BNB y SOL se convierten con nuestro propio índice de esas monedas. Los pares en euros u otra moneda fiat no se cuentan.",
+      "volume": "volumen {value} $",
+      "confidence": {
+        "HIGH": "confianza alta",
+        "MEDIUM": "confianza media",
+        "LOW": "confianza baja"
+      },
+      "manageTitle": "Mercados y precio",
+      "manageSubtitle": "Cada 10 minutos comprobamos los listados declarados contra las API públicas de los exchanges y calculamos el precio con los confirmados.",
+      "none": "aún no hay índice: ningún mercado declarado está confirmado",
+      "refresh": "Actualizar mercados",
+      "refreshing": "Actualizando…",
+      "result": "Comprobados {checked}, confirmados {confirmed}, fallidos {failed}",
+      "reason": {
+        "too_soon": "Los mercados se acaban de actualizar: inténtalo en unos minutos",
+        "no_markets": "La tarjeta no declara ningún mercado",
+        "forbidden": "Sin permisos para la sección de mercados",
+        "card_not_found": "Tarjeta no encontrada"
       }
     }
   },

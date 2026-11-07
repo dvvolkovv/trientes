@@ -1327,7 +1327,20 @@
       "price": "Preço",
       "status": "Status",
       "claimed": "declarado pelo projeto",
-      "confirmed": "confirmado"
+      "confirmed": "confirmado",
+      "change24h": "24 h",
+      "volume24h": "Volume 24 h",
+      "outlier": "fora do índice",
+      "outlierHint": "O preço está longe da mediana ponderada por volume — o mercado aparece, mas não entra no cálculo",
+      "error": {
+        "exchange_unsupported": "ainda não lemos esta exchange",
+        "pair_unparsable": "não foi possível interpretar o par",
+        "pair_not_found": "esse par não existe na exchange",
+        "base_mismatch": "o par não é desta moeda",
+        "no_usd_route": "esta cotação não pode ser convertida em dólar",
+        "exchange_unreachable": "a exchange estava indisponível, vamos repetir",
+        "exchange_error": "a exchange respondeu algo ilegível, vamos repetir"
+      }
     },
     "audit": {
       "report": "Ler o relatório"
@@ -2037,6 +2050,28 @@
         "too_soon": "A verificação acabou de ocorrer — tente em alguns minutos",
         "no_contracts": "O cartão não tem endereços de contrato",
         "forbidden": "Sem permissão na seção de contratos",
+        "card_not_found": "Cartão não encontrado"
+      }
+    },
+    "index": {
+      "fromMarkets": "de {count} mercados",
+      "methodology": "O preço é a mediana dos mercados confirmados ponderada pelo volume de 24 h: o valor em que o volume acumulado passa da metade. Ficam de fora os mercados com menos de US$ 1.000 de volume diário e os que se afastam mais de 20% dessa mediana. Stablecoins (USDT, USDC, DAI e outras) valem um dólar; cotações em BTC, ETH, BNB e SOL são convertidas pelo nosso próprio índice dessas moedas. Pares em euro ou outra moeda fiduciária não entram na conta.",
+      "volume": "volume US$ {value}",
+      "confidence": {
+        "HIGH": "confiança alta",
+        "MEDIUM": "confiança média",
+        "LOW": "confiança baixa"
+      },
+      "manageTitle": "Mercados e preço",
+      "manageSubtitle": "A cada 10 minutos conferimos as listagens declaradas nas APIs públicas das exchanges e calculamos o preço pelas confirmadas.",
+      "none": "ainda sem índice — nenhum mercado declarado foi confirmado",
+      "refresh": "Atualizar mercados",
+      "refreshing": "Atualizando…",
+      "result": "Verificados {checked}, confirmados {confirmed}, com falha {failed}",
+      "reason": {
+        "too_soon": "Os mercados foram atualizados agora — tente em alguns minutos",
+        "no_markets": "Este cartão não declara nenhum mercado",
+        "forbidden": "Sem permissão na seção de mercados",
         "card_not_found": "Cartão não encontrado"
       }
     }

@@ -16,6 +16,7 @@ import { expireStaleRevisions } from "../src/lib/coin-card-expiry";
 import { expireStaleDeletionRequests } from "../src/lib/company-deletion-expiry";
 import { warmProseTranslations } from "../src/lib/prose-warmup";
 import { verifyCardContracts } from "../src/lib/coin-card-onchain";
+import { pruneCardPricePoints, syncCardMarkets } from "../src/lib/coin-card-markets";
 import { startBinance, stopBinance } from "./binance";
 
 async function runPriceSync() {
@@ -270,6 +271,25 @@ async function runContractVerify() {
   }
 }
 
+/**
+ * Слайс C: собственный ценовой индекс. Запросов за прогон — по числу бирж
+ * (снимок всех тикеров одним запросом, с кешем в Redis), а не по числу рынков.
+ */
+async function runCardMarketSync() {
+  const t0 = Date.now();
+  try {
+    const s = await syncCardMarkets({ prisma: prisma as never, redis: redis as never });
+    if (s.cards > 0) {
+      console.log(
+        `[worker] card-market sync ok: ${s.cards} cards, ${s.marketsChecked} markets ` +
+          `(${s.confirmed} confirmed, ${s.failed} failed), ${s.indexed} indexed in ${Date.now() - t0}ms`,
+      );
+    }
+  } catch (err) {
+    console.error("[worker] card-market sync failed:", err);
+  }
+}
+
 async function runCleanup() {
   const t0 = Date.now();
   try {
@@ -279,7 +299,8 @@ async function runCleanup() {
       prisma.coinSnapshot.deleteMany({ where: { fetchedAt: { lt: thirtyDaysAgo } } }),
       prisma.pageView.deleteMany({ where: { createdAt: { lt: ninetyDaysAgo } } }),
     ]);
-    console.log(`[worker] cleanup ok: deleted ${snaps.count} snapshots + ${views.count} page views in ${Date.now() - t0}ms`);
+    const points = await pruneCardPricePoints({ prisma: prisma as never });
+    console.log(`[worker] cleanup ok: deleted ${snaps.count} snapshots + ${views.count} page views + ${points} price points in ${Date.now() - t0}ms`);
   } catch (err) {
     console.error("[worker] cleanup failed:", err);
   }
@@ -349,6 +370,7 @@ async function main() {
   // локалей раньше, чем в неё зайдёт первый посетитель или робот.
   cron.schedule("25 3,15 * * *", () => void runProseWarmup());
   cron.schedule("10 5 * * *", () => void runContractVerify());
+  cron.schedule("*/10 * * * *", () => void runCardMarketSync());
   cron.schedule("0 4 * * *", () => void runCleanup());
 
   // Live price feed via Binance WebSocket — top 20 coins.

@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { getProvenance } from "@/lib/coin-card-provenance";
 import type { PublicCoinCard } from "@/lib/coin-card-public";
 import { ProvenanceBadge } from "./provenance-badge";
+import { PriceIndexBlock } from "./price-index-block";
 
 export async function CoinCardHeader({ card }: { card: PublicCoinCard }) {
   const t = await getTranslations("coinCard");
@@ -25,6 +26,11 @@ export async function CoinCardHeader({ card }: { card: PublicCoinCard }) {
           {card.tagline && <p className="text-muted mt-1">{card.tagline}</p>}
         </div>
       </div>
+      {/* Цена показывается только там, где наш индекс — единственный источник:
+          у монет, привязанных к CoinGecko, цену даёт общая таблица Coin. */}
+      {card.priceIndex && card.coinId == null && (
+        <PriceIndexBlock index={card.priceIndex} provenance={card.provenance} />
+      )}
       {card.tags.length > 0 && (
         <ul className="flex flex-wrap gap-2 mt-4">
           {card.tags.map((tag) => (

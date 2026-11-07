@@ -1327,7 +1327,20 @@
       "price": "Price",
       "status": "Status",
       "claimed": "claimed by project",
-      "confirmed": "confirmed"
+      "confirmed": "confirmed",
+      "change24h": "24h",
+      "volume24h": "24h volume",
+      "outlier": "not in index",
+      "outlierHint": "Price sits too far from the volume-weighted median — the market is shown but left out of the calculation",
+      "error": {
+        "exchange_unsupported": "we do not read this exchange yet",
+        "pair_unparsable": "could not parse this pair",
+        "pair_not_found": "this pair is not on the exchange",
+        "base_mismatch": "this pair is not about this coin",
+        "no_usd_route": "this quote cannot be routed to the dollar",
+        "exchange_unreachable": "the exchange was unreachable, we will retry",
+        "exchange_error": "the exchange returned something unreadable, we will retry"
+      }
     },
     "audit": {
       "report": "Read the report"
@@ -2037,6 +2050,28 @@
         "too_soon": "Just checked — try again in a few minutes",
         "no_contracts": "The card has no contract addresses",
         "forbidden": "You cannot edit the contracts section",
+        "card_not_found": "Card not found"
+      }
+    },
+    "index": {
+      "fromMarkets": "from {count} markets",
+      "methodology": "The price is the median across confirmed markets weighted by 24h volume — the value at which cumulative volume passes half. Markets under $1,000 of daily volume, and markets more than 20% away from that median, are left out. Stablecoins (USDT, USDC, DAI and others) are taken as one dollar; quotes in BTC, ETH, BNB and SOL are converted through our own index for those coins. Pairs quoted in euro or other fiat are not counted.",
+      "volume": "volume ${value}",
+      "confidence": {
+        "HIGH": "high confidence",
+        "MEDIUM": "medium confidence",
+        "LOW": "low confidence"
+      },
+      "manageTitle": "Markets and price",
+      "manageSubtitle": "We check the listings you claim against the exchanges' public APIs every 10 minutes and compute the price from the confirmed ones.",
+      "none": "no index yet — none of the claimed markets has been confirmed",
+      "refresh": "Refresh markets",
+      "refreshing": "Refreshing…",
+      "result": "Checked {checked}, confirmed {confirmed}, failed {failed}",
+      "reason": {
+        "too_soon": "Markets were just refreshed — try again in a few minutes",
+        "no_markets": "This card lists no markets",
+        "forbidden": "No rights to the markets section",
         "card_not_found": "Card not found"
       }
     }

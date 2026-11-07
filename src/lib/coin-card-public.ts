@@ -7,6 +7,8 @@ export async function getPublicCoinCard(slug: string) {
     include: {
       contracts: { orderBy: [{ isCanonical: "desc" }, { chain: "asc" }] },
       markets: { orderBy: { volumeUsd24h: "desc" }, take: 100 },
+      // Слайс C: наш собственный индекс цены по подтверждённым рынкам.
+      priceIndex: true,
     },
   });
 }

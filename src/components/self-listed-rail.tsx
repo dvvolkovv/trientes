@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { listSelfListedCards } from "@/lib/coin-card-directory";
+import { formatPercent, formatPrice } from "@/lib/format";
 
 const TRUST_TONE: Record<string, string> = {
   UNVERIFIED: "text-muted border-hairline",
@@ -10,10 +11,11 @@ const TRUST_TONE: Record<string, string> = {
 };
 
 /**
- * Coins listed by their own teams rather than pulled from a market feed. No
- * price column: these have no aggregated market yet, and an empty number
- * would read as a zero. A card earns a row in the ranked table only once a
- * real price exists for it (slice C).
+ * Coins listed by their own teams rather than pulled from a market feed. Since
+ * slice C a card shows a price as soon as our aggregator confirms at least one
+ * market; cards with no confirmed market stay priceless rather than showing a
+ * zero. The ranked table still needs capitalisation, which needs a verified
+ * circulating supply (slice E).
  */
 export async function SelfListedRail({ locale }: { locale: string }) {
   const t = await getTranslations("listing.selfListed");
@@ -49,6 +51,18 @@ export async function SelfListedRail({ locale }: { locale: string }) {
                   <span className="font-semibold truncate">{c.name}</span>
                   <span className="num text-xs text-muted">{c.symbol}</span>
                 </span>
+                {c.priceUsd != null ? (
+                  <span className="flex items-baseline gap-2 mt-1">
+                    <span className="num text-sm font-semibold">${formatPrice(c.priceUsd)}</span>
+                    {c.change24h != null ? (
+                      <span
+                        className={`num text-xs ${c.change24h >= 0 ? "text-up" : "text-down"}`}
+                      >
+                        {formatPercent(c.change24h)}
+                      </span>
+                    ) : null}
+                  </span>
+                ) : null}
                 {c.tagline ? (
                   <span className="block text-[13px] text-muted mt-1 line-clamp-2">
                     {c.tagline}

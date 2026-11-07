@@ -35,6 +35,7 @@ function loadCardForMember(cardId: string) {
       contracts: { orderBy: [{ isCanonical: "desc" }, { chain: "asc" }] },
       markets: { orderBy: { exchangeName: "asc" } },
       policy: true,
+      priceIndex: true,
     },
   });
 }

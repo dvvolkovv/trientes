@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { getProvenance } from "@/lib/coin-card-provenance";
+import { formatCompact, formatPercent, formatPrice } from "@/lib/format";
 import { ProvenanceBadge } from "../provenance-badge";
 import { ExternalLink } from "../external-link";
 
@@ -12,8 +13,14 @@ type Market = {
   chain: string | null;
   priceUsd: number | null;
   volumeUsd24h: number | null;
+  change24h: number | null;
+  isOutlier: boolean;
+  checkError: string | null;
   confirmedAt: Date | string | null;
 };
+
+/** Ошибки, которые говорят о самом заявлении, а не о нашей связи с биржей. */
+const CLAIM_ERRORS = new Set(["pair_not_found", "base_mismatch"]);
 
 export async function MarketsSection({
   markets,
@@ -25,8 +32,6 @@ export async function MarketsSection({
   const t = await getTranslations("coinCard");
   if (markets.length === 0) return null;
 
-  // Until the aggregator lands (slice C) no market has a price. Hide the
-  // column entirely rather than drawing a row of dashes.
   const hasPrices = markets.some((m) => m.priceUsd != null);
 
   return (
@@ -43,6 +48,8 @@ export async function MarketsSection({
               <th className="text-left px-4 py-3">{t("market.pair")}</th>
               <th className="text-left px-4 py-3">{t("market.kind")}</th>
               {hasPrices && <th className="text-right px-4 py-3">{t("market.price")}</th>}
+              {hasPrices && <th className="text-right px-4 py-3">{t("market.change24h")}</th>}
+              {hasPrices && <th className="text-right px-4 py-3">{t("market.volume24h")}</th>}
               <th className="text-right px-4 py-3">{t("market.status")}</th>
             </tr>
           </thead>
@@ -62,13 +69,37 @@ export async function MarketsSection({
                 </td>
                 {hasPrices && (
                   <td className="px-4 py-3 text-right num">
-                    {m.priceUsd != null ? `$${m.priceUsd}` : "—"}
+                    {m.priceUsd != null ? `$${formatPrice(m.priceUsd)}` : "—"}
+                  </td>
+                )}
+                {hasPrices && (
+                  <td
+                    className={`px-4 py-3 text-right num ${
+                      m.change24h == null ? "" : m.change24h >= 0 ? "text-up" : "text-down"
+                    }`}
+                  >
+                    {m.change24h != null ? formatPercent(m.change24h) : "—"}
+                  </td>
+                )}
+                {hasPrices && (
+                  <td className="px-4 py-3 text-right num">
+                    {m.volumeUsd24h != null ? `$${formatCompact(m.volumeUsd24h)}` : "—"}
                   </td>
                 )}
                 <td className="px-4 py-3 text-right text-xs">
-                  <span className={m.confirmedAt ? "text-up" : "text-muted"}>
-                    {m.confirmedAt ? t("market.confirmed") : t("market.claimed")}
-                  </span>
+                  {m.checkError ? (
+                    <span className={CLAIM_ERRORS.has(m.checkError) ? "text-down" : "text-muted"}>
+                      {t(`market.error.${m.checkError}`)}
+                    </span>
+                  ) : m.isOutlier ? (
+                    <span className="text-muted" title={t("market.outlierHint")}>
+                      {t("market.outlier")}
+                    </span>
+                  ) : m.confirmedAt ? (
+                    <span className="text-up">{t("market.confirmed")}</span>
+                  ) : (
+                    <span className="text-muted">{t("market.claimed")}</span>
+                  )}
                 </td>
               </tr>
             ))}

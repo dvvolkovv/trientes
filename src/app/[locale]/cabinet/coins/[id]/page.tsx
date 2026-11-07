@@ -15,6 +15,7 @@ import { SectionEditor } from "@/components/coin-card-manage/section-editor";
 import { CardTeamSection } from "@/components/coin-card-manage/team-section";
 import { PolicySection } from "@/components/coin-card-manage/policy-section";
 import { OnchainRecheck } from "@/components/coin-card-manage/onchain-recheck";
+import { MarketsRefresh } from "@/components/coin-card-manage/markets-refresh";
 import {
   RevisionsSection,
   type RevisionItem,
@@ -140,6 +141,31 @@ export default async function CoinCardManagePage({
           checkError: c.checkError,
           mismatches: c.mismatches,
           verified: c.verifiedAt != null,
+        }))}
+      />
+
+      <MarketsRefresh
+        cardId={card.id}
+        canEdit={canEditSection(member, "MARKETS")}
+        index={
+          card.priceIndex
+            ? {
+                priceUsd: card.priceIndex.priceUsd,
+                marketCount: card.priceIndex.marketCount,
+                confidence: card.priceIndex.confidence,
+                computedAt: card.priceIndex.computedAt.toISOString().slice(0, 16).replace("T", " "),
+              }
+            : null
+        }
+        markets={card.markets.map((m) => ({
+          id: m.id,
+          exchangeName: m.exchangeName,
+          pair: m.pair,
+          priceUsd: m.priceUsd,
+          checkedAt: m.checkedAt ? m.checkedAt.toISOString().slice(0, 10) : null,
+          checkError: m.checkError,
+          isOutlier: m.isOutlier,
+          confirmed: m.confirmedAt != null,
         }))}
       />
 

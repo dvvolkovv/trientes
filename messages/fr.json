@@ -1327,7 +1327,20 @@
       "price": "Prix",
       "status": "Statut",
       "claimed": "déclaré par le projet",
-      "confirmed": "confirmé"
+      "confirmed": "confirmé",
+      "change24h": "24 h",
+      "volume24h": "Volume 24 h",
+      "outlier": "hors indice",
+      "outlierHint": "Le prix est trop éloigné de la médiane pondérée par le volume : le marché est affiché mais exclu du calcul",
+      "error": {
+        "exchange_unsupported": "nous ne lisons pas encore cette plateforme",
+        "pair_unparsable": "paire illisible",
+        "pair_not_found": "cette paire n’existe pas sur la plateforme",
+        "base_mismatch": "cette paire ne concerne pas cette monnaie",
+        "no_usd_route": "cette cotation ne peut pas être ramenée au dollar",
+        "exchange_unreachable": "la plateforme était injoignable, nous réessaierons",
+        "exchange_error": "la plateforme a répondu de façon illisible, nous réessaierons"
+      }
     },
     "audit": {
       "report": "Lire le rapport"
@@ -2037,6 +2050,28 @@
         "too_soon": "Vérification tout juste effectuée — réessayez dans quelques minutes",
         "no_contracts": "La fiche n'a aucune adresse de contrat",
         "forbidden": "Pas de droits sur la section contrats",
+        "card_not_found": "Fiche introuvable"
+      }
+    },
+    "index": {
+      "fromMarkets": "sur {count} marchés",
+      "methodology": "Le prix est la médiane des marchés confirmés pondérée par le volume sur 24 h : la valeur à laquelle le volume cumulé dépasse la moitié. Les marchés dont le volume quotidien est inférieur à 1 000 $ et ceux qui s’écartent de plus de 20 % de cette médiane sont exclus. Les stablecoins (USDT, USDC, DAI et autres) sont pris pour un dollar ; les cotations en BTC, ETH, BNB et SOL sont converties via notre propre indice de ces monnaies. Les paires en euro ou autre monnaie fiduciaire ne comptent pas.",
+      "volume": "volume {value} $",
+      "confidence": {
+        "HIGH": "confiance élevée",
+        "MEDIUM": "confiance moyenne",
+        "LOW": "confiance faible"
+      },
+      "manageTitle": "Marchés et prix",
+      "manageSubtitle": "Toutes les 10 minutes, nous confrontons les listings déclarés aux API publiques des plateformes et calculons le prix à partir de ceux qui sont confirmés.",
+      "none": "pas encore d’indice — aucun marché déclaré n’est confirmé",
+      "refresh": "Actualiser les marchés",
+      "refreshing": "Actualisation…",
+      "result": "Vérifiés {checked}, confirmés {confirmed}, en échec {failed}",
+      "reason": {
+        "too_soon": "Les marchés viennent d’être actualisés — réessayez dans quelques minutes",
+        "no_markets": "Cette fiche ne déclare aucun marché",
+        "forbidden": "Aucun droit sur la section marchés",
         "card_not_found": "Fiche introuvable"
       }
     }

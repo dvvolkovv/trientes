@@ -9,23 +9,33 @@ export type SelfListedCard = {
   logoUrl: string | null;
   trust: string;
   completeness: number;
+  /** Слайс C: наш собственный индекс, если он уже посчитан. */
+  priceUsd: number | null;
+  change24h: number | null;
 };
 
 /**
- * Approved cards that are not bound to a CoinGecko-backed Coin. They carry no
- * price or market cap (that is slice C), so they cannot sit in the ranked
- * table — they get their own section instead of a row with empty columns.
+ * Approved cards that are not bound to a CoinGecko-backed Coin. Capitalisation
+ * still needs a verified circulating supply (slice E), so they keep their own
+ * section rather than a row in the ranked table — but since slice C they do
+ * carry a price: our own volume-weighted median across confirmed markets.
  */
 export async function listSelfListedCards(limit = 24): Promise<SelfListedCard[]> {
-  return prisma.coinCard.findMany({
+  const rows = await prisma.coinCard.findMany({
     where: { status: "APPROVED", coinId: null },
     orderBy: [{ trust: "desc" }, { completeness: "desc" }, { createdAt: "desc" }],
     take: limit,
     select: {
       id: true, slug: true, name: true, symbol: true,
       tagline: true, logoUrl: true, trust: true, completeness: true,
+      priceIndex: { select: { priceUsd: true, change24h: true } },
     },
   });
+  return rows.map(({ priceIndex, ...card }) => ({
+    ...card,
+    priceUsd: priceIndex?.priceUsd ?? null,
+    change24h: priceIndex?.change24h ?? null,
+  }));
 }
 
 /** Count for the listing tab badge — cheaper than loading the rows. */

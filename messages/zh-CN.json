@@ -1327,7 +1327,20 @@
       "price": "价格",
       "status": "状态",
       "claimed": "项目方自述",
-      "confirmed": "已确认"
+      "confirmed": "已确认",
+      "change24h": "24 小时",
+      "volume24h": "24 小时成交额",
+      "outlier": "未计入指数",
+      "outlierHint": "价格与成交量加权中位数相差过大——仍然展示，但不参与计算",
+      "error": {
+        "exchange_unsupported": "我们暂时还读不了这家交易所",
+        "pair_unparsable": "无法解析该交易对",
+        "pair_not_found": "该交易所没有这个交易对",
+        "base_mismatch": "该交易对不属于这枚币",
+        "no_usd_route": "该计价币无法换算成美元",
+        "exchange_unreachable": "交易所暂时无法访问，稍后重试",
+        "exchange_error": "交易所返回了无法解析的数据，稍后重试"
+      }
     },
     "audit": {
       "report": "查看报告"
@@ -2037,6 +2050,28 @@
         "too_soon": "刚刚核对过 — 请几分钟后再试",
         "no_contracts": "该卡片没有合约地址",
         "forbidden": "没有合约栏目的编辑权限",
+        "card_not_found": "未找到卡片"
+      }
+    },
+    "index": {
+      "fromMarkets": "来自 {count} 个市场",
+      "methodology": "价格取已确认市场按 24 小时成交额加权的中位数——累计成交额超过一半处的那个值。日成交额低于 1000 美元的市场，以及偏离该中位数超过 20% 的市场，都不计入。稳定币（USDT、USDC、DAI 等）按一美元计；以 BTC、ETH、BNB、SOL 计价的报价，按我们自己计算的这些币的指数换算。以欧元等其他法币计价的交易对不计入。",
+      "volume": "成交额 {value} 美元",
+      "confidence": {
+        "HIGH": "可信度高",
+        "MEDIUM": "可信度中",
+        "LOW": "可信度低"
+      },
+      "manageTitle": "市场与价格",
+      "manageSubtitle": "我们每 10 分钟用各交易所的公开 API 核对你申报的上市情况，并用已确认的市场计算价格。",
+      "none": "暂无指数——申报的市场都还没有得到确认",
+      "refresh": "刷新市场",
+      "refreshing": "刷新中…",
+      "result": "已核对 {checked}，已确认 {confirmed}，未通过 {failed}",
+      "reason": {
+        "too_soon": "市场刚刚刷新过——请几分钟后再试",
+        "no_markets": "这张卡片没有申报任何市场",
+        "forbidden": "没有市场板块的权限",
         "card_not_found": "未找到卡片"
       }
     }

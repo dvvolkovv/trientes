@@ -1327,7 +1327,20 @@
       "price": "価格",
       "status": "状態",
       "claimed": "プロジェクト申告",
-      "confirmed": "確認済み"
+      "confirmed": "確認済み",
+      "change24h": "24時間",
+      "volume24h": "24時間出来高",
+      "outlier": "指数に未算入",
+      "outlierHint": "出来高加重中央値から大きく外れているため、表示はしますが計算には含めていません",
+      "error": {
+        "exchange_unsupported": "この取引所はまだ読み取れません",
+        "pair_unparsable": "ペアを解析できませんでした",
+        "pair_not_found": "この取引所にそのペアはありません",
+        "base_mismatch": "このペアはこの通貨のものではありません",
+        "no_usd_route": "この建値をドルに換算できません",
+        "exchange_unreachable": "取引所に接続できませんでした。再試行します",
+        "exchange_error": "取引所の応答を解釈できませんでした。再試行します"
+      }
     },
     "audit": {
       "report": "レポートを読む"
@@ -2037,6 +2050,28 @@
         "too_soon": "直前に照合済みです。数分後にお試しください",
         "no_contracts": "カードにコントラクトアドレスがありません",
         "forbidden": "コントラクト欄の編集権限がありません",
+        "card_not_found": "カードが見つかりません"
+      }
+    },
+    "index": {
+      "fromMarkets": "{count} 市場から",
+      "methodology": "価格は、確認できた市場の24時間出来高で加重した中央値です。累積出来高が半分を超える値を採用します。日次出来高が1,000ドル未満の市場、およびこの中央値から20%以上離れた市場は除外します。ステーブルコイン（USDT、USDC、DAIなど）は1ドルとして扱い、BTC・ETH・BNB・SOL建ては当社自身の指数で換算します。ユーロなど他の法定通貨建てのペアは数えません。",
+      "volume": "出来高 {value} ドル",
+      "confidence": {
+        "HIGH": "信頼度 高",
+        "MEDIUM": "信頼度 中",
+        "LOW": "信頼度 低"
+      },
+      "manageTitle": "市場と価格",
+      "manageSubtitle": "10分ごとに、申告された上場を各取引所の公開APIと照合し、確認できた市場から価格を算出します。",
+      "none": "まだ指数はありません — 申告された市場がどれも確認できていません",
+      "refresh": "市場を更新",
+      "refreshing": "更新中…",
+      "result": "確認 {checked}、一致 {confirmed}、失敗 {failed}",
+      "reason": {
+        "too_soon": "つい先ほど更新しました。数分後にお試しください",
+        "no_markets": "このカードには市場が登録されていません",
+        "forbidden": "市場セクションの権限がありません",
         "card_not_found": "カードが見つかりません"
       }
     }

@@ -1327,7 +1327,20 @@
       "price": "Fiyat",
       "status": "Durum",
       "claimed": "proje tarafından bildirildi",
-      "confirmed": "onaylandı"
+      "confirmed": "onaylandı",
+      "change24h": "24 sa",
+      "volume24h": "24 sa hacim",
+      "outlier": "endekse girmedi",
+      "outlierHint": "Fiyat, hacim ağırlıklı medyandan çok uzak — piyasa gösteriliyor ama hesaba katılmıyor",
+      "error": {
+        "exchange_unsupported": "bu borsayı henüz okumuyoruz",
+        "pair_unparsable": "parite çözümlenemedi",
+        "pair_not_found": "bu parite borsada yok",
+        "base_mismatch": "bu parite bu coine ait değil",
+        "no_usd_route": "bu kotasyon dolara çevrilemiyor",
+        "exchange_unreachable": "borsaya ulaşılamadı, yeniden denenecek",
+        "exchange_error": "borsa anlaşılmaz yanıt verdi, yeniden denenecek"
+      }
     },
     "audit": {
       "report": "Raporu oku"
@@ -2037,6 +2050,28 @@
         "too_soon": "Az önce karşılaştırıldı — birkaç dakika sonra deneyin",
         "no_contracts": "Kartta sözleşme adresi yok",
         "forbidden": "Sözleşmeler bölümü için yetki yok",
+        "card_not_found": "Kart bulunamadı"
+      }
+    },
+    "index": {
+      "fromMarkets": "{count} piyasadan",
+      "methodology": "Fiyat, doğrulanmış piyasaların 24 saatlik hacimle ağırlıklandırılmış medyanıdır: birikmiş hacmin yarıyı geçtiği değer. Günlük hacmi 1.000 doların altındaki piyasalar ve bu medyandan %20’den fazla sapanlar hesaba katılmaz. Stabilcoinler (USDT, USDC, DAI ve diğerleri) bir dolar sayılır; BTC, ETH, BNB ve SOL cinsinden kotasyonlar bu coinler için kendi endeksimizle çevrilir. Euro veya başka itibari para cinsinden pariteler sayılmaz.",
+      "volume": "hacim {value} $",
+      "confidence": {
+        "HIGH": "güven yüksek",
+        "MEDIUM": "güven orta",
+        "LOW": "güven düşük"
+      },
+      "manageTitle": "Piyasalar ve fiyat",
+      "manageSubtitle": "Bildirilen listelemeleri her 10 dakikada borsaların açık API’leriyle karşılaştırıyor, fiyatı doğrulananlardan hesaplıyoruz.",
+      "none": "henüz endeks yok — bildirilen piyasaların hiçbiri doğrulanmadı",
+      "refresh": "Piyasaları yenile",
+      "refreshing": "Yenileniyor…",
+      "result": "Kontrol {checked}, doğrulanan {confirmed}, başarısız {failed}",
+      "reason": {
+        "too_soon": "Piyasalar az önce yenilendi — birkaç dakika sonra deneyin",
+        "no_markets": "Bu kartta hiç piyasa bildirilmemiş",
+        "forbidden": "Piyasalar bölümü için yetki yok",
         "card_not_found": "Kart bulunamadı"
       }
     }

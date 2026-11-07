@@ -1327,7 +1327,20 @@
       "price": "가격",
       "status": "상태",
       "claimed": "프로젝트 신고",
-      "confirmed": "확인됨"
+      "confirmed": "확인됨",
+      "change24h": "24시간",
+      "volume24h": "24시간 거래대금",
+      "outlier": "지수 미반영",
+      "outlierHint": "거래량 가중 중앙값에서 너무 멀어 표시만 하고 계산에는 넣지 않았습니다",
+      "error": {
+        "exchange_unsupported": "이 거래소는 아직 읽지 못합니다",
+        "pair_unparsable": "페어를 해석할 수 없습니다",
+        "pair_not_found": "거래소에 해당 페어가 없습니다",
+        "base_mismatch": "이 페어는 이 코인의 것이 아닙니다",
+        "no_usd_route": "이 호가는 달러로 환산할 수 없습니다",
+        "exchange_unreachable": "거래소에 접속하지 못했습니다. 다시 시도합니다",
+        "exchange_error": "거래소 응답을 해석하지 못했습니다. 다시 시도합니다"
+      }
     },
     "audit": {
       "report": "보고서 읽기"
@@ -2037,6 +2050,28 @@
         "too_soon": "방금 대조했습니다. 몇 분 후에 다시 시도하세요",
         "no_contracts": "카드에 계약 주소가 없습니다",
         "forbidden": "계약 섹션 편집 권한이 없습니다",
+        "card_not_found": "카드를 찾을 수 없습니다"
+      }
+    },
+    "index": {
+      "fromMarkets": "{count}개 시장 기준",
+      "methodology": "가격은 확인된 시장을 24시간 거래대금으로 가중한 중앙값입니다. 누적 거래대금이 절반을 넘는 지점의 값을 씁니다. 일 거래대금이 1,000달러 미만인 시장과 이 중앙값에서 20% 이상 벗어난 시장은 제외합니다. 스테이블코인(USDT, USDC, DAI 등)은 1달러로 보고, BTC·ETH·BNB·SOL 호가는 저희가 직접 계산한 해당 코인 지수로 환산합니다. 유로 등 다른 법정통화 페어는 세지 않습니다.",
+      "volume": "거래대금 {value} 달러",
+      "confidence": {
+        "HIGH": "신뢰도 높음",
+        "MEDIUM": "신뢰도 보통",
+        "LOW": "신뢰도 낮음"
+      },
+      "manageTitle": "시장과 가격",
+      "manageSubtitle": "10분마다 신고된 상장을 거래소 공개 API와 맞춰 보고, 확인된 시장으로 가격을 계산합니다.",
+      "none": "아직 지수가 없습니다 — 신고된 시장이 하나도 확인되지 않았습니다",
+      "refresh": "시장 새로고침",
+      "refreshing": "새로고침 중…",
+      "result": "확인 {checked}, 일치 {confirmed}, 실패 {failed}",
+      "reason": {
+        "too_soon": "방금 새로고침했습니다 — 몇 분 뒤에 다시 시도해 주세요",
+        "no_markets": "이 카드에 등록된 시장이 없습니다",
+        "forbidden": "시장 섹션 권한이 없습니다",
         "card_not_found": "카드를 찾을 수 없습니다"
       }
     }

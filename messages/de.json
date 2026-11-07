@@ -1327,7 +1327,20 @@
       "price": "Preis",
       "status": "Status",
       "claimed": "vom Projekt angegeben",
-      "confirmed": "bestätigt"
+      "confirmed": "bestätigt",
+      "change24h": "24 Std.",
+      "volume24h": "Volumen 24 Std.",
+      "outlier": "nicht im Index",
+      "outlierHint": "Der Preis liegt zu weit vom volumengewichteten Median entfernt — der Markt wird angezeigt, aber nicht gerechnet",
+      "error": {
+        "exchange_unsupported": "diese Börse lesen wir noch nicht",
+        "pair_unparsable": "dieses Paar war nicht lesbar",
+        "pair_not_found": "dieses Paar gibt es an der Börse nicht",
+        "base_mismatch": "dieses Paar betrifft nicht diese Münze",
+        "no_usd_route": "diese Notierung lässt sich nicht in Dollar umrechnen",
+        "exchange_unreachable": "die Börse war nicht erreichbar, wir versuchen es erneut",
+        "exchange_error": "die Börse antwortete unverständlich, wir versuchen es erneut"
+      }
     },
     "audit": {
       "report": "Bericht lesen"
@@ -2037,6 +2050,28 @@
         "too_soon": "Gerade erst geprüft — versuchen Sie es in einigen Minuten",
         "no_contracts": "Die Karte enthält keine Vertragsadressen",
         "forbidden": "Keine Rechte für den Bereich Verträge",
+        "card_not_found": "Karte nicht gefunden"
+      }
+    },
+    "index": {
+      "fromMarkets": "aus {count} Märkten",
+      "methodology": "Der Preis ist der mit dem Tagesvolumen gewichtete Median über die bestätigten Märkte — der Wert, bei dem das kumulierte Volumen die Hälfte überschreitet. Märkte mit weniger als 1.000 $ Tagesvolumen und Märkte, die mehr als 20 % von diesem Median abweichen, bleiben außen vor. Stablecoins (USDT, USDC, DAI und andere) gelten als ein Dollar; Notierungen in BTC, ETH, BNB und SOL werden über unseren eigenen Index dieser Münzen umgerechnet. Paare in Euro oder anderem Fiat zählen nicht mit.",
+      "volume": "Volumen {value} $",
+      "confidence": {
+        "HIGH": "hohe Verlässlichkeit",
+        "MEDIUM": "mittlere Verlässlichkeit",
+        "LOW": "geringe Verlässlichkeit"
+      },
+      "manageTitle": "Märkte und Preis",
+      "manageSubtitle": "Alle 10 Minuten prüfen wir die angegebenen Listings gegen die öffentlichen APIs der Börsen und berechnen den Preis aus den bestätigten.",
+      "none": "noch kein Index — kein angegebener Markt ist bestätigt",
+      "refresh": "Märkte aktualisieren",
+      "refreshing": "Wird aktualisiert…",
+      "result": "Geprüft {checked}, bestätigt {confirmed}, fehlgeschlagen {failed}",
+      "reason": {
+        "too_soon": "Die Märkte wurden gerade aktualisiert — bitte in einigen Minuten erneut",
+        "no_markets": "In dieser Karte ist kein Markt angegeben",
+        "forbidden": "Keine Rechte für den Bereich Märkte",
         "card_not_found": "Karte nicht gefunden"
       }
     }
