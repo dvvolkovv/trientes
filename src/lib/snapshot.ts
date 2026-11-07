@@ -6,7 +6,12 @@ import { fetchFearGreed, type FearGreed } from "@/lib/fear-greed";
 import { redis } from "@/lib/redis";
 import { prisma } from "@/lib/prisma";
 import { KEYS, TTL } from "@/lib/sync/keys";
+import type { CoinSnapshot } from "@prisma/client";
 import { mergeCuratedExchanges } from "@/lib/curated-exchanges";
+
+type LatestSnapshotRow = {
+  [K in keyof CoinSnapshot]: CoinSnapshot[K] | null;
+} & { coinId: string };
 
 async function redisGet(key: string): Promise<string | null> {
   if (redis.status === "wait" || redis.status === "end") {
@@ -54,12 +59,44 @@ export async function readTop100(): Promise<MarketRow[]> {
     where: { isActive: true },
     orderBy: { rank: "asc" },
     take: 200,
-    include: {
-      snapshots: { orderBy: { fetchedAt: "desc" }, take: 1 },
-    },
+  });
+  const snapshots = await prisma.$queryRaw<LatestSnapshotRow[]>`
+    SELECT
+      s.id,
+      c.id AS "coinId",
+      s."priceUsd",
+      s."marketCapUsd",
+      s."volume24hUsd",
+      s."pctChange1h",
+      s."pctChange24h",
+      s."pctChange7d",
+      s."circulatingSupply",
+      s."totalSupply",
+      s."maxSupply",
+      s."sparkline7d",
+      s."fetchedAt"
+    FROM "Coin" AS c
+    LEFT JOIN LATERAL (
+      SELECT *
+      FROM "CoinSnapshot" AS snap
+      WHERE snap."coinId" = c.id
+      ORDER BY snap."fetchedAt" DESC
+      LIMIT 1
+    ) AS s ON TRUE
+    WHERE c."isActive" = TRUE
+    ORDER BY c."rank" ASC
+    LIMIT 200
+  `;
+  const snapshotsByCoinId = new Map<string, LatestSnapshotRow>();
+  for (const snapshot of snapshots) {
+    if (snapshot.id !== null) snapshotsByCoinId.set(snapshot.coinId, snapshot);
+  }
+  const coinsWithSnapshots = coins.map((coin) => {
+    const snapshot = snapshotsByCoinId.get(coin.id);
+    return { ...coin, snapshots: snapshot ? [snapshot] : [] };
   });
 
-  return coins
+  return coinsWithSnapshots
     .filter((c) => c.snapshots[0])
     .map((c) => {
       const s = c.snapshots[0];
