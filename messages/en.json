@@ -2208,7 +2208,10 @@
         "rpc_error": "The network node returned an error",
         "decode_failed": "The node's answer could not be parsed",
         "genesis_mismatch": "The node answers for a different chain — under review"
-      }
+      },
+      "transferFee": "Transfer fee",
+      "transferFeeFree": "no fee",
+      "transferFeeHint": "one-coin transfer"
     }
   },
   "inviteCoin": {

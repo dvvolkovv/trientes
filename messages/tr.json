@@ -2208,7 +2208,10 @@
         "rpc_error": "Ağ düğümü hata döndürdü",
         "decode_failed": "Düğümün yanıtı çözümlenemedi",
         "genesis_mismatch": "Düğüm başka bir zincir için yanıt veriyor — inceleniyor"
-      }
+      },
+      "transferFee": "Transfer ücreti",
+      "transferFeeFree": "ücret yok",
+      "transferFeeHint": "bir coin transferi"
     }
   },
   "inviteCoin": {

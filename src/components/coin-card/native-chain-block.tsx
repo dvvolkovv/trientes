@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { formatFeeAmount } from "@/lib/format";
 import { getProvenance } from "@/lib/coin-card-provenance";
 import { resolveSubstrateChain } from "@/lib/substrate-chains";
 import { ProvenanceBadge } from "./provenance-badge";
@@ -12,6 +13,8 @@ export type ChainFactsView = {
   blockSample: number | null;
   bestNumber: number | null;
   finalitySeconds: number | null;
+  transferFeeTokens: number | null;
+  transferFeeError: string | null;
   mismatches: string[];
   checkedAt: Date | string;
   checkError: string | null;
@@ -27,11 +30,13 @@ export async function NativeChainBlock({
   facts,
   cardSymbol,
   provenance,
+  priceUsd = null,
 }: {
   nativeChain: string;
   facts: ChainFactsView | null;
   cardSymbol: string;
   provenance: unknown;
+  priceUsd?: number | null;
 }) {
   const t = await getTranslations("coinCard.nativeChain");
   const chain = resolveSubstrateChain(nativeChain);
@@ -86,6 +91,26 @@ export async function NativeChainBlock({
               path="payments.finalitySeconds"
               provenance={provenance}
             />
+          )}
+          {/* Комиссию считает сам узел для эталонного перевода одной монеты —
+              поэтому подпись говорит, что именно измерено, а не «типичная». */}
+          {verified.transferFeeTokens != null && !verified.transferFeeError && (
+            <div className="flex flex-wrap items-baseline justify-between gap-3">
+              <dt className="text-[14px] text-muted">{t("transferFee")}</dt>
+              <dd className="text-[14px] num">
+                {verified.transferFeeTokens === 0
+                  ? t("transferFeeFree")
+                  : `${formatFeeAmount(verified.transferFeeTokens)} ${
+                      verified.tokenSymbol ?? cardSymbol
+                    }`}
+                {priceUsd != null && priceUsd > 0 && verified.transferFeeTokens > 0 && (
+                  <span className="text-muted text-xs ml-2 num">
+                    ≈ ${formatFeeAmount(verified.transferFeeTokens * priceUsd)}
+                  </span>
+                )}
+                <span className="text-muted text-xs ml-2">{t("transferFeeHint")}</span>
+              </dd>
+            </div>
           )}
         </dl>
       )}

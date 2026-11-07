@@ -1,6 +1,8 @@
 import { getTranslations } from "next-intl/server";
 import { getProvenance } from "@/lib/coin-card-provenance";
 import { EMPTY_PAYMENTS, validatePayments } from "@/lib/coin-card-payments";
+import { feeMismatch } from "@/lib/coin-card-chain-facts";
+import { formatFeeAmount } from "@/lib/format";
 import { ProvenanceBadge } from "../provenance-badge";
 import { ExternalLink } from "../external-link";
 
@@ -17,10 +19,17 @@ import { ExternalLink } from "../external-link";
  * на цепи. Факт вытесняет заявление в самой строке, но заявление не исчезает:
  * при расхождении больше 10% оно показывается рядом — правило слайса B «не
  * поправлять молча, а показывать расхождение».
+ *
+ * Слайс T: то же самое с комиссией — но она становится долларовым фактом
+ * только вместе с ценой. Цены нет (у монеты нет рынков) — в строке остаётся
+ * заявление проекта, а проверенная комиссия в монетах видна в блоке «Сеть
+ * монеты», где доллары не нужны.
  */
 export type ChainFactsPayments = {
   blockSeconds: number | null;
   finalitySeconds: number | null;
+  transferFeeTokens: number | null;
+  transferFeeError: string | null;
   checkError: string | null;
 };
 
@@ -28,10 +37,13 @@ export async function PaymentsBlock({
   payments,
   provenance,
   chainFacts = null,
+  priceUsd = null,
 }: {
   payments: unknown;
   provenance: unknown;
   chainFacts?: ChainFactsPayments | null;
+  /** Слайс T: без цены проверенная комиссия в доллары не переводится. */
+  priceUsd?: number | null;
 }) {
   const t = await getTranslations("coinCard.payments");
   const v = validatePayments(payments);
@@ -71,13 +83,29 @@ export async function PaymentsBlock({
           : null,
     });
   }
-  if (d.feeUsdTypical !== null) {
+  const factFeeUsd =
+    f?.transferFeeTokens != null && !f.transferFeeError && priceUsd != null && priceUsd > 0
+      ? f.transferFeeTokens * priceUsd
+      : null;
+  const feeUsd = factFeeUsd ?? d.feeUsdTypical;
+  if (feeUsd !== null) {
     rows.push({
       label: t("fee"),
       // Явный ноль, а не прочерк: сеть без комиссии — это факт, а не пропуск.
-      value: d.feeUsdTypical === 0 ? t("feeFree") : `$${d.feeUsdTypical}`,
+      value: feeUsd === 0 ? t("feeFree") : `$${formatFeeAmount(feeUsd)}`,
       path: "payments.feeUsdTypical",
-      aside: null,
+      aside:
+        factFeeUsd != null &&
+        feeMismatch({
+          declaredUsd: d.feeUsdTypical,
+          factTokens: f?.transferFeeTokens ?? null,
+          priceUsd,
+        })
+          ? t("claimedSays", {
+              value:
+                d.feeUsdTypical === 0 ? t("feeFree") : `$${formatFeeAmount(d.feeUsdTypical!)}`,
+            })
+          : null,
     });
   }
   if (d.tps !== null) {

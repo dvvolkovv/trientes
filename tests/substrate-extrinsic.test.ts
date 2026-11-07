@@ -14,21 +14,21 @@ describe("compactEncode", () => {
   // SCALE: однобайтовый режим до 63, двухбайтовый до 2^14−1, четырёхбайтовый до
   // 2^30−1, дальше big-integer с байтом длины. Границы — там, где ошибаются.
   it.each([
-    [0n, "0x00"],
-    [1n, "0x04"],
-    [63n, "0xfc"],
-    [64n, "0x0101"],
-    [16383n, "0xfdff"],
-    [16384n, "0x02000100"],
-    [1073741823n, "0xfeffffff"],
-    [1073741824n, "0x0300000040"],
-    [1000000000000n, "0x070010a5d4e8"],
+    [BigInt(0), "0x00"],
+    [BigInt(1), "0x04"],
+    [BigInt(63), "0xfc"],
+    [BigInt(64), "0x0101"],
+    [BigInt(16383), "0xfdff"],
+    [BigInt(16384), "0x02000100"],
+    [BigInt(1073741823), "0xfeffffff"],
+    [BigInt(1073741824), "0x0300000040"],
+    [BigInt(1000000000000), "0x070010a5d4e8"],
   ])("кодирует %s", (value, expected) => {
     expect(hex(compactEncode(value as bigint))).toBe(expected);
   });
 
   it("отвергает отрицательное", () => {
-    expect(() => compactEncode(-1n)).toThrow();
+    expect(() => compactEncode(-BigInt(1))).toThrow();
   });
 });
 
@@ -41,7 +41,7 @@ describe("transferKeepAliveCall", () => {
     const call = transferKeepAliveCall({
       pallet: 6,
       dest: bytes(32, 0x11),
-      value: 1000000000000n,
+      value: BigInt(1000000000000),
     });
     // 2 байта (палета, вызов) + 1 байт MultiAddress::Id + 32 байта ключа +
     // 6 байт компактной суммы.
@@ -52,12 +52,12 @@ describe("transferKeepAliveCall", () => {
   });
 
   it("отвергает ключ не на 32 байта", () => {
-    expect(() => transferKeepAliveCall({ pallet: 6, dest: bytes(31, 1), value: 1n })).toThrow();
+    expect(() => transferKeepAliveCall({ pallet: 6, dest: bytes(31, 1), value: BigInt(1) })).toThrow();
   });
 });
 
 describe("fakeSignedExtrinsic", () => {
-  const call = transferKeepAliveCall({ pallet: 6, dest: bytes(32, 0x11), value: 1000000000000n });
+  const call = transferKeepAliveCall({ pallet: 6, dest: bytes(32, 0x11), value: BigInt(1000000000000) });
   const signer = bytes(32, 0x22);
   const signature = bytes(64, 0x33);
 

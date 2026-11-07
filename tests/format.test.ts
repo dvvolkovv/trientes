@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatPrice, formatCompact, formatPercent } from "@/lib/format";
+import { formatCompact, formatFeeAmount, formatPercent, formatPrice } from "@/lib/format";
 
 describe("formatPrice", () => {
   it("uses 2 decimals for >= 1", () => {
@@ -36,5 +36,25 @@ describe("formatPercent", () => {
   it("returns em dash for null", () => {
     expect(formatPercent(null)).toBe("—");
     expect(formatPercent(undefined)).toBe("—");
+  });
+});
+
+describe("formatFeeAmount", () => {
+  // Комиссия перевода бывает и в долях микроцента, и в единицах: экспонента в
+  // ценнике нечитаема, поэтому число всегда записано полностью.
+  it.each([
+    [0, "0"],
+    [0.00000263328, "0.00000263"],
+    [0.0159206918, "0.0159"],
+    [0.000533248407, "0.000533"],
+    [0.01, "0.01"],
+    [1.5, "1.50"],
+    [1234.5, "1234.50"],
+  ])("%s → %s", (value, expected) => {
+    expect(formatFeeAmount(value as number)).toBe(expected);
+  });
+
+  it("не скатывается в экспоненциальную запись на очень малых числах", () => {
+    expect(formatFeeAmount(1.2e-9)).toBe("0.0000000012");
   });
 });

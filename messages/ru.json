@@ -2208,7 +2208,10 @@
         "rpc_error": "Узел сети вернул ошибку",
         "decode_failed": "Ответ узла не разобрался",
         "genesis_mismatch": "Узел отвечает за другую цепь — разбираемся"
-      }
+      },
+      "transferFee": "Комиссия перевода",
+      "transferFeeFree": "без комиссии",
+      "transferFeeHint": "перевод одной монеты"
     }
   },
   "inviteCoin": {

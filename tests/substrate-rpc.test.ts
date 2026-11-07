@@ -223,7 +223,7 @@ describe("queryTransferFee", () => {
     await expect(
       queryTransferFee({ url: URL_, pallet: 6, decimals: 12, fetchImpl }),
     ).resolves.toEqual({
-      planck: 2633280n,
+      planck: BigInt(2633280),
       tokens: 0.00000263328,
       metadataHashMode: false,
     });
@@ -234,7 +234,7 @@ describe("queryTransferFee", () => {
     const { fetchImpl, calls } = feeNode(144);
     const fee = await queryTransferFee({ url: URL_, pallet: 5, decimals: 10, fetchImpl });
     expect(fee.metadataHashMode).toBe(true);
-    expect(fee.planck).toBe(2633280n);
+    expect(fee.planck).toBe(BigInt(2633280));
     expect(calls).toEqual(["payment_queryInfo", "payment_queryInfo"]);
   });
 
@@ -249,7 +249,7 @@ describe("queryTransferFee", () => {
     const { fetchImpl } = node({ payment_queryInfo: { partialFee: "0" } });
     await expect(
       queryTransferFee({ url: URL_, pallet: 6, decimals: 12, fetchImpl }),
-    ).resolves.toMatchObject({ planck: 0n, tokens: 0 });
+    ).resolves.toMatchObject({ planck: BigInt(0), tokens: 0 });
   });
 
   it("недоступный узел — rpc_unreachable, без подбора вариантов", async () => {

@@ -2208,7 +2208,10 @@
         "rpc_error": "ネットワークのノードがエラーを返しました",
         "decode_failed": "ノードの応答を解析できませんでした",
         "genesis_mismatch": "ノードが別のチェーンを返しています — 確認中"
-      }
+      },
+      "transferFee": "送金手数料",
+      "transferFeeFree": "手数料なし",
+      "transferFeeHint": "1コインの送金"
     }
   },
   "inviteCoin": {

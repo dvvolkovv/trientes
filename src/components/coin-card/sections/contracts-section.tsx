@@ -23,6 +23,7 @@ export async function ContractsSection({
   cardSymbol,
   nativeChain = null,
   chainFacts = null,
+  priceUsd = null,
 }: {
   contracts: Contract[];
   provenance: unknown;
@@ -31,6 +32,8 @@ export async function ContractsSection({
   /** Слайс S: нативная монета своей сети — контракта у неё нет. */
   nativeChain?: string | null;
   chainFacts?: ChainFactsView | null;
+  /** Слайс T: нужна, чтобы перевести комиссию перевода в доллары. */
+  priceUsd?: number | null;
 }) {
   const t = await getTranslations("coinCard");
   // У нативной монеты список контрактов пуст, но раздел всё равно нужен: в нём
@@ -50,6 +53,7 @@ export async function ContractsSection({
             facts={chainFacts}
             cardSymbol={cardSymbol}
             provenance={provenance}
+            priceUsd={priceUsd}
           />
         )}
         {contracts.map((c) => (

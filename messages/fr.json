@@ -2208,7 +2208,10 @@
         "rpc_error": "Le nœud du réseau a renvoyé une erreur",
         "decode_failed": "La réponse du nœud est illisible",
         "genesis_mismatch": "Le nœud répond pour une autre chaîne — en cours de vérification"
-      }
+      },
+      "transferFee": "Frais de transfert",
+      "transferFeeFree": "sans frais",
+      "transferFeeHint": "transfert d'une pièce"
     }
   },
   "inviteCoin": {

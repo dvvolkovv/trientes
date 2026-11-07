@@ -2208,7 +2208,10 @@
         "rpc_error": "네트워크 노드가 오류를 반환했습니다",
         "decode_failed": "노드 응답을 해석할 수 없습니다",
         "genesis_mismatch": "노드가 다른 체인을 응답합니다 — 확인 중"
-      }
+      },
+      "transferFee": "전송 수수료",
+      "transferFeeFree": "수수료 없음",
+      "transferFeeHint": "코인 1개 전송"
     }
   },
   "inviteCoin": {

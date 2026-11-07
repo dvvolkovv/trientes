@@ -2208,7 +2208,10 @@
         "rpc_error": "Der Node hat einen Fehler geliefert",
         "decode_failed": "Die Antwort des Nodes war nicht lesbar",
         "genesis_mismatch": "Der Node antwortet für eine andere Chain — wird geprüft"
-      }
+      },
+      "transferFee": "Überweisungsgebühr",
+      "transferFeeFree": "keine Gebühr",
+      "transferFeeHint": "Überweisung einer Münze"
     }
   },
   "inviteCoin": {

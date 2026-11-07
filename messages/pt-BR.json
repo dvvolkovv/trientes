@@ -2208,7 +2208,10 @@
         "rpc_error": "O nó da rede retornou um erro",
         "decode_failed": "Não foi possível interpretar a resposta do nó",
         "genesis_mismatch": "O nó responde por outra cadeia — em análise"
-      }
+      },
+      "transferFee": "Taxa de transferência",
+      "transferFeeFree": "sem taxa",
+      "transferFeeHint": "transferência de uma moeda"
     }
   },
   "inviteCoin": {

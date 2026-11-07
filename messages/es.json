@@ -2208,7 +2208,10 @@
         "rpc_error": "El nodo de la red devolvió un error",
         "decode_failed": "No se pudo interpretar la respuesta del nodo",
         "genesis_mismatch": "El nodo responde por otra cadena: en revisión"
-      }
+      },
+      "transferFee": "Comisión de transferencia",
+      "transferFeeFree": "sin comisión",
+      "transferFeeHint": "transferencia de una moneda"
     }
   },
   "inviteCoin": {

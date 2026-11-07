@@ -29,6 +29,7 @@ export async function AcceptanceSection({
   payments,
   provenance,
   chainFacts = null,
+  priceUsd = null,
 }: {
   cardId: string;
   slug: string;
@@ -37,6 +38,7 @@ export async function AcceptanceSection({
   provenance?: unknown;
   /** Слайс S: измеренные параметры своей сети — они важнее заявленных. */
   chainFacts?: ChainFactsPayments | null;
+  priceUsd?: number | null;
 }) {
   const [t, tb, ts, locale] = await Promise.all([
     getTranslations("coinCard.acceptance"),
@@ -149,7 +151,12 @@ export async function AcceptanceSection({
       )}
 
       <div className="mt-5 space-y-5">
-        <PaymentsBlock payments={payments} provenance={provenance} chainFacts={chainFacts} />
+        <PaymentsBlock
+          payments={payments}
+          provenance={provenance}
+          chainFacts={chainFacts}
+          priceUsd={priceUsd}
+        />
         <FiatRoutesBlock cardId={cardId} />
       </div>
 

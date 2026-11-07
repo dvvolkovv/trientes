@@ -206,7 +206,7 @@ export async function queryTransferFee(args: {
     timeoutMs: args.timeoutMs,
     retries: args.retries,
   };
-  const value = 10n ** BigInt(Math.max(0, decimals));
+  const value = BigInt(10) ** BigInt(Math.max(0, decimals));
   const call = transferKeepAliveCall({ pallet, dest: REFERENCE_DEST, value });
 
   for (const metadataHashMode of [false, true]) {

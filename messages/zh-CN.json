@@ -2208,7 +2208,10 @@
         "rpc_error": "网络节点返回错误",
         "decode_failed": "无法解析节点的响应",
         "genesis_mismatch": "节点返回的是另一条链 — 正在核查"
-      }
+      },
+      "transferFee": "转账手续费",
+      "transferFeeFree": "无手续费",
+      "transferFeeHint": "转账一枚代币"
     }
   },
   "inviteCoin": {

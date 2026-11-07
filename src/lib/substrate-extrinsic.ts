@@ -31,19 +31,26 @@ const DUMMY_SIGNER = new Uint8Array(32).fill(0x22);
 const DUMMY_SIGNATURE = new Uint8Array(64).fill(0x33);
 
 /** SCALE compact: четыре режима по двум младшим битам. */
+const ZERO = BigInt(0);
+const BYTE = BigInt(0xff);
+const EIGHT = BigInt(8);
+const SINGLE_MAX = BigInt(64);
+const TWO_BYTE_MAX = BigInt(1) << BigInt(14);
+const FOUR_BYTE_MAX = BigInt(1) << BigInt(30);
+
 export function compactEncode(value: bigint): Uint8Array {
-  if (value < 0n) throw new Error("compact_negative");
-  if (value < 64n) return new Uint8Array([Number(value) << 2]);
-  if (value < 1n << 14n) {
+  if (value < ZERO) throw new Error("compact_negative");
+  if (value < SINGLE_MAX) return new Uint8Array([Number(value) << 2]);
+  if (value < TWO_BYTE_MAX) {
     const v = (Number(value) << 2) | 0b01;
     return new Uint8Array([v & 0xff, (v >> 8) & 0xff]);
   }
-  if (value < 1n << 30n) {
+  if (value < FOUR_BYTE_MAX) {
     const v = (Number(value) << 2) | 0b10;
     return new Uint8Array([v & 0xff, (v >> 8) & 0xff, (v >> 16) & 0xff, (v >>> 24) & 0xff]);
   }
   const le: number[] = [];
-  for (let v = value; v > 0n; v >>= 8n) le.push(Number(v & 0xffn));
+  for (let v = value; v > ZERO; v >>= EIGHT) le.push(Number(v & BYTE));
   if (le.length > 67) throw new Error("compact_too_large");
   return new Uint8Array([((le.length - 4) << 2) | 0b11, ...le]);
 }
@@ -104,8 +111,8 @@ export function fakeSignedExtrinsic(args: {
     [MULTISIGNATURE_SR25519],
     signature,
     [ERA_IMMORTAL],
-    compactEncode(0n), // нонс
-    compactEncode(0n), // чаевые
+    compactEncode(ZERO), // нонс
+    compactEncode(ZERO), // чаевые
     args.metadataHashMode ? [0x00] : [],
     args.call,
   );
