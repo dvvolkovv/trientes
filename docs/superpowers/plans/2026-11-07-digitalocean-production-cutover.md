@@ -34,13 +34,14 @@ EXPECTED='835aca40fc4097ce7abbd1b3e50a4c8b02c94551'
 ssh -o BatchMode=yes "dv@$OLD_IP" 'cd ~/trientes && git status --short --branch && git rev-parse HEAD && git fetch origin main && git rev-parse origin/main'
 ACTUAL=$(ssh -o BatchMode=yes "dv@$OLD_IP" 'git -C ~/trientes rev-parse HEAD')
 test "$ACTUAL" = "$EXPECTED"
+ssh -o BatchMode=yes "dv@$OLD_IP" "cd ~/trientes && git merge-base --is-ancestor '$EXPECTED' origin/main && git diff --quiet '$EXPECTED'..origin/main -- src package.json package-lock.json prisma"
 TARGET_ACTUAL=$(ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && git rev-parse HEAD && cat .next/BUILD_ID')
 test "$TARGET_ACTUAL" = "$EXPECTED 23vtpp4Q8HJo24_ZNoCXr"
 grep -q '^RELEASE_SHA=' /Users/dmitry/.trientes-migration/stage0.env || printf 'RELEASE_SHA=%s\n' "$EXPECTED" >> /Users/dmitry/.trientes-migration/stage0.env
 grep -q '^TARGET_BUILD_ID=' /Users/dmitry/.trientes-migration/stage0.env || printf 'TARGET_BUILD_ID=23vtpp4Q8HJo24_ZNoCXr\n' >> /Users/dmitry/.trientes-migration/stage0.env
 ```
 
-Expected: production HEAD и origin/main равны `RELEASE_SHA`, target HEAD и `.next/BUILD_ID` совпадают с проверенными значениями, working tree чист. Если main продвинулся или target artifact изменился, остановиться и повторить release pipeline, а не подменять код молча.
+Expected: production HEAD равен `RELEASE_SHA`, origin/main может содержать только более новые documentation commits, target HEAD и `.next/BUILD_ID` совпадают с проверенными значениями, working tree чист. Если main продвинулся в `src`, `package.json`, `package-lock.json` или `prisma`, либо target artifact изменился, остановиться и повторить release pipeline, а не подменять код молча.
 
 - [ ] **Step 2: Сохранить полный и production-only audit без автоматического исправления**
 
