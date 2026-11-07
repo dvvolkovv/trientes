@@ -2074,6 +2074,59 @@
         "forbidden": "Aucun droit sur la section marchés",
         "card_not_found": "Fiche introuvable"
       }
+    },
+    "claim": {
+      "title": "Vérification de propriété",
+      "subtitle": "Prouvez que vous contrôlez la monnaie et la fiche devient la vôtre, sans modérateur au milieu. Le curateur qui l’a déposée passe éditeur, il n’est pas supprimé.",
+      "alreadyClaimed": "La propriété de cette fiche est déjà confirmée par le projet.",
+      "start": "Demander un défi",
+      "starting": "Demande…",
+      "check": "Vérifier",
+      "checking": "Vérification…",
+      "cancel": "Annuler",
+      "attempts": "tentatives utilisées : {used} sur 10",
+      "expires": "valable jusqu’au {at}",
+      "method": {
+        "OWNER_SIGNATURE": "Signature du propriétaire",
+        "DNS_TXT": "Enregistrement DNS",
+        "WELL_KNOWN": "Fichier sur le site"
+      },
+      "hint": {
+        "OWNER_SIGNATURE": "Vous signez un texte avec la clé de l’adresse propriétaire du contrat du jeton.",
+        "DNS_TXT": "Vous ajoutez un enregistrement TXT au domaine du site de cette fiche.",
+        "WELL_KNOWN": "Vous déposez un petit fichier texte sur le site de cette fiche."
+      },
+      "instruction": {
+        "OWNER_SIGNATURE": "Signez ce texte avec le portefeuille propriétaire du contrat (MetaMask → « Sign message »). Nous lisons owner() sur le contrat {address} et comparons avec l’adresse retrouvée dans la signature.",
+        "DNS_TXT": "Ajoutez cet enregistrement TXT au domaine {domain} puis cliquez sur Vérifier. Le DNS peut mettre quelques minutes.",
+        "WELL_KNOWN": "Déposez un fichier à cette adresse sur {domain}, avec le jeton à l’intérieur, puis cliquez sur Vérifier."
+      },
+      "reason": {
+        "unauth": "Connectez-vous d’abord",
+        "bad_method": "Méthode de vérification inconnue",
+        "card_not_found": "Fiche introuvable",
+        "already_claimed": "Cette fiche est déjà confirmée par le projet",
+        "no_website": "La fiche n’indique aucun site à vérifier",
+        "no_contracts": "La fiche n’a pas de contrat principal dont lire le propriétaire",
+        "too_many_claims": "Trop de demandes ouvertes — terminez-en ou annulez-en une",
+        "claim_not_found": "Demande introuvable",
+        "claim_closed": "Cette demande est déjà close",
+        "forbidden": "Cette demande appartient à quelqu’un d’autre",
+        "too_soon": "Vérifié à l’instant — réessayez dans une minute",
+        "attempts_exhausted": "Tentatives épuisées — lancez une nouvelle demande",
+        "expired": "Le défi a expiré — lancez une nouvelle demande",
+        "signature_required": "Collez d’abord la signature",
+        "signature_invalid": "Cela ne ressemble pas à une signature",
+        "signature_wrong_address": "La signature provient d’une autre adresse que le propriétaire du contrat",
+        "no_owner": "Ce contrat n’a pas d’owner() — utilisez le DNS ou le fichier",
+        "owner_unreadable": "Le propriétaire du contrat n’a pas pu être lu, réessayez",
+        "chain_unsupported": "Nous ne lisons pas encore cette chaîne",
+        "dns_no_record": "Cet enregistrement TXT n’est pas encore sur le domaine",
+        "dns_unreachable": "Le DNS était injoignable, réessayez",
+        "well_known_missing": "Le fichier n’est pas encore sur le site",
+        "well_known_unreachable": "Le site était injoignable, réessayez",
+        "token_not_found": "Jeton introuvable — vérifiez que vous l’avez copié en entier"
+      }
     }
   },
   "inviteCoin": {

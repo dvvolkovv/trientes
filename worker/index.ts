@@ -17,6 +17,7 @@ import { expireStaleDeletionRequests } from "../src/lib/company-deletion-expiry"
 import { warmProseTranslations } from "../src/lib/prose-warmup";
 import { verifyCardContracts } from "../src/lib/coin-card-onchain";
 import { pruneCardPricePoints, syncCardMarkets } from "../src/lib/coin-card-markets";
+import { expireStaleClaims } from "../src/lib/coin-card-claim";
 import { startBinance, stopBinance } from "./binance";
 
 async function runPriceSync() {
@@ -290,6 +291,21 @@ async function runCardMarketSync() {
   }
 }
 
+/**
+ * Слайс D: просроченные заявки на владение. Автопроверки доказательств нет
+ * сознательно — запись в DNS и файл появляются по действию человека, и он же
+ * нажимает «Проверить»; воркеру остаётся только гасить просроченные вызовы.
+ */
+async function runClaimSweep() {
+  const t0 = Date.now();
+  try {
+    const count = await expireStaleClaims({ prisma: prisma as never });
+    if (count > 0) console.log(`[worker] claim sweep ok: ${count} expired in ${Date.now() - t0}ms`);
+  } catch (err) {
+    console.error("[worker] claim sweep failed:", err);
+  }
+}
+
 async function runCleanup() {
   const t0 = Date.now();
   try {
@@ -371,6 +387,7 @@ async function main() {
   cron.schedule("25 3,15 * * *", () => void runProseWarmup());
   cron.schedule("10 5 * * *", () => void runContractVerify());
   cron.schedule("*/10 * * * *", () => void runCardMarketSync());
+  cron.schedule("20 * * * *", () => void runClaimSweep());
   cron.schedule("0 4 * * *", () => void runCleanup());
 
   // Live price feed via Binance WebSocket — top 20 coins.

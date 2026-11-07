@@ -2074,6 +2074,59 @@
         "forbidden": "No rights to the markets section",
         "card_not_found": "Card not found"
       }
+    },
+    "claim": {
+      "title": "Ownership verification",
+      "subtitle": "Prove you control this coin and the card becomes yours — no moderator in the middle. The curator who filed it is demoted to editor, not removed.",
+      "alreadyClaimed": "Ownership of this card is already confirmed by the project.",
+      "start": "Request a challenge",
+      "starting": "Requesting…",
+      "check": "Check",
+      "checking": "Checking…",
+      "cancel": "Cancel",
+      "attempts": "attempts used: {used} of 10",
+      "expires": "valid until {at}",
+      "method": {
+        "OWNER_SIGNATURE": "Owner signature",
+        "DNS_TXT": "DNS record",
+        "WELL_KNOWN": "File on the site"
+      },
+      "hint": {
+        "OWNER_SIGNATURE": "You sign a text with the key of the address that owns the token contract.",
+        "DNS_TXT": "You add one TXT record to the domain of the website on this card.",
+        "WELL_KNOWN": "You put a small text file on the website of this card."
+      },
+      "instruction": {
+        "OWNER_SIGNATURE": "Sign this text with the wallet that owns the contract (MetaMask → Sign message). We read owner() from the contract at {address} and compare it with the address recovered from the signature.",
+        "DNS_TXT": "Add this TXT record to the domain {domain} and press Check. DNS may take a few minutes to propagate.",
+        "WELL_KNOWN": "Put a file at this address on {domain} with the token inside, then press Check."
+      },
+      "reason": {
+        "unauth": "Sign in first",
+        "bad_method": "Unknown verification method",
+        "card_not_found": "Card not found",
+        "already_claimed": "This card is already confirmed by the project",
+        "no_website": "The card has no website to verify",
+        "no_contracts": "The card has no canonical contract to read the owner from",
+        "too_many_claims": "Too many open claims — finish or cancel one first",
+        "claim_not_found": "Claim not found",
+        "claim_closed": "This claim is already closed",
+        "forbidden": "This claim belongs to someone else",
+        "too_soon": "Checked a moment ago — try again in a minute",
+        "attempts_exhausted": "Attempts exhausted — start a new claim",
+        "expired": "The challenge has expired — start a new claim",
+        "signature_required": "Paste the signature first",
+        "signature_invalid": "This is not a valid signature",
+        "signature_wrong_address": "The signature is from a different address than the contract owner",
+        "no_owner": "This contract has no owner() — use the DNS record or the file",
+        "owner_unreadable": "Could not read the contract owner, try again",
+        "chain_unsupported": "We do not read this chain yet",
+        "dns_no_record": "No such TXT record on the domain yet",
+        "dns_unreachable": "DNS was unreachable, try again",
+        "well_known_missing": "The file is not on the site yet",
+        "well_known_unreachable": "The site was unreachable, try again",
+        "token_not_found": "The token was not found — check that you copied it fully"
+      }
     }
   },
   "inviteCoin": {

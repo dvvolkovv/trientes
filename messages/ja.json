@@ -2074,6 +2074,59 @@
         "forbidden": "市場セクションの権限がありません",
         "card_not_found": "カードが見つかりません"
       }
+    },
+    "claim": {
+      "title": "所有権の確認",
+      "subtitle": "この通貨を支配していることを示せば、カードはあなたのものになります。間に管理者は入りません。登録したキュレーターは削除ではなく編集者に下がります。",
+      "alreadyClaimed": "このカードの所有権はすでにプロジェクトが確認済みです。",
+      "start": "チャレンジを取得",
+      "starting": "取得中…",
+      "check": "確認",
+      "checking": "確認中…",
+      "cancel": "取消",
+      "attempts": "試行 {used} / 10",
+      "expires": "{at} まで有効",
+      "method": {
+        "OWNER_SIGNATURE": "所有者の署名",
+        "DNS_TXT": "DNSレコード",
+        "WELL_KNOWN": "サイト上のファイル"
+      },
+      "hint": {
+        "OWNER_SIGNATURE": "トークン契約を所有するアドレスの鍵でテキストに署名します。",
+        "DNS_TXT": "このカードのサイトのドメインに TXT レコードを1件追加します。",
+        "WELL_KNOWN": "このカードのサイトに小さなテキストファイルを置きます。"
+      },
+      "instruction": {
+        "OWNER_SIGNATURE": "契約を所有するウォレットでこのテキストに署名してください（MetaMask →「Sign message」）。契約 {address} の owner() を読み、署名から復元したアドレスと照合します。",
+        "DNS_TXT": "ドメイン {domain} にこの TXT レコードを追加して「確認」を押してください。DNS の反映には数分かかることがあります。",
+        "WELL_KNOWN": "{domain} のこのアドレスにトークンを書いたファイルを置き、「確認」を押してください。"
+      },
+      "reason": {
+        "unauth": "先にログインしてください",
+        "bad_method": "不明な確認方法です",
+        "card_not_found": "カードが見つかりません",
+        "already_claimed": "このカードはすでにプロジェクトが確認済みです",
+        "no_website": "確認に使えるサイトがカードに登録されていません",
+        "no_contracts": "所有者を読み取れる主要契約がカードにありません",
+        "too_many_claims": "未完了の申請が多すぎます。まず1件を完了または取消してください",
+        "claim_not_found": "申請が見つかりません",
+        "claim_closed": "この申請はすでに終了しています",
+        "forbidden": "この申請は他の方のものです",
+        "too_soon": "たった今確認しました。1分後にお試しください",
+        "attempts_exhausted": "試行回数を使い切りました。新しい申請を始めてください",
+        "expired": "チャレンジの期限が切れました。新しい申請を始めてください",
+        "signature_required": "先に署名を貼り付けてください",
+        "signature_invalid": "署名として読み取れません",
+        "signature_wrong_address": "署名のアドレスが契約の所有者と異なります",
+        "no_owner": "この契約に owner() はありません。DNS かファイルをお使いください",
+        "owner_unreadable": "契約の所有者を読めませんでした。再試行してください",
+        "chain_unsupported": "このチェーンはまだ読み取れません",
+        "dns_no_record": "ドメインにその TXT レコードはまだありません",
+        "dns_unreachable": "DNS に接続できませんでした。再試行してください",
+        "well_known_missing": "サイトにファイルがまだありません",
+        "well_known_unreachable": "サイトに接続できませんでした。再試行してください",
+        "token_not_found": "トークンが見つかりません。全文をコピーしたか確認してください"
+      }
     }
   },
   "inviteCoin": {

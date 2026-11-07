@@ -2074,6 +2074,59 @@
         "forbidden": "Piyasalar bölümü için yetki yok",
         "card_not_found": "Kart bulunamadı"
       }
+    },
+    "claim": {
+      "title": "Sahiplik doğrulaması",
+      "subtitle": "Bu coini kontrol ettiğinizi kanıtlayın, kart sizin olur — arada moderatör olmadan. Kartı giren küratör silinmez, editöre düşürülür.",
+      "alreadyClaimed": "Bu kartın sahipliğini proje zaten doğruladı.",
+      "start": "Doğrulama kodu al",
+      "starting": "Alınıyor…",
+      "check": "Kontrol et",
+      "checking": "Kontrol ediliyor…",
+      "cancel": "İptal",
+      "attempts": "kullanılan deneme: {used} / 10",
+      "expires": "{at} tarihine kadar geçerli",
+      "method": {
+        "OWNER_SIGNATURE": "Sahip imzası",
+        "DNS_TXT": "DNS kaydı",
+        "WELL_KNOWN": "Sitedeki dosya"
+      },
+      "hint": {
+        "OWNER_SIGNATURE": "Token sözleşmesinin sahibi olan adresin anahtarıyla bir metni imzalarsınız.",
+        "DNS_TXT": "Bu karttaki sitenin alan adına bir TXT kaydı eklersiniz.",
+        "WELL_KNOWN": "Bu karttaki siteye küçük bir metin dosyası koyarsınız."
+      },
+      "instruction": {
+        "OWNER_SIGNATURE": "Bu metni sözleşmenin sahibi cüzdanla imzalayın (MetaMask → “Sign message”). {address} sözleşmesinin owner() değerini okuyup imzadan çıkan adresle karşılaştırıyoruz.",
+        "DNS_TXT": "Bu TXT kaydını {domain} alan adına ekleyip Kontrol et’e basın. DNS’in yayılması birkaç dakika sürebilir.",
+        "WELL_KNOWN": "{domain} üzerinde bu adrese içinde kod olan bir dosya koyup Kontrol et’e basın."
+      },
+      "reason": {
+        "unauth": "Önce giriş yapın",
+        "bad_method": "Bilinmeyen doğrulama yöntemi",
+        "card_not_found": "Kart bulunamadı",
+        "already_claimed": "Bu kartı proje zaten doğruladı",
+        "no_website": "Kartta doğrulanacak bir site yok",
+        "no_contracts": "Kartta sahibini okuyabileceğimiz ana sözleşme yok",
+        "too_many_claims": "Çok fazla açık başvuru var — birini bitirin ya da iptal edin",
+        "claim_not_found": "Başvuru bulunamadı",
+        "claim_closed": "Bu başvuru kapanmış",
+        "forbidden": "Bu başvuru başkasına ait",
+        "too_soon": "Az önce kontrol edildi — bir dakika sonra deneyin",
+        "attempts_exhausted": "Denemeler tükendi — yeni başvuru başlatın",
+        "expired": "Doğrulama kodunun süresi doldu — yeni başvuru başlatın",
+        "signature_required": "Önce imzayı yapıştırın",
+        "signature_invalid": "Bu bir imzaya benzemiyor",
+        "signature_wrong_address": "İmza, sözleşme sahibinden farklı bir adrese ait",
+        "no_owner": "Bu sözleşmede owner() yok — DNS kaydını ya da dosyayı kullanın",
+        "owner_unreadable": "Sözleşme sahibi okunamadı, tekrar deneyin",
+        "chain_unsupported": "Bu ağı henüz okumuyoruz",
+        "dns_no_record": "Alan adında böyle bir TXT kaydı henüz yok",
+        "dns_unreachable": "DNS’e ulaşılamadı, tekrar deneyin",
+        "well_known_missing": "Dosya sitede henüz yok",
+        "well_known_unreachable": "Siteye ulaşılamadı, tekrar deneyin",
+        "token_not_found": "Kod bulunamadı — tamamını kopyaladığınızdan emin olun"
+      }
     }
   },
   "inviteCoin": {

@@ -16,6 +16,9 @@ import { CardTeamSection } from "@/components/coin-card-manage/team-section";
 import { PolicySection } from "@/components/coin-card-manage/policy-section";
 import { OnchainRecheck } from "@/components/coin-card-manage/onchain-recheck";
 import { MarketsRefresh } from "@/components/coin-card-manage/markets-refresh";
+import { ClaimSection } from "@/components/coin-card-manage/claim-section";
+import { websiteDomain } from "@/lib/claim-domain";
+import { claimMessage, isClaimed } from "@/lib/coin-card-claim";
 import {
   RevisionsSection,
   type RevisionItem,
@@ -38,7 +41,7 @@ export default async function CoinCardManagePage({
   const published = card.status === "APPROVED";
   const policy = card.policy ?? { multisig: false, threshold: 1, sections: [] };
 
-  const [signerCount, revisions] = await Promise.all([
+  const [signerCount, revisions, claim, viewer] = await Promise.all([
     prisma.coinCardMember.count({ where: { cardId: card.id, isSigner: true } }),
     prisma.coinCardRevision.findMany({
       where: { cardId: card.id, status: { not: "DRAFT" } },
@@ -49,6 +52,12 @@ export default async function CoinCardManagePage({
         approvals: { select: { decision: true, memberId: true } },
       },
     }),
+    prisma.coinCardClaim.findFirst({
+      where: { cardId: card.id, claimantId: userId, status: "PENDING" },
+      orderBy: { createdAt: "desc" },
+    }),
+    // Текст вызова подписывается от имени юзернейма — он же проверяется на сервере.
+    prisma.user.findUnique({ where: { id: userId }, select: { username: true } }),
   ]);
 
   const revisionItems: RevisionItem[] = revisions.map((r) => ({
@@ -142,6 +151,31 @@ export default async function CoinCardManagePage({
           mismatches: c.mismatches,
           verified: c.verifiedAt != null,
         }))}
+      />
+
+      <ClaimSection
+        cardId={card.id}
+        claimed={isClaimed(card.trust)}
+        domain={websiteDomain(card.links)}
+        canonicalAddress={card.contracts.find((c) => c.isCanonical)?.address ?? null}
+        claim={
+          claim
+            ? {
+                id: claim.id,
+                method: claim.method,
+                status: claim.status,
+                token: claim.token,
+                attempts: claim.attempts,
+                lastError: claim.lastError,
+                expiresAt: claim.expiresAt.toISOString().slice(0, 10),
+                message: claimMessage({
+                  slug: card.slug,
+                  claimant: viewer?.username ?? userId,
+                  token: claim.token,
+                }),
+              }
+            : null
+        }
       />
 
       <MarketsRefresh

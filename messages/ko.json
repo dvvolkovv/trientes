@@ -2074,6 +2074,59 @@
         "forbidden": "시장 섹션 권한이 없습니다",
         "card_not_found": "카드를 찾을 수 없습니다"
       }
+    },
+    "claim": {
+      "title": "소유권 확인",
+      "subtitle": "이 코인을 통제한다는 것을 증명하면 카드는 당신의 것이 됩니다. 중간에 운영자는 없습니다. 카드를 등록한 큐레이터는 삭제되지 않고 편집자로 내려갑니다.",
+      "alreadyClaimed": "이 카드의 소유권은 이미 프로젝트가 확인했습니다.",
+      "start": "챌린지 받기",
+      "starting": "요청 중…",
+      "check": "확인",
+      "checking": "확인 중…",
+      "cancel": "취소",
+      "attempts": "시도 {used} / 10",
+      "expires": "{at}까지 유효",
+      "method": {
+        "OWNER_SIGNATURE": "소유자 서명",
+        "DNS_TXT": "DNS 레코드",
+        "WELL_KNOWN": "사이트의 파일"
+      },
+      "hint": {
+        "OWNER_SIGNATURE": "토큰 컨트랙트를 소유한 주소의 키로 문구에 서명합니다.",
+        "DNS_TXT": "이 카드에 적힌 사이트 도메인에 TXT 레코드 하나를 추가합니다.",
+        "WELL_KNOWN": "이 카드에 적힌 사이트에 작은 텍스트 파일을 올립니다."
+      },
+      "instruction": {
+        "OWNER_SIGNATURE": "컨트랙트를 소유한 지갑으로 이 문구에 서명하세요(MetaMask → ‘Sign message’). 컨트랙트 {address}의 owner()를 읽어 서명에서 복원한 주소와 비교합니다.",
+        "DNS_TXT": "도메인 {domain}에 이 TXT 레코드를 추가하고 ‘확인’을 누르세요. DNS 전파에 몇 분이 걸릴 수 있습니다.",
+        "WELL_KNOWN": "{domain}의 이 주소에 토큰이 담긴 파일을 올리고 ‘확인’을 누르세요."
+      },
+      "reason": {
+        "unauth": "먼저 로그인하세요",
+        "bad_method": "알 수 없는 확인 방식입니다",
+        "card_not_found": "카드를 찾을 수 없습니다",
+        "already_claimed": "이 카드는 이미 프로젝트가 확인했습니다",
+        "no_website": "확인에 쓸 사이트가 카드에 없습니다",
+        "no_contracts": "소유자를 읽을 주요 컨트랙트가 카드에 없습니다",
+        "too_many_claims": "열린 신청이 너무 많습니다. 하나를 끝내거나 취소하세요",
+        "claim_not_found": "신청을 찾을 수 없습니다",
+        "claim_closed": "이 신청은 이미 종료되었습니다",
+        "forbidden": "이 신청은 다른 사람의 것입니다",
+        "too_soon": "방금 확인했습니다. 1분 뒤에 시도하세요",
+        "attempts_exhausted": "시도 횟수를 모두 썼습니다. 새 신청을 시작하세요",
+        "expired": "챌린지가 만료되었습니다. 새 신청을 시작하세요",
+        "signature_required": "먼저 서명을 붙여 넣으세요",
+        "signature_invalid": "서명으로 보이지 않습니다",
+        "signature_wrong_address": "서명 주소가 컨트랙트 소유자와 다릅니다",
+        "no_owner": "이 컨트랙트에는 owner()가 없습니다. DNS나 파일을 쓰세요",
+        "owner_unreadable": "컨트랙트 소유자를 읽지 못했습니다. 다시 시도하세요",
+        "chain_unsupported": "이 체인은 아직 읽지 못합니다",
+        "dns_no_record": "도메인에 해당 TXT 레코드가 아직 없습니다",
+        "dns_unreachable": "DNS에 접속하지 못했습니다. 다시 시도하세요",
+        "well_known_missing": "사이트에 파일이 아직 없습니다",
+        "well_known_unreachable": "사이트에 접속하지 못했습니다. 다시 시도하세요",
+        "token_not_found": "토큰을 찾지 못했습니다. 전체를 복사했는지 확인하세요"
+      }
     }
   },
   "inviteCoin": {

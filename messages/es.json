@@ -2074,6 +2074,59 @@
         "forbidden": "Sin permisos para la sección de mercados",
         "card_not_found": "Tarjeta no encontrada"
       }
+    },
+    "claim": {
+      "title": "Verificación de propiedad",
+      "subtitle": "Demuestra que controlas la moneda y la tarjeta será tuya, sin moderador por medio. El curador que la presentó baja a editor, no se elimina.",
+      "alreadyClaimed": "El proyecto ya confirmó la propiedad de esta tarjeta.",
+      "start": "Pedir el reto",
+      "starting": "Pidiendo…",
+      "check": "Comprobar",
+      "checking": "Comprobando…",
+      "cancel": "Cancelar",
+      "attempts": "intentos usados: {used} de 10",
+      "expires": "válido hasta {at}",
+      "method": {
+        "OWNER_SIGNATURE": "Firma del propietario",
+        "DNS_TXT": "Registro DNS",
+        "WELL_KNOWN": "Archivo en el sitio"
+      },
+      "hint": {
+        "OWNER_SIGNATURE": "Firmas un texto con la clave de la dirección propietaria del contrato del token.",
+        "DNS_TXT": "Añades un registro TXT al dominio del sitio de esta tarjeta.",
+        "WELL_KNOWN": "Subes un pequeño archivo de texto al sitio de esta tarjeta."
+      },
+      "instruction": {
+        "OWNER_SIGNATURE": "Firma este texto con la cartera propietaria del contrato (MetaMask → «Sign message»). Leemos owner() del contrato {address} y lo comparamos con la dirección recuperada de la firma.",
+        "DNS_TXT": "Añade este registro TXT al dominio {domain} y pulsa Comprobar. El DNS puede tardar unos minutos.",
+        "WELL_KNOWN": "Sube un archivo a esta dirección en {domain} con el token dentro y pulsa Comprobar."
+      },
+      "reason": {
+        "unauth": "Inicia sesión primero",
+        "bad_method": "Método de verificación desconocido",
+        "card_not_found": "Tarjeta no encontrada",
+        "already_claimed": "El proyecto ya confirmó esta tarjeta",
+        "no_website": "La tarjeta no indica ningún sitio que podamos verificar",
+        "no_contracts": "La tarjeta no tiene contrato principal del que leer el propietario",
+        "too_many_claims": "Demasiadas solicitudes abiertas: termina o cancela una",
+        "claim_not_found": "Solicitud no encontrada",
+        "claim_closed": "Esta solicitud ya está cerrada",
+        "forbidden": "Esta solicitud es de otra persona",
+        "too_soon": "Se comprobó hace un instante: inténtalo en un minuto",
+        "attempts_exhausted": "Intentos agotados: inicia una nueva solicitud",
+        "expired": "El reto caducó: inicia una nueva solicitud",
+        "signature_required": "Pega primero la firma",
+        "signature_invalid": "Esto no parece una firma",
+        "signature_wrong_address": "La firma es de una dirección distinta al propietario del contrato",
+        "no_owner": "Este contrato no tiene owner(): usa el registro DNS o el archivo",
+        "owner_unreadable": "No se pudo leer el propietario del contrato, reinténtalo",
+        "chain_unsupported": "Todavía no leemos esta cadena",
+        "dns_no_record": "Ese registro TXT aún no está en el dominio",
+        "dns_unreachable": "El DNS no respondió, reinténtalo",
+        "well_known_missing": "El archivo aún no está en el sitio",
+        "well_known_unreachable": "El sitio no respondió, reinténtalo",
+        "token_not_found": "No se encontró el token: comprueba que lo copiaste completo"
+      }
     }
   },
   "inviteCoin": {

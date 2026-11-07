@@ -2074,6 +2074,59 @@
         "forbidden": "Keine Rechte für den Bereich Märkte",
         "card_not_found": "Karte nicht gefunden"
       }
+    },
+    "claim": {
+      "title": "Eigentumsnachweis",
+      "subtitle": "Weisen Sie die Kontrolle über die Münze nach — dann gehört die Karte Ihnen, ohne Moderator in der Mitte. Der Kurator, der sie eingereicht hat, wird zum Editor herabgesetzt, nicht entfernt.",
+      "alreadyClaimed": "Das Eigentum an dieser Karte hat das Projekt bereits bestätigt.",
+      "start": "Challenge anfordern",
+      "starting": "Wird angefordert…",
+      "check": "Prüfen",
+      "checking": "Wird geprüft…",
+      "cancel": "Abbrechen",
+      "attempts": "Versuche: {used} von 10",
+      "expires": "gültig bis {at}",
+      "method": {
+        "OWNER_SIGNATURE": "Signatur des Eigentümers",
+        "DNS_TXT": "DNS-Eintrag",
+        "WELL_KNOWN": "Datei auf der Website"
+      },
+      "hint": {
+        "OWNER_SIGNATURE": "Sie signieren einen Text mit dem Schlüssel der Adresse, die den Token-Vertrag besitzt.",
+        "DNS_TXT": "Sie fügen einen TXT-Eintrag zur Domain der Website aus dieser Karte hinzu.",
+        "WELL_KNOWN": "Sie legen eine kleine Textdatei auf der Website aus dieser Karte ab."
+      },
+      "instruction": {
+        "OWNER_SIGNATURE": "Signieren Sie diesen Text mit der Wallet, die den Vertrag besitzt (MetaMask → „Sign message“). Wir lesen owner() beim Vertrag {address} und vergleichen mit der aus der Signatur gewonnenen Adresse.",
+        "DNS_TXT": "Fügen Sie diesen TXT-Eintrag zur Domain {domain} hinzu und klicken Sie auf Prüfen. DNS braucht manchmal einige Minuten.",
+        "WELL_KNOWN": "Legen Sie auf {domain} eine Datei unter dieser Adresse ab, darin das Token, und klicken Sie auf Prüfen."
+      },
+      "reason": {
+        "unauth": "Bitte zuerst anmelden",
+        "bad_method": "Unbekanntes Nachweisverfahren",
+        "card_not_found": "Karte nicht gefunden",
+        "already_claimed": "Diese Karte ist vom Projekt bereits bestätigt",
+        "no_website": "Die Karte nennt keine Website zur Prüfung",
+        "no_contracts": "Die Karte hat keinen Hauptvertrag, dessen Eigentümer wir lesen könnten",
+        "too_many_claims": "Zu viele offene Anträge — schließen oder abbrechen Sie erst einen",
+        "claim_not_found": "Antrag nicht gefunden",
+        "claim_closed": "Dieser Antrag ist bereits geschlossen",
+        "forbidden": "Dieser Antrag gehört jemand anderem",
+        "too_soon": "Gerade eben geprüft — bitte in einer Minute erneut",
+        "attempts_exhausted": "Versuche erschöpft — neuen Antrag starten",
+        "expired": "Die Challenge ist abgelaufen — neuen Antrag starten",
+        "signature_required": "Bitte zuerst die Signatur einfügen",
+        "signature_invalid": "Das ist keine gültige Signatur",
+        "signature_wrong_address": "Die Signatur stammt von einer anderen Adresse als der Vertragseigentümer",
+        "no_owner": "Dieser Vertrag hat kein owner() — nutzen Sie DNS-Eintrag oder Datei",
+        "owner_unreadable": "Der Vertragseigentümer war nicht lesbar, bitte erneut",
+        "chain_unsupported": "Diese Chain lesen wir noch nicht",
+        "dns_no_record": "Diesen TXT-Eintrag gibt es auf der Domain noch nicht",
+        "dns_unreachable": "DNS war nicht erreichbar, bitte erneut",
+        "well_known_missing": "Die Datei liegt noch nicht auf der Website",
+        "well_known_unreachable": "Die Website war nicht erreichbar, bitte erneut",
+        "token_not_found": "Das Token wurde nicht gefunden — prüfen Sie, ob es vollständig kopiert ist"
+      }
     }
   },
   "inviteCoin": {

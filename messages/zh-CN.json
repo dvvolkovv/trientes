@@ -2074,6 +2074,59 @@
         "forbidden": "没有市场板块的权限",
         "card_not_found": "未找到卡片"
       }
+    },
+    "claim": {
+      "title": "所有权验证",
+      "subtitle": "证明你掌控这枚币，卡片就归你，中间没有管理员。最初提交卡片的维护者会降为编辑，而不是被移除。",
+      "alreadyClaimed": "这张卡片的所有权项目方已经确认过了。",
+      "start": "获取验证码",
+      "starting": "获取中…",
+      "check": "检查",
+      "checking": "检查中…",
+      "cancel": "取消",
+      "attempts": "已用尝试：{used} / 10",
+      "expires": "有效期至 {at}",
+      "method": {
+        "OWNER_SIGNATURE": "所有者签名",
+        "DNS_TXT": "DNS 记录",
+        "WELL_KNOWN": "网站上的文件"
+      },
+      "hint": {
+        "OWNER_SIGNATURE": "你用持有代币合约的地址私钥对一段文字签名。",
+        "DNS_TXT": "你在这张卡片所填网站的域名上加一条 TXT 记录。",
+        "WELL_KNOWN": "你在这张卡片所填网站上放一个小文本文件。"
+      },
+      "instruction": {
+        "OWNER_SIGNATURE": "请用持有合约的钱包对这段文字签名（MetaMask →“Sign message”）。我们读取合约 {address} 的 owner()，与从签名恢复出的地址比对。",
+        "DNS_TXT": "把这条 TXT 记录加到域名 {domain}，然后点击“检查”。DNS 生效可能需要几分钟。",
+        "WELL_KNOWN": "在 {domain} 的这个地址放一个写有验证码的文件，然后点击“检查”。"
+      },
+      "reason": {
+        "unauth": "请先登录",
+        "bad_method": "未知的验证方式",
+        "card_not_found": "未找到卡片",
+        "already_claimed": "这张卡片项目方已经确认过了",
+        "no_website": "卡片里没有可供验证的网站",
+        "no_contracts": "卡片里没有可读取所有者的主合约",
+        "too_many_claims": "未完成的申请太多——先完成或取消一个",
+        "claim_not_found": "未找到申请",
+        "claim_closed": "该申请已经结束",
+        "forbidden": "这条申请属于他人",
+        "too_soon": "刚刚才检查过——请一分钟后再试",
+        "attempts_exhausted": "尝试次数已用尽——请重新发起申请",
+        "expired": "验证码已过期——请重新发起申请",
+        "signature_required": "请先粘贴签名",
+        "signature_invalid": "这看起来不是签名",
+        "signature_wrong_address": "签名地址与合约所有者不一致",
+        "no_owner": "该合约没有 owner()——请改用 DNS 记录或文件",
+        "owner_unreadable": "没能读到合约所有者，请重试",
+        "chain_unsupported": "我们暂时还读不了这条链",
+        "dns_no_record": "域名上还没有这条 TXT 记录",
+        "dns_unreachable": "DNS 暂时无法访问，请重试",
+        "well_known_missing": "网站上还没有这个文件",
+        "well_known_unreachable": "网站暂时无法访问，请重试",
+        "token_not_found": "没找到验证码——请确认已完整复制"
+      }
     }
   },
   "inviteCoin": {
