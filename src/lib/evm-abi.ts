@@ -11,6 +11,7 @@ export const SELECTORS = {
   symbol: "0x95d89b41",
   decimals: "0x313ce567",
   totalSupply: "0x18160ddd",
+  balanceOf: "0x70a08231", // balanceOf(address)
   owner: "0x8da5cb5b",
   mint: "0x40c10f19", // mint(address,uint256)
   pause: "0x8456cb59", // pause()
@@ -28,6 +29,11 @@ export class DecodeError extends Error {
   constructor() {
     super("decode_failed");
   }
+}
+
+/** Адрес как аргумент вызова: 32 байта, выровненные нулями слева. */
+export function encodeAddressArg(address: string): string {
+  return address.trim().toLowerCase().replace(/^0x/, "").padStart(64, "0");
 }
 
 export function isEvmAddress(value: string | null | undefined): boolean {
