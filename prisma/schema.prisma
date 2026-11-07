@@ -808,6 +808,7 @@ model CoinCard {
   priceIndex  CoinCardPriceIndex?
   pricePoints CoinCardPricePoint[]
   claims      CoinCardClaim[]
+  supply      CoinCardSupply?
 
   @@index([status, createdAt])
   @@index([trust])
@@ -938,6 +939,11 @@ model CoinCardPriceIndex {
   spreadPct    Float?
   confidence   String // HIGH | MEDIUM | LOW
   method       String   @default("VWMEDIAN_V1")
+  // Слайс E: цена, умноженная на выпуск. Считается здесь, а не в CoinCardSupply,
+  // потому что меняется с ценой (каждые 10 минут), а не с выпуском (раз в час).
+  marketCapUsd Float?
+  fdvUsd       Float?
+  supplySource String? // ONCHAIN | SELF_REPORTED — чем мерили выпуск
   computedAt   DateTime
 }
 
@@ -954,6 +960,33 @@ model CoinCardPricePoint {
 
   @@unique([cardId, at])
   @@index([cardId, at])
+}
+
+// Слайс E: факт сети о выпуске — что ответили контракт и адреса исключений.
+// Отдельная модель, а не поля в CoinCard: заявление проекта лежит в `tokenomics`
+// и не должно затираться фактом (то же правило, что у контрактов в слайсе B).
+model CoinCardSupply {
+  id              String   @id @default(cuid())
+  cardId          String   @unique
+  card            CoinCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  chain           String
+  address         String
+  decimals        Int
+  // Десятичные строки в монетах, не в минимальных единицах: uint256 в Float не влезает.
+  totalSupply     String
+  excludedTotal   String
+  circulating     String
+  // [{address, label, balance, error}] — из чего сложился excludedTotal.
+  excluded        Json
+  // Хотя бы один адрес не ответил: расчёт неполный, и в карточке об этом сказано.
+  partial         Boolean  @default(false)
+  // Отклонение заявленного проектом circulating от посчитанного, в процентах.
+  claimedDeltaPct Float?
+  method          String   @default("ONCHAIN_V1")
+  checkedAt       DateTime
+  checkError      String?
+
+  @@index([checkedAt])
 }
 
 // Заявка на подтверждение владения карточкой. Отдельная модель, а не поля в
