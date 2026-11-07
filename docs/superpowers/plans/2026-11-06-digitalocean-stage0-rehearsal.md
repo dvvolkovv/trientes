@@ -48,7 +48,7 @@ Expected: `git status --porcelain` пуст, `Unpushed commits: 0`. Иначе *
 ```bash
 BASE_SHA=$(ssh -o BatchMode=yes dv@85.192.25.242 'git -C ~/trientes rev-parse HEAD')
 printf 'BASE_SHA=%s\n' "$BASE_SHA" >> /Users/dmitry/.trientes-migration/stage0.env
-ssh -o BatchMode=yes "dv@$OLD_IP" "cd ~/trientes && test ! -e .worktrees/do-stage0-source && git worktree add --detach .worktrees/do-stage0-source '$BASE_SHA'"
+ssh -o BatchMode=yes "dv@$OLD_IP" "cd ~/trientes && test ! -e .worktrees/do-stage0-source && git worktree add --detach .worktrees/do-stage0-source '$BASE_SHA' && git worktree lock .worktrees/do-stage0-source"
 ```
 
 Expected: отдельный detached worktree содержит ровно `BASE_SHA` и не меняется при последующих commits в production. Каталог `.worktrees` игнорируется Git. Production `.env` копируется отдельно в Task 4, поскольку его нет в новом worktree.
@@ -247,6 +247,7 @@ chmod 600 /Users/dmitry/.trientes-migration/aeza-temporary.pub
 scp -q -o BatchMode=yes /Users/dmitry/.trientes-migration/aeza-temporary.pub "root@$NEW_IP:/root/aeza-temporary.pub"
 ssh -o BatchMode=yes "root@$NEW_IP" 'set -e; for file in /root/.ssh/authorized_keys /home/dv/.ssh/authorized_keys; do grep -qxFf /root/aeza-temporary.pub "$file" || cat /root/aeza-temporary.pub >> "$file"; done; chown dv:dv /home/dv/.ssh/authorized_keys; chmod 600 /root/.ssh/authorized_keys /home/dv/.ssh/authorized_keys; rm -f /root/aeza-temporary.pub; install -d -m 700 -o dv -g dv /home/dv/migration-stage0; install -d -m 700 /root/migration-stage0'
 ssh -o BatchMode=yes "dv@$OLD_IP" 'sudo -n true'
+ssh -o BatchMode=yes "dv@$OLD_IP" "if test ! -d /home/dv/migration-stage0/source-clone/.git; then git clone --no-hardlinks /home/dv/trientes/.git /home/dv/migration-stage0/source-clone && git -C /home/dv/migration-stage0/source-clone checkout --detach '$BASE_SHA' && git -C /home/dv/migration-stage0/source-clone remote set-url origin git@github.com:dvvolkovv/trientes.git; fi && test \"\$(git -C /home/dv/migration-stage0/source-clone rev-parse HEAD)\" = '$BASE_SHA' && test -z \"\$(git -C /home/dv/migration-stage0/source-clone status --porcelain)\" && git -C /home/dv/migration-stage0/source-clone cat-file -e '$BASE_SHA^{commit}' && git -C /home/dv/migration-stage0/source-clone fsck --no-dangling"
 ```
 
 Expected: Aeza может подключаться к target только по своему ключу и только через разрешённый firewall; временный root key доступ будет удалён в cutover plan.
@@ -262,7 +263,7 @@ SSH='ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new'
 rsync -a --stats -e "$SSH" \
   --exclude node_modules --exclude .next --exclude .next-preview \
   --exclude .worktrees --exclude test-results --exclude playwright-report \
-  /home/dv/trientes/.worktrees/do-stage0-source/ "dv@$NEW_IP:/home/dv/trientes/"
+  /home/dv/migration-stage0/source-clone/ "dv@$NEW_IP:/home/dv/trientes/"
 rsync -a -e "$SSH" /home/dv/trientes/.env "dv@$NEW_IP:/home/dv/trientes/.env"
 rsync -a -e "$SSH" --exclude authorized_keys --exclude known_hosts /home/dv/.ssh/ "dv@$NEW_IP:/home/dv/.ssh/"
 rsync -a -e "$SSH" /home/dv/.pgpass /home/dv/.trientes-dbpass /home/dv/.trientes-bot-secret /home/dv/.claude.json "dv@$NEW_IP:/home/dv/"
@@ -331,10 +332,10 @@ Expected: configs, symlinks, TLS material и static files на target; default n
 
 ```bash
 source /Users/dmitry/.trientes-migration/stage0.env
-ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && git status --short --branch && git rev-parse HEAD && stat -c "%a %U:%G %n" .env ~/.pgpass ~/.trientes-dbpass ~/.trientes-bot-secret ~/.claude.json && test -d /var/www/trientes-exchange && test -L /var/www/trientes-downloads/trientes.apk'
+ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && test -d .git && git status --short --branch && git rev-parse HEAD && git cat-file -e HEAD^{commit} && stat -c "%a %U:%G %n" .env ~/.pgpass ~/.trientes-dbpass ~/.trientes-bot-secret ~/.claude.json && test -d /var/www/trientes-exchange && test -L /var/www/trientes-downloads/trientes.apk'
 ```
 
-Expected: SHA совпадает с `BASE_SHA`, `.env` и protected files mode 600 владельца `dv`; APK symlink существует. Содержимое файлов не выводится.
+Expected: standalone `.git` директория, рабочие `git status`/`cat-file`, SHA совпадает с `BASE_SHA`, `.env` и protected files mode 600 владельца `dv`; APK symlink существует. Содержимое файлов не выводится.
 
 ### Task 5: Выполнить PostgreSQL и Redis rehearsal
 
@@ -524,6 +525,8 @@ Expected: outbound HTTP и Telegram `getMe ok: true`. Token не выводит�
 
 **Files:**
 - Create protected report: `/Users/dmitry/.trientes-migration/stage0-readiness.md`
+- Copy protected evidence: `/Users/dmitry/.trientes-migration/postfix-memory.csv`
+- Preserve protected evidence: `/Users/dmitry/.trientes-migration/postfix-pm2.log`
 
 - [ ] **Step 1: Проверить неизменность публичных DNS**
 
@@ -538,10 +541,22 @@ Expected: A `@`/`www` остаются `85.192.25.242`, MX и NS остаютс�
 
 - [ ] **Step 2: Записать readiness report**
 
+Скопировать завершённые post-fix memory observations и проверить защищённые права:
+
+```bash
+source /Users/dmitry/.trientes-migration/stage0.env
+scp -q -o BatchMode=yes "dv@$OLD_IP:/home/dv/migration-stage0/postfix-memory.csv" /Users/dmitry/.trientes-migration/postfix-memory.csv
+chmod 600 /Users/dmitry/.trientes-migration/postfix-memory.csv /Users/dmitry/.trientes-migration/postfix-pm2.log
+wc -l /Users/dmitry/.trientes-migration/postfix-memory.csv
+```
+
+Expected: не менее 120 строк при завершённом двухчасовом soak; при активном production-окне monitor не останавливается ради отчёта. Если процесс завершился раньше, сохранить имеющиеся данные и явно отметить причину, не выдумывать тренд. Отдельно зафиксировать изменения RSS/PID/restart count, не называя рост утечкой без heap/profile evidence.
+
 В `/Users/dmitry/.trientes-migration/stage0-readiness.md` зафиксировать через Write:
 
 - Droplet ID/IP, размер, backups и firewall;
-- исходный `BASE_SHA`, отдельный `/home/dv/trientes/.worktrees/do-stage0-source` и совпадение checkout;
+- исходный `BASE_SHA`, locked baseline worktree и standalone `/home/dv/migration-stage0/source-clone` с рабочей `.git` директорией и совпадением checkout;
+- post-fix PM2 events и фактическую динамику RSS/PID/restart count из `postfix-memory.csv`, без необоснованного вывода об утечке;
 - результат restart diagnosis;
 - SHA-256 rehearsal dump и RDB;
 - DB counts/latest_snapshot/migrations и Redis DBSIZE;
