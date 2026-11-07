@@ -535,6 +535,8 @@ Expected: outbound HTTP и Telegram `getMe ok: true`. Token не выводит�
 - Create protected report: `/Users/dmitry/.trientes-migration/stage0-readiness.md`
 - Create protected security handoff: `/Users/dmitry/.trientes-migration/cutover-security-requirements.md`
 - Create protected live-state handoff: `/Users/dmitry/.trientes-migration/cutover-data-delta-requirements.md`
+- Create protected build handoff: `/Users/dmitry/.trientes-migration/cutover-build-requirements.md`
+- Preserve sanitized Task 6 evidence: `/Users/dmitry/.trientes-migration/task6-*.log`
 - Copy protected evidence: `/Users/dmitry/.trientes-migration/postfix-memory.csv`
 - Preserve protected evidence: `/Users/dmitry/.trientes-migration/postfix-pm2.log`
 
@@ -570,7 +572,7 @@ Expected: не менее 120 строк при завершённом двух�
 - результат restart diagnosis;
 - SHA-256 rehearsal dump и RDB;
 - DB counts/latest_snapshot/migrations и Redis DBSIZE;
-- результаты build и полного test suite;
+- результаты build и полного test suite, включая явный статус `UNRESOLVED UPSTREAM/INTERMITTENT` для Next.js 16.2.6 Google Fonts и ссылку на `cutover-build-requirements.md`;
 - HTTPS/health/static/privacy/outbound checks;
 - подтверждение, что worker/bot не запускались, DNS не менялся;
 - открытые замечания, если они есть, либо явное `Ready for separate DNS delegation plan: YES`.
@@ -631,3 +633,34 @@ chmod 600 /Users/dmitry/.trientes-migration/cutover-data-delta-requirements.md
 ```
 
 Expected: handoff mode 0600 и передан в будущий cutover plan. `--delete` на живом state до полной остановки writers и itemized dry-run запрещён.
+
+- [ ] **Step 6: Зафиксировать unresolved Next.js build issue и путь финальной сборки**
+
+Проверить наличие sanitized `/Users/dmitry/.trientes-migration/task6-npm-ci.log`, `task6-tests.log`, `task6-build-failed.log`, `task6-build-success.log`, `task6-migrate-status.log` и `task6-evidence.md` с mode 0600.
+
+Создать `/Users/dmitry/.trientes-migration/cutover-build-requirements.md` через Write:
+
+```markdown
+# Обязательные требования к финальной сборке и cutover
+
+## Статус
+UNRESOLVED UPSTREAM/INTERMITTENT ISSUE — successful retry is a workaround, not a fix.
+
+Сигнатуры: `Module not found @vercel/turbopack-next/internal/font/google/font`, `next/font/google queries have exactly one entry`, `NextFontGoogleFontFileReplacer`. BASE_SHA rehearsal: 8ce8539f2ffdabcab1edbad18731f829e72b3034. Подробности и BUILD_ID — в `task6-evidence.md`.
+
+## Запрещено
+- Не выполнять dependency upgrade или `npm audit fix` во время cutover.
+- Не считать retry исправлением и не менять font import как случайный workaround.
+
+## Выбрать один проверенный путь заранее
+1. Отдельная задача: next + eslint-config-next 16.4.3, extensionless regression fixture, полный test suite и несколько чистых сборок до cutover.
+2. Проверенный `.next`: зафиксировать BASE_SHA/BUILD_ID, защищённый архив с SHA-256 и проверить запуск именно этого BUILD_ID без чистой пересборки.
+
+Контролируемый retry допустим только при совпадении известной error signature; новая ошибка — stop и отдельная диагностика. NFT warning документировать отдельно.
+```
+
+```bash
+chmod 600 /Users/dmitry/.trientes-migration/cutover-build-requirements.md
+```
+
+Expected: handoff и sanitized logs mode 0600; readiness report прямо называет issue нерешённой и ссылается на выбранный путь сборки. Upgrade во время cutover запрещён.
