@@ -53,6 +53,7 @@ model User {
   notifyEmail              Boolean                   @default(false)
   notifyWebPush            Boolean                   @default(false)
   coinCardsStewarded       CoinCard[]                @relation("CoinCardSteward")
+  coinCardClaims           CoinCardClaim[]           @relation("CoinCardClaimant")
   coinCardsReviewed        CoinCard[]                @relation("CoinCardReviewer")
   coinCardMemberships      CoinCardMember[]          @relation("CoinCardMemberUser")
   coinCardInvitesMade      CoinCardInvite[]          @relation("CoinCardInviteCreator")
@@ -313,6 +314,21 @@ enum CoinCardTrust {
   CONTRACT_VERIFIED
   PROJECT_CLAIMED
   FULLY_VERIFIED
+}
+
+// Слайс D: способы доказать контроль над монетой.
+enum ClaimMethod {
+  OWNER_SIGNATURE // подпись ключом адреса-владельца контракта
+  DNS_TXT // TXT-запись на домене сайта
+  WELL_KNOWN // файл на домене сайта
+}
+
+enum ClaimStatus {
+  PENDING
+  VERIFIED
+  FAILED
+  EXPIRED
+  CANCELLED
 }
 
 enum ProvenanceKind {
@@ -791,6 +807,7 @@ model CoinCard {
 
   priceIndex  CoinCardPriceIndex?
   pricePoints CoinCardPricePoint[]
+  claims      CoinCardClaim[]
 
   @@index([status, createdAt])
   @@index([trust])
@@ -937,6 +954,32 @@ model CoinCardPricePoint {
 
   @@unique([cardId, at])
   @@index([cardId, at])
+}
+
+// Заявка на подтверждение владения карточкой. Отдельная модель, а не поля в
+// CoinCard: заявок бывает несколько (разные способы, разные люди), а попытки с
+// ошибками — это журнал, а не свойство монеты.
+model CoinCardClaim {
+  id          String      @id @default(cuid())
+  cardId      String
+  card        CoinCard    @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  claimantId  String
+  claimant    User        @relation("CoinCardClaimant", fields: [claimantId], references: [id], onDelete: Cascade)
+  method      ClaimMethod
+  status      ClaimStatus @default(PENDING)
+  /// Токен вызова: ищется в DNS и в файле, входит в текст подписи.
+  token       String      @unique
+  /// Домен или адрес, который мы проверяли, — для публичной истории.
+  target      String?
+  attempts    Int         @default(0)
+  lastError   String?
+  lastTriedAt DateTime?
+  verifiedAt  DateTime?
+  expiresAt   DateTime
+  createdAt   DateTime    @default(now())
+
+  @@index([cardId, status])
+  @@index([claimantId, createdAt])
 }
 
 // Пакет изменений. thresholdAt/signerCountAt — снимок на момент подачи: без
