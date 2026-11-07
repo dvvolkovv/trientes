@@ -6,6 +6,7 @@ import {
   hourBucket,
   pruneCardPricePoints,
   resolveExchange,
+  supplyForCap,
   syncCardMarkets,
   type MarketClaim,
   type PrismaLike,
@@ -155,6 +156,8 @@ const card = {
   id: "c1",
   symbol: "TAL",
   provenance: {},
+  tokenomics: null,
+  supply: null,
   markets: [
     { id: "m-binance", kind: "CEX", exchangeId: null, exchangeName: "Binance", pair: "TAL/USDT", priceUsd: null, volumeUsd24h: null },
     { id: "m-gate", kind: "CEX", exchangeId: null, exchangeName: "Gate.io", pair: "TAL/USDT", priceUsd: null, volumeUsd24h: null },
@@ -244,6 +247,107 @@ describe("syncCardMarkets", () => {
     });
     expect(stats.cards).toBe(0);
     expect(touched).toBe(false);
+  });
+});
+
+describe("supplyForCap", () => {
+  it("берёт проверенный выпуск, когда он есть", () => {
+    expect(
+      supplyForCap({
+        tokenomics: { circulating: 999, max: 2000 },
+        supply: { circulating: "700", totalSupply: "1000" },
+      }),
+    ).toEqual({ circulating: "700", fdvBase: "2000", source: "ONCHAIN" });
+  });
+
+  it("без максимального выпуска FDV считается по общему из сети", () => {
+    expect(
+      supplyForCap({ tokenomics: {}, supply: { circulating: "700", totalSupply: "1000" } }),
+    ).toEqual({ circulating: "700", fdvBase: "1000", source: "ONCHAIN" });
+  });
+
+  it("без записи из сети берёт заявление проекта и честно это помечает", () => {
+    expect(supplyForCap({ tokenomics: { circulating: 500, total: 900 }, supply: null })).toEqual({
+      circulating: "500",
+      fdvBase: "900",
+      source: "SELF_REPORTED",
+    });
+  });
+
+  it("нечего умножать — нет и капитализации", () => {
+    expect(supplyForCap({ tokenomics: {}, supply: null })).toEqual({
+      circulating: null,
+      fdvBase: null,
+      source: "SELF_REPORTED",
+    });
+  });
+});
+
+describe("капитализация в индексе", () => {
+  const feed = () =>
+    fetchFor({
+      "api.binance.com": [
+        { symbol: "TALUSDT", lastPrice: "2.00", quoteVolume: "600000", priceChangePercent: "3" },
+      ],
+      "api.gateio.ws": [
+        { currency_pair: "TAL_USDT", last: "2.02", quote_volume: "400000", change_percentage: "2" },
+      ],
+    });
+
+  it("считается по проверенному выпуску и помечается ONCHAIN", async () => {
+    const { prisma, calls } = fakePrisma([
+      {
+        ...card,
+        tokenomics: { max: 2000 },
+        supply: { circulating: "700", totalSupply: "1000" },
+      },
+    ]);
+    await syncCardMarkets({ prisma, now: NOW, fetchImpl: feed() });
+
+    const index = calls.find((c) => c.table === "index");
+    expect(index?.args.create).toMatchObject({
+      marketCapUsd: 1400,
+      fdvUsd: 4000,
+      supplySource: "ONCHAIN",
+    });
+    const prov = calls.find((c) => c.table === "card");
+    expect((prov?.args.data as { provenance: Record<string, unknown> }).provenance).toMatchObject({
+      marketCap: { kind: "AGGREGATED", source: "2", at: NOW.toISOString() },
+    });
+  });
+
+  it("по заявлению проекта помечается SELF_REPORTED", async () => {
+    const { prisma, calls } = fakePrisma([
+      { ...card, tokenomics: { circulating: 300, total: 1000 }, supply: null },
+    ]);
+    await syncCardMarkets({ prisma, now: NOW, fetchImpl: feed() });
+
+    const index = calls.find((c) => c.table === "index");
+    expect(index?.args.create).toMatchObject({
+      marketCapUsd: 600,
+      fdvUsd: 2000,
+      supplySource: "SELF_REPORTED",
+    });
+    const prov = calls.find((c) => c.table === "card");
+    expect((prov?.args.data as { provenance: Record<string, unknown> }).provenance).toMatchObject({
+      marketCap: { kind: "SELF_REPORTED", source: null, at: NOW.toISOString() },
+    });
+  });
+
+  it("без выпуска вовсе капитализация остаётся пустой", async () => {
+    const { prisma, calls } = fakePrisma([{ ...card, tokenomics: {}, supply: null }]);
+    await syncCardMarkets({ prisma, now: NOW, fetchImpl: feed() });
+
+    const index = calls.find((c) => c.table === "index");
+    expect(index?.args.create).toMatchObject({
+      marketCapUsd: null,
+      fdvUsd: null,
+      supplySource: null,
+    });
+    const prov = calls.find((c) => c.table === "card");
+    expect((prov?.args.data as { provenance: Record<string, unknown> }).provenance).not.toHaveProperty(
+      "marketCap",
+    );
   });
 });
 

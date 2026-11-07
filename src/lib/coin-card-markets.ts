@@ -13,6 +13,7 @@ import { ALL_CEX_IDS, getSnapshots, type SnapshotFetch, type SnapshotMap } from 
 import { parsePair } from "@/lib/pair";
 import { computeIndex, type IndexCandidate, type IndexResult } from "@/lib/price-index";
 import { mergeProvenance } from "@/lib/coin-card-provenance";
+import { fdv, marketCap } from "@/lib/coin-card-supply";
 import { ANCHORS, quoteToUsd, USD_QUOTES, type AnchorPrices } from "@/lib/quote-usd";
 
 export type MarketCheckError =
@@ -127,6 +128,10 @@ type CardRow = {
   id: string;
   symbol: string;
   provenance: unknown;
+  /** Слайс E: заявление проекта о выпуске — резерв, когда сети нечего сказать. */
+  tokenomics: unknown;
+  /** Слайс E: проверенный выпуск, если он посчитан. */
+  supply: { circulating: string; totalSupply: string } | null;
   markets: MarketRow[];
 };
 
@@ -188,6 +193,8 @@ export async function syncCardMarkets(args: {
       id: true,
       symbol: true,
       provenance: true,
+      tokenomics: true,
+      supply: { select: { circulating: true, totalSupply: true } },
       markets: {
         select: {
           id: true, kind: true, exchangeId: true, exchangeName: true,
@@ -270,13 +277,51 @@ export async function syncCardMarkets(args: {
   return stats;
 }
 
+/**
+ * Слайс E: какой выпуск берём под капитализацию. Проверенный из сети — если он
+ * есть; иначе заявленный проектом, и тогда число честно помечается
+ * `SELF_REPORTED`. Прятать капитализацию без проверенного выпуска нельзя —
+ * карточка станет бесполезной для сравнения, — но и выдавать заявление за
+ * расчёт тоже нельзя.
+ */
+export function supplyForCap(card: {
+  tokenomics: unknown;
+  supply: { circulating: string; totalSupply: string } | null;
+}): { circulating: string | null; fdvBase: string | null; source: "ONCHAIN" | "SELF_REPORTED" } {
+  const t = (card.tokenomics ?? {}) as {
+    circulating?: number | null;
+    total?: number | null;
+    max?: number | null;
+  };
+  const max = typeof t.max === "number" && t.max > 0 ? String(t.max) : null;
+
+  if (card.supply) {
+    return {
+      circulating: card.supply.circulating,
+      fdvBase: max ?? card.supply.totalSupply,
+      source: "ONCHAIN",
+    };
+  }
+
+  const claimed = typeof t.circulating === "number" && t.circulating > 0 ? t.circulating : null;
+  const total = typeof t.total === "number" && t.total > 0 ? String(t.total) : null;
+  return {
+    circulating: claimed == null ? null : String(claimed),
+    fdvBase: max ?? total,
+    source: "SELF_REPORTED",
+  };
+}
+
 async function writeIndex(args: {
   prisma: PrismaLike;
-  card: { id: string; provenance: unknown };
+  card: CardRow;
   index: IndexResult;
   now: Date;
 }): Promise<void> {
   const { prisma, card, index, now } = args;
+  const supply = supplyForCap(card);
+  const cap = marketCap(index.priceUsd, supply.circulating);
+  const fullyDiluted = fdv(index.priceUsd, supply.fdvBase);
   const data = {
     priceUsd: index.priceUsd,
     change24h: index.change24h,
@@ -285,6 +330,9 @@ async function writeIndex(args: {
     spreadPct: index.spreadPct,
     confidence: index.confidence,
     method: index.method,
+    marketCapUsd: cap,
+    fdvUsd: fullyDiluted,
+    supplySource: cap == null ? null : supply.source,
     computedAt: now,
   };
 
@@ -312,10 +360,20 @@ async function writeIndex(args: {
   });
 
   const entry = { kind: "AGGREGATED" as const, source: String(index.marketCount), at: now.toISOString() };
+  // Капитализация честна настолько, насколько честен выпуск под ней: цена
+  // агрегирована нами, а вот выпуск мог прийти из слов проекта.
+  const capEntry =
+    supply.source === "ONCHAIN"
+      ? entry
+      : { kind: "SELF_REPORTED" as const, source: null, at: now.toISOString() };
   await prisma.coinCard.update({
     where: { id: card.id },
     data: {
-      provenance: mergeProvenance(card.provenance, { price: entry, markets: entry }) as never,
+      provenance: mergeProvenance(card.provenance, {
+        price: entry,
+        markets: entry,
+        ...(cap == null ? {} : { marketCap: capEntry }),
+      }) as never,
     },
   });
 }
