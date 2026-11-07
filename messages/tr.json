@@ -1603,7 +1603,10 @@
       "unlockLabel": "Neyin kilidi açılıyor",
       "unlockAmount": "Miktar, coin",
       "unlockPct": "Arza oranı, %",
-      "unlockSource": "Kaynak bağlantısı"
+      "unlockSource": "Kaynak bağlantısı",
+      "nativeChain": "Paranın ağı",
+      "nativeChainHint": "Düğümü herkese açık olan ağı seçin: arz ve hız doğrudan zincirden okunur.",
+      "nativeChainOther": "Başka bir ağ (zincir okunamıyor)"
     },
     "manage": {
       "status": {
@@ -2034,7 +2037,8 @@
         "POS": "POS",
         "SDK": "SDK",
         "OTHER": "diğer"
-      }
+      },
+      "claimedSays": "projenin beyanı: {value}"
     },
     "fiat": {
       "title": "Nasıl kabul edilir ve paraya çevrilir",
@@ -2184,6 +2188,27 @@
       "windows": "30 günde arzın %{pct30}'u, 90 günde %{pct90}'u açılıyor",
       "more": "{count} tane daha bekliyor",
       "past": "{count} tanesi zaten açıldı"
+    },
+    "nativeChain": {
+      "title": "Paranın ağı",
+      "native": "yerel",
+      "symbol": "Zincirdeki sembol",
+      "decimals": "Ondalık basamak",
+      "blockTime": "Blok süresi",
+      "seconds": "{value} sn",
+      "measuredAt": "{block} bloğunda ölçüldü",
+      "finality": "Kesinlik",
+      "genesis": "Genesis özeti",
+      "symbolMismatch": "Proje {claimed} diyor, zincir {actual} yanıtı veriyor",
+      "decimalsMismatch": "Proje {claimed} basamak diyor, zincir {actual} yanıtı veriyor",
+      "checkedAt": "{at} tarihinde okundu",
+      "error": {
+        "chain_unsupported": "Bu ağı henüz okuyamıyoruz",
+        "rpc_unreachable": "Ağ düğümü yanıt vermedi",
+        "rpc_error": "Ağ düğümü hata döndürdü",
+        "decode_failed": "Düğümün yanıtı çözümlenemedi",
+        "genesis_mismatch": "Düğüm başka bir zincir için yanıt veriyor — inceleniyor"
+      }
     }
   },
   "inviteCoin": {

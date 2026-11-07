@@ -1603,7 +1603,10 @@
       "unlockLabel": "解锁内容",
       "unlockAmount": "数量，代币",
       "unlockPct": "占供应量比例，%",
-      "unlockSource": "来源链接"
+      "unlockSource": "来源链接",
+      "nativeChain": "代币网络",
+      "nativeChainHint": "如果该网络的节点可公开读取，请选择它——供应量和速度将直接从链上读取。",
+      "nativeChainOther": "其他网络（无法读取链上数据）"
     },
     "manage": {
       "status": {
@@ -2034,7 +2037,8 @@
         "POS": "POS",
         "SDK": "SDK",
         "OTHER": "其他"
-      }
+      },
+      "claimedSays": "项目声称：{value}"
     },
     "fiat": {
       "title": "如何受理并换成现金",
@@ -2184,6 +2188,27 @@
       "windows": "未来 30 天解锁供应量的 {pct30}%，90 天内 {pct90}%",
       "more": "还有 {count} 次待解锁",
       "past": "已解锁 {count} 次"
+    },
+    "nativeChain": {
+      "title": "代币网络",
+      "native": "原生",
+      "symbol": "链上代号",
+      "decimals": "小数位数",
+      "blockTime": "出块时间",
+      "seconds": "{value} 秒",
+      "measuredAt": "在区块 {block} 处测得",
+      "finality": "最终性",
+      "genesis": "创世哈希",
+      "symbolMismatch": "项目声称 {claimed}，链上返回 {actual}",
+      "decimalsMismatch": "项目声称 {claimed} 位，链上返回 {actual}",
+      "checkedAt": "读取于 {at}",
+      "error": {
+        "chain_unsupported": "我们尚无法读取该网络",
+        "rpc_unreachable": "网络节点未响应",
+        "rpc_error": "网络节点返回错误",
+        "decode_failed": "无法解析节点的响应",
+        "genesis_mismatch": "节点返回的是另一条链 — 正在核查"
+      }
     }
   },
   "inviteCoin": {

@@ -7,6 +7,7 @@
 
 import type { CardSection } from "@/lib/coin-card-risk";
 import { SUPPORTED_CHAINS } from "@/lib/coin-card-validate";
+import { NATIVE_CHAIN_KEYS } from "@/lib/substrate-chains";
 
 export type FieldSpec =
   | { kind: "text" | "url" | "textarea" | "date"; path: string; label: string }
@@ -119,6 +120,9 @@ export const SECTION_SPECS: Record<CardSection, FieldSpec[]> = {
     { kind: "text", path: "sourceLocale", label: "sourceLocale" },
   ],
   CONTRACTS: [
+    // Нативная монета своей сети: контракта у неё нет, вместо адреса — сеть из
+    // реестра. Пустое значение означает «монета живёт токеном в чужой сети».
+    { kind: "select", path: "nativeChain", label: "nativeChain", options: ["", ...NATIVE_CHAIN_KEYS] },
     { kind: "rows", path: "contracts", label: "contract", fields: ROW_SUBFIELDS.contract },
   ],
   TOKENOMICS: [

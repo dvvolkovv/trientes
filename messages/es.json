@@ -1603,7 +1603,10 @@
       "unlockLabel": "Qué se desbloquea",
       "unlockAmount": "Cantidad, monedas",
       "unlockPct": "Parte del suministro, %",
-      "unlockSource": "Enlace de la fuente"
+      "unlockSource": "Enlace de la fuente",
+      "nativeChain": "Red de la moneda",
+      "nativeChainHint": "Elija la red si su nodo es público: el suministro y la velocidad se leerán directamente de la cadena.",
+      "nativeChainOther": "Otra red (no se puede leer la cadena)"
     },
     "manage": {
       "status": {
@@ -2034,7 +2037,8 @@
         "POS": "POS",
         "SDK": "SDK",
         "OTHER": "otra"
-      }
+      },
+      "claimedSays": "el proyecto declara: {value}"
     },
     "fiat": {
       "title": "Cómo aceptarla y convertirla en dinero",
@@ -2184,6 +2188,27 @@
       "windows": "{pct30}% del suministro se desbloquea en 30 días, {pct90}% en 90",
       "more": "{count} más por venir",
       "past": "{count} ya desbloqueados"
+    },
+    "nativeChain": {
+      "title": "Red de la moneda",
+      "native": "nativa",
+      "symbol": "Ticker en la red",
+      "decimals": "Decimales",
+      "blockTime": "Tiempo de bloque",
+      "seconds": "{value} s",
+      "measuredAt": "medido en el bloque {block}",
+      "finality": "Firmeza",
+      "genesis": "Hash de génesis",
+      "symbolMismatch": "El proyecto declara {claimed}, la red responde {actual}",
+      "decimalsMismatch": "El proyecto declara {claimed} decimales, la red responde {actual}",
+      "checkedAt": "leído {at}",
+      "error": {
+        "chain_unsupported": "Todavía no sabemos leer esta red",
+        "rpc_unreachable": "El nodo de la red no respondió",
+        "rpc_error": "El nodo de la red devolvió un error",
+        "decode_failed": "No se pudo interpretar la respuesta del nodo",
+        "genesis_mismatch": "El nodo responde por otra cadena: en revisión"
+      }
     }
   },
   "inviteCoin": {

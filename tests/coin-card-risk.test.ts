@@ -55,3 +55,9 @@ describe("isHighRiskPath", () => {
     expect(isHighRiskPath("whoKnows.someField")).toBe(true);
   });
 });
+
+describe("nativeChain", () => {
+  it("высокий риск: подмена переносит на карточку выпуск чужой сети", () => {
+    expect(isHighRiskPath("nativeChain")).toBe(true);
+  });
+});

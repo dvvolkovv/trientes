@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { saveCoinCardSection } from "@/app/actions/coin-card";
 import { SUPPORTED_CHAINS } from "@/lib/coin-card-validate";
+import { SUBSTRATE_CHAINS } from "@/lib/substrate-chains";
 import { Field, inputCls, labelCls, btnCls } from "./field";
 import { LogoUpload } from "./logo-upload";
 
@@ -30,6 +31,9 @@ export function StepContracts({
 }) {
   const t = useTranslations("coinCard.wizard");
   const [native, setNative] = useState(false);
+  // Слайс S: нативной монете вместо адреса контракта нужна её сеть — по ней
+  // читается выпуск и скорость. Пусто = сеть не из тех, что мы умеем читать.
+  const [nativeChain, setNativeChain] = useState("");
   const [rows, setRows] = useState<Row[]>([{ ...EMPTY_ROW }]);
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
@@ -57,7 +61,9 @@ export function StepContracts({
                   isCanonical: r.isCanonical,
                 }));
           const res = await saveCoinCardSection({
-            cardId, section: "CONTRACTS", payload: { contracts },
+            cardId,
+            section: "CONTRACTS",
+            payload: { contracts, nativeChain: native ? nativeChain : "" },
           });
           if (res.ok) onSaved(res.completeness, res.missing);
           else setError(res.reason);
@@ -70,6 +76,24 @@ export function StepContracts({
         <input type="checkbox" checked={native} onChange={(e) => setNative(e.target.checked)} />
         {t("nativeCoin")}
       </label>
+
+      {native && (
+        <Field id="cc-native-chain" label={t("nativeChain")} hint={t("nativeChainHint")}>
+          <select
+            id="cc-native-chain"
+            value={nativeChain}
+            className={inputCls}
+            onChange={(e) => setNativeChain(e.target.value)}
+          >
+            <option value="">{t("nativeChainOther")}</option>
+            {SUBSTRATE_CHAINS.map((c) => (
+              <option key={c.key} value={c.key}>
+                {c.label}
+              </option>
+            ))}
+          </select>
+        </Field>
+      )}
 
       {!native &&
         rows.map((r, i) => (

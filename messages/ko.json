@@ -1603,7 +1603,10 @@
       "unlockLabel": "언락 대상",
       "unlockAmount": "수량, 코인",
       "unlockPct": "공급량 대비 비율, %",
-      "unlockSource": "출처 링크"
+      "unlockSource": "출처 링크",
+      "nativeChain": "코인 네트워크",
+      "nativeChainHint": "노드가 공개된 네트워크를 선택하면 공급량과 속도를 체인에서 직접 읽어옵니다.",
+      "nativeChainOther": "기타 네트워크 (체인 읽기 불가)"
     },
     "manage": {
       "status": {
@@ -2034,7 +2037,8 @@
         "POS": "POS",
         "SDK": "SDK",
         "OTHER": "기타"
-      }
+      },
+      "claimedSays": "프로젝트 주장: {value}"
     },
     "fiat": {
       "title": "받아서 현금화하는 방법",
@@ -2184,6 +2188,27 @@
       "windows": "30일 내 공급량의 {pct30}%, 90일 내 {pct90}% 언락",
       "more": "예정 {count}건 더",
       "past": "{count}건은 이미 언락됨"
+    },
+    "nativeChain": {
+      "title": "코인 네트워크",
+      "native": "네이티브",
+      "symbol": "체인의 티커",
+      "decimals": "소수점 자리",
+      "blockTime": "블록 시간",
+      "seconds": "{value}초",
+      "measuredAt": "블록 {block}에서 측정",
+      "finality": "최종성",
+      "genesis": "제네시스 해시",
+      "symbolMismatch": "프로젝트는 {claimed}라고 하지만 체인은 {actual}로 응답합니다",
+      "decimalsMismatch": "프로젝트는 {claimed}자리라고 하지만 체인은 {actual}로 응답합니다",
+      "checkedAt": "{at}에 읽음",
+      "error": {
+        "chain_unsupported": "아직 읽을 수 없는 네트워크입니다",
+        "rpc_unreachable": "네트워크 노드가 응답하지 않았습니다",
+        "rpc_error": "네트워크 노드가 오류를 반환했습니다",
+        "decode_failed": "노드 응답을 해석할 수 없습니다",
+        "genesis_mismatch": "노드가 다른 체인을 응답합니다 — 확인 중"
+      }
     }
   },
   "inviteCoin": {

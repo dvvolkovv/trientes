@@ -1603,7 +1603,10 @@
       "unlockLabel": "Ce qui se débloque",
       "unlockAmount": "Quantité, jetons",
       "unlockPct": "Part de l'offre, %",
-      "unlockSource": "Lien source"
+      "unlockSource": "Lien source",
+      "nativeChain": "Réseau de la pièce",
+      "nativeChainHint": "Choisissez le réseau si son nœud est public : l'offre et la vitesse seront lues directement sur la chaîne.",
+      "nativeChainOther": "Autre réseau (lecture de la chaîne impossible)"
     },
     "manage": {
       "status": {
@@ -2034,7 +2037,8 @@
         "POS": "POS",
         "SDK": "SDK",
         "OTHER": "autre"
-      }
+      },
+      "claimedSays": "le projet déclare : {value}"
     },
     "fiat": {
       "title": "Comment l'accepter et la convertir en argent",
@@ -2184,6 +2188,27 @@
       "windows": "{pct30}% de l'offre se débloque sous 30 jours, {pct90}% sous 90",
       "more": "{count} autres à venir",
       "past": "{count} déjà débloqués"
+    },
+    "nativeChain": {
+      "title": "Réseau de la pièce",
+      "native": "native",
+      "symbol": "Ticker sur la chaîne",
+      "decimals": "Décimales",
+      "blockTime": "Temps de bloc",
+      "seconds": "{value} s",
+      "measuredAt": "mesuré au bloc {block}",
+      "finality": "Finalité",
+      "genesis": "Hash de genèse",
+      "symbolMismatch": "Le projet déclare {claimed}, la chaîne répond {actual}",
+      "decimalsMismatch": "Le projet déclare {claimed} décimales, la chaîne répond {actual}",
+      "checkedAt": "lu {at}",
+      "error": {
+        "chain_unsupported": "Nous ne savons pas encore lire ce réseau",
+        "rpc_unreachable": "Le nœud du réseau n'a pas répondu",
+        "rpc_error": "Le nœud du réseau a renvoyé une erreur",
+        "decode_failed": "La réponse du nœud est illisible",
+        "genesis_mismatch": "Le nœud répond pour une autre chaîne — en cours de vérification"
+      }
     }
   },
   "inviteCoin": {

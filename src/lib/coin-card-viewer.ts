@@ -38,6 +38,8 @@ function loadCardForMember(cardId: string) {
       priceIndex: true,
       // Слайс E: проверенный выпуск — кабинет показывает расчёт и кнопку пересчёта.
       supply: true,
+      // Слайс S: факты собственной сети нативной монеты.
+      chainFacts: true,
     },
   });
 }

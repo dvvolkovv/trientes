@@ -44,7 +44,9 @@ describe("normalizeSectionPayload", () => {
     if (!r.ok) return;
     expect(r.patch.contracts?.[0].address).toBe(addr.toLowerCase());
     expect(r.patch.contracts?.[0].isCanonical).toBe(true);
-    expect(r.patch.touched).toEqual(["contracts"]);
+    // Слайс S: раздел контрактов владеет и нативной сетью монеты.
+    expect(r.patch.touched).toEqual(["contracts", "nativeChain"]);
+    expect(r.patch.card.nativeChain).toBeNull();
   });
 
   it("caps the contract count", () => {
@@ -155,5 +157,28 @@ describe("sectionValues", () => {
     expect(sectionValues("IDENTITY", current).name).toBe("Trientes Coin");
     expect(sectionValues("LINKS", current).links).toEqual({ website: "https://trientes.org" });
     expect(sectionValues("CONTRACTS", current).contracts).toEqual([]);
+  });
+});
+
+describe("normalizeSectionPayload — нативная сеть (слайс S)", () => {
+  it("принимает сеть из реестра и приводит ключ к нижнему регистру", () => {
+    const r = normalizeSectionPayload("CONTRACTS", { contracts: [], nativeChain: "Taler" }, current);
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.patch.card.nativeChain).toBe("taler");
+  });
+
+  it("сеть вне реестра отбрасывается: карточка не должна ссылаться на нечитаемую цепь", () => {
+    const r = normalizeSectionPayload("CONTRACTS", { contracts: [], nativeChain: "mystery" }, current);
+    expect(r.ok).toBe(false);
+    if (r.ok) return;
+    expect(r.reason).toBe("chain_unknown");
+  });
+
+  it("пустая строка значит «монета живёт токеном в чужой сети»", () => {
+    const r = normalizeSectionPayload("CONTRACTS", { contracts: [], nativeChain: "  " }, current);
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.patch.card.nativeChain).toBeNull();
   });
 });

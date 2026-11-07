@@ -1603,7 +1603,10 @@
       "unlockLabel": "What unlocks",
       "unlockAmount": "Amount, coins",
       "unlockPct": "Share of supply, %",
-      "unlockSource": "Source link"
+      "unlockSource": "Source link",
+      "nativeChain": "Coin network",
+      "nativeChainHint": "Pick the network if its node is publicly readable — supply and speed then come from the chain itself.",
+      "nativeChainOther": "Another network (on-chain reading unavailable)"
     },
     "manage": {
       "status": {
@@ -2034,7 +2037,8 @@
         "POS": "POS",
         "SDK": "SDK",
         "OTHER": "other"
-      }
+      },
+      "claimedSays": "the project claims: {value}"
     },
     "fiat": {
       "title": "How to accept it and cash out",
@@ -2184,6 +2188,27 @@
       "windows": "{pct30}% of supply unlocks within 30 days, {pct90}% within 90",
       "more": "{count} more upcoming",
       "past": "{count} already unlocked"
+    },
+    "nativeChain": {
+      "title": "Coin network",
+      "native": "native",
+      "symbol": "Ticker on chain",
+      "decimals": "Decimals",
+      "blockTime": "Block time",
+      "seconds": "{value} s",
+      "measuredAt": "measured at block {block}",
+      "finality": "Finality",
+      "genesis": "Genesis hash",
+      "symbolMismatch": "The project claims {claimed}, the chain answers {actual}",
+      "decimalsMismatch": "The project claims {claimed} decimals, the chain answers {actual}",
+      "checkedAt": "read {at}",
+      "error": {
+        "chain_unsupported": "We cannot read this network yet",
+        "rpc_unreachable": "The network node did not answer",
+        "rpc_error": "The network node returned an error",
+        "decode_failed": "The node's answer could not be parsed",
+        "genesis_mismatch": "The node answers for a different chain — under review"
+      }
     }
   },
   "inviteCoin": {

@@ -25,6 +25,9 @@ const LOW_RISK_IDENTITY_PATHS = new Set([
 
 const SECTION_BY_ROOT: Record<string, CardSection> = {
   contracts: "CONTRACTS",
+  // Нативная сеть монеты: подмена значения переносит на карточку выпуск и
+  // скорость чужой сети — тот же вектор, что подмена адреса контракта.
+  nativeChain: "CONTRACTS",
   tokenomics: "TOKENOMICS",
   markets: "MARKETS",
   security: "SECURITY",

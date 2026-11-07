@@ -1603,7 +1603,10 @@
       "unlockLabel": "Что разлочивается",
       "unlockAmount": "Объём, монет",
       "unlockPct": "Доля выпуска, %",
-      "unlockSource": "Ссылка-источник"
+      "unlockSource": "Ссылка-источник",
+      "nativeChain": "Сеть монеты",
+      "nativeChainHint": "Выберите сеть, если её узел читается публично — тогда выпуск и скорость берутся прямо из блокчейна.",
+      "nativeChainOther": "Другая сеть (чтение из блокчейна недоступно)"
     },
     "manage": {
       "status": {
@@ -2034,7 +2037,8 @@
         "POS": "POS",
         "SDK": "SDK",
         "OTHER": "другое"
-      }
+      },
+      "claimedSays": "проект заявляет: {value}"
     },
     "fiat": {
       "title": "Как принять и вывести в деньги",
@@ -2184,6 +2188,27 @@
       "windows": "за 30 дней разлочится {pct30}% выпуска, за 90 — {pct90}%",
       "more": "ещё {count} впереди",
       "past": "{count} уже разлочено"
+    },
+    "nativeChain": {
+      "title": "Сеть монеты",
+      "native": "нативная",
+      "symbol": "Тикер в сети",
+      "decimals": "Знаков после точки",
+      "blockTime": "Время блока",
+      "seconds": "{value} сек",
+      "measuredAt": "измерено на блоке {block}",
+      "finality": "Окончательность",
+      "genesis": "Хэш генезиса",
+      "symbolMismatch": "Проект заявил {claimed}, сеть отвечает {actual}",
+      "decimalsMismatch": "Проект заявил {claimed} знаков, сеть отвечает {actual}",
+      "checkedAt": "прочитано {at}",
+      "error": {
+        "chain_unsupported": "Эту сеть мы читать пока не умеем",
+        "rpc_unreachable": "Узел сети не ответил",
+        "rpc_error": "Узел сети вернул ошибку",
+        "decode_failed": "Ответ узла не разобрался",
+        "genesis_mismatch": "Узел отвечает за другую цепь — разбираемся"
+      }
     }
   },
   "inviteCoin": {

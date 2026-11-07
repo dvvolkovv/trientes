@@ -15,6 +15,7 @@ import {
 } from "@/lib/coin-card-validate";
 import { isEvmAddress, normalizeAddress } from "@/lib/evm-abi";
 import { MAX_EXCLUDED } from "@/lib/coin-card-supply";
+import { resolveSubstrateChain } from "@/lib/substrate-chains";
 import {
   validateAllocation,
   validateUnlocks,
@@ -81,7 +82,9 @@ export type NormalizeResult =
 /** Which card paths a section owns. Used for diffing and for `sectionValues`. */
 export const SECTION_PATHS: Record<CardSection, readonly string[]> = {
   IDENTITY: ["name", "symbol", "tagline", "description", "logoUrl", "tags", "launchDate", "sourceLocale"],
-  CONTRACTS: ["contracts"],
+  // Слайс S: nativeChain — свойство самой карточки, но принадлежит разделу
+  // контрактов: это ответ на тот же вопрос «где живёт монета».
+  CONTRACTS: ["contracts", "nativeChain"],
   TOKENOMICS: ["tokenomics"],
   MARKETS: ["markets"],
   SECURITY: ["security"],
@@ -147,6 +150,15 @@ export function normalizeSectionPayload(
   current: CardStateLike,
 ): NormalizeResult {
   if (section === "CONTRACTS") {
+    // Нативная сеть: пустая строка значит «монета живёт токеном в чужой сети».
+    // Значение вне реестра не принимаем — иначе карточка сослалась бы на цепь,
+    // которую мы не читаем, и выглядела бы проверяемой.
+    const rawNative = typeof payload.nativeChain === "string" ? payload.nativeChain.trim() : "";
+    if (rawNative && !resolveSubstrateChain(rawNative)) {
+      return { ok: false, reason: "chain_unknown" };
+    }
+    const nativeChain = rawNative ? resolveSubstrateChain(rawNative)!.key : null;
+
     const raw = Array.isArray(payload.contracts) ? payload.contracts : [];
     if (raw.length > MAX_CONTRACTS) return { ok: false, reason: "too_many_contracts" };
     const rows: ContractRow[] = [];
@@ -158,7 +170,10 @@ export function normalizeSectionPayload(
         isCanonical: Boolean((c as { isCanonical?: boolean }).isCanonical),
       });
     }
-    return { ok: true, patch: { card: {}, contracts: rows, touched: ["contracts"] } };
+    return {
+      ok: true,
+      patch: { card: { nativeChain }, contracts: rows, touched: ["contracts", "nativeChain"] },
+    };
   }
 
   if (section === "MARKETS") {

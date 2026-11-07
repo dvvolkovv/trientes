@@ -1603,7 +1603,10 @@
       "unlockLabel": "アンロックの対象",
       "unlockAmount": "数量（コイン）",
       "unlockPct": "供給量に対する割合（%）",
-      "unlockSource": "出典リンク"
+      "unlockSource": "出典リンク",
+      "nativeChain": "コインのネットワーク",
+      "nativeChainHint": "ノードが公開されているネットワークを選ぶと、供給量と速度をチェーンから直接読み取ります。",
+      "nativeChainOther": "その他のネットワーク（チェーンの読み取り不可）"
     },
     "manage": {
       "status": {
@@ -2034,7 +2037,8 @@
         "POS": "POS",
         "SDK": "SDK",
         "OTHER": "その他"
-      }
+      },
+      "claimedSays": "プロジェクトの申告: {value}"
     },
     "fiat": {
       "title": "受け取って現金化する方法",
@@ -2184,6 +2188,27 @@
       "windows": "30日以内に供給量の {pct30}%、90日以内に {pct90}% がアンロック",
       "more": "他に {count} 件の予定",
       "past": "{count} 件はアンロック済み"
+    },
+    "nativeChain": {
+      "title": "コインのネットワーク",
+      "native": "ネイティブ",
+      "symbol": "チェーン上のティッカー",
+      "decimals": "小数点以下の桁数",
+      "blockTime": "ブロック時間",
+      "seconds": "{value} 秒",
+      "measuredAt": "ブロック {block} で計測",
+      "finality": "ファイナリティ",
+      "genesis": "ジェネシスハッシュ",
+      "symbolMismatch": "プロジェクトの申告は {claimed}、チェーンの回答は {actual}",
+      "decimalsMismatch": "プロジェクトの申告は {claimed} 桁、チェーンの回答は {actual}",
+      "checkedAt": "{at} に取得",
+      "error": {
+        "chain_unsupported": "このネットワークはまだ読み取れません",
+        "rpc_unreachable": "ネットワークのノードが応答しませんでした",
+        "rpc_error": "ネットワークのノードがエラーを返しました",
+        "decode_failed": "ノードの応答を解析できませんでした",
+        "genesis_mismatch": "ノードが別のチェーンを返しています — 確認中"
+      }
     }
   },
   "inviteCoin": {

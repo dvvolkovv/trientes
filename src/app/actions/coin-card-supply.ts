@@ -24,11 +24,15 @@ export async function recheckCardSupply(cardId: string): Promise<SupplyRecheckRe
   if (!card) return { ok: false, reason: "card_not_found" };
   if (!canEditSection(member, "TOKENOMICS")) return { ok: false, reason: "forbidden" };
 
-  const canonical = card.contracts.find((c) => c.isCanonical);
-  if (!canonical) return { ok: false, reason: "no_canonical_contract" };
-  // Без сверки слайса B `totalSupply()` ничего не стоит: подделка с тем же
-  // тикером ответит на него что угодно.
-  if (!canonical.verifiedAt) return { ok: false, reason: "contract_unverified" };
+  // Нативная монета своей сети: контракта у неё нет, сверять нечего — цепь
+  // отвечает сама за себя (слайс S).
+  if (!card.nativeChain) {
+    const canonical = card.contracts.find((c) => c.isCanonical);
+    if (!canonical) return { ok: false, reason: "no_canonical_contract" };
+    // Без сверки слайса B `totalSupply()` ничего не стоит: подделка с тем же
+    // тикером ответит на него что угодно.
+    if (!canonical.verifiedAt) return { ok: false, reason: "contract_unverified" };
+  }
 
   const last = await prisma.coinCardSupply.findUnique({
     where: { cardId },

@@ -1603,7 +1603,10 @@
       "unlockLabel": "Was freigeschaltet wird",
       "unlockAmount": "Menge, Coins",
       "unlockPct": "Anteil am Bestand, %",
-      "unlockSource": "Quellenlink"
+      "unlockSource": "Quellenlink",
+      "nativeChain": "Netzwerk der Coin",
+      "nativeChainHint": "Wählen Sie das Netzwerk, wenn dessen Node öffentlich lesbar ist — Umlauf und Geschwindigkeit kommen dann direkt aus der Chain.",
+      "nativeChainOther": "Anderes Netzwerk (Auslesen der Chain nicht möglich)"
     },
     "manage": {
       "status": {
@@ -2034,7 +2037,8 @@
         "POS": "POS",
         "SDK": "SDK",
         "OTHER": "andere"
-      }
+      },
+      "claimedSays": "Projektangabe: {value}"
     },
     "fiat": {
       "title": "Annehmen und in Geld auszahlen",
@@ -2184,6 +2188,27 @@
       "windows": "{pct30}% des Bestands werden in 30 Tagen frei, {pct90}% in 90",
       "more": "{count} weitere stehen an",
       "past": "{count} bereits freigeschaltet"
+    },
+    "nativeChain": {
+      "title": "Netzwerk der Coin",
+      "native": "nativ",
+      "symbol": "Ticker in der Chain",
+      "decimals": "Dezimalstellen",
+      "blockTime": "Blockzeit",
+      "seconds": "{value} s",
+      "measuredAt": "gemessen bei Block {block}",
+      "finality": "Endgültigkeit",
+      "genesis": "Genesis-Hash",
+      "symbolMismatch": "Das Projekt nennt {claimed}, die Chain antwortet {actual}",
+      "decimalsMismatch": "Das Projekt nennt {claimed} Dezimalstellen, die Chain antwortet {actual}",
+      "checkedAt": "gelesen {at}",
+      "error": {
+        "chain_unsupported": "Dieses Netzwerk können wir noch nicht lesen",
+        "rpc_unreachable": "Der Node hat nicht geantwortet",
+        "rpc_error": "Der Node hat einen Fehler geliefert",
+        "decode_failed": "Die Antwort des Nodes war nicht lesbar",
+        "genesis_mismatch": "Der Node antwortet für eine andere Chain — wird geprüft"
+      }
     }
   },
   "inviteCoin": {
