@@ -43,12 +43,15 @@ ssh -o BatchMode=yes -o ConnectTimeout=10 dv@85.192.25.242 'cd ~/trientes && git
 
 Expected: `git status --porcelain` пуст, `Unpushed commits: 0`. Иначе **STOP**: не создавать Droplet, не копировать production и не сбрасывать WIP. Продолжить только после чистого зафиксированного состояния или отдельного письменного решения владельца.
 
-После успешной проверки зафиксировать SHA:
+После успешной проверки зафиксировать SHA и создать неизменный source-worktree:
 
 ```bash
 BASE_SHA=$(ssh -o BatchMode=yes dv@85.192.25.242 'git -C ~/trientes rev-parse HEAD')
 printf 'BASE_SHA=%s\n' "$BASE_SHA" >> /Users/dmitry/.trientes-migration/stage0.env
+ssh -o BatchMode=yes "dv@$OLD_IP" "cd ~/trientes && test ! -e .worktrees/do-stage0-source && git worktree add --detach .worktrees/do-stage0-source '$BASE_SHA'"
 ```
+
+Expected: отдельный detached worktree содержит ровно `BASE_SHA` и не меняется при последующих commits в production. Каталог `.worktrees` игнорируется Git. Production `.env` копируется отдельно в Task 4, поскольку его нет в новом worktree.
 
 - [ ] **Step 3: Проверить текущий restart health без дампа секретов**
 
@@ -259,7 +262,8 @@ SSH='ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new'
 rsync -a --stats -e "$SSH" \
   --exclude node_modules --exclude .next --exclude .next-preview \
   --exclude .worktrees --exclude test-results --exclude playwright-report \
-  /home/dv/trientes/ "dv@$NEW_IP:/home/dv/trientes/"
+  /home/dv/trientes/.worktrees/do-stage0-source/ "dv@$NEW_IP:/home/dv/trientes/"
+rsync -a -e "$SSH" /home/dv/trientes/.env "dv@$NEW_IP:/home/dv/trientes/.env"
 rsync -a -e "$SSH" --exclude authorized_keys --exclude known_hosts /home/dv/.ssh/ "dv@$NEW_IP:/home/dv/.ssh/"
 rsync -a -e "$SSH" /home/dv/.pgpass /home/dv/.trientes-dbpass /home/dv/.trientes-bot-secret /home/dv/.claude.json "dv@$NEW_IP:/home/dv/"
 rsync -a -e "$SSH" /home/dv/.claude/ "dv@$NEW_IP:/home/dv/.claude/"
@@ -537,7 +541,7 @@ Expected: A `@`/`www` остаются `85.192.25.242`, MX и NS остаютс�
 В `/Users/dmitry/.trientes-migration/stage0-readiness.md` зафиксировать через Write:
 
 - Droplet ID/IP, размер, backups и firewall;
-- исходный `BASE_SHA` и совпадение checkout;
+- исходный `BASE_SHA`, отдельный `/home/dv/trientes/.worktrees/do-stage0-source` и совпадение checkout;
 - результат restart diagnosis;
 - SHA-256 rehearsal dump и RDB;
 - DB counts/latest_snapshot/migrations и Redis DBSIZE;
