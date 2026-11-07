@@ -396,13 +396,17 @@ Expected: роль существует с исходным паролем, пу
 
 ```bash
 source /Users/dmitry/.trientes-migration/stage0.env
-ssh -o BatchMode=yes "dv@$NEW_IP" 'sudo -u postgres pg_restore --exit-on-error --dbname=trientes /home/dv/migration-stage0/trientes-rehearsal.dump'
+ssh -o BatchMode=yes "root@$NEW_IP" 'set -e; install -d -m 700 -o postgres -g postgres /var/lib/postgresql/migration; install -m 600 -o postgres -g postgres /home/dv/migration-stage0/trientes-rehearsal.dump /var/lib/postgresql/migration/trientes-rehearsal.dump; sudo -u postgres test -r /var/lib/postgresql/migration/trientes-rehearsal.dump'
+SOURCE_SHA=$(ssh -o BatchMode=yes "dv@$OLD_IP" "sha256sum /home/dv/migration-stage0/trientes-rehearsal.dump | cut -d' ' -f1")
+POSTGRES_COPY_SHA=$(ssh -o BatchMode=yes "root@$NEW_IP" "sha256sum /var/lib/postgresql/migration/trientes-rehearsal.dump | cut -d' ' -f1")
+test "$SOURCE_SHA" = "$POSTGRES_COPY_SHA"
+ssh -o BatchMode=yes "root@$NEW_IP" 'sudo -u postgres pg_restore --exit-on-error --dbname=trientes /var/lib/postgresql/migration/trientes-rehearsal.dump'
 COUNTS_SQL='SELECT (SELECT COUNT(*) FROM "CoinSnapshot") AS coin_snapshots, (SELECT MAX("fetchedAt") FROM "CoinSnapshot") AS latest_snapshot, (SELECT COUNT(*) FROM "User") AS users, (SELECT COUNT(*) FROM "Session") AS sessions, (SELECT COUNT(*) FROM "Account") AS accounts, (SELECT COUNT(*) FROM "Coin") AS coins, (SELECT COUNT(*) FROM "Exchange") AS exchanges, (SELECT COUNT(*) FROM "_prisma_migrations") AS migrations;'
 ssh -o BatchMode=yes "dv@$OLD_IP" "psql --host=127.0.0.1 --username=trientes --dbname=trientes -c '$COUNTS_SQL'"
 ssh -o BatchMode=yes "dv@$NEW_IP" "psql --host=127.0.0.1 --username=trientes --dbname=trientes -c '$COUNTS_SQL'"
 ```
 
-Expected: counts, `latest_snapshot` и migrations совпадают на момент дампа. Расхождение — блокер; не запускать migrations автоматически.
+Expected: counts, `latest_snapshot` и migrations совпадают на момент дампа. Перед restore защищённая копия в `/var/lib/postgresql/migration` имеет владельца `postgres:postgres`, права `0700` на каталог и `0600` на dump и тот же SHA-256. Расхождение — блокер; не запускать migrations автоматически. Source продолжает принимать writes после дампа, поэтому сравнивай именно момент snapshot, а не последующий live дрейф.
 
 - [ ] **Step 4: Проверить загрузку Redis RDB**
 
