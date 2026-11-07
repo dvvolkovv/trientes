@@ -36,6 +36,8 @@ function loadCardForMember(cardId: string) {
       markets: { orderBy: { exchangeName: "asc" } },
       policy: true,
       priceIndex: true,
+      // Слайс E: проверенный выпуск — кабинет показывает расчёт и кнопку пересчёта.
+      supply: true,
     },
   });
 }

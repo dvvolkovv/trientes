@@ -9,6 +9,8 @@ export async function getPublicCoinCard(slug: string) {
       markets: { orderBy: { volumeUsd24h: "desc" }, take: 100 },
       // Слайс C: наш собственный индекс цены по подтверждённым рынкам.
       priceIndex: true,
+      // Слайс E: циркулирующий выпуск, посчитанный из сети.
+      supply: true,
     },
   });
 }

@@ -18,6 +18,7 @@ import { warmProseTranslations } from "../src/lib/prose-warmup";
 import { verifyCardContracts } from "../src/lib/coin-card-onchain";
 import { pruneCardPricePoints, syncCardMarkets } from "../src/lib/coin-card-markets";
 import { expireStaleClaims } from "../src/lib/coin-card-claim";
+import { syncCardSupply } from "../src/lib/coin-card-supply";
 import { startBinance, stopBinance } from "./binance";
 
 async function runPriceSync() {
@@ -292,6 +293,26 @@ async function runCardMarketSync() {
 }
 
 /**
+ * Слайс E: проверенный циркулирующий выпуск. Раз в час и не больше 50 карточек
+ * за прогон: на карточку уходит до 21 вызова `eth_call` (общий выпуск плюс
+ * двадцать адресов исключений), а выпуск меняется редко.
+ */
+async function runSupplySweep() {
+  const t0 = Date.now();
+  try {
+    const s = await syncCardSupply({ prisma: prisma as never, limit: 50 });
+    if (s.cards > 0) {
+      console.log(
+        `[worker] supply sweep ok: ${s.cards} cards (${s.ok} ok, ${s.partial} partial, ` +
+          `${s.failed} failed) in ${Date.now() - t0}ms`,
+      );
+    }
+  } catch (err) {
+    console.error("[worker] supply sweep failed:", err);
+  }
+}
+
+/**
  * Слайс D: просроченные заявки на владение. Автопроверки доказательств нет
  * сознательно — запись в DNS и файл появляются по действию человека, и он же
  * нажимает «Проверить»; воркеру остаётся только гасить просроченные вызовы.
@@ -388,6 +409,7 @@ async function main() {
   cron.schedule("10 5 * * *", () => void runContractVerify());
   cron.schedule("*/10 * * * *", () => void runCardMarketSync());
   cron.schedule("20 * * * *", () => void runClaimSweep());
+  cron.schedule("45 * * * *", () => void runSupplySweep());
   cron.schedule("0 4 * * *", () => void runCleanup());
 
   // Live price feed via Binance WebSocket — top 20 coins.

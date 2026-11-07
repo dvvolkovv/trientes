@@ -16,6 +16,7 @@ import { CardTeamSection } from "@/components/coin-card-manage/team-section";
 import { PolicySection } from "@/components/coin-card-manage/policy-section";
 import { OnchainRecheck } from "@/components/coin-card-manage/onchain-recheck";
 import { MarketsRefresh } from "@/components/coin-card-manage/markets-refresh";
+import { SupplyRecheck } from "@/components/coin-card-manage/supply-recheck";
 import { ClaimSection } from "@/components/coin-card-manage/claim-section";
 import { websiteDomain } from "@/lib/claim-domain";
 import { claimMessage, isClaimed } from "@/lib/coin-card-claim";
@@ -151,6 +152,28 @@ export default async function CoinCardManagePage({
           mismatches: c.mismatches,
           verified: c.verifiedAt != null,
         }))}
+      />
+
+      <SupplyRecheck
+        cardId={card.id}
+        canEdit={canEditSection(member, "TOKENOMICS")}
+        hasCanonical={card.contracts.some((c) => c.isCanonical && c.verifiedAt != null)}
+        supply={
+          card.supply
+            ? {
+                chain: card.supply.chain,
+                totalSupply: card.supply.totalSupply,
+                excludedTotal: card.supply.excludedTotal,
+                circulating: card.supply.circulating,
+                partial: card.supply.partial,
+                excludedCount: Array.isArray(card.supply.excluded)
+                  ? card.supply.excluded.length
+                  : 0,
+                checkedAt: card.supply.checkedAt.toISOString().slice(0, 16).replace("T", " "),
+                checkError: card.supply.checkError,
+              }
+            : null
+        }
       />
 
       <ClaimSection

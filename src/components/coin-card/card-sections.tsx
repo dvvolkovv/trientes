@@ -36,7 +36,12 @@ export function CoinCardSections({
         cardName={card.name}
         cardSymbol={card.symbol}
       />
-      <TokenomicsSection tokenomics={card.tokenomics} provenance={card.provenance} badge={badge} />
+      <TokenomicsSection
+        tokenomics={card.tokenomics}
+        provenance={card.provenance}
+        supply={card.supply}
+        badge={badge}
+      />
       <MarketsSection markets={card.markets} provenance={card.provenance} />
       <AcceptanceSection
         cardId={card.id}

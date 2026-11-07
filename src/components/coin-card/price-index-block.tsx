@@ -3,6 +3,7 @@ import { formatCompact, formatPercent, formatPrice } from "@/lib/format";
 import { getProvenance } from "@/lib/coin-card-provenance";
 import { ProvenanceBadge } from "./provenance-badge";
 import { IndexMethodology } from "./index-methodology";
+import { MarketCapLine } from "./market-cap-line";
 
 export type PriceIndexView = {
   priceUsd: number;
@@ -11,6 +12,10 @@ export type PriceIndexView = {
   marketCount: number;
   confidence: string;
   computedAt: Date | string;
+  /** Слайс E: цена, умноженная на выпуск. */
+  marketCapUsd?: number | null;
+  fdvUsd?: number | null;
+  supplySource?: string | null;
 };
 
 /**
@@ -46,6 +51,12 @@ export async function PriceIndexBlock({
         {t("volume", { value: formatCompact(index.volumeUsd24h) })} ·{" "}
         {t(`confidence.${index.confidence}`)} · {at} UTC
       </div>
+      <MarketCapLine
+        marketCapUsd={index.marketCapUsd ?? null}
+        fdvUsd={index.fdvUsd ?? null}
+        supplySource={index.supplySource ?? null}
+        computedAt={index.computedAt}
+      />
       <div className="mt-1">
         <IndexMethodology marketCount={index.marketCount} />
       </div>
