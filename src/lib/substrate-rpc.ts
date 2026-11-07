@@ -4,7 +4,8 @@
  * карточку как `checkError`, и общий словарь важнее удобства.
  */
 
-import { jsonRpc, RpcError, type RpcOptions } from "./json-rpc";
+import { jsonRpc, RpcError, type FetchLike, type RpcOptions } from "./json-rpc";
+import { fakeSignedExtrinsic, transferKeepAliveCall } from "./substrate-extrinsic";
 import {
   decodeAccountBalance,
   decodeUintLE,
@@ -133,4 +134,98 @@ export async function measureBlockSeconds(
   const seconds = Number(tNew - tOld) / sample / 1000;
   if (!Number.isFinite(seconds) || seconds <= 0) throw new RpcError("decode_failed");
   return { blockSeconds: Math.round(seconds * 100) / 100, sample };
+}
+
+export type RuntimeVersion = {
+  specName: string;
+  specVersion: number;
+  transactionVersion: number;
+};
+
+export async function readRuntimeVersion(
+  url: string,
+  opts: RpcOptions = {},
+): Promise<RuntimeVersion> {
+  const raw = await jsonRpc(url, "state_getRuntimeVersion", [], opts);
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new RpcError("decode_failed");
+  const v = raw as Record<string, unknown>;
+  if (
+    typeof v.specName !== "string" ||
+    typeof v.specVersion !== "number" ||
+    typeof v.transactionVersion !== "number"
+  ) {
+    throw new RpcError("decode_failed");
+  }
+  return {
+    specName: v.specName,
+    specVersion: v.specVersion,
+    transactionVersion: v.transactionVersion,
+  };
+}
+
+export type TransferFee = {
+  /** Комиссия в наименьших единицах. */
+  planck: bigint;
+  /** Та же комиссия в монетах. */
+  tokens: number;
+  /** Понадобился ли байт расширения `CheckMetadataHash`. */
+  metadataHashMode: boolean;
+};
+
+/** Эталонный перевод: одна целая монета на обычный адрес, keep-alive. */
+const REFERENCE_DEST = new Uint8Array(32).fill(0x11);
+
+function partialFee(raw: unknown): bigint | null {
+  if (!raw || typeof raw !== "object") return null;
+  const fee = (raw as { partialFee?: unknown }).partialFee;
+  if (typeof fee === "number") return BigInt(Math.trunc(fee));
+  if (typeof fee !== "string" || !/^\d+$/.test(fee)) return null;
+  return BigInt(fee);
+}
+
+/**
+ * Комиссия эталонного перевода: считает сам узел, мы только собираем байты.
+ *
+ * Набор подписанных расширений у сетей разный (`CheckMetadataHash` есть у
+ * Polkadot и Kusama, нет у Taler), а экстринсик с неверным набором не
+ * декодируется вообще — поэтому вариант подбирается попыткой. Отказ узла в
+ * декодировании приходит как `rpc_error`, и только после обоих вариантов
+ * превращается в `decode_failed`.
+ */
+export async function queryTransferFee(args: {
+  url: string;
+  pallet: number;
+  decimals: number;
+  fetchImpl?: FetchLike;
+  timeoutMs?: number;
+  retries?: number;
+}): Promise<TransferFee> {
+  const { url, pallet, decimals } = args;
+  const opts: RpcOptions = {
+    fetchImpl: args.fetchImpl,
+    timeoutMs: args.timeoutMs,
+    retries: args.retries,
+  };
+  const value = 10n ** BigInt(Math.max(0, decimals));
+  const call = transferKeepAliveCall({ pallet, dest: REFERENCE_DEST, value });
+
+  for (const metadataHashMode of [false, true]) {
+    const ext = fakeSignedExtrinsic({ call, metadataHashMode });
+    let raw: unknown;
+    try {
+      raw = await jsonRpc(url, "payment_queryInfo", [ext], opts);
+    } catch (err) {
+      // Узел не ответил вовсе — подбирать варианты бессмысленно.
+      if (err instanceof RpcError && err.code !== "rpc_error") throw err;
+      continue;
+    }
+    const planck = partialFee(raw);
+    if (planck == null) continue;
+    return {
+      planck,
+      tokens: Number(planck) / Number(value),
+      metadataHashMode,
+    };
+  }
+  throw new RpcError("decode_failed", "payment_queryInfo");
 }

@@ -4,7 +4,8 @@
  * свой RPC, иначе «проверено в блокчейне» означало бы «проверено на сервере,
  * который выбрал сам проект».
  *
- * Все три адреса проверены живым POST-запросом 7 ноября 2026.
+ * Все три адреса проверены живым POST-запросом 7 ноября 2026; тогда же сняты
+ * индексы палеты балансов и версии формата транзакций (слайс T).
  */
 
 export type SubstrateChain = {
@@ -14,6 +15,18 @@ export type SubstrateChain = {
   /** Ожидаемый префикс SS58 и тикер: расхождение с узлом попадает в mismatches. */
   ss58Format: number;
   symbol: string;
+  /**
+   * Индекс палеты балансов в рантайме (слайс T). В метаданных он есть, но
+   * добраться до него — значит написать декодер реестра типов, поэтому индекс
+   * проверен живым `payment_queryInfo` и пришпилен здесь.
+   */
+  balancesPallet: number;
+  /**
+   * Версия формата транзакций, при которой индекс проверен. Сеть бампает её
+   * именно при смене формата экстринсика и индексов вызовов: разошлась —
+   * комиссия становится неизвестной, а не показывается устаревшей.
+   */
+  transactionVersion: number;
 };
 
 export const SUBSTRATE_CHAINS: readonly SubstrateChain[] = [
@@ -23,6 +36,8 @@ export const SUBSTRATE_CHAINS: readonly SubstrateChain[] = [
     defaultRpcUrl: "https://node.taler.uno",
     ss58Format: 10960,
     symbol: "TAL",
+    balancesPallet: 6,
+    transactionVersion: 2,
   },
   {
     key: "polkadot",
@@ -30,6 +45,8 @@ export const SUBSTRATE_CHAINS: readonly SubstrateChain[] = [
     defaultRpcUrl: "https://rpc.polkadot.io",
     ss58Format: 0,
     symbol: "DOT",
+    balancesPallet: 5,
+    transactionVersion: 26,
   },
   {
     key: "kusama",
@@ -37,6 +54,8 @@ export const SUBSTRATE_CHAINS: readonly SubstrateChain[] = [
     defaultRpcUrl: "https://kusama-rpc.polkadot.io",
     ss58Format: 2,
     symbol: "KSM",
+    balancesPallet: 4,
+    transactionVersion: 26,
   },
 ];
 

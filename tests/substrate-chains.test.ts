@@ -41,3 +41,17 @@ describe("substrateRpcUrlFor", () => {
     );
   });
 });
+
+describe("пришпиленные индексы палеты балансов (слайс T)", () => {
+  // Проверены живым payment_queryInfo 7 ноября 2026: только с этими индексами
+  // узел посчитал комиссию перевода, и вес совпал с transfer_keep_alive.
+  it.each([
+    ["taler", 6, 2],
+    ["polkadot", 5, 26],
+    ["kusama", 4, 26],
+  ])("%s: палета %i, версия транзакций %i", (key, pallet, txVersion) => {
+    const chain = resolveSubstrateChain(key as string)!;
+    expect(chain.balancesPallet).toBe(pallet);
+    expect(chain.transactionVersion).toBe(txVersion);
+  });
+});

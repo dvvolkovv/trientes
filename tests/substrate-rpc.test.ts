@@ -6,7 +6,9 @@ import {
   readBlockNumbers,
   readChainProperties,
   readGenesisHash,
+  readRuntimeVersion,
   readTotalIssuance,
+  queryTransferFee,
 } from "../src/lib/substrate-rpc";
 
 const URL_ = "https://node.example";
@@ -173,5 +175,89 @@ describe("measureBlockSeconds", () => {
       "decode_failed",
     );
     expect(calls).toEqual([]);
+  });
+});
+
+describe("readRuntimeVersion", () => {
+  it("читает имя и версии рантайма", async () => {
+    const { fetchImpl } = node({
+      state_getRuntimeVersion: { specName: "taler", specVersion: 12, transactionVersion: 2 },
+    });
+    await expect(readRuntimeVersion(URL_, { fetchImpl })).resolves.toEqual({
+      specName: "taler",
+      specVersion: 12,
+      transactionVersion: 2,
+    });
+  });
+
+  it("ответ без версии транзакций — decode_failed", async () => {
+    const { fetchImpl } = node({ state_getRuntimeVersion: { specName: "taler" } });
+    await expect(readRuntimeVersion(URL_, { fetchImpl })).rejects.toThrow("decode_failed");
+  });
+});
+
+describe("queryTransferFee", () => {
+  /**
+   * Узел, который отвечает комиссией только на экстринсик нужной длины, а на
+   * любой другой — тем же сообщением, что живой узел: «Unable to query
+   * dispatch info.» в поле error.
+   */
+  const feeNode = (acceptBodyLen: number) => {
+    const calls: string[] = [];
+    const fetchImpl: FetchLike = async (_url, init) => {
+      const body = JSON.parse(init!.body) as { method: string; params: unknown[] };
+      calls.push(body.method);
+      // Первые два байта — компактная длина тела; дальше само тело.
+      const bodyLen = String(body.params[0]).replace(/^0x/, "").length / 2 - 2;
+      const payload =
+        bodyLen === acceptBodyLen
+          ? { result: { weight: { ref_time: 170798000 }, class: "normal", partialFee: "2633280" } }
+          : { error: { message: "Unable to query dispatch info." } };
+      return { ok: true, status: 200, json: async () => ({ jsonrpc: "2.0", id: 1, ...payload }) };
+    };
+    return { fetchImpl, calls };
+  };
+
+  it("считает комиссию в монетах по ответу узла", async () => {
+    const { fetchImpl, calls } = feeNode(143);
+    await expect(
+      queryTransferFee({ url: URL_, pallet: 6, decimals: 12, fetchImpl }),
+    ).resolves.toEqual({
+      planck: 2633280n,
+      tokens: 0.00000263328,
+      metadataHashMode: false,
+    });
+    expect(calls).toEqual(["payment_queryInfo"]);
+  });
+
+  it("сеть с CheckMetadataHash: первый вариант отклонён, второй принят", async () => {
+    const { fetchImpl, calls } = feeNode(144);
+    const fee = await queryTransferFee({ url: URL_, pallet: 5, decimals: 10, fetchImpl });
+    expect(fee.metadataHashMode).toBe(true);
+    expect(fee.planck).toBe(2633280n);
+    expect(calls).toEqual(["payment_queryInfo", "payment_queryInfo"]);
+  });
+
+  it("оба варианта отклонены — decode_failed", async () => {
+    const { fetchImpl } = feeNode(999);
+    await expect(
+      queryTransferFee({ url: URL_, pallet: 6, decimals: 12, fetchImpl }),
+    ).rejects.toThrow("decode_failed");
+  });
+
+  it("нулевая комиссия — это ноль, а не отсутствие данных", async () => {
+    const { fetchImpl } = node({ payment_queryInfo: { partialFee: "0" } });
+    await expect(
+      queryTransferFee({ url: URL_, pallet: 6, decimals: 12, fetchImpl }),
+    ).resolves.toMatchObject({ planck: 0n, tokens: 0 });
+  });
+
+  it("недоступный узел — rpc_unreachable, без подбора вариантов", async () => {
+    const fetchImpl: FetchLike = async () => {
+      throw new Error("ECONNREFUSED");
+    };
+    await expect(
+      queryTransferFee({ url: URL_, pallet: 6, decimals: 12, fetchImpl, retries: 0 }),
+    ).rejects.toThrow("rpc_unreachable");
   });
 });
