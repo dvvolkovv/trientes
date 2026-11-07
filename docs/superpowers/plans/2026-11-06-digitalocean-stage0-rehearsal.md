@@ -509,7 +509,7 @@ Expected: health 200 с PostgreSQL/Redis ok; `@` и `www` имеют валид�
 ```bash
 source /Users/dmitry/.trientes-migration/stage0.env
 for path in '/.env' '/.git/config' '/uploads/kyb/' '/backups/'; do
-  code=$(curl -sS -o /dev/null -w '%{http_code}' --resolve "trientes.org:443:$NEW_IP" "https://trientes.org$path")
+  code=$(curl -sSL -o /dev/null -w '%{http_code}' --resolve "trientes.org:443:$NEW_IP" "https://trientes.org$path")
   test "$code" = 403 -o "$code" = 404
 done
 for port in 3000 4100 5432 6379; do
@@ -517,7 +517,7 @@ for port in 3000 4100 5432 6379; do
 done
 ```
 
-Expected: секреты/KYB/backups недоступны; внешние подключения к 3000/4100/5432/6379 не проходят. Не сканировать другие хосты или диапазоны.
+Expected: секреты/KYB/backups недоступны; внешние подключения к 3000/4100/5432/6379 не проходят. Для `/uploads/kyb/` и `/backups/` допустима цепочка `308 → /en/<path>`, но финальный код после redirects обязан быть 403/404 и без содержимого файлов. Не сканировать другие хосты или диапазоны.
 
 - [ ] **Step 5: Проверить исходящие зависимости без worker**
 
