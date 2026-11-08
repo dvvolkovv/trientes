@@ -32,16 +32,23 @@
 source /Users/dmitry/.trientes-migration/stage0.env
 : "${RELEASE_SHA:?назначить только после merge security branch}"
 : "${TARGET_BUILD_ID:?назначить из повторно проверенного target build}"
+: "${ROLLBACK_SHA:?SHA, на котором работает Aeza}"
+: "${ROLLBACK_BUILD_ID:?.next/BUILD_ID на Aeza}"
 printf '%s' "$RELEASE_SHA" | grep -Eq '^[0-9a-f]{40}$'
 ssh -o BatchMode=yes "dv@$OLD_IP" 'cd ~/trientes && git status --short --branch && git rev-parse HEAD && git fetch origin main && git rev-parse origin/main'
-ACTUAL=$(ssh -o BatchMode=yes "dv@$OLD_IP" 'git -C ~/trientes rev-parse HEAD')
-test "$ACTUAL" = "$RELEASE_SHA"
-ssh -o BatchMode=yes "dv@$OLD_IP" "cd ~/trientes && git merge-base --is-ancestor '$RELEASE_SHA' origin/main && git diff --quiet '$RELEASE_SHA'..origin/main -- src package.json package-lock.json prisma"
-TARGET_ACTUAL=$(ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && git rev-parse HEAD && cat .next/BUILD_ID')
+ACTUAL=$(ssh -o BatchMode=yes "dv@$OLD_IP" 'cd ~/trientes && test -z "$(git status --short)" && git rev-parse HEAD && cat .next/BUILD_ID' | paste -sd' ' -)
+test "$ACTUAL" = "$ROLLBACK_SHA $ROLLBACK_BUILD_ID"
+ssh -o BatchMode=yes "dv@$OLD_IP" "cd ~/trientes && git merge-base --is-ancestor '$RELEASE_SHA' origin/main && git diff --quiet '$RELEASE_SHA'..origin/main -- src worker bot package.json package-lock.json prisma"
+TARGET_ACTUAL=$(ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && test -z "$(git status --short)" && git rev-parse HEAD && cat .next/BUILD_ID' | paste -sd' ' -)
 test "$TARGET_ACTUAL" = "$RELEASE_SHA $TARGET_BUILD_ID"
+# npm не проверяет engines.node без engine-strict: сравнить версию Node на target явно.
+NODE_CHECK=$(ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && node -p "require(\"./package.json\").engines.node" && node -p process.versions.node' | paste -sd' ' -)
+NODE_MIN=${NODE_CHECK%% *}; NODE_MIN=${NODE_MIN#>=}; NODE_NOW=${NODE_CHECK##* }
+printf '%s' "$NODE_MIN" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'
+test "$(printf '%s\n%s\n' "$NODE_MIN" "$NODE_NOW" | sort -V | head -1)" = "$NODE_MIN"
 ```
 
-Expected: оба значения уже записаны в `stage0.env` после merge security branch, а не взяты из прежнего rehearsal. Production HEAD равен `RELEASE_SHA`, origin/main может содержать только более новые documentation commits, target HEAD и `.next/BUILD_ID` совпадают с проверенными значениями, working tree чист. Если main продвинулся в `src`, `package.json`, `package-lock.json` или `prisma`, либо target artifact изменился, остановиться и повторить release pipeline, а не подменять код молча.
+Expected: `RELEASE_SHA` и `TARGET_BUILD_ID` записаны в `stage0.env` после merge security branch, а не взяты из прежнего rehearsal. Aeza остаётся точкой rollback: HEAD равен `ROLLBACK_SHA` (`835aca4`), `.next/BUILD_ID` равен `ROLLBACK_BUILD_ID`, working tree чист. Release на Aeza не разворачивается: worker и bot запускаются через `tsx` прямо из исходников, поэтому checkout, `node_modules` и `.next` на Aeza должны оставаться согласованными для rollback (Task 9). origin/main содержит `RELEASE_SHA` и может содержать только более новые documentation commits. Target HEAD и `.next/BUILD_ID` совпадают с проверенными значениями, working tree чист. Node на target не ниже `engines.node` из `package.json` (`>=22.12.0`: на более старом Node sanitize-html роняет SSR страниц монет с `ERR_REQUIRE_ESM`). Если main продвинулся в `src`, `worker`, `bot`, `package.json`, `package-lock.json` или `prisma`, либо target artifact изменился, остановиться и повторить release pipeline, а не подменять код молча.
 
 - [ ] **Step 2: Сохранить полный и production-only audit без автоматического исправления**
 
@@ -71,11 +78,11 @@ chmod 600 /Users/dmitry/.trientes-migration/security/critical-high-*.jsonl
 ### Task 2: Запечатать проверенный build artifact и проверить восстановление
 
 **Files:**
-- Create protected archive: `/home/dv/migration-stage0/release-${RELEASE_SHA}.next.tar` и SHA-256
+- Create protected archive: `/home/dv/migration-stage0/release-${RELEASE_SHA}.next.tar` (`.next` + `.generated/maplibre`) и SHA-256
 - Create protected per-file manifest: `/home/dv/migration-stage0/release-${RELEASE_SHA}.artifact-manifest.txt`
 - Create protected restore backup: `/home/dv/migration-stage0/artifact-before-restore-test/`
 
-- [ ] **Step 1: Создать архив именно проверенных `.next` и versioned MapLibre assets**
+- [ ] **Step 1: Создать архив именно проверенных `.next` и `.generated/maplibre`**
 
 ```bash
 source /Users/dmitry/.trientes-migration/stage0.env
@@ -87,32 +94,38 @@ cd ~/trientes
 test "$(cat .next/BUILD_ID)" = "$TARGET_BUILD_ID"
 maplibre_version=$(node -p "require('./node_modules/maplibre-gl/package.json').version")
 map_dir=".generated/maplibre/$maplibre_version"
-assets=(maplibre-gl-worker.mjs maplibre-gl-shared.mjs)
-source_maps=(maplibre-gl-worker.mjs.map maplibre-gl-shared.mjs.map)
-for asset in "${assets[@]}"; do
-  test -s "$map_dir/$asset"
+for asset in maplibre-gl-worker.mjs maplibre-gl-shared.mjs; do
   cmp "node_modules/maplibre-gl/dist/$asset" "$map_dir/$asset"
 done
-for asset in "${source_maps[@]}"; do
-  test ! -e "$map_dir/$asset"
-done
+test -z "$(find .generated/maplibre -name '*.map' -print -quit)"
+test -z "$(find .generated/maplibre -name '.*.tmp' -print -quit)"
 test ! -e public/maplibre
+dirs=$(find .generated/maplibre -mindepth 1 -maxdepth 1 -type d | wc -l)
+test "$dirs" -ge 1 && test "$dirs" -le 2
+node -e '
+const fs = require("fs"), p = require("path");
+const nft = ".next/server/app/maplibre/[...path]/route.js.nft.json";
+const files = JSON.parse(fs.readFileSync(nft, "utf8")).files
+  .map((f) => p.relative(process.cwd(), p.resolve(p.dirname(nft), f)));
+const leaked = files.filter((f) => f.startsWith("src/") || f === "package.json");
+if (leaked.length) { console.error("route trace widened:", leaked.slice(0, 5)); process.exit(1); }
+'
 install -d -m 700 /home/dv/migration-stage0
 archive="/home/dv/migration-stage0/release-$RELEASE_SHA.next.tar"
 manifest="/home/dv/migration-stage0/release-$RELEASE_SHA.artifact-manifest.txt"
 test ! -e "$archive"
 test ! -e "$manifest"
-tar -C /home/dv/trientes -cf "$archive" .next "$map_dir"
-find .next "$map_dir" -type f -print0 | sort -z | xargs -0 sha256sum > "$manifest"
+tar -C /home/dv/trientes -cf "$archive" .next .generated/maplibre
+find .next .generated/maplibre -type f -print0 | sort -z | xargs -0 sha256sum > "$manifest"
 sha256sum "$archive" > "$archive.sha256"
 chmod 600 "$archive" "$archive.sha256" "$manifest"
-printf 'Sealed MapLibre version %s with %s assets\n' "$maplibre_version" "${#assets[@]}"
+printf 'Sealed BUILD_ID %s with MapLibre %s (%s version dirs)\n' "$TARGET_BUILD_ID" "$maplibre_version" "$dirs"
 REMOTE
 ```
 
-Expected: BUILD_ID совпадает; архив содержит `.next` и `.generated/maplibre/<version>/` (вне `public/`: эти файлы отдаёт только route `src/app/maplibre/[...path]/route.ts`); manifest содержит SHA-256 каждого файла обоих trees; оба runtime assets (`maplibre-gl-worker.mjs`, `maplibre-gl-shared.mjs`) побайтово совпадают с установленным MapLibre distribution; source maps в production build отсутствуют (`prebuild` копирует с `MAPLIBRE_INCLUDE_SOURCE_MAPS=0`), legacy `public/maplibre` отсутствует. Archive SHA-256 и MapLibre version сохранены в `merged-release-evidence.md`.
+Expected: BUILD_ID совпадает; versioned runtime assets (`worker`/`shared`) побайтово совпадают с установленным MapLibre distribution; source maps и осиротевшие temp-файлы в production artifact отсутствуют (`prebuild` запускает copy с `MAPLIBRE_INCLUDE_SOURCE_MAPS=0` и prune, который удаляет stale `.map` во всех сохранённых версиях; между `npm run build` и этим шагом в `~/trientes` не запускать `npm test`/`npm run dev` — они кладут `.map`); legacy `public/maplibre` отсутствует; trace route `/maplibre/[...path]` не расширился на `src/` и корневой `package.json` (сужение из `432e2fe`); в `.generated/maplibre` текущая и максимум одна предыдущая версия (на чистом target — ровно одна). Архив содержит `.next` и весь `.generated/maplibre`, manifest — SHA-256 каждого файла обоих trees. Archive SHA-256 и MapLibre version сохранены в `merged-release-evidence.md`.
 
-- [ ] **Step 2: Проверить восстановление BUILD_ID, manifest и MapLibre HTTP**
+- [ ] **Step 2: Проверить восстановление BUILD_ID, manifest, MapLibre HTTP и Cache-Control**
 
 ```bash
 source /Users/dmitry/.trientes-migration/stage0.env
@@ -122,43 +135,51 @@ ssh -o BatchMode=yes "dv@$NEW_IP" "RELEASE_SHA='$RELEASE_SHA' TARGET_BUILD_ID='$
 set -euo pipefail
 cd ~/trientes
 maplibre_version=$(node -p "require('./node_modules/maplibre-gl/package.json').version")
-map_dir=".generated/maplibre/$maplibre_version"
 archive="/home/dv/migration-stage0/release-$RELEASE_SHA.next.tar"
 manifest="/home/dv/migration-stage0/release-$RELEASE_SHA.artifact-manifest.txt"
 backup=/home/dv/migration-stage0/artifact-before-restore-test
-pm2 stop trientes-web
 test ! -e "$backup"
+pm2 stop trientes-web
 mkdir -m 700 -p "$backup"
 mv .next "$backup/.next"
-mv "$map_dir" "$backup/maplibre"
+mv .generated/maplibre "$backup/maplibre"
 tar -C /home/dv/trientes -xf "$archive"
 test "$(cat .next/BUILD_ID)" = "$TARGET_BUILD_ID"
 sha256sum --quiet -c "$manifest"
-diff -qr "$backup/.next" /home/dv/trientes/.next
-diff -qr "$backup/maplibre" "/home/dv/trientes/$map_dir"
+diff -qr "$backup/.next" .next
+diff -qr "$backup/maplibre" .generated/maplibre
+read -r out_log err_log < <(pm2 jlist | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const e=JSON.parse(s).find(x=>x.name==="trientes-web").pm2_env;console.log(e.pm_out_log_path,e.pm_err_log_path)})')
+out_off=$(stat -c %s "$out_log" 2>/dev/null || echo 0) err_off=$(stat -c %s "$err_log" 2>/dev/null || echo 0)
 pm2 start ecosystem.config.js --only trientes-web
 pm2 save
+sleep 5
 curl -fsS http://127.0.0.1:3000/api/health
 test "$(curl -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/en)" = 200
-assets=(maplibre-gl-worker.mjs maplibre-gl-shared.mjs)
-for asset in "${assets[@]}"; do
-  url="http://127.0.0.1:3000/maplibre/$maplibre_version/$asset"
-  headers=$(curl -sS -o /dev/null -D - "$url")
-  grep -q '^HTTP/[0-9.]* 200' <<<"$headers"
-  grep -qi '^cache-control: public, max-age=31536000, immutable' <<<"$headers"
-  printf '200 immutable %s\n' "$url"
-done
-for asset_path in "$maplibre_version/maplibre-gl-worker.mjs.map" "$maplibre_version/maplibre-gl-shared.mjs.map" maplibre-gl-worker.mjs; do
-  url="http://127.0.0.1:3000/maplibre/$asset_path"
-  headers=$(curl -sS -o /dev/null -D - "$url")
-  grep -q '^HTTP/[0-9.]* 404' <<<"$headers"
-  grep -qi '^cache-control: no-store' <<<"$headers"
-  printf '404 no-store %s\n' "$url"
-done
+check() {
+  expected_status=$1 expected_cache=$2 url_path=$3
+  headers=$(curl -sS --max-time 10 -A 'trientes-cutover-check' -o /dev/null -D - "http://127.0.0.1:3000/$url_path" | tr -d '\r') || true
+  hdr() { printf '%s\n' "$headers" | awk -v h="$1:" 'tolower($1)==h {sub(/^[^:]*: */, ""); print}' | sort -u | paste -sd, -; }
+  http_status=$(printf '%s\n' "$headers" | awk 'NR==1 {print $2}')
+  cache=$(hdr cache-control) ctype=$(hdr content-type) nosniff=$(hdr x-content-type-options)
+  printf '%s [%s] [%s] /%s\n' "$http_status" "$cache" "$ctype" "$url_path"
+  problem=
+  test "$http_status" = "$expected_status" || problem=status
+  case "$cache" in *"$expected_cache"*) ;; *) problem="${problem:+$problem,}cache-control" ;; esac
+  test "$nosniff" = nosniff || problem="${problem:+$problem,}nosniff"
+  if [ "$expected_status" = 200 ]; then case "$ctype" in text/javascript*) ;; *) problem="${problem:+$problem,}content-type" ;; esac; fi
+  if [ -n "$problem" ]; then printf 'FAIL /%s: %s\n%s\n' "$url_path" "$problem" "$headers" >&2; return 1; fi
+}
+check 200 immutable "maplibre/$maplibre_version/maplibre-gl-worker.mjs"
+check 200 immutable "maplibre/$maplibre_version/maplibre-gl-shared.mjs"
+check 404 no-store "maplibre/$maplibre_version/maplibre-gl-worker.mjs.map"
+check 404 no-store maplibre/maplibre-gl-worker.mjs
+check 404 no-store maplibre/maplibre-gl-shared.mjs
+check 404 no-store maplibre/0.0.0/maplibre-gl-worker.mjs
+if { tail -c +"$((out_off + 1))" "$out_log"; tail -c +"$((err_off + 1))" "$err_log"; } 2>/dev/null | grep -F '[maplibre-assets]'; then echo 'FAIL maplibre asset errors in web log since restart' >&2; exit 1; fi
 REMOTE
 ```
 
-Expected: восстановленный `.next` и versioned MapLibre tree (`.generated/maplibre/<version>/`) побайтово совпадают с backup и manifest, BUILD_ID совпадает, health/`/en` возвращают HTTP 200, оба runtime URLs `/maplibre/<version>/maplibre-gl-{worker,shared}.mjs` возвращают HTTP 200 с `Cache-Control: public, max-age=31536000, immutable`, а production source maps и unversioned `/maplibre/maplibre-gl-worker.mjs` возвращают 404 `no-store`; worker/bot не запущены. Любая разница — блокер; не запускать cutover с другим artifact.
+Expected: восстановленные `.next` и `.generated/maplibre` побайтово совпадают с backup и manifest, BUILD_ID совпадает, health и `/en` 200; versioned `worker`/`shared` — HTTP 200 с `public, max-age=31536000, immutable`, `content-type: text/javascript` (module worker без JS MIME не загрузится) и `nosniff`; source map, root URL без версии (worker и shared) и несуществующая версия — 404 с `no-store` и `nosniff` (404 никогда не кешируется как immutable); в логе web нет стартовой/runtime ошибки MapLibre-ассетов (только строки, дописанные после этого `pm2 start` — старые ошибки rehearsal не дают ложный FAIL; префикс `[maplibre-assets]`: стартовая проверка `src/instrumentation.ts` пишет `DEPLOYMENT ERROR: missing …` через ~6 с после старта без запросов, route — `deployment error: … is missing` один раз на путь и любые не-ENOENT ошибки чтения); worker/bot не запущены. Любая разница — блокер; не запускать cutover с другим artifact. При падении `check` печатает URL, список несовпадений и все заголовки.
 
 ### Task 3: Проверить readiness внешних зависимостей и final acceptance plan
 
@@ -186,7 +207,7 @@ Expected: `Binance WS open` и одно message получены, затем cle
 
 - [ ] **Step 3: Записать dependency evidence и go/no-go checklist**
 
-В `/Users/dmitry/.trientes-migration/cutover-dependency-checks.md` через Write зафиксировать release/artifact SHA, все HTTP checks, Binance open/message и требование финального single-writer запуска. Добавить: production `main` всё ещё равен `RELEASE_SHA`, A/MX не менялись, old web/worker online, old bot stopped, активных Claude processes нет, target web-only.
+В `/Users/dmitry/.trientes-migration/cutover-dependency-checks.md` через Write зафиксировать release/artifact SHA, все HTTP checks, Binance open/message и требование финального single-writer запуска. Добавить: origin/main содержит `RELEASE_SHA` без новых изменений в коде, Aeza всё ещё на `ROLLBACK_SHA`/`ROLLBACK_BUILD_ID`, A/MX не менялись, old web/worker online, old bot stopped, активных Claude processes нет, target web-only.
 
 ### Task 4: Остановить writers и сделать финальные snapshots
 
@@ -206,6 +227,25 @@ ssh -o BatchMode=yes "dv@$NEW_IP" 'crontab -l'
 Expected: `/home/dv/pg-backup.sh` присутствует и executable, crontab содержит `0 3 * * * /home/dv/pg-backup.sh >> /home/dv/logs/pg-backup.log 2>&1`. Остальные source jobs не добавляются автоматически.
 
 - [ ] **Step 2: Заморозить deploys и остановить writers на Aeza**
+
+До остановки writers снять существующую database session отдельного тестового аккаунта (не реального пользователя) на Aeza. Она попадёт в финальный dump и в Task 6 доказывает, что перенесённые сессии работают на target. Пароль вводится интерактивно и не сохраняется:
+
+```bash
+source /Users/dmitry/.trientes-migration/stage0.env
+: "${CUTOVER_TEST_IDENTIFIER:?email или username тестового аккаунта}"
+COOKIE_JAR=/Users/dmitry/.trientes-migration/cutover-auth-cookie.txt
+(umask 077 && : > "$COOKIE_JAR")
+read -rs CUTOVER_TEST_PASSWORD
+jq -n --arg identifier "$CUTOVER_TEST_IDENTIFIER" --arg password "$CUTOVER_TEST_PASSWORD" '{identifier:$identifier,password:$password,locale:"en"}' \
+  | curl -fsS --resolve "trientes.org:443:$OLD_IP" -c "$COOKIE_JAR" -H 'content-type: application/json' --data-binary @- https://trientes.org/api/auth/password/login > /dev/null
+unset CUTOVER_TEST_PASSWORD
+chmod 600 "$COOKIE_JAR"
+test "$(curl -sS -o /dev/null -w '%{http_code}' --resolve "trientes.org:443:$OLD_IP" -b "$COOKIE_JAR" https://trientes.org/en/cabinet)" = 200
+```
+
+Expected: cookie jar `0600`, cabinet на Aeza 200 с этой session. Cookie не выводится и не копируется в чат/логи.
+
+Затем остановить writers:
 
 ```bash
 source /Users/dmitry/.trientes-migration/stage0.env
@@ -340,7 +380,70 @@ curl -fsS --resolve "trientes.org:443:$NEW_IP" https://trientes.org/en
 
 Expected: health и `/en` 200, DB/Redis ok, cold-cache не вызывает рост память/реstarts. Это abort checkpoint: при ошибке A не менять и вернуть старый стек.
 
-- [ ] **Step 2: Запустить worker один раз и проверить startup jobs**
+- [ ] **Step 2: Проверить реальные uploads и защиту KYB до изменения A**
+
+```bash
+source /Users/dmitry/.trientes-migration/stage0.env
+urlpath() { python3 -c 'import sys, urllib.parse; print(urllib.parse.quote(sys.argv[1]))' "$1"; }
+PUBLIC_UPLOAD=$(ssh -o BatchMode=yes "dv@$NEW_IP" 'find /var/www/trientes-uploads/coin-cards -type f -name "*.png" | head -n 1')
+test -n "$PUBLIC_UPLOAD"
+REL_PATH=${PUBLIC_UPLOAD#/var/www/trientes-uploads/}
+curl -sS -o /dev/null -w '%{http_code} %{content_type}\n' --resolve "trientes.org:443:$NEW_IP" "https://trientes.org/uploads/$(urlpath "$REL_PATH")" | grep -qx '200 image/png'
+KYB_FILE=$(ssh -o BatchMode=yes "dv@$NEW_IP" 'find /home/dv/trientes/public/uploads/kyb -type f ! -name .gitkeep | head -n 1')
+if [ -n "$KYB_FILE" ]; then
+  KYB_REL=${KYB_FILE#/home/dv/trientes/public/}
+  KYB_STATUS=$(curl -sS -o /dev/null -w '%{http_code}' --resolve "trientes.org:443:$NEW_IP" "https://trientes.org/$(urlpath "$KYB_REL")")
+  case "$KYB_STATUS" in 403|404) ;; *) echo "KYB exposed: $KYB_STATUS"; exit 1 ;; esac
+fi
+unset PUBLIC_UPLOAD REL_PATH KYB_FILE KYB_REL
+```
+
+Expected: существующий coin-card PNG отдаётся как `200 image/png` по `/uploads/coin-cards/...` (путь `REL_PATH` уже содержит `coin-cards/`); реальный KYB-документ (не `.gitkeep`), если есть, — 403/404. На 2026-11-08 реальных KYB-документов нет; KYB upload пишет в `public/uploads/kyb`, который Next.js раздаёт без авторизации, — это отдельный pre-existing finding `security/kyb-public-storage-finding.md`, а появление документа с HTTP 200 — блокер или письменный risk acceptance. Имена файлов не выводятся. Если upload отсутствует на target или KYB доступен, A-записи не менять. Это обязательный pre-DNS upload gate.
+
+- [ ] **Step 3: Проверить перенесённую session, fresh login/logout и OAuth redirects до изменения A**
+
+```bash
+source /Users/dmitry/.trientes-migration/stage0.env
+: "${CUTOVER_TEST_IDENTIFIER:?email или username тестового аккаунта}"
+COOKIE_JAR=/Users/dmitry/.trientes-migration/cutover-auth-cookie.txt
+cabinet_status() { curl -sS -o /dev/null -w '%{http_code}' --resolve "trientes.org:443:$NEW_IP" "$@" https://trientes.org/en/cabinet; }
+test "$(cabinet_status -b "$COOKIE_JAR")" = 200
+test "$(cabinet_status)" != 200
+
+FRESH_JAR=$(mktemp); chmod 600 "$FRESH_JAR"
+read -rs CUTOVER_TEST_PASSWORD
+jq -n --arg identifier "$CUTOVER_TEST_IDENTIFIER" --arg password "$CUTOVER_TEST_PASSWORD" '{identifier:$identifier,password:$password,locale:"en"}' \
+  | curl -fsS --resolve "trientes.org:443:$NEW_IP" -c "$FRESH_JAR" -H 'content-type: application/json' --data-binary @- https://trientes.org/api/auth/password/login > /dev/null
+unset CUTOVER_TEST_PASSWORD
+test "$(cabinet_status -b "$FRESH_JAR")" = 200
+CSRF=$(curl -fsS --resolve "trientes.org:443:$NEW_IP" -b "$FRESH_JAR" -c "$FRESH_JAR" https://trientes.org/api/auth/csrf | jq -r .csrfToken)
+curl -sS -o /dev/null --resolve "trientes.org:443:$NEW_IP" -b "$FRESH_JAR" -c "$FRESH_JAR" --data-urlencode "csrfToken=$CSRF" https://trientes.org/api/auth/signout
+test "$(cabinet_status -b "$FRESH_JAR")" != 200
+rm -f "$FRESH_JAR"
+
+for provider in google github; do
+  OAUTH_JAR=$(mktemp); chmod 600 "$OAUTH_JAR"
+  CSRF=$(curl -fsS --resolve "trientes.org:443:$NEW_IP" -b "$OAUTH_JAR" -c "$OAUTH_JAR" https://trientes.org/api/auth/csrf | jq -r .csrfToken)
+  LOCATION=$(curl -sS -o /dev/null -w '%{redirect_url}' --resolve "trientes.org:443:$NEW_IP" -b "$OAUTH_JAR" -c "$OAUTH_JAR" \
+    --data-urlencode "csrfToken=$CSRF" --data-urlencode "callbackUrl=https://trientes.org/en/cabinet" "https://trientes.org/api/auth/signin/$provider")
+  python3 - "$provider" "$LOCATION" <<'PY'
+import sys, urllib.parse
+provider, location = sys.argv[1], sys.argv[2]
+url = urllib.parse.urlparse(location)
+query = urllib.parse.parse_qs(url.query)
+assert url.hostname == {"google": "accounts.google.com", "github": "github.com"}[provider], provider
+assert query.get("redirect_uri") == [f"https://trientes.org/api/auth/callback/{provider}"], provider
+assert query.get("code_challenge") or query.get("state"), provider
+print(provider, "redirect ok")
+PY
+  rm -f "$OAUTH_JAR"
+done
+unset CSRF LOCATION
+```
+
+Expected: перенесённая из dump session открывает cabinet (200), без cookie — redirect на login; fresh password login создаёт database session, signout её удаляет; Google/GitHub signin ведут на провайдера с `redirect_uri=https://trientes.org/api/auth/callback/<provider>` и PKCE/state. Полный OAuth callback требует интерактивного входа пользователя и проверяется в Task 8; in-progress OAuth flow со старыми pre-upgrade check-cookies может закончиться ожидаемым `InvalidCheck` — повторный вход должен пройти. При любой ошибке auth A-записи не менять и вернуть старый стек; это обязательный pre-DNS gate.
+
+- [ ] **Step 4: Запустить worker один раз и проверить startup jobs**
 
 ```bash
 source /Users/dmitry/.trientes-migration/stage0.env
@@ -349,16 +452,65 @@ ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && pm2 start ecosystem.config.j
 
 Expected: worker online, startup jobs начали заполнять caches, Binance WS/reconnect не зацикливается, нет повторяющихся 429/5xx/parser errors. Старый worker остаётся stopped. Не отправлять тестовые уведомления реальным пользователям.
 
-- [ ] **Step 3: Перезапустить bot и проверить webhook/voice/native fetch без искусственных updates**
+- [ ] **Step 5: Перезапустить bot и проверить webhook/voice/native fetch без искусственных updates**
 
 ```bash
 source /Users/dmitry/.trientes-migration/stage0.env
 ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && pm2 restart ecosystem.config.js --only trientes-bot --update-env && pm2 save && curl -fsS http://127.0.0.1:4100/health'
 ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && node -e '"'"'require("dotenv").config(); (async()=>{const base="https://api.telegram.org/bot"+process.env.TELEGRAM_BOT_TOKEN; const [me,hook]=await Promise.all([fetch(base+"/getMe").then(r=>r.json()),fetch(base+"/getWebhookInfo").then(r=>r.json())]); const url=hook.result?.url; const origin=url?new URL(url).origin:null; console.log(JSON.stringify({getMe:me.ok,webhook:hook.ok,origin,pending:hook.result?.pending_update_count,last_error_date:hook.result?.last_error_date})); if(!me.ok||!hook.ok||origin!=="https://trientes.org")process.exit(1)})().catch(()=>process.exit(1))'"'"''
-ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && npx vitest run bot/__tests__/voice.test.ts'
+ssh -o BatchMode=yes "dv@$NEW_IP" 'bash -s' <<'REMOTE'
+set -euo pipefail
+check=$(mktemp -d /tmp/voice-check.XXXXXX)
+rmdir "$check"
+trap 'cd /; rm -f "$check/node_modules"; git -C /home/dv/trientes worktree remove --force "$check" 2>/dev/null || rm -rf "$check"' EXIT
+git -C /home/dv/trientes worktree add --detach "$check" HEAD >/dev/null
+ln -s /home/dv/trientes/node_modules "$check/node_modules"
+cd "$check"
+npx vitest run bot/__tests__/voice.openai-http.test.ts bot/__tests__/voice.test.ts
+REMOTE
+ssh -o BatchMode=yes "dv@$NEW_IP" 'bash -s' <<'REMOTE'
+set -euo pipefail
+cd /home/dv/trientes
+test -z "$(find .generated/maplibre -name '*.map' -print -quit)"
+grep '  \.generated/maplibre/' "/home/dv/migration-stage0/release-$(git rev-parse HEAD).artifact-manifest.txt" | sha256sum --quiet -c -
+test "$(git worktree list | wc -l)" -eq 1
+echo "artifact maplibre intact, temp worktree removed"
+REMOTE
 ```
 
-Expected: bot health ok; native `fetch` возвращает `getMe.ok=true`; webhook origin остаётся `https://trientes.org`, pending 0 и нет новой ошибки. `setWebhook` не выполняется. Voice regression использует реальный OpenAI 6 client через local mock `/v1/audio/transcriptions`, без внешней сети, real API key, аудио или PII; результат записать в startup evidence. Затем пользователь отправляет `/whoami` один раз: ровно один ответ без дублей.
+Expected: bot health ok; native `fetch` возвращает `getMe.ok=true`; webhook origin остаётся `https://trientes.org`, pending 0 и нет новой ошибки. `setWebhook` не выполняется. Voice regression использует реальный OpenAI 6 client через local HTTP `/v1/audio/transcriptions`, без внешней сети, real API key, аудио или PII; результат записать в startup evidence. Тесты идут во временном detached worktree с symlink на production `node_modules` и без `.env`: vitest globalSetup копирует MapLibre с source maps, поэтому его нельзя запускать в живом `~/trientes`. Это бы добавило `.map` в `.generated/maplibre` и сломало sealed artifact. Вторая команда подтверждает три вещи: в production `.generated/maplibre` нет `.map`, его файлы сходятся с artifact manifest, временный worktree удалён (`git worktree list` = 1). `.next` здесь с manifest не сверяется: работающий web может переписать ISR-страницы. Затем пользователь отправляет `/whoami` один раз: ровно один ответ без дублей.
+
+- [ ] **Step 6: Проверить MapLibre и cabinet point form до изменения A**
+
+```bash
+source /Users/dmitry/.trientes-migration/stage0.env
+MAPLIBRE_VERSION=$(ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && node -p "require(\"./node_modules/maplibre-gl/package.json\").version"')
+test "$(curl -sS -o /dev/null -w '%{http_code}' --resolve "trientes.org:443:$NEW_IP" 'https://trientes.org/en/crypto-map?coin=bitcoin')" = 200
+edge_check() {
+  expected_status=$1 expected_cache=$2 url_path=$3
+  headers=$(curl -sS --max-time 10 -A 'trientes-cutover-check' -o /dev/null -D - --resolve "trientes.org:443:$NEW_IP" "https://trientes.org/$url_path" | tr -d '\r') || true
+  hdr() { printf '%s\n' "$headers" | awk -v h="$1:" 'tolower($1)==h {sub(/^[^:]*: */, ""); print}' | sort -u | paste -sd, -; }
+  http_status=$(printf '%s\n' "$headers" | awk 'NR==1 {print $2}')
+  cache=$(hdr cache-control) ctype=$(hdr content-type) nosniff=$(hdr x-content-type-options)
+  printf '%s [%s] [%s] /%s\n' "$http_status" "$cache" "$ctype" "$url_path"
+  problem=
+  test "$http_status" = "$expected_status" || problem=status
+  case "$cache" in *"$expected_cache"*) ;; *) problem="${problem:+$problem,}cache-control" ;; esac
+  test "$nosniff" = nosniff || problem="${problem:+$problem,}nosniff"
+  if [ "$expected_status" = 200 ]; then case "$ctype" in text/javascript*) ;; *) problem="${problem:+$problem,}content-type" ;; esac; fi
+  if [ -n "$problem" ]; then printf 'FAIL /%s: %s\n%s\n' "$url_path" "$problem" "$headers" >&2; return 1; fi
+}
+edge_check 200 immutable "maplibre/$MAPLIBRE_VERSION/maplibre-gl-worker.mjs"
+edge_check 200 immutable "maplibre/$MAPLIBRE_VERSION/maplibre-gl-shared.mjs"
+edge_check 404 no-store "maplibre/$MAPLIBRE_VERSION/maplibre-gl-worker.mjs.map"
+edge_check 404 no-store maplibre/maplibre-gl-worker.mjs
+edge_check 404 no-store maplibre/maplibre-gl-shared.mjs
+edge_check 404 no-store maplibre/0.0.0/maplibre-gl-worker.mjs
+```
+
+Через Playwright (Chromium с `--host-resolver-rules="MAP trientes.org $NEW_IP, MAP www.trientes.org $NEW_IP"`) дополнительно проверить на target: создание MapLibre canvas, загрузку vector tiles (HTTP 200), empty-map click с origin marker, выбор реального POI, видимые статические `© OpenStreetMap contributors` и `© OpenFreeMap`, отсутствие `pageerror` и ошибок worker. С отключённым WebGL2 (init script: `getContext("webgl2")` возвращает `null`) страница показывает локализованное fallback-сообщение вместо карты без `pageerror`. В cabinet под тестовым аккаунтом: клик по карте ставит marker и заполняет координаты, после SHOP→ONLINE→SHOP карта и click работают, сохранение координат тестовой точки проходит.
+
+Expected: публичная карта и cabinet map form работают; через nginx/TLS versioned worker/shared отдают HTTP 200 с `immutable`, `text/javascript` и `nosniff`, source map, root URL без версии (worker и shared) и несуществующая версия — 404 с `no-store` и `nosniff`; WebGL2 fallback корректен, нет 404 ресурсов и `pageerror`. Любая ошибка — блокер до A-записей.
 
 ### Task 7: Переключить только A-записи в DigitalOcean
 
@@ -413,7 +565,7 @@ Expected: после распространения внешние health 200 и
 - Существующая Auth.js database session продолжает работать и не удаляется; in-progress OAuth flow со старыми pre-upgrade check-cookies может быть отклонён — это ожидаемый повторный login, не обход и не patch библиотеки. Fresh Google/GitHub login/logout и domain OAuth callbacks успешны.
 - Telegram `/whoami` и `/status` получают ровно один ответ; `getWebhookInfo` не имеет нового `last_error_date`/backlog.
 - Worker caches свежие, schedules однократны, Binance WS подключён, alerts не дублируются.
-- Обязательный browser gate `/en/crypto-map?coin=bitcoin`: canvas виден и инициализирован, tile responses HTTP 200, versioned worker/shared/оба map files HTTP 200, нет `pageerror`/MapLibre error; статические `© OpenStreetMap contributors` и `© OpenFreeMap` видимы. В cabinet point form клик по карте ставит marker и заполняет координаты; после SHOP→ONLINE→SHOP карта и click продолжают работать.
+- Обязательный browser gate `/en/crypto-map?coin=bitcoin`: canvas виден и инициализирован, tile responses HTTP 200, versioned worker/shared HTTP 200 с `immutable`, source maps и root URL без версии 404 с `no-store` (в production не публикуются), нет `pageerror`/MapLibre error; при отключённом WebGL2 виден локализованный fallback без `pageerror`; статические `© OpenStreetMap contributors` и `© OpenFreeMap` видимы. В cabinet point form клик по карте ставит marker и заполняет координаты; после SHOP→ONLINE→SHOP карта и click продолжают работать.
 - `/exchange/`, APK latest symlink и read-only `GET /exchange-api/health` возвращает HTTP 200 и подтверждает работу proxy к внешнему order service; uploads доступны, KYB/protected files 403/404.
 - Android/iOS продолжают использовать `https://trientes.org`; Mac tunnel перенастроен на `NEW_IP`, затем `/home/dv/bin/mac-ios --lane build_sim` проходит.
 
@@ -494,7 +646,7 @@ for path in paths:
         raise SystemExit(f'Expected old IP missing in {path}')
     path.write_text(text.replace('85.192.25.242', os.environ['NEW_IP']))
 PY
-ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && git diff --check && git add README.md deploy/nginx/trientes.conf deploy/nginx/trientes-tls.conf deploy/docs/dns-tls.md && git commit -m "chore(deploy): перейти на DigitalOcean IP" -m "Co-Authored-By: Kimi Code <noreply@anthropic.com>" && git push origin HEAD:main'
+ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && git diff --check && git add README.md deploy/nginx/trientes.conf deploy/nginx/trientes-tls.conf deploy/docs/dns-tls.md && git commit -m "chore(deploy): перейти на DigitalOcean IP" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" && git push origin HEAD:main'
 ```
 
 Expected: старый IP удалён только из перечисленных deploy/docs файлов, commit/push успешен. Исторические plans/specs не переписываются.
@@ -517,6 +669,8 @@ ssh -o BatchMode=yes "dv@$OLD_IP" 'sudo systemctl enable pm2-dv && pm2 start eco
 ```
 
 Expected: A возвращены на Aeza, новые worker/bot не запускались, старый стек восстановлен. Если новые writes были, эта команда не применяется.
+
+Rollback опирается на нетронутые `~/trientes/node_modules` и `~/trientes/.next` на Aeza (`835aca4`). Не пересобирать и не чистить их, пока Aeza хранится (≥7 дней). Чистый `npm ci` на `835aca4` падает с ERESOLVE: `openai@4.104.0` требует `zod@^3`, а в lock-файле `zod@4.4.3`; в security-ветке это исправлено коммитом `782e5a2`. Если всё же придётся переустанавливать старую версию, использовать `npm ci --legacy-peer-deps` и сверить `.next/BUILD_ID` со значением из Stage 0.
 
 - [ ] **Step 2: Rollback после новых writes — отдельное reverse migration window**
 
