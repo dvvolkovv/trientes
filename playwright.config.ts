@@ -11,7 +11,11 @@ export default defineConfig({
     ["html", { open: "never", outputFolder: "playwright-report" }],
   ],
   use: {
-    baseURL: process.env.BASE_URL ?? "http://localhost:3000",
+    // 127.0.0.1:3000 is the live site on the production host. Without
+    // BASE_URL the suite expects its own server on :3200, e.g.
+    // `npx next start -p 3200`; for a local dev server pass
+    // BASE_URL=http://localhost:3000 explicitly.
+    baseURL: process.env.BASE_URL ?? "http://127.0.0.1:3200",
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
     actionTimeout: 10_000,
