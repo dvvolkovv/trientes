@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { sanitizeFintechSocials } from "@/lib/fintech";
-import { safeHttpUrl } from "@/lib/crypto-map";
+import { safeHttpUrl } from "@/lib/safe-url";
 import { localizedProse } from "@/lib/localized-prose";
 import { TranslatedBadge } from "@/components/coin-card/translated-badge";
 

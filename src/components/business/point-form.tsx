@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition } from "react";
-import { Map as MlMap, Marker, setWorkerUrl } from "maplibre-gl";
+import { Map as MlMap, Marker } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+import "@/lib/maplibre-worker";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { submitCompanyPoint, updateCompanyPoint } from "@/app/actions/company";
@@ -12,7 +13,6 @@ import {
   MAPLIBRE_ATTRIBUTION_OPTIONS,
 } from "@/lib/maplibre-attribution";
 
-setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
 const PRAGUE: [number, number] = [14.4212535, 50.0874654];
 const TYPES = ["SHOP", "ATM", "POS", "SALES_OFFICE", "COMPANY", "ONLINE"] as const;

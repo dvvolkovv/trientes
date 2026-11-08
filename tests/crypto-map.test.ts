@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { safeHttpUrl } from "../src/lib/safe-url";
 import {
   parseBbox,
   coinPaymentTags,
@@ -13,7 +14,6 @@ import {
   parseOpenGraph,
   isBlockedIp,
   assertUrlShape,
-  safeHttpUrl,
 } from "@/lib/crypto-map";
 
 describe("parseBbox", () => {

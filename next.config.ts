@@ -8,6 +8,19 @@ const nextConfig: NextConfig = {
   // Lets a preview build land in its own directory (NEXT_DIST_DIR=.next-preview npm run
   // build) so screenshotting a change never overwrites the .next the live server serves.
   distDir: process.env.NEXT_DIST_DIR ?? ".next",
+  async headers() {
+    return [
+      {
+        source: "/maplibre/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "coin-images.coingecko.com" },

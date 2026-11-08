@@ -8,12 +8,13 @@ import {
   NavigationControl,
   Marker,
   Popup,
-  setWorkerUrl,
   type SourceSpecification,
   type GeoJSONSource,
   type GeolocatePositionEvent,
 } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+import "@/lib/maplibre-worker";
+import { safeHttpUrl } from "@/lib/safe-url";
 import { useLocale, useTranslations } from "next-intl";
 import type { Poi, PoiLayer, RouteResult, RouteMode, TransitLeg, GeoResult, Social, OgPreview } from "@/lib/crypto-map";
 import { StreetViewOverlay } from "@/components/coin-detail/street-view-overlay";
@@ -26,7 +27,6 @@ import {
   MAPLIBRE_ATTRIBUTION_OPTIONS,
 } from "@/lib/maplibre-attribution";
 
-setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
 // MapLibre flattens non-primitive feature properties to JSON strings, so `socials`
 // rides through the GeoJSON source as a string and is parsed back when a popup opens.
@@ -931,18 +931,6 @@ function escapeHtml(s: string): string {
   return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 }
 
-// Mirror of lib `safeHttpUrl`. Can't import it: crypto-map.ts pulls in node:dns,
-// so this client bundle only takes its types. Keep the two in sync.
-function safeWebsite(raw: string | null | undefined): string | null {
-  if (!raw) return null;
-  try {
-    const u = new URL(raw);
-    return u.protocol === "http:" || u.protocol === "https:" ? raw : null;
-  } catch {
-    return null;
-  }
-}
-
 // Collapse the photo slot if its image fails to load (404, hotlink block, or an
 // http image blocked as mixed content on the https page) instead of showing a broken icon.
 function wirePhotoFallback(el: HTMLElement): void {
@@ -987,7 +975,7 @@ function buildCard(p: PoiProps, t: Translator, near: boolean, showStart: boolean
   const el = document.createElement("div");
   el.className = "cmap-popup";
 
-  const website = safeWebsite(p.website);
+  const website = safeHttpUrl(p.website);
   const hasPhoto = !!p.image || !!website;
   const photoHtml = hasPhoto
     ? `<div class="cmap-photo">${
@@ -1080,7 +1068,7 @@ function curatedToProps(c: CuratedPoi): PoiProps {
 // Lazily upgrade the photo slot with the place's own OpenGraph splash. Guards against
 // the popup being closed mid-flight; prefers the source image, falls back to OSM's.
 function hydratePhoto(el: HTMLElement, p: PoiProps, t: Translator): void {
-  const website = safeWebsite(p.website);
+  const website = safeHttpUrl(p.website);
   if (!website) return; // OSM image (if any) is already shown; nothing to fetch
   const photo = el.querySelector<HTMLElement>(".cmap-photo");
   fetch(`/api/crypto-map/preview?url=${encodeURIComponent(website)}`)
