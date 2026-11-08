@@ -22,6 +22,9 @@
 
 # generated MapLibre worker assets (scripts/copy-maplibre-worker.mjs)
 /.generated/
+# next/font build fixture of integration-tests/security-next-font-build.test.ts;
+# Turbopack compiles only inside its root, so it cannot live in os.tmpdir()
+/integration-tests/.next-font-extensionless-*/
 
 # misc
 .DS_Store
