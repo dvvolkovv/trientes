@@ -20,7 +20,15 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"], channel: "chrome" },
+      use: {
+        ...devices["Desktop Chrome"],
+        channel: "chrome",
+        // The e2e server runs with the production .env, and /api/track writes a
+        // PageView row for every page the browser opens. The "Playwright" token
+        // makes isBotUserAgent() skip it; the Chrome UA stays as the prefix so
+        // pages render exactly as for a desktop Chrome visitor.
+        userAgent: `${devices["Desktop Chrome"].userAgent} trientes-e2e Playwright`,
+      },
     },
   ],
 });
