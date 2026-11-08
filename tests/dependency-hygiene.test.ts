@@ -49,4 +49,19 @@ describe("dependency lockfile hygiene", () => {
       lock.packages["node_modules/micromatch/node_modules/picomatch"].version,
     ).toBe("2.3.2");
   });
+
+  // express@4.22 asks for qs ~6.15.1, which resolved to 6.15.2
+  // (GHSA-x5fp-wj9c-mxmx, GHSA-4mjr-xmp4-gh2g, GHSA-6pq8-jhm2-2vcw). Its query
+  // parser runs on every bot webhook request, so it must use the same fixed
+  // qs as the overridden body-parser.
+  it("pins qs 6.16.2 for express", () => {
+    expect(manifest.overrides.express?.qs).toBe("6.16.2");
+    const qsEntries = Object.entries(lock.packages).filter(([key]) =>
+      /(^|\/)node_modules\/qs$/.test(key),
+    );
+    expect(qsEntries.length).toBeGreaterThan(0);
+    for (const [key, entry] of qsEntries) {
+      expect((entry as { version: string }).version, key).toBe("6.16.2");
+    }
+  });
 });

@@ -91,6 +91,9 @@
     "picomatch": "4.0.4",
     "micromatch": {
       "picomatch": "2.3.2"
+    },
+    "express": {
+      "qs": "6.16.2"
     }
   }
 }
