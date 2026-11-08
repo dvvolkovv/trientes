@@ -26,7 +26,10 @@ function atLeast(version: string, minimum: string): boolean {
   return true;
 }
 
-/** Lower bound of a `>=x.y.z` or `^x.y.z` range, the only forms used here. */
+/**
+ * Lower bound of a `>=x.y.z` or `^x.y.z` range, the only forms used here.
+ * Anything else, such as `^20.19.0 || >=22.12.0`, throws instead of guessing.
+ */
 function lowerBound(range: string): string {
   const match = /^(?:>=|\^)\s*(\d+\.\d+\.\d+)$/.exec(range.trim());
   if (!match) throw new Error(`unsupported version range: ${range}`);
