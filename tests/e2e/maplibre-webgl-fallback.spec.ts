@@ -119,9 +119,37 @@ async function bundle(): Promise<string> {
  *   half-initialised map instead of throwing.
  * - maplibre-context-throws: context creation on MapLibre's canvas throws, so
  *   `new Map(...)` itself throws.
+ * In both of the latter the probe is answered by a stand-in context, so they reach
+ * MapLibre on any machine, with or without a GPU (see expectMapLibreOutcome).
  */
 const MODES = ["no-webgl", "maplibre-context-null", "maplibre-context-throws"] as const;
 type WebglMode = (typeof MODES)[number];
+
+/** Set by the init script in openHarness: how many times a page asked any canvas for "webgl2". */
+type WebglCalls = { __webgl2Calls: number };
+
+/** What tryCreateMap prints when MapLibre itself fails in each mode that gets that far. */
+const MAPLIBRE_FAILURE_WARNING: Record<Exclude<WebglMode, "no-webgl">, RegExp> = {
+  "maplibre-context-null": /^\[map\] MapLibre could not create a WebGL2 context$/,
+  "maplibre-context-throws": /^\[map\] MapLibre failed to initialise .*WebGL2 context creation blocked/,
+};
+
+/**
+ * Proves which branch of tryCreateMap a mode exercised. Without WebGL2 MapLibre is
+ * never constructed. In the other modes the probe must pass and MapLibre must be
+ * reached and fail (probe + MapLibre's own canvas = at least two webgl2 calls);
+ * otherwise those modes would silently collapse into "no-webgl" on a machine
+ * without a GPU.
+ */
+async function expectMapLibreOutcome(page: Page, mode: WebglMode) {
+  if (mode === "no-webgl") {
+    await expect.poll(() => mapWarnings(page)).toEqual([]);
+    return;
+  }
+  const calls = await page.evaluate(() => (window as unknown as WebglCalls).__webgl2Calls);
+  expect(calls, "the WebGL2 probe passed and MapLibre asked for its own context").toBeGreaterThanOrEqual(2);
+  await expect.poll(() => mapWarnings(page)).toEqual([expect.stringMatching(MAPLIBRE_FAILURE_WARNING[mode])]);
+}
 
 let script: string;
 test.beforeAll(async () => {
@@ -153,12 +181,23 @@ function mapWarnings(page: Page): string[] {
 async function openHarness(page: Page, mode: WebglMode | "native") {
   await page.addInitScript((mode: WebglMode | "native") => {
     if (mode === "native") return;
+    const counter = window as unknown as WebglCalls;
+    counter.__webgl2Calls = 0;
+    // Everything supportsWebGL2() does with the context it gets: free it again.
+    const probeContext = {
+      getExtension: (name: string) => (name === "WEBGL_lose_context" ? { loseContext() {} } : null),
+    };
     const original = HTMLCanvasElement.prototype.getContext;
     const webglTypes = new Set(["webgl2", "webgl", "experimental-webgl"]);
     HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement, type: string, ...rest: unknown[]) {
+      if (type === "webgl2") counter.__webgl2Calls += 1;
       if (webglTypes.has(type)) {
         const mapCanvas = this.classList.contains("maplibregl-canvas");
         if (mode === "no-webgl") return null;
+        // The first webgl2 call is the supportsWebGL2() probe. Serve it a stand-in
+        // so it passes with or without a GPU; only the calls after it (MapLibre's
+        // own canvas) are broken below.
+        if (type === "webgl2" && counter.__webgl2Calls === 1) return probeContext as unknown as WebGL2RenderingContext;
         if (mode === "maplibre-context-null" && mapCanvas) return null;
         if (mode === "maplibre-context-throws" && mapCanvas) throw new Error("WebGL2 context creation blocked");
       }
@@ -274,6 +313,7 @@ for (const mode of MODES) {
     await expect(page.getByText("cryptoMap.mapUnavailable")).toBeVisible();
     await expect(page.locator("canvas")).toHaveCount(0);
     await expect(page.locator(".maplibregl-map")).toHaveCount(0);
+    await expectMapLibreOutcome(page, mode);
 
     // Everything that is not the map itself keeps working without one.
     const threeD = page.getByRole("button", { name: "cryptoMap.threeD" });
@@ -368,6 +408,7 @@ for (const mode of MODES) {
 
     await expect(page.getByText("business.mapUnavailable")).toBeVisible();
     await expect(page.locator("canvas")).toHaveCount(0);
+    await expectMapLibreOutcome(page, mode);
 
     // SHOP → ONLINE → SHOP must neither crash nor resurrect a broken map.
     await page.getByRole("button", { name: "business.type.ONLINE" }).click();

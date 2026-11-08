@@ -1,3 +1,4 @@
+import path from "node:path";
 import { build, type Plugin } from "esbuild";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -183,6 +184,10 @@ async function bundle(): Promise<string> {
       export function useLocale() { return "en"; }
     `],
     ["next/navigation", `export function useRouter() { return { refresh() {} }; }`],
+    // MapLibre is mocked above, so the real WebGL2 probe must not decide whether
+    // the mock map gets created: without a GPU (or with --disable-3d-apis) it
+    // would return false and every test here would time out waiting for a map.
+    ["@/lib/webgl-support", "export const supportsWebGL2 = () => true;"],
     ["next/dynamic", `
       import CryptoNavigator from "@/components/coin-detail/crypto-navigator";
       export default function dynamic() { return CryptoNavigator; }
@@ -209,6 +214,15 @@ async function bundle(): Promise<string> {
       build.onResolve({ filter: /^next-intl$/ }, () => ({ path: "next-intl", namespace: "virtual" }));
       build.onResolve({ filter: /^next\/navigation$/ }, () => ({ path: "next/navigation", namespace: "virtual" }));
       build.onResolve({ filter: /^next\/dynamic$/ }, () => ({ path: "next/dynamic", namespace: "virtual" }));
+      // src/lib/maplibre-map.ts imports it as "./webgl-support": catch every
+      // spelling that resolves to src/lib/webgl-support.
+      build.onResolve({ filter: /(^|\/)webgl-support$/ }, (args) => {
+        const target = args.path.startsWith("@/")
+          ? path.join(root, "src", args.path.slice(2))
+          : path.resolve(args.resolveDir, args.path);
+        if (target !== path.join(root, "src/lib/webgl-support")) return undefined;
+        return { path: "@/lib/webgl-support", namespace: "virtual" };
+      });
       build.onResolve({ filter: /^@\/app\/actions\/company$/ }, () => ({ path: "@/app/actions/company", namespace: "virtual" }));
       build.onResolve({ filter: /^@\/components\/coin-detail\/street-view-overlay$/ }, () => ({ path: "@/components/coin-detail/street-view-overlay", namespace: "virtual" }));
       build.onResolve({ filter: /^@\/components\/fintech\/available-fintech-panel$/ }, () => ({ path: "@/components/fintech/available-fintech-panel", namespace: "virtual" }));
