@@ -11,9 +11,16 @@ const ASSET_DIRECTORY = ".generated/maplibre";
 const DEPLOY_HINT =
   "run `npm run build` in the repository root and start the server from there";
 
-// Missing installed-version assets already reported by this process: a broken
-// deploy is logged once per path, not once per request.
-const reportedMissingAssets = new Set<string>();
+// Read errors already reported by this process, so a broken deploy or a
+// repeated probe is logged once rather than once per request. Keys hold only an
+// error code and an allowlisted path of the installed version, so the set stays
+// small whatever the requests are.
+const reportedReadErrors = new Set<string>();
+
+// Codes that mean the asset does not exist: the file or the version directory
+// is missing, the version path is a file, or a version segment the allowlist
+// accepts is longer than the filesystem allows.
+const MISSING_CODES = new Set(["ENOENT", "ENOTDIR", "ENAMETOOLONG"]);
 
 // The only files the route may ever read, matched against the joined relative
 // path before any filesystem access. Source maps are dev/test-only.
@@ -90,24 +97,42 @@ function errorCode(error: unknown): string {
   return "unknown error";
 }
 
-// Logs the code and the allowlisted relative path only: error messages carry
-// absolute paths. A missing file is expected for any other version (an old tab,
-// a probe) and for source maps, but for a runtime asset of the installed
+function reportOnce(key: string, message: string): void {
+  if (reportedReadErrors.has(key)) return;
+  reportedReadErrors.add(key);
+  console.error(message);
+}
+
+// Logs the code and at most an allowlisted relative path of the installed
+// version: error messages carry absolute paths, and any other version comes
+// from the request. A missing file is expected for any other version (an old
+// tab, a probe) and for source maps, but for a runtime asset of the installed
 // version it means the deploy skipped prebuild or runs from another cwd.
 function reportReadError(relativePath: string, error: unknown): void {
   const code = errorCode(error);
-  if (code !== "ENOENT" && code !== "ENOTDIR") {
-    console.error(`[maplibre-assets] cannot serve ${relativePath}: ${code}`);
+  if (MISSING_CODES.has(code)) {
+    const installedRuntimeAsset = RUNTIME_ASSETS.some(
+      (asset) => relativePath === `${INSTALLED_VERSION}/${asset}`,
+    );
+    if (!installedRuntimeAsset) return;
+    reportOnce(
+      `missing ${relativePath}`,
+      `[maplibre-assets] deployment error: ${ASSET_DIRECTORY}/${relativePath} ` +
+        `is missing (${code}), so maps cannot start their worker: ${DEPLOY_HINT}.`,
+    );
     return;
   }
-  const installedRuntimeAsset = RUNTIME_ASSETS.some(
-    (asset) => relativePath === `${INSTALLED_VERSION}/${asset}`,
-  );
-  if (!installedRuntimeAsset || reportedMissingAssets.has(relativePath)) return;
-  reportedMissingAssets.add(relativePath);
-  console.error(
-    `[maplibre-assets] deployment error: ${ASSET_DIRECTORY}/${relativePath} ` +
-      `is missing (${code}), so maps cannot start their worker: ${DEPLOY_HINT}.`,
+  if (relativePath.startsWith(`${INSTALLED_VERSION}/`)) {
+    reportOnce(
+      `installed ${code} ${relativePath}`,
+      `[maplibre-assets] cannot serve ${relativePath}: ${code}`,
+    );
+    return;
+  }
+  reportOnce(
+    `other ${code}`,
+    `[maplibre-assets] cannot serve an asset of a MapLibre version other than ` +
+      `the installed ${INSTALLED_VERSION}: ${code}`,
   );
 }
 
