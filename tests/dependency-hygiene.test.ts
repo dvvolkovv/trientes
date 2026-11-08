@@ -21,14 +21,25 @@ describe("dependency lockfile hygiene", () => {
     "@prisma/engines-version",
     "@prisma/fetch-engine",
     "@prisma/get-platform",
-    "@types/react",
-    "@types/react-dom",
-    "csstype",
   ])("marks %s as development-only", (packageName) => {
     const entry = lock.packages[`node_modules/${packageName}`];
     expect(entry.dev, packageName).toBe(true);
     expect(entry.devOptional, packageName).not.toBe(true);
   });
+
+  // These type-only packages are also optional peers of runtime dependencies
+  // (@radix-ui/*, react-remove-scroll, ...), so the canonical
+  // `npm install --package-lock-only` output marks them devOptional rather
+  // than dev. Accept either flag; neither carries runtime code.
+  it.each(["@types/react", "@types/react-dom", "csstype"])(
+    "marks type-only %s as dev or devOptional",
+    (packageName) => {
+      const entry = lock.packages[`node_modules/${packageName}`];
+      expect(entry.dev === true || entry.devOptional === true, packageName).toBe(
+        true,
+      );
+    },
+  );
 
   it("keeps micromatch on its compatible picomatch major", () => {
     expect(manifest.overrides.picomatch).toBe("4.0.4");
