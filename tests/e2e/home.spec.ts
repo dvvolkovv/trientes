@@ -1,6 +1,23 @@
 import { test, expect } from "@playwright/test";
 
-test("home page renders top-coin table with at least 10 rows", async ({ page }) => {
+// Transparent 1×1 RGBA PNG.
+const PIXEL_PNG = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVR42mNgAAIAAAUAAen63NgAAAAASUVORK5CYII=",
+  "base64",
+);
+
+test("home page renders top-coin table with at least 10 rows", async ({ page, baseURL }) => {
+  // /uploads/ is filled at runtime (coin-card logos and other user uploads) and
+  // is gitignored, so a clean checkout 404s on it. Serve a real image for our
+  // own origin only; third-party URLs that merely contain /uploads/ (news
+  // thumbnails) load as usual.
+  const origin = new URL(baseURL!).origin;
+  await page.route("**/uploads/**", (route) => {
+    const url = new URL(route.request().url());
+    if (url.origin !== origin || !url.pathname.startsWith("/uploads/")) return route.fallback();
+    return route.fulfill({ status: 200, contentType: "image/png", body: PIXEL_PNG });
+  });
+
   const consoleErrors: string[] = [];
   page.on("console", (msg) => {
     if (msg.type() === "error") consoleErrors.push(msg.text());
