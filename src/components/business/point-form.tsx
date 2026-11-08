@@ -7,6 +7,10 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { submitCompanyPoint, updateCompanyPoint } from "@/app/actions/company";
 import { COUNTRIES, countryName } from "@/lib/countries";
+import {
+  addStaticMapAttribution,
+  MAPLIBRE_ATTRIBUTION_OPTIONS,
+} from "@/lib/maplibre-attribution";
 
 setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
@@ -113,7 +117,9 @@ export function PointForm({
       // Same key-less dark base as the Crypto Navigator (CARTO now watermarks keyless tiles).
       style: "https://tiles.openfreemap.org/styles/dark",
       center: PRAGUE, zoom: 12,
+      ...MAPLIBRE_ATTRIBUTION_OPTIONS,
     });
+    addStaticMapAttribution(map);
     mapRef.current = map;
     map.on("click", (e) => placeMarker(e.lngLat.lng, e.lngLat.lat));
     // При правке сразу показываем, где точка стоит сейчас.

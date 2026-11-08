@@ -21,6 +21,10 @@ import { CURATED_POIS, type CuratedPoi } from "@/lib/curated-pois";
 import { NavigationController, type NavigationCallbacks } from "./navigation-controller";
 import { haversineMeters } from "@/lib/route-geometry";
 import { AvailableFintechPanel } from "@/components/fintech/available-fintech-panel";
+import {
+  addStaticMapAttribution,
+  MAPLIBRE_ATTRIBUTION_OPTIONS,
+} from "@/lib/maplibre-attribution";
 
 setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
@@ -305,8 +309,9 @@ export default function CryptoNavigator({
       center: PRAGUE,
       zoom: 13,
       pitch: 0,
-      attributionControl: { compact: true },
+      ...MAPLIBRE_ATTRIBUTION_OPTIONS,
     });
+    addStaticMapAttribution(map);
     mapRef.current = map;
 
     map.addControl(new NavigationControl({ visualizePitch: true }), "top-right");

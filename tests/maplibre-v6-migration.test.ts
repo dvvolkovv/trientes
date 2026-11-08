@@ -83,6 +83,40 @@ describe("MapLibre 6 migration", () => {
     },
   );
 
+  it.each(modules)(
+    "disables remote attribution and installs the static override in $relativePath",
+    ({ relativePath }) => {
+      const source = parseModule(relativePath);
+      const helperImport = source.statements.find(
+        (statement): statement is ts.ImportDeclaration =>
+          ts.isImportDeclaration(statement) &&
+          ts.isStringLiteral(statement.moduleSpecifier) &&
+          statement.moduleSpecifier.text === "@/lib/maplibre-attribution",
+      );
+      expect(
+        helperImport,
+        "the shared attribution override must be imported",
+      ).toBeDefined();
+
+      const bindings = helperImport?.importClause?.namedBindings;
+      const importedNames =
+        bindings && ts.isNamedImports(bindings)
+          ? bindings.elements.map((element) => element.name.text)
+          : [];
+      expect(importedNames).toEqual(
+        expect.arrayContaining([
+          "MAPLIBRE_ATTRIBUTION_OPTIONS",
+          "addStaticMapAttribution",
+        ]),
+      );
+
+      const text = source.getFullText();
+      expect(text).toContain("...MAPLIBRE_ATTRIBUTION_OPTIONS");
+      expect(text).toContain("addStaticMapAttribution(map)");
+      expect(text).not.toMatch(/attributionControl:\s*\{/);
+    },
+  );
+
   it.each(["maplibre-gl-worker.mjs", "maplibre-gl-shared.mjs"])(
     "ships the complete local %s asset",
     (asset) => {
