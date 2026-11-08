@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import {
   copyFileSync,
+  lstatSync,
   mkdirSync,
   readdirSync,
   readFileSync,
@@ -34,6 +35,11 @@ const LEGACY_PUBLIC_DIRECTORY = "public/maplibre";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
+// Leftovers of an atomicCopy interrupted by a crash or a kill. Younger ones may
+// still belong to a parallel run and are left alone.
+const TEMPORARY_FILE = /^\..+\.tmp$/;
+const STALE_TEMPORARY_FILE_AGE_MS = 5 * 60 * 1000;
+
 export function sha256(filePath) {
   return createHash("sha256").update(readFileSync(filePath)).digest("hex");
 }
@@ -60,6 +66,22 @@ function atomicCopy(source, destination, sourceStat) {
     renameSync(temporary, destination);
   } finally {
     rmSync(temporary, { force: true });
+  }
+}
+
+// Best effort. Age is taken from ctime, not mtime: atomicCopy backdates the
+// temporary file's mtime to the source mtime before renaming it.
+function removeStaleTemporaryFiles(directory, now) {
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    if (!entry.isFile() || !TEMPORARY_FILE.test(entry.name)) continue;
+    const filePath = path.join(directory, entry.name);
+    try {
+      if (now - lstatSync(filePath).ctimeMs > STALE_TEMPORARY_FILE_AGE_MS) {
+        rmSync(filePath, { force: true });
+      }
+    } catch {
+      // Already renamed or removed by a parallel run.
+    }
   }
 }
 
@@ -140,6 +162,10 @@ export function copyMapLibreAssets({
   const targetRoot = path.join(rootDirectory, MAPLIBRE_ASSET_DIRECTORY);
   const targetVersion = path.join(targetRoot, version);
   mkdirSync(targetVersion, { recursive: true });
+  const now = Date.now();
+  for (const directory of [targetRoot, targetVersion]) {
+    removeStaleTemporaryFiles(directory, now);
+  }
 
   const includeSourceMaps = includeSourceMapsFor(environment);
   const assets = includeSourceMaps

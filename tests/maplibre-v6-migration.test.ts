@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import {
   copyFileSync,
   existsSync,
+  lstatSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -30,7 +31,11 @@ vi.mock("node:crypto", async (importOriginal) => {
 
 vi.mock("node:fs", async (importOriginal) => {
   const actual = await importOriginal<typeof import("node:fs")>();
-  return { ...actual, copyFileSync: vi.fn(actual.copyFileSync) };
+  return {
+    ...actual,
+    copyFileSync: vi.fn(actual.copyFileSync),
+    lstatSync: vi.fn(actual.lstatSync),
+  };
 });
 
 const actualCrypto = await vi.importActual<typeof import("node:crypto")>(
@@ -39,6 +44,7 @@ const actualCrypto = await vi.importActual<typeof import("node:crypto")>(
 const actualFs = await vi.importActual<typeof import("node:fs")>("node:fs");
 const createHashMock = vi.mocked(createHash);
 const copyFileSyncMock = vi.mocked(copyFileSync);
+const lstatSyncMock = vi.mocked(lstatSync);
 const root = path.resolve(__dirname, "..");
 const version = maplibrePackage.version;
 const generatedRoot = path.join(root, ".generated/maplibre");
@@ -145,6 +151,8 @@ beforeEach(() => {
   copyFileSyncMock.mockImplementation(actualFs.copyFileSync);
   createHashMock.mockReset();
   createHashMock.mockImplementation(actualCrypto.createHash);
+  lstatSyncMock.mockReset();
+  lstatSyncMock.mockImplementation(actualFs.lstatSync);
 });
 
 afterEach(() => {
@@ -418,6 +426,54 @@ describe("MapLibre copy modes and idempotence", () => {
       "not-a-version",
     ]);
     expect(existsSync(outside)).toBe(true);
+  });
+
+  it("removes orphaned temporary files older than five minutes before copying", () => {
+    const fixture = createFixture();
+    mkdirSync(fixture.targetVersion, { recursive: true });
+    const staleInVersion = path.join(
+      fixture.targetVersion,
+      ".maplibre-gl-worker.mjs.111.stale.tmp",
+    );
+    const staleInRoot = path.join(
+      fixture.targetRoot,
+      ".maplibre-gl-worker.mjs.222.stale.tmp",
+    );
+    // A parallel run's temp file: atomicCopy backdates its mtime to the source
+    // mtime before the rename, so only its ctime says it is fresh.
+    const freshInVersion = path.join(
+      fixture.targetVersion,
+      ".maplibre-gl-shared.mjs.333.fresh.tmp",
+    );
+    const staleDirectory = path.join(fixture.targetVersion, ".directory.tmp");
+    const unrelatedDotfile = path.join(fixture.targetVersion, ".keep");
+    for (const file of [staleInVersion, staleInRoot, freshInVersion, unrelatedDotfile]) {
+      writeFileSync(file, "temporary");
+    }
+    mkdirSync(staleDirectory);
+    const longAgo = new Date("2020-01-01T00:00:00Z");
+    utimesSync(freshInVersion, longAgo, longAgo);
+
+    const stale = new Set([staleInVersion, staleInRoot, staleDirectory, unrelatedDotfile]);
+    lstatSyncMock.mockImplementation(((filePath: string, options?: object) => {
+      const stats = actualFs.lstatSync(filePath, options);
+      if (stale.has(String(filePath))) {
+        const tenMinutesAgo = Date.now() - 10 * 60 * 1000;
+        Object.assign(stats, { ctimeMs: tenMinutesAgo, mtimeMs: tenMinutesAgo });
+      }
+      return stats;
+    }) as typeof lstatSync);
+
+    copyMapLibreAssets({
+      rootDirectory: fixture.rootDirectory,
+      environment: { MAPLIBRE_INCLUDE_SOURCE_MAPS: "0" },
+    });
+
+    expect(existsSync(staleInVersion)).toBe(false);
+    expect(existsSync(staleInRoot)).toBe(false);
+    expect(existsSync(freshInVersion)).toBe(true);
+    expect(existsSync(staleDirectory)).toBe(true);
+    expect(existsSync(unrelatedDotfile)).toBe(true);
   });
 
   it("keeps a complete old file visible to a parallel reader during replacement", async () => {
