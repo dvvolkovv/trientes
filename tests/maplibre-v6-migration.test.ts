@@ -1,3 +1,4 @@
+import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
   copyFileSync,
@@ -563,6 +564,48 @@ describe("MapLibre copy modes and idempotence", () => {
     expect(existsSync(path.join(fixture.targetRoot, "6.3.0"))).toBe(true);
     expect(existsSync(path.join(fixture.targetRoot, "6.4.0"))).toBe(true);
     expect(existsSync(fixture.legacyPublicRoot)).toBe(true);
+  });
+});
+
+describe("MapLibre copy without an installed maplibre-gl", () => {
+  const NOT_INSTALLED = "maplibre-gl is not installed; run npm install";
+
+  it("throws a clear error before creating any target directory", () => {
+    const fixture = createFixture();
+    rmSync(path.join(fixture.rootDirectory, "node_modules"), {
+      recursive: true,
+      force: true,
+    });
+
+    expect(() =>
+      copyMapLibreAssets({
+        rootDirectory: fixture.rootDirectory,
+        environment: { MAPLIBRE_INCLUDE_SOURCE_MAPS: "0" },
+      }),
+    ).toThrow(NOT_INSTALLED);
+    expect(existsSync(path.join(fixture.rootDirectory, ".generated"))).toBe(false);
+  });
+
+  it("exits with code 1 and prints the message without a stack trace", () => {
+    const projectRoot = mkdtempSync(path.join(tmpdir(), "maplibre-cli-"));
+    fixtureRoots.push(projectRoot);
+    const script = path.join(projectRoot, "scripts/copy-maplibre-worker.mjs");
+    mkdirSync(path.dirname(script));
+    actualFs.copyFileSync(
+      path.join(root, "scripts/copy-maplibre-worker.mjs"),
+      script,
+    );
+
+    const result = spawnSync(process.execPath, [script], {
+      cwd: projectRoot,
+      encoding: "utf8",
+      env: { ...process.env, MAPLIBRE_INCLUDE_SOURCE_MAPS: "0" },
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stderr.trim()).toBe(NOT_INSTALLED);
+    expect(result.stderr).not.toMatch(/^\s+at /m);
+    expect(existsSync(path.join(projectRoot, ".generated"))).toBe(false);
   });
 });
 

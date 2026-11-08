@@ -40,6 +40,24 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const TEMPORARY_FILE = /^\..+\.tmp$/;
 const STALE_TEMPORARY_FILE_AGE_MS = 5 * 60 * 1000;
 
+export class MapLibreNotInstalledError extends Error {
+  constructor() {
+    super("maplibre-gl is not installed; run npm install");
+    this.name = "MapLibreNotInstalledError";
+  }
+}
+
+function readInstalledVersion(packagePath) {
+  let packageJson;
+  try {
+    packageJson = readFileSync(packagePath, "utf8");
+  } catch (error) {
+    if (error?.code === "ENOENT") throw new MapLibreNotInstalledError();
+    throw error;
+  }
+  return JSON.parse(packageJson).version;
+}
+
 export function sha256(filePath) {
   return createHash("sha256").update(readFileSync(filePath)).digest("hex");
 }
@@ -154,7 +172,7 @@ export function copyMapLibreAssets({
     rootDirectory,
     "node_modules/maplibre-gl/dist",
   );
-  const { version } = JSON.parse(readFileSync(packagePath, "utf8"));
+  const version = readInstalledVersion(packagePath);
   if (!stableVersion(version)) {
     throw new Error(`Unsupported MapLibre version: ${version}`);
   }
@@ -197,5 +215,12 @@ if (
   process.argv[1] &&
   path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 ) {
-  copyMapLibreAssets();
+  try {
+    copyMapLibreAssets();
+  } catch (error) {
+    // An expected setup problem: a one-line hint instead of a raw stack.
+    if (!(error instanceof MapLibreNotInstalledError)) throw error;
+    console.error(error.message);
+    process.exitCode = 1;
+  }
 }
