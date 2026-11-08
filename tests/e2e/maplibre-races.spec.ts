@@ -274,6 +274,12 @@ async function setupPage(page: Page) {
   await page.goto("about:blank");
   // Not vacuous: the init script above ran in this document.
   expect(await page.evaluate(() => "__webglDenied" in window), "WebGL denied before the bundle loads").toBe(true);
+  expect(
+    await page.evaluate(() =>
+      ["webgl2", "webgl"].map((type) => document.createElement("canvas").getContext(type) === null),
+    ),
+    "no WebGL context for the bundle",
+  ).toEqual([true, true]);
   await page.evaluate(() => {
     const requests: unknown[] = [];
     Object.assign(window, { __requests: requests });
