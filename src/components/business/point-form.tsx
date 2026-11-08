@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition } from "react";
-import maplibregl, { Marker } from "maplibre-gl";
+import { Map as MlMap, Marker, setWorkerUrl } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { submitCompanyPoint, updateCompanyPoint } from "@/app/actions/company";
 import { COUNTRIES, countryName } from "@/lib/countries";
+
+setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
 const PRAGUE: [number, number] = [14.4212535, 50.0874654];
 const TYPES = ["SHOP", "ATM", "POS", "SALES_OFFICE", "COMPANY", "ONLINE"] as const;
@@ -64,7 +66,7 @@ export function PointForm({
 }) {
   const t = useTranslations("business");
   const containerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<maplibregl.Map | null>(null);
+  const mapRef = useRef<MlMap | null>(null);
   const markerRef = useRef<Marker | null>(null);
   const [pos, setPos] = useState<[number, number] | null>(
     editing?.lat != null && editing?.lon != null ? [editing.lon, editing.lat] : null,
@@ -106,7 +108,7 @@ export function PointForm({
 
   useEffect(() => {
     if (!containerRef.current) return;
-    const map = new maplibregl.Map({
+    const map = new MlMap({
       container: containerRef.current,
       // Same key-less dark base as the Crypto Navigator (CARTO now watermarks keyless tiles).
       style: "https://tiles.openfreemap.org/styles/dark",

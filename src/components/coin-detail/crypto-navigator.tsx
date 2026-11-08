@@ -1,14 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import maplibregl, {
+import {
   Map as MlMap,
+  LngLatBounds,
   GeolocateControl,
   NavigationControl,
   Marker,
   Popup,
+  setWorkerUrl,
   type SourceSpecification,
   type GeoJSONSource,
+  type GeolocatePositionEvent,
 } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useLocale, useTranslations } from "next-intl";
@@ -19,10 +22,13 @@ import { NavigationController, type NavigationCallbacks } from "./navigation-con
 import { haversineMeters } from "@/lib/route-geometry";
 import { AvailableFintechPanel } from "@/components/fintech/available-fintech-panel";
 
+setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
+
 // MapLibre flattens non-primitive feature properties to JSON strings, so `socials`
 // rides through the GeoJSON source as a string and is parsed back when a popup opens.
 type PoiProps = Omit<Poi, "socials"> & { socials: string };
 type Translator = (key: string) => string;
+type FilterSpecification = NonNullable<Parameters<MlMap["setFilter"]>[1]>;
 
 const MIN_ZOOM = 11; // below this the bbox is too wide to return a useful number of points
 const PRAGUE: [number, number] = [14.4212535, 50.0874654]; // dense BTCMap coverage — a non-empty default
@@ -226,7 +232,7 @@ export default function CryptoNavigator({
         if (coords.length && !navControllerRef.current) {
           const bounds = coords.reduce(
             (bb, c) => bb.extend(c as [number, number]),
-            new maplibregl.LngLatBounds(coords[0] as [number, number], coords[0] as [number, number]),
+            new LngLatBounds(coords[0] as [number, number], coords[0] as [number, number]),
           );
           map.fitBounds(bounds, { padding: 80, maxZoom: 15 });
         }
@@ -293,7 +299,7 @@ export default function CryptoNavigator({
   // ---- Map setup (once) ----
   useEffect(() => {
     if (!containerRef.current) return;
-    const map = new maplibregl.Map({
+    const map = new MlMap({
       container: containerRef.current,
       style: BASE_STYLE_URL,
       center: PRAGUE,
@@ -311,7 +317,7 @@ export default function CryptoNavigator({
     });
     geolocateRef.current = geo;
     map.addControl(geo, "top-right");
-    geo.on("geolocate", (e: GeolocationPosition) => {
+    geo.on("geolocate", (e: GeolocatePositionEvent) => {
       originRef.current = [e.coords.longitude, e.coords.latitude];
       // GeolocateControl shows its own blue dot — drop the manual orange pin.
       originMarkerRef.current?.remove();
@@ -492,9 +498,9 @@ export default function CryptoNavigator({
     setCoinOnly(next);
     if (!map) return;
     (["merchant", "atm", "financial", "fintech"] as PoiLayer[]).forEach((layer) => {
-      const base: maplibregl.FilterSpecification = ["==", ["get", "layer"], layer];
-      const filter: maplibregl.FilterSpecification = next
-        ? (["all", base, ["==", ["get", "coinSpecific"], true]] as maplibregl.FilterSpecification)
+      const base: FilterSpecification = ["==", ["get", "layer"], layer];
+      const filter: FilterSpecification = next
+        ? (["all", base, ["==", ["get", "coinSpecific"], true]] as FilterSpecification)
         : base;
       map.setFilter(`poi-${layer}`, filter);
     });
