@@ -1,5 +1,6 @@
 import { build, type Plugin } from "esbuild";
 import { expect, test, type Page } from "@playwright/test";
+import type { tryCreateMap } from "../../src/lib/maplibre-map";
 
 // Component harness in the style of maplibre-races.spec.ts, but with the REAL
 // maplibre-gl 6 bundle: the point is to see how the components cope with the
@@ -11,6 +12,7 @@ const ORIGIN = "http://map-fallback.test";
 type Harness = {
   __componentTest: { mountPoint(editing?: unknown): void; mountNavigator(): void; unmount(): void };
   __actions: unknown[];
+  __tryCreateMap: typeof tryCreateMap;
 };
 
 const componentEntry = `
@@ -18,8 +20,10 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { PointForm } from "./src/components/business/point-form";
 import CryptoNavigator from "./src/components/coin-detail/crypto-navigator";
+import { tryCreateMap } from "./src/lib/maplibre-map";
 
 globalThis.__actions = [];
+globalThis.__tryCreateMap = tryCreateMap;
 globalThis.__navigationControllers = [];
 let root;
 let host;
@@ -125,17 +129,30 @@ test.beforeAll(async () => {
 });
 
 const pageErrors = new WeakMap<Page, string[]>();
+const pageWarnings = new WeakMap<Page, string[]>();
 test.beforeEach(({ page }) => {
   const errors: string[] = [];
+  const warnings: string[] = [];
   pageErrors.set(page, errors);
+  pageWarnings.set(page, warnings);
   page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() === "warning") warnings.push(message.text());
+  });
 });
 test.afterEach(({ page }) => {
   expect(pageErrors.get(page)).toEqual([]);
 });
 
-async function openHarness(page: Page, mode: WebglMode) {
-  await page.addInitScript((mode: WebglMode) => {
+/** The console.warn lines tryCreateMap itself printed (they all start with "[map] "). */
+function mapWarnings(page: Page): string[] {
+  return (pageWarnings.get(page) ?? []).filter((text) => text.startsWith("[map] "));
+}
+
+/** "native" leaves the browser's WebGL alone; the other modes break it as described above. */
+async function openHarness(page: Page, mode: WebglMode | "native") {
+  await page.addInitScript((mode: WebglMode | "native") => {
+    if (mode === "native") return;
     const original = HTMLCanvasElement.prototype.getContext;
     const webglTypes = new Set(["webgl2", "webgl", "experimental-webgl"]);
     HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement, type: string, ...rest: unknown[]) {
@@ -174,6 +191,80 @@ async function openHarness(page: Page, mode: WebglMode) {
   await page.addScriptTag({ content: script });
   return { api, external };
 }
+
+// Positive contract of tryCreateMap with the real MapLibre bundle. tryCreateMap
+// tells a failed WebGL2 start by the missing `map.painter`, a MapLibre internal.
+// Every other test here only covers the failures, so if an upgrade renamed the
+// painter or set it up asynchronously, they would all stay green while every
+// user lost the map. Run this test first when upgrading maplibre-gl. It needs
+// real WebGL2 (GPU or SwiftShader) and fails, not skips, without it.
+test("tryCreateMap returns a working map with the real MapLibre bundle (contract)", async ({ page }) => {
+  const { external } = await openHarness(page, "native");
+  const webgl2 = await page.evaluate(() => {
+    const gl = document.createElement("canvas").getContext("webgl2");
+    gl?.getExtension("WEBGL_lose_context")?.loseContext();
+    return gl !== null;
+  });
+  expect(webgl2, "contract test requires WebGL2 (SwiftShader/GPU)").toBe(true);
+
+  const result = await page.evaluate(() => {
+    const container = document.createElement("div");
+    container.style.width = "320px";
+    container.style.height = "240px";
+    document.body.appendChild(container);
+    const map = (window as unknown as Harness).__tryCreateMap({ container, attributionControl: false });
+    if (!map) return null;
+
+    const canvas = map.getCanvas();
+    // getContext on a canvas that already has a WebGL2 context returns that context.
+    const gl = canvas.getContext("webgl2");
+    const created = {
+      painter: Boolean(map.painter),
+      mapClass: container.classList.contains("maplibregl-map"),
+      canvases: [...container.querySelectorAll("canvas")].map((element) => element.className),
+      canvasIsTheMapCanvas: container.querySelector("canvas.maplibregl-canvas") === canvas,
+      webgl2Context: gl instanceof WebGL2RenderingContext,
+    };
+    let removeEvent = false;
+    map.on("remove", () => {
+      removeEvent = true;
+    });
+    map.remove();
+    // What MapLibre 6.4.1 remove() guarantees: it detaches its canvas and control
+    // containers, drops the maplibregl-map class, loses the WebGL context
+    // (WEBGL_lose_context) and fires "remove". The container element itself
+    // belongs to the caller and stays.
+    const removed = {
+      removeEvent,
+      children: container.childElementCount,
+      className: container.className,
+      contextLost: gl?.isContextLost() ?? null,
+      containerAttached: container.isConnected,
+    };
+    container.remove();
+    return { created, removed };
+  });
+
+  expect(result, "tryCreateMap returned null although WebGL2 works").not.toBeNull();
+  expect(result).toEqual({
+    created: {
+      painter: true,
+      mapClass: true,
+      canvases: ["maplibregl-canvas"],
+      canvasIsTheMapCanvas: true,
+      webgl2Context: true,
+    },
+    removed: {
+      removeEvent: true,
+      children: 0,
+      className: "",
+      contextLost: true,
+      containerAttached: true,
+    },
+  });
+  expect(mapWarnings(page)).toEqual([]);
+  expect(external).toEqual([]);
+});
 
 for (const mode of MODES) {
   test(`crypto navigator renders a fallback instead of the map (${mode})`, async ({ page }) => {

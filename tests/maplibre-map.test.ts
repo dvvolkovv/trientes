@@ -57,14 +57,18 @@ describe("tryCreateMap", () => {
 
     expect(tryCreateMap({ container })).toBeNull();
     expect(state.constructed).toHaveLength(1);
-    expect(warn).toHaveBeenCalled();
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn.mock.calls[0][0]).toBe("[map] MapLibre failed to initialise");
+    expect(warn.mock.calls[0][1]).toEqual(new Error("Failed to initialize WebGL"));
   });
 
   it("returns null for a half-initialised map without a painter", () => {
     state.behaviour = "no-painter";
-    vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     expect(tryCreateMap({ container })).toBeNull();
     expect(state.constructed).toHaveLength(1);
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn.mock.calls[0][0]).toBe("[map] MapLibre could not create a WebGL2 context");
   });
 });

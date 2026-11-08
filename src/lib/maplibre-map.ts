@@ -16,6 +16,12 @@ export function tryCreateMap(options: MapOptions): MlMap | null {
   if (!supportsWebGL2()) return null;
   try {
     const map = new MlMap(options);
+    // `painter` is a MapLibre internal, not public API: MapLibre >= 6.x creates
+    // it synchronously in the constructor and stops right there without a
+    // WebGL2 context (map.ts: `if (!this.painter) return;`). The positive
+    // contract test "tryCreateMap returns a working map with the real MapLibre
+    // bundle" in tests/e2e/maplibre-webgl-fallback.spec.ts pins this down; run
+    // it first whenever maplibre-gl is upgraded.
     if (!map.painter) {
       console.warn("[map] MapLibre could not create a WebGL2 context");
       return null;
