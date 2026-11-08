@@ -1,13 +1,6 @@
 import { readFileSync, realpathSync, statSync } from "node:fs";
 import path from "node:path";
 
-/**
- * Written by scripts/copy-maplibre-worker.mjs (predev/prebuild, Vitest
- * globalSetup). Deliberately outside public/: Next must never serve these
- * files statically, so the route below is the single owner of their headers.
- */
-export const MAPLIBRE_ASSET_DIRECTORY = path.join(".generated", "maplibre");
-
 const IMMUTABLE = "public, max-age=31536000, immutable";
 
 // The only files the route may ever read, matched against the joined relative
@@ -21,6 +14,22 @@ export type MapLibreAssetOptions = {
   /** Source maps are served only when this is not "production"; defaults to process.env.NODE_ENV. */
   nodeEnv?: string;
 };
+
+/**
+ * The default root is written by scripts/copy-maplibre-worker.mjs
+ * (predev/prebuild, Vitest globalSetup). It is deliberately outside public/:
+ * Next must never serve these files statically, so this module is the single
+ * owner of their headers.
+ *
+ * Turbopack traces filesystem calls into the server output. The literal
+ * segments scope that trace to .generated/maplibre; an injected root (tests
+ * only) is opted out, because its unknown value would trace the whole project.
+ */
+function resolveAssetRoot(root: string | undefined): string {
+  return root === undefined
+    ? realpathSync(path.join(process.cwd(), ".generated", "maplibre"))
+    : realpathSync(/*turbopackIgnore: true*/ root);
+}
 
 function notFound(): Response {
   return new Response("Not found", {
@@ -62,10 +71,7 @@ function contentType(filePath: string): string {
 
 export function serveMapLibreAsset(
   segments: readonly string[] | undefined,
-  {
-    root = path.join(process.cwd(), MAPLIBRE_ASSET_DIRECTORY),
-    nodeEnv = process.env.NODE_ENV,
-  }: MapLibreAssetOptions = {},
+  { root, nodeEnv = process.env.NODE_ENV }: MapLibreAssetOptions = {},
 ): Response {
   if (
     !segments?.length ||
@@ -76,7 +82,7 @@ export function serveMapLibreAsset(
   }
 
   try {
-    const realRoot = realpathSync(root);
+    const realRoot = resolveAssetRoot(root);
     const candidate = realpathSync(path.join(realRoot, ...segments));
     const relative = path.relative(realRoot, candidate);
     if (
