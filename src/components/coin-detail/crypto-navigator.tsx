@@ -37,6 +37,8 @@ type FilterSpecification = NonNullable<Parameters<MlMap["setFilter"]>[1]>;
 const MIN_ZOOM = 11; // below this the bbox is too wide to return a useful number of points
 const PRAGUE: [number, number] = [14.4212535, 50.0874654]; // dense BTCMap coverage — a non-empty default
 
+const POI_LAYERS = ["merchant", "atm", "financial", "fintech"] as const satisfies readonly PoiLayer[];
+
 const LAYER_COLOR: Record<PoiLayer, string> = {
   merchant: "#30B658",
   atm: "#FE5C04",
@@ -92,7 +94,7 @@ const TERRAIN_SOURCE: SourceSpecification = {
 type Base = "dark" | "satellite";
 
 function applyCoinOnlyFilter(map: MlMap, coinOnly: boolean) {
-  (["merchant", "atm", "financial", "fintech"] as PoiLayer[]).forEach((layer) => {
+  POI_LAYERS.forEach((layer) => {
     const base: FilterSpecification = ["==", ["get", "layer"], layer];
     const filter: FilterSpecification = coinOnly
       ? (["all", base, ["==", ["get", "coinSpecific"], true]] as FilterSpecification)
@@ -114,6 +116,7 @@ export default function CryptoNavigator({
   const locale = useLocale();
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MlMap | null>(null);
+  const mapReadyRef = useRef(false);
   const geolocateRef = useRef<GeolocateControl | null>(null);
   const originRef = useRef<[number, number] | null>(null);
   const originMarkerRef = useRef<Marker | null>(null);
@@ -127,8 +130,16 @@ export default function CryptoNavigator({
   const coinOnlyRef = useRef(false);
 
   const [base, setBase] = useState<Base>("dark");
+  const baseRef = useRef<Base>("dark");
   const [is3D, setIs3D] = useState(false);
+  const is3DRef = useRef(false);
   const [visible, setVisible] = useState<Record<PoiLayer, boolean>>({
+    merchant: true,
+    atm: true,
+    financial: true,
+    fintech: true,
+  });
+  const visibleRef = useRef<Record<PoiLayer, boolean>>({
     merchant: true,
     atm: true,
     financial: true,
@@ -159,6 +170,24 @@ export default function CryptoNavigator({
   const navControllerRef = useRef<NavigationController | null>(null);
   // Tracked map center for the AvailableFintechPanel — debounced inside the panel.
   const [mapCenter, setMapCenter] = useState<{ lat: number; lon: number } | null>(null);
+
+  const cancelRouteRequest = useCallback(() => {
+    routeSequenceRef.current += 1;
+    routeAbortRef.current?.abort();
+    routeAbortRef.current = null;
+  }, []);
+
+  function applyDesiredMapState(map: MlMap) {
+    map.setLayoutProperty("satellite", "visibility", baseRef.current === "satellite" ? "visible" : "none");
+    POI_LAYERS.forEach((layer) => {
+      map.setLayoutProperty(`poi-${layer}`, "visibility", visibleRef.current[layer] ? "visible" : "none");
+    });
+    applyCoinOnlyFilter(map, coinOnlyRef.current);
+    if (is3DRef.current) {
+      map.setTerrain({ source: "terrain", exaggeration: 1.3 });
+      map.easeTo({ pitch: 60, duration: 800 });
+    }
+  }
 
   // ---- POI loading for the current viewport ----
   const loadPois = useCallback(() => {
@@ -215,9 +244,8 @@ export default function CryptoNavigator({
     const origin = originRef.current;
     const dest = destRef.current;
     if (!map) return;
-    const request = ++routeSequenceRef.current;
-    routeAbortRef.current?.abort();
-    routeAbortRef.current = null;
+    cancelRouteRequest();
+    const request = routeSequenceRef.current;
     if (!origin) {
       setStatus(t("noOrigin"));
       return;
@@ -281,7 +309,7 @@ export default function CryptoNavigator({
         if (aborted || request !== routeSequenceRef.current || mapRef.current !== map) return;
         setStatus(m === "transit" ? t("noTransit") : t("noRoute"));
       });
-  }, [t]);
+  }, [t, cancelRouteRequest]);
 
   function switchMode(next: RouteMode) {
     modeRef.current = next;
@@ -434,7 +462,7 @@ export default function CryptoNavigator({
         hydratePhoto(el, p, t);
       };
 
-      (["fintech", "financial", "atm", "merchant"] as PoiLayer[]).forEach((layer) => {
+      [...POI_LAYERS].reverse().forEach((layer) => {
         map.addLayer({
           id: `poi-${layer}`,
           type: "circle",
@@ -461,12 +489,13 @@ export default function CryptoNavigator({
         });
       });
 
-      applyCoinOnlyFilter(map, coinOnlyRef.current);
+      mapReadyRef.current = true;
+      applyDesiredMapState(map);
 
       // Click on empty map → drop/move the draggable "my position" pin.
       map.on("click", (e) => {
         const hit = map.queryRenderedFeatures(e.point, {
-          layers: ["poi-merchant", "poi-atm", "poi-financial", "poi-fintech"],
+          layers: POI_LAYERS.map((layer) => `poi-${layer}`),
         });
         if (hit.length) return; // a POI was clicked — its popup opener handles it
         setOrigin([e.lngLat.lng, e.lngLat.lat], null, true);
@@ -500,12 +529,11 @@ export default function CryptoNavigator({
       navControllerRef.current?.stop();
       navControllerRef.current = null;
       if (moveTimer.current) clearTimeout(moveTimer.current);
+      mapReadyRef.current = false;
       poiSequenceRef.current += 1;
       poiAbortRef.current?.abort();
       poiAbortRef.current = null;
-      routeSequenceRef.current += 1;
-      routeAbortRef.current?.abort();
-      routeAbortRef.current = null;
+      cancelRouteRequest();
       map.remove();
       mapRef.current = null;
     };
@@ -515,8 +543,9 @@ export default function CryptoNavigator({
   // ---- Control handlers ----
   function switchBase(next: Base) {
     const map = mapRef.current;
-    if (!map) return;
+    baseRef.current = next;
     setBase(next);
+    if (!map || !mapReadyRef.current) return;
     // The satellite raster covers the whole viewport, so showing it is enough to
     // hide the vector base underneath — no per-base-layer toggling needed.
     map.setLayoutProperty("satellite", "visibility", next === "satellite" ? "visible" : "none");
@@ -524,9 +553,10 @@ export default function CryptoNavigator({
 
   function toggle3D() {
     const map = mapRef.current;
-    if (!map) return;
-    const next = !is3D;
+    const next = !is3DRef.current;
+    is3DRef.current = next;
     setIs3D(next);
+    if (!map || !mapReadyRef.current) return;
     if (next) {
       map.setTerrain({ source: "terrain", exaggeration: 1.3 });
       map.easeTo({ pitch: 60, duration: 800 });
@@ -538,9 +568,10 @@ export default function CryptoNavigator({
 
   function toggleLayer(layer: PoiLayer) {
     const map = mapRef.current;
-    if (!map) return;
-    const next = !visible[layer];
-    setVisible((v) => ({ ...v, [layer]: next }));
+    const next = !visibleRef.current[layer];
+    visibleRef.current = { ...visibleRef.current, [layer]: next };
+    setVisible(visibleRef.current);
+    if (!map || !mapReadyRef.current) return;
     map.setLayoutProperty(`poi-${layer}`, "visibility", next ? "visible" : "none");
   }
 
@@ -549,7 +580,7 @@ export default function CryptoNavigator({
     const next = !coinOnlyRef.current;
     coinOnlyRef.current = next;
     setCoinOnly(next);
-    if (!map || !map.isStyleLoaded()) return;
+    if (!map || !mapReadyRef.current) return;
     applyCoinOnlyFilter(map, next);
   }
 
@@ -576,6 +607,8 @@ export default function CryptoNavigator({
 
   function clearOrigin() {
     const map = mapRef.current;
+    cancelRouteRequest();
+    setPendingStart(false);
     originRef.current = null;
     setOriginLabel(null);
     originMarkerRef.current?.remove();
@@ -591,6 +624,8 @@ export default function CryptoNavigator({
 
   function clearRoute() {
     const map = mapRef.current;
+    cancelRouteRequest();
+    setPendingStart(false);
     destRef.current = null;
     setRoute(null);
     setStatus(null);
@@ -774,7 +809,7 @@ export default function CryptoNavigator({
         >
           {coinOnly ? "✓ " : ""}{symbol.toUpperCase()} {t("coinOnly")}
         </button>
-        {(["merchant", "atm", "financial", "fintech"] as PoiLayer[]).map((layer) => (
+        {POI_LAYERS.map((layer) => (
           <button
             key={layer}
             type="button"

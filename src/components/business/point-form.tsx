@@ -72,9 +72,10 @@ export function PointForm({
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MlMap | null>(null);
   const markerRef = useRef<Marker | null>(null);
-  const [pos, setPos] = useState<[number, number] | null>(
+  const posRef = useRef<[number, number] | null>(
     editing?.lat != null && editing?.lon != null ? [editing.lon, editing.lat] : null,
   );
+  const [pos, setPos] = useState<[number, number] | null>(posRef.current);
   const [type, setType] = useState<PointType>(editing?.type ?? "SHOP");
   const [name, setName] = useState(editing?.name ?? "");
   const [addr, setAddr] = useState<Addr>(
@@ -97,19 +98,25 @@ export function PointForm({
   const [pending, start] = useTransition();
   const router = useRouter();
 
+  function updatePos(next: [number, number] | null) {
+    posRef.current = next;
+    setPos(next);
+  }
+
   function placeMarker(lng: number, lat: number) {
-    setPos([lng, lat]);
+    updatePos([lng, lat]);
     const map = mapRef.current;
     if (!map) return;
     if (markerRef.current) markerRef.current.setLngLat([lng, lat]);
     else {
       const mk = new Marker({ color: "#FE5C04", draggable: true }).setLngLat([lng, lat]).addTo(map);
-      mk.on("dragend", () => { const l = mk.getLngLat(); setPos([l.lng, l.lat]); });
+      mk.on("dragend", () => { const l = mk.getLngLat(); updatePos([l.lng, l.lat]); });
       markerRef.current = mk;
     }
     map.flyTo({ center: [lng, lat], zoom: Math.max(map.getZoom(), 13), duration: 600 });
   }
 
+  const mapVisible = type !== "ONLINE";
   useEffect(() => {
     if (!containerRef.current) return;
     const map = new MlMap({
@@ -122,12 +129,13 @@ export function PointForm({
     addStaticMapAttribution(map);
     mapRef.current = map;
     map.on("click", (e) => placeMarker(e.lngLat.lng, e.lngLat.lat));
-    // При правке сразу показываем, где точка стоит сейчас.
-    if (editing?.lat != null && editing?.lon != null) {
-      map.once("load", () => placeMarker(editing.lon!, editing.lat!));
-    }
+    // Восстанавливаем актуальную позицию, включая изменения до ONLINE → SHOP.
+    map.once("load", () => {
+      const current = posRef.current;
+      if (current) placeMarker(current[0], current[1]);
+    });
     return () => { map.remove(); mapRef.current = null; markerRef.current = null; };
-  }, [type]);
+  }, [mapVisible]);
 
   // When 'use company address' is toggled on, copy the company address in.
   function toggleUseCompanyAddr(on: boolean) {
@@ -223,7 +231,7 @@ export function PointForm({
         setName(""); setAddr(EMPTY_ADDR); setAccepted([]); setAcceptedCards([]);
         setUseCompanyAddr(false); setPhotos([]);
         if (markerRef.current) { markerRef.current.remove(); markerRef.current = null; }
-        setPos(null);
+        updatePos(null);
         router.refresh();
       } else {
         setMsg(t(`err.${res.reason}`) ?? t("err.generic"));

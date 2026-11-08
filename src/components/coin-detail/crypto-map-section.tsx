@@ -28,7 +28,7 @@ export function CryptoMapSection({
       <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">{t("eyebrow")}</div>
       <h2 className="text-[24px] md:text-[28px] font-bold tracking-[-0.025em] mb-1">{t("title")}</h2>
       <p className="text-muted text-[14px] mb-4 max-w-[680px]">{t("intro")}</p>
-      <CryptoNavigator coinId={coinId} symbol={symbol} coinName={coinName} />
+      <CryptoNavigator key={coinId} coinId={coinId} symbol={symbol} coinName={coinName} />
     </section>
   );
 }
