@@ -702,6 +702,7 @@
     "geocoding": "Koordinaten zur Adresse suchen…",
     "geocodingOk": "Markierung an der Adresse gesetzt",
     "geocodingFailed": "Adresse nicht erkannt — Markierung manuell setzen",
+    "geocodingFailedNoMap": "Adresse nicht erkannt — präzisieren Sie sie (Stadt, Straße, Hausnummer), damit die Koordinaten ermittelt werden können",
     "statusBadge": {
       "PENDING": "In Bearbeitung",
       "APPROVED": "Akzeptiert",

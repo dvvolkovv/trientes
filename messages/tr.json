@@ -702,6 +702,7 @@
     "geocoding": "Adresten koordinatlar aranıyor…",
     "geocodingOk": "İşaretçi adrese yerleştirildi",
     "geocodingFailed": "Adres tanınmadı — işaretçiyi manuel yerleştirin",
+    "geocodingFailedNoMap": "Adres tanınmadı — koordinatların belirlenebilmesi için adresi netleştirin (şehir, sokak, bina numarası)",
     "statusBadge": {
       "PENDING": "İşleniyor",
       "APPROVED": "Onaylandı",

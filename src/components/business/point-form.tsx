@@ -291,7 +291,8 @@ export function PointForm({
             <p className="text-[12px] text-muted">
               {geoStatus === "loading" && `↻ ${t("geocoding")}`}
               {geoStatus === "ok" && `● ${t("geocodingOk")}`}
-              {geoStatus === "fail" && `⚠ ${t("geocodingFailed")}`}
+              {geoStatus === "fail" &&
+                `⚠ ${mapUnavailable ? t("geocodingFailedNoMap") : t("geocodingFailed")}`}
               {geoStatus === "idle" && t("clickMapToPlace")}
             </p>
           )}

@@ -702,6 +702,7 @@
     "geocoding": "住所から座標を検索中…",
     "geocodingOk": "住所にピンを配置しました",
     "geocodingFailed": "住所を認識できません — 手動でピンを配置してください",
+    "geocodingFailedNoMap": "住所を認識できません — 座標を特定できるよう、住所（市区町村・通り・番地）を詳しく入力してください",
     "statusBadge": {
       "PENDING": "処理中",
       "APPROVED": "承認済み",

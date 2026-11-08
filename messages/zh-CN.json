@@ -702,6 +702,7 @@
     "geocoding": "正在按地址查找坐标…",
     "geocodingOk": "已在地址处放置标记",
     "geocodingFailed": "地址未识别 — 请手动放置标记",
+    "geocodingFailedNoMap": "地址未识别 — 请完善地址（城市、街道、门牌号），以便确定坐标",
     "statusBadge": {
       "PENDING": "处理中",
       "APPROVED": "已接受",

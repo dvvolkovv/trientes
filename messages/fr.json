@@ -702,6 +702,7 @@
     "geocoding": "Recherche des coordonnées à partir de l'adresse…",
     "geocodingOk": "Repère placé à l'adresse",
     "geocodingFailed": "Adresse non reconnue — placez le repère manuellement",
+    "geocodingFailedNoMap": "Adresse non reconnue — précisez-la (ville, rue, numéro) pour que les coordonnées puissent être déterminées",
     "statusBadge": {
       "PENDING": "En traitement",
       "APPROVED": "Acceptée",

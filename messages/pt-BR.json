@@ -702,6 +702,7 @@
     "geocoding": "Buscando coordenadas pelo endereço…",
     "geocodingOk": "Marcador colocado no endereço",
     "geocodingFailed": "Endereço não reconhecido — coloque o marcador manualmente",
+    "geocodingFailedNoMap": "Endereço não reconhecido — detalhe-o (cidade, rua, número) para que as coordenadas possam ser determinadas",
     "statusBadge": {
       "PENDING": "Em processamento",
       "APPROVED": "Aceita",

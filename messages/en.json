@@ -702,6 +702,7 @@
     "geocoding": "Looking up coordinates from address…",
     "geocodingOk": "Pin placed at the address",
     "geocodingFailed": "Address not recognized — place the pin manually",
+    "geocodingFailedNoMap": "Address not recognized — refine it (city, street, house number) so the coordinates can be determined",
     "statusBadge": {
       "PENDING": "Processing",
       "APPROVED": "Approved",

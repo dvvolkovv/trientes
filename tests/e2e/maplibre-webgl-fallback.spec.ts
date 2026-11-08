@@ -177,8 +177,17 @@ function mapWarnings(page: Page): string[] {
   return (pageWarnings.get(page) ?? []).filter((text) => text.startsWith("[map] "));
 }
 
-/** "native" leaves the browser's WebGL alone; the other modes break it as described above. */
-async function openHarness(page: Page, mode: WebglMode | "native") {
+const PRAHA = [{ lat: 50.0755, lon: 14.4378, label: "Praha" }];
+
+/**
+ * "native" leaves the browser's WebGL alone; the other modes break it as described above.
+ * `geocodeResults` is what /api/crypto-map/geocode answers to every address lookup.
+ */
+async function openHarness(
+  page: Page,
+  mode: WebglMode | "native",
+  { geocodeResults = PRAHA }: { geocodeResults?: unknown[] } = {},
+) {
   await page.addInitScript((mode: WebglMode | "native") => {
     if (mode === "native") return;
     const counter = window as unknown as WebglCalls;
@@ -221,7 +230,7 @@ async function openHarness(page: Page, mode: WebglMode | "native") {
     }
     api.push(url.pathname + url.search);
     if (url.pathname === "/api/crypto-map/geocode" && url.searchParams.has("q")) {
-      return route.fulfill({ json: { results: [{ lat: 50.0755, lon: 14.4378, label: "Praha" }] } });
+      return route.fulfill({ json: { results: geocodeResults } });
     }
     return route.fulfill({ json: {} });
   });
@@ -382,6 +391,25 @@ test("point form without WebGL places a new point from its address and submits i
       }),
     },
   ]);
+  expect(external).toEqual([]);
+});
+
+test("point form without WebGL asks for a better address when geocoding finds nothing", async ({ page }) => {
+  const { api, external } = await openHarness(page, "no-webgl", { geocodeResults: [] });
+  await page.evaluate(() => (window as unknown as Harness).__componentTest.mountPoint());
+
+  await expect(page.getByText("business.mapUnavailable")).toBeVisible();
+  await page.getByPlaceholder("business.pointName").fill("Crypto café");
+  await page.locator("select").first().selectOption("CZ");
+  await page.getByPlaceholder("business.city").fill("Praha");
+  await page.getByPlaceholder("business.street").fill("Neexistující");
+  await page.getByPlaceholder("business.houseNumber").fill("999");
+
+  // There is no map to put the pin on, so the hint must point at the address instead.
+  await expect(page.getByText("business.geocodingFailedNoMap")).toBeVisible();
+  await expect(page.getByText(/business\.geocodingFailed$/)).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "business.submitPoint" })).toBeDisabled();
+  expect(api.filter((url) => url.startsWith("/api/crypto-map/geocode?q="))).not.toEqual([]);
   expect(external).toEqual([]);
 });
 
