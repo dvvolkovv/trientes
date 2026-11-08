@@ -107,7 +107,7 @@ function reportReadError(relativePath: string, error: unknown): void {
   reportedMissingAssets.add(relativePath);
   console.error(
     `[maplibre-assets] deployment error: ${ASSET_DIRECTORY}/${relativePath} ` +
-      `is missing (${code}); maps cannot start their worker. ${DEPLOY_HINT}.`,
+      `is missing (${code}), so maps cannot start their worker: ${DEPLOY_HINT}.`,
   );
 }
 
