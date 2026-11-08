@@ -1,3 +1,4 @@
+import { DomUtils, parseDocument } from "htmlparser2";
 import { describe, expect, it } from "vitest";
 import { sanitizeDescription } from "@/lib/sanitize";
 
@@ -11,45 +12,70 @@ const ALLOWED_A_ATTRIBUTES = new Set(["href", "rel", "target"]);
 const ALLOWED_SCHEMES = new Set(["http", "https", "mailto"]);
 const LINK_ATTRIBUTES = 'rel="noopener noreferrer nofollow" target="_blank"';
 
-// What description.tsx must never ship, whatever the parser made of the input.
-const EXECUTABLE =
-  /<script|javascript:|on\w+=|<svg|<noscript|<textarea|<meta|<iframe|<img/i;
+type ParsedNode = ReturnType<typeof parseDocument>["children"][number];
 
-function decodeAttribute(value: string): string {
-  return value
-    .replace(/&quot;/g, '"')
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&amp;/g, "&");
+// The URL parser drops tab and newline characters anywhere and strips leading
+// C0 controls and spaces before it reads the scheme.
+function urlScheme(href: string): string | undefined {
+  const url = href.replace(/[\t\n\r]/g, "").replace(/^[\u0000- ]+/, "");
+  return /^([a-zA-Z][a-zA-Z0-9+.-]*):/.exec(url)?.[1].toLowerCase();
 }
 
 /**
- * Asserts the sanitized HTML holds the allowlist. Text is entity-escaped on
- * output, so every literal `<` starts a tag the sanitizer chose to emit.
+ * Asserts the sanitized HTML holds the allowlist, reading it back with an HTML
+ * parser that decodes character references by the spec (in attributes too),
+ * so `&#106;avascript:` or `java&Tab;script:` is seen as a browser sees it.
+ * Text nodes are not checked: the serializer escapes them, and their words
+ * ("javascript:", "onboarding=") are not markup.
  */
 function expectInert(html: string): void {
-  expect(html, html).not.toMatch(EXECUTABLE);
-  for (const [tag] of html.matchAll(/<[^>]*>?/g)) {
-    const match = tag.match(/^<\/?([a-zA-Z][a-zA-Z0-9]*)([^>]*)>$/);
-    expect(match, `malformed tag ${tag} in ${html}`).not.toBeNull();
-    const [, name, rest] = match!;
-    expect(ALLOWED_TAGS.has(name.toLowerCase()), `tag ${name} in ${html}`).toBe(true);
-    if (name.toLowerCase() !== "a") {
-      expect(rest.trim(), `attributes on ${tag} in ${html}`).toMatch(/^\/?$/);
-      continue;
+  const pending: ParsedNode[] = [...parseDocument(html).children];
+  for (let node = pending.pop(); node !== undefined; node = pending.pop()) {
+    if (DomUtils.isText(node)) continue;
+    // Anything else but an element: comment (CDATA too, in HTML), processing
+    // instruction, doctype.
+    if (!DomUtils.isTag(node)) {
+      throw new Error(`${node.type} node in ${html}`);
     }
-    const body = rest.replace(/"[^"]*"/g, '""');
-    expect(body, `unquoted attribute in ${tag}`).toMatch(/^(\s+[a-z-]+="")*\s*$/);
-    for (const [, attribute, value] of rest.matchAll(/([a-zA-Z-]+)="([^"]*)"/g)) {
-      expect(ALLOWED_A_ATTRIBUTES.has(attribute), `attribute ${attribute} in ${html}`).toBe(true);
+    expect(ALLOWED_TAGS.has(node.name), `tag ${node.name} in ${html}`).toBe(true);
+    for (const [attribute, value] of Object.entries(node.attribs)) {
+      expect(
+        node.name === "a" && ALLOWED_A_ATTRIBUTES.has(attribute),
+        `attribute ${attribute} on ${node.name} in ${html}`,
+      ).toBe(true);
       if (attribute !== "href") continue;
-      // Browsers drop ASCII whitespace and control characters inside a scheme.
-      const href = decodeAttribute(value).replace(/[\u0000- ]/g, "");
-      const scheme = href.match(/^([a-zA-Z][a-zA-Z0-9+.-]*):/)?.[1]?.toLowerCase();
-      if (scheme) expect(ALLOWED_SCHEMES.has(scheme), `href ${value} in ${html}`).toBe(true);
+      const scheme = urlScheme(value);
+      // No scheme: a relative URL.
+      if (scheme !== undefined) {
+        expect(ALLOWED_SCHEMES.has(scheme), `href ${JSON.stringify(value)} in ${html}`).toBe(true);
+      }
     }
+    pending.push(...node.children);
   }
 }
+
+// The check itself: a test that cannot fail proves nothing about the sanitizer.
+describe("expectInert", () => {
+  it.each([
+    '<a href="&#106;avascript:x">x</a>',
+    '<a href="javascript&colon;x">',
+    '<a href="java&Tab;script:x">',
+    '<a href="&#x6A;avascript:x">',
+    "<img src=x>",
+    '<a onclick="x">',
+    "<!-- x -->",
+  ])("rejects %s", (html) => {
+    expect(() => expectInert(html)).toThrow();
+  });
+
+  it.each([
+    "<p>Never paste javascript: URLs</p>",
+    `<a href="https://x.org/?bonus=1" ${LINK_ATTRIBUTES}>x</a>`,
+    "<p>set onboarding=true</p>",
+  ])("accepts %s", (html) => {
+    expect(() => expectInert(html)).not.toThrow();
+  });
+});
 
 describe("sanitizeDescription — allowed markup", () => {
   it("keeps the allowed tags and their text", () => {
