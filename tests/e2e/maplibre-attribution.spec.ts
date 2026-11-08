@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import maplibrePackage from "maplibre-gl/package.json";
 import { buildSync } from "esbuild";
 import { expect, test } from "@playwright/test";
 
@@ -21,6 +22,7 @@ function bundle(output: "main" | "worker"): string {
     stdin: {
       contents: `
         import * as maplibregl from "maplibre-gl";
+        import "./src/lib/maplibre-worker";
         ${baseline ? "" : `
           import {
             MAPLIBRE_ATTRIBUTION_OPTIONS,
@@ -92,8 +94,12 @@ test("remote style attribution cannot execute iframe srcdoc", async ({ page }) =
       MapAttribution?: typeof import("../../src/lib/maplibre-attribution");
       __maplibreSrcdocExecuted?: number;
       __maplibreMap?: import("maplibre-gl").Map;
+      __configuredWorkerUrl?: string;
+      __mapConstructorType?: string;
     };
     const { maplibregl, MapAttribution } = browserWindow;
+    browserWindow.__configuredWorkerUrl = maplibregl.getWorkerUrl();
+    browserWindow.__mapConstructorType = typeof maplibregl.Map;
     maplibregl.setWorkerUrl(workerUrl);
     const container = document.createElement("div");
     container.style.cssText = "width:640px;height:480px";
@@ -124,6 +130,8 @@ test("remote style attribution cannot execute iframe srcdoc", async ({ page }) =
     const browserWindow = window as unknown as {
       __maplibreSrcdocExecuted?: number;
       __maplibreMap?: import("maplibre-gl").Map;
+      __configuredWorkerUrl?: string;
+      __mapConstructorType?: string;
     };
     const attributionElements = Array.from(
       document.querySelectorAll<HTMLElement>(".maplibregl-ctrl-attrib-inner"),
@@ -149,6 +157,8 @@ test("remote style attribution cannot execute iframe srcdoc", async ({ page }) =
     browserWindow.__maplibreMap?.remove();
     return {
       srcdocExecuted: browserWindow.__maplibreSrcdocExecuted ?? 0,
+      configuredWorkerUrl: browserWindow.__configuredWorkerUrl,
+      mapConstructorType: browserWindow.__mapConstructorType,
       iframeCount: document.querySelectorAll("iframe").length,
       attributionText,
       attributionVisible,
@@ -161,6 +171,10 @@ test("remote style attribution cannot execute iframe srcdoc", async ({ page }) =
   });
 
   expect(result.srcdocExecuted).toBe(0);
+  expect(result.configuredWorkerUrl).toBe(
+    `/maplibre/${maplibrePackage.version}/maplibre-gl-worker.mjs`,
+  );
+  expect(result.mapConstructorType).toBe("function");
   expect(result.iframeCount).toBe(0);
   expect(result.attributionText).toContain("© OpenStreetMap contributors");
   expect(result.attributionText).toContain("© OpenFreeMap");

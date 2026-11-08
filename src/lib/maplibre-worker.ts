@@ -1,6 +1,6 @@
 import { setWorkerUrl } from "maplibre-gl";
-import maplibrePackage from "maplibre-gl/package.json";
+import { MAPLIBRE_WORKER_URL } from "./maplibre-worker-url";
 
-export const MAPLIBRE_WORKER_URL = `/maplibre/${maplibrePackage.version}/maplibre-gl-worker.mjs`;
+export { MAPLIBRE_WORKER_URL } from "./maplibre-worker-url";
 
 setWorkerUrl(MAPLIBRE_WORKER_URL);

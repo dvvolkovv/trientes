@@ -4,8 +4,9 @@ import path from "node:path";
 export default defineConfig({
   test: {
     environment: "node",
+    globalSetup: ["./tests/globalSetup.ts"],
     include: ["tests/**/*.test.ts", "bot/**/*.test.ts"],
-    exclude: [...configDefaults.exclude, "tests/e2e/**"],
+    exclude: [...configDefaults.exclude, "tests/e2e/**", "integration-tests/**"],
     setupFiles: ["./bot/__tests__/setup.ts"],
     server: {
       deps: {

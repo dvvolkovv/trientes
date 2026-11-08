@@ -14,6 +14,7 @@ import {
   parseOpenGraph,
   isBlockedIp,
   assertUrlShape,
+  safeHttpUrl as safeHttpUrlFromCryptoMap,
 } from "@/lib/crypto-map";
 
 describe("parseBbox", () => {
@@ -314,6 +315,10 @@ describe("parseOpenGraph", () => {
 });
 
 describe("safeHttpUrl", () => {
+  it("keeps the legacy crypto-map export compatible", () => {
+    expect(safeHttpUrlFromCryptoMap).toBe(safeHttpUrl);
+  });
+
   it("returns http(s) URLs unchanged", () => {
     expect(safeHttpUrl("https://sats.cafe/x")).toBe("https://sats.cafe/x");
     expect(safeHttpUrl("http://sats.cafe")).toBe("http://sats.cafe");

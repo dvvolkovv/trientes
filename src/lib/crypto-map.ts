@@ -10,6 +10,8 @@
 import { lookup } from "node:dns/promises";
 import { isWebsiteBlocked } from "@/lib/poi-blocklist";
 
+export { safeHttpUrl } from "./safe-url";
+
 export type Bbox = { minLon: number; minLat: number; maxLon: number; maxLat: number };
 
 /** Parse "minLon,minLat,maxLon,maxLat" (GeoJSON / MapLibre bounds order). */
