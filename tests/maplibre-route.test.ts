@@ -92,6 +92,8 @@ const ALLOWLIST_FIXTURE = {
 function expectNoStoreNotFound(response: Response): void {
   expect(response.status).toBe(404);
   expect(response.headers.get("cache-control")).toBe("no-store");
+  expect(response.headers.get("content-type")).toBe("text/plain; charset=utf-8");
+  expect(response.headers.get("x-content-type-options")).toBe("nosniff");
 }
 
 afterEach(() => {
@@ -105,8 +107,11 @@ describe("MapLibre asset route cache policy", () => {
   it.each(["maplibre-gl-worker.mjs", "maplibre-gl-shared.mjs"])(
     "serves the generated %s with immutable caching",
     async (asset) => {
+      resetDiskReads();
       const response = await requestAsset([version, asset]);
       expect(response.status).toBe(200);
+      // Served through the realpath containment check, not a bare read.
+      expect(realpathSync).toHaveBeenCalled();
       expect(response.headers.get("cache-control")).toBe(IMMUTABLE);
       expect(response.headers.get("content-type")).toBe(
         "text/javascript; charset=utf-8",
@@ -182,6 +187,20 @@ describe("MapLibre asset route cache policy", () => {
     expect(await response.text()).not.toContain("outside-secret");
   });
 
+  it("returns no-store when the asset root does not exist", () => {
+    const { base } = createAssetRoot({});
+    const errors = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      expectNoStoreNotFound(
+        serveMapLibreAsset(["6.4.1", "maplibre-gl-worker.mjs"], {
+          root: path.join(base, "missing"),
+        }),
+      );
+    } finally {
+      errors.mockRestore();
+    }
+  });
+
   it("returns no-store for a directory at an asset path", () => {
     const { assetRoot } = createAssetRoot({
       "6.4.1/maplibre-gl-worker.mjs/nested.txt": "directory",
@@ -224,6 +243,15 @@ describe("MapLibre asset route cache policy", () => {
         expectNoDiskReads();
       },
     );
+
+    it("rejects one segment carrying a slash without reading the disk", () => {
+      // Joined, it would pass the allowlist as 6.4.1/maplibre-gl-worker.mjs.
+      resetDiskReads();
+      expectNoStoreNotFound(
+        serveMapLibreAsset(["6.4.1/maplibre-gl-worker.mjs"], { root: assetRoot }),
+      );
+      expectNoDiskReads();
+    });
 
     it.each([
       ["undefined", undefined],
