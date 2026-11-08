@@ -209,13 +209,15 @@ describe("MapLibre asset read errors", () => {
       expect(serve(relativePath).status).toBe(404);
     }
 
-    expect(messages()).toHaveLength(2);
-    for (const [message, code] of messages().map((text, index) => [text, ["EACCES", "EIO"][index]])) {
-      expect(message).toContain("[maplibre-assets]");
-      expect(message).toContain(code);
-      expect(message).not.toContain("0.0.");
-      expect(message).not.toContain("maplibre-gl-");
-      expect(message).not.toContain(base);
-    }
+    // Exact text: names only the installed version and the code, never one of
+    // the requested versions, an asset name or the absolute path.
+    expect(messages()).toEqual(
+      ["EACCES", "EIO"].map(
+        (code) =>
+          "[maplibre-assets] cannot serve an asset of a MapLibre version other than " +
+          `the installed ${version}: ${code}`,
+      ),
+    );
+    for (const message of messages()) expect(message).not.toContain(base);
   });
 });
