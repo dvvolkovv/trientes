@@ -127,7 +127,7 @@ export function PointForm({
       map.once("load", () => placeMarker(editing.lon!, editing.lat!));
     }
     return () => { map.remove(); mapRef.current = null; markerRef.current = null; };
-  }, []);
+  }, [type]);
 
   // When 'use company address' is toggled on, copy the company address in.
   function toggleUseCompanyAddr(on: boolean) {

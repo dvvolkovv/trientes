@@ -91,6 +91,16 @@ const TERRAIN_SOURCE: SourceSpecification = {
 
 type Base = "dark" | "satellite";
 
+function applyCoinOnlyFilter(map: MlMap, coinOnly: boolean) {
+  (["merchant", "atm", "financial", "fintech"] as PoiLayer[]).forEach((layer) => {
+    const base: FilterSpecification = ["==", ["get", "layer"], layer];
+    const filter: FilterSpecification = coinOnly
+      ? (["all", base, ["==", ["get", "coinSpecific"], true]] as FilterSpecification)
+      : base;
+    map.setFilter(`poi-${layer}`, filter);
+  });
+}
+
 export default function CryptoNavigator({
   coinId,
   symbol,
@@ -110,6 +120,11 @@ export default function CryptoNavigator({
   const destRef = useRef<{ lonlat: [number, number]; name: string } | null>(null);
   const modeRef = useRef<RouteMode>("walk");
   const moveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const poiAbortRef = useRef<AbortController | null>(null);
+  const poiSequenceRef = useRef(0);
+  const routeAbortRef = useRef<AbortController | null>(null);
+  const routeSequenceRef = useRef(0);
+  const coinOnlyRef = useRef(false);
 
   const [base, setBase] = useState<Base>("dark");
   const [is3D, setIs3D] = useState(false);
@@ -149,17 +164,26 @@ export default function CryptoNavigator({
   const loadPois = useCallback(() => {
     const map = mapRef.current;
     if (!map) return;
+    const request = ++poiSequenceRef.current;
+    poiAbortRef.current?.abort();
+    poiAbortRef.current = null;
     if (map.getZoom() < MIN_ZOOM) {
       setTooFar(true);
+      setLoading(false);
       return;
     }
     setTooFar(false);
     const b = map.getBounds();
     const bbox = [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()].map((n) => n.toFixed(5)).join(",");
+    const controller = new AbortController();
+    poiAbortRef.current = controller;
     setLoading(true);
-    fetch(`/api/crypto-map/poi?bbox=${bbox}&coin=${encodeURIComponent(coinId)}&symbol=${encodeURIComponent(symbol)}`)
+    fetch(`/api/crypto-map/poi?bbox=${bbox}&coin=${encodeURIComponent(coinId)}&symbol=${encodeURIComponent(symbol)}`, {
+      signal: controller.signal,
+    })
       .then((r) => r.json())
       .then((res: { pois?: Poi[] }) => {
+        if (request !== poiSequenceRef.current || mapRef.current !== map) return;
         const pois = res.pois ?? [];
         const src = map.getSource("pois") as GeoJSONSource | undefined;
         src?.setData({
@@ -178,7 +202,11 @@ export default function CryptoNavigator({
         });
       })
       .catch(() => {})
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (request !== poiSequenceRef.current) return;
+        poiAbortRef.current = null;
+        setLoading(false);
+      });
   }, [coinId, symbol]);
 
   // ---- Routing ----
@@ -187,6 +215,9 @@ export default function CryptoNavigator({
     const origin = originRef.current;
     const dest = destRef.current;
     if (!map) return;
+    const request = ++routeSequenceRef.current;
+    routeAbortRef.current?.abort();
+    routeAbortRef.current = null;
     if (!origin) {
       setStatus(t("noOrigin"));
       return;
@@ -196,12 +227,16 @@ export default function CryptoNavigator({
       return;
     }
     const m = modeRef.current;
+    const controller = new AbortController();
+    routeAbortRef.current = controller;
     setStatus(null);
     fetch(
       `/api/crypto-map/directions?from=${origin[0]},${origin[1]}&to=${dest.lonlat[0]},${dest.lonlat[1]}&mode=${m}`,
+      { signal: controller.signal },
     )
       .then((r) => (r.ok ? r.json() : Promise.reject()))
       .then((res: RouteResult) => {
+        if (request !== routeSequenceRef.current || mapRef.current !== map) return;
         const src = map.getSource("route") as GeoJSONSource | undefined;
         // Transit draws one feature per leg (walk connectors dashed, vehicles coloured);
         // walk/car is a single solid line.
@@ -241,7 +276,11 @@ export default function CryptoNavigator({
           map.fitBounds(bounds, { padding: 80, maxZoom: 15 });
         }
       })
-      .catch(() => setStatus(modeRef.current === "transit" ? t("noTransit") : t("noRoute")));
+      .catch((error: unknown) => {
+        const aborted = (error as { name?: string } | null | undefined)?.name === "AbortError";
+        if (aborted || request !== routeSequenceRef.current || mapRef.current !== map) return;
+        setStatus(m === "transit" ? t("noTransit") : t("noRoute"));
+      });
   }, [t]);
 
   function switchMode(next: RouteMode) {
@@ -422,6 +461,8 @@ export default function CryptoNavigator({
         });
       });
 
+      applyCoinOnlyFilter(map, coinOnlyRef.current);
+
       // Click on empty map → drop/move the draggable "my position" pin.
       map.on("click", (e) => {
         const hit = map.queryRenderedFeatures(e.point, {
@@ -459,6 +500,12 @@ export default function CryptoNavigator({
       navControllerRef.current?.stop();
       navControllerRef.current = null;
       if (moveTimer.current) clearTimeout(moveTimer.current);
+      poiSequenceRef.current += 1;
+      poiAbortRef.current?.abort();
+      poiAbortRef.current = null;
+      routeSequenceRef.current += 1;
+      routeAbortRef.current?.abort();
+      routeAbortRef.current = null;
       map.remove();
       mapRef.current = null;
     };
@@ -499,16 +546,11 @@ export default function CryptoNavigator({
 
   function toggleCoinOnly() {
     const map = mapRef.current;
-    const next = !coinOnly;
+    const next = !coinOnlyRef.current;
+    coinOnlyRef.current = next;
     setCoinOnly(next);
-    if (!map) return;
-    (["merchant", "atm", "financial", "fintech"] as PoiLayer[]).forEach((layer) => {
-      const base: FilterSpecification = ["==", ["get", "layer"], layer];
-      const filter: FilterSpecification = next
-        ? (["all", base, ["==", ["get", "coinSpecific"], true]] as FilterSpecification)
-        : base;
-      map.setFilter(`poi-${layer}`, filter);
-    });
+    if (!map || !map.isStyleLoaded()) return;
+    applyCoinOnlyFilter(map, next);
   }
 
   function submitSearch(e: React.FormEvent) {
