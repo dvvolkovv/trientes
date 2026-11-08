@@ -86,12 +86,17 @@ set -euo pipefail
 cd ~/trientes
 test "$(cat .next/BUILD_ID)" = "$TARGET_BUILD_ID"
 maplibre_version=$(node -p "require('./node_modules/maplibre-gl/package.json').version")
-map_dir="public/maplibre/$maplibre_version"
-assets=(maplibre-gl-worker.mjs maplibre-gl-shared.mjs maplibre-gl-worker.mjs.map maplibre-gl-shared.mjs.map)
+map_dir=".generated/maplibre/$maplibre_version"
+assets=(maplibre-gl-worker.mjs maplibre-gl-shared.mjs)
+source_maps=(maplibre-gl-worker.mjs.map maplibre-gl-shared.mjs.map)
 for asset in "${assets[@]}"; do
   test -s "$map_dir/$asset"
   cmp "node_modules/maplibre-gl/dist/$asset" "$map_dir/$asset"
 done
+for asset in "${source_maps[@]}"; do
+  test ! -e "$map_dir/$asset"
+done
+test ! -e public/maplibre
 install -d -m 700 /home/dv/migration-stage0
 archive="/home/dv/migration-stage0/release-$RELEASE_SHA.next.tar"
 manifest="/home/dv/migration-stage0/release-$RELEASE_SHA.artifact-manifest.txt"
@@ -105,7 +110,7 @@ printf 'Sealed MapLibre version %s with %s assets\n' "$maplibre_version" "${#ass
 REMOTE
 ```
 
-Expected: BUILD_ID совпадает; архив содержит `.next` и `public/maplibre/<version>/`; manifest содержит SHA-256 каждого файла обоих trees; все четыре versioned assets побайтово совпадают с установленным MapLibre distribution. Archive SHA-256 и MapLibre version сохранены в `merged-release-evidence.md`.
+Expected: BUILD_ID совпадает; архив содержит `.next` и `.generated/maplibre/<version>/` (вне `public/`: эти файлы отдаёт только route `src/app/maplibre/[...path]/route.ts`); manifest содержит SHA-256 каждого файла обоих trees; оба runtime assets (`maplibre-gl-worker.mjs`, `maplibre-gl-shared.mjs`) побайтово совпадают с установленным MapLibre distribution; source maps в production build отсутствуют (`prebuild` копирует с `MAPLIBRE_INCLUDE_SOURCE_MAPS=0`), legacy `public/maplibre` отсутствует. Archive SHA-256 и MapLibre version сохранены в `merged-release-evidence.md`.
 
 - [ ] **Step 2: Проверить восстановление BUILD_ID, manifest и MapLibre HTTP**
 
@@ -117,7 +122,7 @@ ssh -o BatchMode=yes "dv@$NEW_IP" "RELEASE_SHA='$RELEASE_SHA' TARGET_BUILD_ID='$
 set -euo pipefail
 cd ~/trientes
 maplibre_version=$(node -p "require('./node_modules/maplibre-gl/package.json').version")
-map_dir="public/maplibre/$maplibre_version"
+map_dir=".generated/maplibre/$maplibre_version"
 archive="/home/dv/migration-stage0/release-$RELEASE_SHA.next.tar"
 manifest="/home/dv/migration-stage0/release-$RELEASE_SHA.artifact-manifest.txt"
 backup=/home/dv/migration-stage0/artifact-before-restore-test
@@ -135,17 +140,25 @@ pm2 start ecosystem.config.js --only trientes-web
 pm2 save
 curl -fsS http://127.0.0.1:3000/api/health
 test "$(curl -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/en)" = 200
-assets=(maplibre-gl-worker.mjs maplibre-gl-shared.mjs maplibre-gl-worker.mjs.map maplibre-gl-shared.mjs.map)
+assets=(maplibre-gl-worker.mjs maplibre-gl-shared.mjs)
 for asset in "${assets[@]}"; do
   url="http://127.0.0.1:3000/maplibre/$maplibre_version/$asset"
-  status=$(curl -sS -o /dev/null -w '%{http_code}' "$url")
-  test "$status" = 200
-  printf '%s %s\n' "$status" "$url"
+  headers=$(curl -sS -o /dev/null -D - "$url")
+  grep -q '^HTTP/[0-9.]* 200' <<<"$headers"
+  grep -qi '^cache-control: public, max-age=31536000, immutable' <<<"$headers"
+  printf '200 immutable %s\n' "$url"
+done
+for asset_path in "$maplibre_version/maplibre-gl-worker.mjs.map" "$maplibre_version/maplibre-gl-shared.mjs.map" maplibre-gl-worker.mjs; do
+  url="http://127.0.0.1:3000/maplibre/$asset_path"
+  headers=$(curl -sS -o /dev/null -D - "$url")
+  grep -q '^HTTP/[0-9.]* 404' <<<"$headers"
+  grep -qi '^cache-control: no-store' <<<"$headers"
+  printf '404 no-store %s\n' "$url"
 done
 REMOTE
 ```
 
-Expected: восстановленный `.next` и versioned MapLibre tree побайтово совпадают с backup и manifest, BUILD_ID совпадает, health/`/en` и все четыре `/maplibre/<version>/...` URLs возвращают HTTP 200, worker/bot не запущены. Любая разница — блокер; не запускать cutover с другим artifact.
+Expected: восстановленный `.next` и versioned MapLibre tree (`.generated/maplibre/<version>/`) побайтово совпадают с backup и manifest, BUILD_ID совпадает, health/`/en` возвращают HTTP 200, оба runtime URLs `/maplibre/<version>/maplibre-gl-{worker,shared}.mjs` возвращают HTTP 200 с `Cache-Control: public, max-age=31536000, immutable`, а production source maps и unversioned `/maplibre/maplibre-gl-worker.mjs` возвращают 404 `no-store`; worker/bot не запущены. Любая разница — блокер; не запускать cutover с другим artifact.
 
 ### Task 3: Проверить readiness внешних зависимостей и final acceptance plan
 
