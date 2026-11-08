@@ -170,12 +170,25 @@ function removeStaleVersionDirectories(targetRoot, currentVersion) {
   }
 }
 
-// Builds run without source maps, and the production seal check expects no
-// .map file in the tree afterwards, so drop whatever a dev/test copy left.
+// A copy without source maps drops whatever a dev/test copy left in the
+// version directory. Only real files directly inside it: a symlink is neither
+// followed nor removed.
 function removeSourceMaps(targetVersion) {
   for (const entry of readdirSync(targetVersion, { withFileTypes: true })) {
     if (entry.isFile() && SOURCE_MAP_FILE.test(entry.name)) {
       rmSync(path.join(targetVersion, entry.name), { force: true });
+    }
+  }
+}
+
+// Builds run without source maps, and the production seal check expects no
+// .map file in the tree afterwards. A dev/test copy of an earlier version (now
+// retained as N-1) or of a newer one (kept for a rollback) can have left maps
+// there, so a pruning build drops them in every real stable-version directory.
+function removeRetainedSourceMaps(targetRoot) {
+  for (const entry of readdirSync(targetRoot, { withFileTypes: true })) {
+    if (entry.isDirectory() && stableVersion(entry.name)) {
+      removeSourceMaps(path.join(targetRoot, entry.name));
     }
   }
 }
@@ -213,8 +226,9 @@ function removeLegacyPublicFiles(rootDirectory) {
 /**
  * Copies the installed MapLibre worker assets into .generated/maplibre/<version>.
  *
- * `prune` also deletes: older version directories beyond N-1 and the files
- * earlier revisions generated in public/maplibre. Only prebuild prunes. The
+ * `prune` also deletes: older version directories beyond N-1, the files
+ * earlier revisions generated in public/maplibre and, in a copy without source
+ * maps, the source maps of every retained version. Only prebuild prunes. The
  * production checkout doubles as a working copy, so dev and test runs there
  * must never delete the directory of the version the running server serves.
  *
@@ -263,6 +277,7 @@ export function copyMapLibreAssets({
   // Only after every asset was copied successfully.
   if (prune) {
     removeStaleVersionDirectories(targetRoot, version);
+    if (!includeSourceMaps) removeRetainedSourceMaps(targetRoot);
     removeLegacyPublicFiles(rootDirectory);
   }
 }

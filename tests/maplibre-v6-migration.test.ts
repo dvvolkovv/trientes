@@ -333,6 +333,87 @@ describe("MapLibre copy modes and idempotence", () => {
     },
   );
 
+  // npm test on N-1 (Vitest globalSetup copies source maps), then an upgrade to
+  // N and npm run build: the retained N-1 directory, and a newer one kept for a
+  // rollback, must lose their maps, or the seal check
+  // `find .generated/maplibre -name '*.map'` fails after the build.
+  it.each([true, false])(
+    "removes source maps of every retained version only with prune (prune: %s)",
+    (prune) => {
+      const fixture = createFixture("6.4.0");
+      copyMapLibreAssets({
+        rootDirectory: fixture.rootDirectory,
+        environment: { MAPLIBRE_INCLUDE_SOURCE_MAPS: "1" },
+      });
+      writeFiles(path.join(fixture.targetRoot, "6.5.0"), REQUIRED_TEST_ASSETS);
+      writeFileSync(
+        path.join(fixture.rootDirectory, "node_modules/maplibre-gl/package.json"),
+        JSON.stringify({ version: "6.4.1" }),
+      );
+
+      copyMapLibreAssets({
+        rootDirectory: fixture.rootDirectory,
+        environment: { MAPLIBRE_INCLUDE_SOURCE_MAPS: "0" },
+        prune,
+      });
+
+      expect(remainingDirectories(fixture.targetRoot)).toEqual(["6.4.0", "6.4.1", "6.5.0"]);
+      const retained = [...(prune ? REQUIRED_RUNTIME_ASSETS : REQUIRED_TEST_ASSETS)].sort();
+      for (const directory of ["6.4.0", "6.5.0"]) {
+        expect(readdirSync(path.join(fixture.targetRoot, directory)).sort(), directory).toEqual(
+          retained,
+        );
+      }
+      expect(readdirSync(path.join(fixture.targetRoot, "6.4.1")).sort()).toEqual(
+        [...REQUIRED_RUNTIME_ASSETS].sort(),
+      );
+    },
+  );
+
+  it("removes only real MapLibre source maps of retained versions with prune", () => {
+    const fixture = createFixture("6.4.1");
+    const outside = path.join(fixture.rootDirectory, "outside");
+    writeFiles(outside, ["maplibre-gl-worker.mjs.map", "6.4.2/maplibre-gl-worker.mjs.map"]);
+    writeFiles(fixture.targetRoot, [
+      "6.4.0/maplibre-gl-shared.mjs.map",
+      "6.4.0/notes.map",
+      "6.4.0/nested/maplibre-gl-worker.mjs.map",
+      "6.4.1-rc.1/maplibre-gl-worker.mjs.map",
+      "not-a-version/maplibre-gl-worker.mjs.map",
+    ]);
+    // A symlinked map in a retained version and a symlinked version directory:
+    // neither is followed nor removed.
+    symlinkSync(
+      path.join(outside, "maplibre-gl-worker.mjs.map"),
+      path.join(fixture.targetRoot, "6.4.0/maplibre-gl-worker.mjs.map"),
+    );
+    symlinkSync(path.join(outside, "6.4.2"), path.join(fixture.targetRoot, "6.4.2"));
+
+    copyMapLibreAssets({
+      rootDirectory: fixture.rootDirectory,
+      environment: { MAPLIBRE_INCLUDE_SOURCE_MAPS: "0" },
+      prune: true,
+    });
+
+    expect(existsSync(path.join(fixture.targetRoot, "6.4.0/maplibre-gl-shared.mjs.map"))).toBe(
+      false,
+    );
+    for (const kept of [
+      "6.4.0/notes.map",
+      "6.4.0/nested/maplibre-gl-worker.mjs.map",
+      "6.4.1-rc.1/maplibre-gl-worker.mjs.map",
+      "not-a-version/maplibre-gl-worker.mjs.map",
+    ]) {
+      expect(readFileSync(path.join(fixture.targetRoot, kept), "utf8"), kept).toBe("legacy");
+    }
+    for (const link of ["6.4.0/maplibre-gl-worker.mjs.map", "6.4.2"]) {
+      expect(lstatSync(path.join(fixture.targetRoot, link)).isSymbolicLink(), link).toBe(true);
+    }
+    for (const target of ["maplibre-gl-worker.mjs.map", "6.4.2/maplibre-gl-worker.mjs.map"]) {
+      expect(readFileSync(path.join(outside, target), "utf8"), target).toBe("legacy");
+    }
+  });
+
   it("leaves older versions and public/maplibre alone without prune", () => {
     const fixture = createFixture("6.4.1");
     createVersionDirectories(fixture.targetRoot, ["6.2.0", "6.3.0", "6.4.0"]);
