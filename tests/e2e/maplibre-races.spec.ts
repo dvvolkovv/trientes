@@ -258,7 +258,22 @@ test.afterEach(({ page }) => {
 });
 
 async function setupPage(page: Page) {
+  // The bundle mocks maplibre-gl and the WebGL2 probe, so nothing here needs a
+  // WebGL context. Take WebGL away anyway: if either mock stopped applying, the
+  // real probe or MapLibre would get no context and every test here would fail
+  // on every machine, instead of passing wherever a GPU or SwiftShader happens
+  // to provide one.
+  await page.addInitScript(() => {
+    const original = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement, type: string, ...rest: unknown[]) {
+      if (type === "webgl2" || type === "webgl") return null;
+      return (original as (...args: unknown[]) => RenderingContext | null).call(this, type, ...rest);
+    } as typeof original;
+    Object.assign(window, { __webglDenied: true });
+  });
   await page.goto("about:blank");
+  // Not vacuous: the init script above ran in this document.
+  expect(await page.evaluate(() => "__webglDenied" in window), "WebGL denied before the bundle loads").toBe(true);
   await page.evaluate(() => {
     const requests: unknown[] = [];
     Object.assign(window, { __requests: requests });

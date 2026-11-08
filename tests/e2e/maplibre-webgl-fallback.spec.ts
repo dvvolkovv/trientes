@@ -135,18 +135,23 @@ const MAPLIBRE_FAILURE_WARNING: Record<Exclude<WebglMode, "no-webgl">, RegExp> =
 };
 
 /**
- * Proves which branch of tryCreateMap a mode exercised. Without WebGL2 MapLibre is
- * never constructed. In the other modes the probe must pass and MapLibre must be
- * reached and fail (probe + MapLibre's own canvas = at least two webgl2 calls);
+ * Proves which branch of tryCreateMap a mode exercised. Without WebGL2 the probe
+ * runs once and MapLibre is never constructed (exactly one webgl2 call, no
+ * warning). In the other modes the probe must pass and MapLibre must be reached
+ * and fail (probe + MapLibre's own canvas = at least two webgl2 calls);
  * otherwise those modes would silently collapse into "no-webgl" on a machine
- * without a GPU.
+ * without a GPU. Call it after the fallback is visible and before anything
+ * remounts the map.
  */
 async function expectMapLibreOutcome(page: Page, mode: WebglMode) {
+  const calls = await page.evaluate(() => (window as unknown as WebglCalls).__webgl2Calls);
   if (mode === "no-webgl") {
-    await expect.poll(() => mapWarnings(page)).toEqual([]);
+    expect(calls, "the WebGL2 probe ran once and MapLibre never asked for a context").toBe(1);
+    // A direct check: expect.poll(...).toEqual([]) passes on its first sample,
+    // so polling would not wait for anything.
+    expect(mapWarnings(page)).toEqual([]);
     return;
   }
-  const calls = await page.evaluate(() => (window as unknown as WebglCalls).__webgl2Calls);
   expect(calls, "the WebGL2 probe passed and MapLibre asked for its own context").toBeGreaterThanOrEqual(2);
   await expect.poll(() => mapWarnings(page)).toEqual([expect.stringMatching(MAPLIBRE_FAILURE_WARNING[mode])]);
 }
