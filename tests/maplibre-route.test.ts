@@ -2,21 +2,49 @@ import {
   mkdirSync,
   mkdtempSync,
   readFileSync,
+  realpathSync,
   rmSync,
+  statSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import maplibrePackage from "maplibre-gl/package.json";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { GET } from "../src/app/maplibre/[...path]/route";
 import { serveMapLibreAsset } from "../src/lib/maplibre-assets";
+
+// Pass-through spies: they prove a rejected path never reaches the disk.
+vi.mock("node:fs", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("node:fs")>();
+  return {
+    ...actual,
+    realpathSync: Object.assign(vi.fn(actual.realpathSync), {
+      native: actual.realpathSync.native,
+    }),
+    statSync: vi.fn(actual.statSync),
+    readFileSync: vi.fn(actual.readFileSync),
+  };
+});
 
 const root = path.resolve(__dirname, "..");
 const version = maplibrePackage.version;
 const IMMUTABLE = "public, max-age=31536000, immutable";
 const temporaryRoots: string[] = [];
+const diskReads = [
+  vi.mocked(realpathSync),
+  vi.mocked(statSync),
+  vi.mocked(readFileSync),
+];
+
+function resetDiskReads(): void {
+  for (const spy of diskReads) spy.mockClear();
+}
+
+function expectNoDiskReads(): void {
+  for (const spy of diskReads) expect(spy).not.toHaveBeenCalled();
+}
 
 function requestAsset(segments: string[]): Promise<Response> {
   return GET(new Request(`http://localhost/maplibre/${segments.join("/")}`), {
@@ -24,10 +52,9 @@ function requestAsset(segments: string[]): Promise<Response> {
   });
 }
 
-/** Creates `<base>/assets/<relative>` files outside the repository. */
-function createAssetRoot(files: Record<string, string>) {
+/** Writes `<base>/assets/<relative>` files outside the repository. */
+function writeAssetTree(files: Record<string, string>) {
   const base = mkdtempSync(path.join(tmpdir(), "maplibre-route-"));
-  temporaryRoots.push(base);
   const assetRoot = path.join(base, "assets");
   mkdirSync(assetRoot);
   for (const [relative, content] of Object.entries(files)) {
@@ -38,12 +65,37 @@ function createAssetRoot(files: Record<string, string>) {
   return { base, assetRoot };
 }
 
+/** Same as writeAssetTree, removed again after the current test. */
+function createAssetRoot(files: Record<string, string>) {
+  const tree = writeAssetTree(files);
+  temporaryRoots.push(tree.base);
+  return tree;
+}
+
+// Every rejected allowlist case exists here on disk, so its 404 can only come
+// from the allowlist.
+const ALLOWLIST_FIXTURE = {
+  "6.4.1/evil.mjs": "evil",
+  "6.4.1/maplibre-gl-worker.mjs": "worker",
+  "6.4.1/maplibre-gl-worker.mjs.map": "{}",
+  "6.4.1/maplibre-gl-worker.mjs.map.bak": "{}",
+  "6.4.1/maplibre-gl-worker.js": "worker",
+  "6.4.1/maplibre-gl-csp-worker.mjs": "worker",
+  "6.4.1/nested/maplibre-gl-worker.mjs": "worker",
+  "6.4/maplibre-gl-worker.mjs": "worker",
+  "v6.4.1/maplibre-gl-worker.mjs": "worker",
+  "6.4.1-rc.1/maplibre-gl-worker.mjs": "worker",
+  "maplibre-gl-worker.mjs": "worker",
+  "maplibre-gl-shared.mjs": "shared",
+};
+
 function expectNoStoreNotFound(response: Response): void {
   expect(response.status).toBe(404);
   expect(response.headers.get("cache-control")).toBe("no-store");
 }
 
 afterEach(() => {
+  vi.unstubAllEnvs();
   for (const temporaryRoot of temporaryRoots.splice(0)) {
     rmSync(temporaryRoot, { recursive: true, force: true });
   }
@@ -140,6 +192,110 @@ describe("MapLibre asset route cache policy", () => {
       }),
     );
   });
+
+  describe("strict asset allowlist", () => {
+    // The spies prove a rejected path never reaches the disk.
+    let tree: ReturnType<typeof writeAssetTree>;
+    let assetRoot: string;
+    beforeAll(() => {
+      tree = writeAssetTree(ALLOWLIST_FIXTURE);
+      assetRoot = tree.assetRoot;
+    });
+    afterAll(() => rmSync(tree.base, { recursive: true, force: true }));
+
+    it.each([
+      ["6.4.1", "evil.mjs"],
+      ["6.4.1", "maplibre-gl-worker.js"],
+      ["6.4.1", "maplibre-gl-csp-worker.mjs"],
+      ["6.4.1", "maplibre-gl-worker.mjs.map.bak"],
+      ["6.4.1", "nested", "maplibre-gl-worker.mjs"],
+      ["6.4", "maplibre-gl-worker.mjs"],
+      ["v6.4.1", "maplibre-gl-worker.mjs"],
+      ["6.4.1-rc.1", "maplibre-gl-worker.mjs"],
+      ["maplibre-gl-worker.mjs"],
+      ["maplibre-gl-shared.mjs"],
+    ].map((segments) => [segments.join("/"), segments] as const))(
+      "rejects %s without reading the disk",
+      (_label, segments) => {
+        resetDiskReads();
+        expectNoStoreNotFound(
+          serveMapLibreAsset(segments, { root: assetRoot, nodeEnv: "development" }),
+        );
+        expectNoDiskReads();
+      },
+    );
+
+    it.each([
+      ["undefined", undefined],
+      ["[]", []],
+    ])("rejects an empty path %s without reading the disk", (_label, segments) => {
+      resetDiskReads();
+      expectNoStoreNotFound(serveMapLibreAsset(segments, { root: assetRoot }));
+      expectNoDiskReads();
+    });
+
+    it("rejects source maps in production without reading the disk", () => {
+      resetDiskReads();
+      expectNoStoreNotFound(
+        serveMapLibreAsset(["6.4.1", "maplibre-gl-worker.mjs.map"], {
+          root: assetRoot,
+          nodeEnv: "production",
+        }),
+      );
+      expectNoDiskReads();
+    });
+
+    it("serves source maps outside production", async () => {
+      const response = serveMapLibreAsset(["6.4.1", "maplibre-gl-worker.mjs.map"], {
+        root: assetRoot,
+        nodeEnv: "development",
+      });
+      expect(response.status).toBe(200);
+      expect(response.headers.get("cache-control")).toBe(IMMUTABLE);
+      expect(response.headers.get("content-type")).toBe(
+        "application/json; charset=utf-8",
+      );
+      expect(response.headers.get("x-content-type-options")).toBe("nosniff");
+      expect(await response.text()).toBe("{}");
+    });
+
+    it("still serves allowlisted runtime assets in production", async () => {
+      const response = serveMapLibreAsset(["6.4.1", "maplibre-gl-worker.mjs"], {
+        root: assetRoot,
+        nodeEnv: "production",
+      });
+      expect(response.status).toBe(200);
+      expect(await response.text()).toBe("worker");
+    });
+  });
+
+  it.each(["maplibre-gl-worker.mjs.map", "maplibre-gl-shared.mjs.map"])(
+    "GET returns 404 no-store for %s when NODE_ENV=production",
+    async (asset) => {
+      vi.stubEnv("NODE_ENV", "production");
+      resetDiskReads();
+      expectNoStoreNotFound(await requestAsset([version, asset]));
+      expectNoDiskReads();
+    },
+  );
+
+  it.each(["maplibre-gl-worker.mjs.map", "maplibre-gl-shared.mjs.map"])(
+    "GET serves the generated %s when NODE_ENV=development",
+    async (asset) => {
+      vi.stubEnv("NODE_ENV", "development");
+      const response = await requestAsset([version, asset]);
+      expect(response.status).toBe(200);
+      expect(response.headers.get("content-type")).toBe(
+        "application/json; charset=utf-8",
+      );
+      const body = Buffer.from(await response.arrayBuffer());
+      expect(
+        body.equals(
+          readFileSync(path.join(root, "node_modules/maplibre-gl/dist", asset)),
+        ),
+      ).toBe(true);
+    },
+  );
 
   it("leaves MapLibre cache policy to the route instead of next.config headers", async () => {
     const { default: config } = await import("../next.config");
