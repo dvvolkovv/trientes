@@ -29,6 +29,8 @@ export const MAPLIBRE_ASSETS = [
 
 // Served by src/app/maplibre/[...path]/route.ts. Kept outside public/ so Next
 // never serves these files statically: the route alone owns their cache policy.
+// src/lib/maplibre-assets.ts spells the same directory as literal path segments
+// (they keep Turbopack's file trace scoped to it); keep both in sync.
 export const MAPLIBRE_ASSET_DIRECTORY = ".generated/maplibre";
 // Written by earlier revisions of this script; its generated files are removed
 // by a pruning copy so a stale public copy can never shadow the route.

@@ -29,7 +29,9 @@ export type MapLibreAssetOptions = {
 
 /**
  * The default root is written by scripts/copy-maplibre-worker.mjs
- * (predev/prebuild, Vitest globalSetup). It is deliberately outside public/:
+ * (predev/prebuild, Vitest globalSetup), which names it
+ * MAPLIBRE_ASSET_DIRECTORY; keep the literal segments here and ASSET_DIRECTORY
+ * above in sync with it. It is deliberately outside public/:
  * Next must never serve these files statically, so this module is the single
  * owner of their headers.
  *

@@ -95,6 +95,23 @@ cd ~/trientes && git pull && npm ci --legacy-peer-deps && npm run build
 pm2 restart trientes-web trientes-worker
 ```
 
+### MapLibre runtime assets
+
+The map worker is served at runtime from `.generated/maplibre/<version>/` by the
+`/maplibre/[...path]` route; it is not part of `public/` or `.next/`.
+
+- Build only with `npm run build`: its `prebuild` step copies the installed
+  MapLibre worker and shared bundles there. A bare `next build` skips the copy.
+- Start PM2 / `next start` with the repository root as the working directory:
+  the route resolves the directory from `process.cwd()`.
+- `.generated/maplibre` belongs to the build output: whenever `.next` is copied
+  or moved to another host or directory, copy it along.
+- Only `npm run build` deletes old versions (it keeps the current and the
+  previous one for open tabs). `npm test` and `npm run dev` copy the assets but
+  never delete anything.
+- On startup the server logs `[maplibre-assets] DEPLOYMENT ERROR` if an asset
+  of the installed version is missing.
+
 ### OAuth App Registration
 
 To enable sign-in, register OAuth apps:
