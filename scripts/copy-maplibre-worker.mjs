@@ -95,27 +95,27 @@ function stableVersion(version) {
   return match ? match.slice(1).map(Number) : null;
 }
 
-function isOlderStableVersion(candidate, current) {
-  const left = stableVersion(candidate);
-  const right = stableVersion(current);
-  if (!left || !right) return false;
+function compareStableVersions(left, right) {
   for (let index = 0; index < 3; index += 1) {
-    if (left[index] !== right[index]) return left[index] < right[index];
+    if (left[index] !== right[index]) return left[index] - right[index];
   }
-  return false;
+  return 0;
 }
 
-function removeOlderVersionDirectories(targetRoot, currentVersion) {
-  for (const entry of readdirSync(targetRoot, { withFileTypes: true })) {
-    if (
-      entry.isDirectory() &&
-      isOlderStableVersion(entry.name, currentVersion)
-    ) {
-      rmSync(path.join(targetRoot, entry.name), {
-        recursive: true,
-        force: true,
-      });
-    }
+// Retains the current version plus the newest older stable version: a tab that
+// loaded the page before a deployment still requests the previous version's
+// worker URL. Older stable versions are removed. Newer versions (a rollback)
+// and directories that are not a plain x.y.z version are never touched.
+function removeStaleVersionDirectories(targetRoot, currentVersion) {
+  const current = stableVersion(currentVersion);
+  const older = readdirSync(targetRoot, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => ({ name: entry.name, version: stableVersion(entry.name) }))
+    .filter(({ version }) => version && compareStableVersions(version, current) < 0)
+    .sort((left, right) => compareStableVersions(right.version, left.version));
+
+  for (const { name } of older.slice(1)) {
+    rmSync(path.join(targetRoot, name), { recursive: true, force: true });
   }
 }
 
@@ -159,7 +159,8 @@ export function copyMapLibreAssets({
     }
   }
 
-  removeOlderVersionDirectories(targetRoot, version);
+  // Only after every asset was copied successfully.
+  removeStaleVersionDirectories(targetRoot, version);
   rmSync(path.join(rootDirectory, LEGACY_PUBLIC_DIRECTORY), {
     recursive: true,
     force: true,

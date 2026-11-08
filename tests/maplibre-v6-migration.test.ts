@@ -59,7 +59,7 @@ const REQUIRED_TEST_ASSETS = [
 
 const fixtureRoots: string[] = [];
 
-function createFixture() {
+function createFixture(fixtureVersion = "6.4.1") {
   const rootDirectory = mkdtempSync(path.join(tmpdir(), "maplibre-copy-"));
   fixtureRoots.push(rootDirectory);
   const distributionDirectory = path.join(
@@ -69,7 +69,7 @@ function createFixture() {
   mkdirSync(distributionDirectory, { recursive: true });
   writeFileSync(
     path.join(rootDirectory, "node_modules/maplibre-gl/package.json"),
-    JSON.stringify({ version: "6.4.1" }),
+    JSON.stringify({ version: fixtureVersion }),
   );
   const contents: Record<string, string> = {
     "maplibre-gl-worker.mjs": "worker-v1",
@@ -84,7 +84,7 @@ function createFixture() {
     rootDirectory,
     distributionDirectory,
     targetRoot: path.join(rootDirectory, ".generated/maplibre"),
-    targetVersion: path.join(rootDirectory, ".generated/maplibre/6.4.1"),
+    targetVersion: path.join(rootDirectory, ".generated/maplibre", fixtureVersion),
     legacyPublicRoot: path.join(rootDirectory, "public/maplibre"),
   };
 }
@@ -347,23 +347,60 @@ describe("MapLibre copy modes and idempotence", () => {
     expect(readFileSync(destination, "utf8")).toBe(readFileSync(source, "utf8"));
   });
 
-  it("removes only older stable version directories after a successful copy", () => {
-    const fixture = createFixture();
-    for (const directory of [
-      "6.4.0",
+  function createVersionDirectories(targetRoot: string, directories: string[]): void {
+    for (const directory of directories) {
+      mkdirSync(path.join(targetRoot, directory, "nested"), { recursive: true });
+      writeFileSync(path.join(targetRoot, directory, "nested/keep.txt"), directory);
+    }
+  }
+
+  function remainingDirectories(targetRoot: string): string[] {
+    return readdirSync(targetRoot).sort();
+  }
+
+  it("keeps the current and the previous version and removes older ones", () => {
+    const fixture = createFixture("6.4.1");
+    createVersionDirectories(fixture.targetRoot, ["6.3.0", "6.4.0"]);
+
+    copyMapLibreAssets({
+      rootDirectory: fixture.rootDirectory,
+      environment: { MAPLIBRE_INCLUDE_SOURCE_MAPS: "0" },
+    });
+
+    expect(remainingDirectories(fixture.targetRoot)).toEqual(["6.4.0", "6.4.1"]);
+    expect(
+      readFileSync(path.join(fixture.targetRoot, "6.4.0/nested/keep.txt"), "utf8"),
+    ).toBe("6.4.0");
+  });
+
+  it("picks the previous version by numeric semver, not by name", () => {
+    const fixture = createFixture("6.10.0");
+    createVersionDirectories(fixture.targetRoot, [
+      "6.2.0",
+      "6.9.0",
+      "6.4.1",
+      "6.3.10",
       "6.3.9",
+    ]);
+
+    copyMapLibreAssets({
+      rootDirectory: fixture.rootDirectory,
+      environment: { MAPLIBRE_INCLUDE_SOURCE_MAPS: "0" },
+    });
+
+    expect(remainingDirectories(fixture.targetRoot)).toEqual(["6.10.0", "6.9.0"]);
+  });
+
+  it("never removes newer versions, non-version directories or outside files", () => {
+    const fixture = createFixture("6.4.1");
+    createVersionDirectories(fixture.targetRoot, [
+      "6.3.9",
+      "6.4.0",
       "6.4.2",
       "6.10.0",
+      "6.4.1-rc.1",
       "not-a-version",
-    ]) {
-      mkdirSync(path.join(fixture.targetRoot, directory, "nested"), {
-        recursive: true,
-      });
-      writeFileSync(
-        path.join(fixture.targetRoot, directory, "nested/keep.txt"),
-        directory,
-      );
-    }
+    ]);
     const outside = path.join(fixture.rootDirectory, "outside.txt");
     writeFileSync(outside, "keep");
 
@@ -372,11 +409,14 @@ describe("MapLibre copy modes and idempotence", () => {
       environment: { MAPLIBRE_INCLUDE_SOURCE_MAPS: "0" },
     });
 
-    expect(existsSync(path.join(fixture.targetRoot, "6.4.0"))).toBe(false);
-    expect(existsSync(path.join(fixture.targetRoot, "6.3.9"))).toBe(false);
-    expect(existsSync(path.join(fixture.targetRoot, "6.4.2"))).toBe(true);
-    expect(existsSync(path.join(fixture.targetRoot, "6.10.0"))).toBe(true);
-    expect(existsSync(path.join(fixture.targetRoot, "not-a-version"))).toBe(true);
+    expect(remainingDirectories(fixture.targetRoot)).toEqual([
+      "6.10.0",
+      "6.4.0",
+      "6.4.1",
+      "6.4.1-rc.1",
+      "6.4.2",
+      "not-a-version",
+    ]);
     expect(existsSync(outside)).toBe(true);
   });
 
@@ -445,6 +485,7 @@ describe("MapLibre copy modes and idempotence", () => {
       "maplibre-gl-worker.mjs",
     );
     writeFileSync(destination, "OLD-COMPLETE-CONTENT");
+    mkdirSync(path.join(fixture.targetRoot, "6.3.0"), { recursive: true });
     mkdirSync(path.join(fixture.targetRoot, "6.4.0"), { recursive: true });
     mkdirSync(fixture.legacyPublicRoot, { recursive: true });
     copyFileSyncMock.mockImplementation((_source, temporaryPath) => {
@@ -462,6 +503,8 @@ describe("MapLibre copy modes and idempotence", () => {
     expect(
       readdirSync(fixture.targetVersion).filter((name) => name.endsWith(".tmp")),
     ).toEqual([]);
+    // Cleanup runs only after a successful copy: even the stale 6.3.0 survives.
+    expect(existsSync(path.join(fixture.targetRoot, "6.3.0"))).toBe(true);
     expect(existsSync(path.join(fixture.targetRoot, "6.4.0"))).toBe(true);
     expect(existsSync(fixture.legacyPublicRoot)).toBe(true);
   });
