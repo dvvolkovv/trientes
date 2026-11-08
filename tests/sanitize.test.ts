@@ -61,9 +61,18 @@ describe("expectInert", () => {
     '<a href="javascript&colon;x">',
     '<a href="java&Tab;script:x">',
     '<a href="&#x6A;avascript:x">',
+    '<a href="JAVASCRIPT:x">',
+    '<a href=" javascript:x">',
+    '<a href="\u0001javascript:x">',
+    '<a href="\njava\tscript:x">',
     "<img src=x>",
     '<a onclick="x">',
+    '<a title="x">x</a>',
+    '<p style="color:red">x</p>',
     "<!-- x -->",
+    "<?x?>",
+    "<!DOCTYPE html>",
+    "<![CDATA[x]]>",
   ])("rejects %s", (html) => {
     expect(() => expectInert(html)).toThrow();
   });
