@@ -103,4 +103,21 @@ describe("dependency lockfile hygiene", () => {
       expect(atLeast(version, "6.16.2"), `${key} ${version}`).toBe(true);
     }
   });
+
+  // sanitize-html loads the ESM-only htmlparser2 12 through require(esm), so
+  // on an older Node the coin pages fail during SSR with ERR_REQUIRE_ESM. The
+  // project must not declare support for a Node that sanitize-html rejects.
+  it("requires at least the Node version sanitize-html requires", () => {
+    const sanitizeHtml = JSON.parse(
+      readFileSync(
+        path.join(root, "node_modules", "sanitize-html", "package.json"),
+        "utf8",
+      ),
+    );
+    const required = lowerBound(sanitizeHtml.engines.node);
+    expect(manifest.engines?.node).toBeDefined();
+    const declared = lowerBound(manifest.engines.node);
+    expect(atLeast(declared, required), `${declared} < ${required}`).toBe(true);
+    expect(lock.packages[""].engines).toEqual(manifest.engines);
+  });
 });
