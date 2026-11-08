@@ -6,6 +6,7 @@ import {
   readdirSync,
   readFileSync,
   renameSync,
+  rmdirSync,
   rmSync,
   statSync,
   utimesSync,
@@ -29,9 +30,17 @@ export const MAPLIBRE_ASSETS = [
 // Served by src/app/maplibre/[...path]/route.ts. Kept outside public/ so Next
 // never serves these files statically: the route alone owns their cache policy.
 export const MAPLIBRE_ASSET_DIRECTORY = ".generated/maplibre";
-// Written by earlier revisions of this script; removed after a successful copy
-// so a stale public copy can never shadow the route.
+// Written by earlier revisions of this script; its generated files are removed
+// by a pruning copy so a stale public copy can never shadow the route.
 const LEGACY_PUBLIC_DIRECTORY = "public/maplibre";
+// The files those revisions generated there, at the directory root or in a
+// <x.y.z>/ subdirectory: MapLibre worker, shared and CSP worker bundles with
+// their source maps, and orphaned atomicCopy temporaries. Anything else in
+// public/maplibre is not ours and is left alone.
+const LEGACY_GENERATED_FILE =
+  /^(?:maplibre-gl-(?:csp-worker|worker|shared)[\w.-]*\.m?js(?:\.map)?|\.maplibre-gl-[\w.-]+\.tmp)$/;
+// Every MapLibre source map a dev/test copy can leave in a version directory.
+const SOURCE_MAP_FILE = /^maplibre-gl-[\w.-]*\.mjs\.map$/;
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -159,10 +168,60 @@ function removeStaleVersionDirectories(targetRoot, currentVersion) {
   }
 }
 
-/** @param {{ rootDirectory?: string, environment?: Record<string, string | undefined> }} [options] */
+// Builds run without source maps, and the production seal check expects no
+// .map file in the tree afterwards, so drop whatever a dev/test copy left.
+function removeSourceMaps(targetVersion) {
+  for (const entry of readdirSync(targetVersion, { withFileTypes: true })) {
+    if (entry.isFile() && SOURCE_MAP_FILE.test(entry.name)) {
+      rmSync(path.join(targetVersion, entry.name), { force: true });
+    }
+  }
+}
+
+function isRealDirectory(directory) {
+  try {
+    return lstatSync(directory).isDirectory();
+  } catch {
+    return false;
+  }
+}
+
+// Removes the generated files of one directory, then the directory if that
+// left it empty. Never recursive: foreign files and directories survive.
+function removeGeneratedFiles(directory) {
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    if (entry.isFile() && LEGACY_GENERATED_FILE.test(entry.name)) {
+      rmSync(path.join(directory, entry.name), { force: true });
+    }
+  }
+  if (readdirSync(directory).length === 0) rmdirSync(directory);
+}
+
+function removeLegacyPublicFiles(rootDirectory) {
+  const legacyRoot = path.join(rootDirectory, LEGACY_PUBLIC_DIRECTORY);
+  if (!isRealDirectory(legacyRoot)) return;
+  for (const entry of readdirSync(legacyRoot, { withFileTypes: true })) {
+    if (entry.isDirectory() && stableVersion(entry.name)) {
+      removeGeneratedFiles(path.join(legacyRoot, entry.name));
+    }
+  }
+  removeGeneratedFiles(legacyRoot);
+}
+
+/**
+ * Copies the installed MapLibre worker assets into .generated/maplibre/<version>.
+ *
+ * `prune` also deletes: older version directories beyond N-1 and the files
+ * earlier revisions generated in public/maplibre. Only prebuild prunes. The
+ * production checkout doubles as a working copy, so dev and test runs there
+ * must never delete the directory of the version the running server serves.
+ *
+ * @param {{ rootDirectory?: string, environment?: Record<string, string | undefined>, prune?: boolean }} [options]
+ */
 export function copyMapLibreAssets({
   rootDirectory = root,
   environment = process.env,
+  prune = false,
 } = {}) {
   const packagePath = path.join(
     rootDirectory,
@@ -197,18 +256,13 @@ export function copyMapLibreAssets({
     );
   }
 
-  if (!includeSourceMaps) {
-    for (const asset of MAPLIBRE_SOURCE_MAP_ASSETS) {
-      rmSync(path.join(targetVersion, asset), { force: true });
-    }
-  }
+  if (!includeSourceMaps) removeSourceMaps(targetVersion);
 
   // Only after every asset was copied successfully.
-  removeStaleVersionDirectories(targetRoot, version);
-  rmSync(path.join(rootDirectory, LEGACY_PUBLIC_DIRECTORY), {
-    recursive: true,
-    force: true,
-  });
+  if (prune) {
+    removeStaleVersionDirectories(targetRoot, version);
+    removeLegacyPublicFiles(rootDirectory);
+  }
 }
 
 if (
@@ -216,7 +270,10 @@ if (
   path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 ) {
   try {
-    copyMapLibreAssets();
+    // A command-line flag rather than an environment variable: an exported
+    // variable would leak into predev and into Vitest globalSetup, which pass
+    // process.env through, and turn their copies into deleting ones.
+    copyMapLibreAssets({ prune: process.argv.slice(2).includes("--prune") });
   } catch (error) {
     // An expected setup problem: a one-line hint instead of a raw stack.
     if (!(error instanceof MapLibreNotInstalledError)) throw error;
