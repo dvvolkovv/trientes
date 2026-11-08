@@ -1,4 +1,5 @@
 import {
+  chmodSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -200,6 +201,33 @@ describe("MapLibre asset route cache policy", () => {
       errors.mockRestore();
     }
   });
+
+  it.skipIf(process.getuid?.() === 0)(
+    "returns no-store and logs an unreadable asset without its absolute path",
+    () => {
+      const { base, assetRoot } = createAssetRoot({
+        "6.4.1/maplibre-gl-worker.mjs": "worker",
+      });
+      const asset = path.join(assetRoot, "6.4.1/maplibre-gl-worker.mjs");
+      chmodSync(asset, 0o000);
+      const errors = vi.spyOn(console, "error").mockImplementation(() => {});
+      try {
+        expectNoStoreNotFound(
+          serveMapLibreAsset(["6.4.1", "maplibre-gl-worker.mjs"], {
+            root: assetRoot,
+          }),
+        );
+        expect(errors).toHaveBeenCalledTimes(1);
+        const message = errors.mock.calls[0].join(" ");
+        expect(message).toContain("6.4.1/maplibre-gl-worker.mjs");
+        expect(message).toContain("EACCES");
+        expect(message).not.toContain(base);
+      } finally {
+        errors.mockRestore();
+        chmodSync(asset, 0o644);
+      }
+    },
+  );
 
   it("returns no-store for a directory at an asset path", () => {
     const { assetRoot } = createAssetRoot({
