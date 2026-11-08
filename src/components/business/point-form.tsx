@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition } from "react";
-import { Map as MlMap, Marker } from "maplibre-gl";
+import { type Map as MlMap, Marker } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import "@/lib/maplibre-worker";
 import { useRouter } from "next/navigation";
@@ -12,6 +12,7 @@ import {
   addStaticMapAttribution,
   MAPLIBRE_ATTRIBUTION_OPTIONS,
 } from "@/lib/maplibre-attribution";
+import { tryCreateMap } from "@/lib/maplibre-map";
 
 
 const PRAGUE: [number, number] = [14.4212535, 50.0874654];
@@ -95,6 +96,9 @@ export function PointForm({
   const [uploading, setUploading] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [geoStatus, setGeoStatus] = useState<"idle" | "loading" | "ok" | "fail">("idle");
+  // No WebGL2 (or MapLibre failed to start): no map, the pin comes only from the
+  // address geocoder (or the saved coordinates), and placeMarker skips the map.
+  const [mapUnavailable, setMapUnavailable] = useState(false);
   const [pending, start] = useTransition();
   const router = useRouter();
 
@@ -119,13 +123,17 @@ export function PointForm({
   const mapVisible = type !== "ONLINE";
   useEffect(() => {
     if (!containerRef.current) return;
-    const map = new MlMap({
+    const map = tryCreateMap({
       container: containerRef.current,
       // Same key-less dark base as the Crypto Navigator (CARTO now watermarks keyless tiles).
       style: "https://tiles.openfreemap.org/styles/dark",
       center: PRAGUE, zoom: 12,
       ...MAPLIBRE_ATTRIBUTION_OPTIONS,
     });
+    if (!map) {
+      setMapUnavailable(true);
+      return;
+    }
     addStaticMapAttribution(map);
     mapRef.current = map;
     map.on("click", (e) => placeMarker(e.lngLat.lng, e.lngLat.lat));
@@ -279,13 +287,21 @@ export function PointForm({
         <p className="text-[12px] text-muted">{t("onlineHint")}</p>
       ) : (
         <>
-          <p className="text-[12px] text-muted">
-            {geoStatus === "loading" && `↻ ${t("geocoding")}`}
-            {geoStatus === "ok" && `● ${t("geocodingOk")}`}
-            {geoStatus === "fail" && `⚠ ${t("geocodingFailed")}`}
-            {geoStatus === "idle" && t("clickMapToPlace")}
-          </p>
-          <div ref={containerRef} className="w-full h-[320px] rounded-md overflow-hidden border border-hairline" />
+          {(geoStatus !== "idle" || !mapUnavailable) && (
+            <p className="text-[12px] text-muted">
+              {geoStatus === "loading" && `↻ ${t("geocoding")}`}
+              {geoStatus === "ok" && `● ${t("geocodingOk")}`}
+              {geoStatus === "fail" && `⚠ ${t("geocodingFailed")}`}
+              {geoStatus === "idle" && t("clickMapToPlace")}
+            </p>
+          )}
+          {mapUnavailable ? (
+            <p role="status" className="rounded-md border border-hairline bg-bg-tint px-3 py-4 text-[12px] text-muted">
+              {t("mapUnavailable")}
+            </p>
+          ) : (
+            <div ref={containerRef} className="w-full h-[320px] rounded-md overflow-hidden border border-hairline" />
+          )}
         </>
       )}
 

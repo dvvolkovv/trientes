@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import {
-  Map as MlMap,
+  type Map as MlMap,
   LngLatBounds,
   GeolocateControl,
   NavigationControl,
@@ -26,6 +26,7 @@ import {
   addStaticMapAttribution,
   MAPLIBRE_ATTRIBUTION_OPTIONS,
 } from "@/lib/maplibre-attribution";
+import { tryCreateMap } from "@/lib/maplibre-map";
 
 
 // MapLibre flattens non-primitive feature properties to JSON strings, so `socials`
@@ -170,6 +171,9 @@ export default function CryptoNavigator({
   const navControllerRef = useRef<NavigationController | null>(null);
   // Tracked map center for the AvailableFintechPanel — debounced inside the panel.
   const [mapCenter, setMapCenter] = useState<{ lat: number; lon: number } | null>(null);
+  // No WebGL2 (or MapLibre failed to start): show a notice instead of the map.
+  // mapRef then stays null, so every map handler below is a no-op.
+  const [mapUnavailable, setMapUnavailable] = useState(false);
 
   const cancelRouteRequest = useCallback(() => {
     routeSequenceRef.current += 1;
@@ -370,7 +374,7 @@ export default function CryptoNavigator({
   // ---- Map setup (once) ----
   useEffect(() => {
     if (!containerRef.current) return;
-    const map = new MlMap({
+    const map = tryCreateMap({
       container: containerRef.current,
       style: BASE_STYLE_URL,
       center: PRAGUE,
@@ -378,6 +382,10 @@ export default function CryptoNavigator({
       pitch: 0,
       ...MAPLIBRE_ATTRIBUTION_OPTIONS,
     });
+    if (!map) {
+      setMapUnavailable(true);
+      return;
+    }
     addStaticMapAttribution(map);
     mapRef.current = map;
 
@@ -780,7 +788,16 @@ export default function CryptoNavigator({
 
       {/* Map */}
       <div className="relative">
-        <div ref={containerRef} className="w-full h-[420px] md:h-[520px] rounded-md overflow-hidden border border-hairline" />
+        {mapUnavailable ? (
+          <div
+            role="status"
+            className="w-full rounded-md border border-hairline bg-bg-tint px-4 py-10 text-center text-[13px] text-muted"
+          >
+            {t("mapUnavailable")}
+          </div>
+        ) : (
+          <div ref={containerRef} className="w-full h-[420px] md:h-[520px] rounded-md overflow-hidden border border-hairline" />
+        )}
         {tooFar && (
           <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-card/95 border border-hairline rounded-full px-4 py-1.5 text-[12px] text-muted pointer-events-none">
             {t("zoomIn")}

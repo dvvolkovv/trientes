@@ -49,6 +49,8 @@ export class Map extends EventTarget {
     super();
     this.options = options;
     this.container = options.container;
+    // A MapLibre map that got its WebGL2 context has a painter; tryCreateMap checks it.
+    this.painter = {};
     this.sources = new globalThis.Map();
     this.layers = new globalThis.Map();
     this.filterCalls = [];
