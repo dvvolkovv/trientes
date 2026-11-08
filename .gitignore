@@ -20,8 +20,8 @@
 # production
 /build
 
-# generated MapLibre worker assets (created by predev/pretest/prebuild)
-/public/maplibre/
+# generated MapLibre worker assets (scripts/copy-maplibre-worker.mjs)
+/.generated/
 
 # misc
 .DS_Store

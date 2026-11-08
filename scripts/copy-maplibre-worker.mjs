@@ -25,6 +25,13 @@ export const MAPLIBRE_ASSETS = [
   ...MAPLIBRE_SOURCE_MAP_ASSETS,
 ];
 
+// Served by src/app/maplibre/[...path]/route.ts. Kept outside public/ so Next
+// never serves these files statically: the route alone owns their cache policy.
+export const MAPLIBRE_ASSET_DIRECTORY = ".generated/maplibre";
+// Written by earlier revisions of this script; removed after a successful copy
+// so a stale public copy can never shadow the route.
+const LEGACY_PUBLIC_DIRECTORY = "public/maplibre";
+
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 export function sha256(filePath) {
@@ -56,7 +63,7 @@ function atomicCopy(source, destination, sourceStat) {
   }
 }
 
-function syncAsset(source, destination, getSourceHash) {
+function syncAsset(source, destination) {
   const sourceStat = statSync(source);
   let destinationStat;
   try {
@@ -74,7 +81,7 @@ function syncAsset(source, destination, getSourceHash) {
   }
 
   if (destinationStat?.isFile() && destinationStat.size === sourceStat.size) {
-    if (getSourceHash() === sha256(destination)) {
+    if (sha256(source) === sha256(destination)) {
       preserveSourceTimes(destination, sourceStat);
       return;
     }
@@ -130,7 +137,7 @@ export function copyMapLibreAssets({
     throw new Error(`Unsupported MapLibre version: ${version}`);
   }
 
-  const targetRoot = path.join(rootDirectory, "public/maplibre");
+  const targetRoot = path.join(rootDirectory, MAPLIBRE_ASSET_DIRECTORY);
   const targetVersion = path.join(targetRoot, version);
   mkdirSync(targetVersion, { recursive: true });
 
@@ -140,19 +147,10 @@ export function copyMapLibreAssets({
     : MAPLIBRE_RUNTIME_ASSETS;
 
   for (const asset of assets) {
-    const source = path.join(sourceDirectory, asset);
-    let sourceHash;
-    const getSourceHash = () => {
-      sourceHash ??= sha256(source);
-      return sourceHash;
-    };
-
-    syncAsset(source, path.join(targetVersion, asset), getSourceHash);
-    if (MAPLIBRE_RUNTIME_ASSETS.includes(asset)) {
-      // Keep already-open tabs working across a versioned deployment. These two
-      // compatibility files are never removed by old-version directory cleanup.
-      syncAsset(source, path.join(targetRoot, asset), getSourceHash);
-    }
+    syncAsset(
+      path.join(sourceDirectory, asset),
+      path.join(targetVersion, asset),
+    );
   }
 
   if (!includeSourceMaps) {
@@ -162,6 +160,10 @@ export function copyMapLibreAssets({
   }
 
   removeOlderVersionDirectories(targetRoot, version);
+  rmSync(path.join(rootDirectory, LEGACY_PUBLIC_DIRECTORY), {
+    recursive: true,
+    force: true,
+  });
 }
 
 if (

@@ -41,7 +41,8 @@ const createHashMock = vi.mocked(createHash);
 const copyFileSyncMock = vi.mocked(copyFileSync);
 const root = path.resolve(__dirname, "..");
 const version = maplibrePackage.version;
-const versionRoot = path.join(root, "public/maplibre", version);
+const generatedRoot = path.join(root, ".generated/maplibre");
+const versionRoot = path.join(generatedRoot, version);
 
 // Deliberately independent of the copy script manifest. Removing a required
 // asset from that manifest must fail these assertions rather than vacuously pass.
@@ -82,8 +83,9 @@ function createFixture() {
   return {
     rootDirectory,
     distributionDirectory,
-    targetRoot: path.join(rootDirectory, "public/maplibre"),
-    targetVersion: path.join(rootDirectory, "public/maplibre/6.4.1"),
+    targetRoot: path.join(rootDirectory, ".generated/maplibre"),
+    targetVersion: path.join(rootDirectory, ".generated/maplibre/6.4.1"),
+    legacyPublicRoot: path.join(rootDirectory, "public/maplibre"),
   };
 }
 
@@ -171,18 +173,12 @@ describe("MapLibre worker URL and generated asset closure", () => {
     },
   );
 
-  it.each(REQUIRED_RUNTIME_ASSETS)(
-    "ships the root compatibility asset %s",
-    (asset) => {
-      const target = path.join(root, "public/maplibre", asset);
-      const distribution = path.join(
-        root,
-        "node_modules/maplibre-gl/dist",
-        asset,
-      );
-      expect(readFileSync(target).equals(readFileSync(distribution))).toBe(true);
-    },
-  );
+  it("generates assets outside public/ and without root compatibility copies", () => {
+    expect(existsSync(path.join(root, "public/maplibre"))).toBe(false);
+    for (const asset of REQUIRED_RUNTIME_ASSETS) {
+      expect(existsSync(path.join(generatedRoot, asset)), asset).toBe(false);
+    }
+  });
 
   it("covers every relative static import and sourceMappingURL from the worker", () => {
     const pending = [path.join(versionRoot, "maplibre-gl-worker.mjs")];
@@ -248,8 +244,9 @@ describe("MapLibre copy modes and idempotence", () => {
       );
     }
     for (const asset of REQUIRED_RUNTIME_ASSETS) {
-      expect(existsSync(path.join(fixture.targetRoot, asset))).toBe(true);
+      expect(existsSync(path.join(fixture.targetRoot, asset))).toBe(false);
     }
+    expect(existsSync(fixture.legacyPublicRoot)).toBe(false);
   });
 
   it("copies only runtime assets in production and removes stale source maps", () => {
@@ -268,18 +265,48 @@ describe("MapLibre copy modes and idempotence", () => {
 
     for (const asset of REQUIRED_RUNTIME_ASSETS) {
       expect(existsSync(path.join(fixture.targetVersion, asset))).toBe(true);
-      expect(existsSync(path.join(fixture.targetRoot, asset))).toBe(true);
+      expect(existsSync(path.join(fixture.targetRoot, asset))).toBe(false);
     }
     for (const asset of REQUIRED_TEST_ASSETS.slice(2)) {
       expect(existsSync(path.join(fixture.targetVersion, asset))).toBe(false);
     }
   });
 
+  it("removes the legacy public/maplibre directory after a successful copy", () => {
+    const fixture = createFixture();
+    for (const legacy of [
+      "maplibre-gl-worker.mjs",
+      "6.4.1/maplibre-gl-worker.mjs",
+      "6.4.1/maplibre-gl-worker.mjs.map",
+    ]) {
+      mkdirSync(path.dirname(path.join(fixture.legacyPublicRoot, legacy)), {
+        recursive: true,
+      });
+      writeFileSync(path.join(fixture.legacyPublicRoot, legacy), "legacy");
+    }
+    const sibling = path.join(fixture.rootDirectory, "public/keep.txt");
+    writeFileSync(sibling, "keep");
+
+    copyMapLibreAssets({
+      rootDirectory: fixture.rootDirectory,
+      environment: { MAPLIBRE_INCLUDE_SOURCE_MAPS: "0" },
+    });
+
+    expect(existsSync(fixture.legacyPublicRoot)).toBe(false);
+    expect(readFileSync(sibling, "utf8")).toBe("keep");
+    expect(
+      readFileSync(
+        path.join(fixture.targetVersion, "maplibre-gl-worker.mjs"),
+        "utf8",
+      ),
+    ).toBe("worker-v1");
+  });
+
   it("uses stat for clean files and SHA-256 only for stat mismatches", () => {
     const fixture = createFixture();
     const environment = { MAPLIBRE_INCLUDE_SOURCE_MAPS: "0" };
     copyMapLibreAssets({ rootDirectory: fixture.rootDirectory, environment });
-    expect(copyFileSyncMock).toHaveBeenCalledTimes(4);
+    expect(copyFileSyncMock).toHaveBeenCalledTimes(2);
     expect(createHashMock).not.toHaveBeenCalled();
 
     copyFileSyncMock.mockClear();
@@ -351,9 +378,6 @@ describe("MapLibre copy modes and idempotence", () => {
     expect(existsSync(path.join(fixture.targetRoot, "6.10.0"))).toBe(true);
     expect(existsSync(path.join(fixture.targetRoot, "not-a-version"))).toBe(true);
     expect(existsSync(outside)).toBe(true);
-    for (const asset of REQUIRED_RUNTIME_ASSETS) {
-      expect(existsSync(path.join(fixture.targetRoot, asset))).toBe(true);
-    }
   });
 
   it("keeps a complete old file visible to a parallel reader during replacement", async () => {
@@ -422,6 +446,7 @@ describe("MapLibre copy modes and idempotence", () => {
     );
     writeFileSync(destination, "OLD-COMPLETE-CONTENT");
     mkdirSync(path.join(fixture.targetRoot, "6.4.0"), { recursive: true });
+    mkdirSync(fixture.legacyPublicRoot, { recursive: true });
     copyFileSyncMock.mockImplementation((_source, temporaryPath) => {
       writeFileSync(temporaryPath, "PARTIAL");
       throw new Error("injected copy failure");
@@ -438,6 +463,7 @@ describe("MapLibre copy modes and idempotence", () => {
       readdirSync(fixture.targetVersion).filter((name) => name.endsWith(".tmp")),
     ).toEqual([]);
     expect(existsSync(path.join(fixture.targetRoot, "6.4.0"))).toBe(true);
+    expect(existsSync(fixture.legacyPublicRoot)).toBe(true);
   });
 });
 
