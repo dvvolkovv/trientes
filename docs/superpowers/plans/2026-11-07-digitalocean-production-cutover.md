@@ -12,7 +12,7 @@
 
 **Readiness:** `/Users/dmitry/.trientes-migration/stage0-readiness.md` и `merged-release-evidence.md`.
 
-**Release:** `835aca40fc4097ce7abbd1b3e50a4c8b02c94551`, target `BUILD_ID=23vtpp4Q8HJo24_ZNoCXr`.
+**Release:** `RELEASE_SHA` и `TARGET_BUILD_ID` назначаются только после merge security branch и повторной проверки target build. До их назначения cutover заблокирован; значения прежнего rehearsal release не наследуются.
 
 **Source:** `dv@85.192.25.242`, `/home/dv/trientes`.
 
@@ -24,32 +24,32 @@
 
 **Files:**
 - Modify protected state: `/Users/dmitry/.trientes-migration/stage0.env`
-- Create protected audit: `/Users/dmitry/.trientes-migration/security/npm-audit-full.json`, `npm-audit-production.json`, `audit-triage.md`
+- Create protected audit: `/Users/dmitry/.trientes-migration/security/npm-audit-full.json`, `npm-audit-production.json`, `audit-triage-${RELEASE_SHA}.md`
 
 - [ ] **Step 1: Проверить идентичность production release и зафиксировать её**
 
 ```bash
 source /Users/dmitry/.trientes-migration/stage0.env
-EXPECTED='835aca40fc4097ce7abbd1b3e50a4c8b02c94551'
+: "${RELEASE_SHA:?назначить только после merge security branch}"
+: "${TARGET_BUILD_ID:?назначить из повторно проверенного target build}"
+printf '%s' "$RELEASE_SHA" | grep -Eq '^[0-9a-f]{40}$'
 ssh -o BatchMode=yes "dv@$OLD_IP" 'cd ~/trientes && git status --short --branch && git rev-parse HEAD && git fetch origin main && git rev-parse origin/main'
 ACTUAL=$(ssh -o BatchMode=yes "dv@$OLD_IP" 'git -C ~/trientes rev-parse HEAD')
-test "$ACTUAL" = "$EXPECTED"
-ssh -o BatchMode=yes "dv@$OLD_IP" "cd ~/trientes && git merge-base --is-ancestor '$EXPECTED' origin/main && git diff --quiet '$EXPECTED'..origin/main -- src package.json package-lock.json prisma"
+test "$ACTUAL" = "$RELEASE_SHA"
+ssh -o BatchMode=yes "dv@$OLD_IP" "cd ~/trientes && git merge-base --is-ancestor '$RELEASE_SHA' origin/main && git diff --quiet '$RELEASE_SHA'..origin/main -- src package.json package-lock.json prisma"
 TARGET_ACTUAL=$(ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && git rev-parse HEAD && cat .next/BUILD_ID')
-test "$TARGET_ACTUAL" = "$EXPECTED 23vtpp4Q8HJo24_ZNoCXr"
-grep -q '^RELEASE_SHA=' /Users/dmitry/.trientes-migration/stage0.env || printf 'RELEASE_SHA=%s\n' "$EXPECTED" >> /Users/dmitry/.trientes-migration/stage0.env
-grep -q '^TARGET_BUILD_ID=' /Users/dmitry/.trientes-migration/stage0.env || printf 'TARGET_BUILD_ID=23vtpp4Q8HJo24_ZNoCXr\n' >> /Users/dmitry/.trientes-migration/stage0.env
+test "$TARGET_ACTUAL" = "$RELEASE_SHA $TARGET_BUILD_ID"
 ```
 
-Expected: production HEAD равен `RELEASE_SHA`, origin/main может содержать только более новые documentation commits, target HEAD и `.next/BUILD_ID` совпадают с проверенными значениями, working tree чист. Если main продвинулся в `src`, `package.json`, `package-lock.json` или `prisma`, либо target artifact изменился, остановиться и повторить release pipeline, а не подменять код молча.
+Expected: оба значения уже записаны в `stage0.env` после merge security branch, а не взяты из прежнего rehearsal. Production HEAD равен `RELEASE_SHA`, origin/main может содержать только более новые documentation commits, target HEAD и `.next/BUILD_ID` совпадают с проверенными значениями, working tree чист. Если main продвинулся в `src`, `package.json`, `package-lock.json` или `prisma`, либо target artifact изменился, остановиться и повторить release pipeline, а не подменять код молча.
 
 - [ ] **Step 2: Сохранить полный и production-only audit без автоматического исправления**
 
 ```bash
 source /Users/dmitry/.trientes-migration/stage0.env
 install -m 700 -d /Users/dmitry/.trientes-migration/security
-ssh -o BatchMode=yes "dv@$OLD_IP" 'cd ~/trientes && npm audit --json' > /Users/dmitry/.trientes-migration/security/npm-audit-full.json || true
-ssh -o BatchMode=yes "dv@$OLD_IP" 'cd ~/trientes && npm audit --omit=dev --json' > /Users/dmitry/.trientes-migration/security/npm-audit-production.json || true
+ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && npm audit --json' > /Users/dmitry/.trientes-migration/security/npm-audit-full.json || true
+ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && npm audit --omit=dev --json' > /Users/dmitry/.trientes-migration/security/npm-audit-production.json || true
 chmod 600 /Users/dmitry/.trientes-migration/security/npm-audit-*.json
 jq -e '.metadata.vulnerabilities' /Users/dmitry/.trientes-migration/security/npm-audit-full.json
 jq -e '.metadata.vulnerabilities' /Users/dmitry/.trientes-migration/security/npm-audit-production.json
@@ -66,31 +66,86 @@ jq -r '.vulnerabilities | to_entries[] | select(.value.severity == "critical" or
 chmod 600 /Users/dmitry/.trientes-migration/security/critical-high-*.jsonl
 ```
 
-В `audit-triage.md` для каждой записи из обоих JSONL указать: prod/dev, direct/transitive, runtime reachability, advisory/link, available fix и решение `fix separately / written risk acceptance`. Не выдавать количество findings за эксплуатируемость. Эксплуатируемая production-critical уязвимость — блокер cutover; остальные требуют письменного risk acceptance.
+После merge security branch и повторного audit создать `/Users/dmitry/.trientes-migration/security/audit-triage-${RELEASE_SHA}.md` с явными `RELEASE_SHA`, `TARGET_BUILD_ID`, датой audit и результатом `go/no-go`. Для каждой записи из обоих JSONL указать: prod/dev, direct/transitive, runtime reachability, advisory/link, available fix и решение `fix separately / written risk acceptance`. Отдельно перечислить остаточные dev-only high findings и обосновать их отсутствие в production dependency graph; старый triage не переиспользовать. Не выдавать количество findings за эксплуатируемость. Эксплуатируемая production-critical уязвимость — блокер cutover; остальные требуют письменного risk acceptance. Без нового release-specific triage и явного `go` cutover не начинать. Файл защитить `chmod 600`.
 
 ### Task 2: Запечатать проверенный build artifact и проверить восстановление
 
 **Files:**
-- Create protected archive: `/home/dv/migration-stage0/release-835aca40.next.tar` и SHA-256
-- Create protected restore backup: `/home/dv/migration-stage0/next-before-restore-test/`
+- Create protected archive: `/home/dv/migration-stage0/release-${RELEASE_SHA}.next.tar` и SHA-256
+- Create protected per-file manifest: `/home/dv/migration-stage0/release-${RELEASE_SHA}.artifact-manifest.txt`
+- Create protected restore backup: `/home/dv/migration-stage0/artifact-before-restore-test/`
 
-- [ ] **Step 1: Создать архив именно проверенного `.next`**
-
-```bash
-source /Users/dmitry/.trientes-migration/stage0.env
-ssh -o BatchMode=yes "dv@$NEW_IP" 'set -e; cd ~/trientes; test "$(cat .next/BUILD_ID)" = "23vtpp4Q8HJo24_ZNoCXr"; install -d -m 700 /home/dv/migration-stage0; tar -C /home/dv/trientes -cf /home/dv/migration-stage0/release-835aca40.next.tar .next; chmod 600 /home/dv/migration-stage0/release-835aca40.next.tar; sha256sum /home/dv/migration-stage0/release-835aca40.next.tar'
-```
-
-Expected: BUILD_ID совпадает, archive создан и непустой, SHA-256 сохранён в `merged-release-evidence.md`.
-
-- [ ] **Step 2: Проверить восстановление именно этого BUILD_ID**
+- [ ] **Step 1: Создать архив именно проверенных `.next` и versioned MapLibre assets**
 
 ```bash
 source /Users/dmitry/.trientes-migration/stage0.env
-ssh -o BatchMode=yes "dv@$NEW_IP" 'set -e; cd ~/trientes; pm2 stop trientes-web; test ! -e /home/dv/migration-stage0/next-before-restore-test; mkdir -m 700 -p /home/dv/migration-stage0/next-before-restore-test; mv .next /home/dv/migration-stage0/next-before-restore-test/.next; tar -C /home/dv/trientes -xf /home/dv/migration-stage0/release-835aca40.next.tar; test "$(cat .next/BUILD_ID)" = "23vtpp4Q8HJo24_ZNoCXr"; diff -qr /home/dv/migration-stage0/next-before-restore-test/.next /home/dv/trientes/.next; pm2 start ecosystem.config.js --only trientes-web && pm2 save && curl -fsS http://127.0.0.1:3000/api/health && curl -fsS -o /dev/null -w "%{http_code}\n" http://127.0.0.1:3000/en'
+: "${RELEASE_SHA:?назначить после merge security branch}"
+: "${TARGET_BUILD_ID:?назначить из проверенного target build}"
+ssh -o BatchMode=yes "dv@$NEW_IP" "RELEASE_SHA='$RELEASE_SHA' TARGET_BUILD_ID='$TARGET_BUILD_ID' bash -s" <<'REMOTE'
+set -euo pipefail
+cd ~/trientes
+test "$(cat .next/BUILD_ID)" = "$TARGET_BUILD_ID"
+maplibre_version=$(node -p "require('./node_modules/maplibre-gl/package.json').version")
+map_dir="public/maplibre/$maplibre_version"
+assets=(maplibre-gl-worker.mjs maplibre-gl-shared.mjs maplibre-gl-worker.mjs.map maplibre-gl-shared.mjs.map)
+for asset in "${assets[@]}"; do
+  test -s "$map_dir/$asset"
+  cmp "node_modules/maplibre-gl/dist/$asset" "$map_dir/$asset"
+done
+install -d -m 700 /home/dv/migration-stage0
+archive="/home/dv/migration-stage0/release-$RELEASE_SHA.next.tar"
+manifest="/home/dv/migration-stage0/release-$RELEASE_SHA.artifact-manifest.txt"
+test ! -e "$archive"
+test ! -e "$manifest"
+tar -C /home/dv/trientes -cf "$archive" .next "$map_dir"
+find .next "$map_dir" -type f -print0 | sort -z | xargs -0 sha256sum > "$manifest"
+sha256sum "$archive" > "$archive.sha256"
+chmod 600 "$archive" "$archive.sha256" "$manifest"
+printf 'Sealed MapLibre version %s with %s assets\n' "$maplibre_version" "${#assets[@]}"
+REMOTE
 ```
 
-Expected: восстановленный `.next` побайтово совпадает с backup, BUILD_ID совпадает, health и `/en` 200, worker/bot не запущены. Любая разница — блокер; не запускать cutover с другим artifact.
+Expected: BUILD_ID совпадает; архив содержит `.next` и `public/maplibre/<version>/`; manifest содержит SHA-256 каждого файла обоих trees; все четыре versioned assets побайтово совпадают с установленным MapLibre distribution. Archive SHA-256 и MapLibre version сохранены в `merged-release-evidence.md`.
+
+- [ ] **Step 2: Проверить восстановление BUILD_ID, manifest и MapLibre HTTP**
+
+```bash
+source /Users/dmitry/.trientes-migration/stage0.env
+: "${RELEASE_SHA:?назначить после merge security branch}"
+: "${TARGET_BUILD_ID:?назначить из проверенного target build}"
+ssh -o BatchMode=yes "dv@$NEW_IP" "RELEASE_SHA='$RELEASE_SHA' TARGET_BUILD_ID='$TARGET_BUILD_ID' bash -s" <<'REMOTE'
+set -euo pipefail
+cd ~/trientes
+maplibre_version=$(node -p "require('./node_modules/maplibre-gl/package.json').version")
+map_dir="public/maplibre/$maplibre_version"
+archive="/home/dv/migration-stage0/release-$RELEASE_SHA.next.tar"
+manifest="/home/dv/migration-stage0/release-$RELEASE_SHA.artifact-manifest.txt"
+backup=/home/dv/migration-stage0/artifact-before-restore-test
+pm2 stop trientes-web
+test ! -e "$backup"
+mkdir -m 700 -p "$backup"
+mv .next "$backup/.next"
+mv "$map_dir" "$backup/maplibre"
+tar -C /home/dv/trientes -xf "$archive"
+test "$(cat .next/BUILD_ID)" = "$TARGET_BUILD_ID"
+sha256sum --quiet -c "$manifest"
+diff -qr "$backup/.next" /home/dv/trientes/.next
+diff -qr "$backup/maplibre" "/home/dv/trientes/$map_dir"
+pm2 start ecosystem.config.js --only trientes-web
+pm2 save
+curl -fsS http://127.0.0.1:3000/api/health
+test "$(curl -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/en)" = 200
+assets=(maplibre-gl-worker.mjs maplibre-gl-shared.mjs maplibre-gl-worker.mjs.map maplibre-gl-shared.mjs.map)
+for asset in "${assets[@]}"; do
+  url="http://127.0.0.1:3000/maplibre/$maplibre_version/$asset"
+  status=$(curl -sS -o /dev/null -w '%{http_code}' "$url")
+  test "$status" = 200
+  printf '%s %s\n' "$status" "$url"
+done
+REMOTE
+```
+
+Expected: восстановленный `.next` и versioned MapLibre tree побайтово совпадают с backup и manifest, BUILD_ID совпадает, health/`/en` и все четыре `/maplibre/<version>/...` URLs возвращают HTTP 200, worker/bot не запущены. Любая разница — блокер; не запускать cutover с другим artifact.
 
 ### Task 3: Проверить readiness внешних зависимостей и final acceptance plan
 
@@ -281,14 +336,16 @@ ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && pm2 start ecosystem.config.j
 
 Expected: worker online, startup jobs начали заполнять caches, Binance WS/reconnect не зацикливается, нет повторяющихся 429/5xx/parser errors. Старый worker остаётся stopped. Не отправлять тестовые уведомления реальным пользователям.
 
-- [ ] **Step 3: Запустить bot и проверить webhook health без искусственных updates**
+- [ ] **Step 3: Перезапустить bot и проверить webhook/voice/native fetch без искусственных updates**
 
 ```bash
 source /Users/dmitry/.trientes-migration/stage0.env
-ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && pm2 start ecosystem.config.js --only trientes-bot && pm2 save && curl -fsS http://127.0.0.1:4100/health && node -e '"'"'require("dotenv").config(); fetch("https://api.telegram.org/bot"+process.env.TELEGRAM_BOT_TOKEN+"/getWebhookInfo").then(r=>r.json()).then(j=>{const url=j.result?.url; const origin=url?new URL(url).origin:null; console.log(JSON.stringify({ok:j.ok,origin,pending:j.result?.pending_update_count,last_error_date:j.result?.last_error_date})); if(!j.ok||origin!=="https://trientes.org")process.exit(1)})'"'"''
+ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && pm2 restart ecosystem.config.js --only trientes-bot --update-env && pm2 save && curl -fsS http://127.0.0.1:4100/health'
+ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && node -e '"'"'require("dotenv").config(); (async()=>{const base="https://api.telegram.org/bot"+process.env.TELEGRAM_BOT_TOKEN; const [me,hook]=await Promise.all([fetch(base+"/getMe").then(r=>r.json()),fetch(base+"/getWebhookInfo").then(r=>r.json())]); const url=hook.result?.url; const origin=url?new URL(url).origin:null; console.log(JSON.stringify({getMe:me.ok,webhook:hook.ok,origin,pending:hook.result?.pending_update_count,last_error_date:hook.result?.last_error_date})); if(!me.ok||!hook.ok||origin!=="https://trientes.org")process.exit(1)})().catch(()=>process.exit(1))'"'"''
+ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && npx vitest run bot/__tests__/voice.test.ts'
 ```
 
-Expected: bot health ok, webhook origin остаётся `https://trientes.org`, pending 0 и нет новой ошибки. `setWebhook` не выполняется. Затем пользователь отправляет `/whoami` один раз: ровно один ответ без дублей.
+Expected: bot health ok; native `fetch` возвращает `getMe.ok=true`; webhook origin остаётся `https://trientes.org`, pending 0 и нет новой ошибки. `setWebhook` не выполняется. Voice regression использует реальный OpenAI 6 client через local mock `/v1/audio/transcriptions`, без внешней сети, real API key, аудио или PII; результат записать в startup evidence. Затем пользователь отправляет `/whoami` один раз: ровно один ответ без дублей.
 
 ### Task 7: Переключить только A-записи в DigitalOcean
 
@@ -340,9 +397,10 @@ Expected: после распространения внешние health 200 и
 
 Выполнить через браузер и read-only diagnostics:
 
-- Существующая Auth.js session продолжает работать; fresh login/logout и domain OAuth callbacks успешны.
+- Существующая Auth.js database session продолжает работать и не удаляется; in-progress OAuth flow со старыми pre-upgrade check-cookies может быть отклонён — это ожидаемый повторный login, не обход и не patch библиотеки. Fresh Google/GitHub login/logout и domain OAuth callbacks успешны.
 - Telegram `/whoami` и `/status` получают ровно один ответ; `getWebhookInfo` не имеет нового `last_error_date`/backlog.
 - Worker caches свежие, schedules однократны, Binance WS подключён, alerts не дублируются.
+- Обязательный browser gate `/en/crypto-map?coin=bitcoin`: canvas виден и инициализирован, tile responses HTTP 200, versioned worker/shared/оба map files HTTP 200, нет `pageerror`/MapLibre error; статические `© OpenStreetMap contributors` и `© OpenFreeMap` видимы. В cabinet point form клик по карте ставит marker и заполняет координаты; после SHOP→ONLINE→SHOP карта и click продолжают работать.
 - `/exchange/`, APK latest symlink и read-only `GET /exchange-api/health` возвращает HTTP 200 и подтверждает работу proxy к внешнему order service; uploads доступны, KYB/protected files 403/404.
 - Android/iOS продолжают использовать `https://trientes.org`; Mac tunnel перенастроен на `NEW_IP`, затем `/home/dv/bin/mac-ios --lane build_sim` проходит.
 
