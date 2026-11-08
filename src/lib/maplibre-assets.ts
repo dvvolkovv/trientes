@@ -109,6 +109,59 @@ function reportReadError(relativePath: string, error: unknown): void {
   );
 }
 
+export type MapLibreAssetCheckOptions = {
+  /** Directory containing `<version>/<asset>`; defaults to `<cwd>/.generated/maplibre`. */
+  root?: string;
+  /** Defaults to the installed maplibre-gl version. */
+  version?: string;
+};
+
+/** Relative `<version>/<asset>` paths of the runtime assets that are not a readable file. */
+export function findMissingMapLibreAssets({
+  root,
+  version = INSTALLED_VERSION,
+}: MapLibreAssetCheckOptions = {}): string[] {
+  const assetRoot = root ?? path.join(process.cwd(), ".generated", "maplibre");
+  return RUNTIME_ASSETS.map((asset) => `${version}/${asset}`).filter(
+    (relativePath) => {
+      try {
+        // Opted out of Turbopack tracing like an injected root: the route
+        // already traces the default directory.
+        return !statSync(
+          path.join(/*turbopackIgnore: true*/ assetRoot, relativePath),
+          { throwIfNoEntry: false },
+        )?.isFile();
+      } catch {
+        return true;
+      }
+    },
+  );
+}
+
+/**
+ * Startup check, called from src/instrumentation.ts: reports a deploy that
+ * skipped prebuild or a server started outside the repository root before the
+ * first map fails. Never throws, so it can never stop the server.
+ *
+ * @returns whether every runtime asset of the version is present.
+ */
+export function checkMapLibreAssets(
+  options: MapLibreAssetCheckOptions = {},
+): boolean {
+  try {
+    const missing = findMissingMapLibreAssets(options);
+    if (missing.length === 0) return true;
+    console.error(
+      `[maplibre-assets] DEPLOYMENT ERROR: missing ` +
+        missing.map((relativePath) => `${ASSET_DIRECTORY}/${relativePath}`).join(", ") +
+        `. Maps cannot start their worker until this is fixed: ${DEPLOY_HINT}.`,
+    );
+  } catch (error) {
+    console.error(`[maplibre-assets] startup check failed: ${errorCode(error)}`);
+  }
+  return false;
+}
+
 function contentType(filePath: string): string {
   if (filePath.endsWith(".mjs")) return "text/javascript; charset=utf-8";
   if (filePath.endsWith(".map")) return "application/json; charset=utf-8";
