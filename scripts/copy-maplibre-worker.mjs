@@ -14,7 +14,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const sourceDirectory = path.join(root, "node_modules/maplibre-gl/dist");
 const packagePath = path.join(root, "node_modules/maplibre-gl/package.json");
 
-function sha256(filePath) {
+export function sha256(filePath) {
   return createHash("sha256").update(readFileSync(filePath)).digest("hex");
 }
 

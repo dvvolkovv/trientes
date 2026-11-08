@@ -1,5 +1,3 @@
-import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
 import path from "node:path";
 import * as maplibre from "maplibre-gl";
 import maplibrePackage from "maplibre-gl/package.json";
@@ -7,14 +5,11 @@ import { describe, expect, it } from "vitest";
 import {
   copyMapLibreAssets,
   MAPLIBRE_ASSETS,
+  sha256,
 } from "../scripts/copy-maplibre-worker.mjs";
 import { MAPLIBRE_WORKER_URL } from "../src/lib/maplibre-worker";
 
 const root = path.resolve(__dirname, "..");
-
-function sha256(filePath: string): string {
-  return createHash("sha256").update(readFileSync(filePath)).digest("hex");
-}
 
 describe("MapLibre 6 runtime and assets", () => {
   it("exposes named ESM exports and configures the installed worker version", () => {
