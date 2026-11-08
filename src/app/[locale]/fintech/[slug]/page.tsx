@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { sanitizeFintechSocials } from "@/lib/fintech";
 import { safeHttpUrl } from "@/lib/safe-url";
 import { localizedProse } from "@/lib/localized-prose";
+import { serializeJsonLd } from "@/lib/json-ld";
 import { TranslatedBadge } from "@/components/coin-card/translated-badge";
 
 export const dynamic = "force-dynamic";
@@ -74,7 +75,7 @@ export default async function FintechDetail({
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbLd) }}
       />
       <div className="max-w-[1200px] mx-auto px-4 md:px-12 xl:px-20 py-12">
         <header className="flex flex-col md:flex-row items-start gap-6 mb-10">

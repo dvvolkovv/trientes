@@ -15,6 +15,7 @@ import { ExchangeCardNewPairs } from "@/components/exchange-card/new-pairs";
 import { fetchWikipediaSummary } from "@/lib/wikipedia";
 import { getFreshExchangeDetail } from "@/lib/exchange-fresh";
 import { resolveCpId } from "@/lib/coinpaprika";
+import { serializeJsonLd } from "@/lib/json-ld";
 import type { Exchange } from "@/lib/coingecko";
 
 export const revalidate = 60;
@@ -115,7 +116,7 @@ export default async function ExchangeDetailPage({
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbLd) }}
       />
       <Link href={`/${locale}/exchanges`} className="text-accent text-[13px] hover:underline inline-block">
         {t("back")}

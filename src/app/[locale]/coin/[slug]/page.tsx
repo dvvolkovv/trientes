@@ -8,6 +8,7 @@ import { EXCHANGES } from "@/lib/exchanges";
 import { getCurrency } from "@/lib/get-currency";
 import { readUserWatchedIds, isAuthenticated } from "@/lib/watchlist";
 import { localizedDescription } from "@/lib/coin-description";
+import { serializeJsonLd } from "@/lib/json-ld";
 import { CoinHeader } from "@/components/coin-detail/header";
 import { ChartPanel } from "@/components/coin-detail/chart-panel";
 import { Description } from "@/components/coin-detail/description";
@@ -226,12 +227,12 @@ export default async function CoinDetailPage({
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(productLd) }}
       />
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbLd) }}
       />
       <LivePrices currency={currency} rates={rates} />
       <CoinHeader

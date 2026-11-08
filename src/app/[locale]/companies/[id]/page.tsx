@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { NOT_DELETED } from "@/lib/soft-delete";
 import { localizedProse } from "@/lib/localized-prose";
+import { serializeJsonLd } from "@/lib/json-ld";
 import { TranslatedBadge } from "@/components/coin-card/translated-badge";
 
 export const dynamic = "force-dynamic";
@@ -102,13 +103,13 @@ export default async function PublicCompanyPage({
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbLd) }}
       />
       {orgLd ? (
         <script
           type="application/ld+json"
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgLd) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(orgLd) }}
         />
       ) : null}
       <header className="flex items-start gap-4 flex-wrap">
