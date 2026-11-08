@@ -621,19 +621,29 @@ describe("MapLibre component and lifecycle configuration", () => {
     const packageJson = JSON.parse(
       readFileSync(path.join(root, "package.json"), "utf8"),
     );
-    for (const hook of ["predev", "pretest", "pretest:watch"]) {
-      expect(packageJson.scripts[hook]).toContain(
-        "MAPLIBRE_INCLUDE_SOURCE_MAPS=1",
-      );
-      expect(packageJson.scripts[hook]).toContain(
-        "node scripts/copy-maplibre-worker.mjs",
-      );
-    }
+    expect(packageJson.scripts.predev).toContain(
+      "MAPLIBRE_INCLUDE_SOURCE_MAPS=1",
+    );
+    expect(packageJson.scripts.predev).toContain(
+      "node scripts/copy-maplibre-worker.mjs",
+    );
     expect(packageJson.scripts.prebuild).toContain(
       "MAPLIBRE_INCLUDE_SOURCE_MAPS=0",
     );
     expect(packageJson.scripts.prebuild).toContain(
       "node scripts/copy-maplibre-worker.mjs",
+    );
+
+    // npm test, npm run test:watch and a bare npx vitest all load
+    // vitest.config.ts, whose globalSetup copies the assets with source maps
+    // once per run; an npm pre-hook would only duplicate that copy.
+    expect(packageJson.scripts.pretest).toBeUndefined();
+    expect(packageJson.scripts["pretest:watch"]).toBeUndefined();
+    expect(readFileSync(path.join(root, "vitest.config.ts"), "utf8")).toMatch(
+      /globalSetup:\s*\[\s*"\.\/tests\/globalSetup\.ts"\s*\]/,
+    );
+    expect(readFileSync(path.join(root, "tests/globalSetup.ts"), "utf8")).toContain(
+      'MAPLIBRE_INCLUDE_SOURCE_MAPS: "1"',
     );
   });
 });
