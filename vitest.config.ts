@@ -7,10 +7,16 @@ export default defineConfig({
     include: ["tests/**/*.test.ts", "bot/**/*.test.ts"],
     exclude: [...configDefaults.exclude, "tests/e2e/**"],
     setupFiles: ["./bot/__tests__/setup.ts"],
+    server: {
+      deps: {
+        inline: ["next-auth"],
+      },
+    },
   },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "next/server": path.resolve(__dirname, "./node_modules/next/server.js"),
     },
   },
 });
