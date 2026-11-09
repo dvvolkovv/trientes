@@ -27,6 +27,7 @@ import { expireStaleClaims } from "../src/lib/coin-card-claim";
 import { syncChainFacts } from "../src/lib/coin-card-chain-facts";
 import { syncCardSupply } from "../src/lib/coin-card-supply";
 import { runListingSweep } from "../src/lib/coin-card-listing-sweep";
+import { sendHealthReport } from "../src/lib/health-report";
 import { startBinance, stopBinance } from "./binance";
 
 async function runPriceSync() {
@@ -341,6 +342,22 @@ async function runSupplySweep() {
  * раз. Прогон идёт после ночных чтений фактов и выпуска, чтобы решение
  * принималось по свежим строкам.
  */
+/**
+ * Отчёт здоровья владельцу в Telegram: замолчавшие прогоны, ошибки чтения сетей,
+ * доли ответов nginx за сутки, живой GET трёх страниц. Поломку стакана на
+ * /exchange (12 часов ответов 429) нашли руками по логам — это чтобы следующую
+ * нашли сами.
+ */
+async function runHealthReportJob() {
+  const t0 = Date.now();
+  try {
+    const r = await sendHealthReport({ prisma: prisma as never, redis: redis as never });
+    console.log(`[worker] health report sent to ${r.sent.length} chat(s)${r.failed.length ? `, failed: ${r.failed.map((f) => `${f.chatId} (${f.reason})`).join(", ")}` : ""} in ${Date.now() - t0}ms`);
+  } catch (err) {
+    console.error("[worker] health report failed:", err);
+  }
+}
+
 async function runListingSweepJob() {
   const t0 = Date.now();
   try {
@@ -495,6 +512,9 @@ async function main() {
   // получает рынки тем же утром.
   cron.schedule("40 4 * * *", () => void runCardMarketSeedJob());
   cron.schedule("0 4 * * *", () => void runCleanup());
+  // Отчёт здоровья — в 06:00 UTC (09:00 МСК): после всех ночных прогонов, чтобы
+  // их свежесть считалась по уже прошедшим, а не по ещё не начавшимся.
+  cron.schedule("0 6 * * *", () => void runHealthReportJob());
 
   // Live price feed via Binance WebSocket — top 20 coins.
   startBinance();

@@ -25,7 +25,7 @@ export type NotifyResult = {
 // have started a conversation with the bot at least once (or signed in via the
 // Telegram Login widget) for this to succeed — Telegram does not let bots DM
 // arbitrary users.
-async function sendTelegram(chatId: string, text: string): Promise<{ ok: boolean; reason?: string }> {
+export async function sendTelegram(chatId: string, text: string): Promise<{ ok: boolean; reason?: string }> {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   if (!token) return { ok: false, reason: "no_token" };
   try {
