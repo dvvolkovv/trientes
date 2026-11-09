@@ -3,8 +3,8 @@
 ## DNS (ionos)
 
 Add two A-records on the `trientes.org` zone:
-- `@` → `85.192.25.242`
-- `www` → `85.192.25.242`
+- `@` → `159.65.118.122`
+- `www` → `159.65.118.122`
 
 TTL 3600 is fine. Verify with `dig +short trientes.org`.
 

@@ -82,11 +82,11 @@ See `.env.example` for the full list. Key vars:
 
 ## Deployment
 
-The app runs on `85.192.25.242` under PM2:
+The app runs on `159.65.118.122` under PM2:
 
 ```bash
 # SSH to server
-ssh dv@85.192.25.242
+ssh dv@159.65.118.122
 
 # Pull latest + rebuild
 cd ~/trientes && git pull && npm ci --legacy-peer-deps && npm run build
