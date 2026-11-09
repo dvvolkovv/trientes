@@ -24,6 +24,11 @@ export type SeedRow = {
 
 export const SEED_CARDS: readonly SeedRow[] = [
   // Substrate: читается тем же кодом, что карточка Taler (слайсы S и T).
+  // Polkadot и Kusama в каталоге CoinGecko не лежат в категории layer-1, из-за
+  // чего их не принёс автосинк и в первом прогоне посева их не было; монеты
+  // добавлены как ADMIN_ADDED, выпуск читается с Asset Hub (см. реестр).
+  { coinId: "polkadot", chain: "polkadot" },
+  { coinId: "kusama", chain: "kusama" },
   { coinId: "bittensor", chain: "bittensor" },
   { coinId: "astar", chain: "astar" },
   { coinId: "hydradx", chain: "hydradx" },

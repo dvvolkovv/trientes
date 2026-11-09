@@ -15,10 +15,10 @@ describe("таблица посева", () => {
     expect(new Set(chains).size).toBe(chains.length);
   });
 
-  it("в пилоте восемнадцать монет: девять Substrate и девять Cosmos", () => {
-    expect(SEED_CARDS).toHaveLength(18);
+  it("двадцать монет: одиннадцать Substrate и девять Cosmos", () => {
+    expect(SEED_CARDS).toHaveLength(20);
     const byFamily = SEED_CARDS.map((r) => chainFamily(r.chain));
-    expect(byFamily.filter((f) => f === "SUBSTRATE")).toHaveLength(9);
+    expect(byFamily.filter((f) => f === "SUBSTRATE")).toHaveLength(11);
     expect(byFamily.filter((f) => f === "COSMOS")).toHaveLength(9);
   });
 
