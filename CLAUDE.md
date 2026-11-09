@@ -4,6 +4,7 @@
 
 - **Audio reply every turn.** Generate a Russian voice summary (OpenAI TTS → mp3) and emit `📎 attach: <abs-path>` in the reply (write the mp3 to `/home/dv/trientes-artifacts/audio/`, not the repo root) so the Telegram bot sends it. No exceptions, even for short answers or errors — the user reads with difficulty and voice is the primary channel ([[feedback_audio_summaries]]).
 - **Persist the session across bot restarts.** Whenever `trientes-bot` is restarted (manually or after a 143/SIGTERM timeout), the next invocation must resume the prior Claude Code session (`claude --resume` / saved session id) instead of starting fresh — never lose conversation state on restart.
+- **Фронт DEX (/exchange) — отдельный репозиторий `/home/dv/trientes-dex-ui`** (GitHub `dvvolkovv/trientes-dex-ui`). Перед любой правкой страницы обмена прочитай его `CLAUDE.md`. Файлы в `/var/www/trientes-exchange` руками не править никогда — только `npm run deploy -- org` из `/home/dv/trientes-dex-ui/dex-ui`.
 
 # Project history (server only)
 
