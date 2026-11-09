@@ -112,12 +112,14 @@ export async function NativeChainBlock({
             />
           )}
           {/* Комиссию перевода этой семье пока никто не считает: узел сообщает
-              только минимальную цену газа, и она показывается как есть. */}
+              только минимальную цену газа — показываем как есть, с базовым
+              деномом, в котором узел её и назвал (0.002 utia за единицу газа). */}
           {verified.minGasPrice && (
             <div className="flex flex-wrap items-baseline justify-between gap-3">
               <dt className="text-[14px] text-muted">{t("minGasPrice")}</dt>
               <dd className="text-[14px] num">
                 {verified.minGasPrice}
+                {cosmos ? ` ${cosmos.denom}` : ""}
                 <span className="text-muted text-xs ml-2">{t("feeNotMeasured")}</span>
               </dd>
             </div>
