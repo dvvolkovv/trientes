@@ -81,7 +81,7 @@ Shipped 2026-05-24. Lets INDIVIDUAL users register with username + password, man
 - Своего почтового сервера нет: домен `trientes.org` заведён на Mailcow Селянской — `mail.selyanska.eu` (`165.245.254.8`, отдельный дроплет DO). MX, SPF, DKIM (`dkim._domainkey`) и DMARC — в DO-зоне `trientes.org`.
 - Ящики: `listing@` (заявки на листинг) и `noreply@` (отправитель сайта); алиасы `postmaster@`, `abuse@`, `dmarc@` → `listing@`.
 - Сайт шлёт через `src/lib/email.ts` (nodemailer, SMTP 587 + STARTTLS, логин `noreply@trientes.org`). Ключи — `SMTP_*` в `.env`; без `SMTP_USER`/`SMTP_PASS` письма молча пропускаются (`email_not_configured`).
-- Новая заявка на `/request` → письмо на `LISTING_REQUESTS_TO` (по умолчанию `listing@trientes.org`) со ссылкой на `/en/admin/requests`. Сбой письма заявку не роняет: только `console.error` с `requestId`.
+- Новая заявка на `/request` → письмо на `LISTING_REQUESTS_TO` (по умолчанию `listing@trientes.org`), код в `src/lib/listing-desk.ts`. Форма на `/request` — мастер карточки монеты (`CoinCardWizard`): письмо уходит после шага 1, когда `createCoinCard` создал карточку в PENDING, со ссылкой на `/en/admin/coin-cards` (шаги 2–4 заявитель может дозаполнять позже). Старый `submitCoinRequest` (`CoinRequestForm`, сейчас нигде не показан) шлёт такое же письмо со ссылкой на `/en/admin/requests`. Сбой письма заявку не роняет: только `console.error` с `cardId`/`requestId`.
 - Пароли ящиков в чат, логи и коммиты не выводить.
 
 # Загрузки пользователей (важно)

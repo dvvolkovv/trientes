@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { validateCardBasics } from "@/lib/coin-card-validate";
+import { mailListingDesk, listingDeskAdminUrl } from "@/lib/listing-desk";
+import { validateCardBasics, type BasicsData } from "@/lib/coin-card-validate";
 import { buildSlugCandidates } from "@/lib/coin-card-slug";
 import { computeCompleteness, missingFields } from "@/lib/coin-card-completeness";
 import { markSelfReported } from "@/lib/coin-card-provenance";
@@ -17,6 +18,41 @@ const MAX_PENDING_PER_USER = 3;
 export type CreateResult =
   | { ok: true; cardId: string; slug: string }
   | { ok: false; reason: string };
+
+type CreatedCard = {
+  id: string;
+  slug: string;
+  createdAt: Date;
+  steward: { email: string | null; username: string | null } | null;
+};
+
+// Best-effort heads-up to the listing desk mailbox; the card is already in
+// the /admin/coin-cards queue, so a lost email never fails the submission.
+async function notifyListingDesk(card: CreatedCard, userId: string, data: BasicsData) {
+  const text = [
+    "New listing request (coin card)",
+    "",
+    `Card ID: ${card.id}`,
+    `Slug: ${card.slug}`,
+    `Created: ${card.createdAt.toISOString()}`,
+    `User ID: ${userId}`,
+    `Username: ${card.steward?.username ?? "—"}`,
+    `Email: ${card.steward?.email ?? "—"}`,
+    `Coin: ${data.name} (${data.symbol})`,
+    `Website: ${data.website}`,
+    `Tagline: ${data.tagline ?? "—"}`,
+    "",
+    "Description:",
+    data.description ?? "—",
+    "",
+    "The card is PENDING. The applicant may still be adding contracts, tokenomics and trust details.",
+    `Moderate: ${listingDeskAdminUrl("coin-cards")}`,
+  ].join("\n");
+  const r = await mailListingDesk(`New Trientes listing request: ${card.slug}`, text);
+  if (!r.ok) {
+    console.error("[coin-card] listing notification failed", { cardId: card.id, reason: r.reason });
+  }
+}
 
 /**
  * Step 1 of the wizard: creates the card in PENDING with the minimum viable
@@ -69,8 +105,14 @@ export async function createCoinCard(input: {
           members: { create: { userId, role: "OWNER", isSigner: true } },
           policy: { create: {} },
         },
-        select: { id: true, slug: true },
+        select: {
+          id: true,
+          slug: true,
+          createdAt: true,
+          steward: { select: { email: true, username: true } },
+        },
       });
+      void notifyListingDesk(card, userId, v.data);
       revalidatePath("/", "layout");
       return { ok: true, cardId: card.id, slug: card.slug };
     } catch (e) {

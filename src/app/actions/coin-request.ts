@@ -3,12 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { sendEmail } from "@/lib/email";
+import { mailListingDesk, listingDeskAdminUrl } from "@/lib/listing-desk";
 import { validateCoinRequest } from "@/lib/coin-request";
 
 const MAX_PENDING_PER_USER = 10;
-const SITE_ORIGIN = process.env.PUBLIC_ORIGIN ?? "https://trientes.org";
-const LISTING_REQUESTS_TO = process.env.LISTING_REQUESTS_TO ?? "listing@trientes.org";
 
 type CreatedRequest = {
   id: string;
@@ -38,21 +36,12 @@ async function notifyListingDesk(request: CreatedRequest): Promise<void> {
     "Reason:",
     request.reason,
     "",
-    `Moderate: ${SITE_ORIGIN.replace(/\/+$/, "")}/en/admin/requests`,
+    `Moderate: ${listingDeskAdminUrl("requests")}`,
   ].join("\n");
-  let reason: string | undefined;
-  try {
-    const r = await sendEmail({
-      to: LISTING_REQUESTS_TO,
-      subject: `New Trientes listing request ${request.id}`,
-      text,
-    });
-    if (r.ok) return;
-    reason = r.reason ?? "unknown";
-  } catch {
-    reason = "email_helper_exception";
+  const r = await mailListingDesk(`New Trientes listing request ${request.id}`, text);
+  if (!r.ok) {
+    console.error("[coin-request] listing notification failed", { requestId: request.id, reason: r.reason });
   }
-  console.error("[coin-request] listing notification failed", { requestId: request.id, reason });
 }
 
 export async function submitCoinRequest(input: {
