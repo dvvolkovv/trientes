@@ -413,7 +413,11 @@ export async function syncChainFacts(args: {
     const identity = facts.family === "COSMOS" ? facts.chainId : facts.genesisHash;
     const stored =
       facts.family === "COSMOS" ? card.chainFacts?.chainId : card.chainFacts?.genesisHash;
-    const moved = Boolean(!facts.error && card.chainFacts && identity && stored !== identity);
+    // Записанная идентичность пуста, когда первое чтение сорвалось: такую
+    // строку новая, успешно прочитанная, вправе заполнить. Со сравнением
+    // «пусто !== прочитано» карточка застревала в genesis_mismatch навсегда —
+    // живой случай Neutron, узел которого не реализует base/node/config.
+    const moved = Boolean(!facts.error && identity && stored && stored !== identity);
 
     if (facts.error || moved) {
       stats.failed++;

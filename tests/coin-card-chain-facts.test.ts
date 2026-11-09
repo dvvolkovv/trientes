@@ -234,6 +234,27 @@ describe("syncChainFacts", () => {
     expect(updates).toEqual([]);
   });
 
+  it("пустая записанная идентичность не считается переездом узла", async () => {
+    // Живой случай Neutron: первое чтение сорвалось, строка фактов осталась с
+    // пустым chain-id. Со строгим сравнением карточка застревала в
+    // genesis_mismatch навсегда — ни одно следующее чтение не могло записаться.
+    const { prisma, upserts } = prismaWith({
+      ...talerCard,
+      chainFacts: { genesisHash: null },
+    });
+
+    const stats = await syncChainFacts({
+      prisma: prisma as never,
+      fetchImpl: node(),
+      now: new Date("2026-11-07T10:00:00Z"),
+    });
+
+    expect(stats).toEqual({ cards: 1, ok: 1, failed: 0 });
+    const written = (upserts[0] as { update: Record<string, unknown> }).update;
+    expect(written.checkError).toBeNull();
+    expect(written.blockSeconds).toBe(6);
+  });
+
   it("тикер сети расходится с карточкой — факт пишется, расхождение помечено", async () => {
     const { prisma, upserts } = prismaWith({ ...talerCard, symbol: "WRONG" });
 

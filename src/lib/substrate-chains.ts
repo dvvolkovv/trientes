@@ -163,6 +163,66 @@ export const SUBSTRATE_CHAINS: readonly SubstrateChain[] = [
     balancesPallet: null,
     transactionVersion: null,
   },
+  // Слайс W: проверено живым POST 9 ноября 2026 — свойства, хэш генезиса и
+  // `TotalIssuance` прочитаны у каждой. Индекс палеты балансов подтверждается
+  // отдельным прогоном `scripts/probe-substrate-pallet.ts`.
+  {
+    // Мультиассетная сеть: `system_properties` отдаёт массивы, и нативная
+    // единица — первая (ACA, 12 знаков). Комиссия не читается: ни один индекс
+    // палеты не декодировал перевод, то есть вызов собирается иначе.
+    key: "acala",
+    label: "Acala",
+    defaultRpcUrl: "https://acala-rpc.aca-api.network",
+    ss58Format: 10,
+    symbol: "ACA",
+    balancesPallet: null,
+    transactionVersion: null,
+  },
+  {
+    // Darwinia 2 — сеть с 20-байтными адресами, как Moonbeam: префикс узел не
+    // публикует, и ждать от него нечего.
+    key: "darwinia",
+    label: "Darwinia",
+    defaultRpcUrl: "https://rpc.darwinia.network",
+    ss58Format: null,
+    symbol: "RING",
+    balancesPallet: null,
+    transactionVersion: null,
+  },
+  {
+    // Индекс 5 декодирует оба вызова, но комиссии расходятся в 1,56 раза, а не
+    // на доли процента, как у настоящей палеты балансов. Это слабое
+    // подтверждение, и комиссия остаётся непрочитанной, а не пришпиленной
+    // наугад.
+    key: "vara",
+    label: "Vara Network",
+    defaultRpcUrl: "https://rpc.vara.network",
+    ss58Format: 137,
+    symbol: "VARA",
+    balancesPallet: null,
+    transactionVersion: null,
+  },
+  {
+    // Как и у Acala, перевод не декодируется ни при одном индексе.
+    key: "unique",
+    label: "Unique Network",
+    defaultRpcUrl: "https://rpc.unique.network",
+    ss58Format: 7391,
+    symbol: "UNQ",
+    balancesPallet: null,
+    transactionVersion: null,
+  },
+  {
+    key: "avail",
+    label: "Avail",
+    defaultRpcUrl: "https://mainnet-rpc.avail.so/rpc",
+    ss58Format: 42,
+    symbol: "AVAIL",
+    // Индекс 6 подтверждён дважды: keep_alive 0,12475 и allow_death 0,12478
+    // AVAIL, отношение 1,0003.
+    balancesPallet: 6,
+    transactionVersion: 1,
+  },
 ];
 
 /** Значения select'а нативной сети в форме карточки. */

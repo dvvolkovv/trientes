@@ -20,6 +20,7 @@ import { pruneCardPricePoints, syncCardMarkets } from "../src/lib/coin-card-mark
 import { expireStaleClaims } from "../src/lib/coin-card-claim";
 import { syncChainFacts } from "../src/lib/coin-card-chain-facts";
 import { syncCardSupply } from "../src/lib/coin-card-supply";
+import { runListingSweep } from "../src/lib/coin-card-listing-sweep";
 import { startBinance, stopBinance } from "./binance";
 
 async function runPriceSync() {
@@ -294,14 +295,14 @@ async function runCardMarketSync() {
 }
 
 /**
- * Слайс E: проверенный циркулирующий выпуск. Раз в час и не больше 50 карточек
+ * Слайс E: проверенный циркулирующий выпуск. Раз в час и не больше 100 карточек
  * за прогон: на карточку уходит до 21 вызова `eth_call` (общий выпуск плюс
  * двадцать адресов исключений), а выпуск меняется редко.
  */
 async function runChainFactsSweep() {
   const t0 = Date.now();
   try {
-    const s = await syncChainFacts({ prisma: prisma as never, limit: 50 });
+    const s = await syncChainFacts({ prisma: prisma as never, limit: 100 });
     if (s.cards > 0) {
       console.log(
         `[worker] chain facts ok: ${s.cards} cards (${s.ok} ok, ${s.failed} failed) ` +
@@ -316,7 +317,7 @@ async function runChainFactsSweep() {
 async function runSupplySweep() {
   const t0 = Date.now();
   try {
-    const s = await syncCardSupply({ prisma: prisma as never, limit: 50 });
+    const s = await syncCardSupply({ prisma: prisma as never, limit: 100 });
     if (s.cards > 0) {
       console.log(
         `[worker] supply sweep ok: ${s.cards} cards (${s.ok} ok, ${s.partial} partial, ` +
@@ -325,6 +326,30 @@ async function runSupplySweep() {
     }
   } catch (err) {
     console.error("[worker] supply sweep failed:", err);
+  }
+}
+
+/**
+ * Слайс W: конвейер листинга. Раз в сутки заводит монету и карточку для новых
+ * строк реестра и открывает те карточки, где сеть подтвердила всё и не один
+ * раз. Прогон идёт после ночных чтений фактов и выпуска, чтобы решение
+ * принималось по свежим строкам.
+ */
+async function runListingSweepJob() {
+  const t0 = Date.now();
+  try {
+    const s = await runListingSweep({ prisma: prisma as never });
+    const held = Object.entries(s.held)
+      .map(([k, v]) => `${k}=${v}`)
+      .join(" ");
+    if (s.coinsCreated || s.cardsCreated || s.published || held) {
+      console.log(
+        `[worker] listing sweep ok: +${s.coinsCreated} coins, +${s.cardsCreated} cards, ` +
+          `${s.published} published${held ? `, held: ${held}` : ""} in ${Date.now() - t0}ms`,
+      );
+    }
+  } catch (err) {
+    console.error("[worker] listing sweep failed:", err);
   }
 }
 
@@ -428,6 +453,7 @@ async function main() {
   // Факты сети — на :35, чтобы не толкаться с заявками (:20) и выпуском (:45).
   cron.schedule("35 * * * *", () => void runChainFactsSweep());
   cron.schedule("45 * * * *", () => void runSupplySweep());
+  cron.schedule("25 4 * * *", () => void runListingSweepJob());
   cron.schedule("0 4 * * *", () => void runCleanup());
 
   // Live price feed via Binance WebSocket — top 20 coins.

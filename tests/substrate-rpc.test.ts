@@ -64,6 +64,44 @@ describe("readChainProperties", () => {
     });
   });
 
+  it("префикс под другим написанием ключа: SS58Prefix и ss58format", async () => {
+    // Живые ответы 9 ноября 2026: Moonbeam отдаёт SS58Prefix, Vara — ss58format.
+    // Строгий поиск по `ss58Format` оставлял три сети без сверки префикса.
+    const moonbeam = node({
+      system_properties: { SS58Prefix: 1284, tokenDecimals: 18, tokenSymbol: "GLMR" },
+    });
+    await expect(readChainProperties(URL_, { fetchImpl: moonbeam.fetchImpl })).resolves.toEqual({
+      decimals: 18,
+      symbol: "GLMR",
+      ss58Format: 1284,
+    });
+    const vara = node({
+      system_properties: { ss58format: 137, tokenDecimals: 12, tokenSymbol: "VARA" },
+    });
+    await expect(readChainProperties(URL_, { fetchImpl: vara.fetchImpl })).resolves.toEqual({
+      decimals: 12,
+      symbol: "VARA",
+      ss58Format: 137,
+    });
+  });
+
+  it("префикса нет или он нечисловой — null, а не догадка", async () => {
+    const absent = node({ system_properties: { tokenDecimals: 18, tokenSymbol: "RING" } });
+    await expect(readChainProperties(URL_, { fetchImpl: absent.fetchImpl })).resolves.toEqual({
+      decimals: 18,
+      symbol: "RING",
+      ss58Format: null,
+    });
+    const junk = node({
+      system_properties: { ss58Format: "42", tokenDecimals: 12, tokenSymbol: "X" },
+    });
+    await expect(readChainProperties(URL_, { fetchImpl: junk.fetchImpl })).resolves.toEqual({
+      decimals: 12,
+      symbol: "X",
+      ss58Format: null,
+    });
+  });
+
   it("массивы вместо скаляров (мультиассетные сети) — берётся первый", async () => {
     const { fetchImpl } = node({
       system_properties: { ss58Format: 2, tokenDecimals: [12, 10], tokenSymbol: ["KSM", "X"] },

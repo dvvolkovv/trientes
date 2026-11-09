@@ -11,7 +11,9 @@ describe("resolveCosmosChain", () => {
   it("находит сеть по ключу, не считая сетью родовое слово", () => {
     expect(resolveCosmosChain("celestia")?.chainId).toBe("celestia");
     expect(resolveCosmosChain(" Celestia ")?.key).toBe("celestia");
+    // Родовое слово семьи — не сеть: у Cosmos Hub ключ `cosmoshub`.
     expect(resolveCosmosChain("cosmos")).toBeNull();
+    expect(resolveCosmosChain("cosmoshub")?.chainId).toBe("cosmoshub-4");
     expect(resolveCosmosChain("")).toBeNull();
     expect(resolveCosmosChain(null)).toBeNull();
     expect(resolveCosmosChain("polkadot")).toBeNull();
@@ -19,8 +21,8 @@ describe("resolveCosmosChain", () => {
 });
 
 describe("реестр как целое", () => {
-  it("в пилоте девять сетей, и все поля заполнены", () => {
-    expect(COSMOS_CHAINS).toHaveLength(9);
+  it("двадцать сетей, и все поля заполнены", () => {
+    expect(COSMOS_CHAINS).toHaveLength(20);
     for (const c of COSMOS_CHAINS) {
       expect(c.defaultRestUrl).toMatch(/^https:\/\//);
       expect(c.defaultRestUrl).not.toMatch(/\/$/);

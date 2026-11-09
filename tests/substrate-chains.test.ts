@@ -58,6 +58,7 @@ describe("пришпиленные индексы палеты балансов 
     ["creditcoin", 3, 4],
     ["enjin", 6, 18],
     ["polymesh", 5, 8],
+    ["avail", 6, 1],
   ])("%s: палета %i, версия транзакций %i", (key, pallet, txVersion) => {
     const chain = resolveSubstrateChain(key as string)!;
     expect(chain.balancesPallet).toBe(pallet);
@@ -67,11 +68,17 @@ describe("пришпиленные индексы палеты балансов 
   // Сеть, у которой комиссию прочитать не удалось, честно хранит null, а не
   // индекс наугад: у HydraDX не совпал набор подписанных расширений, у
   // Moonbeam и Moonriver адреса 20-байтные и MultiAddress не применяется.
-  it.each(["hydradx", "moonbeam", "moonriver"])("%s: комиссия не читается", (key) => {
-    const chain = resolveSubstrateChain(key)!;
-    expect(chain.balancesPallet).toBeNull();
-    expect(chain.transactionVersion).toBeNull();
-  });
+  // Слайс W добавил четыре таких сети: у Acala и Unique перевод не
+  // декодируется ни при одном индексе, у Vara подтверждение слабое (комиссии
+  // двух вызовов расходятся в 1,56 раза), у Darwinia адреса 20-байтные.
+  it.each(["hydradx", "moonbeam", "moonriver", "acala", "darwinia", "vara", "unique"])(
+    "%s: комиссия не читается",
+    (key) => {
+      const chain = resolveSubstrateChain(key)!;
+      expect(chain.balancesPallet).toBeNull();
+      expect(chain.transactionVersion).toBeNull();
+    },
+  );
 });
 
 describe("реестр как целое", () => {
@@ -85,8 +92,8 @@ describe("реестр как целое", () => {
     }
   });
 
-  it("в пилоте двенадцать сетей", () => {
-    expect(SUBSTRATE_CHAINS).toHaveLength(12);
+  it("семнадцать сетей в реестре", () => {
+    expect(SUBSTRATE_CHAINS).toHaveLength(17);
   });
 });
 

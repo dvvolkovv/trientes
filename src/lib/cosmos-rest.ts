@@ -221,11 +221,24 @@ export function pickGasPrice(raw: unknown, denom: string): string | null {
   return null;
 }
 
+/**
+ * Минимальная цена газа. Запрос `base/node/config` реализован не у всех узлов:
+ * Neutron отвечает 501. Это свойство узла, а не сбой чтения сети, поэтому
+ * необязательный факт превращается в `null`, а не роняет весь прогон — иначе
+ * из-за одного нереализованного запроса карточка теряла бы и время блока, и
+ * chain-id, и финальность.
+ */
 export async function readCosmosMinGasPrice(
   baseUrl: string,
   denom: string,
   opts: HttpOptions = {},
 ): Promise<string | null> {
-  const raw = await httpGetJson(`${baseUrl}/cosmos/base/node/v1beta1/config`, opts);
+  let raw: unknown;
+  try {
+    raw = await httpGetJson(`${baseUrl}/cosmos/base/node/v1beta1/config`, opts);
+  } catch (err) {
+    if (err instanceof RpcError && err.code === "rpc_error") return null;
+    throw err;
+  }
   return pickGasPrice(asRecord(raw).minimum_gas_price, denom);
 }

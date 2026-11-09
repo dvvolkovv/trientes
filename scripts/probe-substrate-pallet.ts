@@ -66,10 +66,13 @@ async function main(): Promise<void> {
     process.exit(1);
   }
   const url = substrateRpcUrlFor(chain);
+  // Мультиассетные сети (Acala, Bifrost) отдают массив знаков: нужна первая,
+  // основная единица — иначе `BigInt` падает на «12,12,10,10».
   const props = (await jsonRpc(url, "system_properties", [], { timeoutMs: 15000 })) as {
-    tokenDecimals?: number;
+    tokenDecimals?: number | number[];
   };
-  const decimals = props.tokenDecimals ?? 12;
+  const raw = Array.isArray(props.tokenDecimals) ? props.tokenDecimals[0] : props.tokenDecimals;
+  const decimals = typeof raw === "number" ? raw : 12;
   console.log(`${chain.key} · ${url} · ${decimals} знаков`);
 
   for (let pallet = 0; pallet <= maxIndex; pallet++) {

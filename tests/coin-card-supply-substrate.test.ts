@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { FetchLike } from "../src/lib/json-rpc";
 import {
   parseExcluded,
+  pickAggregated,
   readSubstrateSupplyFacts,
   supplyShare,
   syncCardSupply,
@@ -341,5 +342,25 @@ describe("охранник доли выпуска", () => {
       now: new Date("2026-11-09T10:00:00Z"),
     });
     expect((upserts[0] as { create: Record<string, unknown> }).create.checkError).toBeNull();
+  });
+});
+
+describe("pickAggregated", () => {
+  it("общий выпуск предпочтительнее оборота", () => {
+    expect(pickAggregated(1_000_000, 700_000)).toBe(1_000_000);
+  });
+
+  it("абсурдный общий выпуск уступает обороту", () => {
+    // Живой случай Neutron: 6,2e27 при обороте 369 млн — база в минимальных
+    // единицах, попавшая в поле монет. Сравнение с ней объявило бы прочитанные
+    // 546 млн NTRN «малой частью монеты».
+    expect(pickAggregated(6.219e27, 369_081_858)).toBe(369_081_858);
+  });
+
+  it("ноль, отрицательное и NaN числами не считаются", () => {
+    expect(pickAggregated(0, 692_773_334)).toBe(692_773_334);
+    expect(pickAggregated(NaN, 100)).toBe(100);
+    expect(pickAggregated(-5, null)).toBeNull();
+    expect(pickAggregated(null, null)).toBeNull();
   });
 });

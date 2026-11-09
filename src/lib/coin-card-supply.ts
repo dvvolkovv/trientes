@@ -754,6 +754,31 @@ async function syncNativeChainCard(args: {
  * число, с которым можно сравнить прочитанное. Общий выпуск предпочитается
  * обороту: сравниваем общее с общим.
  */
+/**
+ * Во сколько раз общий выпуск у агрегатора должен превысить оборот, чтобы счесть
+ * его дефектом фида. Живой случай: у Neutron CoinGecko отдаёт
+ * `total_supply = 6,2e27` при обороте 369 млн — это база в минимальных единицах,
+ * попавшая в поле монет.
+ */
+export const AGGREGATE_ABSURD_RATIO = 1000;
+
+/**
+ * Какое число агрегатора считать известным выпуском монеты. Общий выпуск
+ * предпочтительнее оборота, но абсурдное число хуже отсутствующего: сравнение с
+ * ним объявило бы прочитанную сеть «малой частью монеты» и скрыло бы верный
+ * факт.
+ */
+export function pickAggregated(
+  total: number | null | undefined,
+  circulating: number | null | undefined,
+): number | null {
+  const t = total != null && Number.isFinite(total) && total > 0 ? total : null;
+  const c =
+    circulating != null && Number.isFinite(circulating) && circulating > 0 ? circulating : null;
+  if (t != null && c != null && t > c * AGGREGATE_ABSURD_RATIO) return c;
+  return t ?? c;
+}
+
 async function aggregatedSupply(
   prisma: PrismaLike,
   coinId: string | null | undefined,
@@ -766,9 +791,11 @@ async function aggregatedSupply(
   });
   if (!snap) return null;
   // Decimal у Prisma — объект; Number() работает и на нём, и на строке.
-  const pick = snap.totalSupply ?? snap.circulatingSupply;
-  const n = pick == null ? NaN : Number(pick);
-  return Number.isFinite(n) && n > 0 ? n : null;
+  const num = (v: unknown): number | null => {
+    const n = v == null ? NaN : Number(v);
+    return Number.isFinite(n) ? n : null;
+  };
+  return pickAggregated(num(snap.totalSupply), num(snap.circulatingSupply));
 }
 
 /**

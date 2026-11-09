@@ -22,6 +22,7 @@ function node(
     supply?: string;
     supplyDenom?: string;
     minGasPrice?: string;
+    configUnimplemented?: boolean;
     meta?: unknown;
     metaError?: boolean;
     fail?: "unreachable" | "html";
@@ -63,6 +64,10 @@ function node(
       return json({
         amount: { denom: opts.supplyDenom ?? "utia", amount: opts.supply ?? "1181464869027930" },
       });
+    }
+    if (url.includes("/base/node/v1beta1/config") && opts.configUnimplemented) {
+      // Живой ответ узла Neutron: запрос в этой сети не реализован.
+      return json({ code: 12, message: "Not Implemented" }, false, 501);
     }
     if (url.includes("/denoms_metadata/")) {
       if (opts.metaError) return json({ code: 5, message: "client metadata for denom" }, false, 404);
@@ -238,6 +243,14 @@ describe("readCosmosMinGasPrice", () => {
   it("пустая цена у узла — null, а не ноль", async () => {
     expect(
       await readCosmosMinGasPrice(BASE, "usaga", { fetchImpl: node({ minGasPrice: "" }) }),
+    ).toBeNull();
+  });
+
+  it("узел не реализует запрос (501 у Neutron) — null, а не сбой всего чтения", async () => {
+    expect(
+      await readCosmosMinGasPrice(BASE, "untrn", {
+        fetchImpl: node({ configUnimplemented: true }),
+      }),
     ).toBeNull();
   });
 });

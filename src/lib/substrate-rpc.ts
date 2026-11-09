@@ -24,6 +24,22 @@ export type ChainProperties = {
 /** Мультиассетные сети отдают массивы: берём первую, основную единицу. */
 const firstOf = (v: unknown): unknown => (Array.isArray(v) ? v[0] : v);
 
+/**
+ * Префикс SS58 сети публикуют под разными именами: `ss58Format` (Polkadot),
+ * `SS58Prefix` (Moonbeam, Moonriver), `ss58format` (Vara). Строгий поиск по
+ * одному написанию оставлял три сети вообще без сверки префикса, хотя узел его
+ * сообщает. Нечисловое значение — не догадка, а `null`: ожидание реестра
+ * должно сверяться с числом от узла или не сверяться вовсе.
+ */
+const PREFIX_KEYS = ["ss58format", "ss58prefix"];
+
+function prefixOf(p: Record<string, unknown>): number | null {
+  for (const [k, v] of Object.entries(p)) {
+    if (PREFIX_KEYS.includes(k.toLowerCase()) && typeof v === "number") return v;
+  }
+  return null;
+}
+
 export async function readChainProperties(
   url: string,
   opts: RpcOptions = {},
@@ -33,11 +49,10 @@ export async function readChainProperties(
   const p = raw as Record<string, unknown>;
   const decimals = firstOf(p.tokenDecimals);
   const symbol = firstOf(p.tokenSymbol);
-  const prefix = p.ss58Format;
   return {
     decimals: typeof decimals === "number" ? decimals : null,
     symbol: typeof symbol === "string" ? symbol : null,
-    ss58Format: typeof prefix === "number" ? prefix : null,
+    ss58Format: prefixOf(p),
   };
 }
 

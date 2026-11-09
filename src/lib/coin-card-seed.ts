@@ -38,6 +38,11 @@ export const SEED_CARDS: readonly SeedRow[] = [
   { coinId: "polymesh", chain: "polymesh" },
   { coinId: "moonbeam", chain: "moonbeam" },
   { coinId: "moonriver", chain: "moonriver" },
+  { coinId: "acala", chain: "acala" },
+  { coinId: "darwinia-network-native-token", chain: "darwinia" },
+  { coinId: "vara-network", chain: "vara" },
+  { coinId: "unique-network", chain: "unique" },
+  { coinId: "avail", chain: "avail" },
   // Cosmos SDK: стандартный REST, свой ридер.
   { coinId: "celestia", chain: "celestia" },
   { coinId: "injective-protocol", chain: "injective" },
@@ -48,6 +53,17 @@ export const SEED_CARDS: readonly SeedRow[] = [
   { coinId: "initia", chain: "initia" },
   { coinId: "saga-2", chain: "saga" },
   { coinId: "secret", chain: "secret" },
+  { coinId: "cosmos", chain: "cosmoshub" },
+  { coinId: "osmosis", chain: "osmosis" },
+  { coinId: "akash-network", chain: "akash" },
+  { coinId: "juno-network", chain: "juno" },
+  { coinId: "axelar", chain: "axelar" },
+  { coinId: "neutron-3", chain: "neutron" },
+  { coinId: "stride", chain: "stride" },
+  { coinId: "dymension", chain: "dymension" },
+  { coinId: "persistence", chain: "persistence" },
+  { coinId: "agoric", chain: "agoric" },
+  { coinId: "band-protocol", chain: "band" },
 ];
 
 /** К какой семье относится ключ сети. Ключи реестров не пересекаются. */

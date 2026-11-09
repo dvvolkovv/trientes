@@ -4,7 +4,7 @@
  * пользовательский ввод, иначе «проверено в сети» означало бы «проверено на
  * сервере, который выбрал сам проект».
  *
- * Все девять адресов и chain-id проверены живым GET-запросом 9 ноября 2026.
+ * Все двадцать адресов и chain-id проверены живым GET-запросом 9 ноября 2026.
  * Деном и порядок — из ответа `bank/supply/by_denom` и публичной документации
  * сети; расхождение ожидаемого chain-id с ответом узла попадает в mismatches.
  */
@@ -30,6 +30,120 @@ export type CosmosChain = {
 };
 
 export const COSMOS_CHAINS: readonly CosmosChain[] = [
+  // Слайс W, проверено живым GET 9 ноября 2026.
+  {
+    // Ключ `cosmoshub`, а не `cosmos`: родовое слово семьи сетью не считается
+    // (его отбивает `resolveCosmosChain`), иначе карточка могла бы привязаться
+    // к «семье вообще» вместо конкретной сети.
+    key: "cosmoshub",
+    label: "Cosmos Hub",
+    defaultRestUrl: "https://cosmos-rest.publicnode.com",
+    chainId: "cosmoshub-4",
+    denom: "uatom",
+    exponent: 6,
+    symbol: "ATOM",
+    bech32Prefix: "cosmos",
+  },
+  {
+    key: "osmosis",
+    label: "Osmosis",
+    defaultRestUrl: "https://osmosis-rest.publicnode.com",
+    chainId: "osmosis-1",
+    denom: "uosmo",
+    exponent: 6,
+    symbol: "OSMO",
+    bech32Prefix: "osmo",
+  },
+  {
+    key: "akash",
+    label: "Akash Network",
+    defaultRestUrl: "https://akash-rest.publicnode.com",
+    chainId: "akashnet-2",
+    denom: "uakt",
+    exponent: 6,
+    symbol: "AKT",
+    bech32Prefix: "akash",
+  },
+  {
+    key: "juno",
+    label: "Juno",
+    defaultRestUrl: "https://juno-rest.publicnode.com",
+    chainId: "juno-1",
+    denom: "ujuno",
+    exponent: 6,
+    symbol: "JUNO",
+    bech32Prefix: "juno",
+  },
+  {
+    key: "axelar",
+    label: "Axelar",
+    defaultRestUrl: "https://axelar-rest.publicnode.com",
+    chainId: "axelar-dojo-1",
+    denom: "uaxl",
+    exponent: 6,
+    symbol: "AXL",
+    bech32Prefix: "axelar",
+  },
+  {
+    key: "neutron",
+    label: "Neutron",
+    defaultRestUrl: "https://neutron-api.polkachu.com",
+    chainId: "neutron-1",
+    denom: "untrn",
+    exponent: 6,
+    symbol: "NTRN",
+    bech32Prefix: "neutron",
+  },
+  {
+    key: "stride",
+    label: "Stride",
+    defaultRestUrl: "https://stride-api.polkachu.com",
+    chainId: "stride-1",
+    denom: "ustrd",
+    exponent: 6,
+    symbol: "STRD",
+    bech32Prefix: "stride",
+  },
+  {
+    key: "dymension",
+    label: "Dymension",
+    defaultRestUrl: "https://dymension-api.polkachu.com",
+    chainId: "dymension_1100-1",
+    denom: "adym",
+    exponent: 18,
+    symbol: "DYM",
+    bech32Prefix: "dym",
+  },
+  {
+    key: "persistence",
+    label: "Persistence",
+    defaultRestUrl: "https://persistence-api.polkachu.com",
+    chainId: "core-1",
+    denom: "uxprt",
+    exponent: 6,
+    symbol: "XPRT",
+    bech32Prefix: "persistence",
+  },
+  {
+    key: "agoric",
+    label: "Agoric",
+    defaultRestUrl: "https://agoric-api.polkachu.com",
+    chainId: "agoric-3",
+    denom: "ubld",
+    exponent: 6,
+    symbol: "BLD",
+    bech32Prefix: "agoric",
+  },
+  {
+    key: "band",
+    label: "Band Protocol",
+    defaultRestUrl: "https://band-api.polkachu.com",
+    chainId: "laozi-mainnet",
+    denom: "uband",
+    exponent: 6,
+    symbol: "BAND",
+    bech32Prefix: "band",
+  },
   {
     key: "celestia",
     label: "Celestia",
