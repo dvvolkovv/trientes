@@ -14,7 +14,11 @@ import { SELECTORS, decodeUint, encodeAddressArg, isEvmAddress, normalizeAddress
 import { resolveEvmChain, rpcUrlFor } from "./evm-chains";
 import { ethCall, RpcError, type FetchLike } from "./evm-rpc";
 import { mergeProvenance } from "./coin-card-provenance";
-import { resolveSubstrateChain, substrateRpcUrlFor } from "./substrate-chains";
+import {
+  resolveSubstrateChain,
+  substrateIssuanceUrlFor,
+  substrateRpcUrlFor,
+} from "./substrate-chains";
 import { isSs58Address } from "./substrate-codec";
 import {
   readAccountBalance,
@@ -205,6 +209,31 @@ export function computeSupply(args: {
 }
 
 /** На сколько процентов заявление проекта расходится с расчётом. */
+/**
+ * Ниже этой доли прочитанное число перестаёт быть выпуском монеты. Порог грубый
+ * сознательно: он ловит переезд балансов и мост (разница в разы), а не
+ * расхождение методик подсчёта (разница в проценты — для неё `claimedDeltaPct`).
+ */
+export const SUPPLY_SHARE_MIN = 0.5;
+
+/**
+ * Какую часть известного выпуска монеты мы прочитали в этой сети.
+ *
+ * Нужна потому, что домашняя сеть монеты не всегда держит саму монету: у
+ * Polkadot балансы переехали в Asset Hub, у MANTRA основная масса живёт за
+ * пределами `mantra-1`. В обоих случаях `TotalIssuance` отвечает честно — но
+ * про остаток, а не про монету. Сравнение со снимком агрегатора это видит.
+ */
+export function supplyShare(
+  readCoins: string | null | undefined,
+  aggregated: number | null | undefined,
+): number | null {
+  if (!readCoins || aggregated == null || !(aggregated > 0)) return null;
+  const read = coinsToNumber(readCoins);
+  if (read == null) return null;
+  return read / aggregated;
+}
+
 export function claimedDeltaPct(
   claimed: number | null | undefined,
   circulating: string,
@@ -338,7 +367,9 @@ export async function readSubstrateSupplyFacts(args: {
     symbol = props.symbol;
     prefix = props.ss58Format ?? chain.ss58Format;
     genesisHash = await readGenesisHash(url, opts);
-    totalUnits = (await readTotalIssuance(url, opts)).toString();
+    // Выпуск — с того узла, где он настоящий: у сети с переехавшими балансами
+    // это не тот же адрес, что для всего остального.
+    totalUnits = (await readTotalIssuance(substrateIssuanceUrlFor(chain), opts)).toString();
   } catch {
     return { ...empty, error: "supply_unreadable" };
   }
@@ -362,12 +393,15 @@ type ContractRow = { chain: string; address: string; decimals: number | null; on
 
 type CardRow = {
   id: string;
+  coinId?: string | null;
   nativeChain: string | null;
   tokenomics: unknown;
   provenance: unknown;
   contracts: ContractRow[];
   supply: { checkedAt: Date } | null;
 };
+
+type SnapshotRow = { totalSupply: unknown; circulatingSupply: unknown } | null;
 
 export type PrismaLike = {
   coinCard: {
@@ -376,6 +410,13 @@ export type PrismaLike = {
   };
   coinCardSupply: {
     upsert(args: unknown): Promise<unknown>;
+  };
+  /**
+   * Нужен только охраннику доли: у карточки без `coinId` сравнивать не с чем, и
+   * тогда снимок не запрашивается вовсе.
+   */
+  coinSnapshot?: {
+    findFirst(args: unknown): Promise<SnapshotRow>;
   };
 };
 
@@ -415,6 +456,7 @@ export async function syncCardSupply(args: {
       };
   const select = {
     id: true,
+    coinId: true,
     nativeChain: true,
     tokenomics: true,
     provenance: true,
@@ -580,7 +622,7 @@ async function syncNativeChainCard(args: {
   // Адреса исключений в этой сети — SS58 своего префикса. EVM-адреса и
   // канонические адреса сжигания отсекаются здесь же: в Substrate их нет.
   const excluded = parseExcluded(card.tokenomics, {
-    accept: (a) => isSs58Address(a, chain.ss58Format),
+    accept: (a) => isSs58Address(a, chain.ss58Format ?? undefined),
     normalize: (a) => a.trim(),
   });
   const facts = await readSubstrateSupplyFacts({ chain: chain.key, excluded, fetchImpl });
@@ -612,6 +654,12 @@ async function syncNativeChainCard(args: {
   });
   const claimed = (card.tokenomics as { circulating?: number | null } | null)?.circulating ?? null;
 
+  // Прочитанный выпуск относится к прочитанной сети, а не к монете: если в этой
+  // сети лежит малая часть монеты, число сохраняется как факт сети, но выпуском
+  // монеты не называется и провенанс на него не ставится.
+  const share = supplyShare(result.total, await aggregatedSupply(prisma, card.coinId));
+  const understated = share != null && share < SUPPLY_SHARE_MIN;
+
   await writeSupply({
     prisma,
     cardId: card.id,
@@ -627,9 +675,14 @@ async function syncNativeChainCard(args: {
       partial: result.partial,
       claimedDeltaPct: claimedDeltaPct(claimed, result.circulating),
       checkedAt: now,
-      checkError: null,
+      checkError: understated ? "supply_share" : null,
     },
   });
+
+  if (understated) {
+    stats.failed++;
+    return;
+  }
 
   await prisma.coinCard.update({
     where: { id: card.id },
@@ -646,6 +699,28 @@ async function syncNativeChainCard(args: {
 
   if (result.partial) stats.partial++;
   else stats.ok++;
+}
+
+/**
+ * Выпуск монеты по последнему снимку агрегатора — единственное независимое
+ * число, с которым можно сравнить прочитанное. Общий выпуск предпочитается
+ * обороту: сравниваем общее с общим.
+ */
+async function aggregatedSupply(
+  prisma: PrismaLike,
+  coinId: string | null | undefined,
+): Promise<number | null> {
+  if (!coinId || !prisma.coinSnapshot) return null;
+  const snap = await prisma.coinSnapshot.findFirst({
+    where: { coinId },
+    orderBy: { fetchedAt: "desc" },
+    select: { totalSupply: true, circulatingSupply: true },
+  });
+  if (!snap) return null;
+  // Decimal у Prisma — объект; Number() работает и на нём, и на строке.
+  const pick = snap.totalSupply ?? snap.circulatingSupply;
+  const n = pick == null ? NaN : Number(pick);
+  return Number.isFinite(n) && n > 0 ? n : null;
 }
 
 async function writeSupply(args: {

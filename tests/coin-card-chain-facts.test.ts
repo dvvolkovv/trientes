@@ -9,7 +9,7 @@ function node(
   opts: {
     decimals?: number;
     symbol?: string;
-    prefix?: number;
+    prefix?: number | null;
     best?: number;
     finalized?: number;
     stepMs?: number;
@@ -34,7 +34,7 @@ function node(
     let result: unknown = null;
     if (method === "system_properties") {
       result = {
-        ss58Format: opts.prefix ?? 10960,
+        ss58Format: opts.prefix === undefined ? 10960 : opts.prefix,
         tokenDecimals: opts.decimals ?? 12,
         tokenSymbol: opts.symbol ?? "TAL",
       };
@@ -373,5 +373,37 @@ describe("комиссия перевода (слайс T)", () => {
     });
     await run(prisma, node());
     expect((upserts[0] as { create: { mismatches: string[] } }).create.mismatches).toEqual([]);
+  });
+});
+
+describe("сеть без читаемой комиссии (слайс V)", () => {
+  // У HydraDX не совпал набор подписанных расширений, у Moonbeam адреса
+  // 20-байтные: индекс палеты в реестре `null`, и комиссия честно не читается.
+  // Остальные факты сети при этом обязаны прочитаться.
+  it.each(["hydradx", "moonbeam", "moonriver"])(
+    "%s: комиссия fee_unsupported, прочие факты на месте",
+    async (chain) => {
+      const facts = await readChainFacts({ chain, fetchImpl: node({}) });
+      expect(facts.error).toBeNull();
+      expect(facts.transferFeeError).toBe("fee_unsupported");
+      expect(facts.transferFeePlanck).toBeNull();
+      expect(facts.blockSeconds).toBeGreaterThan(0);
+      expect(facts.genesisHash).toBeTruthy();
+    },
+  );
+
+  it("узел не публикует префикс SS58 — расхождения нет", async () => {
+    const facts = await readChainFacts({ chain: "hydradx", fetchImpl: node({ prefix: null }) });
+    const codes = chainMismatches({
+      chainKey: "hydradx",
+      cardSymbol: facts.tokenSymbol ?? "",
+      claimedDecimals: null,
+      facts: {
+        symbol: facts.tokenSymbol,
+        decimals: facts.tokenDecimals,
+        ss58Format: facts.ss58Format,
+      },
+    });
+    expect(codes).not.toContain("SS58_FORMAT");
   });
 });

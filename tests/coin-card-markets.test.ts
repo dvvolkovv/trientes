@@ -360,3 +360,24 @@ describe("pruneCardPricePoints", () => {
     expect(where.at.lt.toISOString()).toBe("2026-08-09T14:37:12.000Z");
   });
 });
+
+describe("supplyForCap и выпуск, относящийся к одной сети", () => {
+  const supply = { circulating: "1000000", totalSupply: "1000000" };
+
+  it("обычная проверенная строка выпуска идёт в капитализацию", () => {
+    const got = supplyForCap({ tokenomics: {}, supply: { ...supply, checkError: null } });
+    expect(got).toEqual({ circulating: "1000000", fdvBase: "1000000", source: "ONCHAIN" });
+  });
+
+  it("supply_share — считаем по заявлению, а не по остатку в одной сети", () => {
+    const got = supplyForCap({
+      tokenomics: { circulating: 999_000_000, total: 1_000_000_000 },
+      supply: { ...supply, checkError: "supply_share" },
+    });
+    expect(got).toEqual({
+      circulating: "999000000",
+      fdvBase: "1000000000",
+      source: "SELF_REPORTED",
+    });
+  });
+});

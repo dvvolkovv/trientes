@@ -3,6 +3,7 @@ import type { FetchLike } from "../src/lib/json-rpc";
 import {
   parseExcluded,
   readSubstrateSupplyFacts,
+  supplyShare,
   syncCardSupply,
 } from "../src/lib/coin-card-supply";
 
@@ -207,5 +208,138 @@ describe("syncCardSupply для нативной сети", () => {
     const upsert = upserts[0] as { update: Record<string, unknown> };
     expect(upsert.update.checkError).toBe("chain_unsupported");
     expect(upsert.update.totalSupply).toBeUndefined();
+  });
+});
+
+describe("выпуск читается с того узла, где он лежит", () => {
+  /** Запоминает адреса, на которые ушли запросы. */
+  function recordingNode(seen: string[]): FetchLike {
+    const issuance = BigInt(1_000_000) * BigInt(10) ** BigInt(12);
+    return async (url, init) => {
+      seen.push(String(url));
+      const { method, params } = JSON.parse(init!.body) as { method: string; params: unknown[] };
+      let result: unknown = null;
+      if (method === "system_properties") {
+        result = { ss58Format: 0, tokenDecimals: 12, tokenSymbol: "DOT" };
+      } else if (method === "chain_getBlockHash") {
+        result = GENESIS;
+      } else if (method === "state_getStorage") {
+        result = String(params[0]).length === 66 ? le(issuance, 16) : accountInfo(BigInt(0), 12);
+      }
+      return { ok: true, status: 200, json: async () => ({ jsonrpc: "2.0", id: 1, result }) };
+    };
+  }
+
+  // Балансы Polkadot переехали в Asset Hub, и на релее остался остаток: выпуск
+  // обязан читаться с того узла, где он настоящий.
+  it("у Polkadot общий выпуск спрашивается у Asset Hub, остальное — у релея", async () => {
+    const seen: string[] = [];
+    await readSubstrateSupplyFacts({
+      chain: "polkadot",
+      excluded: [{ address: ALICE, label: "казна" }],
+      fetchImpl: recordingNode(seen),
+    });
+    expect(seen).toContain("https://polkadot-asset-hub-rpc.polkadot.io");
+    expect(seen).toContain("https://rpc.polkadot.io");
+  });
+
+  it("у сети без переезда все запросы идут на один узел", async () => {
+    const seen: string[] = [];
+    await readSubstrateSupplyFacts({ chain: "taler", excluded: [], fetchImpl: recordingNode(seen) });
+    expect(new Set(seen)).toEqual(new Set(["https://node.taler.uno"]));
+  });
+});
+
+describe("supplyShare", () => {
+  it("доля прочитанного выпуска от заявленного агрегатором", () => {
+    expect(supplyShare("210696", 1_000_000_000)).toBeCloseTo(0.00021, 5);
+    expect(supplyShare("600000", 1_000_000)).toBeCloseTo(0.6, 5);
+    expect(supplyShare("1000000", 1_000_000)).toBe(1);
+    // Прочитано больше заявленного — это не повод скрывать факт: охранник
+    // ловит только недостачу.
+    expect(supplyShare("2000000", 1_000_000)).toBe(2);
+  });
+
+  it("сравнивать не с чем — доли нет", () => {
+    expect(supplyShare("1000", null)).toBeNull();
+    expect(supplyShare("1000", 0)).toBeNull();
+    expect(supplyShare(null, 1000)).toBeNull();
+  });
+});
+
+describe("охранник доли выпуска", () => {
+  function prismaWith(card: Record<string, unknown>, snapshot: Record<string, unknown> | null) {
+    const upserts: Array<Record<string, unknown>> = [];
+    const updates: Array<Record<string, unknown>> = [];
+    const prisma = {
+      coinCard: {
+        findMany: async (args: { where: { supply?: { is?: null } } }) =>
+          args.where.supply?.is === null ? [card] : [],
+        update: async (a: Record<string, unknown>) => {
+          updates.push(a);
+          return {};
+        },
+      },
+      coinCardSupply: {
+        upsert: async (a: Record<string, unknown>) => {
+          upserts.push(a);
+          return {};
+        },
+      },
+      coinSnapshot: { findFirst: async () => snapshot },
+    };
+    return { prisma, upserts, updates };
+  }
+
+  const card = {
+    id: "card1",
+    coinId: "mantra",
+    nativeChain: "polkadot",
+    tokenomics: {},
+    provenance: {},
+    contracts: [],
+    supply: null,
+  };
+
+  // Случай MANTRA: в собственной сети лежит 0,02 % монеты, остальное живёт
+  // снаружи. Такое число нельзя показывать как выпуск монеты.
+  it("прочитано в разы меньше заявленного — число есть, но не как выпуск", async () => {
+    const { prisma, upserts, updates } = prismaWith(card, { totalSupply: "1000000000" });
+    const stats = await syncCardSupply({
+      prisma: prisma as never,
+      fetchImpl: chainNode(BigInt(1_000_000), BigInt(0)),
+      now: new Date("2026-11-09T10:00:00Z"),
+    });
+
+    expect(stats.failed).toBe(1);
+    const data = (upserts[0] as { create: Record<string, unknown> }).create;
+    expect(data.checkError).toBe("supply_share");
+    // Само число сохраняется: карточка покажет «в этой сети N, это M % от
+    // заявленного» — это полезный факт, просто не выпуск монеты.
+    expect(data.totalSupply).toBe("1000000");
+    expect(updates).toHaveLength(0);
+  });
+
+  it("доля в норме — обычная запись с провенансом", async () => {
+    const { prisma, upserts, updates } = prismaWith(card, { totalSupply: "1100000" });
+    const stats = await syncCardSupply({
+      prisma: prisma as never,
+      fetchImpl: chainNode(BigInt(1_000_000), BigInt(0)),
+      now: new Date("2026-11-09T10:00:00Z"),
+    });
+
+    expect(stats.ok).toBe(1);
+    expect((upserts[0] as { create: Record<string, unknown> }).create.checkError).toBeNull();
+    expect(updates).toHaveLength(1);
+  });
+
+  it("снимка агрегатора нет — охранник молчит", async () => {
+    const { prisma, upserts } = prismaWith({ ...card, coinId: null }, null);
+    await syncCardSupply({
+      prisma: prisma as never,
+      fetchImpl: chainNode(BigInt(1_000_000), BigInt(0)),
+      now: new Date("2026-11-09T10:00:00Z"),
+    });
+    expect((upserts[0] as { create: Record<string, unknown> }).create.checkError).toBeNull();
   });
 });

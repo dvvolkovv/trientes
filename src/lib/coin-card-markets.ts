@@ -194,7 +194,7 @@ export async function syncCardMarkets(args: {
       symbol: true,
       provenance: true,
       tokenomics: true,
-      supply: { select: { circulating: true, totalSupply: true } },
+      supply: { select: { circulating: true, totalSupply: true, checkError: true } },
       markets: {
         select: {
           id: true, kind: true, exchangeId: true, exchangeName: true,
@@ -286,7 +286,7 @@ export async function syncCardMarkets(args: {
  */
 export function supplyForCap(card: {
   tokenomics: unknown;
-  supply: { circulating: string; totalSupply: string } | null;
+  supply: { circulating: string; totalSupply: string; checkError?: string | null } | null;
 }): { circulating: string | null; fdvBase: string | null; source: "ONCHAIN" | "SELF_REPORTED" } {
   const t = (card.tokenomics ?? {}) as {
     circulating?: number | null;
@@ -295,7 +295,9 @@ export function supplyForCap(card: {
   };
   const max = typeof t.max === "number" && t.max > 0 ? String(t.max) : null;
 
-  if (card.supply) {
+  // `supply_share` означает, что число прочитано верно, но относится к одной
+  // сети, а не к монете: капитализацию по нему считать нельзя (слайс V).
+  if (card.supply && card.supply.checkError !== "supply_share") {
     return {
       circulating: card.supply.circulating,
       fdvBase: max ?? card.supply.totalSupply,
