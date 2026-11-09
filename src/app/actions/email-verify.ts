@@ -39,7 +39,7 @@ export async function requestEmailVerification(input?: { locale?: string }) {
   });
   if (!r.ok) {
     // Most likely "email_not_configured" — surface a non-blocking warning so
-    // the user can ask the operator to set up Resend.
+    // the user can ask the operator to check the SMTP settings.
     return { ok: false as const, reason: "send_failed" as const };
   }
   return { ok: true as const };
