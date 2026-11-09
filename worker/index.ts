@@ -16,7 +16,13 @@ import { expireStaleRevisions } from "../src/lib/coin-card-expiry";
 import { expireStaleDeletionRequests } from "../src/lib/company-deletion-expiry";
 import { warmProseTranslations } from "../src/lib/prose-warmup";
 import { verifyCardContracts } from "../src/lib/coin-card-onchain";
-import { pruneCardPricePoints, syncCardMarkets } from "../src/lib/coin-card-markets";
+import {
+  computeAnchorPrices,
+  pruneCardPricePoints,
+  syncCardMarkets,
+} from "../src/lib/coin-card-markets";
+import { ALL_CEX_IDS, getSnapshots } from "../src/lib/cex-snapshot";
+import { seedCardMarkets } from "../src/lib/coin-card-market-seed";
 import { expireStaleClaims } from "../src/lib/coin-card-claim";
 import { syncChainFacts } from "../src/lib/coin-card-chain-facts";
 import { syncCardSupply } from "../src/lib/coin-card-supply";
@@ -354,6 +360,37 @@ async function runListingSweepJob() {
 }
 
 /**
+ * Слайс X: посев рынков карточкам, проверенным в сети. У такой карточки нет
+ * проекта, который заявил бы листинг, поэтому рынок заявляем мы — найденный в
+ * снимках бирж и сверенный с опорной ценой, чтобы тикер-двойник не принёс на
+ * карточку цену чужого актива. Сразу после посева зовётся сверка слайса C:
+ * иначе новый рынок простоит без цены до следующего десятиминутного прогона.
+ */
+async function runCardMarketSeedJob() {
+  const t0 = Date.now();
+  try {
+    const snapshots = await getSnapshots(ALL_CEX_IDS, { redis: redis as never });
+    const anchors = computeAnchorPrices(snapshots);
+    const { stats } = await seedCardMarkets({
+      prisma: prisma as never,
+      snapshots,
+      anchors,
+    });
+    if (stats.cards > 0) {
+      console.log(
+        `[worker] card-market seed ok: ${stats.cards} cards, +${stats.created} markets ` +
+          `(${stats.noReference} no reference, ${stats.noPairs} no pairs, ` +
+          `${stats.conflict} price conflict, ${stats.rejected} rejected) ` +
+          `in ${Date.now() - t0}ms`,
+      );
+    }
+    if (stats.created > 0) await runCardMarketSync();
+  } catch (err) {
+    console.error("[worker] card-market seed failed:", err);
+  }
+}
+
+/**
  * Слайс D: просроченные заявки на владение. Автопроверки доказательств нет
  * сознательно — запись в DNS и файл появляются по действию человека, и он же
  * нажимает «Проверить»; воркеру остаётся только гасить просроченные вызовы.
@@ -454,6 +491,9 @@ async function main() {
   cron.schedule("35 * * * *", () => void runChainFactsSweep());
   cron.schedule("45 * * * *", () => void runSupplySweep());
   cron.schedule("25 4 * * *", () => void runListingSweepJob());
+  // Посев рынков — после конвейера листинга: карточка, открытая им сегодня,
+  // получает рынки тем же утром.
+  cron.schedule("40 4 * * *", () => void runCardMarketSeedJob());
   cron.schedule("0 4 * * *", () => void runCleanup());
 
   // Live price feed via Binance WebSocket — top 20 coins.

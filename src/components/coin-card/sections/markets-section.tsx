@@ -69,7 +69,7 @@ export async function MarketsSection({
                 </td>
                 {hasPrices && (
                   <td className="px-4 py-3 text-right num">
-                    {m.priceUsd != null ? `$${formatPrice(m.priceUsd)}` : "—"}
+                    {m.priceUsd != null ? formatPrice(m.priceUsd) : "—"}
                   </td>
                 )}
                 {hasPrices && (
@@ -83,7 +83,7 @@ export async function MarketsSection({
                 )}
                 {hasPrices && (
                   <td className="px-4 py-3 text-right num">
-                    {m.volumeUsd24h != null ? `$${formatCompact(m.volumeUsd24h)}` : "—"}
+                    {m.volumeUsd24h != null ? formatCompact(m.volumeUsd24h) : "—"}
                   </td>
                 )}
                 <td className="px-4 py-3 text-right text-xs">
