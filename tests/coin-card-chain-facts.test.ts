@@ -623,3 +623,229 @@ describe("застрявшая финализация (слайс V)", () => {
     expect(prov["payments.finalitySeconds"]).toBeUndefined();
   });
 });
+
+describe("семья Bitcoin (слайс Y)", () => {
+  const GENESIS_BTC = "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f";
+  const CHECKPOINT_BTC = "00000000000000000002a7c4c1e48d76c5a37902165a270156b7a8d72728a054";
+  const GENESIS_DOGE = "1a91e3dace36e2be3bf030a65679fe821aa1d6ef92e7c9902eb318182c355691";
+
+  /**
+   * Поддельный узел Esplora: тот же инъектируемый fetch, но ответы читаются
+   * через text() — высота головы приходит голым числом.
+   */
+  function esplora(
+    opts: {
+      height?: number;
+      stepMs?: number;
+      genesis?: string;
+      checkpoint?: string;
+      feePerVb?: number;
+      noFees?: boolean;
+    } = {},
+  ): FetchLike {
+    const height = opts.height ?? 975_185;
+    const base = Date.parse("2026-11-09T14:30:00Z");
+    const step = opts.stepMs ?? 600_000;
+    const hashAt = (h: number) =>
+      h === 0
+        ? (opts.genesis ?? GENESIS_BTC)
+        : h === 800_000
+          ? (opts.checkpoint ?? CHECKPOINT_BTC)
+          : h.toString(16).padStart(64, "0");
+
+    return (async (url: string) => {
+      const text = (body: string, status = 200) => ({
+        ok: status >= 200 && status < 300,
+        status,
+        text: async () => body,
+      });
+      if (url.endsWith("/blocks/tip/height")) return text(String(height));
+      if (url.includes("/block-height/")) return text(hashAt(Number(url.split("/block-height/")[1])));
+      if (url.includes("/block/")) {
+        const hash = url.split("/block/")[1];
+        const h =
+          hash === (opts.genesis ?? GENESIS_BTC)
+            ? 0
+            : hash === (opts.checkpoint ?? CHECKPOINT_BTC)
+              ? 800_000
+              : parseInt(hash, 16);
+        return text(
+          JSON.stringify({ id: hash, height: h, timestamp: Math.floor((base - (height - h) * step) / 1000) }),
+        );
+      }
+      if (url.endsWith("/v1/fees/recommended")) {
+        if (opts.noFees) return text('endpoint does not exist "/v1/fees/recommended"', 404);
+        return text(JSON.stringify({ halfHourFee: opts.feePerVb ?? 2 }));
+      }
+      if (url.endsWith("/fee-estimates")) {
+        if (opts.noFees) return text('endpoint does not exist "/fee-estimates"', 404);
+        return text(JSON.stringify({ "6": opts.feePerVb ?? 2 }));
+      }
+      return text("not found", 404);
+    }) as unknown as FetchLike;
+  }
+
+  /** Поддельный узел BlockCypher: Dogecoin и Dash читаются им. */
+  function blockcypher(opts: { height?: number; stepMs?: number; genesis?: string } = {}): FetchLike {
+    const height = opts.height ?? 6_450_537;
+    const base = Date.parse("2026-11-09T14:38:24Z");
+    const step = opts.stepMs ?? 60_000;
+    const hashAt = (h: number) =>
+      h === 0 ? (opts.genesis ?? GENESIS_DOGE) : h.toString(16).padStart(64, "0");
+
+    return (async (url: string) => {
+      const text = (body: string) => ({ ok: true, status: 200, text: async () => body });
+      if (url.includes("/blocks/")) {
+        const h = Number(url.split("/blocks/")[1]);
+        return text(
+          JSON.stringify({
+            hash: hashAt(h),
+            height: h,
+            time: new Date(base - (height - h) * step).toISOString(),
+          }),
+        );
+      }
+      return text(
+        JSON.stringify({
+          name: "DOGE.main",
+          height,
+          hash: hashAt(height),
+          time: new Date(base).toISOString(),
+          medium_fee_per_kb: 62_345_835,
+        }),
+      );
+    }) as unknown as FetchLike;
+  }
+
+  it("читает генезис, время блока и комиссию; финализации в PoW нет", async () => {
+    const facts = await readChainFacts({ chain: "bitcoin", fetchImpl: esplora({ feePerVb: 2 }) });
+    expect(facts.error).toBeNull();
+    expect(facts.family).toBe("BITCOIN");
+    expect(facts.genesisHash).toBe(GENESIS_BTC);
+    expect(facts.blockSeconds).toBe(600);
+    expect(facts.blockSample).toBe(100);
+    expect(facts.bestNumber).toBe(975_185);
+    // Окончательность в PoW не достигается: выдавать соглашение получателя за
+    // измеренный факт нельзя.
+    expect(facts.finalizedNumber).toBeNull();
+    expect(facts.finalityLag).toBeNull();
+    expect(facts.finalitySeconds).toBeNull();
+    // Комиссия: 2 sat/vB × 141 vB = 282 сатоши.
+    expect(facts.transferFeePlanck).toBe("282");
+    expect(facts.transferFeeTokens).toBeCloseTo(0.00000282, 12);
+    expect(facts.transferFeeError).toBeNull();
+    // Тикер и знаки из этих API не читаются — и не подставляются из реестра.
+    expect(facts.tokenSymbol).toBeNull();
+    expect(facts.tokenDecimals).toBeNull();
+    expect(facts.chainId).toBeNull();
+  });
+
+  it("BlockCypher: Dogecoin читается по цене за килобайт и legacy-размеру", async () => {
+    const facts = await readChainFacts({ chain: "dogecoin", fetchImpl: blockcypher() });
+    expect(facts.error).toBeNull();
+    expect(facts.genesisHash).toBe(GENESIS_DOGE);
+    expect(facts.blockSeconds).toBe(60);
+    // 62 345 835 / 1000 × 226 vB, округление вверх до сатоши.
+    expect(facts.transferFeePlanck).toBe("14090159");
+    expect(facts.transferFeeTokens).toBeCloseTo(0.14090159, 10);
+  });
+
+  it("узел отвечает за форк — genesis_mismatch, числа не пишутся", async () => {
+    // Хэш блока 0 у Bitcoin Cash тот же, что у Bitcoin: отличает только блок
+    // выше точки форка.
+    const facts = await readChainFacts({
+      chain: "bitcoin",
+      fetchImpl: esplora({ checkpoint: "f".repeat(64) }),
+    });
+    expect(facts.error).toBe("genesis_mismatch");
+    expect(facts.blockSeconds).toBeNull();
+    expect(facts.transferFeePlanck).toBeNull();
+  });
+
+  it("чужой генезис — тоже genesis_mismatch", async () => {
+    const facts = await readChainFacts({
+      chain: "litecoin",
+      fetchImpl: esplora({ genesis: "a".repeat(64) }),
+    });
+    expect(facts.error).toBe("genesis_mismatch");
+  });
+
+  it("узел не дал оценки комиссии — остальные факты на месте", async () => {
+    const facts = await readChainFacts({ chain: "bitcoin", fetchImpl: esplora({ noFees: true }) });
+    expect(facts.error).toBeNull();
+    expect(facts.transferFeeError).toBe("fee_unsupported");
+    expect(facts.transferFeePlanck).toBeNull();
+    expect(facts.blockSeconds).toBeGreaterThan(0);
+    expect(facts.genesisHash).toBeTruthy();
+  });
+
+  it("переезд ловится по хэшу генезиса, как у Substrate", async () => {
+    const updates: Array<Record<string, unknown>> = [];
+    const prisma = {
+      coinCard: {
+        findMany: async () => [
+          {
+            id: "card1",
+            nativeChain: "bitcoin",
+            symbol: "BTC",
+            tokenomics: {},
+            payments: {},
+            provenance: {},
+            chainFacts: { genesisHash: "b".repeat(64), chainId: null },
+            priceIndex: null,
+          },
+        ],
+        update: async (a: Record<string, unknown>) => {
+          updates.push(a);
+          return {};
+        },
+      },
+      coinCardChainFacts: {
+        upsert: async (a: Record<string, unknown>) => {
+          updates.push(a);
+          return {};
+        },
+      },
+    };
+    const stats = await syncChainFacts({ prisma: prisma as never, fetchImpl: esplora() });
+    expect(stats).toEqual({ cards: 1, ok: 0, failed: 1 });
+    expect((updates[0] as { update: { checkError: string } }).update.checkError).toBe(
+      "genesis_mismatch",
+    );
+  });
+
+  it("провенанс: время блока проверено, финализация — нет", async () => {
+    const updates: Array<Record<string, unknown>> = [];
+    const prisma = {
+      coinCard: {
+        findMany: async () => [
+          {
+            id: "card1",
+            nativeChain: "bitcoin",
+            symbol: "BTC",
+            tokenomics: {},
+            payments: {},
+            provenance: {},
+            chainFacts: null,
+            priceIndex: { priceUsd: 74_554 },
+          },
+        ],
+        update: async (a: Record<string, unknown>) => {
+          updates.push(a);
+          return {};
+        },
+      },
+      coinCardChainFacts: { upsert: async () => ({}) },
+    };
+    await syncChainFacts({ prisma: prisma as never, fetchImpl: esplora() });
+    const prov = (updates[0] as { data: { provenance: Record<string, { kind: string }> } }).data
+      .provenance;
+    expect(prov["payments.blockSeconds"].kind).toBe("VERIFIED_ONCHAIN");
+    expect(prov["payments.finalitySeconds"]).toBeUndefined();
+    // Комиссия в долларах подтверждается: цена монеты известна.
+    expect(prov["payments.feeUsdTypical"].kind).toBe("VERIFIED_ONCHAIN");
+    // Тикер и знаки не прочитаны — проверенными не помечены.
+    expect(prov["chain.symbol"]).toBeUndefined();
+    expect(prov["chain.decimals"]).toBeUndefined();
+  });
+});

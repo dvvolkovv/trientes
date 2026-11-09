@@ -1339,7 +1339,8 @@
         "supply_unreadable": "컨트랙트가 totalSupply에 응답하지 않았습니다.",
         "rpc_unreachable": "노드가 응답하지 않음",
         "rpc_error": "노드가 호출을 거부함",
-        "decode_failed": "해독할 수 없는 응답"
+        "decode_failed": "해독할 수 없는 응답",
+        "supply_unsupported": "이 네트워크에서는 전체 UTXO 집합을 훑어야만 발행량이 증명되며, 공개 노드는 그 호출을 수행하지 않습니다."
       },
       "reason": {
         "card_not_found": "카드를 찾을 수 없습니다.",
@@ -2223,7 +2224,9 @@
       "chainId": "체인 ID",
       "finalityInstant": "같은 블록에서",
       "minGasPrice": "최소 가스 가격",
-      "feeNotMeasured": "노드 기준. 전송 수수료는 아직 측정하지 않음"
+      "feeNotMeasured": "노드 기준. 전송 수수료는 아직 측정하지 않음",
+      "finalityProbabilistic": "확률적 — 확인 수에 따라 높아짐",
+      "transferFeeHintUtxo": "기준 전송: 입력 1개, 출력 2개"
     }
   },
   "inviteCoin": {

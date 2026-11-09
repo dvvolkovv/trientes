@@ -75,11 +75,17 @@ async function main(): Promise<void> {
     );
   }
 
-  await prisma.$disconnect();
 }
 
-main().catch(async (err) => {
-  console.error(err);
-  await prisma.$disconnect();
-  process.exit(1);
-});
+main()
+  .catch((err) => {
+    console.error(err);
+    process.exitCode = 1;
+  })
+  // Соединение с Redis держит процесс живым: без явного закрытия скрипт
+  // заканчивал работу и не выходил — с прошлого прогона так висели три
+  // процесса. Закрываем оба соединения, как это делает `scripts/add-coin.ts`.
+  .finally(async () => {
+    await prisma.$disconnect();
+    redis.disconnect();
+  });

@@ -1339,7 +1339,8 @@
         "supply_unreadable": "Le contrat n'a pas répondu à totalSupply.",
         "rpc_unreachable": "le nœud n'a pas répondu",
         "rpc_error": "le nœud a refusé l'appel",
-        "decode_failed": "réponse illisible"
+        "decode_failed": "réponse illisible",
+        "supply_unsupported": "Sur ce réseau, l'offre n'est prouvée qu'en parcourant tout l'ensemble UTXO, ce que les nœuds publics n'exécutent pas."
       },
       "reason": {
         "card_not_found": "Fiche introuvable.",
@@ -2223,7 +2224,9 @@
       "chainId": "Identifiant de chaîne",
       "finalityInstant": "dans le même bloc",
       "minGasPrice": "Prix du gaz minimum",
-      "feeNotMeasured": "selon le nœud ; frais de transfert pas encore mesurés"
+      "feeNotMeasured": "selon le nœud ; frais de transfert pas encore mesurés",
+      "finalityProbabilistic": "probabiliste — augmente avec les confirmations",
+      "transferFeeHintUtxo": "transfert de référence : 1 entrée, 2 sorties"
     }
   },
   "inviteCoin": {

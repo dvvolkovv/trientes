@@ -8,6 +8,19 @@
  * предпочитает факт, а расхождение показывает рядом (правило слайса B).
  */
 
+import {
+  bitcoinApiUrlFor,
+  resolveBitcoinChain,
+  type BitcoinChain,
+} from "./bitcoin-chains";
+import {
+  measureBitcoinBlockSeconds,
+  readBitcoinBlockHash,
+  readBitcoinFeeRate,
+  readBitcoinTip,
+  transferFeeSats,
+  type TextFetch,
+} from "./bitcoin-rest";
 import { mergeProvenance } from "./coin-card-provenance";
 import { resolveCosmosChain, cosmosRestUrlFor } from "./cosmos-chains";
 import {
@@ -68,7 +81,7 @@ export type ChainFactsError =
   | "genesis_mismatch";
 
 /** Какой ридер отвечал: от этого зависят и подписи в карточке, и охранник переезда. */
-export type ChainFamily = "SUBSTRATE" | "COSMOS";
+export type ChainFamily = "SUBSTRATE" | "COSMOS" | "BITCOIN";
 
 export type ChainFacts = {
   chain: string;
@@ -129,6 +142,7 @@ export async function readChainFacts(args: {
   const substrate = resolveSubstrateChain(args.chain);
   if (substrate) return readSubstrateChainFacts({ ...args, chain: substrate.key });
   if (resolveCosmosChain(args.chain)) return readCosmosChainFacts(args);
+  if (resolveBitcoinChain(args.chain)) return readBitcoinChainFacts(args);
   return { chain: args.chain, family: "SUBSTRATE", ...EMPTY, error: "chain_unsupported" };
 }
 
@@ -231,6 +245,109 @@ async function readCosmosChainFacts(args: {
     };
   } catch (err) {
     return { chain: chain.key, family: "COSMOS", ...EMPTY, error: errorCode(err) };
+  }
+}
+
+/**
+ * Факты цепи семьи Bitcoin (слайс Y). Отличий от двух прежних семей три, и все
+ * они свойства протокола, а не нашей лени:
+ *
+ * 1. **Идентичность — хэш блока 0 и контрольный блок.** Генезис у форков общий
+ *    (Bitcoin Cash, Bitcoin SV, Bitcoin Gold родились из блока 0 Bitcoin),
+ *    поэтому у цепи с форками реестр задаёт ещё и блок выше точки форка.
+ *    Расхождение любого из двух — `genesis_mismatch`, и числа не пишутся: узел
+ *    отвечает не за ту цепь, которую мы в него записали.
+ * 2. **Финализации нет.** В PoW блок не становится окончательным, вероятность
+ *    переписывания лишь падает с подтверждениями. Числа финализации остаются
+ *    `null`, а в карточке стоит «вероятностная» — соглашение о шести
+ *    подтверждениях принадлежит получателю, а не сети, и выдавать его за
+ *    измеренный факт нельзя.
+ * 3. **Тикера и знаков в этих API нет.** Оставляем непрочитанными — тот же
+ *    случай, что Injective, Kava и Secret в семье Cosmos.
+ */
+async function readBitcoinChainFacts(args: {
+  chain: string;
+  fetchImpl?: FetchLike;
+  timeoutMs?: number;
+  sample?: number;
+}): Promise<ChainFacts> {
+  const chain = resolveBitcoinChain(args.chain);
+  if (!chain) return { chain: args.chain, family: "BITCOIN", ...EMPTY, error: "chain_unsupported" };
+
+  const url = bitcoinApiUrlFor(chain);
+  // Ридеры трёх семей принимают инъектируемый fetch, но ответы читают
+  // по-разному: Substrate — json() после POST, Cosmos — json() после GET,
+  // Bitcoin — text(), потому что высота головы приходит голым числом.
+  const opts = { fetchImpl: args.fetchImpl as unknown as TextFetch, timeoutMs: args.timeoutMs };
+  const sample = args.sample ?? BLOCK_SAMPLE;
+
+  try {
+    const genesisHash = await readBitcoinBlockHash(chain, url, 0, opts);
+    if (genesisHash !== chain.genesisHash) {
+      return { chain: chain.key, family: "BITCOIN", ...EMPTY, error: "genesis_mismatch" };
+    }
+    if (chain.checkpoint) {
+      const hash = await readBitcoinBlockHash(chain, url, chain.checkpoint.height, opts);
+      if (hash !== chain.checkpoint.hash) {
+        return { chain: chain.key, family: "BITCOIN", ...EMPTY, error: "genesis_mismatch" };
+      }
+    }
+    const tip = await readBitcoinTip(chain, url, opts);
+    const time = await measureBitcoinBlockSeconds(chain, url, tip, sample, opts);
+    const fee = await readBitcoinTransferFee(chain, url, opts);
+    return {
+      chain: chain.key,
+      family: "BITCOIN",
+      genesisHash,
+      chainId: null,
+      minGasPrice: null,
+      tokenSymbol: null,
+      tokenDecimals: null,
+      ss58Format: null,
+      blockSeconds: time.blockSeconds,
+      blockSample: time.sample,
+      bestNumber: tip.height,
+      finalizedNumber: null,
+      finalityLag: null,
+      finalitySeconds: null,
+      transferFeePlanck: fee.planck,
+      transferFeeTokens: fee.tokens,
+      transferFeeError: fee.error,
+      error: null,
+    };
+  } catch (err) {
+    return { chain: chain.key, family: "BITCOIN", ...EMPTY, error: errorCode(err) };
+  }
+}
+
+/**
+ * Комиссия эталонного перевода в семье Bitcoin: цену за байт оценивает сам
+ * узел, размер перевода (один вход, два выхода) задан реестром. Это модель, и
+ * подпись в карточке называет оба слагаемых.
+ *
+ * Знаки берутся из реестра, а не из сети: прочитать их здесь неоткуда, а во
+ * всей семье единица — сатоши, 10⁻⁸ монеты. Поэтому `tokenDecimals` в фактах
+ * остаётся пустым, но перевод сатоши в монеты возможен.
+ */
+async function readBitcoinTransferFee(
+  chain: BitcoinChain,
+  url: string,
+  opts: { fetchImpl?: TextFetch; timeoutMs?: number },
+): Promise<FeeRead> {
+  try {
+    const rate = await readBitcoinFeeRate(chain, url, opts);
+    if (rate == null) return { ...FEE_UNREAD, error: "fee_unsupported" };
+    const sats = transferFeeSats(rate, chain.txVsize);
+    return {
+      planck: sats.toString(),
+      tokens: Number(sats) / 10 ** chain.decimals,
+      error: null,
+    };
+  } catch (err) {
+    return {
+      ...FEE_UNREAD,
+      error: err instanceof RpcError ? (err.code as TransferFeeError) : "rpc_error",
+    };
   }
 }
 

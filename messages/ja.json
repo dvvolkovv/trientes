@@ -1339,7 +1339,8 @@
         "supply_unreadable": "コントラクトが totalSupply に応答しませんでした。",
         "rpc_unreachable": "ノードが応答しませんでした",
         "rpc_error": "ノードが呼び出しを拒否しました",
-        "decode_failed": "解読できない応答"
+        "decode_failed": "解読できない応答",
+        "supply_unsupported": "このネットワークでは発行量はUTXO集合全体の走査でしか証明できず、公開ノードはその呼び出しを実行しません。"
       },
       "reason": {
         "card_not_found": "カードが見つかりません。",
@@ -2223,7 +2224,9 @@
       "chainId": "チェーン ID",
       "finalityInstant": "同一ブロック内",
       "minGasPrice": "最低ガス価格",
-      "feeNotMeasured": "ノード申告値。送金手数料は未計測"
+      "feeNotMeasured": "ノード申告値。送金手数料は未計測",
+      "finalityProbabilistic": "確率的 — 承認数とともに高まる",
+      "transferFeeHintUtxo": "基準送金: 入力1・出力2"
     }
   },
   "inviteCoin": {

@@ -394,7 +394,7 @@ describe("syncCardSupply", () => {
     });
 
     const stats = await syncCardSupply({ prisma, fetchImpl, now: new Date("2026-11-07T10:00:00Z") });
-    expect(stats).toEqual({ cards: 1, ok: 1, partial: 0, failed: 0 });
+    expect(stats).toEqual({ cards: 1, ok: 1, partial: 0, failed: 0, unsupported: 0 });
 
     const row = supplies.get("card1")!;
     expect(row.totalSupply).toBe("1000");
@@ -476,7 +476,7 @@ describe("syncCardSupply", () => {
       [balanceCall(BURN_ADDRESSES[1])]: uintWord(BigInt(0)),
     });
     const stats = await syncCardSupply({ prisma, fetchImpl });
-    expect(stats).toEqual({ cards: 1, ok: 0, partial: 1, failed: 0 });
+    expect(stats).toEqual({ cards: 1, ok: 0, partial: 1, failed: 0, unsupported: 0 });
     expect(supplies.get("card5")!.partial).toBe(true);
   });
 });

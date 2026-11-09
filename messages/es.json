@@ -1339,7 +1339,8 @@
         "supply_unreadable": "El contrato no respondió a totalSupply.",
         "rpc_unreachable": "el nodo no respondió",
         "rpc_error": "el nodo rechazó la llamada",
-        "decode_failed": "respuesta ilegible"
+        "decode_failed": "respuesta ilegible",
+        "supply_unsupported": "En esta red la emisión solo se demuestra recorriendo todo el conjunto UTXO, y los nodos públicos no ejecutan esa llamada."
       },
       "reason": {
         "card_not_found": "Ficha no encontrada.",
@@ -2223,7 +2224,9 @@
       "chainId": "ID de la cadena",
       "finalityInstant": "en el mismo bloque",
       "minGasPrice": "Precio mínimo del gas",
-      "feeNotMeasured": "según el nodo; la comisión de transferencia aún no se mide"
+      "feeNotMeasured": "según el nodo; la comisión de transferencia aún no se mide",
+      "finalityProbabilistic": "probabilística: crece con las confirmaciones",
+      "transferFeeHintUtxo": "transferencia de referencia: 1 entrada, 2 salidas"
     }
   },
   "inviteCoin": {

@@ -144,7 +144,7 @@ describe("syncCardSupply для нативной сети", () => {
       now: new Date("2026-11-07T10:00:00Z"),
     });
 
-    expect(stats).toEqual({ cards: 1, ok: 1, partial: 0, failed: 0 });
+    expect(stats).toEqual({ cards: 1, ok: 1, partial: 0, failed: 0, unsupported: 0 });
     const data = (upserts[0] as { create: Record<string, unknown> }).create;
     expect(data.method).toBe("SUBSTRATE_V1");
     expect(data.chain).toBe("polkadot");
@@ -205,7 +205,7 @@ describe("syncCardSupply для нативной сети", () => {
       now: new Date("2026-11-07T10:00:00Z"),
     });
 
-    expect(stats).toEqual({ cards: 1, ok: 0, partial: 0, failed: 1 });
+    expect(stats).toEqual({ cards: 1, ok: 0, partial: 0, failed: 1, unsupported: 0 });
     const upsert = upserts[0] as { update: Record<string, unknown> };
     expect(upsert.update.checkError).toBe("chain_unsupported");
     expect(upsert.update.totalSupply).toBeUndefined();

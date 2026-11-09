@@ -1339,7 +1339,8 @@
         "supply_unreadable": "合约未响应 totalSupply。",
         "rpc_unreachable": "节点未响应",
         "rpc_error": "节点拒绝了调用",
-        "decode_failed": "无法解析的返回值"
+        "decode_failed": "无法解析的返回值",
+        "supply_unsupported": "在该网络中，供应量只能通过遍历整个 UTXO 集合来证明，而公共节点不执行该调用。"
       },
       "reason": {
         "card_not_found": "未找到该卡片。",
@@ -2223,7 +2224,9 @@
       "chainId": "链 ID",
       "finalityInstant": "同一区块内",
       "minGasPrice": "最低 Gas 价格",
-      "feeNotMeasured": "来自节点；转账手续费尚未测量"
+      "feeNotMeasured": "来自节点；转账手续费尚未测量",
+      "finalityProbabilistic": "概率性 — 随确认数增加",
+      "transferFeeHintUtxo": "基准转账：1 个输入、2 个输出"
     }
   },
   "inviteCoin": {

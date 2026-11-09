@@ -17,10 +17,10 @@ import { syncCardSupply } from "@/lib/coin-card-supply";
  *   tsx scripts/seed-chain-cards.ts --dump     показать прочитанное таблицей
  *   tsx scripts/seed-chain-cards.ts --publish  опубликовать те, где всё сошлось
  *
- * Фильтр по семье: `--family=SUBSTRATE` или `--family=COSMOS`.
+ * Фильтр по семье: `--family=SUBSTRATE`, `--family=COSMOS` или `--family=BITCOIN`.
  */
 
-type Family = "SUBSTRATE" | "COSMOS";
+type Family = "SUBSTRATE" | "COSMOS" | "BITCOIN";
 
 const args = process.argv.slice(2);
 const has = (flag: string) => args.includes(flag);
@@ -79,7 +79,17 @@ async function fill(): Promise<void> {
     const supply = await syncCardSupply({ prisma: prisma as never, cardId: card.id });
     console.log(
       `  ${card.slug}: факты ${facts.ok ? "ok" : "сбой"}, выпуск ` +
-        `${supply.ok ? "ok" : supply.partial ? "частично" : "сбой"}`,
+        // `unsupported` — свойство семьи (слайс Y: выпуск в UTXO-цепи не
+        // читается), а не сбой чтения: в логе это должно различаться.
+        `${
+          supply.ok
+            ? "ok"
+            : supply.partial
+              ? "частично"
+              : supply.unsupported
+                ? "не читается в этой семье"
+                : "сбой"
+        }`,
     );
   }
 }
@@ -112,11 +122,14 @@ async function publish(): Promise<void> {
   let held = 0;
   for (const card of await seededCards()) {
     if (card.status === "APPROVED") continue;
+    // Выпуск, не читаемый по свойству семьи (слайс Y, UTXO), публикации не
+    // мешает — то же правило, что в `publishBlocker` конвейера листинга.
+    const supplyOk =
+      card.supply && (!card.supply.checkError || card.supply.checkError === "supply_unsupported");
     const ready =
       card.chainFacts &&
       !card.chainFacts.checkError &&
-      card.supply &&
-      !card.supply.checkError &&
+      supplyOk &&
       card.chainFacts.mismatches.length === 0;
     if (!ready) {
       console.log(`  ${card.slug}: держим скрытой — факты не сошлись`);

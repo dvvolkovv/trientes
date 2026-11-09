@@ -10,10 +10,11 @@
  * и карточка добавляет то, чего там нет, — факты, прочитанные из сети.
  */
 
+import { resolveBitcoinChain } from "./bitcoin-chains";
 import { resolveCosmosChain } from "./cosmos-chains";
 import { resolveSubstrateChain } from "./substrate-chains";
 
-export type ChainFamily = "SUBSTRATE" | "COSMOS";
+export type ChainFamily = "SUBSTRATE" | "COSMOS" | "BITCOIN";
 
 export type SeedRow = {
   /** `Coin.id` в нашей базе: карточка становится слоем поверх его страницы. */
@@ -64,12 +65,21 @@ export const SEED_CARDS: readonly SeedRow[] = [
   { coinId: "persistence", chain: "persistence" },
   { coinId: "agoric", chain: "agoric" },
   { coinId: "band-protocol", chain: "band" },
+  // Семья Bitcoin (слайс Y): выпуск в этой семье не читается, остальные факты
+  // читаются. Монеты Dogecoin в каталоге нет — её заведёт конвейер листинга из
+  // реестра, как было с Polkadot.
+  { coinId: "bitcoin", chain: "bitcoin" },
+  { coinId: "litecoin", chain: "litecoin" },
+  { coinId: "dogecoin", chain: "dogecoin" },
+  { coinId: "dash", chain: "dash" },
+  { coinId: "digibyte", chain: "digibyte" },
 ];
 
 /** К какой семье относится ключ сети. Ключи реестров не пересекаются. */
 export function chainFamily(chain: string): ChainFamily | null {
   if (resolveSubstrateChain(chain)) return "SUBSTRATE";
   if (resolveCosmosChain(chain)) return "COSMOS";
+  if (resolveBitcoinChain(chain)) return "BITCOIN";
   return null;
 }
 

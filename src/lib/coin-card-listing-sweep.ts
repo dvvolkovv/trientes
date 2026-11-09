@@ -13,6 +13,7 @@
  * админ.
  */
 
+import { resolveBitcoinChain } from "./bitcoin-chains";
 import { chainFamily, plannedCard, SEED_CARDS } from "./coin-card-seed";
 import { resolveCosmosChain } from "./cosmos-chains";
 import { resolveSubstrateChain } from "./substrate-chains";
@@ -53,7 +54,13 @@ export function publishBlocker(card: PublishCandidate, now: Date): string | null
     return `mismatch:${card.chainFacts.mismatches.join(",")}`;
   if (now.getTime() - card.chainFacts.checkedAt.getTime() > MAX_FACTS_AGE_MS) return "facts_stale";
   if (!card.supply) return "no_supply";
-  if (card.supply.checkError) return `supply_error:${card.supply.checkError}`;
+  // Выпуск, не читаемый по свойству семьи (слайс Y: в UTXO-цепи его доказывает
+  // только проход по всему UTXO-множеству, и публичные узлы его не выполняют),
+  // препятствием не считается — иначе карточка Bitcoin ждала бы человека
+  // вечно. Сбой чтения по-прежнему держит карточку закрытой.
+  if (card.supply.checkError && card.supply.checkError !== "supply_unsupported") {
+    return `supply_error:${card.supply.checkError}`;
+  }
   return null;
 }
 
@@ -63,6 +70,8 @@ export function coinFromRegistry(chain: string): { symbol: string; name: string 
   if (sub) return { symbol: sub.symbol, name: sub.label };
   const cos = resolveCosmosChain(chain);
   if (cos) return { symbol: cos.symbol, name: cos.label };
+  const btc = resolveBitcoinChain(chain);
+  if (btc) return { symbol: btc.symbol, name: btc.label };
   return null;
 }
 

@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { formatFeeAmount } from "@/lib/format";
+import { resolveBitcoinChain } from "@/lib/bitcoin-chains";
 import { getProvenance } from "@/lib/coin-card-provenance";
 import { resolveCosmosChain } from "@/lib/cosmos-chains";
 import { resolveSubstrateChain } from "@/lib/substrate-chains";
@@ -52,11 +53,17 @@ export async function NativeChainBlock({
   const t = await getTranslations("coinCard.nativeChain");
   const substrate = resolveSubstrateChain(nativeChain);
   const cosmos = substrate ? null : resolveCosmosChain(nativeChain);
-  const label = substrate?.label ?? cosmos?.label ?? nativeChain;
+  const bitcoin = substrate || cosmos ? null : resolveBitcoinChain(nativeChain);
+  const label = substrate?.label ?? cosmos?.label ?? bitcoin?.label ?? nativeChain;
   const verified = facts && !facts.checkError ? facts : null;
   // В Cosmos блок окончателен в момент включения: показывать «0 секунд» было бы
   // верно по числу и непонятно по смыслу.
   const instantFinality = facts?.family === "COSMOS";
+  // В PoW окончательности нет вовсе: вероятность переписывания лишь падает с
+  // подтверждениями. Соглашение «шесть подтверждений» принадлежит получателю, а
+  // не сети, поэтому числа здесь нет — есть время блока выше, из которого
+  // читатель считает своё.
+  const probabilisticFinality = facts?.family === "BITCOIN";
 
   return (
     <div className="border border-hairline rounded-md p-3 bg-card space-y-2">
@@ -111,6 +118,12 @@ export async function NativeChainBlock({
               provenance={provenance}
             />
           )}
+          {probabilisticFinality && verified.finalitySeconds == null && (
+            <div className="flex flex-wrap items-baseline justify-between gap-3">
+              <dt className="text-[14px] text-muted">{t("finality")}</dt>
+              <dd className="text-[14px]">{t("finalityProbabilistic")}</dd>
+            </div>
+          )}
           {/* Комиссию перевода этой семье пока никто не считает: узел сообщает
               только минимальную цену газа — показываем как есть, с базовым
               деномом, в котором узел её и назвал (0.002 utia за единицу газа). */}
@@ -140,7 +153,9 @@ export async function NativeChainBlock({
                     ≈ ${formatFeeAmount(verified.transferFeeTokens * priceUsd)}
                   </span>
                 )}
-                <span className="text-muted text-xs ml-2">{t("transferFeeHint")}</span>
+                <span className="text-muted text-xs ml-2">
+                  {probabilisticFinality ? t("transferFeeHintUtxo") : t("transferFeeHint")}
+                </span>
               </dd>
             </div>
           )}

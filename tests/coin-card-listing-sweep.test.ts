@@ -90,3 +90,27 @@ describe("coinFromRegistry", () => {
     expect(coinFromRegistry("cosmos")).toBeNull();
   });
 });
+
+describe("семья Bitcoin в конвейере (слайс Y)", () => {
+  it("выпуск, не читаемый по свойству семьи, карточку не держит", () => {
+    const btc = card({
+      nativeChain: "bitcoin",
+      supply: { checkError: "supply_unsupported" },
+    });
+    expect(publishBlocker(btc, NOW)).toBeNull();
+  });
+
+  it("сбой чтения выпуска по-прежнему держит карточку закрытой", () => {
+    const broken = card({ nativeChain: "bitcoin", supply: { checkError: "rpc_unreachable" } });
+    expect(publishBlocker(broken, NOW)).toBe("supply_error:rpc_unreachable");
+  });
+
+  it("строки выпуска нет вовсе — это «ещё не читали», а не свойство семьи", () => {
+    expect(publishBlocker(card({ nativeChain: "bitcoin", supply: null }), NOW)).toBe("no_supply");
+  });
+
+  it("монета заводится из третьего реестра", () => {
+    expect(coinFromRegistry("dogecoin")).toEqual({ symbol: "DOGE", name: "Dogecoin" });
+    expect(coinFromRegistry("bitcoin")).toEqual({ symbol: "BTC", name: "Bitcoin" });
+  });
+});

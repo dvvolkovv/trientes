@@ -1339,7 +1339,8 @@
         "supply_unreadable": "Sözleşme totalSupply çağrısına yanıt vermedi.",
         "rpc_unreachable": "düğüm yanıt vermedi",
         "rpc_error": "düğüm çağrıyı reddetti",
-        "decode_failed": "okunamayan yanıt"
+        "decode_failed": "okunamayan yanıt",
+        "supply_unsupported": "Bu ağda arz ancak tüm UTXO kümesi taranarak kanıtlanır ve genel düğümler bu çağrıyı çalıştırmaz."
       },
       "reason": {
         "card_not_found": "Kart bulunamadı.",
@@ -2223,7 +2224,9 @@
       "chainId": "Zincir kimliği",
       "finalityInstant": "aynı blokta",
       "minGasPrice": "Asgari gaz fiyatı",
-      "feeNotMeasured": "düğüme göre; transfer ücreti henüz ölçülmüyor"
+      "feeNotMeasured": "düğüme göre; transfer ücreti henüz ölçülmüyor",
+      "finalityProbabilistic": "olasılıksal — onay sayısıyla artar",
+      "transferFeeHintUtxo": "referans transfer: 1 girdi, 2 çıktı"
     }
   },
   "inviteCoin": {

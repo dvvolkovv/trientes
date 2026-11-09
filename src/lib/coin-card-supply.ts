@@ -10,6 +10,7 @@
  * правится. Факт сети живёт в `CoinCardSupply`, расхождение показывается рядом.
  */
 
+import { resolveBitcoinChain } from "./bitcoin-chains";
 import { SELECTORS, decodeUint, encodeAddressArg, isEvmAddress, normalizeAddress } from "./evm-abi";
 import { resolveEvmChain, rpcUrlFor } from "./evm-chains";
 import { ethCall, RpcError, type FetchLike } from "./evm-rpc";
@@ -469,6 +470,13 @@ export type SupplySyncStats = {
   ok: number;
   partial: number;
   failed: number;
+  /**
+   * Карточки, у которых выпуск не читается по свойству семьи, а не из-за сбоя
+   * (слайс Y: в UTXO-цепи его доказывает только проход по всему
+   * UTXO-множеству, и публичные узлы его не выполняют). Отдельно от `failed`:
+   * иначе лог прогона каждый час сообщал бы о сбоях, которых нет.
+   */
+  unsupported: number;
 };
 
 /**
@@ -532,7 +540,7 @@ export async function syncCardSupply(args: {
         });
   const cards = [...never, ...stale];
 
-  const stats: SupplySyncStats = { cards: 0, ok: 0, partial: 0, failed: 0 };
+  const stats: SupplySyncStats = { cards: 0, ok: 0, partial: 0, failed: 0, unsupported: 0 };
 
   for (const card of cards) {
     // Нативная монета своей сети: контракта нет, читаем саму цепь.
@@ -645,6 +653,10 @@ async function syncNativeChainCard(args: {
   const chainKey = card.nativeChain ?? "";
   if (resolveCosmosChain(chainKey)) {
     await syncCosmosCard(args);
+    return;
+  }
+  if (resolveBitcoinChain(chainKey)) {
+    await syncBitcoinCard(args);
     return;
   }
   const chain = resolveSubstrateChain(chainKey);
@@ -881,6 +893,45 @@ async function syncCosmosCard(args: {
     },
   });
   stats.ok++;
+}
+
+/**
+ * Один проход по нативной монете семьи Bitcoin (слайс Y). Сети здесь не
+ * касаемся вовсе: выпуск в UTXO-цепи доказывает только `gettxoutsetinfo` —
+ * сумма всего UTXO-множества, — а публичные узлы этот вызов не выполняют
+ * (живая проверка 9 ноября: полная нода обрывает запрос через 30 секунд).
+ *
+ * Записываем это состояние, а не оставляем пустоту: `supply_unsupported` —
+ * признанный факт о семье, по которому конвейер листинга вправе открыть
+ * карточку, тогда как отсутствие строки означало бы «ещё не читали».
+ *
+ * Чего здесь сознательно нет: выпуска по расписанию эмиссии. Высота цепи
+ * известна, субсидия halving-эпох известна, но это наше вычисление, а не факт
+ * сети, и у Dogecoin оно просто неверно — до блока 600 000 награда была
+ * случайной.
+ */
+async function syncBitcoinCard(args: {
+  prisma: PrismaLike;
+  card: CardRow;
+  now: Date;
+  stats: SupplySyncStats;
+}): Promise<void> {
+  const { prisma, card, now, stats } = args;
+  const chain = resolveBitcoinChain(card.nativeChain ?? "")!;
+  await writeSupply({
+    prisma,
+    cardId: card.id,
+    data: {
+      chain: chain.key,
+      address: chain.genesisHash,
+      decimals: chain.decimals,
+      method: "BITCOIN_V1",
+      checkedAt: now,
+      checkError: "supply_unsupported",
+    },
+    createDefaults: true,
+  });
+  stats.unsupported++;
 }
 
 async function writeSupply(args: {
