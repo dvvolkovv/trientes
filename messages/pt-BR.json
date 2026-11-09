@@ -1408,7 +1408,10 @@
       "PROJECT_CLAIMED": "Reivindicado pelo projeto",
       "PROJECT_CLAIMED_note": "O projeto comprovou controle do contrato ou do domínio.",
       "FULLY_VERIFIED": "Totalmente verificado",
-      "FULLY_VERIFIED_note": "Reivindicado, auditado, com equipe e entidade jurídica divulgadas."
+      "FULLY_VERIFIED_note": "Reivindicado, auditado, com equipe e entidade jurídica divulgadas.",
+      "SEEDED": "Mantido pela Trientes",
+      "SEEDED_note": "A Trientes criou este cartão. O projeto não declarou nada aqui — mostramos apenas fatos lidos da rede.",
+      "SEEDED_cta": "Esta moeda é sua? Solicite o cartão."
     },
     "wizard": {
       "steps": {
@@ -2214,7 +2217,9 @@
       },
       "transferFee": "Taxa de transferência",
       "transferFeeFree": "sem taxa",
-      "transferFeeHint": "transferência de uma moeda"
+      "transferFeeHint": "transferência de uma moeda",
+      "supplyHere": "Emissão nesta rede",
+      "supplyHereHint": "Refere-se a esta rede, não à moeda como um todo"
     }
   },
   "inviteCoin": {

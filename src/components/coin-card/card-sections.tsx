@@ -38,6 +38,9 @@ export function CoinCardSections({
         nativeChain={card.nativeChain}
         chainFacts={card.chainFacts}
         priceUsd={card.priceIndex?.priceUsd ?? null}
+        networkSupply={
+          card.supply?.checkError === "supply_share" ? card.supply.totalSupply : null
+        }
       />
       <TokenomicsSection
         tokenomics={card.tokenomics}

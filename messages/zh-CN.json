@@ -1408,7 +1408,10 @@
       "PROJECT_CLAIMED": "项目方已认领",
       "PROJECT_CLAIMED_note": "项目方已证明对合约或域名的控制权。",
       "FULLY_VERIFIED": "完全验证",
-      "FULLY_VERIFIED_note": "已认领、已审计，团队与法律实体均已披露。"
+      "FULLY_VERIFIED_note": "已认领、已审计，团队与法律实体均已披露。",
+      "SEEDED": "由 Trientes 维护",
+      "SEEDED_note": "本卡片由 Trientes 创建。项目方未在此作任何声明，仅展示从网络读取的事实。",
+      "SEEDED_cta": "这是您的币吗？申请接管卡片。"
     },
     "wizard": {
       "steps": {
@@ -2214,7 +2217,9 @@
       },
       "transferFee": "转账手续费",
       "transferFeeFree": "无手续费",
-      "transferFeeHint": "转账一枚代币"
+      "transferFeeHint": "转账一枚代币",
+      "supplyHere": "本网络内的发行量",
+      "supplyHereHint": "仅限本网络，不代表该币的总量"
     }
   },
   "inviteCoin": {

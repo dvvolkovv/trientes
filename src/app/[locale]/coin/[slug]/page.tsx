@@ -33,6 +33,15 @@ export const revalidate = 3600;
 const SITE = process.env.PUBLIC_ORIGIN ?? "https://trientes.org";
 
 /**
+ * Карточку завели мы, а не проект: куратора нет, компании нет — заявить права
+ * на неё никто не пытался. Признак выводится, а не хранится отдельным полем:
+ * «никто не заявил» — это ровно отсутствие и того, и другого.
+ */
+function isSeededCard(card: { stewardUserId: string | null; companyId: string | null }): boolean {
+  return card.stewardUserId == null && card.companyId == null;
+}
+
+/**
  * Определённый язык источника запоминается, чтобы не определять его снова, и
  * чтобы проект мог его поправить в секции IDENTITY. Запись без ожидания:
  * страница не должна её ждать, а промах просто повторится.
@@ -117,7 +126,11 @@ export default async function CoinDetailPage({
       return (
         <main className="max-w-[1600px] mx-auto px-4 md:px-12 xl:px-20 py-8 md:py-12 space-y-10 md:space-y-14">
           <CoinCardHeader card={loc.card} />
-          <TrustPlaque trust={loc.card.trust} />
+          <TrustPlaque
+            trust={loc.card.trust}
+            seeded={isSeededCard(loc.card)}
+            locale={locale}
+          />
           <CardDescription
             description={loc.card.description}
             provenance={loc.card.provenance}
@@ -250,7 +263,7 @@ export default async function CoinDetailPage({
       <CoinLinks coin={coin} />
       {card && (
         <>
-          <TrustPlaque trust={card.trust} />
+          <TrustPlaque trust={card.trust} seeded={isSeededCard(card)} locale={locale} />
           <CoinCardSections
             card={card}
             translated={localizedCard?.translated ?? false}

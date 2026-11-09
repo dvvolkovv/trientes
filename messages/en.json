@@ -1408,7 +1408,10 @@
       "PROJECT_CLAIMED": "Claimed by the project",
       "PROJECT_CLAIMED_note": "The project proved control of the contract or domain.",
       "FULLY_VERIFIED": "Fully verified",
-      "FULLY_VERIFIED_note": "Claimed, audited, with a disclosed team and legal entity."
+      "FULLY_VERIFIED_note": "Claimed, audited, with a disclosed team and legal entity.",
+      "SEEDED": "Maintained by Trientes",
+      "SEEDED_note": "Trientes created this card. The project has claimed nothing here — only facts read from the network are shown.",
+      "SEEDED_cta": "Is this your coin? Request the card."
     },
     "wizard": {
       "steps": {
@@ -2214,7 +2217,9 @@
       },
       "transferFee": "Transfer fee",
       "transferFeeFree": "no fee",
-      "transferFeeHint": "one-coin transfer"
+      "transferFeeHint": "one-coin transfer",
+      "supplyHere": "Supply in this network",
+      "supplyHereHint": "Belongs to this network, not to the coin as a whole"
     }
   },
   "inviteCoin": {

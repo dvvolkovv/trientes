@@ -1408,7 +1408,10 @@
       "PROJECT_CLAIMED": "プロジェクトが権利主張済み",
       "PROJECT_CLAIMED_note": "プロジェクトがコントラクトまたはドメインの管理権を証明しました。",
       "FULLY_VERIFIED": "完全検証済み",
-      "FULLY_VERIFIED_note": "権利主張済み・監査済み・チームと法人を開示。"
+      "FULLY_VERIFIED_note": "権利主張済み・監査済み・チームと法人を開示。",
+      "SEEDED": "Trientes が管理",
+      "SEEDED_note": "このカードは Trientes が作成しました。プロジェクトからの申告はなく、ネットワークから読み取った事実のみを表示しています。",
+      "SEEDED_cta": "あなたのコインですか？カードを引き継げます。"
     },
     "wizard": {
       "steps": {
@@ -2214,7 +2217,9 @@
       },
       "transferFee": "送金手数料",
       "transferFeeFree": "手数料なし",
-      "transferFeeHint": "1コインの送金"
+      "transferFeeHint": "1コインの送金",
+      "supplyHere": "このネットワークの発行量",
+      "supplyHereHint": "コイン全体ではなく、このネットワークに限った値です"
     }
   },
   "inviteCoin": {

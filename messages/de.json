@@ -1408,7 +1408,10 @@
       "PROJECT_CLAIMED": "Vom Projekt beansprucht",
       "PROJECT_CLAIMED_note": "Das Projekt hat Kontrolle über Contract oder Domain nachgewiesen.",
       "FULLY_VERIFIED": "Vollständig verifiziert",
-      "FULLY_VERIFIED_note": "Beansprucht, auditiert, mit offengelegtem Team und Rechtsträger."
+      "FULLY_VERIFIED_note": "Beansprucht, auditiert, mit offengelegtem Team und Rechtsträger.",
+      "SEEDED": "Von Trientes gepflegt",
+      "SEEDED_note": "Diese Karte wurde von Trientes angelegt. Das Projekt hat hier nichts angegeben — gezeigt werden nur aus dem Netzwerk gelesene Fakten.",
+      "SEEDED_cta": "Ist das Ihre Münze? Karte anfordern."
     },
     "wizard": {
       "steps": {
@@ -2214,7 +2217,9 @@
       },
       "transferFee": "Überweisungsgebühr",
       "transferFeeFree": "keine Gebühr",
-      "transferFeeHint": "Überweisung einer Münze"
+      "transferFeeHint": "Überweisung einer Münze",
+      "supplyHere": "Umlauf in diesem Netzwerk",
+      "supplyHereHint": "Gilt für dieses Netzwerk, nicht für die Münze insgesamt"
     }
   },
   "inviteCoin": {

@@ -1408,7 +1408,10 @@
       "PROJECT_CLAIMED": "Revendiqué par le projet",
       "PROJECT_CLAIMED_note": "Le projet a prouvé le contrôle du contrat ou du domaine.",
       "FULLY_VERIFIED": "Entièrement vérifié",
-      "FULLY_VERIFIED_note": "Revendiqué, audité, avec équipe et entité juridique divulguées."
+      "FULLY_VERIFIED_note": "Revendiqué, audité, avec équipe et entité juridique divulguées.",
+      "SEEDED": "Tenue par Trientes",
+      "SEEDED_note": "Cette fiche a été créée par Trientes. Le projet n'a rien déclaré ici — seuls les faits lus sur le réseau sont affichés.",
+      "SEEDED_cta": "C'est votre monnaie ? Demandez la fiche."
     },
     "wizard": {
       "steps": {
@@ -2214,7 +2217,9 @@
       },
       "transferFee": "Frais de transfert",
       "transferFeeFree": "sans frais",
-      "transferFeeHint": "transfert d'une pièce"
+      "transferFeeHint": "transfert d'une pièce",
+      "supplyHere": "Émission sur ce réseau",
+      "supplyHereHint": "Concerne ce réseau, pas l'ensemble de la monnaie"
     }
   },
   "inviteCoin": {

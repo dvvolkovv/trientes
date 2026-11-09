@@ -1408,7 +1408,10 @@
       "PROJECT_CLAIMED": "Proje tarafından sahiplenildi",
       "PROJECT_CLAIMED_note": "Proje, kontrat veya alan adı kontrolünü kanıtladı.",
       "FULLY_VERIFIED": "Tamamen doğrulanmış",
-      "FULLY_VERIFIED_note": "Sahiplenilmiş, denetlenmiş, ekip ve tüzel kişilik açıklanmış."
+      "FULLY_VERIFIED_note": "Sahiplenilmiş, denetlenmiş, ekip ve tüzel kişilik açıklanmış.",
+      "SEEDED": "Trientes tarafından tutuluyor",
+      "SEEDED_note": "Bu kartı Trientes oluşturdu. Proje burada hiçbir beyanda bulunmadı — yalnızca ağdan okunan gerçekler gösteriliyor.",
+      "SEEDED_cta": "Bu sizin paranız mı? Kartı talep edin."
     },
     "wizard": {
       "steps": {
@@ -2214,7 +2217,9 @@
       },
       "transferFee": "Transfer ücreti",
       "transferFeeFree": "ücret yok",
-      "transferFeeHint": "bir coin transferi"
+      "transferFeeHint": "bir coin transferi",
+      "supplyHere": "Bu ağdaki arz",
+      "supplyHereHint": "Paranın tamamı için değil, yalnızca bu ağ için geçerlidir"
     }
   },
   "inviteCoin": {

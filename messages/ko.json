@@ -1408,7 +1408,10 @@
       "PROJECT_CLAIMED": "프로젝트가 소유권을 확인함",
       "PROJECT_CLAIMED_note": "프로젝트가 컨트랙트 또는 도메인의 통제권을 증명했습니다.",
       "FULLY_VERIFIED": "완전 검증됨",
-      "FULLY_VERIFIED_note": "소유권 확인, 감사 완료, 팀과 법인 공개."
+      "FULLY_VERIFIED_note": "소유권 확인, 감사 완료, 팀과 법인 공개.",
+      "SEEDED": "Trientes 관리",
+      "SEEDED_note": "이 카드는 Trientes가 만들었습니다. 프로젝트가 신고한 내용은 없으며, 네트워크에서 읽은 사실만 표시합니다.",
+      "SEEDED_cta": "본인의 코인인가요? 카드를 가져가세요."
     },
     "wizard": {
       "steps": {
@@ -2214,7 +2217,9 @@
       },
       "transferFee": "전송 수수료",
       "transferFeeFree": "수수료 없음",
-      "transferFeeHint": "코인 1개 전송"
+      "transferFeeHint": "코인 1개 전송",
+      "supplyHere": "이 네트워크의 발행량",
+      "supplyHereHint": "코인 전체가 아니라 이 네트워크에 해당하는 값입니다"
     }
   },
   "inviteCoin": {

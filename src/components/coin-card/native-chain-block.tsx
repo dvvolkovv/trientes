@@ -31,12 +31,19 @@ export async function NativeChainBlock({
   cardSymbol,
   provenance,
   priceUsd = null,
+  networkSupply = null,
 }: {
   nativeChain: string;
   facts: ChainFactsView | null;
   cardSymbol: string;
   provenance: unknown;
   priceUsd?: number | null;
+  /**
+   * Выпуск, прочитанный в этой сети, когда он не годится как выпуск монеты
+   * (`supply_share`): в разделе токеномики его показывать нельзя — он там
+   * означал бы выпуск монеты, — а как факт сети он на месте.
+   */
+  networkSupply?: string | null;
 }) {
   const t = await getTranslations("coinCard.nativeChain");
   const chain = resolveSubstrateChain(nativeChain);
@@ -113,6 +120,16 @@ export async function NativeChainBlock({
             </div>
           )}
         </dl>
+      )}
+
+      {networkSupply && (
+        <div className="flex flex-wrap items-baseline justify-between gap-3">
+          <dt className="text-[14px] text-muted">{t("supplyHere")}</dt>
+          <dd className="text-[14px] num">
+            {networkSupply}
+            <span className="text-muted text-xs ml-2">{t("supplyHereHint")}</span>
+          </dd>
+        </div>
       )}
 
       {verified?.mismatches.includes("SYMBOL") && verified.tokenSymbol && (

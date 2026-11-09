@@ -1408,7 +1408,10 @@
       "PROJECT_CLAIMED": "Reclamado por el proyecto",
       "PROJECT_CLAIMED_note": "El proyecto demostró control del contrato o del dominio.",
       "FULLY_VERIFIED": "Totalmente verificado",
-      "FULLY_VERIFIED_note": "Reclamado, auditado, con equipo y entidad legal revelados."
+      "FULLY_VERIFIED_note": "Reclamado, auditado, con equipo y entidad legal revelados.",
+      "SEEDED": "Mantenida por Trientes",
+      "SEEDED_note": "Trientes creó esta ficha. El proyecto no ha declarado nada aquí: solo se muestran datos leídos de la red.",
+      "SEEDED_cta": "¿Es tu moneda? Solicita la ficha."
     },
     "wizard": {
       "steps": {
@@ -2214,7 +2217,9 @@
       },
       "transferFee": "Comisión de transferencia",
       "transferFeeFree": "sin comisión",
-      "transferFeeHint": "transferencia de una moneda"
+      "transferFeeHint": "transferencia de una moneda",
+      "supplyHere": "Emisión en esta red",
+      "supplyHereHint": "Corresponde a esta red, no a la moneda en su conjunto"
     }
   },
   "inviteCoin": {
