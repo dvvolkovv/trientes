@@ -543,3 +543,62 @@ describe("семья Cosmos (слайс V)", () => {
     expect(Object.keys(written.update).sort()).toEqual(["checkError", "checkedAt"]);
   });
 });
+
+describe("застрявшая финализация (слайс V)", () => {
+  it("отставание больше часа — секунд финализации нет, числа голов остаются", async () => {
+    // Живой прогон 9 ноября: публичный узел Astar отдал лучшую голову на 9810
+    // блоков впереди финализированной. Умножение дало бы «финализация 17 часов»
+    // — это состояние узла в тот миг, а не свойство сети.
+    const f = await readChainFacts({
+      chain: "astar",
+      fetchImpl: node({ best: 1_000_100, finalized: 1_000_100 - 9810 }),
+    });
+    expect(f.error).toBeNull();
+    expect(f.finalityLag).toBe(9810);
+    expect(f.finalitySeconds).toBeNull();
+    expect(f.bestNumber).toBe(1_000_100);
+    expect(f.finalizedNumber).toBe(1_000_100 - 9810);
+  });
+
+  it("отставание в пределах порога считается как раньше", async () => {
+    const f = await readChainFacts({
+      chain: "astar",
+      fetchImpl: node({ best: 1_000_100, finalized: 1_000_000 }),
+    });
+    expect(f.finalityLag).toBe(100);
+    expect(f.finalitySeconds).toBe(600);
+  });
+
+  it("при застрявшей финализации провенанс её не помечает проверенной", async () => {
+    const updates: Array<Record<string, unknown>> = [];
+    const prisma = {
+      coinCard: {
+        findMany: async () => [
+          {
+            id: "card1",
+            nativeChain: "astar",
+            symbol: "ASTR",
+            tokenomics: {},
+            provenance: {},
+            chainFacts: null,
+          },
+        ],
+        update: async (a: Record<string, unknown>) => {
+          updates.push(a);
+          return {};
+        },
+      },
+      coinCardChainFacts: { upsert: async () => ({}) },
+    };
+
+    await syncChainFacts({
+      prisma: prisma as never,
+      fetchImpl: node({ best: 1_000_100, finalized: 1_000_100 - 9810 }),
+    });
+
+    const prov = (updates[0] as { data: { provenance: Record<string, { kind: string }> } }).data
+      .provenance;
+    expect(prov["payments.blockSeconds"].kind).toBe("VERIFIED_ONCHAIN");
+    expect(prov["payments.finalitySeconds"]).toBeUndefined();
+  });
+});

@@ -111,39 +111,14 @@ export default async function CoinDetailPage({
       snapshots: { orderBy: { fetchedAt: "desc" }, take: 1 },
     },
   });
-  // A self-listed card has no Coin row and no snapshot behind it — there is no
-  // external feed by design. Serve it as a standalone page under the same
-  // canonical /coin/<slug> URL instead of 404ing.
-  if (!coin) {
-    const only = await getPublicCoinCard(slug);
-    if (only) {
-      // Проза карточки введена проектом на одном языке; посетителю она
-      // показывается на языке интерфейса с пометкой о машинном переводе.
-      const loc = await localizeCoinCard(only, locale, wantsOriginal);
-      void persistCardSourceLocale(only.id, only.sourceLocale, loc.sourceLocale);
-      const originalHref = `/${locale}/coin/${slug}?orig=1#card-description`;
-      const badge = loc.translated ? <TranslatedBadge originalHref={originalHref} /> : null;
-      return (
-        <main className="max-w-[1600px] mx-auto px-4 md:px-12 xl:px-20 py-8 md:py-12 space-y-10 md:space-y-14">
-          <CoinCardHeader card={loc.card} />
-          <TrustPlaque
-            trust={loc.card.trust}
-            seeded={isSeededCard(loc.card)}
-            locale={locale}
-          />
-          <CardDescription
-            description={loc.card.description}
-            provenance={loc.card.provenance}
-            badge={badge}
-          />
-          <CoinCardSections
-            card={loc.card}
-            translated={loc.translated}
-            originalHref={originalHref}
-          />
-        </main>
-      );
-    }
+  // Карточка живёт и без рыночных данных. Самостоятельно заведённая карточка
+  // не имеет строки Coin вовсе — внешнего фида у неё нет по замыслу. У
+  // посеянной (слайс V) монета есть, а снимка фид не даёт: Secret, AtomOne и
+  // Saga он не считает. В обоих случаях страница отдаётся как одна карточка под
+  // тем же адресом /coin/<slug>, а не 404.
+  if (!coin || !coin.snapshots[0]) {
+    const only = await renderCardOnly(slug, locale, wantsOriginal);
+    if (only) return only;
   }
 
   if (!coin || !coin.snapshots[0]) {
@@ -288,6 +263,48 @@ export default async function CoinDetailPage({
           <NewsRail items={news} locale={locale} />
         </section>
       )}
+    </main>
+  );
+}
+
+/**
+ * Страница, на которой кроме карточки ничего нет: ни графика, ни рынков,
+ * потому что рыночного снимка за монетой не стоит. Вынесена из тела страницы,
+ * чтобы один и тот же вид отдавался и монете без строки Coin, и монете, которую
+ * рыночный фид не считает.
+ */
+async function renderCardOnly(
+  slug: string,
+  locale: string,
+  wantsOriginal: boolean,
+) {
+  const only = await getPublicCoinCard(slug);
+  if (!only) return null;
+
+  // Проза карточки введена проектом на одном языке; посетителю она
+  // показывается на языке интерфейса с пометкой о машинном переводе.
+  const loc = await localizeCoinCard(only, locale, wantsOriginal);
+  void persistCardSourceLocale(only.id, only.sourceLocale, loc.sourceLocale);
+  const originalHref = `/${locale}/coin/${slug}?orig=1#card-description`;
+  const badge = loc.translated ? <TranslatedBadge originalHref={originalHref} /> : null;
+  return (
+    <main className="max-w-[1600px] mx-auto px-4 md:px-12 xl:px-20 py-8 md:py-12 space-y-10 md:space-y-14">
+      <CoinCardHeader card={loc.card} />
+      <TrustPlaque
+        trust={loc.card.trust}
+        seeded={isSeededCard(loc.card)}
+        locale={locale}
+      />
+      <CardDescription
+        description={loc.card.description}
+        provenance={loc.card.provenance}
+        badge={badge}
+      />
+      <CoinCardSections
+        card={loc.card}
+        translated={loc.translated}
+        originalHref={originalHref}
+      />
     </main>
   );
 }

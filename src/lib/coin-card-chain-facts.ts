@@ -32,6 +32,23 @@ import {
 export const BLOCK_SAMPLE = 100;
 
 /**
+ * Предел отставания финализации, за которым число перестаёт быть свойством
+ * сети. Живой прогон 9 ноября поймал у публичного узла Astar лучшую голову на
+ * 9810 блоков впереди финализированной — умножение дало «финализация 17
+ * часов». Это застрявшая финализация у цепи или у самого узла в тот миг, и
+ * показывать её как измеренную скорость сети нельзя. Порог в 600 блоков — это
+ * час на шестисекундной цепи: всё, что дольше, разбирается руками по
+ * `finalityLag`, который остаётся записанным.
+ */
+export const FINALITY_LAG_MAX = 600;
+
+/** Секунды финализации, если отставание правдоподобно; иначе их нет. */
+export function finalitySecondsFor(lag: number, blockSeconds: number): number | null {
+  if (lag > FINALITY_LAG_MAX) return null;
+  return Math.round(lag * blockSeconds * 100) / 100;
+}
+
+/**
  * Почему комиссия неизвестна. Отдельно от `checkError`: сбой расчёта комиссии
  * не отменяет остальных фактов сети, а ноль у комиссии — допустимое значение,
  * поэтому «нет данных» отличается от «ноль» типом, а не магическим числом.
@@ -150,7 +167,7 @@ async function readSubstrateChainFacts(args: {
       bestNumber: numbers.best,
       finalizedNumber: numbers.finalized,
       finalityLag: numbers.lag,
-      finalitySeconds: Math.round(numbers.lag * time.blockSeconds * 100) / 100,
+      finalitySeconds: finalitySecondsFor(numbers.lag, time.blockSeconds),
       transferFeePlanck: fee.planck,
       transferFeeTokens: fee.tokens,
       transferFeeError: fee.error,
@@ -472,7 +489,9 @@ export async function syncChainFacts(args: {
       data: {
         provenance: mergeProvenance(card.provenance, {
           "payments.blockSeconds": entry,
-          "payments.finalitySeconds": entry,
+          // Застрявшую финализацию мы не записали числом — помечать её
+          // проверенной тоже нечем.
+          ...(facts.finalitySeconds != null ? { "payments.finalitySeconds": entry } : {}),
           // Реестр денома есть не у всякой сети Cosmos: чего не прочитали, то и
           // не помечаем проверенным.
           ...(facts.tokenSymbol != null ? { "chain.symbol": entry } : {}),
