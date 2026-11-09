@@ -12,9 +12,10 @@
 
 import { resolveBitcoinChain } from "./bitcoin-chains";
 import { resolveCosmosChain } from "./cosmos-chains";
+import { resolveEvmChain } from "./evm-chains";
 import { resolveSubstrateChain } from "./substrate-chains";
 
-export type ChainFamily = "SUBSTRATE" | "COSMOS" | "BITCOIN";
+export type ChainFamily = "SUBSTRATE" | "COSMOS" | "BITCOIN" | "EVM";
 
 export type SeedRow = {
   /** `Coin.id` в нашей базе: карточка становится слоем поверх его страницы. */
@@ -73,6 +74,23 @@ export const SEED_CARDS: readonly SeedRow[] = [
   { coinId: "dogecoin", chain: "dogecoin" },
   { coinId: "dash", chain: "dash" },
   { coinId: "digibyte", chain: "digibyte" },
+  // Нативные монеты сетей EVM (слайс Z). Сетей L2, нативная монета которых —
+  // тот же ETH (Arbitrum, Optimism, Base), здесь нет сознательно: карточка одна
+  // на монету, и у ETH она привязана к Ethereum.
+  { coinId: "ethereum", chain: "ethereum" },
+  { coinId: "binancecoin", chain: "bsc" },
+  { coinId: "polygon-ecosystem-token", chain: "polygon" },
+  { coinId: "avalanche-2", chain: "avalanche" },
+  { coinId: "crypto-com-chain", chain: "cronos" },
+  { coinId: "sonic-3", chain: "sonic" },
+  { coinId: "berachain-bera", chain: "berachain" },
+  { coinId: "sei-network", chain: "sei" },
+  { coinId: "hyperliquid", chain: "hyperliquid" },
+  { coinId: "mantle", chain: "mantle" },
+  { coinId: "celo", chain: "celo" },
+  { coinId: "flare-networks", chain: "flare" },
+  { coinId: "ronin", chain: "ronin" },
+  { coinId: "kaia", chain: "kaia" },
 ];
 
 /** К какой семье относится ключ сети. Ключи реестров не пересекаются. */
@@ -80,6 +98,9 @@ export function chainFamily(chain: string): ChainFamily | null {
   if (resolveSubstrateChain(chain)) return "SUBSTRATE";
   if (resolveCosmosChain(chain)) return "COSMOS";
   if (resolveBitcoinChain(chain)) return "BITCOIN";
+  // EVM спрашивается последним: его реестр разбирает алиасы («eth», «bnb»,
+  // «matic»), и спрошенный первым он мог бы перехватить ключ другой семьи.
+  if (resolveEvmChain(chain)) return "EVM";
   return null;
 }
 

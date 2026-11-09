@@ -2226,7 +2226,8 @@
       "minGasPrice": "Precio mínimo del gas",
       "feeNotMeasured": "según el nodo; la comisión de transferencia aún no se mide",
       "finalityProbabilistic": "probabilística: crece con las confirmaciones",
-      "transferFeeHintUtxo": "transferencia de referencia: 1 entrada, 2 salidas"
+      "transferFeeHintUtxo": "transferencia de referencia: 1 entrada, 2 salidas",
+      "transferFeeHintEvm": "transferencia sin datos, 21 000 de gas"
     }
   },
   "inviteCoin": {

@@ -86,8 +86,14 @@ describe("coinFromRegistry", () => {
   });
 
   it("незнакомая сеть монету не создаёт", () => {
-    expect(coinFromRegistry("ethereum")).toBeNull();
+    expect(coinFromRegistry("solana")).toBeNull();
+    // Родовое слово семьи сетью не считается: ключ Cosmos Hub — `cosmoshub`.
     expect(coinFromRegistry("cosmos")).toBeNull();
+  });
+
+  it("сеть EVM монету создаёт из своего реестра (слайс Z)", () => {
+    expect(coinFromRegistry("ethereum")).toEqual({ symbol: "ETH", name: "Ethereum" });
+    expect(coinFromRegistry("bsc")).toEqual({ symbol: "BNB", name: "BNB Chain" });
   });
 });
 

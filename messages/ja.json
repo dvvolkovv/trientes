@@ -2226,7 +2226,8 @@
       "minGasPrice": "最低ガス価格",
       "feeNotMeasured": "ノード申告値。送金手数料は未計測",
       "finalityProbabilistic": "確率的 — 承認数とともに高まる",
-      "transferFeeHintUtxo": "基準送金: 入力1・出力2"
+      "transferFeeHintUtxo": "基準送金: 入力1・出力2",
+      "transferFeeHintEvm": "データなしの送金・ガス21,000"
     }
   },
   "inviteCoin": {

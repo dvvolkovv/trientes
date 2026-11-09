@@ -2226,7 +2226,8 @@
       "minGasPrice": "최소 가스 가격",
       "feeNotMeasured": "노드 기준. 전송 수수료는 아직 측정하지 않음",
       "finalityProbabilistic": "확률적 — 확인 수에 따라 높아짐",
-      "transferFeeHintUtxo": "기준 전송: 입력 1개, 출력 2개"
+      "transferFeeHintUtxo": "기준 전송: 입력 1개, 출력 2개",
+      "transferFeeHintEvm": "데이터 없는 전송, 가스 21,000"
     }
   },
   "inviteCoin": {

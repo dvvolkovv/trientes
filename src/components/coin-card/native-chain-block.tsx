@@ -3,6 +3,7 @@ import { formatFeeAmount } from "@/lib/format";
 import { resolveBitcoinChain } from "@/lib/bitcoin-chains";
 import { getProvenance } from "@/lib/coin-card-provenance";
 import { resolveCosmosChain } from "@/lib/cosmos-chains";
+import { resolveEvmChain } from "@/lib/evm-chains";
 import { resolveSubstrateChain } from "@/lib/substrate-chains";
 import { ProvenanceBadge } from "./provenance-badge";
 
@@ -54,11 +55,14 @@ export async function NativeChainBlock({
   const substrate = resolveSubstrateChain(nativeChain);
   const cosmos = substrate ? null : resolveCosmosChain(nativeChain);
   const bitcoin = substrate || cosmos ? null : resolveBitcoinChain(nativeChain);
-  const label = substrate?.label ?? cosmos?.label ?? bitcoin?.label ?? nativeChain;
+  const evm = substrate || cosmos || bitcoin ? null : resolveEvmChain(nativeChain);
+  const label =
+    substrate?.label ?? cosmos?.label ?? bitcoin?.label ?? evm?.label ?? nativeChain;
   const verified = facts && !facts.checkError ? facts : null;
-  // В Cosmos блок окончателен в момент включения: показывать «0 секунд» было бы
-  // верно по числу и непонятно по смыслу.
-  const instantFinality = facts?.family === "COSMOS";
+  // Ноль секунд финализации — это «окончателен в момент включения»: верно по
+  // числу и непонятно по смыслу. Решается по значению, а не по семье: так
+  // отвечают и Cosmos, и половина сетей EVM (Cronos, Sonic, Hyperliquid).
+  const instantFinality = facts?.finalitySeconds === 0;
   // В PoW окончательности нет вовсе: вероятность переписывания лишь падает с
   // подтверждениями. Соглашение «шесть подтверждений» принадлежит получателю, а
   // не сети, поэтому числа здесь нет — есть время блока выше, из которого
@@ -154,7 +158,11 @@ export async function NativeChainBlock({
                   </span>
                 )}
                 <span className="text-muted text-xs ml-2">
-                  {probabilisticFinality ? t("transferFeeHintUtxo") : t("transferFeeHint")}
+                  {probabilisticFinality
+                    ? t("transferFeeHintUtxo")
+                    : facts?.family === "EVM"
+                      ? t("transferFeeHintEvm")
+                      : t("transferFeeHint")}
                 </span>
               </dd>
             </div>
@@ -178,15 +186,17 @@ export async function NativeChainBlock({
         </p>
       )}
 
-      {facts?.genesisHash && (
+      {/* У EVM есть и то и другое: chainId — идентичность, хэш генезиса —
+          дополнительная проверка там, где узел отдаёт блок 0. */}
+      {facts?.chainId && (
         <p className="font-mono text-xs break-all text-muted">
-          {t("genesis")}: {facts.genesisHash}
+          {t("chainId")}: {facts.chainId}
         </p>
       )}
 
-      {!facts?.genesisHash && facts?.chainId && (
+      {facts?.genesisHash && (
         <p className="font-mono text-xs break-all text-muted">
-          {t("chainId")}: {facts.chainId}
+          {t("genesis")}: {facts.genesisHash}
         </p>
       )}
 

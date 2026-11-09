@@ -659,6 +659,14 @@ async function syncNativeChainCard(args: {
     await syncBitcoinCard(args);
     return;
   }
+  // Нативная монета сети EVM: контракта у неё нет, а значит нет и
+  // `totalSupply()`. Узел знает балансы адресов, но не сумму по всем — её не
+  // считает никто. Отличие от семьи Bitcoin только в причине: там вызов есть,
+  // но публичные узлы его не выполняют, здесь вызова нет вовсе.
+  if (resolveEvmChain(chainKey)) {
+    await syncEvmNativeCard(args);
+    return;
+  }
   const chain = resolveSubstrateChain(chainKey);
 
   if (!chain) {
@@ -926,6 +934,36 @@ async function syncBitcoinCard(args: {
       address: chain.genesisHash,
       decimals: chain.decimals,
       method: "BITCOIN_V1",
+      checkedAt: now,
+      checkError: "supply_unsupported",
+    },
+    createDefaults: true,
+  });
+  stats.unsupported++;
+}
+
+/**
+ * Один проход по нативной монете сети EVM (слайс Z). Как и в семье Bitcoin,
+ * выпуск не читается — но причина иная, и она записана кодом
+ * `supply_unsupported` с методом `EVM_NATIVE_V1`.
+ */
+async function syncEvmNativeCard(args: {
+  prisma: PrismaLike;
+  card: CardRow;
+  now: Date;
+  stats: SupplySyncStats;
+}): Promise<void> {
+  const { prisma, card, now, stats } = args;
+  const chain = resolveEvmChain(card.nativeChain ?? "")!;
+  await writeSupply({
+    prisma,
+    cardId: card.id,
+    data: {
+      chain: chain.key,
+      // Идентичность сети EVM — chainId: блок 0 отдают не все узлы.
+      address: String(chain.chainId),
+      decimals: chain.decimals,
+      method: "EVM_NATIVE_V1",
       checkedAt: now,
       checkError: "supply_unsupported",
     },

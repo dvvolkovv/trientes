@@ -30,6 +30,16 @@ import {
   readCosmosMinGasPrice,
   type HttpFetch,
 } from "./cosmos-rest";
+import {
+  finalityLagOf,
+  measureEvmBlockSeconds,
+  readEvmBlock,
+  readEvmChainId,
+  readEvmGasPrice,
+  readEvmHead,
+  transferFeeWei,
+} from "./evm-chain-read";
+import { resolveEvmChain, rpcUrlFor, type EvmChain } from "./evm-chains";
 import { RpcError, type FetchLike } from "./json-rpc";
 import { resolveSubstrateChain, substrateRpcUrlFor } from "./substrate-chains";
 import {
@@ -45,20 +55,27 @@ import {
 export const BLOCK_SAMPLE = 100;
 
 /**
- * Предел отставания финализации, за которым число перестаёт быть свойством
- * сети. Живой прогон 9 ноября поймал у публичного узла Astar лучшую голову на
- * 9810 блоков впереди финализированной — умножение дало «финализация 17
- * часов». Это застрявшая финализация у цепи или у самого узла в тот миг, и
- * показывать её как измеренную скорость сети нельзя. Порог в 600 блоков — это
- * час на шестисекундной цепи: всё, что дольше, разбирается руками по
- * `finalityLag`, который остаётся записанным.
+ * Предел времени финализации, за которым число перестаёт быть свойством сети.
+ * Живой прогон 9 ноября поймал у публичного узла Astar лучшую голову на 9810
+ * блоков впереди финализированной — умножение дало «финализация 17 часов». Это
+ * застрявшая финализация у цепи или у самого узла в тот миг, и показывать её
+ * как измеренную скорость сети нельзя.
+ *
+ * Порог задан в **секундах, а не в блоках** (слайс Z): у цепи с блоком 0,25 с
+ * прежние 600 блоков — это две минуты, то есть порог отрезал бы нормальную
+ * финальность, а у Celo отставание в полмиллиона блоков он ловил лишь случайно.
+ * Единица, в которой это суждение имеет смысл, — время: два часа. Astar (16,4 ч)
+ * и Celo (144 ч) отрезаются, Mantle (24 мин) и Ronin (30 мин) проходят.
+ *
+ * Отставание в блоках хранится всегда — по нему разбираются руками.
  */
-export const FINALITY_LAG_MAX = 600;
+export const FINALITY_SECONDS_MAX = 2 * 60 * 60;
 
-/** Секунды финализации, если отставание правдоподобно; иначе их нет. */
+/** Секунды финализации, если время правдоподобно; иначе их нет. */
 export function finalitySecondsFor(lag: number, blockSeconds: number): number | null {
-  if (lag > FINALITY_LAG_MAX) return null;
-  return Math.round(lag * blockSeconds * 100) / 100;
+  const seconds = Math.round(lag * blockSeconds * 100) / 100;
+  if (seconds > FINALITY_SECONDS_MAX) return null;
+  return seconds;
 }
 
 /**
@@ -81,7 +98,7 @@ export type ChainFactsError =
   | "genesis_mismatch";
 
 /** Какой ридер отвечал: от этого зависят и подписи в карточке, и охранник переезда. */
-export type ChainFamily = "SUBSTRATE" | "COSMOS" | "BITCOIN";
+export type ChainFamily = "SUBSTRATE" | "COSMOS" | "BITCOIN" | "EVM";
 
 export type ChainFacts = {
   chain: string;
@@ -143,6 +160,10 @@ export async function readChainFacts(args: {
   if (substrate) return readSubstrateChainFacts({ ...args, chain: substrate.key });
   if (resolveCosmosChain(args.chain)) return readCosmosChainFacts(args);
   if (resolveBitcoinChain(args.chain)) return readBitcoinChainFacts(args);
+  // Реестр EVM спрашивается последним: его `resolveEvmChain` разбирает алиасы
+  // («eth», «bnb», «matic»), и спрошенный первым он перехватывал бы ключи
+  // других семей.
+  if (resolveEvmChain(args.chain)) return readEvmChainFacts(args);
   return { chain: args.chain, family: "SUBSTRATE", ...EMPTY, error: "chain_unsupported" };
 }
 
@@ -351,6 +372,103 @@ async function readBitcoinTransferFee(
   }
 }
 
+/**
+ * Факты сети EVM для нативной монеты (слайс Z). Чем эта семья отличается от
+ * трёх прежних:
+ *
+ * 1. **Идентичность — `chainId`, и проверка жёсткая.** Он закреплён консенсусом
+ *    (входит в подпись транзакции как защита от повтора) и у живой сети не
+ *    меняется, поэтому несовпадение с реестром означает подмену адреса, а не
+ *    переезд сети: числа не пишутся вовсе. В семье Cosmos chain-id читается из
+ *    заголовка блока как самоназвание узла, и там это мягкое расхождение.
+ * 2. **Хэш генезиса — дополнительная проверка, где узел его отдаёт.** Cronos и
+ *    Hyperliquid блок 0 не держат, и это не сбой.
+ * 3. **Финализация настоящая:** тег `finalized` отдаёт блок, который сеть
+ *    считает необратимым. Цепь без этого тега отвечает пустотой — тогда чисел
+ *    финализации просто нет.
+ * 4. **Комиссия — самая чистая из четырёх семей:** цену газа оценивает узел, а
+ *    21 000 газа за перевод без данных — константа протокола, а не выбранный
+ *    нами размер, как в семье Bitcoin.
+ */
+async function readEvmChainFacts(args: {
+  chain: string;
+  fetchImpl?: FetchLike;
+  timeoutMs?: number;
+  sample?: number;
+}): Promise<ChainFacts> {
+  const chain = resolveEvmChain(args.chain);
+  if (!chain) return { chain: args.chain, family: "EVM", ...EMPTY, error: "chain_unsupported" };
+
+  const url = rpcUrlFor(chain);
+  const opts = { fetchImpl: args.fetchImpl, timeoutMs: args.timeoutMs };
+  const sample = args.sample ?? BLOCK_SAMPLE;
+
+  try {
+    const chainId = await readEvmChainId(url, opts);
+    if (chainId !== chain.chainId) {
+      return { chain: chain.key, family: "EVM", ...EMPTY, error: "genesis_mismatch" };
+    }
+    // Блок 0 спрашиваем только там, где реестр знает ответ: у обрезанной базы
+    // этого блока нет, и спрашивать его незачем.
+    const genesis = chain.genesisHash ? await readEvmBlock(url, 0, opts) : null;
+    if (genesis && genesis.hash !== chain.genesisHash) {
+      return { chain: chain.key, family: "EVM", ...EMPTY, error: "genesis_mismatch" };
+    }
+
+    const head = await readEvmHead(url, opts);
+    const time = await measureEvmBlockSeconds(url, head, sample, opts);
+    const finalized = await readEvmBlock(url, "finalized", opts);
+    const lag = finalized ? finalityLagOf(head.number, finalized.number) : null;
+    const fee = await readEvmTransferFee(chain, url, opts);
+
+    return {
+      chain: chain.key,
+      family: "EVM",
+      genesisHash: genesis?.hash ?? null,
+      chainId: String(chainId),
+      minGasPrice: null,
+      tokenSymbol: null,
+      tokenDecimals: null,
+      ss58Format: null,
+      blockSeconds: time.blockSeconds,
+      blockSample: time.sample,
+      bestNumber: head.number,
+      finalizedNumber: finalized?.number ?? null,
+      finalityLag: lag,
+      finalitySeconds: lag == null ? null : finalitySecondsFor(lag, time.blockSeconds),
+      transferFeePlanck: fee.planck,
+      transferFeeTokens: fee.tokens,
+      transferFeeError: fee.error,
+      error: null,
+    };
+  } catch (err) {
+    return { chain: chain.key, family: "EVM", ...EMPTY, error: errorCode(err) };
+  }
+}
+
+/** Комиссия перевода в EVM: цена газа от узла × 21 000 газа из протокола. */
+async function readEvmTransferFee(
+  chain: EvmChain,
+  url: string,
+  opts: { fetchImpl?: FetchLike; timeoutMs?: number },
+): Promise<FeeRead> {
+  try {
+    const gasPrice = await readEvmGasPrice(url, opts);
+    if (gasPrice == null) return { ...FEE_UNREAD, error: "fee_unsupported" };
+    const wei = transferFeeWei(gasPrice, chain.transferGas);
+    return {
+      planck: wei.toString(),
+      tokens: Number(wei) / 10 ** chain.decimals,
+      error: null,
+    };
+  } catch (err) {
+    return {
+      ...FEE_UNREAD,
+      error: err instanceof RpcError ? (err.code as TransferFeeError) : "rpc_error",
+    };
+  }
+}
+
 type FeeRead = {
   planck: string | null;
   tokens: number | null;
@@ -527,9 +645,11 @@ export async function syncChainFacts(args: {
     // Идентичность сети изменилась — узел переехал на другую цепь. Числа не
     // перезаписываем: это повод для разбора руками, а не новость о монете.
     // У Substrate идентичность — хэш генезиса, у Cosmos — chain-id.
-    const identity = facts.family === "COSMOS" ? facts.chainId : facts.genesisHash;
-    const stored =
-      facts.family === "COSMOS" ? card.chainFacts?.chainId : card.chainFacts?.genesisHash;
+    // У Cosmos и EVM идентичность сети — chain-id, у Substrate и Bitcoin —
+    // хэш генезиса (в EVM блок 0 отдают не все узлы, а chainId отдают все).
+    const identityByChainId = facts.family === "COSMOS" || facts.family === "EVM";
+    const identity = identityByChainId ? facts.chainId : facts.genesisHash;
+    const stored = identityByChainId ? card.chainFacts?.chainId : card.chainFacts?.genesisHash;
     // Записанная идентичность пуста, когда первое чтение сорвалось: такую
     // строку новая, успешно прочитанная, вправе заполнить. Со сравнением
     // «пусто !== прочитано» карточка застревала в genesis_mismatch навсегда —

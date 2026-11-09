@@ -17,10 +17,10 @@ import { syncCardSupply } from "@/lib/coin-card-supply";
  *   tsx scripts/seed-chain-cards.ts --dump     показать прочитанное таблицей
  *   tsx scripts/seed-chain-cards.ts --publish  опубликовать те, где всё сошлось
  *
- * Фильтр по семье: `--family=SUBSTRATE`, `--family=COSMOS` или `--family=BITCOIN`.
+ * Фильтр по семье: `--family=SUBSTRATE`, `COSMOS`, `BITCOIN` или `EVM`.
  */
 
-type Family = "SUBSTRATE" | "COSMOS" | "BITCOIN";
+type Family = "SUBSTRATE" | "COSMOS" | "BITCOIN" | "EVM";
 
 const args = process.argv.slice(2);
 const has = (flag: string) => args.includes(flag);

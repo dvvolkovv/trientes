@@ -2226,7 +2226,8 @@
       "minGasPrice": "Minimum gas price",
       "feeNotMeasured": "per node; transfer fee not measured yet",
       "finalityProbabilistic": "probabilistic — grows with confirmations",
-      "transferFeeHintUtxo": "reference transfer: 1 input, 2 outputs"
+      "transferFeeHintUtxo": "reference transfer: 1 input, 2 outputs",
+      "transferFeeHintEvm": "transfer with no data, 21,000 gas"
     }
   },
   "inviteCoin": {

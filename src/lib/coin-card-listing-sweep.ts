@@ -16,6 +16,7 @@
 import { resolveBitcoinChain } from "./bitcoin-chains";
 import { chainFamily, plannedCard, SEED_CARDS } from "./coin-card-seed";
 import { resolveCosmosChain } from "./cosmos-chains";
+import { resolveEvmChain } from "./evm-chains";
 import { resolveSubstrateChain } from "./substrate-chains";
 
 /** Сколько карточка должна прожить до автопубликации. */
@@ -72,6 +73,8 @@ export function coinFromRegistry(chain: string): { symbol: string; name: string 
   if (cos) return { symbol: cos.symbol, name: cos.label };
   const btc = resolveBitcoinChain(chain);
   if (btc) return { symbol: btc.symbol, name: btc.label };
+  const evm = resolveEvmChain(chain);
+  if (evm) return { symbol: evm.symbol, name: evm.label };
   return null;
 }
 

@@ -2226,7 +2226,8 @@
       "minGasPrice": "最低 Gas 价格",
       "feeNotMeasured": "来自节点；转账手续费尚未测量",
       "finalityProbabilistic": "概率性 — 随确认数增加",
-      "transferFeeHintUtxo": "基准转账：1 个输入、2 个输出"
+      "transferFeeHintUtxo": "基准转账：1 个输入、2 个输出",
+      "transferFeeHintEvm": "无数据转账，21,000 gas"
     }
   },
   "inviteCoin": {

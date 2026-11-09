@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import type { FetchLike } from "../src/lib/json-rpc";
-import { chainMismatches, readChainFacts, syncChainFacts } from "../src/lib/coin-card-chain-facts";
+import {
+  chainMismatches,
+  finalitySecondsFor,
+  FINALITY_SECONDS_MAX,
+  readChainFacts,
+  syncChainFacts,
+} from "../src/lib/coin-card-chain-facts";
 
 const GENESIS = `0x${"ab".repeat(32)}`;
 
@@ -847,5 +853,189 @@ describe("семья Bitcoin (слайс Y)", () => {
     // Тикер и знаки не прочитаны — проверенными не помечены.
     expect(prov["chain.symbol"]).toBeUndefined();
     expect(prov["chain.decimals"]).toBeUndefined();
+  });
+});
+
+describe("семья EVM (слайс Z)", () => {
+  const GENESIS_ETH = "0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3";
+
+  /** Поддельный узел EVM: тот же инъектируемый fetch, POST с `eth_*`. */
+  function evm(
+    opts: {
+      chainId?: number;
+      head?: number;
+      finalized?: number | null;
+      stepMs?: number;
+      genesis?: string;
+      gasPrice?: bigint;
+      gasUnsupported?: boolean;
+    } = {},
+  ): FetchLike {
+    const head = opts.head ?? 23_900_100;
+    const finalized = opts.finalized === undefined ? head - 93 : opts.finalized;
+    const step = opts.stepMs ?? 12_000;
+    const baseMs = Date.parse("2026-11-09T15:00:00Z");
+
+    return (async (_url: string, init?: { body: string }) => {
+      const { method, params } = JSON.parse(init!.body) as { method: string; params: unknown[] };
+      const reply = (result: unknown) => ({ ok: true, status: 200, json: async () => ({ result }) });
+      if (method === "eth_chainId") return reply(`0x${(opts.chainId ?? 1).toString(16)}`);
+      if (method === "eth_gasPrice") {
+        if (opts.gasUnsupported) {
+          return { ok: true, status: 200, json: async () => ({ error: { message: "no method" } }) };
+        }
+        return reply(`0x${(opts.gasPrice ?? BigInt(367_300_000)).toString(16)}`);
+      }
+      if (method === "eth_getBlockByNumber") {
+        const tag = params[0] as string;
+        let n: number;
+        if (tag === "latest") n = head;
+        else if (tag === "finalized") {
+          if (finalized === null) return reply(null);
+          n = finalized;
+        } else n = Number(BigInt(tag));
+        return reply({
+          number: `0x${n.toString(16)}`,
+          hash: n === 0 ? (opts.genesis ?? GENESIS_ETH) : `0x${n.toString(16).padStart(64, "0")}`,
+          timestamp: `0x${Math.floor((baseMs - (head - n) * step) / 1000).toString(16)}`,
+        });
+      }
+      return { ok: true, status: 200, json: async () => ({ error: { message: "unknown" } }) };
+    }) as unknown as FetchLike;
+  }
+
+  it("читает chainId, генезис, время блока, финализацию и комиссию", async () => {
+    const facts = await readChainFacts({ chain: "ethereum", fetchImpl: evm() });
+    expect(facts.error).toBeNull();
+    expect(facts.family).toBe("EVM");
+    expect(facts.chainId).toBe("1");
+    expect(facts.genesisHash).toBe(GENESIS_ETH);
+    expect(facts.blockSeconds).toBe(12);
+    expect(facts.bestNumber).toBe(23_900_100);
+    // Финализация в EVM настоящая: тег finalized отдаёт необратимый блок.
+    expect(facts.finalizedNumber).toBe(23_900_100 - 93);
+    expect(facts.finalityLag).toBe(93);
+    expect(facts.finalitySeconds).toBe(1116);
+    // 0,3673 gwei × 21 000 газа.
+    expect(facts.transferFeePlanck).toBe("7713300000000");
+    expect(facts.transferFeeTokens).toBeCloseTo(0.0000077133, 12);
+    expect(facts.transferFeeError).toBeNull();
+    // Тикер и знаки из eth_* не читаются и из реестра не подставляются.
+    expect(facts.tokenSymbol).toBeNull();
+    expect(facts.tokenDecimals).toBeNull();
+  });
+
+  it("узел отвечает другим chainId — числа не пишутся вовсе", async () => {
+    // chainId закреплён консенсусом: его несовпадение — подмена адреса, а не
+    // переезд сети, поэтому это жёсткая ошибка, а не мягкое расхождение.
+    const facts = await readChainFacts({ chain: "ethereum", fetchImpl: evm({ chainId: 56 }) });
+    expect(facts.error).toBe("genesis_mismatch");
+    expect(facts.blockSeconds).toBeNull();
+    expect(facts.transferFeePlanck).toBeNull();
+  });
+
+  it("чужой хэш генезиса при верном chainId — тоже жёсткая ошибка", async () => {
+    const facts = await readChainFacts({
+      chain: "ethereum",
+      fetchImpl: evm({ genesis: `0x${"c".repeat(64)}` }),
+    });
+    expect(facts.error).toBe("genesis_mismatch");
+  });
+
+  it("сеть без блока 0: идентичность по chainId, генезис пустой", async () => {
+    // Живой случай Cronos и Hyperliquid — обрезанная база.
+    const facts = await readChainFacts({ chain: "cronos", fetchImpl: evm({ chainId: 25 }) });
+    expect(facts.error).toBeNull();
+    expect(facts.chainId).toBe("25");
+    expect(facts.genesisHash).toBeNull();
+  });
+
+  it("цепь без тега finalized: чисел финализации нет, остальное на месте", async () => {
+    const facts = await readChainFacts({
+      chain: "ethereum",
+      fetchImpl: evm({ finalized: null }),
+    });
+    expect(facts.error).toBeNull();
+    expect(facts.finalizedNumber).toBeNull();
+    expect(facts.finalityLag).toBeNull();
+    expect(facts.finalitySeconds).toBeNull();
+    expect(facts.blockSeconds).toBe(12);
+  });
+
+  it("финализированная голова впереди лучшей — отставание ноль, не минус", async () => {
+    // Живой прогон поймал −1 у Sei и Hyperliquid: головы читаются двумя
+    // запросами, и вторая успевает уйти вперёд.
+    const facts = await readChainFacts({
+      chain: "hyperliquid",
+      fetchImpl: evm({ chainId: 999, finalized: 23_900_101, stepMs: 1_000 }),
+    });
+    expect(facts.finalityLag).toBe(0);
+    expect(facts.finalitySeconds).toBe(0);
+  });
+
+  it("узел без eth_gasPrice: комиссия fee_unsupported, прочее читается", async () => {
+    const facts = await readChainFacts({
+      chain: "ethereum",
+      fetchImpl: evm({ gasUnsupported: true }),
+    });
+    expect(facts.error).toBeNull();
+    expect(facts.transferFeeError).toBe("fee_unsupported");
+    expect(facts.blockSeconds).toBe(12);
+  });
+
+  it("переезд ловится по chainId, а не по хэшу генезиса", async () => {
+    const updates: Array<Record<string, unknown>> = [];
+    const prisma = {
+      coinCard: {
+        findMany: async () => [
+          {
+            id: "card1",
+            nativeChain: "ethereum",
+            symbol: "ETH",
+            tokenomics: {},
+            payments: {},
+            provenance: {},
+            chainFacts: { genesisHash: null, chainId: "137" },
+            priceIndex: null,
+          },
+        ],
+        update: async (a: Record<string, unknown>) => {
+          updates.push(a);
+          return {};
+        },
+      },
+      coinCardChainFacts: {
+        upsert: async (a: Record<string, unknown>) => {
+          updates.push(a);
+          return {};
+        },
+      },
+    };
+    const stats = await syncChainFacts({ prisma: prisma as never, fetchImpl: evm() });
+    expect(stats).toEqual({ cards: 1, ok: 0, failed: 1 });
+    expect((updates[0] as { update: { checkError: string } }).update.checkError).toBe(
+      "genesis_mismatch",
+    );
+  });
+});
+
+describe("порог финализации в секундах (слайс Z)", () => {
+  it("финализация L2 в 24 минуты показывается, хотя это 724 блока", () => {
+    // Живой случай Mantle: 724 блока по 2 с. Прежний порог в 600 блоков
+    // отрезал бы настоящую финальность.
+    expect(finalitySecondsFor(724, 2)).toBe(1448);
+  });
+
+  it("шесть суток не показываются (живой случай Celo)", () => {
+    expect(finalitySecondsFor(519_512, 1)).toBeNull();
+  });
+
+  it("две минуты на быстрой цепи — это нормальная финальность", () => {
+    expect(finalitySecondsFor(600, 0.25)).toBe(150);
+  });
+
+  it("ровно на пороге — ещё показывается", () => {
+    expect(finalitySecondsFor(FINALITY_SECONDS_MAX, 1)).toBe(FINALITY_SECONDS_MAX);
+    expect(finalitySecondsFor(FINALITY_SECONDS_MAX + 1, 1)).toBeNull();
   });
 });

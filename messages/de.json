@@ -2226,7 +2226,8 @@
       "minGasPrice": "Mindest-Gaspreis",
       "feeNotMeasured": "laut Node; Transfergebühr noch nicht gemessen",
       "finalityProbabilistic": "wahrscheinlichkeitsbasiert — wächst mit Bestätigungen",
-      "transferFeeHintUtxo": "Referenzüberweisung: 1 Eingang, 2 Ausgänge"
+      "transferFeeHintUtxo": "Referenzüberweisung: 1 Eingang, 2 Ausgänge",
+      "transferFeeHintEvm": "Überweisung ohne Daten, 21 000 Gas"
     }
   },
   "inviteCoin": {

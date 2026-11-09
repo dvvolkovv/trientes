@@ -2226,7 +2226,8 @@
       "minGasPrice": "Asgari gaz fiyatı",
       "feeNotMeasured": "düğüme göre; transfer ücreti henüz ölçülmüyor",
       "finalityProbabilistic": "olasılıksal — onay sayısıyla artar",
-      "transferFeeHintUtxo": "referans transfer: 1 girdi, 2 çıktı"
+      "transferFeeHintUtxo": "referans transfer: 1 girdi, 2 çıktı",
+      "transferFeeHintEvm": "veri içermeyen transfer, 21.000 gaz"
     }
   },
   "inviteCoin": {
