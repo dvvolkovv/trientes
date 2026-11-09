@@ -59,7 +59,6 @@ Shipped 2026-05-24. Lets INDIVIDUAL users register with username + password, man
 - **Главная:** бегущая строка под шапкой + зверь настроения рынка (бык/медведь, обводка по фото). **`/{locale}/compare`** — сравнение монет, ссылка есть в бургер- и десктоп-меню и в `sitemap.xml`.
 
 **Известные дыры (нужно решение владельца, не код):**
-- `RESEND_API_KEY` не задан → письма не уходят. `src/lib/email.ts` аккуратно no-op'ит (`email_not_configured`), Telegram и web-push работают. Нужен ключ Resend + верифицированный домен-отправитель.
 - **Рынки держатся на неофициальном фиде CNBC** (`quote.cnbc.com`, без ключа) — см. обновление от 2026-11-06 в `docs/superpowers/specs/2026-05-23-markets-stooq-design.md`. Stooq и Yahoo блокируют IP сервера, CME банит за автоматический доступ (их ToS). Нормальное решение — бесплатный ключ **Twelve Data** (800 запросов/сутки, внутридневные OHLC) или **FRED** (официально, но только дневное закрытие). Нужен ключ от владельца.
 
 # Phase 10 — Командные аккаунты
@@ -73,9 +72,17 @@ Shipped 2026-05-24. Lets INDIVIDUAL users register with username + password, man
 - **Защита от потери контроля:** последнего OWNER нельзя ни понизить, ни удалить (`last_owner`).
 - **Редиректы после входа** чистятся через `safeNext()` (`src/lib/safe-next.ts`) — `//evil.com` и `/\evil.com` отбрасываются.
 - **Модель:** `CompanyMember` (миграция `20260531080000_company_members`, бэкфилл владельцев) и `CompanyInvite` (миграция `20261105170000_company_invites`).
-- **Уведомления:** при добавлении и при приёме приглашения владельцам уходит `notifyUser` (Telegram и web-push; email молчит, пока нет `RESEND_API_KEY`).
+- **Уведомления:** при добавлении и при приёме приглашения владельцам уходит `notifyUser` (Telegram, email и web-push).
 
 **Гигиена репозитория:** голосовые отчёты и скриншоты ассистента в корне НЕ хранятся — писать их в `/home/dv/trientes-artifacts/{audio,screens}/` (туда же убран архив прежних 181 файла). Корневые `*.png` / `*.mp3` на всякий случай в `.gitignore`.
+
+# Почта
+
+- Своего почтового сервера нет: домен `trientes.org` заведён на Mailcow Селянской — `mail.selyanska.eu` (`165.245.254.8`, отдельный дроплет DO). MX, SPF, DKIM (`dkim._domainkey`) и DMARC — в DO-зоне `trientes.org`.
+- Ящики: `listing@` (заявки на листинг) и `noreply@` (отправитель сайта); алиасы `postmaster@`, `abuse@`, `dmarc@` → `listing@`.
+- Сайт шлёт через `src/lib/email.ts` (nodemailer, SMTP 587 + STARTTLS, логин `noreply@trientes.org`). Ключи — `SMTP_*` в `.env`; без `SMTP_USER`/`SMTP_PASS` письма молча пропускаются (`email_not_configured`).
+- Новая заявка на `/request` → письмо на `LISTING_REQUESTS_TO` (по умолчанию `listing@trientes.org`) со ссылкой на `/en/admin/requests`. Сбой письма заявку не роняет: только `console.error` с `requestId`.
+- Пароли ящиков в чат, логи и коммиты не выводить.
 
 # Загрузки пользователей (важно)
 
