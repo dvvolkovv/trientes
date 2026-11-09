@@ -163,8 +163,10 @@ mv .generated/maplibre "$backup/maplibre"
 tar -C /home/dv/trientes -xf "$archive"
 test "$(cat .next/BUILD_ID)" = "$TARGET_BUILD_ID"
 sha256sum --quiet -c "$manifest"
-diff -qr "$backup/.next" .next
-diff -qr "$backup/maplibre" .generated/maplibre
+# .next/node_modules держит относительные symlink'и на внешние пакеты: в $backup они висят, поэтому сравнивать ссылки как ссылки.
+diff -qr --no-dereference "$backup/.next" .next
+diff -qr --no-dereference "$backup/maplibre" .generated/maplibre
+test -z "$(find .next .generated/maplibre -xtype l -print -quit)"
 read -r out_log err_log < <(pm2 jlist | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const e=JSON.parse(s).find(x=>x.name==="trientes-web").pm2_env;console.log(e.pm_out_log_path,e.pm_err_log_path)})')
 out_off=$(stat -c %s "$out_log" 2>/dev/null || echo 0) err_off=$(stat -c %s "$err_log" 2>/dev/null || echo 0)
 pm2 start ecosystem.config.js --only trientes-web
@@ -200,7 +202,7 @@ REMOTE
 echo "OK: Task 2 Step 2"
 ```
 
-Expected: web был остановлен со Step 1 (иначе блок падает до восстановления — повторить Step 1); восстановленные `.next` и `.generated/maplibre` побайтово совпадают с backup и manifest, BUILD_ID совпадает, health и `/en` 200; versioned `worker`/`shared` — HTTP 200 с Cache-Control ровно `public, max-age=31536000, immutable` (сравнение точное: лишняя или повторённая директива, например от nginx, — FAIL), `content-type: text/javascript` (module worker без JS MIME не загрузится) и `nosniff`; source map, root URL без версии (worker и shared) и несуществующая версия — 404 с Cache-Control ровно `no-store` и `nosniff` (404 никогда не кешируется как immutable); в логе web нет стартовой/runtime ошибки MapLibre-ассетов (только строки, дописанные после этого `pm2 start` — старые ошибки rehearsal не дают ложный FAIL; префикс `[maplibre-assets]`: стартовая проверка `src/instrumentation.ts` пишет `DEPLOYMENT ERROR: missing …` через ~6 с после старта без запросов, route — `deployment error: … is missing` один раз на путь и любые не-ENOENT ошибки чтения); worker/bot не запущены. Любая разница — блокер; не запускать cutover с другим artifact. При падении `check` печатает URL, список несовпадений и все заголовки.
+Expected: web был остановлен со Step 1 (иначе блок падает до восстановления — повторить Step 1); восстановленные `.next` и `.generated/maplibre` побайтово совпадают с backup и manifest (symlink'и в `.next/node_modules` сравниваются как ссылки и после распаковки не висят), BUILD_ID совпадает, health и `/en` 200; versioned `worker`/`shared` — HTTP 200 с Cache-Control ровно `public, max-age=31536000, immutable` (сравнение точное: лишняя или повторённая директива, например от nginx, — FAIL), `content-type: text/javascript` (module worker без JS MIME не загрузится) и `nosniff`; source map, root URL без версии (worker и shared) и несуществующая версия — 404 с Cache-Control ровно `no-store` и `nosniff` (404 никогда не кешируется как immutable); в логе web нет стартовой/runtime ошибки MapLibre-ассетов (только строки, дописанные после этого `pm2 start` — старые ошибки rehearsal не дают ложный FAIL; префикс `[maplibre-assets]`: стартовая проверка `src/instrumentation.ts` пишет `DEPLOYMENT ERROR: missing …` через ~6 с после старта без запросов, route — `deployment error: … is missing` один раз на путь и любые не-ENOENT ошибки чтения); worker/bot не запущены. Любая разница — блокер; не запускать cutover с другим artifact. При падении `check` печатает URL, список несовпадений и все заголовки.
 
 ### Task 3: Проверить readiness внешних зависимостей и final acceptance plan
 
@@ -212,12 +214,12 @@ Expected: web был остановлен со Step 1 (иначе блок па�
 ```bash
 set -euo pipefail
 source /Users/dmitry/.trientes-migration/stage0.env
-ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && npx tsx -e '"'"'import { fetchMarkets } from "./src/lib/markets"; const rows = await fetchMarkets(); if (rows.length === 0) throw new Error("CNBC markets empty"); console.log(`CNBC quotes: ${rows.length}`)'"'"''
+ssh -o BatchMode=yes "dv@$NEW_IP" 'cd ~/trientes && npx tsx -e '"'"'import { fetchMarkets } from "./src/lib/markets"; (async () => { const rows = await fetchMarkets(); if (rows.length === 0) throw new Error("CNBC markets empty"); console.log(`CNBC quotes: ${rows.length}`); })().catch((e) => { console.error(e); process.exit(1); })'"'"''
 ssh -o BatchMode=yes "dv@$NEW_IP" 'curl -fsS https://api.coingecko.com/api/v3/ping >/dev/null && curl -fsS https://api.coinpaprika.com/v1/global >/dev/null && curl -fsS https://api.alternative.me/fng/?limit=1 >/dev/null && curl -fsS https://cointelegraph.com/rss >/dev/null && curl -fsS https://www.coindesk.com/arc/outboundfeeds/rss/ >/dev/null && printf "Startup HTTP dependencies passed\n"'
 echo "OK: Task 3 Step 1"
 ```
 
-Expected: CNBC quotes непустой, остальные endpoints HTTP 200. Любая ошибка — блокер до отдельной диагностики; не запускать worker для маскировки.
+Expected: CNBC quotes непустой, остальные endpoints HTTP 200. `tsx -e` собирает eval в CJS, где top-level `await` запрещён, поэтому вызов обёрнут в async IIFE. Любая ошибка — блокер до отдельной диагностики; не запускать worker для маскировки.
 
 - [ ] **Step 2: Проверить Binance WebSocket без торговли**
 
