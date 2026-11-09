@@ -250,10 +250,11 @@ ssh -o BatchMode=yes "dv@$OLD_IP" "rsync -a -e 'ssh -o BatchMode=yes' /home/dv/p
 ssh -o BatchMode=yes "dv@$NEW_IP" 'chmod 700 /home/dv/pg-backup.sh && test -x /home/dv/pg-backup.sh && ! crontab -l | grep -q .'
 ssh -o BatchMode=yes "dv@$OLD_IP" 'crontab -l' | ssh -o BatchMode=yes "dv@$NEW_IP" 'crontab -'
 ssh -o BatchMode=yes "dv@$NEW_IP" 'crontab -l' | grep -Fx '0 3 * * * /home/dv/pg-backup.sh >> /home/dv/logs/pg-backup.log 2>&1'
+test "$(ssh -o BatchMode=yes "dv@$NEW_IP" 'crontab -l' | grep -v '^#' | grep -c .)" = 1 || { echo "FAIL: в crontab target не только backup job" >&2; exit 1; }
 echo "OK: Task 4 Step 1"
 ```
 
-Expected: `/home/dv/pg-backup.sh` присутствует и executable, crontab содержит `0 3 * * * /home/dv/pg-backup.sh >> /home/dv/logs/pg-backup.log 2>&1`. Остальные source jobs не добавляются автоматически.
+Expected: `/home/dv/pg-backup.sh` присутствует и executable. Crontab Aeza копируется целиком; в нём единственная строка `0 3 * * * /home/dv/pg-backup.sh >> /home/dv/logs/pg-backup.log 2>&1`, и блок падает, если на target оказалось что-то ещё. На Aeza этот job продолжает работать: он делает только локальный dump уже замороженной БД, это безвредно и даёт лишнюю точку для rollback.
 
 - [ ] **Step 2: Заморозить deploys и остановить writers на Aeza**
 
@@ -601,6 +602,8 @@ ssh -o BatchMode=yes "dv@$NEW_IP" 'bash -s' <<'REMOTE'
 set -euo pipefail
 cd ~/trientes
 pm2 start ecosystem.config.js --only trientes-bot --update-env
+# Task 8 Step 1 сравнивает restart_time с этим значением: повторный pm2 start уже запущенного app тоже его увеличивает.
+pm2 jlist | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const p=JSON.parse(s).find(x=>x.name==="trientes-bot");if(!p)process.exit(1);console.log(p.pm2_env.restart_time)})' > /home/dv/migration-stage0/trientes-bot.restart-baseline
 for _ in $(seq 1 60); do curl -fsS -o /dev/null http://127.0.0.1:4100/health 2>/dev/null && break; sleep 1; done
 curl -fsS http://127.0.0.1:4100/health
 pm2 save
@@ -627,7 +630,7 @@ REMOTE
 echo "OK: Task 6 Step 5"
 ```
 
-Expected: на Aeza ничего не online; bot health ok; native `fetch` возвращает `getMe.ok=true`; webhook origin остаётся `https://trientes.org`. `setWebhook` не выполняется. До переключения A ненулевые `pending` и свежий `last_error_date` ожидаемы: DNS ещё ведёт на Aeza, где bot остановлен и webhook отвечает 502; Telegram держит updates и доставит их после Task 7. `pending` → 0 и ответ на `/whoami` проверяются в Task 8 Step 1. Voice regression использует реальный OpenAI 6 client через local HTTP `/v1/audio/transcriptions`, без внешней сети, real API key, аудио или PII; результат записать в startup evidence. Тесты идут во временном detached worktree с symlink на production `node_modules` и без `.env`: vitest globalSetup копирует MapLibre с source maps, поэтому его нельзя запускать в живом `~/trientes`. Это бы добавило `.map` в `.generated/maplibre` и сломало sealed artifact. Вторая команда подтверждает три вещи: в production `.generated/maplibre` нет `.map`, его файлы сходятся с artifact manifest, временный worktree удалён (`git worktree list` = 1). `.next` здесь с manifest не сверяется: работающий web может переписать ISR-страницы.
+Expected: на Aeza ничего не online; bot health ok; `restart_time` bot сразу после старта записан в `migration-stage0/trientes-bot.restart-baseline`; native `fetch` возвращает `getMe.ok=true`; webhook origin остаётся `https://trientes.org`. `setWebhook` не выполняется. До переключения A ненулевые `pending` и свежий `last_error_date` ожидаемы: DNS ещё ведёт на Aeza, где bot остановлен и webhook отвечает 502; Telegram держит updates и доставит их после Task 7. `pending` → 0 и ответ на `/whoami` проверяются в Task 8 Step 1. Voice regression использует реальный OpenAI 6 client через local HTTP `/v1/audio/transcriptions`, без внешней сети, real API key, аудио или PII; результат записать в startup evidence. Тесты идут во временном detached worktree с symlink на production `node_modules` и без `.env`: vitest globalSetup копирует MapLibre с source maps, поэтому его нельзя запускать в живом `~/trientes`. Это бы добавило `.map` в `.generated/maplibre` и сломало sealed artifact. Вторая команда подтверждает три вещи: в production `.generated/maplibre` нет `.map`, его файлы сходятся с artifact manifest, временный worktree удалён (`git worktree list` = 1). `.next` здесь с manifest не сверяется: работающий web может переписать ISR-страницы.
 
 - [ ] **Step 6: Проверить MapLibre и cabinet point form до изменения A**
 
@@ -678,8 +681,12 @@ source /Users/dmitry/.trientes-migration/stage0.env
 umask 077
 DIR=/Users/dmitry/.trientes-migration
 BEFORE=$DIR/dns-before-cutover.json; AFTER=$DIR/dns-after-cutover.json
-[ -e "$BEFORE" ] || doctl compute domain records list trientes.org --output json > "$BEFORE"
-jq -e --arg old "$OLD_IP" '(map(select(.id == 1837678911 and .type == "A" and .name == "@" and .data == $old)) | length) == 1 and (map(select(.id == 1837678935 and .type == "A" and .name == "www" and .data == $old)) | length) == 1 and (map(select(.type == "AAAA")) | length) == 0' "$BEFORE" > /dev/null
+if [ ! -e "$BEFORE" ]; then
+  doctl compute domain records list trientes.org --output json > "$BEFORE.tmp"
+  jq -e 'type == "array" and length > 0' "$BEFORE.tmp" > /dev/null
+  mv "$BEFORE.tmp" "$BEFORE"
+fi
+jq -e --arg old "$OLD_IP" '(map(select(.id == 1837678911 and .type == "A" and .name == "@" and .data == $old and .ttl == 300)) | length) == 1 and (map(select(.id == 1837678935 and .type == "A" and .name == "www" and .data == $old and .ttl == 300)) | length) == 1 and (map(select(.type == "AAAA")) | length) == 0' "$BEFORE" > /dev/null
 [ -e "$DIR/dns-switched-at" ] || date -u +%s > "$DIR/dns-switched-at"
 for id in 1837678911 1837678935; do doctl compute domain records update trientes.org --record-id "$id" --record-data "$NEW_IP" --record-ttl 300 > /dev/null; done
 doctl compute domain records list trientes.org --output json > "$AFTER"
@@ -699,7 +706,7 @@ PY
 echo "OK: Task 7 Step 1"
 ```
 
-Expected: изменены только A `@` и `www` на `159.65.118.122`. MX/SPF/DMARC/DKIM/NS не изменены. Если production AAAA появится, отдельно проверить его перед переключением; сейчас AAAA нет. `dns-before-cutover.json` — снимок зоны до переключения: при повторном запуске он не перезаписывается, и по нему Task 9 возвращает A. `dns-switched-at` (Unix time переключения) читают Task 8 Step 1, Task 9 и Task 10. Блок сравнивает зону до и после: если изменилось что-то, кроме поля `data` двух A-записей, он падает. Такой результат — сигнал разобраться вручную, а не повторять блок.
+Expected: изменены только A `@` и `www` на `159.65.118.122`. MX/SPF/DMARC/DKIM/NS не изменены. Если production AAAA появится, отдельно проверить его перед переключением; сейчас AAAA нет. `dns-before-cutover.json` — снимок зоны до переключения: при повторном запуске он не перезаписывается, и по нему Task 9 возвращает A (вместе с TTL). Снимок пишется через `.tmp` и `mv`, поэтому оборванный `doctl` не оставит пустой или неполный файл. Precheck требует у обеих A `OLD_IP` и TTL 300. `dns-switched-at` (Unix time переключения) читают Task 8 Step 1, Task 9 и Task 10. Блок сравнивает зону до и после: если изменилось что-то, кроме поля `data` двух A-записей, он падает. Такой результат — сигнал разобраться вручную, а не повторять блок.
 
 - [ ] **Step 2: Проверить authoritative и публичные DNS**
 
@@ -783,7 +790,9 @@ printf '%s' "$SWITCHED_AT" | grep -Eqx '[0-9]{10}'
 ssh -o BatchMode=yes "dv@$NEW_IP" "SWITCHED_AT='$SWITCHED_AT' bash -s" <<'REMOTE'
 set -euo pipefail
 cd ~/trientes
-pm2 jlist | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const ps=JSON.parse(s);let bad=0;for(const n of ["trientes-web","trientes-worker","trientes-bot"]){const p=ps.find(x=>x.name===n);const st=p?p.pm2_env.status:"missing";console.log(n+" "+st+(p?" restarts="+p.pm2_env.restart_time:""));if(st!=="online")bad=1;if(n==="trientes-bot"&&p&&p.pm2_env.restart_time!==0)bad=1}process.exit(bad)})'
+BOT_BASE=$(cat /home/dv/migration-stage0/trientes-bot.restart-baseline)
+printf '%s' "$BOT_BASE" | grep -Eqx '[0-9]+'
+pm2 jlist | BOT_BASE="$BOT_BASE" node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const ps=JSON.parse(s);let bad=0;for(const n of ["trientes-web","trientes-worker","trientes-bot"]){const p=ps.find(x=>x.name===n);const st=p?p.pm2_env.status:"missing";console.log(n+" "+st+(p?" restarts="+p.pm2_env.restart_time:""));if(st!=="online")bad=1;if(n==="trientes-bot"&&p&&p.pm2_env.restart_time!==Number(process.env.BOT_BASE))bad=1}process.exit(bad)})'
 node - <<'JS'
 require("dotenv").config({ quiet: true });
 const switchedAt = Number(process.env.SWITCHED_AT);
@@ -814,7 +823,7 @@ echo "OK: Task 8 Step 1"
 
 После `OK` владелец отправляет боту `/whoami` и `/status` и подтверждает, что на каждую команду пришёл ровно один ответ.
 
-Expected: все три приложения online. У bot `restart_time=0` с запуска в Task 6 Step 5. Webhook origin остаётся `https://trientes.org` (путь и secret не печатаются). Backlog доставлен (`pending=0`), свежих ошибок нет. Ошибки, которые Telegram получал от Aeza в первые 6 минут после переключения (`dns-switched-at` + 360 с), свежими не считаются: в это время Telegram ещё мог брать из DNS cache старый IP. Блок ждёт до 15 минут. Если backlog не уходит или появляются новые ошибки, разобрать `last_error_message` до продолжения; `setWebhook` не выполнять.
+Expected: все три приложения online. У bot `restart_time` не вырос с запуска в Task 6 Step 5 (сравнение с `trientes-bot.restart-baseline`, а не с 0: повторный `pm2 start` уже зарегистрированного app тоже увеличивает счётчик). Webhook origin остаётся `https://trientes.org` (путь и secret не печатаются). Backlog доставлен (`pending=0`), свежих ошибок нет. Ошибки, которые Telegram получал от Aeza в первые 6 минут после переключения (`dns-switched-at` + 360 с), свежими не считаются: в это время Telegram ещё мог брать из DNS cache старый IP. Блок ждёт до 15 минут. Если backlog не уходит или появляются новые ошибки, разобрать `last_error_message` до продолжения; `setWebhook` не выполнять.
 
 - [ ] **Step 2: Перенастроить Mac tunnel на `NEW_IP` и проверить iOS build**
 
@@ -871,10 +880,12 @@ ssh -o BatchMode=yes "dv@$NEW_IP" "MAC_IP='$MAC_IP' MAC_FP='$MAC_FP' MAC_KEY_B64
 set -euo pipefail
 umask 077
 tmpk=$(mktemp); trap 'rm -f "$tmpk"' EXIT
+# Без этого строка, дописанная к файлу без финального \n, склеится с последней.
+ensure_nl() { [ ! -s "$1" ] || [ -z "$(tail -c1 "$1")" ] || printf '\n' >> "$1"; }
 key=$(printf '%s' "$MAC_KEY_B64" | base64 -d)
 printf '%s\n' "$key" > "$tmpk"
 test "$(ssh-keygen -lf "$tmpk" | awk '{print $2}')" = "$MAC_FP"
-if ! grep -qxF -- "$key" ~/.ssh/authorized_keys; then printf '%s\n' "$key" >> ~/.ssh/authorized_keys; fi
+if ! grep -qxF -- "$key" ~/.ssh/authorized_keys; then ensure_nl ~/.ssh/authorized_keys; printf '%s\n' "$key" >> ~/.ssh/authorized_keys; fi
 sudo ufw allow from "$MAC_IP" to any port 22 proto tcp comment 'mac ios tunnel' > /dev/null
 ufw_status=$(sudo ufw status)
 grep -qF "$MAC_IP" <<< "$ufw_status"
@@ -883,11 +894,16 @@ other=$(printf '%s\n' "$busy" | awk 'NF && !/"sshd/')
 test -z "$other" || { echo "FAIL: порты 2222/5900 на target заняты не sshd" >&2; exit 1; }
 touch ~/.ssh/known_hosts
 kh=$(printf '%s' "$KH_B64" | base64 -d)
-existing=$(ssh-keygen -F '[localhost]:2222' -f ~/.ssh/known_hosts | grep -v '^#' || true)
-extra=$(comm -23 <(printf '%s\n' "$existing" | sed '/^$/d' | sort -u) <(printf '%s\n' "$kh" | sort -u))
+# Сравниваются тип и ключ (поля 2–3): у хешированных записей одного хоста разная соль в поле 1.
+existing=$(ssh-keygen -F '[localhost]:2222' -f ~/.ssh/known_hosts | awk '!/^#/ && NF { print $2 " " $3 }' | sort -u || true)
+kh_keys=$(printf '%s\n' "$kh" | awk 'NF { print $2 " " $3 }' | sort -u)
+extra=$(comm -23 <(printf '%s\n' "$existing" | sed '/^$/d') <(printf '%s\n' "$kh_keys"))
 test -z "$extra" || { echo "FAIL: в known_hosts target другой ключ для [localhost]:2222" >&2; exit 1; }
+ensure_nl ~/.ssh/known_hosts
 while IFS= read -r l; do
-  if ! grep -qxF -- "$l" ~/.ssh/known_hosts; then printf '%s\n' "$l" >> ~/.ssh/known_hosts; fi
+  [ -n "$l" ] || continue
+  k=$(printf '%s\n' "$l" | awk '{ print $2 " " $3 }')
+  if ! grep -qxF -- "$k" <<< "$existing"; then printf '%s\n' "$l" >> ~/.ssh/known_hosts; fi
 done <<< "$kh"
 ssh-keygen -F '[localhost]:2222' -f ~/.ssh/known_hosts > /dev/null
 echo "target: ключ Mac, UFW и known_hosts готовы"
@@ -914,6 +930,7 @@ LIVE=/Library/LaunchDaemons/$LABEL.plist
 DIR=$HOME/trientes-tunnel
 install -d -m 700 "$DIR"
 if [ -e "$DIR/do.plist" ] && cmp -s "$LIVE" "$DIR/do.plist"; then echo "Mac tunnel уже смотрит на $NEW_IP"; exit 0; fi
+sudo -n /bin/sh -c true || { echo "FAIL: на Mac нет sudo без пароля для reload.sh" >&2; exit 1; }
 [ -e "$DIR/aeza.plist" ] || cp -p "$LIVE" "$DIR/aeza.plist"
 cmp -s "$LIVE" "$DIR/aeza.plist" || { echo "FAIL: live plist отличается от сохранённого aeza.plist" >&2; exit 1; }
 old_re=$(printf '%s' "$OLD_IP" | sed 's/\./\\./g')
@@ -1073,19 +1090,25 @@ LOGIN_BODY=/Users/dmitry/.trientes-migration/cutover-login.json
 COOKIE_JAR=/Users/dmitry/.trientes-migration/cutover-auth-cookie.txt
 csrf_token() { curl -fsS --resolve "trientes.org:443:$NEW_IP" -b "$1" -c "$1" https://trientes.org/api/auth/csrf | jq -er '.csrfToken | select(type == "string" and length > 0)'; }
 cabinet_status() { curl -sS -o /dev/null -w '%{http_code}' --resolve "trientes.org:443:$NEW_IP" "$@" https://trientes.org/en/cabinet; }
-if [ -e "$COOKIE_JAR" ] && [ "$(cabinet_status -b "$COOKIE_JAR")" = 200 ]; then
-  ORIG=$(mktemp); chmod 600 "$ORIG"
-  cp "$COOKIE_JAR" "$ORIG"
-  CSRF=$(csrf_token "$COOKIE_JAR")
-  curl -sS -o /dev/null --resolve "trientes.org:443:$NEW_IP" -b "$COOKIE_JAR" -c "$COOKIE_JAR" --data-urlencode "csrfToken=$CSRF" https://trientes.org/api/auth/signout
-  STATUS=$(cabinet_status -b "$ORIG")
-  rm -f "$ORIG"
-  unset CSRF
-  test "$STATUS" != 200 || { echo "FAIL: session из Task 4 всё ещё открывает cabinet" >&2; exit 1; }
-  echo "session из Task 4 отозвана"
-else
-  echo "активной session из Task 4 нет"
-fi
+S=no-jar
+if [ -e "$COOKIE_JAR" ]; then S=$(cabinet_status -b "$COOKIE_JAR"); fi
+case "$S" in
+  200)
+    ORIG=$(mktemp); chmod 600 "$ORIG"
+    cp "$COOKIE_JAR" "$ORIG"
+    CSRF=$(csrf_token "$COOKIE_JAR")
+    curl -sS -o /dev/null --resolve "trientes.org:443:$NEW_IP" -b "$COOKIE_JAR" -c "$COOKIE_JAR" --data-urlencode "csrfToken=$CSRF" https://trientes.org/api/auth/signout
+    STATUS=$(cabinet_status -b "$ORIG")
+    rm -f "$ORIG"
+    unset CSRF
+    case "$STATUS" in
+      302|303|307|401) echo "session из Task 4 отозвана" ;;
+      *) echo "FAIL: после signout cabinet по исходной cookie отвечает $STATUS" >&2; exit 1 ;;
+    esac
+    ;;
+  no-jar|302|303|307|401) echo "активной session из Task 4 нет ($S)" ;;
+  *) echo "FAIL: cabinet ответил $S; session не проверена, файлы не удаляю" >&2; exit 1 ;;
+esac
 rm -f "$COOKIE_JAR" "$LOGIN_BODY"
 test ! -e "$COOKIE_JAR"
 test ! -e "$LOGIN_BODY"
@@ -1094,7 +1117,8 @@ echo "OK: Task 8 Step 4"
 
 Expected:
 - Session тестового аккаунта, перенесённая в dump из Task 4 Step 2, удалена на сервере. Проверка идёт исходной cookie (копия до signout), а не перезаписанным jar: она больше не открывает cabinet.
-- Если session уже неактивна, блок только удаляет файлы.
+- Если session уже неактивна (cabinet отвечает redirect или 401) или cookie jar нет, блок только удаляет файлы.
+- Любой другой ответ (5xx, 000 при сетевой ошибке и т. п.) — FAIL до удаления: иначе живая session осталась бы без возможности её отозвать.
 - `cutover-login.json` (пароль тестового аккаунта) и cookie jar удалены. Ни пароль, ни cookie не выводились.
 
 - [ ] **Step 5: Создать первый backup и проверить restore во временную БД**
@@ -1108,7 +1132,7 @@ cd /tmp
 test -x /home/dv/pg-backup.sh
 test -d /home/dv/logs
 start=$(date +%s)
-/home/dv/pg-backup.sh >> /home/dv/logs/pg-backup.log 2>&1
+/home/dv/pg-backup.sh >> /home/dv/logs/pg-backup.log 2>&1 < /dev/null
 LATEST=$(ls -1t /home/dv/backups/pg/trientes-*.sql.gz | sed -n 1p)
 test -n "$LATEST"
 test "$(stat -c %Y "$LATEST")" -ge "$start"
@@ -1246,10 +1270,10 @@ Expected:
 
 **Files:**
 - Rollback evidence only; no automatic DNS revert
-- Create protected rollback state: `/Users/dmitry/.trientes-migration/rollback-ts`, `rollback-gate.result`, `rollback-reverse-synced`, `run/task9-user-writes.sql`, `dns-after-rollback.json`
+- Create protected rollback state: `/Users/dmitry/.trientes-migration/rollback-ts`, `rollback-gate.result`, `rollback-db-restored`, `rollback-reverse-synced`, `run/task9-user-writes.sql`, `dns-after-rollback.json`
 - Create на Aeza: `/home/dv/migration-stage0/rollback-gate/`, `reverse-review/`, `trientes-rollback-<TS>.dump`, `aeza-before-rollback-<TS>.dump`, `aeza-before-rollback-<TS>/files/`, `aeza-before-rollback-claude-<TS>/`
 
-Rollback — решение владельца при подтверждённом сбое target, а не реакция на одну ошибку. Порядок: Step 1 останавливает target и определяет, были ли на нём пользовательские записи. Step 2 переносит их на Aeza (только если gate `dirty`). Step 3 запускает Aeza, возвращает A и writers. Обратная синхронизация идёт с Aeza (pull): target на Aeza писать не может. Redis не переносится целиком: dump Redis 8.10 (RDB v15) Redis 8.0.5 на Aeza не прочитает. Поэтому с target переносятся только флаги `bot:verbose:*`, а Telegram-сессии Claude (`claude:session:*`, TTL 30 минут) теряются. Если target недоступен и gate выполнить нельзя, данные target после переключения A не восстановить (RPO > 0): решение о rollback принимает владелец.
+Rollback — решение владельца при подтверждённом сбое target, а не реакция на одну ошибку. Порядок: Step 1 останавливает target и определяет, были ли на нём пользовательские записи. Step 2 переносит их на Aeza (только если gate `dirty`). Step 3 запускает Aeza, возвращает A и writers. Обратная синхронизация идёт с Aeza (pull): target на Aeza писать не может. Redis не переносится целиком: dump Redis 8.10 (RDB v15) Redis 8.0.5 на Aeza не прочитает. Поэтому с target переносятся только флаги `bot:verbose:*`, а Telegram-сессии Claude (`claude:session:*`, TTL 30 минут) теряются. Если target недоступен и gate выполнить нельзя, данные target после переключения A не восстановить (RPO > 0): решение о rollback принимает владелец, и только тогда Step 1 запускают с `ROLLBACK_TARGET_UNREACHABLE=1`.
 
 - [ ] **Step 1: Остановить target и проверить пользовательские записи (gate)**
 
@@ -1260,9 +1284,30 @@ source /Users/dmitry/.trientes-migration/stage0.env
 DIR=/Users/dmitry/.trientes-migration
 umask 077
 [ -e "$DIR/rollback-ts" ] || date -u +%Y%m%dT%H%M%SZ > "$DIR/rollback-ts"
+# Старый результат и маркеры Step 2 не должны разрешить Step 3: gate пересчитывается при каждом запуске.
+rm -f "$DIR/rollback-gate.result" "$DIR/rollback-db-restored" "$DIR/rollback-reverse-synced"
+if ! ssh -n -o BatchMode=yes -o ConnectTimeout=15 "dv@$NEW_IP" true; then
+  if [ "${ROLLBACK_TARGET_UNREACHABLE:-}" != 1 ]; then
+    echo "FAIL: target недоступен по SSH. Изоляция выключением droplet теряет его записи после cutover (RPO > 0);" >&2
+    echo "      только по явному решению владельца перезапустить с ROLLBACK_TARGET_UNREACHABLE=1" >&2
+    exit 1
+  fi
+  : "${DROPLET_ID:?ID target droplet}"
+  test "$(doctl compute droplet get "$DROPLET_ID" --output json | jq -r '.[0].networks.v4[] | select(.type == "public") | .ip_address')" = "$NEW_IP"
+  doctl compute droplet-action power-off "$DROPLET_ID" --wait > /dev/null
+  test "$(doctl compute droplet get "$DROPLET_ID" --output json | jq -r '.[0].status')" = off
+  echo unknown > "$DIR/rollback-gate.result"
+  echo "target выключен (power-off), gate unknown: записи target после cutover не переносятся"
+  echo "OK: Task 9 Step 1"
+  exit 0
+fi
+if [ "${ROLLBACK_TARGET_UNREACHABLE:-}" = 1 ]; then echo "FAIL: target доступен по SSH; уберите ROLLBACK_TARGET_UNREACHABLE" >&2; exit 1; fi
 ssh -o BatchMode=yes "dv@$NEW_IP" "RELEASE_SHA='$RELEASE_SHA' bash -s" <<'REMOTE'
 set -euo pipefail
-cd ~/trientes
+# Состояние checkout только печатается: оно не должно мешать остановить target.
+rev=$(git -C ~/trientes rev-parse HEAD 2>/dev/null || echo unknown)
+[ "$rev" = "$RELEASE_SHA" ] || echo "WARN: HEAD на target $rev, а не RELEASE_SHA" >&2
+[ -z "$(git -C ~/trientes status --short 2>/dev/null)" ] || echo "WARN: в ~/trientes на target есть локальные изменения" >&2
 running() { pm2 jlist | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).filter(p=>p.pm2_env.status!=="stopped").map(p=>p.name).join(" ")))'; }
 now=$(running)
 if [ -n "$now" ]; then pm2 stop $now > /dev/null; fi
@@ -1270,8 +1315,6 @@ sudo systemctl disable pm2-dv
 now=$(running)
 test -z "$now" || { echo "FAIL: на target не остановлены: $now" >&2; exit 1; }
 test -z "$(pgrep -x claude || true)" || { echo "FAIL: на target работает claude" >&2; exit 1; }
-test -z "$(git status --short)"
-test "$(git rev-parse HEAD)" = "$RELEASE_SHA"
 echo "target остановлен, pm2-dv disabled"
 REMOTE
 if [ ! -e "$DIR/dns-switched-at" ]; then
@@ -1367,11 +1410,14 @@ echo "OK: Task 9 Step 1"
 ```
 
 Expected: с этого момента сайт недоступен до Step 3. Target остановлен (web/worker/bot, `pm2-dv` disabled) и больше не пишет; DNS ещё ведёт на него.
+- **Повторный запуск.** `rollback-gate.result`, `rollback-db-restored` и `rollback-reverse-synced` удаляются в начале: Step 3 разрешает только результат последнего запуска gate. `rollback-ts` сохраняется, поэтому dump-файлы Step 2 не дублируются.
+- **Checkout target.** HEAD и локальные изменения `~/trientes` проверяются до остановки и дают только `WARN`: остановку target они не блокируют.
+- **Target недоступен по SSH.** Без флага блок падает и ничего не меняет. Если владелец решил откатываться без данных target, блок перезапускают с `ROLLBACK_TARGET_UNREACHABLE=1`: он сверяет, что у `DROPLET_ID` публичный IP `NEW_IP`, делает `power-off` и ждёт статус `off`. Gate получает `unknown`: Step 2 пропускается, записи target после переключения A на Aeza не попадают (RPO > 0), Step 3 оставляет `.claude` и `bot:verbose:*` Aeza как до cutover. Диск target сохраняется. Включать его обратно только через Recovery Console и с выключенным `pm2-dv`, иначе его worker и bot стартуют вторыми writers. Если флаг задан, а target отвечает, блок падает.
 - **Без переключения A.** Если A не переключались (`dns-switched-at` нет), production-трафика на target не было, и gate сразу `clean`.
 - **DB gate.** Сравниваются только пользовательские записи. Не сравниваются таблицы, которые пополняет worker (snapshots, markets, POI, price/supply/chain facts), а также `PageView`, `LoginAttempt`, `Session`, `VerificationToken`, `Coin` и `Exchange`. В `PriceAlert`, `CoinCard`, `CoinCardMarket`, `CoinCardContract` исключены столбцы, которые обновляет worker. Из `CoinCard.provenance` учитываются только записи `SELF_REPORTED`/`ADMIN_SET`. Если исключаемой таблицы или столбца нет, блок падает с `schema drift: …` (rc 3): схема изменилась, и gate надо пересобрать.
 - **Ложный `dirty` безопасен.** Его может дать истечение alert, upgrade provenance или onchain tokenomics; он лишь ведёт в reverse sync (Step 2). Печатаются только имена таблиц и counts, без строк и md5.
 - **File gate.** Dry-run pull с target на Aeza сравнивает содержимое (`-c`) без времени и прав. Itemize-файлы лежат на Aeza в `rollback-gate/` (`0600`); в чат выводится только число строк. Имена файлов (KYB, PII) не печатаются.
-- **Результат.** Итог (`clean`/`dirty`) записан в `rollback-gate.result`. При `clean` Step 2 пропустить.
+- **Результат.** Итог (`clean`/`dirty`/`unknown`) записан в `rollback-gate.result`. При `clean` и `unknown` Step 2 пропустить.
 
 - [ ] **Step 2: Перенести пользовательские данные с target на Aeza (только при gate `dirty`)**
 
@@ -1418,6 +1464,8 @@ DIR=/Users/dmitry/.trientes-migration
 test "$(cat "$DIR/rollback-gate.result")" = dirty
 TS=$(cat "$DIR/rollback-ts")
 printf '%s' "$TS" | grep -Eqx '[0-9]{8}T[0-9]{6}Z'
+# БД Aeza пересоздаётся: до успешной сверки ни один маркер не должен разрешать следующие блоки.
+rm -f "$DIR/rollback-db-restored" "$DIR/rollback-reverse-synced"
 ssh -o BatchMode=yes "dv@$OLD_IP" "TS='$TS' bash -s" <<'REMOTE'
 set -euo pipefail
 cd /tmp
@@ -1444,6 +1492,7 @@ for f in task5-compare.sql task9-user-writes.sql; do
   test -n "$O_OUT"
   if [ "$O_OUT" != "$N_OUT" ]; then echo "FAIL: $f после restore отличается" >&2; exit 1; fi
 done
+touch "$DIR/rollback-db-restored"
 echo "OK: Task 9 Step 2 (restore)"
 ```
 
@@ -1482,6 +1531,8 @@ set -euo pipefail
 source /Users/dmitry/.trientes-migration/stage0.env
 DIR=/Users/dmitry/.trientes-migration
 test "$(cat "$DIR/rollback-gate.result")" = dirty
+test -e "$DIR/rollback-db-restored" || { echo "FAIL: restore БД (Step 2 restore) не завершён" >&2; exit 1; }
+rm -f "$DIR/rollback-reverse-synced"
 TS=$(cat "$DIR/rollback-ts")
 printf '%s' "$TS" | grep -Eqx '[0-9]{8}T[0-9]{6}Z'
 ssh -o BatchMode=yes "dv@$OLD_IP" "NEW_IP='$NEW_IP' TS='$TS' bash -s" <<'REMOTE'
@@ -1512,12 +1563,12 @@ Expected:
   - Dump target снят при остановленных приложениях; повторный запуск его не перезаписывает.
   - Aeza перед restore сохраняет собственный dump (`aeza-before-rollback-<TS>.dump`): из него можно вернуть состояние Aeza.
   - Aeza забирает dump с target (pull), SHA-256 совпадает.
-- **restore.** БД Aeza пересоздаётся с прежними collation/ctype и восстанавливается из dump target. Затем `task5-compare.sql` (counts, sequences, migrations, md5 статических таблиц) и gate SQL на Aeza и target совпадают построчно. Target при этом остановлен, поэтому его данные не меняются.
+- **restore.** БД Aeza пересоздаётся с прежними collation/ctype и восстанавливается из dump target. Затем `task5-compare.sql` (counts, sequences, migrations, md5 статических таблиц) и gate SQL на Aeza и target совпадают построчно. Target при этом остановлен, поэтому его данные не меняются. Маркер `rollback-db-restored` снимается в начале блока и ставится только после сверки: оборванный restore не разрешит ни files apply, ни Step 3.
 - **files review.** Dry-run с правами и временем; на файл печатаются только счётчики по типам изменений. Если что-то неожиданное (массовые `delete`, изменения в `trientes-exchange`), остановиться и разобрать.
 - **files apply.**
   - Pull с `--delete`: всё, что перезаписано или удалено на Aeza, сохраняется в `aeza-before-rollback-<TS>/files/`.
   - Права protected dirs восстановлены (dirs `0700`, executables `0700`, остальное `0600`).
-  - Маркер `rollback-reverse-synced` разрешает Step 3.
+  - Блок запускается только после `rollback-db-restored`. Маркер `rollback-reverse-synced` ставится в конце; Step 3 при gate `dirty` требует оба маркера.
 
 - [ ] **Step 3: Вернуть трафик на Aeza**
 
@@ -1530,24 +1581,39 @@ DIR=/Users/dmitry/.trientes-migration
 TS=$(cat "$DIR/rollback-ts")
 printf '%s' "$TS" | grep -Eqx '[0-9]{8}T[0-9]{6}Z'
 GATE=$(cat "$DIR/rollback-gate.result")
-if [ "$GATE" != clean ] && [ ! -e "$DIR/rollback-reverse-synced" ]; then echo "FAIL: gate $GATE, а reverse sync (Step 2) не завершён" >&2; exit 1; fi
-TARGET_ONLINE=$(ssh -o BatchMode=yes "dv@$NEW_IP" 'pm2 jlist' | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).filter(p=>p.pm2_env.status!=="stopped").map(p=>p.name).join(" ")))')
-test -z "$TARGET_ONLINE" || { echo "FAIL: на target запущены: $TARGET_ONLINE" >&2; exit 1; }
-ssh -o BatchMode=yes "dv@$OLD_IP" "NEW_IP='$NEW_IP' TS='$TS' ROLLBACK_SHA='$ROLLBACK_SHA' ROLLBACK_BUILD_ID='$ROLLBACK_BUILD_ID' bash -s" <<'REMOTE'
+TARGET_OFF=0
+case "$GATE" in
+  clean) ;;
+  dirty)
+    if [ ! -e "$DIR/rollback-db-restored" ] || [ ! -e "$DIR/rollback-reverse-synced" ]; then echo "FAIL: gate dirty, а Step 2 (restore и files apply) не завершён" >&2; exit 1; fi
+    ;;
+  unknown) TARGET_OFF=1 ;;
+  *) echo "FAIL: неизвестный gate [$GATE]" >&2; exit 1 ;;
+esac
+if [ "$TARGET_OFF" = 1 ]; then
+  : "${DROPLET_ID:?ID target droplet}"
+  test "$(doctl compute droplet get "$DROPLET_ID" --output json | jq -r '.[0].status')" = off || { echo "FAIL: gate unknown, но target droplet не выключен" >&2; exit 1; }
+else
+  TARGET_ONLINE=$(ssh -o BatchMode=yes "dv@$NEW_IP" 'pm2 jlist' | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).filter(p=>p.pm2_env.status!=="stopped").map(p=>p.name).join(" ")))')
+  test -z "$TARGET_ONLINE" || { echo "FAIL: на target запущены: $TARGET_ONLINE" >&2; exit 1; }
+fi
+ssh -o BatchMode=yes "dv@$OLD_IP" "NEW_IP='$NEW_IP' TS='$TS' TARGET_OFF='$TARGET_OFF' ROLLBACK_SHA='$ROLLBACK_SHA' ROLLBACK_BUILD_ID='$ROLLBACK_BUILD_ID' bash -s" <<'REMOTE'
 set -euo pipefail
 SSH='ssh -o BatchMode=yes'
-C=/home/dv/migration-stage0/aeza-before-rollback-claude-$TS
-if [ ! -e "$C" ]; then
-  install -d -m 700 "$C.tmp"
-  rsync -aH /home/dv/.claude/ "$C.tmp/.claude/"
-  rsync -aH /home/dv/.claude.json "$C.tmp/.claude.json"
-  mv "$C.tmp" "$C"
+if [ "$TARGET_OFF" = 0 ]; then
+  C=/home/dv/migration-stage0/aeza-before-rollback-claude-$TS
+  if [ ! -e "$C" ]; then
+    install -d -m 700 "$C.tmp"
+    rsync -aH /home/dv/.claude/ "$C.tmp/.claude/"
+    rsync -aH /home/dv/.claude.json "$C.tmp/.claude.json"
+    mv "$C.tmp" "$C"
+  fi
+  rsync -aH --delete -e "$SSH" "dv@$NEW_IP:/home/dv/.claude/" /home/dv/.claude/
+  rsync -aH -e "$SSH" "dv@$NEW_IP:/home/dv/.claude.json" /home/dv/.claude.json
+  find /home/dv/.claude -type d -exec chmod 700 {} +
+  find /home/dv/.claude -type f -exec sh -c 'for file; do if test -x "$file"; then chmod 700 "$file"; else chmod 600 "$file"; fi; done' sh {} +
+  chmod 600 /home/dv/.claude.json
 fi
-rsync -aH --delete -e "$SSH" "dv@$NEW_IP:/home/dv/.claude/" /home/dv/.claude/
-rsync -aH -e "$SSH" "dv@$NEW_IP:/home/dv/.claude.json" /home/dv/.claude.json
-find /home/dv/.claude -type d -exec chmod 700 {} +
-find /home/dv/.claude -type f -exec sh -c 'for file; do if test -x "$file"; then chmod 700 "$file"; else chmod 600 "$file"; fi; done' sh {} +
-chmod 600 /home/dv/.claude.json
 sudo systemctl start redis-server
 for _ in $(seq 1 30); do test "$(redis-cli PING 2>/dev/null)" = PONG && break; sleep 1; done
 test "$(redis-cli PING)" = PONG
@@ -1558,14 +1624,23 @@ for _ in $(seq 1 30); do
   sleep 1
 done
 grep -qx 'loading:0' <<< "$info"
-vtmp=$(mktemp); trap 'rm -f "$vtmp"' EXIT
-ssh -n -o BatchMode=yes "dv@$NEW_IP" 'redis-cli --scan --pattern "bot:verbose:*" | while IFS= read -r k; do printf "%s\t%s\n" "$k" "$(redis-cli GET "$k" < /dev/null)"; done' > "$vtmp"
-bad=$(awk -F'\t' 'NF != 2 || $1 !~ /^bot:verbose:[0-9]+$/ || $2 != "1" { n++ } END { print n + 0 }' "$vtmp")
-test "$bad" = 0 || { echo "FAIL: неожиданных записей bot:verbose: $bad" >&2; exit 1; }
-redis-cli --scan --pattern 'bot:verbose:*' | while IFS= read -r k; do redis-cli DEL "$k" < /dev/null > /dev/null; done
-while IFS=$'\t' read -r k v; do redis-cli SET "$k" "$v" < /dev/null > /dev/null; done < "$vtmp"
-test "$(redis-cli --scan --pattern 'bot:verbose:*' | wc -l)" -eq "$(wc -l < "$vtmp")"
-printf 'bot:verbose synced: %s keys\n' "$(wc -l < "$vtmp")"
+if [ "$TARGET_OFF" = 0 ]; then
+  vtmp=$(mktemp); trap 'rm -f "$vtmp"' EXIT
+  # pipefail и PING на target: иначе упавший redis-cli дал бы пустой список, и блок стёр бы флаги на Aeza.
+  ssh -o BatchMode=yes "dv@$NEW_IP" 'bash -s' > "$vtmp" <<'VERBOSE'
+set -euo pipefail
+test "$(redis-cli PING)" = PONG
+redis-cli --scan --pattern 'bot:verbose:*' | while IFS= read -r k; do printf '%s\t%s\n' "$k" "$(redis-cli GET "$k" < /dev/null)"; done
+VERBOSE
+  bad=$(awk -F'\t' 'NF != 2 || $1 !~ /^bot:verbose:[0-9]+$/ || $2 != "1" { n++ } END { print n + 0 }' "$vtmp")
+  test "$bad" = 0 || { echo "FAIL: неожиданных записей bot:verbose: $bad" >&2; exit 1; }
+  redis-cli --scan --pattern 'bot:verbose:*' | while IFS= read -r k; do redis-cli DEL "$k" < /dev/null > /dev/null; done
+  while IFS=$'\t' read -r k v; do redis-cli SET "$k" "$v" < /dev/null > /dev/null; done < "$vtmp"
+  test "$(redis-cli --scan --pattern 'bot:verbose:*' | wc -l)" -eq "$(wc -l < "$vtmp")"
+  printf 'bot:verbose synced: %s keys\n' "$(wc -l < "$vtmp")"
+else
+  echo "target выключен: .claude и bot:verbose:* на Aeza остаются как до cutover"
+fi
 pg_isready -q -h 127.0.0.1
 cd ~/trientes
 test -z "$(git status --short)"
@@ -1594,7 +1669,10 @@ fi
 BEFORE=$DIR/dns-before-cutover.json
 test -s "$BEFORE"
 umask 077
-for id in 1837678911 1837678935; do doctl compute domain records update trientes.org --record-id "$id" --record-data "$OLD_IP" --record-ttl 300 > /dev/null; done
+for id in 1837678911 1837678935; do
+  ttl=$(jq -er --argjson id "$id" '.[] | select(.id == $id) | .ttl' "$BEFORE")
+  doctl compute domain records update trientes.org --record-id "$id" --record-data "$OLD_IP" --record-ttl "$ttl" > /dev/null
+done
 REVERTED=$DIR/dns-after-rollback.json
 doctl compute domain records list trientes.org --output json > "$REVERTED"
 python3 - "$BEFORE" "$REVERTED" "$OLD_IP" <<'PY'
@@ -1624,8 +1702,15 @@ echo "OK: Task 9 Step 3 (dns)"
 ```bash
 set -euo pipefail
 source /Users/dmitry/.trientes-migration/stage0.env
-TARGET_ONLINE=$(ssh -o BatchMode=yes "dv@$NEW_IP" 'pm2 jlist' | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).filter(p=>p.pm2_env.status!=="stopped").map(p=>p.name).join(" ")))')
-test -z "$TARGET_ONLINE" || { echo "FAIL: на target запущены: $TARGET_ONLINE" >&2; exit 1; }
+DIR=/Users/dmitry/.trientes-migration
+GATE=$(cat "$DIR/rollback-gate.result")
+if [ "$GATE" = unknown ]; then
+  : "${DROPLET_ID:?ID target droplet}"
+  test "$(doctl compute droplet get "$DROPLET_ID" --output json | jq -r '.[0].status')" = off || { echo "FAIL: gate unknown, но target droplet не выключен" >&2; exit 1; }
+else
+  TARGET_ONLINE=$(ssh -o BatchMode=yes "dv@$NEW_IP" 'pm2 jlist' | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).filter(p=>p.pm2_env.status!=="stopped").map(p=>p.name).join(" ")))')
+  test -z "$TARGET_ONLINE" || { echo "FAIL: на target запущены: $TARGET_ONLINE" >&2; exit 1; }
+fi
 ssh -o BatchMode=yes "dv@$OLD_IP" 'bash -s' <<'REMOTE'
 set -euo pipefail
 cd ~/trientes
@@ -1654,7 +1739,7 @@ echo "OK: Task 9 Step 3 (writers)"
 ```bash
 set -euo pipefail
 source /Users/dmitry/.trientes-migration/stage0.env
-LISTEN=$(ssh -o BatchMode=yes "dv@$NEW_IP" "ss -Htln '( sport = :2222 )'" || true)
+LISTEN=$(ssh -o BatchMode=yes -o ConnectTimeout=10 "dv@$NEW_IP" "ss -Htln '( sport = :2222 )'" || true)
 RELOADED=0
 if [ -n "$LISTEN" ]; then
   RELOADED=1
@@ -1666,6 +1751,7 @@ DIR=$HOME/trientes-tunnel
 test -s "$DIR/aeza.plist"
 test -s "$DIR/do.plist"
 test -x "$DIR/reload.sh"
+sudo -n /bin/sh -c true || { echo "FAIL: на Mac нет sudo без пароля для reload.sh" >&2; exit 1; }
 : > "$DIR/reload.log"
 sudo -n /bin/sh -c "nohup /bin/bash '$DIR/reload.sh' '$OLD_IP' '$DIR/aeza.plist' '$DIR/do.plist' > '$DIR/reload.log' 2>&1 < /dev/null &"
 echo "reload на $OLD_IP запланирован"
@@ -1695,20 +1781,21 @@ Rollback опирается на нетронутые `~/trientes/node_modules` 
 
 Expected: RPO 0 только после reverse synchronization. RTO отдельный, не 10–30 минут. Не возвращать A до восстановления данных и не откатывать NS одновременно с A.
 - **start.**
-  - Запуск разрешён только при gate `clean` или после Step 2.
-  - Сначала копия `.claude`/`.claude.json` Aeza сохраняется в `aeza-before-rollback-claude-<TS>`, затем они забираются с target.
-  - Redis на Aeza поднимается из своего pre-cutover RDB. С target переносятся только `bot:verbose:*`; печатается их число, ID не печатаются.
+  - Gate `clean` — запуск без условий. `dirty` — только при обоих маркерах Step 2 (`rollback-db-restored` и `rollback-reverse-synced`). `unknown` — только если `doctl` показывает target droplet в статусе `off`. Любое другое значение — FAIL.
+  - Target доступен: сначала копия `.claude`/`.claude.json` Aeza сохраняется в `aeza-before-rollback-claude-<TS>`, затем они забираются с target.
+  - Redis на Aeza поднимается из своего pre-cutover RDB. С target переносятся только `bot:verbose:*`; печатается их число, ID не печатаются. Список читается на target через `bash -s` с `pipefail` и `PING`: если Redis target не ответил, блок падает и флаги на Aeza не стираются.
+  - Gate `unknown` (target выключен): `.claude` и `bot:verbose:*` не трогаются и остаются как на Aeza до cutover.
   - HEAD и `.next/BUILD_ID` Aeza равны `ROLLBACK_SHA`/`ROLLBACK_BUILD_ID`. Запускается только web; health и `/en` через `--resolve` на `OLD_IP` отвечают 200.
   - Если TLS на Aeza не проходит, проверить срок сертификата: после переключения A certbot на Aeza продлить его не может.
-- **dns.** A `@`/`www` возвращены и совпадают со снимком `dns-before-cutover.json`. Другие записи зоны (например, почтовые, если менялись после cutover) не трогаются, печатается только их число. Все DO nameserver отдают `OLD_IP`.
+- **dns.** A `@`/`www` возвращены с TTL из снимка `dns-before-cutover.json` и совпадают с ним. Другие записи зоны (например, почтовые, если менялись после cutover) не трогаются, печатается только их число. Все DO nameserver отдают `OLD_IP`.
 - **writers.**
-  - Worker и bot стартуют только после DNS и при остановленном target, поэтому двух writers нет.
+  - Worker и bot стартуют только после DNS и при остановленном target, поэтому двух writers нет. При gate `unknown` остановку подтверждает статус droplet `off` (SSH на target нет).
   - Bot health 200, `pm2 save`, `pm2-dv` снова enabled.
   - `getMe` ok, webhook origin `https://trientes.org` (путь и secret не печатаются).
 - **mac.**
   - Если Mac tunnel был на target, `reload.sh` загружает `aeza.plist`; при неудаче он вернёт `do.plist`.
   - Listener `:2222` на Aeza и `RESULT ok candidate`.
-  - Если target недоступен, переключить Mac может только владелец: запустить `reload.sh` с аргументами `OLD_IP aeza.plist do.plist` на самом Mac.
+  - Если target недоступен (в том числе выключен при gate `unknown`), проверка listener на target за 10 секунд уходит в timeout, и блок ждёт listener на Aeza. Переключить Mac в этом случае может только владелец: запустить `reload.sh` с аргументами `OLD_IP aeza.plist do.plist` на самом Mac, затем повторить блок.
 - **После rollback.** Target остаётся остановленным, `pm2-dv` на нём disabled. Повторный cutover — новый проход runbook с новым финальным dump; `rollback-*` маркеры перед ним перенести в архив.
 
 ### Task 10: Закрыть окно rollback (не раньше 7 дней после cutover)
@@ -1771,6 +1858,8 @@ sudo ufw --force delete allow from "$OLD_IP" to any port 22 proto tcp > /dev/nul
 ufw_status=$(sudo ufw status)
 if grep -qF "$OLD_IP" <<< "$ufw_status"; then echo "FAIL: OLD_IP остался в UFW" >&2; exit 1; fi
 REMOTE
+# Без этой проверки недоступная Aeza выглядела бы как успешно закрытый доступ.
+ssh -o BatchMode=yes -o ConnectTimeout=15 "dv@$OLD_IP" true || { echo "FAIL: Aeza недоступна, проверка невозможна" >&2; exit 1; }
 if ssh -o BatchMode=yes "dv@$OLD_IP" "ssh -o BatchMode=yes -o ConnectTimeout=10 dv@$NEW_IP true" 2>/dev/null; then echo "FAIL: Aeza всё ещё входит на target" >&2; exit 1; fi
 for port in 3000 4100 5432 6379; do
   if nc -z -G 3 -w 3 "$NEW_IP" "$port" 2>/dev/null; then echo "FAIL: порт $port открыт снаружи" >&2; exit 1; fi
@@ -1781,7 +1870,7 @@ echo "OK: Task 10 Step 1"
 Expected:
 - **Предусловия.** Прошло ≥ 7 дней с переключения A, rollback не выполнялся, A ведут на `NEW_IP`, все три приложения на target online.
 - **Ключи.** Временный Aeza key (`R2/p0…`) удалён из `authorized_keys` root и `dv`. Владелец, группа и права файлов сохранены. Ключ ноута (`crrC7Bh…`) остаётся в обоих; у `dv` также остаётся ключ Mac (`ANYY…`). Приватный ключ `~/.ssh/id_ed25519` dv на target не трогается: через него `mac-ios` входит на Mac.
-- **Доступ с Aeza.** 22/tcp с `OLD_IP` убран из Cloud Firewall и UFW, вход с Aeza на target больше не проходит.
+- **Доступ с Aeza.** 22/tcp с `OLD_IP` убран из Cloud Firewall и UFW, вход с Aeza на target больше не проходит. Перед этой проверкой ноут сам входит на Aeza: если Aeza недоступна, блок падает, а не засчитывает закрытый доступ.
 - **Внешние порты.** 3000, 4100, 5432 и 6379 снаружи закрыты.
 
 - [ ] **Step 2: Владелец задаёт пароль `dv`**
@@ -1806,6 +1895,12 @@ ssh -o BatchMode=yes "dv@$NEW_IP" 'bash -s' <<'REMOTE'
 set -euo pipefail
 groups=$(id -nG dv)
 case " $groups " in *' sudo '*) ;; *) echo "FAIL: dv не в группе sudo" >&2; exit 1 ;; esac
+# Повторный запуск после удаления NOPASSWD: sudo без tty уже не работает, а всё нужное сделано.
+if ! sudo -n true 2>/dev/null; then
+  test -e /usr/local/sbin/trientes-disable-root-ssh || { echo "FAIL: NOPASSWD убран, а helper отсутствует (Step 4 уже выполнен?)" >&2; exit 1; }
+  echo "NOPASSWD уже убран ранее, helper на месте"
+  exit 0
+fi
 test "$(sudo passwd -S dv | awk '{print $2}')" = P
 tmp=$(mktemp)
 cat > "$tmp" <<'SH'
@@ -1826,9 +1921,11 @@ sudo install -m 700 -o root -g root "$tmp" /usr/local/sbin/trientes-disable-root
 rm -f "$tmp"
 sudo bash -s <<'ROOT'
 set -euo pipefail
-test -e /etc/sudoers.d/90-dv-migration
 test -e /etc/sudoers.d/90-cloud-init-users
-rm /etc/sudoers.d/90-dv-migration
+if [ -e /etc/sudoers.d/90-dv-migration ]; then
+  grep -q NOPASSWD /etc/sudoers.d/90-dv-migration
+  rm /etc/sudoers.d/90-dv-migration
+fi
 visudo -c > /dev/null
 rights=$(sudo -l -U dv)
 if grep -q NOPASSWD <<< "$rights"; then echo 'FAIL: у dv остался NOPASSWD' >&2; exit 1; fi
@@ -1846,7 +1943,8 @@ Expected:
   - проверяет `sshd -t` и эффективное `permitrootlogin no`;
   - перезагружает ssh;
   - удаляет себя.
-- **sudo.** `/etc/sudoers.d/90-dv-migration` удалён, `visudo -c` ok. У `dv` больше нет `NOPASSWD`, остаётся `(ALL : ALL) ALL` через группу `sudo`. `90-cloud-init-users` (только root) не трогается.
+- **sudo.** `/etc/sudoers.d/90-dv-migration` (с `NOPASSWD`) удалён, `visudo -c` ok. У `dv` больше нет `NOPASSWD`, остаётся `(ALL : ALL) ALL` через группу `sudo`. `90-cloud-init-users` (только root) не трогается.
+- **Повторный запуск.** Если `sudo -n` уже не работает, блок только проверяет, что helper на месте, печатает «NOPASSWD уже убран ранее» и выходит без изменений. Если helper тоже нет, Step 4 уже выполнен — блок падает.
 
 - [ ] **Step 4: Владелец проверяет `sudo` по паролю и закрывает root SSH**
 
