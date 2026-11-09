@@ -9,6 +9,14 @@
  */
 
 import { mergeProvenance } from "./coin-card-provenance";
+import { resolveCosmosChain, cosmosRestUrlFor } from "./cosmos-chains";
+import {
+  measureCosmosBlockSeconds,
+  readCosmosBlock,
+  readCosmosDenomMeta,
+  readCosmosMinGasPrice,
+  type HttpFetch,
+} from "./cosmos-rest";
 import { RpcError, type FetchLike } from "./json-rpc";
 import { resolveSubstrateChain, substrateRpcUrlFor } from "./substrate-chains";
 import {
@@ -42,9 +50,17 @@ export type ChainFactsError =
   | "decode_failed"
   | "genesis_mismatch";
 
+/** Какой ридер отвечал: от этого зависят и подписи в карточке, и охранник переезда. */
+export type ChainFamily = "SUBSTRATE" | "COSMOS";
+
 export type ChainFacts = {
   chain: string;
+  family: ChainFamily;
   genesisHash: string | null;
+  /** Идентичность сети Cosmos. У Substrate остаётся null. */
+  chainId: string | null;
+  /** Минимальная цена газа по узлу. У Substrate остаётся null. */
+  minGasPrice: string | null;
   tokenSymbol: string | null;
   tokenDecimals: number | null;
   ss58Format: number | null;
@@ -63,6 +79,8 @@ export type ChainFacts = {
 
 const EMPTY = {
   genesisHash: null,
+  chainId: null,
+  minGasPrice: null,
   tokenSymbol: null,
   tokenDecimals: null,
   ss58Format: null,
@@ -80,14 +98,31 @@ const EMPTY = {
 const errorCode = (err: unknown): ChainFactsError =>
   err instanceof RpcError ? (err.code as ChainFactsError) : "rpc_error";
 
+/**
+ * Факты сети по ключу из одного из двух реестров. Развилка по семье здесь, а не
+ * у вызывающего: карточка знает только ключ сети, а какой это протокол —
+ * свойство реестра, в котором ключ нашёлся.
+ */
 export async function readChainFacts(args: {
   chain: string;
   fetchImpl?: FetchLike;
   timeoutMs?: number;
   sample?: number;
 }): Promise<ChainFacts> {
+  const substrate = resolveSubstrateChain(args.chain);
+  if (substrate) return readSubstrateChainFacts({ ...args, chain: substrate.key });
+  if (resolveCosmosChain(args.chain)) return readCosmosChainFacts(args);
+  return { chain: args.chain, family: "SUBSTRATE", ...EMPTY, error: "chain_unsupported" };
+}
+
+async function readSubstrateChainFacts(args: {
+  chain: string;
+  fetchImpl?: FetchLike;
+  timeoutMs?: number;
+  sample?: number;
+}): Promise<ChainFacts> {
   const chain = resolveSubstrateChain(args.chain);
-  if (!chain) return { chain: args.chain, ...EMPTY, error: "chain_unsupported" };
+  if (!chain) return { chain: args.chain, family: "SUBSTRATE", ...EMPTY, error: "chain_unsupported" };
 
   const url = substrateRpcUrlFor(chain);
   const opts = { fetchImpl: args.fetchImpl, timeoutMs: args.timeoutMs };
@@ -103,6 +138,9 @@ export async function readChainFacts(args: {
     const fee = await readTransferFee(url, chain.key, props.decimals, opts);
     return {
       chain: chain.key,
+      family: "SUBSTRATE",
+      chainId: null,
+      minGasPrice: null,
       genesisHash,
       tokenSymbol: props.symbol,
       tokenDecimals: props.decimals,
@@ -119,7 +157,63 @@ export async function readChainFacts(args: {
       error: null,
     };
   } catch (err) {
-    return { chain: chain.key, ...EMPTY, error: errorCode(err) };
+    return { chain: chain.key, family: "SUBSTRATE", ...EMPTY, error: errorCode(err) };
+  }
+}
+
+/**
+ * Факты сети на Cosmos SDK. Отличий от Substrate три, и все честные:
+ * идентичность сети — chain-id, а не хэш генезиса; блок считается
+ * окончательным в момент включения, поэтому отставание финализации нулевое; а
+ * комиссию перевода этой семье пока никто не считает — вместо неё узел
+ * сообщает минимальную цену газа.
+ *
+ * Тикер и знаки берутся из реестра денома, если узел его знает. Injective,
+ * Kava и Secret не знают — тогда полей просто нет, и подставлять ожидаемое из
+ * нашего реестра нельзя: «прочитано из сети» означало бы «взято у нас».
+ */
+async function readCosmosChainFacts(args: {
+  chain: string;
+  fetchImpl?: FetchLike;
+  timeoutMs?: number;
+  sample?: number;
+}): Promise<ChainFacts> {
+  const chain = resolveCosmosChain(args.chain);
+  if (!chain) return { chain: args.chain, family: "COSMOS", ...EMPTY, error: "chain_unsupported" };
+
+  const url = cosmosRestUrlFor(chain);
+  // Оба ридера принимают инъектируемый fetch, но типы у них разные: у Substrate
+  // это POST с телом, у Cosmos — GET. Поддельный fetch в тестах один и тот же.
+  const opts = { fetchImpl: args.fetchImpl as unknown as HttpFetch, timeoutMs: args.timeoutMs };
+  const sample = args.sample ?? BLOCK_SAMPLE;
+
+  try {
+    const best = await readCosmosBlock(url, "latest", opts);
+    const time = await measureCosmosBlockSeconds(url, best, sample, opts);
+    const meta = await readCosmosDenomMeta(url, chain.denom, opts);
+    const minGasPrice = await readCosmosMinGasPrice(url, chain.denom, opts);
+    return {
+      chain: chain.key,
+      family: "COSMOS",
+      genesisHash: null,
+      chainId: best.chainId,
+      minGasPrice,
+      tokenSymbol: meta.symbol,
+      tokenDecimals: meta.exponent,
+      ss58Format: null,
+      blockSeconds: time.blockSeconds,
+      blockSample: time.sample,
+      bestNumber: best.height,
+      finalizedNumber: best.height,
+      finalityLag: 0,
+      finalitySeconds: 0,
+      transferFeePlanck: null,
+      transferFeeTokens: null,
+      transferFeeError: "fee_unsupported",
+      error: null,
+    };
+  } catch (err) {
+    return { chain: chain.key, family: "COSMOS", ...EMPTY, error: errorCode(err) };
   }
 }
 
@@ -170,7 +264,13 @@ async function readTransferFee(
   }
 }
 
-export type MismatchCode = "SYMBOL" | "DECIMALS" | "CHAIN_SYMBOL" | "SS58_FORMAT" | "FEE_USD";
+export type MismatchCode =
+  | "SYMBOL"
+  | "DECIMALS"
+  | "CHAIN_SYMBOL"
+  | "SS58_FORMAT"
+  | "CHAIN_ID"
+  | "FEE_USD";
 
 /** Цент: ниже этой разницы относительные проценты шумят. */
 const FEE_MISMATCH_USD = 0.01;
@@ -204,12 +304,19 @@ export function chainMismatches(args: {
   chainKey: string;
   cardSymbol: string;
   claimedDecimals: number | null;
-  facts: { symbol: string | null; decimals: number | null; ss58Format: number | null };
+  facts: {
+    symbol: string | null;
+    decimals: number | null;
+    ss58Format: number | null;
+    chainId?: string | null;
+  };
   fee?: { declaredUsd: number | null; factTokens: number | null; priceUsd: number | null };
 }): MismatchCode[] {
   const out: MismatchCode[] = [];
-  const registry = resolveSubstrateChain(args.chainKey);
-  const { symbol, decimals, ss58Format } = args.facts;
+  const substrate = resolveSubstrateChain(args.chainKey);
+  const cosmos = substrate ? null : resolveCosmosChain(args.chainKey);
+  const expectedSymbol = substrate?.symbol ?? cosmos?.symbol ?? null;
+  const { symbol, decimals, ss58Format, chainId } = args.facts;
 
   if (symbol && args.cardSymbol && symbol.toUpperCase() !== args.cardSymbol.toUpperCase()) {
     out.push("SYMBOL");
@@ -217,12 +324,15 @@ export function chainMismatches(args: {
   if (decimals != null && args.claimedDecimals != null && decimals !== args.claimedDecimals) {
     out.push("DECIMALS");
   }
-  if (registry && symbol && symbol.toUpperCase() !== registry.symbol.toUpperCase()) {
+  if (expectedSymbol && symbol && symbol.toUpperCase() !== expectedSymbol.toUpperCase()) {
     out.push("CHAIN_SYMBOL");
   }
-  if (registry && ss58Format != null && ss58Format !== registry.ss58Format) {
+  if (substrate && substrate.ss58Format != null && ss58Format != null && ss58Format !== substrate.ss58Format) {
     out.push("SS58_FORMAT");
   }
+  // Узел представился другой цепью, чем записано в реестре: это либо подмена
+  // адреса в окружении, либо переезд сети на новый chain-id.
+  if (cosmos && chainId && chainId !== cosmos.chainId) out.push("CHAIN_ID");
   if (args.fee && feeMismatch(args.fee)) out.push("FEE_USD");
   return out;
 }
@@ -234,7 +344,7 @@ type CardRow = {
   tokenomics: unknown;
   payments: unknown;
   provenance: unknown;
-  chainFacts: { genesisHash: string } | null;
+  chainFacts: { genesisHash: string | null; chainId: string | null } | null;
   priceIndex: { priceUsd: number } | null;
 };
 
@@ -268,7 +378,7 @@ export async function syncChainFacts(args: {
       tokenomics: true,
       payments: true,
       provenance: true,
-      chainFacts: { select: { genesisHash: true } },
+      chainFacts: { select: { genesisHash: true, chainId: true } },
       priceIndex: { select: { priceUsd: true } },
     },
   });
@@ -280,14 +390,13 @@ export async function syncChainFacts(args: {
     stats.cards++;
     const facts = await readChainFacts({ chain: card.nativeChain, fetchImpl });
 
-    // Хэш генезиса изменился — узел переехал на другую цепь. Числа не
+    // Идентичность сети изменилась — узел переехал на другую цепь. Числа не
     // перезаписываем: это повод для разбора руками, а не новость о монете.
-    const moved = Boolean(
-      !facts.error &&
-        card.chainFacts &&
-        facts.genesisHash &&
-        card.chainFacts.genesisHash !== facts.genesisHash,
-    );
+    // У Substrate идентичность — хэш генезиса, у Cosmos — chain-id.
+    const identity = facts.family === "COSMOS" ? facts.chainId : facts.genesisHash;
+    const stored =
+      facts.family === "COSMOS" ? card.chainFacts?.chainId : card.chainFacts?.genesisHash;
+    const moved = Boolean(!facts.error && card.chainFacts && identity && stored !== identity);
 
     if (facts.error || moved) {
       stats.failed++;
@@ -298,7 +407,9 @@ export async function syncChainFacts(args: {
         create: {
           cardId: card.id,
           chain: card.nativeChain,
-          genesisHash: facts.genesisHash ?? "",
+          family: facts.family,
+          genesisHash: facts.genesisHash,
+          chainId: facts.chainId,
           checkedAt: now,
           checkError,
         },
@@ -319,13 +430,17 @@ export async function syncChainFacts(args: {
         symbol: facts.tokenSymbol,
         decimals: facts.tokenDecimals,
         ss58Format: facts.ss58Format,
+        chainId: facts.chainId,
       },
       fee: { declaredUsd: declaredFeeUsd, factTokens: facts.transferFeeTokens, priceUsd },
     });
 
     const data = {
       chain: facts.chain,
-      genesisHash: facts.genesisHash ?? "",
+      family: facts.family,
+      genesisHash: facts.genesisHash,
+      chainId: facts.chainId,
+      minGasPrice: facts.minGasPrice,
       tokenSymbol: facts.tokenSymbol,
       tokenDecimals: facts.tokenDecimals,
       ss58Format: facts.ss58Format,
@@ -358,8 +473,10 @@ export async function syncChainFacts(args: {
         provenance: mergeProvenance(card.provenance, {
           "payments.blockSeconds": entry,
           "payments.finalitySeconds": entry,
-          "chain.symbol": entry,
-          "chain.decimals": entry,
+          // Реестр денома есть не у всякой сети Cosmos: чего не прочитали, то и
+          // не помечаем проверенным.
+          ...(facts.tokenSymbol != null ? { "chain.symbol": entry } : {}),
+          ...(facts.tokenDecimals != null ? { "chain.decimals": entry } : {}),
           ...(feeVerified ? { "payments.feeUsdTypical": entry } : {}),
         }) as never,
       },

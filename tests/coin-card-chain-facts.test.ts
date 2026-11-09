@@ -407,3 +407,139 @@ describe("сеть без читаемой комиссии (слайс V)", () 
     expect(codes).not.toContain("SS58_FORMAT");
   });
 });
+
+describe("семья Cosmos (слайс V)", () => {
+  /** Поддельный REST-узел Cosmos: тот же инъектируемый fetch, но GET. */
+  function cosmos(
+    opts: { chainId?: string; height?: number; stepMs?: number; meta?: boolean } = {},
+  ): FetchLike {
+    const height = opts.height ?? 15_724_506;
+    const base = Date.parse("2026-11-09T05:18:11.095Z");
+    const step = opts.stepMs ?? 11_500;
+    return (async (url: string) => {
+      const json = (body: unknown, ok = true, status = 200) => ({
+        ok,
+        status,
+        json: async () => body,
+      });
+      if (url.includes("/blocks/")) {
+        const raw = url.split("/blocks/")[1];
+        const h = raw === "latest" ? height : Number(raw);
+        return json({
+          block: {
+            header: {
+              chain_id: opts.chainId ?? "celestia",
+              height: String(h),
+              time: new Date(base - (height - h) * step).toISOString(),
+            },
+          },
+        });
+      }
+      if (url.includes("/denoms_metadata/")) {
+        if (opts.meta === false) return json({ code: 5, message: "client metadata" }, false, 404);
+        return json({
+          metadata: {
+            display: "TIA",
+            denom_units: [
+              { denom: "utia", exponent: 0 },
+              { denom: "TIA", exponent: 6 },
+            ],
+          },
+        });
+      }
+      if (url.includes("/node/v1beta1/config")) {
+        return json({ minimum_gas_price: "0.002000000000000000utia" });
+      }
+      return json({ code: 12, message: "not implemented" }, false, 501);
+    }) as unknown as FetchLike;
+  }
+
+  it("читает chain-id, время блока, цену газа; финальность — в том же блоке", async () => {
+    const facts = await readChainFacts({ chain: "celestia", fetchImpl: cosmos(), sample: 200 });
+    expect(facts.error).toBeNull();
+    expect(facts.family).toBe("COSMOS");
+    expect(facts.chainId).toBe("celestia");
+    // Хэш генезиса у этой семьи не читается: блок 1 на обрезанных узлах нет.
+    expect(facts.genesisHash).toBeNull();
+    expect(facts.blockSeconds).toBe(11.5);
+    expect(facts.finalityLag).toBe(0);
+    expect(facts.finalitySeconds).toBe(0);
+    expect(facts.minGasPrice).toBe("0.002");
+    expect(facts.tokenSymbol).toBe("TIA");
+    expect(facts.tokenDecimals).toBe(6);
+    // Комиссию перевода этой семье пока никто не считает — и это сказано явно.
+    expect(facts.transferFeeError).toBe("fee_unsupported");
+    expect(facts.transferFeeTokens).toBeNull();
+    expect(facts.ss58Format).toBeNull();
+  });
+
+  it("сеть без реестра денома: тикер и знаки пустые, остальное на месте", async () => {
+    const facts = await readChainFacts({ chain: "celestia", fetchImpl: cosmos({ meta: false }) });
+    expect(facts.error).toBeNull();
+    expect(facts.tokenSymbol).toBeNull();
+    expect(facts.tokenDecimals).toBeNull();
+    expect(facts.chainId).toBe("celestia");
+  });
+
+  it("узел представился другой цепью — CHAIN_ID в расхождениях", () => {
+    expect(
+      chainMismatches({
+        chainKey: "celestia",
+        cardSymbol: "TIA",
+        claimedDecimals: null,
+        facts: { symbol: "TIA", decimals: 6, ss58Format: null, chainId: "celestia-test" },
+      }),
+    ).toContain("CHAIN_ID");
+  });
+
+  it("свой chain-id расхождением не считается", () => {
+    expect(
+      chainMismatches({
+        chainKey: "celestia",
+        cardSymbol: "TIA",
+        claimedDecimals: null,
+        facts: { symbol: "TIA", decimals: 6, ss58Format: null, chainId: "celestia" },
+      }),
+    ).toEqual([]);
+  });
+
+  it("переезд ловится по chain-id, а не по хэшу генезиса", async () => {
+    const updates: Array<Record<string, unknown>> = [];
+    const prisma = {
+      coinCard: {
+        findMany: async () => [
+          {
+            id: "card1",
+            nativeChain: "celestia",
+            symbol: "TIA",
+            tokenomics: {},
+            payments: {},
+            provenance: {},
+            chainFacts: { genesisHash: null, chainId: "celestia-old" },
+            priceIndex: null,
+          },
+        ],
+        update: async (a: Record<string, unknown>) => {
+          updates.push(a);
+          return {};
+        },
+      },
+      coinCardChainFacts: {
+        upsert: async (a: Record<string, unknown>) => {
+          updates.push(a);
+          return {};
+        },
+      },
+    };
+    const stats = await syncChainFacts({
+      prisma: prisma as never,
+      fetchImpl: cosmos(),
+      now: new Date("2026-11-09T10:00:00Z"),
+    });
+    expect(stats).toEqual({ cards: 1, ok: 0, failed: 1 });
+    const written = updates[0] as { update: Record<string, unknown> };
+    expect(written.update.checkError).toBe("genesis_mismatch");
+    // Числа не перезаписаны: в update ушли только отметка времени и ошибка.
+    expect(Object.keys(written.update).sort()).toEqual(["checkError", "checkedAt"]);
+  });
+});

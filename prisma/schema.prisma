@@ -1002,7 +1002,18 @@ model CoinCardChainFacts {
   cardId          String   @unique
   card            CoinCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
   chain           String
-  genesisHash     String
+  /// SUBSTRATE | COSMOS — какой ридер отвечал. Рендер подписывает факты
+  /// по-разному: у Cosmos финальность достигается в том же блоке, а комиссию
+  /// перевода пока никто не считает.
+  family          String   @default("SUBSTRATE")
+  /// Необязателен с слайса V: у Cosmos идентичность сети — chain-id, а блок 1
+  /// на обрезанных узлах недоступен.
+  genesisHash     String?
+  /// Идентичность сети Cosmos: "celestia", "dydx-mainnet-1".
+  chainId         String?
+  /// Минимальная цена газа, заявленная узлом ("0.002utia" → "0.002"). Строкой:
+  /// это десятичная дробь, а не число с плавающей точкой.
+  minGasPrice     String?
   tokenSymbol     String?
   tokenDecimals   Int?
   ss58Format      Int?

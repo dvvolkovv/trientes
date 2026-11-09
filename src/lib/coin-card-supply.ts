@@ -20,6 +20,8 @@ import {
   substrateRpcUrlFor,
 } from "./substrate-chains";
 import { isSs58Address } from "./substrate-codec";
+import { resolveCosmosChain, cosmosRestUrlFor } from "./cosmos-chains";
+import { readCosmosBlock, readCosmosSupply, type HttpFetch } from "./cosmos-rest";
 import {
   readAccountBalance,
   readChainProperties,
@@ -387,6 +389,48 @@ export async function readSubstrateSupplyFacts(args: {
   return { totalUnits, balances, decimals, symbol, genesisHash, error: null };
 }
 
+/**
+ * Выпуск в сети на Cosmos SDK. Исключений у посеянной карточки нет: адреса
+ * казны может назвать только проект, а он здесь ничего не заявлял, — поэтому
+ * оборот равен общему выпуску, и в карточке это подписано провенансом.
+ *
+ * Знаки берутся из реестра, а не из реестра денома узла: от них зависит
+ * порядок величины, и терять выпуск целиком из-за того, что сеть не публикует
+ * метаданные денома (Injective, Kava, Secret), неправильно. Расхождение
+ * реестра с метаданными ловит сверка фактов сети кодом `DECIMALS`.
+ */
+export async function readCosmosSupplyFacts(args: {
+  chain: string;
+  fetchImpl?: FetchLike;
+  timeoutMs?: number;
+}): Promise<{
+  totalUnits: string | null;
+  decimals: number | null;
+  symbol: string | null;
+  chainId: string | null;
+  error: SupplyReadError | null;
+}> {
+  const empty = { totalUnits: null, decimals: null, symbol: null, chainId: null };
+  const chain = resolveCosmosChain(args.chain);
+  if (!chain) return { ...empty, error: "chain_unsupported" };
+
+  const url = cosmosRestUrlFor(chain);
+  const opts = { fetchImpl: args.fetchImpl as unknown as HttpFetch, timeoutMs: args.timeoutMs };
+  try {
+    const block = await readCosmosBlock(url, "latest", opts);
+    const units = await readCosmosSupply(url, chain.denom, opts);
+    return {
+      totalUnits: units.toString(),
+      decimals: chain.exponent,
+      symbol: chain.symbol,
+      chainId: block.chainId,
+      error: null,
+    };
+  } catch {
+    return { ...empty, error: "supply_unreadable" };
+  }
+}
+
 /* ─── прогон по базе ─────────────────────────────────────────────────────── */
 
 type ContractRow = { chain: string; address: string; decimals: number | null; onchainDecimals: number | null };
@@ -599,6 +643,10 @@ async function syncNativeChainCard(args: {
 }): Promise<void> {
   const { prisma, card, now, fetchImpl, stats } = args;
   const chainKey = card.nativeChain ?? "";
+  if (resolveCosmosChain(chainKey)) {
+    await syncCosmosCard(args);
+    return;
+  }
   const chain = resolveSubstrateChain(chainKey);
 
   if (!chain) {
@@ -721,6 +769,91 @@ async function aggregatedSupply(
   const pick = snap.totalSupply ?? snap.circulatingSupply;
   const n = pick == null ? NaN : Number(pick);
   return Number.isFinite(n) && n > 0 ? n : null;
+}
+
+/**
+ * Один проход по нативной монете сети Cosmos. Отдельно от Substrate-ветки по
+ * той же причине, по которой та отделена от EVM: читаются разные вещи, и два
+ * расчёта в одном теле не читаются.
+ */
+async function syncCosmosCard(args: {
+  prisma: PrismaLike;
+  card: CardRow;
+  now: Date;
+  fetchImpl?: FetchLike;
+  stats: SupplySyncStats;
+}): Promise<void> {
+  const { prisma, card, now, fetchImpl, stats } = args;
+  const chain = resolveCosmosChain(card.nativeChain ?? "")!;
+  const facts = await readCosmosSupplyFacts({ chain: chain.key, fetchImpl });
+
+  if (facts.error || facts.totalUnits == null || facts.decimals == null) {
+    stats.failed++;
+    await writeSupply({
+      prisma,
+      cardId: card.id,
+      data: {
+        chain: chain.key,
+        address: facts.chainId ?? chain.chainId,
+        decimals: facts.decimals ?? 0,
+        method: "COSMOS_V1",
+        checkedAt: now,
+        checkError: facts.error ?? "supply_unreadable",
+      },
+      // Прошлые числа не стираются: недоступный узел — не новость о монете.
+      createDefaults: true,
+    });
+    return;
+  }
+
+  // Исключений нет: назвать адреса казны может только проект, а он на
+  // посеянной карточке ничего не заявлял. Оборот равен общему выпуску.
+  const result = computeSupply({
+    totalUnits: facts.totalUnits,
+    decimals: facts.decimals,
+    balances: [],
+  });
+  const claimed = (card.tokenomics as { circulating?: number | null } | null)?.circulating ?? null;
+  const share = supplyShare(result.total, await aggregatedSupply(prisma, card.coinId));
+  const understated = share != null && share < SUPPLY_SHARE_MIN;
+
+  await writeSupply({
+    prisma,
+    cardId: card.id,
+    data: {
+      chain: chain.key,
+      address: facts.chainId ?? chain.chainId,
+      decimals: facts.decimals,
+      method: "COSMOS_V1",
+      totalSupply: result.total,
+      excludedTotal: result.excludedTotal,
+      circulating: result.circulating,
+      excluded: result.excluded,
+      partial: result.partial,
+      claimedDeltaPct: claimedDeltaPct(claimed, result.circulating),
+      checkedAt: now,
+      checkError: understated ? "supply_share" : null,
+    },
+  });
+
+  if (understated) {
+    stats.failed++;
+    return;
+  }
+
+  await prisma.coinCard.update({
+    where: { id: card.id },
+    data: {
+      provenance: mergeProvenance(card.provenance, {
+        "supply.circulating": {
+          kind: "VERIFIED_ONCHAIN",
+          source: chain.key,
+          at: now.toISOString(),
+        },
+      }) as never,
+    },
+  });
+  stats.ok++;
 }
 
 async function writeSupply(args: {
