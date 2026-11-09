@@ -1,12 +1,16 @@
 import { getTranslations } from "next-intl/server";
 import { formatFeeAmount } from "@/lib/format";
 import { getProvenance } from "@/lib/coin-card-provenance";
+import { resolveCosmosChain } from "@/lib/cosmos-chains";
 import { resolveSubstrateChain } from "@/lib/substrate-chains";
 import { ProvenanceBadge } from "./provenance-badge";
 
 export type ChainFactsView = {
   chain: string;
-  genesisHash: string;
+  family?: string;
+  genesisHash: string | null;
+  chainId?: string | null;
+  minGasPrice?: string | null;
   tokenSymbol: string | null;
   tokenDecimals: number | null;
   blockSeconds: number | null;
@@ -46,9 +50,13 @@ export async function NativeChainBlock({
   networkSupply?: string | null;
 }) {
   const t = await getTranslations("coinCard.nativeChain");
-  const chain = resolveSubstrateChain(nativeChain);
-  const label = chain?.label ?? nativeChain;
+  const substrate = resolveSubstrateChain(nativeChain);
+  const cosmos = substrate ? null : resolveCosmosChain(nativeChain);
+  const label = substrate?.label ?? cosmos?.label ?? nativeChain;
   const verified = facts && !facts.checkError ? facts : null;
+  // В Cosmos блок окончателен в момент включения: показывать «0 секунд» было бы
+  // верно по числу и непонятно по смыслу.
+  const instantFinality = facts?.family === "COSMOS";
 
   return (
     <div className="border border-hairline rounded-md p-3 bg-card space-y-2">
@@ -94,10 +102,25 @@ export async function NativeChainBlock({
           {verified.finalitySeconds != null && (
             <Row
               label={t("finality")}
-              value={t("seconds", { value: verified.finalitySeconds })}
+              value={
+                instantFinality
+                  ? t("finalityInstant")
+                  : t("seconds", { value: verified.finalitySeconds })
+              }
               path="payments.finalitySeconds"
               provenance={provenance}
             />
+          )}
+          {/* Комиссию перевода этой семье пока никто не считает: узел сообщает
+              только минимальную цену газа, и она показывается как есть. */}
+          {verified.minGasPrice && (
+            <div className="flex flex-wrap items-baseline justify-between gap-3">
+              <dt className="text-[14px] text-muted">{t("minGasPrice")}</dt>
+              <dd className="text-[14px] num">
+                {verified.minGasPrice}
+                <span className="text-muted text-xs ml-2">{t("feeNotMeasured")}</span>
+              </dd>
+            </div>
           )}
           {/* Комиссию считает сам узел для эталонного перевода одной монеты —
               поэтому подпись говорит, что именно измерено, а не «типичная». */}
@@ -141,6 +164,12 @@ export async function NativeChainBlock({
       {facts?.genesisHash && (
         <p className="font-mono text-xs break-all text-muted">
           {t("genesis")}: {facts.genesisHash}
+        </p>
+      )}
+
+      {!facts?.genesisHash && facts?.chainId && (
+        <p className="font-mono text-xs break-all text-muted">
+          {t("chainId")}: {facts.chainId}
         </p>
       )}
 

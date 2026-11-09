@@ -20,14 +20,22 @@ export function CoinCardSections({
   card,
   translated = false,
   originalHref,
+  fallbackPriceUsd = null,
 }: {
   card: PublicCoinCard;
   translated?: boolean;
   originalHref?: string;
+  /**
+   * Цена со страницы монеты. Нужна посеянной карточке (слайс V): собственного
+   * ценового индекса у неё нет — рынков ей никто не заявлял, — а комиссию
+   * перевода без цены не перевести в доллары.
+   */
+  fallbackPriceUsd?: number | null;
 }) {
   const badge = translated && originalHref
     ? <TranslatedBadge originalHref={originalHref} />
     : null;
+  const priceUsd = card.priceIndex?.priceUsd ?? fallbackPriceUsd;
   return (
     <>
       <ContractsSection
@@ -37,7 +45,7 @@ export function CoinCardSections({
         cardSymbol={card.symbol}
         nativeChain={card.nativeChain}
         chainFacts={card.chainFacts}
-        priceUsd={card.priceIndex?.priceUsd ?? null}
+        priceUsd={priceUsd}
         networkSupply={
           card.supply?.checkError === "supply_share" ? card.supply.totalSupply : null
         }
@@ -56,7 +64,7 @@ export function CoinCardSections({
         payments={card.payments}
         provenance={card.provenance}
         chainFacts={card.chainFacts}
-        priceUsd={card.priceIndex?.priceUsd ?? null}
+        priceUsd={priceUsd}
       />
       <LegalSection legal={card.legal} />
       <SecuritySection security={card.security} />

@@ -2219,7 +2219,11 @@
       "transferFeeFree": "keine Gebühr",
       "transferFeeHint": "Überweisung einer Münze",
       "supplyHere": "Umlauf in diesem Netzwerk",
-      "supplyHereHint": "Gilt für dieses Netzwerk, nicht für die Münze insgesamt"
+      "supplyHereHint": "Gilt für dieses Netzwerk, nicht für die Münze insgesamt",
+      "chainId": "Chain-ID",
+      "finalityInstant": "im selben Block",
+      "minGasPrice": "Mindest-Gaspreis",
+      "feeNotMeasured": "laut Node; Transfergebühr noch nicht gemessen"
     }
   },
   "inviteCoin": {

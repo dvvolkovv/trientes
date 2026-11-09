@@ -268,6 +268,7 @@ export default async function CoinDetailPage({
             card={card}
             translated={localizedCard?.translated ?? false}
             originalHref={`/${locale}/coin/${slug}?orig=1#tokenomics`}
+            fallbackPriceUsd={row.priceUsd}
           />
         </>
       )}

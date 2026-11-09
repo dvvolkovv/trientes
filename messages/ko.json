@@ -2219,7 +2219,11 @@
       "transferFeeFree": "수수료 없음",
       "transferFeeHint": "코인 1개 전송",
       "supplyHere": "이 네트워크의 발행량",
-      "supplyHereHint": "코인 전체가 아니라 이 네트워크에 해당하는 값입니다"
+      "supplyHereHint": "코인 전체가 아니라 이 네트워크에 해당하는 값입니다",
+      "chainId": "체인 ID",
+      "finalityInstant": "같은 블록에서",
+      "minGasPrice": "최소 가스 가격",
+      "feeNotMeasured": "노드 기준. 전송 수수료는 아직 측정하지 않음"
     }
   },
   "inviteCoin": {

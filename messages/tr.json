@@ -2219,7 +2219,11 @@
       "transferFeeFree": "ücret yok",
       "transferFeeHint": "bir coin transferi",
       "supplyHere": "Bu ağdaki arz",
-      "supplyHereHint": "Paranın tamamı için değil, yalnızca bu ağ için geçerlidir"
+      "supplyHereHint": "Paranın tamamı için değil, yalnızca bu ağ için geçerlidir",
+      "chainId": "Zincir kimliği",
+      "finalityInstant": "aynı blokta",
+      "minGasPrice": "Asgari gaz fiyatı",
+      "feeNotMeasured": "düğüme göre; transfer ücreti henüz ölçülmüyor"
     }
   },
   "inviteCoin": {

@@ -2219,7 +2219,11 @@
       "transferFeeFree": "无手续费",
       "transferFeeHint": "转账一枚代币",
       "supplyHere": "本网络内的发行量",
-      "supplyHereHint": "仅限本网络，不代表该币的总量"
+      "supplyHereHint": "仅限本网络，不代表该币的总量",
+      "chainId": "链 ID",
+      "finalityInstant": "同一区块内",
+      "minGasPrice": "最低 Gas 价格",
+      "feeNotMeasured": "来自节点；转账手续费尚未测量"
     }
   },
   "inviteCoin": {

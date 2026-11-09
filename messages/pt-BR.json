@@ -2219,7 +2219,11 @@
       "transferFeeFree": "sem taxa",
       "transferFeeHint": "transferência de uma moeda",
       "supplyHere": "Emissão nesta rede",
-      "supplyHereHint": "Refere-se a esta rede, não à moeda como um todo"
+      "supplyHereHint": "Refere-se a esta rede, não à moeda como um todo",
+      "chainId": "ID da cadeia",
+      "finalityInstant": "no mesmo bloco",
+      "minGasPrice": "Preço mínimo do gás",
+      "feeNotMeasured": "segundo o nó; taxa de transferência ainda não medida"
     }
   },
   "inviteCoin": {

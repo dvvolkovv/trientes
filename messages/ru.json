@@ -2219,7 +2219,11 @@
       "transferFeeFree": "без комиссии",
       "transferFeeHint": "перевод одной монеты",
       "supplyHere": "Выпуск в этой сети",
-      "supplyHereHint": "Относится к этой сети, а не ко всей монете"
+      "supplyHereHint": "Относится к этой сети, а не ко всей монете",
+      "chainId": "Идентификатор цепи",
+      "finalityInstant": "в том же блоке",
+      "minGasPrice": "Минимальная цена газа",
+      "feeNotMeasured": "по узлу; комиссия перевода пока не измеряется"
     }
   },
   "inviteCoin": {

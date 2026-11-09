@@ -2219,7 +2219,11 @@
       "transferFeeFree": "no fee",
       "transferFeeHint": "one-coin transfer",
       "supplyHere": "Supply in this network",
-      "supplyHereHint": "Belongs to this network, not to the coin as a whole"
+      "supplyHereHint": "Belongs to this network, not to the coin as a whole",
+      "chainId": "Chain ID",
+      "finalityInstant": "in the same block",
+      "minGasPrice": "Minimum gas price",
+      "feeNotMeasured": "per node; transfer fee not measured yet"
     }
   },
   "inviteCoin": {
