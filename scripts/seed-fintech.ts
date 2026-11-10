@@ -14,7 +14,7 @@ async function main() {
   let created = 0;
   let updated = 0;
   for (const row of CURATED_FINTECH) {
-    const logoUrl = logoForDomain(row.website);
+    const logoUrl = row.logoUrl ?? logoForDomain(row.website);
     const data = {
       slug: row.slug,
       displayName: row.displayName,

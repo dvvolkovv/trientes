@@ -8,6 +8,9 @@ export type CuratedFintech = {
   legalName?: string;
   website: string;
   description: string;
+  // Переопределяет фавикон домена: у приложения иконка из App Store лучше
+  // любого /ip3/<host>.ico, а у сервиса без собственного сайта её может не быть.
+  logoUrl?: string;
   foundedYear: number;
   countryCode: string;
   services: FintechService[];
@@ -375,5 +378,44 @@ export const CURATED_FINTECH: CuratedFintech[] = [
     kycLevel: "NONE",
     appStoreUrl: "https://apps.apple.com/app/metamask-blockchain-wallet/id1438144202",
     playStoreUrl: "https://play.google.com/store/apps/details?id=io.metamask",
+  },
+  {
+    // Кошелёк нативной монеты Taler. Описание, иконка и доступность по
+    // магазинам взяты с карточки App Store (itunes.apple.com/lookup?id=…),
+    // юрлицо и адрес — из AML/KYC-политики на taler.tirol.
+    slug: "twx-taler-wallet",
+    displayName: "TWX: Taler Wallet & Multisig",
+    legalName: "TalerX Inc.",
+    website: "https://taler.tirol",
+    logoUrl: "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/0e/1a/1f/0e1a1f2c-4503-6edb-b7ab-128da24f4ee7/AppIcon-prod-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg",
+    description: `TWX is a wallet for TAL on the Taler blockchain. Balances, transfers, staking and shared multisig accounts — all in one app. Your TAL belongs to you alone: keys stay on your device, and there's no signup and no personal data to hand over.
+
+TRANSFERS IN SECONDS
+Scan a QR code or paste an address, enter the amount — done. The recipient will see the tokens in seconds.
+
+STAKING
+Pick a validator and start earning. The rate is fixed and doesn't move with the market. You can start a withdrawal whenever you like; your TAL returns after the unlocking period.
+
+VIVID STAKING
+An extra option for anyone willing to lock TAL for a set term. The longer the term, the higher the rate. When the term ends, your TAL and the interest earned move back to standard staking automatically.
+
+MULTISIG
+Set up a wallet where a transaction goes through only after several people approve it. Choose your approval threshold — up to 100 signatories. Works for any situation where funds are managed jointly.
+
+PRIVACY
+No names, no addresses, no documents, no biometrics — the app collects no personal data.
+
+IMPORTANT
+TWX is a non-custodial wallet: you and only you control your TAL. Losing your seed phrase means losing access to the wallet permanently. Blockchain transactions cannot be reversed — check the recipient's address before you send. Staking rewards are not guaranteed: if your chosen validator misbehaves, the protocol may slash part of your delegated TAL.
+TWX is not an exchange. It does not convert fiat to cryptocurrency and does not provide payment or brokerage services.`,
+    foundedYear: 2025,
+    countryCode: "US",
+    // Не он-рамп: приложение само пишет, что фиат в крипту не конвертирует.
+    services: ["CUSTODY","STAKING","PAYMENTS"],
+    supportedCoinIds: ["taler"],
+    supportedFiats: [],
+    availableIn: MAJORS,
+    kycLevel: "NONE",
+    appStoreUrl: "https://apps.apple.com/us/app/twx-taler-wallet-multisig/id6760403514",
   },
 ];
