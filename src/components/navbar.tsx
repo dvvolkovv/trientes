@@ -175,7 +175,12 @@ export async function Navbar() {
           {t("exchange")}
         </a>
 
-        <nav className="hidden min-[1800px]:flex items-center gap-1 text-sm text-muted whitespace-nowrap shrink-0">
+        {/* Промежутки раздаёт justify-evenly, а не фиксированный gap: запас шапки
+            конечный (max-w-[1600px]), и у французской локали на промежуток
+            остаётся меньше 8px — фиксированное значение, подобранное по
+            русскому меню, выдавило бы её за край. shrink-0 оставлен, чтобы
+            пункты никогда не сжимались ниже своей ширины. */}
+        <nav className="hidden min-[1800px]:flex grow shrink-0 justify-evenly items-center gap-1 text-sm text-muted whitespace-nowrap">
           <Link
             href={`/${locale}`}
             className="hover:text-foreground transition-colors"
