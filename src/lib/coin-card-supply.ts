@@ -11,9 +11,9 @@
  */
 
 import { resolveBitcoinChain } from "./bitcoin-chains";
-import { SELECTORS, decodeUint, encodeAddressArg, isEvmAddress, normalizeAddress } from "./evm-abi";
+import { DecodeError, SELECTORS, decodeUint, encodeAddressArg, isEvmAddress, normalizeAddress } from "./evm-abi";
 import { resolveEvmChain, rpcUrlFor } from "./evm-chains";
-import { ethCall, RpcError, type FetchLike } from "./evm-rpc";
+import { ethCall, RpcError, type FetchLike, type RpcErrorCode } from "./evm-rpc";
 import { mergeProvenance } from "./coin-card-provenance";
 import {
   resolveSubstrateChain,
@@ -266,7 +266,18 @@ export function fdv(
 
 /* ─── чтение из сети ─────────────────────────────────────────────────────── */
 
-export type SupplyReadError = "chain_unsupported" | "address_invalid" | "supply_unreadable";
+/**
+ * Почему выпуск не прочитан. Коды транспорта (`rpc_unreachable`, `rpc_error`,
+ * `decode_failed`) попадают сюда как есть: сбой связи с публичным узлом, отказ
+ * самого узла и ответ без значения — три разные новости, и ночной отчёт
+ * здоровья обязан их различать. `supply_unreadable` остался как последнее
+ * слово для сбоя не из транспорта.
+ */
+export type SupplyReadError =
+  | "chain_unsupported"
+  | "address_invalid"
+  | "supply_unreadable"
+  | RpcErrorCode;
 
 export type SupplyFacts = {
   totalUnits: string | null;
@@ -276,6 +287,17 @@ export type SupplyFacts = {
 
 function rpcErrorCode(err: unknown): string {
   return err instanceof RpcError ? err.code : "rpc_error";
+}
+
+/**
+ * Код сбоя чтения выпуска: от узла — его собственный, от декодера — его же
+ * слово (в EVM расшифровка живёт вне транспорта, в Substrate внутри, а причина
+ * одна и та же), иначе общее слово.
+ */
+function supplyReadError(err: unknown): SupplyReadError {
+  if (err instanceof RpcError) return err.code;
+  if (err instanceof DecodeError) return "decode_failed";
+  return "supply_unreadable";
 }
 
 /**
@@ -304,8 +326,8 @@ export async function readSupplyFacts(args: {
   try {
     const raw = await ethCall(url, token, SELECTORS.totalSupply, opts);
     totalUnits = decodeUint(raw).toString();
-  } catch {
-    return { totalUnits: null, balances: [], error: "supply_unreadable" };
+  } catch (err) {
+    return { totalUnits: null, balances: [], error: supplyReadError(err) };
   }
 
   const balances: BalanceRow[] = [];
@@ -373,8 +395,8 @@ export async function readSubstrateSupplyFacts(args: {
     // Выпуск — с того узла, где он настоящий: у сети с переехавшими балансами
     // это не тот же адрес, что для всего остального.
     totalUnits = (await readTotalIssuance(substrateIssuanceUrlFor(chain), opts)).toString();
-  } catch {
-    return { ...empty, error: "supply_unreadable" };
+  } catch (err) {
+    return { ...empty, error: supplyReadError(err) };
   }
 
   const balances: BalanceRow[] = [];
@@ -427,8 +449,8 @@ export async function readCosmosSupplyFacts(args: {
       chainId: block.chainId,
       error: null,
     };
-  } catch {
-    return { ...empty, error: "supply_unreadable" };
+  } catch (err) {
+    return { ...empty, error: supplyReadError(err) };
   }
 }
 
@@ -702,8 +724,11 @@ async function syncNativeChainCard(args: {
       cardId: card.id,
       data: {
         chain: chain.key,
-        address: facts.genesisHash ?? "",
-        decimals: facts.decimals ?? 0,
+        // Знаки и хэш генезиса пишутся только когда прочитаны: сорванное
+        // чтение не должно обнулять то, что сеть уже подтвердила, — с знаками
+        // уходит порядок величины выпуска, а с генезисом идентичность сети.
+        ...(facts.genesisHash ? { address: facts.genesisHash } : {}),
+        ...(facts.decimals == null ? {} : { decimals: facts.decimals }),
         method: "SUBSTRATE_V1",
         checkedAt: now,
         checkError:
@@ -842,7 +867,7 @@ async function syncCosmosCard(args: {
       data: {
         chain: chain.key,
         address: facts.chainId ?? chain.chainId,
-        decimals: facts.decimals ?? 0,
+        ...(facts.decimals == null ? {} : { decimals: facts.decimals }),
         method: "COSMOS_V1",
         checkedAt: now,
         checkError: facts.error ?? "supply_unreadable",
@@ -980,7 +1005,16 @@ async function writeSupply(args: {
 }): Promise<void> {
   const { prisma, cardId, data } = args;
   const create = args.createDefaults
-    ? { totalSupply: "0", excludedTotal: "0", circulating: "0", excluded: [], partial: true, ...data }
+    ? {
+        address: "",
+        decimals: 0,
+        totalSupply: "0",
+        excludedTotal: "0",
+        circulating: "0",
+        excluded: [],
+        partial: true,
+        ...data,
+      }
     : data;
   await prisma.coinCardSupply.upsert({
     where: { cardId },

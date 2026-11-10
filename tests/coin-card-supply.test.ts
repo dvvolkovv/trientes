@@ -304,17 +304,26 @@ describe("readSupplyFacts", () => {
     expect(result.circulating).toBe("950");
   });
 
-  it("revert на totalSupply — фатальная ошибка", async () => {
+  // Сбой фатален в любом случае, но называется своим именем: отказ узла,
+  // недоступный узел и неразборчивый ответ читаются в отчёте здоровья
+  // по-разному.
+  it("revert на totalSupply — фатальная ошибка узла", async () => {
     const { fetchImpl } = fakeNode({ [totalCall]: { fail: "rpc" } });
     const facts = await readSupplyFacts({ chain: "ethereum", address: TOKEN, excluded: [], fetchImpl });
-    expect(facts.error).toBe("supply_unreadable");
+    expect(facts.error).toBe("rpc_error");
     expect(facts.totalUnits).toBeNull();
+  });
+
+  it("недоступный узел — rpc_unreachable", async () => {
+    const { fetchImpl } = fakeNode({ [totalCall]: { fail: "http" } });
+    const facts = await readSupplyFacts({ chain: "ethereum", address: TOKEN, excluded: [], fetchImpl });
+    expect(facts.error).toBe("rpc_unreachable");
   });
 
   it("пустой ответ на totalSupply не декодируется", async () => {
     const { fetchImpl } = fakeNode({ [totalCall]: "0x" });
     const facts = await readSupplyFacts({ chain: "ethereum", address: TOKEN, excluded: [], fetchImpl });
-    expect(facts.error).toBe("supply_unreadable");
+    expect(facts.error).toBe("decode_failed");
   });
 
   it("неизвестная сеть и мусорный адрес до сети не доходят", async () => {
@@ -455,7 +464,7 @@ describe("syncCardSupply", () => {
     const stats = await syncCardSupply({ prisma, fetchImpl: bad.fetchImpl });
     expect(stats.failed).toBe(1);
     const row = supplies.get("card4")!;
-    expect(row.checkError).toBe("supply_unreadable");
+    expect(row.checkError).toBe("rpc_unreachable");
     expect(row.circulating).toBe("500");
   });
 

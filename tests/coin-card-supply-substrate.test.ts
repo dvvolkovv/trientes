@@ -93,7 +93,10 @@ describe("readSubstrateSupplyFacts", () => {
     expect(facts.totalUnits).toBeNull();
   });
 
-  it("недоступный узел — supply_unreadable", async () => {
+  // Сбой связи, отказ узла и «узел ответил, а значения нет» — три разные
+  // новости, и в ночном отчёте здоровья их нельзя путать: первая говорит о
+  // публичном узле, последняя — о сети.
+  it("недоступный узел — rpc_unreachable", async () => {
     const facts = await readSubstrateSupplyFacts({
       chain: "polkadot",
       excluded: [],
@@ -101,7 +104,47 @@ describe("readSubstrateSupplyFacts", () => {
         throw new Error("ECONNREFUSED");
       },
     });
-    expect(facts.error).toBe("supply_unreadable");
+    expect(facts.error).toBe("rpc_unreachable");
+  });
+
+  it("узел ответил 502 — rpc_unreachable", async () => {
+    const facts = await readSubstrateSupplyFacts({
+      chain: "polkadot",
+      excluded: [],
+      fetchImpl: async () => ({ ok: false, status: 502, json: async () => ({}) }),
+    });
+    expect(facts.error).toBe("rpc_unreachable");
+  });
+
+  it("узел ответил ошибкой JSON-RPC — rpc_error", async () => {
+    const facts = await readSubstrateSupplyFacts({
+      chain: "polkadot",
+      excluded: [],
+      fetchImpl: async () => ({
+        ok: true,
+        status: 200,
+        json: async () => ({ jsonrpc: "2.0", id: 1, error: { message: "method not found" } }),
+      }),
+    });
+    expect(facts.error).toBe("rpc_error");
+  });
+
+  it("узел ответил, а выпуска в ответе нет — decode_failed", async () => {
+    const facts = await readSubstrateSupplyFacts({
+      chain: "polkadot",
+      excluded: [],
+      fetchImpl: async (_url, init) => {
+        const { method } = JSON.parse(init!.body) as { method: string };
+        const result =
+          method === "system_properties"
+            ? { ss58Format: 0, tokenDecimals: 12, tokenSymbol: "DOT" }
+            : method === "chain_getBlockHash"
+              ? GENESIS
+              : null; // выпуск: узел отвечает, значения нет
+        return { ok: true, status: 200, json: async () => ({ jsonrpc: "2.0", id: 1, result }) };
+      },
+    });
+    expect(facts.error).toBe("decode_failed");
   });
 });
 
@@ -209,6 +252,56 @@ describe("syncCardSupply для нативной сети", () => {
     const upsert = upserts[0] as { update: Record<string, unknown> };
     expect(upsert.update.checkError).toBe("chain_unsupported");
     expect(upsert.update.totalSupply).toBeUndefined();
+  });
+});
+
+describe("сорванное чтение не стирает прочитанное раньше", () => {
+  function prismaWith(card: Record<string, unknown>) {
+    const upserts: Array<Record<string, unknown>> = [];
+    const prisma = {
+      coinCard: {
+        findMany: async (args: { where: { supply?: { is?: null } } }) =>
+          args.where.supply?.is === null ? [card] : [],
+        update: async () => ({}),
+      },
+      coinCardSupply: {
+        upsert: async (a: Record<string, unknown>) => {
+          upserts.push(a);
+          return {};
+        },
+      },
+    };
+    return { prisma, upserts };
+  }
+
+  // Недоступный узел — не новость о монете: знаки после точки и хэш генезиса
+  // в строке выпуска остаются теми, что сеть уже подтвердила. Иначе один
+  // сетевой сбой обнуляет знаки, а с ними и порядок величины выпуска.
+  it("знаки и хэш генезиса не обнуляются сбоем узла", async () => {
+    const { prisma, upserts } = prismaWith({
+      id: "card1",
+      nativeChain: "polkadot",
+      tokenomics: {},
+      provenance: {},
+      contracts: [],
+      supply: null,
+    });
+
+    await syncCardSupply({
+      prisma: prisma as never,
+      fetchImpl: async () => {
+        throw new Error("ECONNREFUSED");
+      },
+      now: new Date("2026-11-10T10:00:00Z"),
+    });
+
+    const upsert = upserts[0] as { update: Record<string, unknown>; create: Record<string, unknown> };
+    expect(upsert.update.checkError).toBe("rpc_unreachable");
+    expect(upsert.update.decimals).toBeUndefined();
+    expect(upsert.update.address).toBeUndefined();
+    // Строки у карточки ещё нет — её нужно чем-то создать, и вот там нули уместны.
+    expect(upsert.create.decimals).toBe(0);
+    expect(upsert.create.address).toBe("");
   });
 });
 
