@@ -1,4 +1,5 @@
 import type { OHLCV } from "@/lib/binance-klines";
+import { cgGet, cgGetUi } from "@/lib/coingecko-http";
 
 export type MarketRow = {
   id: string;
@@ -75,26 +76,17 @@ export function parseGlobal(raw: unknown): GlobalSnap {
   };
 }
 
-const CG_BASE = "https://api.coingecko.com/api/v3";
-
+// Запросы идут через `coingecko-http`: один шлюз частоты на процесс и повтор
+// с разбросом. Прежний здешний `cgFetch` повторялся один раз через ровно 15 с,
+// и четыре прогона воркера, упавшие залпом, возвращались синхронно — см.
+// доводы в шапке `rate-gate.ts`.
 async function cgFetch(path: string, params: Record<string, string>): Promise<unknown> {
-  const qs = new URLSearchParams(params).toString();
-  const url = `${CG_BASE}${path}?${qs}`;
-  // Retry once on 429 — Free tier occasionally bursts past limits.
-  for (let attempt = 0; attempt < 2; attempt++) {
-    const res = await fetch(url, {
-      headers: { accept: "application/json" },
-      cache: "no-store",
-    });
-    if (res.ok) return res.json();
-    if (res.status === 429 && attempt === 0) {
-      await new Promise((r) => setTimeout(r, 15_000));
-      continue;
-    }
-    const body = await res.text().catch(() => "");
-    throw new Error(`coingecko ${path} ${res.status}: ${body.slice(0, 200)}`);
-  }
-  throw new Error(`coingecko ${path}: unreachable`);
+  return cgGet(path, params);
+}
+
+/** То же, но для чтений на пути отрисовки страницы: своя очередь, быстрый повтор. */
+async function cgFetchUi(path: string, params: Record<string, string>): Promise<unknown> {
+  return cgGetUi(path, params);
 }
 
 export async function fetchTop100L1(): Promise<MarketRow[]> {
@@ -240,7 +232,7 @@ export async function fetchCoinDetail(id: string): Promise<CoinDetail> {
 }
 
 export async function fetchMarketChart(id: string, days: number | "max"): Promise<ChartPoint[]> {
-  const raw = await cgFetch(`/coins/${encodeURIComponent(id)}/market_chart`, {
+  const raw = await cgFetchUi(`/coins/${encodeURIComponent(id)}/market_chart`, {
     vs_currency: "usd",
     days: String(days),
   });
@@ -264,7 +256,7 @@ export function parseOhlc(raw: unknown): OHLCV[] {
 
 // CoinGecko OHLC candles (no volume). days ∈ {1,7,14,30,90,180,365,"max"}.
 export async function fetchOhlc(id: string, days: number | "max"): Promise<OHLCV[]> {
-  const raw = await cgFetch(`/coins/${encodeURIComponent(id)}/ohlc`, {
+  const raw = await cgFetchUi(`/coins/${encodeURIComponent(id)}/ohlc`, {
     vs_currency: "usd",
     days: String(days),
   });
@@ -272,7 +264,7 @@ export async function fetchOhlc(id: string, days: number | "max"): Promise<OHLCV
 }
 
 export async function fetchTickers(id: string): Promise<TickerRow[]> {
-  const raw = await cgFetch(`/coins/${encodeURIComponent(id)}/tickers`, { page: "1" });
+  const raw = await cgFetchUi(`/coins/${encodeURIComponent(id)}/tickers`, { page: "1" });
   return parseTickers(raw);
 }
 

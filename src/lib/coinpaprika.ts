@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { cpGet } from "./coinpaprika-http";
+
 /**
  * Normalized shape we use internally after parsing CoinPaprika's response.
  */
@@ -92,15 +94,10 @@ export function resolveCpId(cpId: string): string {
   return CP_TO_CG_ALIAS[cpId] ?? cpId;
 }
 
-const CP_BASE = "https://api.coinpaprika.com/v1";
-
 export async function fetchCoinPaprikaExchanges(): Promise<CoinPaprikaExchange[]> {
-  const res = await fetch(`${CP_BASE}/exchanges`, {
-    headers: { Accept: "application/json" },
-    next: { revalidate: 0 },
-  });
-  if (!res.ok) throw new Error(`CoinPaprika /exchanges failed: ${res.status}`);
-  const json = (await res.json()) as unknown[];
+  // Через `cpGet`: промежуток между запросами и повтор при 402/429/5xx — см.
+  // доводы в шапке `coinpaprika-http.ts`.
+  const json = (await cpGet("/exchanges")) as unknown[];
   if (!Array.isArray(json)) throw new Error("CoinPaprika /exchanges: expected array");
   const out: CoinPaprikaExchange[] = [];
   for (const row of json) {
@@ -190,12 +187,14 @@ export type CoinPaprikaExchangeDetail = CoinPaprikaExchange & {
  * so we can derive pairsCount from markets[].length.
  */
 export async function fetchCoinPaprikaExchangeDetail(id: string): Promise<CoinPaprikaExchangeDetail | null> {
-  const res = await fetch(`${CP_BASE}/exchanges/${encodeURIComponent(id)}`, {
-    headers: { Accept: "application/json" },
-    next: { revalidate: 0 },
-  });
-  if (!res.ok) return null;
-  const json = (await res.json()) as { markets?: unknown[] } & Record<string, unknown>;
+  // Подробности одной биржи — не повод валить прогон: не ответили, значит у
+  // этой биржи данных нет. Повтор при 402/429/5xx уже внутри `cpGet`.
+  let json: { markets?: unknown[] } & Record<string, unknown>;
+  try {
+    json = (await cpGet(`/exchanges/${encodeURIComponent(id)}`)) as typeof json;
+  } catch {
+    return null;
+  }
   const base = parseCoinPaprikaExchange(json);
   if (!base) return null;
   const rawMarkets = Array.isArray(json.markets) ? json.markets : [];

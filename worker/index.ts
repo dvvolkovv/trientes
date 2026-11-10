@@ -464,11 +464,19 @@ async function main() {
   // Stagger the 30-min batch off the 10-min boundary so we don't fire 5 CoinGecko
   // calls in the same second at :00 / :30 (caused sporadic 429s).
   cron.schedule("*/10 * * * *", () => void runPriceSync());
+  // Четыре прогона CoinGecko — **по очереди**, а не залпом. Параллельный `void`
+  // отправлял четыре запроса в одну секунду, бесплатный тариф отвечал 429 всем
+  // четырём, и повторы уходили синхронно: в логах 02:35:15 и 03:35:15 — четыре
+  // падения с одной отметкой времени. Промежуток между запросами держит шлюз
+  // `coingecko-http`, но очередь здесь нужна всё равно: иначе порядок прогонов
+  // решает случай, а ошибка одного тянет за собой ожидание остальных.
   cron.schedule("5,35 * * * *", () => {
-    void runGlobalSync();
-    void runRatesSync();
-    void runExchangesSync();
-    void runAdminAddedSync();
+    void (async () => {
+      await runGlobalSync();
+      await runRatesSync();
+      await runExchangesSync();
+      await runAdminAddedSync();
+    })();
   });
   // News + Fear & Greed — both public, no-key, independent of CoinGecko, so staggered to :15/:45.
   cron.schedule("15,45 * * * *", () => {

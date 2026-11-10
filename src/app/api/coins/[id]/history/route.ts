@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { redis } from "@/lib/redis";
 import { fetchMarketChart } from "@/lib/coingecko";
-import { HISTORY_KEY, HISTORY_TTL, TIMEFRAME_DAYS } from "@/lib/sync/keys";
+import { readChartHistory } from "@/lib/chart-history-cache";
+import { TIMEFRAME_DAYS } from "@/lib/sync/keys";
 
 export const dynamic = "force-dynamic";
 
@@ -20,30 +21,17 @@ export async function GET(
     return NextResponse.json({ error: "invalid id" }, { status: 400 });
   }
 
-  const key = HISTORY_KEY(id, timeframe);
-
-  // Try cache.
   try {
-    if (redis.status === "wait" || redis.status === "end") await redis.connect();
-    const cached = await redis.get(key);
-    if (cached) {
-      return NextResponse.json(JSON.parse(cached), {
-        headers: { "x-cache": "hit" },
-      });
-    }
-  } catch {
-    // ignore — fall through to fetch
-  }
-
-  // Fetch from CoinGecko.
-  try {
-    const points = await fetchMarketChart(id, TIMEFRAME_DAYS[timeframe]);
-    try {
-      await redis.set(key, JSON.stringify(points), "EX", HISTORY_TTL[timeframe]);
-    } catch {
-      // best-effort cache write
-    }
-    return NextResponse.json(points, { headers: { "x-cache": "miss" } });
+    // Кэш, сеть и запасная копия на случай отказа — в `chart-history-cache`.
+    const { points, cache } = await readChartHistory(id, timeframe, {
+      fetchChart: (coinId, tf) => fetchMarketChart(coinId, TIMEFRAME_DAYS[tf]),
+      get: async (key) => {
+        if (redis.status === "wait" || redis.status === "end") await redis.connect();
+        return redis.get(key);
+      },
+      set: (key, value, ttl) => redis.set(key, value, "EX", ttl),
+    });
+    return NextResponse.json(points, { headers: { "x-cache": cache } });
   } catch (err) {
     return NextResponse.json(
       { error: `fetch_failed: ${err instanceof Error ? err.message : "unknown"}` },
