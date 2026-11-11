@@ -15,6 +15,7 @@ import { computeIndex, type IndexCandidate, type IndexResult } from "@/lib/price
 import { mergeProvenance } from "@/lib/coin-card-provenance";
 import { fdv, marketCap } from "@/lib/coin-card-supply";
 import { ANCHORS, quoteToUsd, USD_QUOTES, type AnchorPrices } from "@/lib/quote-usd";
+import { isOwnDexMarket, OWN_DEX_MAX_AGE_MS } from "@/lib/coin-card-dex-market";
 
 export type MarketCheckError =
   | "exchange_unsupported"
@@ -122,7 +123,11 @@ export function computeAnchorPrices(snapshots: SnapshotMap): AnchorPrices {
 
 /* ─── прогон по базе ─────────────────────────────────────────────────────── */
 
-type MarketRow = MarketClaim & { priceUsd: number | null; volumeUsd24h: number | null };
+type MarketRow = MarketClaim & {
+  priceUsd: number | null;
+  volumeUsd24h: number | null;
+  checkedAt?: Date | null;
+};
 
 type CardRow = {
   id: string;
@@ -198,7 +203,7 @@ export async function syncCardMarkets(args: {
       markets: {
         select: {
           id: true, kind: true, exchangeId: true, exchangeName: true,
-          pair: true, priceUsd: true, volumeUsd24h: true,
+          pair: true, priceUsd: true, volumeUsd24h: true, checkedAt: true,
         },
       },
     },
@@ -216,6 +221,21 @@ export async function syncCardMarkets(args: {
     const checks = new Map<string, MarketCheck>();
 
     for (const market of card.markets) {
+      // Рынок нашего собственного обмена сверке со снимками бирж не подлежит:
+      // его цену пишет тот, кто прочитал её из сети, и второго автора у этого
+      // значения нет. В индекс он идёт своей ценой, пока она свежая.
+      if (isOwnDexMarket(market)) {
+        const age = market.checkedAt ? now.getTime() - market.checkedAt.getTime() : Infinity;
+        if (market.priceUsd != null && age <= OWN_DEX_MAX_AGE_MS) {
+          candidates.push({
+            id: market.id,
+            priceUsd: market.priceUsd,
+            volumeUsd24h: market.volumeUsd24h ?? 0,
+            changePct: null,
+          });
+        }
+        continue;
+      }
       const check = checkMarket(market, card.symbol, snapshots, anchors);
       checks.set(market.id, check);
       stats.marketsChecked++;

@@ -23,6 +23,7 @@ import {
 } from "../src/lib/coin-card-markets";
 import { ALL_CEX_IDS, getSnapshots } from "../src/lib/cex-snapshot";
 import { seedCardMarkets } from "../src/lib/coin-card-market-seed";
+import { syncOwnDexMarkets } from "../src/lib/coin-card-dex-market";
 import { expireStaleClaims } from "../src/lib/coin-card-claim";
 import { syncChainFacts } from "../src/lib/coin-card-chain-facts";
 import { syncCardSupply } from "../src/lib/coin-card-supply";
@@ -383,6 +384,26 @@ async function runListingSweepJob() {
  * карточку цену чужого актива. Сразу после посева зовётся сверка слайса C:
  * иначе новый рынок простоит без цены до следующего десятиминутного прогона.
  */
+/**
+ * Рынок нашего собственного обмена. Чаще раза в час незачем: цену пишет не
+ * биржевой снимок, а сеть, и она отвечает на каждый запрос заново — а индекс
+ * всё равно пересчитывается прогоном `runCardMarketSync` каждые десять минут.
+ */
+async function runOwnDexMarketJob() {
+  const t0 = Date.now();
+  try {
+    const stats = await syncOwnDexMarkets({ prisma: prisma as never });
+    if (stats.written > 0 || stats.failed > 0) {
+      console.log(
+        `[worker] own-dex markets ok: ${stats.written} written, ${stats.failed} failed ` +
+          `${JSON.stringify(stats.errors)} in ${Date.now() - t0}ms`,
+      );
+    }
+  } catch (err) {
+    console.error("[worker] own-dex markets failed:", err);
+  }
+}
+
 async function runCardMarketSeedJob() {
   const t0 = Date.now();
   try {
@@ -519,6 +540,7 @@ async function main() {
   // Посев рынков — после конвейера листинга: карточка, открытая им сегодня,
   // получает рынки тем же утром.
   cron.schedule("40 4 * * *", () => void runCardMarketSeedJob());
+  cron.schedule("50 * * * *", () => void runOwnDexMarketJob());
   cron.schedule("0 4 * * *", () => void runCleanup());
   // Отчёт здоровья — в 06:00 UTC (09:00 МСК): после всех ночных прогонов, чтобы
   // их свежесть считалась по уже прошедшим, а не по ещё не начавшимся.
