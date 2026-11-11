@@ -9,6 +9,7 @@ export const SUPPORTED_LOCALES = [
   "fr",
   "pt-BR",
   "tr",
+  "hr",
 ] as const;
 
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
@@ -26,4 +27,5 @@ export const LOCALE_LABELS: Record<Locale, string> = {
   fr: "Français",
   "pt-BR": "Português (BR)",
   tr: "Türkçe",
+  hr: "Hrvatski",
 };

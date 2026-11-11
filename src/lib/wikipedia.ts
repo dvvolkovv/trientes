@@ -18,6 +18,7 @@ const WIKI_LOCALE: Record<string, string> = {
   "pt-BR": "pt",
   "tr": "tr",
   "zh-CN": "zh",
+  "hr": "hr",
 };
 
 const TTL_SECONDS = 60 * 60 * 24; // 24h

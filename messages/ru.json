@@ -38,6 +38,7 @@
   },
   "home": {
     "title": "Добро пожаловать",
+    "newsflowHint": "Последние заголовки о криптовалютах · обновляется каждые 30 мин",
     "comingSoon": "Список монет — в Phase 2.",
     "heroLine1": "Реестр",
     "heroLine2Before": "цифровой ",
@@ -214,7 +215,7 @@
       "name": "Название",
       "source": "Источник",
       "metadata": "Метаданные получены",
-      "status": "Status"
+      "status": "Статус"
     },
     "addCoin": {
       "heading": "Добавить монету вручную",
@@ -228,7 +229,7 @@
     "users": {
       "title": "Пользователи",
       "subtitle": "Управляйте ролями зарегистрированных пользователей.",
-      "email": "Email",
+      "email": "Эл. почта",
       "name": "Название",
       "providers": "Провайдеры",
       "role": "Роль",
@@ -644,16 +645,9 @@
     "description": "О компании",
     "logoUrl": "URL логотипа",
     "website": "Сайт",
-    "websiteHint": "Можно с https://, http:// или просто www.example.com",
     "address": "Адрес",
-    "addressSection": "Адрес",
-    "city": "Город",
-    "street": "Улица",
-    "houseNumber": "Дом",
-    "postalCode": "Индекс",
-    "useCompanyAddress": "Использовать адрес компании",
     "phone": "Телефон",
-    "email": "Email",
+    "email": "Эл. почта",
     "country": "Страна",
     "yourPoints": "Ваши точки",
     "addPoint": "Добавить точку",
@@ -662,10 +656,6 @@
     "pointAddress": "Адрес",
     "clickMapToPlace": "Адрес можно ввести выше — метка появится автоматически. Или поставьте её на карте вручную.",
     "mapUnavailable": "Карта недоступна: браузер или устройство не поддерживает WebGL2. Точку всё равно можно сохранить — координаты определятся по адресу, а уже сохранённые останутся без изменений.",
-    "geocoding": "Ищу координаты по адресу…",
-    "geocodingOk": "Метка поставлена по адресу",
-    "geocodingFailed": "Адрес не распознан — поставьте метку на карте вручную",
-    "geocodingFailedNoMap": "Адрес не распознан — уточните его (город, улица, дом), чтобы определить координаты",
     "acceptedCoins": "Принимаемые монеты",
     "submitPoint": "Отправить на модерацию",
     "pointSubmitted": "Отправлено на модерацию",
@@ -703,6 +693,17 @@
       "bad_form": "Неверный запрос",
       "coin_not_selectable": "Эта карточка монеты не одобрена — указать её нельзя."
     },
+    "websiteHint": "Можно с https://, http:// или просто www.example.com",
+    "addressSection": "Адрес",
+    "city": "Город",
+    "street": "Улица",
+    "houseNumber": "Дом",
+    "postalCode": "Индекс",
+    "useCompanyAddress": "Использовать адрес компании",
+    "geocoding": "Ищу координаты по адресу…",
+    "geocodingOk": "Метка поставлена по адресу",
+    "geocodingFailed": "Адрес не распознан — поставьте метку на карте вручную",
+    "geocodingFailedNoMap": "Адрес не распознан — уточните его (город, улица, дом), чтобы определить координаты",
     "statusBadge": {
       "PENDING": "Процессинг",
       "APPROVED": "Акцептировано",
@@ -847,7 +848,7 @@
       "firstName": "Имя",
       "lastName": "Фамилия",
       "phone": "Телефон",
-      "email": "Email",
+      "email": "Эл. почта",
       "save": "Сохранить",
       "saved": "Сохранено.",
       "changePasswordTitle": "Изменить пароль",
@@ -914,7 +915,7 @@
       "channels": {
         "title": "Каналы доставки",
         "telegram": "Telegram",
-        "email": "Email",
+        "email": "Эл. почта",
         "telegramNotLinked": "Войди через Telegram, чтобы включить.",
         "emailNotSet": "Укажи email в профиле, чтобы включить.",
         "emailNotVerified": "Сначала подтверди email, чтобы включить.",
@@ -938,11 +939,6 @@
       "displayName": "Отображаемое название",
       "submit": "Создать компанию",
       "submitting": "Создание…",
-      "status": {
-        "PENDING": "На модерации",
-        "APPROVED": "Акцептировано",
-        "REJECTED": "Отклонено"
-      },
       "errors": {
         "unauth": "Сначала войдите в аккаунт.",
         "legal_name_required": "Укажите юридическое название.",
@@ -951,6 +947,11 @@
         "generic": "Что-то пошло не так.",
         "too_many_companies": "Достигнут предел: не больше 10 компаний на аккаунт.",
         "too_many_pending_companies": "Уже 3 компании ждут модерации — дождитесь решения по ним."
+      },
+      "status": {
+        "PENDING": "На модерации",
+        "APPROVED": "Акцептировано",
+        "REJECTED": "Отклонено"
       }
     },
     "exchanges": {
@@ -1011,6 +1012,10 @@
     "identifier": "Имя пользователя или email",
     "submit": "Создать аккаунт",
     "submitting": "Создаём…",
+    "orSeparator": "или",
+    "continueWithGoogle": "Продолжить через Google",
+    "continueWithGitHub": "Продолжить через GitHub",
+    "orWithTelegram": "Или через Telegram",
     "signIn": "Войти",
     "createAccount": "Создать",
     "haveAccount": "Уже есть аккаунт?",
@@ -1056,7 +1061,7 @@
     "description": "Описание",
     "website": "Сайт",
     "country": "Страна",
-    "email": "Email",
+    "email": "Эл. почта",
     "phone": "Телефон",
     "address": "Адрес",
     "logoUrl": "URL логотипа",
@@ -1150,7 +1155,7 @@
       "owner": "Владелец"
     },
     "form": {
-      "slug": "Slug",
+      "slug": "Слаг",
       "slugHint": "латиница / цифры / дефис, 2–40",
       "displayName": "Отображаемое имя",
       "website": "Сайт",
@@ -1201,7 +1206,7 @@
   "companyPublic": {
     "verified": "Проверено",
     "website": "Сайт",
-    "email": "Email",
+    "email": "Эл. почта",
     "phone": "Телефон",
     "address": "Адрес",
     "placesTitle": "Точки приёма",
@@ -1382,12 +1387,12 @@
       "website": "Сайт",
       "docs": "Документация",
       "whitepaper": "Вайтпейпер",
-      "blog": "Блог",
       "github": "GitHub",
       "x": "X",
       "telegram": "Telegram",
       "discord": "Discord",
       "reddit": "Reddit",
+      "blog": "Блог",
       "youtube": "YouTube",
       "explorer": "Обозреватель сети"
     },
@@ -1486,12 +1491,12 @@
       "links": {
         "docs": "Документация",
         "whitepaper": "Вайтпейпер",
-        "blog": "Блог",
         "github": "GitHub",
         "x": "X",
         "telegram": "Telegram",
         "discord": "Discord",
         "reddit": "Reddit",
+        "blog": "Блог",
         "youtube": "YouTube",
         "explorer": "Обозреватель сети"
       },

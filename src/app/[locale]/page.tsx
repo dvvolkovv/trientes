@@ -161,7 +161,7 @@ export default async function Home({
                 Newsflow
               </div>
               <span className="hidden sm:inline text-muted text-[12px] font-light">
-                Latest crypto headlines · refreshed every 30 min
+                {th("newsflowHint")}
               </span>
             </div>
             <NewsRail items={news} locale={locale} />

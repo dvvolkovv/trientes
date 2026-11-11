@@ -38,6 +38,7 @@
   },
   "home": {
     "title": "Welcome",
+    "newsflowHint": "Latest crypto headlines · refreshed every 30 min",
     "comingSoon": "Coin listings coming in Phase 2.",
     "heroLine1": "The ledger",
     "heroLine2Before": "of digital ",
@@ -1011,6 +1012,10 @@
     "identifier": "Username or email",
     "submit": "Create account",
     "submitting": "Creating…",
+    "orSeparator": "or",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithGitHub": "Continue with GitHub",
+    "orWithTelegram": "Or with Telegram",
     "signIn": "Sign in",
     "createAccount": "Create one",
     "haveAccount": "Already have an account?",

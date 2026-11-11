@@ -8,8 +8,9 @@ const SITE = process.env.PUBLIC_ORIGIN ?? "https://trientes.org";
 type Entry = MetadataRoute.Sitemap[number];
 
 // Build hreflang alternate URLs so search engines map a single canonical entry
-// across the 10 supported locales. We expose only the default locale (en) as
-// the primary URL and list the other 9 under `alternates.languages`.
+// across every supported locale. We expose only the default locale (en) as the
+// primary URL and list the rest under `alternates.languages` — the count comes
+// from SUPPORTED_LOCALES, so adding a language needs no edit here.
 function withAlternates(path: string, lastModified?: Date): Entry {
   const languages: Record<string, string> = {};
   for (const l of SUPPORTED_LOCALES) languages[l] = `${SITE}/${l}${path}`;

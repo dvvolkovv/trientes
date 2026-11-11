@@ -18,6 +18,7 @@ import { MarketsTable } from "@/components/coin-detail/markets";
 import { CryptoMapSection } from "@/components/coin-detail/crypto-map-section";
 import { SectionNav } from "@/components/coin-detail/section-nav";
 import { getPublicCoinCard } from "@/lib/coin-card-public";
+import { SUPPORTED_LOCALES } from "@/lib/locales";
 import { localizeCoinCard } from "@/lib/coin-card-prose";
 import { TranslatedBadge } from "@/components/coin-card/translated-badge";
 import { CoinCardHeader } from "@/components/coin-card/card-header";
@@ -75,7 +76,8 @@ export async function generateMetadata({
   const canonical = `${SITE}/${locale}/coin/${slug}`;
 
   const languages: Record<string, string> = {};
-  for (const l of ["en","ru","de","es","fr","ja","ko","pt-BR","tr","zh-CN"]) {
+  // Список локалей — один на проект: своя копия здесь уже отставала на один язык.
+  for (const l of SUPPORTED_LOCALES) {
     languages[l] = `${SITE}/${l}/coin/${slug}`;
   }
 

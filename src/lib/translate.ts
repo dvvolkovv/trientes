@@ -11,6 +11,7 @@ const LANG_NAMES: Record<string, string> = {
   "pt-BR": "Brazilian Portuguese",
   tr: "Turkish",
   "zh-CN": "Simplified Chinese",
+  hr: "Croatian",
 };
 
 // English (and any locale we don't translate to) returns null → caller serves the source.

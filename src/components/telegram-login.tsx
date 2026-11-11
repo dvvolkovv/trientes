@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 
 declare global {
   interface Window {
@@ -10,6 +11,7 @@ declare global {
 
 export function TelegramLogin({ botUsername }: { botUsername: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const t = useTranslations("register");
 
   useEffect(() => {
     if (!ref.current) return;
@@ -40,7 +42,7 @@ export function TelegramLogin({ botUsername }: { botUsername: string }) {
   return (
     <div>
       <div className="text-[10px] uppercase tracking-[0.18em] text-muted mb-3">
-        Or with Telegram
+        {t("orWithTelegram")}
       </div>
       <div ref={ref} />
     </div>

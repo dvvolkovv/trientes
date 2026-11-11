@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     template: "%s · Trientes",
   },
   description:
-    "Live prices, exchanges, fintech directory and an on-the-ground crypto navigator across 10 languages.",
+    "Live prices, exchanges, fintech directory and an on-the-ground crypto navigator across 11 languages.",
   applicationName: "Trientes",
   openGraph: {
     type: "website",
