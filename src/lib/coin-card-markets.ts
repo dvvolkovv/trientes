@@ -313,6 +313,11 @@ export function supplyForCap(card: {
     total?: number | null;
     max?: number | null;
   };
+  // Полная разводнённая оценка считается только по **заявленному максимуму**.
+  // Прежний запасной вариант — текущий выпуск — разводнением не был: у монеты
+  // без потолка он умножал цену на весь выпуск, то есть возвращал в карточку
+  // замороженную часть, которой в обороте нет, а у монеты без исключений
+  // дословно повторял капитализацию второй строкой.
   const max = typeof t.max === "number" && t.max > 0 ? String(t.max) : null;
 
   // `supply_share` означает, что число прочитано верно, но относится к одной
@@ -320,16 +325,15 @@ export function supplyForCap(card: {
   if (card.supply && card.supply.checkError !== "supply_share") {
     return {
       circulating: card.supply.circulating,
-      fdvBase: max ?? card.supply.totalSupply,
+      fdvBase: max,
       source: "ONCHAIN",
     };
   }
 
   const claimed = typeof t.circulating === "number" && t.circulating > 0 ? t.circulating : null;
-  const total = typeof t.total === "number" && t.total > 0 ? String(t.total) : null;
   return {
     circulating: claimed == null ? null : String(claimed),
-    fdvBase: max ?? total,
+    fdvBase: max,
     source: "SELF_REPORTED",
   };
 }

@@ -1345,7 +1345,8 @@
         "rpc_unreachable": "čvor nije odgovorio",
         "rpc_error": "čvor je odbio poziv",
         "decode_failed": "nečitljiv odgovor",
-        "supply_unsupported": "U ovoj mreži ponuda se može dokazati samo skeniranjem cijelog UTXO skupa, a javni čvorovi ne izvršavaju taj poziv."
+        "supply_unsupported": "U ovoj mreži ponuda se može dokazati samo skeniranjem cijelog UTXO skupa, a javni čvorovi ne izvršavaju taj poziv.",
+        "vesting_unreadable": "Mreža je odgovorila o izdanju, ali ne i o zamrzavanju — količina u optjecaju ispala bi precijenjena."
       },
       "reason": {
         "card_not_found": "Kartica nije pronađena.",

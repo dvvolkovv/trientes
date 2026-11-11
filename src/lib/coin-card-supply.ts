@@ -21,6 +21,7 @@ import {
   substrateRpcUrlFor,
 } from "./substrate-chains";
 import { isSs58Address } from "./substrate-codec";
+import { readVestingLocked, VESTING_STORAGE } from "./substrate-vesting";
 import { resolveCosmosChain, cosmosRestUrlFor } from "./cosmos-chains";
 import { readCosmosBlock, readCosmosSupply, type HttpFetch } from "./cosmos-rest";
 import {
@@ -277,6 +278,12 @@ export type SupplyReadError =
   | "chain_unsupported"
   | "address_invalid"
   | "supply_unreadable"
+  /**
+   * Выпуск прочитан, а заморозка — нет. Отдельный код, потому что новость
+   * другая: числа есть, но оборот по ним посчитался бы без вычета, то есть
+   * завышенным. Такую карточку лучше оставить с прежними числами.
+   */
+  | "vesting_unreadable"
   | RpcErrorCode;
 
 export type SupplyFacts = {
@@ -406,6 +413,31 @@ export async function readSubstrateSupplyFacts(args: {
       balances.push({ ...row, units: units.toString(), error: null });
     } catch (err) {
       balances.push({ ...row, units: null, error: rpcErrorCode(err) });
+    }
+  }
+
+  // Заморозка вестингом — такое же исключение, только адрес ему не нужен:
+  // сумма снимается со всей карты расписаний. Сбой здесь не местный, как у
+  // одного адреса: без вычета оборот вышел бы завышенным, поэтому чтение
+  // срывается целиком и прежние числа карточки остаются на месте.
+  if (chain.vestingLocked) {
+    try {
+      const locked = await readVestingLocked(url, opts);
+      balances.push({
+        address: VESTING_STORAGE,
+        label: `vesting · ${locked.accounts}`,
+        units: locked.units.toString(),
+        error: null,
+      });
+    } catch (err) {
+      const transport = err instanceof RpcError && err.code !== "decode_failed" ? err.code : null;
+      return {
+        ...empty,
+        decimals,
+        symbol,
+        genesisHash,
+        error: transport ?? "vesting_unreadable",
+      };
     }
   }
 

@@ -1345,7 +1345,8 @@
         "rpc_unreachable": "节点未响应",
         "rpc_error": "节点拒绝了调用",
         "decode_failed": "无法解析的返回值",
-        "supply_unsupported": "在该网络中，供应量只能通过遍历整个 UTXO 集合来证明，而公共节点不执行该调用。"
+        "supply_unsupported": "在该网络中，供应量只能通过遍历整个 UTXO 集合来证明，而公共节点不执行该调用。",
+        "vesting_unreadable": "节点回答了发行量，却没有回答冻结量——流通量会偏高。"
       },
       "reason": {
         "card_not_found": "未找到该卡片。",

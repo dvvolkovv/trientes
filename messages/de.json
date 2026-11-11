@@ -1345,7 +1345,8 @@
         "rpc_unreachable": "Knoten antwortete nicht",
         "rpc_error": "Knoten lehnte den Aufruf ab",
         "decode_failed": "unlesbare Antwort",
-        "supply_unsupported": "In diesem Netzwerk belegt nur ein Durchlauf der gesamten UTXO-Menge den Umlauf, und öffentliche Knoten führen diesen Aufruf nicht aus."
+        "supply_unsupported": "In diesem Netzwerk belegt nur ein Durchlauf der gesamten UTXO-Menge den Umlauf, und öffentliche Knoten führen diesen Aufruf nicht aus.",
+        "vesting_unreadable": "Das Netzwerk antwortete zum Umlauf, aber nicht zur Sperre — der Umlauf käme zu hoch heraus."
       },
       "reason": {
         "card_not_found": "Karte nicht gefunden.",

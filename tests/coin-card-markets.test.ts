@@ -260,16 +260,16 @@ describe("supplyForCap", () => {
     ).toEqual({ circulating: "700", fdvBase: "2000", source: "ONCHAIN" });
   });
 
-  it("без максимального выпуска FDV считается по общему из сети", () => {
+  it("без заявленного максимума FDV не считается вовсе", () => {
     expect(
       supplyForCap({ tokenomics: {}, supply: { circulating: "700", totalSupply: "1000" } }),
-    ).toEqual({ circulating: "700", fdvBase: "1000", source: "ONCHAIN" });
+    ).toEqual({ circulating: "700", fdvBase: null, source: "ONCHAIN" });
   });
 
   it("без записи из сети берёт заявление проекта и честно это помечает", () => {
     expect(supplyForCap({ tokenomics: { circulating: 500, total: 900 }, supply: null })).toEqual({
       circulating: "500",
-      fdvBase: "900",
+      fdvBase: null,
       source: "SELF_REPORTED",
     });
   });
@@ -318,7 +318,7 @@ describe("капитализация в индексе", () => {
 
   it("по заявлению проекта помечается SELF_REPORTED", async () => {
     const { prisma, calls } = fakePrisma([
-      { ...card, tokenomics: { circulating: 300, total: 1000 }, supply: null },
+      { ...card, tokenomics: { circulating: 300, total: 1000, max: 1000 }, supply: null },
     ]);
     await syncCardMarkets({ prisma, now: NOW, fetchImpl: feed() });
 
@@ -366,7 +366,7 @@ describe("supplyForCap и выпуск, относящийся к одной с�
 
   it("обычная проверенная строка выпуска идёт в капитализацию", () => {
     const got = supplyForCap({ tokenomics: {}, supply: { ...supply, checkError: null } });
-    expect(got).toEqual({ circulating: "1000000", fdvBase: "1000000", source: "ONCHAIN" });
+    expect(got).toEqual({ circulating: "1000000", fdvBase: null, source: "ONCHAIN" });
   });
 
   it("supply_share — считаем по заявлению, а не по остатку в одной сети", () => {
@@ -376,7 +376,7 @@ describe("supplyForCap и выпуск, относящийся к одной с�
     });
     expect(got).toEqual({
       circulating: "999000000",
-      fdvBase: "1000000000",
+      fdvBase: null,
       source: "SELF_REPORTED",
     });
   });

@@ -1345,7 +1345,8 @@
         "rpc_unreachable": "el nodo no respondió",
         "rpc_error": "el nodo rechazó la llamada",
         "decode_failed": "respuesta ilegible",
-        "supply_unsupported": "En esta red la emisión solo se demuestra recorriendo todo el conjunto UTXO, y los nodos públicos no ejecutan esa llamada."
+        "supply_unsupported": "En esta red la emisión solo se demuestra recorriendo todo el conjunto UTXO, y los nodos públicos no ejecutan esa llamada.",
+        "vesting_unreadable": "La red respondió sobre la emisión, pero no sobre el bloqueo: la cantidad en circulación saldría sobrestimada."
       },
       "reason": {
         "card_not_found": "Ficha no encontrada.",

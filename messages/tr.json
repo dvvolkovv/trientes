@@ -1345,7 +1345,8 @@
         "rpc_unreachable": "düğüm yanıt vermedi",
         "rpc_error": "düğüm çağrıyı reddetti",
         "decode_failed": "okunamayan yanıt",
-        "supply_unsupported": "Bu ağda arz ancak tüm UTXO kümesi taranarak kanıtlanır ve genel düğümler bu çağrıyı çalıştırmaz."
+        "supply_unsupported": "Bu ağda arz ancak tüm UTXO kümesi taranarak kanıtlanır ve genel düğümler bu çağrıyı çalıştırmaz.",
+        "vesting_unreadable": "Ağ arz hakkında yanıt verdi, ancak kilit hakkında vermedi — dolaşımdaki miktar olduğundan yüksek çıkardı."
       },
       "reason": {
         "card_not_found": "Kart bulunamadı.",
