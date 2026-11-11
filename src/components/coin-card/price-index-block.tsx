@@ -38,7 +38,7 @@ export async function PriceIndexBlock({
     <div className="mt-5">
       <div className="flex flex-wrap items-baseline gap-3">
         <span className="num text-[32px] md:text-[40px] font-bold tracking-[-0.03em]">
-          ${formatPrice(index.priceUsd)}
+          {formatPrice(index.priceUsd)}
         </span>
         {index.change24h != null && (
           <span className={`num text-[16px] font-semibold ${up ? "text-up" : "text-down"}`}>
@@ -48,7 +48,11 @@ export async function PriceIndexBlock({
         <ProvenanceBadge entry={getProvenance(provenance, "price")} />
       </div>
       <div className="text-xs text-muted mt-1 num">
-        {t("volume", { value: formatCompact(index.volumeUsd24h) })} ·{" "}
+        {/* Объём показываем, только когда он есть: наш обмен его не публикует
+            вовсе, и «$0.00» читалось бы как «торгов не было». */}
+        {index.volumeUsd24h > 0 && (
+          <>{t("volume", { value: formatCompact(index.volumeUsd24h) })} · </>
+        )}
         {t(`confidence.${index.confidence}`)} · {at} UTC
       </div>
       <MarketCapLine

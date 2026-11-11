@@ -3,9 +3,16 @@ import { getProvenance } from "@/lib/coin-card-provenance";
 import type { PublicCoinCard } from "@/lib/coin-card-public";
 import { ProvenanceBadge } from "./provenance-badge";
 import { PriceIndexBlock } from "./price-index-block";
+import { DexCandlesChart } from "./dex-candles-chart";
+import { isOwnDexMarket } from "@/lib/coin-card-dex-market";
+import { dexPairKey } from "@/lib/dex-candles";
 
 export async function CoinCardHeader({ card }: { card: PublicCoinCard }) {
   const t = await getTranslations("coinCard");
+  // Ряд свечей ведёт служба заявок нашего обмена, и он есть только у пары,
+  // которой на обмене торгуют. Признак тот же, что у цены: рынок наш.
+  const ownDex = card.markets.find((m) => isOwnDexMarket(m));
+  const pairKey = ownDex ? dexPairKey(ownDex.pair) : null;
   return (
     <header>
       <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
@@ -31,6 +38,7 @@ export async function CoinCardHeader({ card }: { card: PublicCoinCard }) {
       {card.priceIndex && card.coinId == null && (
         <PriceIndexBlock index={card.priceIndex} provenance={card.provenance} />
       )}
+      {pairKey && <DexCandlesChart pairKey={pairKey} />}
       {card.tags.length > 0 && (
         <ul className="flex flex-wrap gap-2 mt-4">
           {card.tags.map((tag) => (

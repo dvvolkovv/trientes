@@ -2118,7 +2118,7 @@
     "index": {
       "fromMarkets": "来自 {count} 个市场",
       "methodology": "价格取已确认市场按 24 小时成交额加权的中位数——累计成交额超过一半处的那个值。日成交额低于 1000 美元的市场，以及偏离该中位数超过 20% 的市场，都不计入。稳定币（USDT、USDC、DAI 等）按一美元计；以 BTC、ETH、BNB、SOL 计价的报价，按我们自己计算的这些币的指数换算。以欧元等其他法币计价的交易对不计入。",
-      "volume": "成交额 {value} 美元",
+      "volume": "成交额 {value}",
       "confidence": {
         "HIGH": "可信度高",
         "MEDIUM": "可信度中",
@@ -2234,6 +2234,12 @@
       "finalityProbabilistic": "概率性 — 随确认数增加",
       "transferFeeHintUtxo": "基准转账：1 个输入、2 个输出",
       "transferFeeHintEvm": "无数据转账，21,000 gas"
+    },
+    "dexChart": {
+      "title": "自有交易所 · {pair}",
+      "caption": "价格为本交易所做市商报价，成交量仅为客户成交。这不是汇总市场。",
+      "asOf": "网络区块 {block}",
+      "stale": "未能读取序列 — 显示的是此前的数字"
     }
   },
   "inviteCoin": {

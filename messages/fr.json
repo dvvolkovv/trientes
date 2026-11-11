@@ -2118,7 +2118,7 @@
     "index": {
       "fromMarkets": "sur {count} marchés",
       "methodology": "Le prix est la médiane des marchés confirmés pondérée par le volume sur 24 h : la valeur à laquelle le volume cumulé dépasse la moitié. Les marchés dont le volume quotidien est inférieur à 1 000 $ et ceux qui s’écartent de plus de 20 % de cette médiane sont exclus. Les stablecoins (USDT, USDC, DAI et autres) sont pris pour un dollar ; les cotations en BTC, ETH, BNB et SOL sont converties via notre propre indice de ces monnaies. Les paires en euro ou autre monnaie fiduciaire ne comptent pas.",
-      "volume": "volume {value} $",
+      "volume": "volume {value}",
       "confidence": {
         "HIGH": "confiance élevée",
         "MEDIUM": "confiance moyenne",
@@ -2234,6 +2234,12 @@
       "finalityProbabilistic": "probabiliste — augmente avec les confirmations",
       "transferFeeHintUtxo": "transfert de référence : 1 entrée, 2 sorties",
       "transferFeeHintEvm": "transfert sans données, 21 000 de gaz"
+    },
+    "dexChart": {
+      "title": "Notre échange · {pair}",
+      "caption": "Le prix est la cotation du teneur de marché de notre échange ; le volume, uniquement les transactions des clients. Ce n'est pas un marché agrégé.",
+      "asOf": "bloc du réseau {block}",
+      "stale": "la série n'a pas été chargée — les chiffres affichés sont les précédents"
     }
   },
   "inviteCoin": {

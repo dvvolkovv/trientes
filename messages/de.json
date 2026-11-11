@@ -2118,7 +2118,7 @@
     "index": {
       "fromMarkets": "aus {count} Märkten",
       "methodology": "Der Preis ist der mit dem Tagesvolumen gewichtete Median über die bestätigten Märkte — der Wert, bei dem das kumulierte Volumen die Hälfte überschreitet. Märkte mit weniger als 1.000 $ Tagesvolumen und Märkte, die mehr als 20 % von diesem Median abweichen, bleiben außen vor. Stablecoins (USDT, USDC, DAI und andere) gelten als ein Dollar; Notierungen in BTC, ETH, BNB und SOL werden über unseren eigenen Index dieser Münzen umgerechnet. Paare in Euro oder anderem Fiat zählen nicht mit.",
-      "volume": "Volumen {value} $",
+      "volume": "Volumen {value}",
       "confidence": {
         "HIGH": "hohe Verlässlichkeit",
         "MEDIUM": "mittlere Verlässlichkeit",
@@ -2234,6 +2234,12 @@
       "finalityProbabilistic": "wahrscheinlichkeitsbasiert — wächst mit Bestätigungen",
       "transferFeeHintUtxo": "Referenzüberweisung: 1 Eingang, 2 Ausgänge",
       "transferFeeHintEvm": "Überweisung ohne Daten, 21 000 Gas"
+    },
+    "dexChart": {
+      "title": "Unsere Börse · {pair}",
+      "caption": "Preis — die Notierung des Market Makers unserer Börse; Volumen — nur Kundengeschäfte. Das ist kein aggregierter Markt.",
+      "asOf": "Netzblock {block}",
+      "stale": "die Reihe wurde nicht geladen — es stehen die vorherigen Zahlen"
     }
   },
   "inviteCoin": {

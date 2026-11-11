@@ -2118,7 +2118,7 @@
     "index": {
       "fromMarkets": "{count} piyasadan",
       "methodology": "Fiyat, doğrulanmış piyasaların 24 saatlik hacimle ağırlıklandırılmış medyanıdır: birikmiş hacmin yarıyı geçtiği değer. Günlük hacmi 1.000 doların altındaki piyasalar ve bu medyandan %20’den fazla sapanlar hesaba katılmaz. Stabilcoinler (USDT, USDC, DAI ve diğerleri) bir dolar sayılır; BTC, ETH, BNB ve SOL cinsinden kotasyonlar bu coinler için kendi endeksimizle çevrilir. Euro veya başka itibari para cinsinden pariteler sayılmaz.",
-      "volume": "hacim {value} $",
+      "volume": "hacim {value}",
       "confidence": {
         "HIGH": "güven yüksek",
         "MEDIUM": "güven orta",
@@ -2234,6 +2234,12 @@
       "finalityProbabilistic": "olasılıksal — onay sayısıyla artar",
       "transferFeeHintUtxo": "referans transfer: 1 girdi, 2 çıktı",
       "transferFeeHintEvm": "veri içermeyen transfer, 21.000 gaz"
+    },
+    "dexChart": {
+      "title": "Kendi borsamız · {pair}",
+      "caption": "Fiyat, borsamızın piyasa yapıcısının kotasyonudur; hacim yalnızca müşteri işlemleridir. Bu toplu bir piyasa değildir.",
+      "asOf": "ağ bloğu {block}",
+      "stale": "seri okunamadı — önceki sayılar gösteriliyor"
     }
   },
   "inviteCoin": {

@@ -56,6 +56,14 @@ body {
 body {
   font-family: var(--font-sans);
   font-feature-settings: "ss01" 1, "cv11" 1;
+  /*
+   * Страница не ездит вбок. Это страховка, а не замена вёрстке: виновника
+   * (неразрывная строка, колонка сетки шире экрана) всё равно чинят на месте,
+   * но одна чужая строка данных не должна превращать весь сайт в карту.
+   * `clip`, а не `hidden`: `hidden` сделал бы body прокручиваемым и сломал
+   * прилипающую шапку, `clip` только обрезает.
+   */
+  overflow-x: clip;
 }
 
 /* Tabular numerics — apply via .num class anywhere a price/percent/volume renders. */

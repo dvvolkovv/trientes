@@ -2118,7 +2118,7 @@
     "index": {
       "fromMarkets": "{count} 市場から",
       "methodology": "価格は、確認できた市場の24時間出来高で加重した中央値です。累積出来高が半分を超える値を採用します。日次出来高が1,000ドル未満の市場、およびこの中央値から20%以上離れた市場は除外します。ステーブルコイン（USDT、USDC、DAIなど）は1ドルとして扱い、BTC・ETH・BNB・SOL建ては当社自身の指数で換算します。ユーロなど他の法定通貨建てのペアは数えません。",
-      "volume": "出来高 {value} ドル",
+      "volume": "出来高 {value}",
       "confidence": {
         "HIGH": "信頼度 高",
         "MEDIUM": "信頼度 中",
@@ -2234,6 +2234,12 @@
       "finalityProbabilistic": "確率的 — 承認数とともに高まる",
       "transferFeeHintUtxo": "基準送金: 入力1・出力2",
       "transferFeeHintEvm": "データなしの送金・ガス21,000"
+    },
+    "dexChart": {
+      "title": "自社取引所 · {pair}",
+      "caption": "価格は当取引所のマーケットメイカーの提示値、出来高は顧客の約定のみです。集計市場ではありません。",
+      "asOf": "ネットワークブロック {block}",
+      "stale": "系列を読み込めませんでした — 表示は以前の数値です"
     }
   },
   "inviteCoin": {

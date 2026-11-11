@@ -2118,7 +2118,7 @@
     "index": {
       "fromMarkets": "{count}개 시장 기준",
       "methodology": "가격은 확인된 시장을 24시간 거래대금으로 가중한 중앙값입니다. 누적 거래대금이 절반을 넘는 지점의 값을 씁니다. 일 거래대금이 1,000달러 미만인 시장과 이 중앙값에서 20% 이상 벗어난 시장은 제외합니다. 스테이블코인(USDT, USDC, DAI 등)은 1달러로 보고, BTC·ETH·BNB·SOL 호가는 저희가 직접 계산한 해당 코인 지수로 환산합니다. 유로 등 다른 법정통화 페어는 세지 않습니다.",
-      "volume": "거래대금 {value} 달러",
+      "volume": "거래대금 {value}",
       "confidence": {
         "HIGH": "신뢰도 높음",
         "MEDIUM": "신뢰도 보통",
@@ -2234,6 +2234,12 @@
       "finalityProbabilistic": "확률적 — 확인 수에 따라 높아짐",
       "transferFeeHintUtxo": "기준 전송: 입력 1개, 출력 2개",
       "transferFeeHintEvm": "데이터 없는 전송, 가스 21,000"
+    },
+    "dexChart": {
+      "title": "자체 거래소 · {pair}",
+      "caption": "가격은 자체 거래소 마켓메이커의 호가이며, 거래량은 고객 체결만 반영합니다. 집계 시장이 아닙니다.",
+      "asOf": "네트워크 블록 {block}",
+      "stale": "계열을 불러오지 못했습니다 — 이전 수치가 표시됩니다"
     }
   },
   "inviteCoin": {

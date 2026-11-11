@@ -46,8 +46,12 @@ export async function CardHistorySection({ cardId }: { cardId: string }) {
             {it.kind === "revision" ? (
               <ul className="space-y-1">
                 {it.diff.slice(0, 6).map((e) => (
-                  <li key={e.path} className="text-xs text-muted">
-                    <span className="num">{e.path}</span>: {short(e.before)} → {short(e.after)}
+                  // Значение правки — произвольный текст проекта: ссылка или
+                  // JSON целиком, без единого пробела. Без переноса такая
+                  // строка распирала всю страницу на узком экране.
+                  <li key={e.path} className="text-xs text-muted break-words">
+                    <span className="num break-all">{e.path}</span>: {short(e.before)} →{" "}
+                    {short(e.after)}
                   </li>
                 ))}
                 {it.diff.length > 6 ? (

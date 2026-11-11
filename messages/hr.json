@@ -2118,7 +2118,7 @@
     "index": {
       "fromMarkets": "iz {count} tržišta",
       "methodology": "Cijena je medijan među potvrđenim tržištima ponderiran 24-satnim volumenom — vrijednost pri kojoj kumulativni volumen prelazi polovicu. Tržišta s dnevnim volumenom ispod 1.000 $ i tržišta koja odstupaju više od 20% od tog medijana izostavljena su. Stablecoini (USDT, USDC, DAI i drugi) uzimaju se kao jedan dolar; kotacije u BTC, ETH, BNB i SOL pretvaraju se putem našeg indeksa za te kovanice. Parovi kotirani u euru ili drugoj fiat valuti ne uračunavaju se.",
-      "volume": "volumen ${value}",
+      "volume": "volumen {value}",
       "confidence": {
         "HIGH": "visoka pouzdanost",
         "MEDIUM": "srednja pouzdanost",
@@ -2234,6 +2234,12 @@
       "finalityProbabilistic": "vjerojatnosna — raste s brojem potvrda",
       "transferFeeHintUtxo": "referentni prijenos: 1 ulaz, 2 izlaza",
       "transferFeeHintEvm": "prijenos bez podataka, 21.000 gas"
+    },
+    "dexChart": {
+      "title": "Naša burza · {pair}",
+      "caption": "Cijena je kotacija održavatelja tržišta naše burze; obujam su samo klijentske transakcije. Ovo nije zbirno tržište.",
+      "asOf": "blok mreže {block}",
+      "stale": "niz nije učitan — prikazani su prethodni brojevi"
     }
   },
   "inviteCoin": {

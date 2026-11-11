@@ -2118,7 +2118,7 @@
     "index": {
       "fromMarkets": "from {count} markets",
       "methodology": "The price is the median across confirmed markets weighted by 24h volume — the value at which cumulative volume passes half. Markets under $1,000 of daily volume, and markets more than 20% away from that median, are left out. Stablecoins (USDT, USDC, DAI and others) are taken as one dollar; quotes in BTC, ETH, BNB and SOL are converted through our own index for those coins. Pairs quoted in euro or other fiat are not counted.",
-      "volume": "volume ${value}",
+      "volume": "volume {value}",
       "confidence": {
         "HIGH": "high confidence",
         "MEDIUM": "medium confidence",
@@ -2234,6 +2234,12 @@
       "finalityProbabilistic": "probabilistic — grows with confirmations",
       "transferFeeHintUtxo": "reference transfer: 1 input, 2 outputs",
       "transferFeeHintEvm": "transfer with no data, 21,000 gas"
+    },
+    "dexChart": {
+      "title": "Our exchange · {pair}",
+      "caption": "Price — the quote of our exchange's market maker; volume — client trades only. This is not an aggregated market.",
+      "asOf": "chain block {block}",
+      "stale": "the series did not load — the numbers shown are the previous ones"
     }
   },
   "inviteCoin": {
