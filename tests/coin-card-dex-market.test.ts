@@ -66,9 +66,14 @@ describe("readOwnDexMarket", () => {
     expect(r).toEqual({ fact: null, error: "pair_not_found" });
   });
 
-  it("крипто-котировку за доллар не принимает: у LTC пары только к BTC и ETH", async () => {
+  // Монета без стейбловой пары с обмена не пропадает: рынок наш и настоящий,
+  // а цена в долларах через второе наше же число не считается.
+  it("у LTC пары только к BTC и ETH — рынок есть, цены нет", async () => {
     const r = await readOwnDexMarket({ id: "c1", symbol: "LTC" }, nodeOf([QUOTE_OK, QUOTE_OK]));
-    expect(r).toEqual({ fact: null, error: "no_usd_route" });
+    expect(r).toEqual({
+      error: null,
+      fact: { pair: "LTC/BTC", quote: "BTC", priceUsd: null, spreadPct: null, markupPct: null },
+    });
   });
 });
 

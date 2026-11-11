@@ -32,21 +32,40 @@ export function isOwnDexMarket(m: { kind: string; exchangeName: string }): boole
 export type DexMarketFact = {
   pair: string;
   quote: string;
-  priceUsd: number;
-  spreadPct: number;
-  markupPct: number;
+  /**
+   * Цена в долларах; `null` — пара есть, а доллара в ней нет. Монета, которой
+   * обмен торгует только к BTC или ETH, в карточке всё равно показывается:
+   * «этой монетой торгуют у нас» — утверждение само по себе, и цена для него
+   * не нужна. Своё же число через второе своё число не пересчитываем (тот же
+   * запрет, что в посеве рынков, слайс X).
+   */
+  priceUsd: number | null;
+  spreadPct: number | null;
+  markupPct: number | null;
 };
 
 export type DexMarketResult =
   | { fact: DexMarketFact; error: null }
-  | { fact: null; error: DexReadError | "no_usd_route" };
+  | { fact: null; error: DexReadError };
 
 export type DexMarketCard = { id: string; symbol: string };
 
+/** Пара реестра словами, в той ориентации, в которой она заведена в сети. */
+function pairLabel(
+  registry: { coins: readonly { ticker: number; symbol: string }[] },
+  pair: { base: number; quote: number },
+): { label: string; quote: string } | null {
+  const base = registry.coins.find((c) => c.ticker === pair.base);
+  const quote = registry.coins.find((c) => c.ticker === pair.quote);
+  return base && quote ? { label: `${base.symbol}/${quote.symbol}`, quote: quote.symbol } : null;
+}
+
 /**
- * Цена монеты на нашем обмене, приведённая к доллару. Котировку берём только
- * стейбловую: курс крипто-котировки пришёл бы из второго нашего же числа, и
- * ошибка в нём удвоилась бы (тот же запрет, что в посеве рынков, слайс X).
+ * Монета на нашем обмене: торгуют ли ею и почём.
+ *
+ * Цена берётся только из стейбловой котировки — стейбл принимается за доллар,
+ * то же допущение, что в `quote-usd.ts`. Нет стейбловой пары — рынок всё равно
+ * наш и всё равно настоящий: записываем его без цены, по реестру сети.
  */
 export async function readOwnDexMarket(
   card: DexMarketCard,
@@ -56,18 +75,21 @@ export async function readOwnDexMarket(
   if ("error" in registry) return { fact: null, error: registry.error };
 
   const symbol = card.symbol.trim().toUpperCase();
-  const base = registry.coins.find((c) => c.symbol === symbol && c.open);
-  if (!base) return { fact: null, error: "pair_not_found" };
+  const coin = registry.coins.find((c) => c.symbol === symbol && c.open);
+  if (!coin) return { fact: null, error: "pair_not_found" };
 
-  // Котировки пары перечисляет сам реестр; берём первую стейбловую, в той
-  // ориентации, в которой пара заведена в сети.
-  const quoteSymbols = registry.pairs
-    .filter((p) => p.base === base.ticker)
+  const asBase = registry.pairs.filter((p) => p.base === coin.ticker);
+  const asQuote = registry.pairs.filter((p) => p.quote === coin.ticker);
+  if (asBase.length === 0 && asQuote.length === 0) {
+    return { fact: null, error: "pair_not_found" };
+  }
+
+  // Котировки пары перечисляет сам реестр; стейбловые пробуем по очереди.
+  const quoteSymbols = asBase
     .map((p) => registry.coins.find((c) => c.ticker === p.quote)?.symbol)
     .filter((s): s is string => !!s && USD_QUOTES.has(s));
-  if (quoteSymbols.length === 0) return { fact: null, error: "no_usd_route" };
 
-  let last: DexReadError = "pair_not_found";
+  let last: DexReadError | null = null;
   for (const quote of quoteSymbols) {
     const price = await readPairPrice(registry, symbol, quote, fetchImpl);
     if ("error" in price) {
@@ -79,14 +101,22 @@ export async function readOwnDexMarket(
       fact: {
         pair: price.pair,
         quote: price.quote,
-        // Стейбл принимается за доллар — то же допущение, что в quote-usd.ts.
         priceUsd: price.price,
         spreadPct: price.spreadPct,
         markupPct: price.markupPct,
       },
     };
   }
-  return { fact: null, error: last };
+  // Стейбловая пара была, но цена не прочиталась — это сбой, а не «нет цены»:
+  // записать такую карточку без цены значило бы стереть прежнюю верную.
+  if (last) return { fact: null, error: last };
+
+  const listed = pairLabel(registry, asBase[0] ?? asQuote[0]);
+  if (!listed) return { fact: null, error: "registry_unreadable" };
+  return {
+    error: null,
+    fact: { pair: listed.label, quote: listed.quote, priceUsd: null, spreadPct: null, markupPct: null },
+  };
 }
 
 /* ─── запись ─────────────────────────────────────────────────────────────── */
@@ -135,7 +165,7 @@ export async function syncOwnDexMarkets(args: {
     const res = await readOwnDexMarket(card, fetchImpl);
     if (res.error) {
       // Нет пары — это не сбой карточки, а норма: таких карточек большинство.
-      if (res.error !== "pair_not_found" && res.error !== "no_usd_route") {
+      if (res.error !== "pair_not_found") {
         stats.failed++;
         stats.errors[res.error] = (stats.errors[res.error] ?? 0) + 1;
       }

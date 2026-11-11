@@ -1,6 +1,8 @@
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { getProvenance } from "@/lib/coin-card-provenance";
 import { formatCompact, formatPercent, formatPrice } from "@/lib/format";
+import { isOwnDexMarket } from "@/lib/coin-card-dex-market";
 import { ProvenanceBadge } from "../provenance-badge";
 import { ExternalLink } from "../external-link";
 
@@ -33,6 +35,11 @@ export async function MarketsSection({
   if (markets.length === 0) return null;
 
   const hasPrices = markets.some((m) => m.priceUsd != null);
+  // Свой обмен — первой строкой: у монеты, которой нет на биржах, он
+  // единственный рынок, и искать его в хвосте списка бессмысленно.
+  const rows = [...markets].sort(
+    (a, b) => Number(isOwnDexMarket(b)) - Number(isOwnDexMarket(a)),
+  );
 
   return (
     <section id="card-markets" className="scroll-mt-24">
@@ -54,13 +61,29 @@ export async function MarketsSection({
             </tr>
           </thead>
           <tbody>
-            {markets.map((m) => (
-              <tr key={m.id} className="border-b border-hairline last:border-0">
+            {rows.map((m) => {
+              const own = isOwnDexMarket(m);
+              return (
+              <tr
+                key={m.id}
+                className={`border-b border-hairline last:border-0 ${own ? "bg-bg-tint" : ""}`}
+              >
                 <td className="px-4 py-3">
-                  <ExternalLink href={m.tradeUrl} className="text-accent">
-                    {m.exchangeName}
-                  </ExternalLink>
-                  {!m.tradeUrl && m.exchangeName}
+                  <span className="inline-flex items-center gap-2 whitespace-nowrap">
+                    {own && (
+                      <Image
+                        src="/logo.png"
+                        alt=""
+                        width={20}
+                        height={20}
+                        className="rounded-full border border-hairline shrink-0"
+                      />
+                    )}
+                    <ExternalLink href={m.tradeUrl} className="text-accent">
+                      {m.exchangeName}
+                    </ExternalLink>
+                    {!m.tradeUrl && m.exchangeName}
+                  </span>
                 </td>
                 <td className="px-4 py-3 num">{m.pair}</td>
                 <td className="px-4 py-3 text-muted">
@@ -102,7 +125,8 @@ export async function MarketsSection({
                   )}
                 </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>

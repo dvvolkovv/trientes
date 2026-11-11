@@ -60,7 +60,9 @@ async function dump(): Promise<void> {
     const r = await readOwnDexMarket(card);
     if (r.error) continue;
     console.log(
-      `карточка ${card.slug.padEnd(24)} ${r.fact.pair.padEnd(12)} ${r.fact.priceUsd.toPrecision(8)} USD`,
+      `карточка ${card.slug.padEnd(24)} ${r.fact.pair.padEnd(12)} ${
+        r.fact.priceUsd == null ? "без цены (нет стейбловой пары)" : `${r.fact.priceUsd.toPrecision(8)} USD`
+      }`,
     );
   }
 }
