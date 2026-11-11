@@ -20,7 +20,7 @@ const TRUST_TONE: Record<string, string> = {
 export async function SelfListedRail({ locale }: { locale: string }) {
   const t = await getTranslations("listing.selfListed");
   const tt = await getTranslations("coinCard.trust");
-  const cards = await listSelfListedCards();
+  const cards = await listSelfListedCards(24, locale);
   if (cards.length === 0) return null;
 
   return (

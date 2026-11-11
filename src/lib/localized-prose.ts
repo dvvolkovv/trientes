@@ -45,10 +45,12 @@ export async function ensureSourceLocale(
   ns: string,
   id: string,
   sample: string,
+  cacheOnly = false,
 ): Promise<string | null> {
   const key = `i18nsrc:${ns}:${id}:${proseHash({ sample })}`;
   const cached = await rGet(key);
   if (cached) return cached === "none" ? null : cached;
+  if (cacheOnly) return null;
   const detected = await detectSourceLocale(sample);
   await rSet(key, detected ?? "none");
   return detected;
@@ -74,8 +76,15 @@ export async function localizedProse<T extends Record<string, string | null>>(in
   fields: T;
   /** Посетитель попросил оригинал — не переводим и не помечаем. */
   original?: boolean;
+  /**
+   * Только из кеша: промах отдаёт оригинал и не зовёт модель. Для списков, где
+   * карточек на странице десятки, а мягкий дедлайн платится за каждую по
+   * очереди — страница встала бы на минуту ради подписи в три строки. Кеш
+   * наполняет прогрев воркера (`prose-warmup.ts`).
+   */
+  cacheOnly?: boolean;
 }): Promise<LocalizedProseResult<T>> {
-  const { ns, id, locale, fields, original } = input;
+  const { ns, id, locale, fields, original, cacheOnly } = input;
   const prose = collectProse(fields);
   const nothing = { fields, translated: false, sourceLocale: input.sourceLocale };
   if (original || Object.keys(prose).length === 0) return nothing;
@@ -85,7 +94,7 @@ export async function localizedProse<T extends Record<string, string | null>>(in
   let source = input.sourceLocale;
   if (!source) {
     const longest = Object.values(prose).sort((a, b) => b.length - a.length)[0];
-    source = await ensureSourceLocale(ns, id, longest);
+    source = await ensureSourceLocale(ns, id, longest, cacheOnly);
   }
   if (source === locale) return { fields, translated: false, sourceLocale: source };
 
@@ -99,6 +108,7 @@ export async function localizedProse<T extends Record<string, string | null>>(in
       // битый кеш — переводим заново
     }
   }
+  if (cacheOnly) return { fields, translated: false, sourceLocale: source };
 
   const job = (async () => {
     const out = await translateStrings(prose, locale);

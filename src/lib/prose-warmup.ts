@@ -17,6 +17,8 @@ type PrismaLike = {
       description: string | null;
       marketing: unknown;
       tokenomics: unknown;
+      payments: unknown;
+      legal: unknown;
     }>>;
   };
   company: {
@@ -49,8 +51,12 @@ export async function warmProseTranslations(
   const cards = await prisma.coinCard.findMany({
     where: { status: "APPROVED" },
     select: {
+      // Набор полей — ровно тот, что собирает collectCardProse: ключ кеша
+      // считается по всей прозе разом, и неполный набор прогрел бы ключ,
+      // которого страница никогда не спросит.
       id: true, sourceLocale: true, tagline: true,
       description: true, marketing: true, tokenomics: true,
+      payments: true, legal: true,
     },
     take: 200,
   });
