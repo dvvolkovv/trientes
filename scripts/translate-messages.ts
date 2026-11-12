@@ -10,6 +10,7 @@
  * потому что сеть рвётся, а платить за перевод второй раз незачем). Нужен
  * полный пересчёт — флаг --force.
  *
+ *   npm run i18n                                         # все локали разом
  *   npx tsx scripts/translate-messages.ts hr             # перевести отсутствующее
  *   npx tsx scripts/translate-messages.ts hr --force     # перевести всё заново
  *   npx tsx scripts/translate-messages.ts hr --dump      # что осталось непереведённым
@@ -20,6 +21,7 @@ import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import path from "node:path";
 import OpenAI from "openai";
 import { config as loadEnv } from "dotenv";
+import { SUPPORTED_LOCALES } from "../src/lib/locales";
 
 loadEnv({ path: path.join(process.cwd(), ".env") });
 
@@ -239,12 +241,37 @@ async function restyle(locale: string): Promise<void> {
   console.log(`rewrote ${target}: ${changed} strings restyled`);
 }
 
+/**
+ * Все локали разом (`--all`, он же `npm run i18n`).
+ *
+ * Правка в `messages/en.json` без такого прогона выходит на сайт по-английски:
+ * загрузчик подмешивает английский как базу, поэтому пропущенный ключ не падает,
+ * а тихо показывается не на том языке. Прогон идемпотентный — уже переведённые
+ * ключи не переспрашиваются, — поэтому звать его можно после любой правки.
+ * Список языков один и тот же: `SUPPORTED_LOCALES` без английского.
+ */
+async function translateAll(flags: string[]): Promise<void> {
+  const locales = SUPPORTED_LOCALES.filter((l) => l !== "en");
+  for (const locale of locales) {
+    console.log(`\n── ${locale} ──`);
+    await translateOne(locale, flags);
+  }
+}
+
 async function main() {
   const [locale, ...flags] = process.argv.slice(2);
+  if (locale === "--all") {
+    await translateAll(flags);
+    return;
+  }
   if (!locale) {
-    console.error("usage: npx tsx scripts/translate-messages.ts <locale> [--force] [--dump]");
+    console.error("usage: npx tsx scripts/translate-messages.ts <locale|--all> [--force] [--dump]");
     process.exit(1);
   }
+  await translateOne(locale, flags);
+}
+
+async function translateOne(locale: string, flags: string[]) {
   if (flags.includes("--restyle")) {
     await restyle(locale);
     return;

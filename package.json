@@ -11,6 +11,7 @@
     "build": "next build",
     "prebuild": "MAPLIBRE_INCLUDE_SOURCE_MAPS=0 node scripts/copy-maplibre-worker.mjs --prune",
     "start": "next start",
+    "i18n": "tsx scripts/translate-messages.ts --all",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",

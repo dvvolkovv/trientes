@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { readExchangeRates, readTop100, readTickers, readNews } from "@/lib/snapshot";
-import { topExchangesByVolume, listedAdapterExchanges } from "@/lib/listings";
+import { topExchangesByVolume, listedAdapterExchanges, cardTopExchanges } from "@/lib/listings";
 import { EXCHANGES } from "@/lib/exchanges";
 import { getCurrency } from "@/lib/get-currency";
 import { readUserWatchedIds, isAuthenticated } from "@/lib/watchlist";
@@ -289,6 +289,11 @@ async function renderCardOnly(
   void persistCardSourceLocale(only.id, only.sourceLocale, loc.sourceLocale);
   const originalHref = `/${locale}/coin/${slug}?orig=1#card-description`;
   const badge = loc.translated ? <TranslatedBadge originalHref={originalHref} /> : null;
+
+  // «Топ бирж» строится из рынков карточки: тикеров рыночного фида у такой
+  // монеты нет, а биржа есть — у Taler это наш собственный обмен.
+  const [rates, currency] = await Promise.all([readExchangeRates(), getCurrency()]);
+  const exchanges = cardTopExchanges(loc.card.markets);
   return (
     <main className="max-w-[1600px] mx-auto px-4 md:px-12 xl:px-20 py-8 md:py-12 space-y-10 md:space-y-14">
       <CoinCardHeader card={loc.card} />
@@ -307,6 +312,11 @@ async function renderCardOnly(
         translated={loc.translated}
         originalHref={originalHref}
       />
+      {exchanges.length > 0 && (
+        <section id="exchanges" className="scroll-mt-24">
+          <MarketsTable exchanges={exchanges} currency={currency} rates={rates} />
+        </section>
+      )}
     </main>
   );
 }

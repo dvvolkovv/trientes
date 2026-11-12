@@ -114,3 +114,31 @@ export function parseDexCandles(raw: unknown, expect: { pair: DexPair; interval:
   const block = isObject(raw.asOf) ? finite(raw.asOf.block) : null;
   return { symbol: raw.symbol, interval: raw.interval, block, candles };
 }
+
+/** Окно суточного объёма: ровно сутки назад от текущего мгновения. */
+export const DEX_VOLUME_WINDOW_MS = 24 * 60 * 60 * 1000;
+
+/**
+ * Объём сделок за сутки в долларах по ряду свечей.
+ *
+ * Объём свечи служба ведёт в базовой монете, поэтому доллар считается по цене
+ * закрытия **каждой** свечи, а не по последней цене всего ряда: за сутки цена
+ * уходит, и одна цена на весь ряд завысила бы или занизила объём.
+ *
+ * Пустой ряд — `null`, а не ноль: «сделок не было» и «ряда нет» разные
+ * утверждения, и второе нельзя выдавать за первое.
+ */
+export function sumDexVolumeUsd(
+  candles: readonly DexCandle[],
+  now: Date,
+  windowMs = DEX_VOLUME_WINDOW_MS,
+): number | null {
+  if (candles.length === 0) return null;
+  const from = (now.getTime() - windowMs) / 1000;
+  let usd = 0;
+  for (const c of candles) {
+    if (c.time < from) continue;
+    usd += c.volume * c.close;
+  }
+  return usd;
+}

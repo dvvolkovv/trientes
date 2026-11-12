@@ -195,7 +195,7 @@ export default async function Home({
                 <p className="text-muted">{tl("loadingFallback")}</p>
               )
             }
-            self={<SelfListedRail locale={locale} />}
+            self={<SelfListedRail locale={locale} currency={currency} rates={rates} />}
           />
         </section>
       </div>

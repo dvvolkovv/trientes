@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { topExchangesByVolume, listedAdapterExchanges } from "@/lib/listings";
+import { cardTopExchanges, topExchangesByVolume, listedAdapterExchanges } from "@/lib/listings";
 import type { TickerRow } from "@/lib/coingecko";
 
 const t = (exchange: string, volumeUsd: number, extra: Partial<TickerRow> = {}): TickerRow => ({
@@ -61,5 +61,43 @@ describe("listedAdapterExchanges", () => {
 
   it("returns an empty set for no tickers", () => {
     expect(listedAdapterExchanges([]).size).toBe(0);
+  });
+});
+
+describe("cardTopExchanges", () => {
+  const m = (
+    exchangeName: string,
+    pair: string,
+    priceUsd: number | null,
+    volumeUsd24h: number | null,
+    tradeUrl: string | null = null,
+  ) => ({ exchangeName, pair, priceUsd, volumeUsd24h, tradeUrl });
+
+  it("строит строку биржи из рынка карточки", () => {
+    expect(
+      cardTopExchanges([m("Trientes DEX", "TAL/USDT", 11995, 195.6, "https://x/#/swap/USDT-TAL")]),
+    ).toEqual([
+      {
+        exchange: "Trientes DEX",
+        base: "TAL",
+        target: "USDT",
+        priceUsd: 11995,
+        volumeUsd: 195.6,
+        tradeUrl: "https://x/#/swap/USDT-TAL",
+      },
+    ]);
+  });
+
+  it("рынок без цены в таблицу не идёт", () => {
+    expect(cardTopExchanges([m("Trientes DEX", "LTC/BTC", null, null)])).toEqual([]);
+  });
+
+  it("неизвестный объём остаётся неизвестным и уходит в хвост", () => {
+    const rows = cardTopExchanges([
+      m("A", "TAL/USDT", 1, null),
+      m("B", "TAL/USDC", 1, 10),
+    ]);
+    expect(rows.map((r) => r.exchange)).toEqual(["B", "A"]);
+    expect(rows[1].volumeUsd).toBeNull();
   });
 });

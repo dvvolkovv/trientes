@@ -17,6 +17,10 @@
 
 import { readPairPrice, readSwapRegistry, type DexReadError, type FetchLike } from "@/lib/trientes-dex";
 import { USD_QUOTES } from "@/lib/quote-usd";
+import { DEX_CANDLES_API, dexPairKey, parseDexCandles, sumDexVolumeUsd } from "@/lib/dex-candles";
+
+/** Адрес сайта: и обмен, и служба заявок стоят за ним же. */
+export const DEX_ORIGIN = process.env.PUBLIC_ORIGIN ?? "https://trientes.org";
 
 /** Имя биржи в таблице рынков. Оно же — признак авторства значения. */
 export const OWN_DEX_NAME = "Trientes DEX";
@@ -27,6 +31,56 @@ export const OWN_DEX_MAX_AGE_MS = 3 * 60 * 60 * 1000;
 
 export function isOwnDexMarket(m: { kind: string; exchangeName: string }): boolean {
   return m.kind.toUpperCase() === "DEX" && m.exchangeName === OWN_DEX_NAME;
+}
+
+/**
+ * Адрес обмена с уже выбранной парой.
+ *
+ * Простой `/exchange/` открывает обмен на паре по умолчанию (BTC), и человек,
+ * пришедший с карточки Taler, попадает не туда, куда шёл. Адрес экрана обмена
+ * — хеш-путь `#/swap/<отдаёте>-<получаете>`, и получать он должен монету
+ * карточки: сторона, на которой наша монета стоит в паре, решает порядок.
+ */
+export function dexTradeUrl(pair: string, symbol: string, origin = DEX_ORIGIN): string {
+  const parts = pair.trim().toUpperCase().split("/");
+  const coin = symbol.trim().toUpperCase();
+  if (parts.length !== 2) return `${origin}/exchange/`;
+  const [base, quote] = parts;
+  const [from, to] = base === coin ? [quote, base] : [base, quote];
+  return `${origin}/exchange/#/swap/${from}-${to}`;
+}
+
+/**
+ * Объём сделок за сутки в долларах — по ряду свечей службы заявок.
+ *
+ * Реестр сети объёма не публикует (слайс AB так и записал — пусто), но ряд,
+ * который рисует график на `/exchange` и в карточке, ведёт сделки клиентов и
+ * их объём. Это именно объём сделок клиентов, а не сводный оборот биржи:
+ * котировки маркетмейкера, по которым никто не сработал, в него не входят.
+ *
+ * Ряда у пары нет или служба не ответила — `null`: прежнее число тогда не
+ * трогаем, ноль означал бы «сделок не было».
+ */
+export async function readOwnDexVolumeUsd(
+  pair: string,
+  fetchImpl: FetchLike,
+  now: Date,
+  origin = DEX_ORIGIN,
+): Promise<number | null> {
+  const key = dexPairKey(pair);
+  if (!key) return null;
+  const [base, quote] = key.split("-");
+  try {
+    const res = await fetchImpl(`${origin}${DEX_CANDLES_API}/${key}/1h`);
+    if (!res.ok) return null;
+    const parsed = parseDexCandles(await res.json(), {
+      pair: { key, base, quote },
+      interval: "1h",
+    });
+    return parsed ? sumDexVolumeUsd(parsed.candles, now) : null;
+  } catch {
+    return null;
+  }
 }
 
 export type DexMarketFact = {
@@ -172,6 +226,7 @@ export async function syncOwnDexMarkets(args: {
       continue;
     }
     stats.cards++;
+    const volumeUsd24h = await readOwnDexVolumeUsd(res.fact.pair, fetchImpl, now);
     const existing = await prisma.coinCardMarket.findFirst({
       where: { cardId: card.id, kind: "DEX", exchangeName: OWN_DEX_NAME },
       select: { id: true },
@@ -182,16 +237,20 @@ export async function syncOwnDexMarkets(args: {
       quote: res.fact.quote,
       chain: OWN_DEX_CHAIN,
       priceUsd: res.fact.priceUsd,
-      // Объём сеть не публикует — пусто, а не ноль.
-      volumeUsd24h: null,
+      // Адрес пишем каждый прогон: пара монеты на обмене может смениться, а
+      // ссылка на чужую пару хуже, чем ссылка на обмен вообще.
+      tradeUrl: dexTradeUrl(res.fact.pair, card.symbol),
       change24h: null,
       isOutlier: false,
       confirmedAt: now,
       checkedAt: now,
       checkError: null,
     };
+    // Объём — отдельный факт и отдельное чтение: сорвалось оно — остаётся
+    // прежнее число, а не ноль и не пустота.
+    const withVolume = volumeUsd24h == null ? data : { ...data, volumeUsd24h };
     if (existing) {
-      await prisma.coinCardMarket.update({ where: { id: existing.id }, data });
+      await prisma.coinCardMarket.update({ where: { id: existing.id }, data: withVolume });
     } else {
       await prisma.coinCardMarket.create({
         data: {
@@ -199,9 +258,9 @@ export async function syncOwnDexMarkets(args: {
           kind: "DEX",
           exchangeId: null,
           exchangeName: OWN_DEX_NAME,
-          tradeUrl: "https://trientes.org/exchange/",
+          volumeUsd24h,
           claimedAt: now,
-          ...data,
+          ...withVolume,
         },
       });
     }

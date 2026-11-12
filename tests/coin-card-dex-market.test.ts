@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  dexTradeUrl,
   isOwnDexMarket,
   OWN_DEX_NAME,
   readOwnDexMarket,
@@ -11,10 +12,40 @@ import { COINS, PAIRS, QUOTE_OK, QUOTE_REFUSED, TICKERS } from "./fixtures/trien
 
 const NOW = new Date("2026-11-11T20:00:00.000Z");
 
-/** Узел-заглушка: реестр из снимков, котировки — очередью. */
-function nodeOf(quotes: string[]): FetchLike {
+/** Ряд свечей службы заявок: час назад и два часа назад, по сделке в каждой. */
+const CANDLES = (now: Date) => ({
+  source: "trientes",
+  symbol: "TAL/USDT",
+  interval: "1h",
+  candles: [
+    {
+      time: Math.floor(now.getTime() / 1000) - 7200,
+      open: 100,
+      high: 100,
+      low: 100,
+      close: 100,
+      volume: 2,
+    },
+    {
+      time: Math.floor(now.getTime() / 1000) - 3600,
+      open: 110,
+      high: 110,
+      low: 110,
+      close: 110,
+      volume: 1,
+    },
+  ],
+});
+
+/** Узел-заглушка: реестр из снимков, котировки — очередью, свечи — по адресу. */
+function nodeOf(quotes: string[], candles?: unknown): FetchLike {
   const queue = [...quotes];
-  return async (_url, init) => {
+  return async (url, init) => {
+    if (!init?.body) {
+      // Это запрос ряда свечей, а не вызов узла.
+      if (candles === undefined) return new Response("no series", { status: 404 });
+      return new Response(JSON.stringify(candles), { status: 200 });
+    }
     const body = JSON.parse(String(init?.body)) as { params: [string, string] };
     const map: Record<string, string> = {
       SwapApi_tickers: TICKERS,
@@ -117,5 +148,44 @@ describe("syncOwnDexMarkets", () => {
     expect(stats.failed).toBe(1);
     expect(stats.errors.rpc_unreachable).toBe(1);
     expect(writes).toHaveLength(0);
+  });
+});
+
+describe("dexTradeUrl", () => {
+  it("открывает обмен на паре карточки, и получает её монету", () => {
+    // Монета карточки — база пары: отдаём котировку, получаем монету.
+    expect(dexTradeUrl("TAL/USDT", "TAL", "https://trientes.org")).toBe(
+      "https://trientes.org/exchange/#/swap/USDT-TAL",
+    );
+  });
+
+  it("монета карточки в котировке — порядок обратный", () => {
+    expect(dexTradeUrl("BTC/TAL", "TAL", "https://trientes.org")).toBe(
+      "https://trientes.org/exchange/#/swap/BTC-TAL",
+    );
+  });
+
+  it("не пара — остаётся обмен без выбора", () => {
+    expect(dexTradeUrl("TAL", "TAL", "https://trientes.org")).toBe("https://trientes.org/exchange/");
+  });
+});
+
+describe("суточный объём нашего обмена", () => {
+  it("пишется в рынок по ряду свечей и считается по цене каждой свечи", async () => {
+    const { prisma, writes } = prismaOf([{ id: "c1", symbol: "TAL" }]);
+    await syncOwnDexMarkets({
+      prisma,
+      fetchImpl: nodeOf([QUOTE_OK, QUOTE_OK], CANDLES(NOW)),
+      now: NOW,
+    });
+    expect(writes[0].data.volumeUsd24h).toBeCloseTo(2 * 100 + 1 * 110, 6);
+    expect(writes[0].data.tradeUrl).toContain("#/swap/USDT-TAL");
+  });
+
+  it("служба не ответила — прежнее число не трогаем", async () => {
+    const { prisma, writes } = prismaOf([{ id: "c1", symbol: "TAL" }], "m1");
+    await syncOwnDexMarkets({ prisma, fetchImpl: nodeOf([QUOTE_OK, QUOTE_OK]), now: NOW });
+    expect(writes[0].op).toBe("update");
+    expect("volumeUsd24h" in writes[0].data).toBe(false);
   });
 });

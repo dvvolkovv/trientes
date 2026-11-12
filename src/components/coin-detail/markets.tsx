@@ -18,8 +18,9 @@ export async function MarketsTable({
   const r = rates ?? {};
   const fmtP = (n: number) =>
     rates ? formatPriceInCurrency(n, currency, r) : `$${n.toFixed(2)}`;
-  const fmtV = (n: number) =>
-    rates ? formatCompactInCurrency(n, currency, r) : `$${(n / 1e6).toFixed(2)}M`;
+  // Объём неизвестен — так и говорим: ноль здесь означал бы «торгов не было».
+  const fmtV = (n: number | null) =>
+    n == null ? "—" : rates ? formatCompactInCurrency(n, currency, r) : `$${(n / 1e6).toFixed(2)}M`;
   return (
     <section>
       <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">

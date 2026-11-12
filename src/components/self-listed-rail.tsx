@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { listSelfListedCards } from "@/lib/coin-card-directory";
-import { formatPercent, formatPrice } from "@/lib/format";
+import { formatPercent } from "@/lib/format";
+import { formatPriceInCurrency, type Currency } from "@/lib/currency";
+import type { ExchangeRates } from "@/lib/coingecko";
 
 const TRUST_TONE: Record<string, string> = {
   UNVERIFIED: "text-muted border-hairline",
@@ -17,11 +19,22 @@ const TRUST_TONE: Record<string, string> = {
  * zero. The ranked table still needs capitalisation, which needs a verified
  * circulating supply (slice E).
  */
-export async function SelfListedRail({ locale }: { locale: string }) {
+export async function SelfListedRail({
+  locale,
+  currency,
+  rates,
+}: {
+  locale: string;
+  currency: Currency;
+  rates: ExchangeRates | null;
+}) {
   const t = await getTranslations("listing.selfListed");
   const tt = await getTranslations("coinCard.trust");
   const cards = await listSelfListedCards(24, locale);
   if (cards.length === 0) return null;
+  // Знак валюты ставит форматтер, и только он: свой «$» рядом с ним давал
+  // «$$11 985,30» и игнорировал выбранную валюту.
+  const price = (usd: number) => (rates ? formatPriceInCurrency(usd, currency, rates) : "—");
 
   return (
     <div>
@@ -53,7 +66,7 @@ export async function SelfListedRail({ locale }: { locale: string }) {
                 </span>
                 {c.priceUsd != null ? (
                   <span className="flex items-baseline gap-2 mt-1">
-                    <span className="num text-sm font-semibold">${formatPrice(c.priceUsd)}</span>
+                    <span className="num text-sm font-semibold">{price(c.priceUsd)}</span>
                     {c.change24h != null ? (
                       <span
                         className={`num text-xs ${c.change24h >= 0 ? "text-up" : "text-down"}`}

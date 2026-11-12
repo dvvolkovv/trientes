@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { dexPairKey, parseDexCandles, parseDexPairs } from "../src/lib/dex-candles";
+import {
+  dexPairKey,
+  parseDexCandles,
+  parseDexPairs,
+  sumDexVolumeUsd,
+  type DexCandle,
+} from "../src/lib/dex-candles";
 
 const PAIR = { key: "TAL-USDT", base: "TAL", quote: "USDT" };
 
@@ -81,5 +87,37 @@ describe("parseDexCandles", () => {
   it("нулевая цена — не цена", () => {
     const zero = { ...LIVE, candles: [{ ...LIVE.candles[0], close: 0 }] };
     expect(parseDexCandles(zero, { pair: PAIR, interval: "1h" })).toBeNull();
+  });
+});
+
+describe("sumDexVolumeUsd", () => {
+  const NOW = new Date("2026-11-12T12:00:00.000Z");
+  const hour = 3600;
+  const t = (hoursAgo: number) => Math.floor(NOW.getTime() / 1000) - hoursAgo * hour;
+  const candle = (hoursAgo: number, volume: number, close: number): DexCandle => ({
+    time: t(hoursAgo),
+    open: close,
+    high: close,
+    low: close,
+    close,
+    volume,
+  });
+
+  it("считает объём в долларах по цене закрытия каждой свечи", () => {
+    const sum = sumDexVolumeUsd([candle(2, 0.01, 12_000), candle(1, 0.02, 10_000)], NOW);
+    expect(sum).toBeCloseTo(0.01 * 12_000 + 0.02 * 10_000, 6);
+  });
+
+  it("свечи старше суток в окно не входят", () => {
+    const sum = sumDexVolumeUsd([candle(30, 5, 12_000), candle(1, 0.02, 10_000)], NOW);
+    expect(sum).toBeCloseTo(200, 6);
+  });
+
+  it("сделок не было — это ноль, а не отсутствие числа", () => {
+    expect(sumDexVolumeUsd([candle(1, 0, 12_000)], NOW)).toBe(0);
+  });
+
+  it("ряда нет — объём неизвестен, и ноль тут соврал бы", () => {
+    expect(sumDexVolumeUsd([], NOW)).toBeNull();
   });
 });
