@@ -1361,7 +1361,7 @@
         "rpc_error": "le nœud a refusé l'appel",
         "decode_failed": "réponse illisible",
         "supply_unsupported": "Sur ce réseau, l'offre n'est prouvée qu'en parcourant tout l'ensemble UTXO, ce que les nœuds publics n'exécutent pas.",
-        "vesting_unreadable": "Le réseau a répondu sur l'émission, mais pas sur le gel — la quantité en circulation serait surestimée."
+        "locks_unreadable": "Le réseau a répondu concernant l'offre, mais pas concernant ce qui est verrouillé — le montant en circulation serait alors surévalué."
       },
       "reason": {
         "card_not_found": "Fiche introuvable.",

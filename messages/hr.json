@@ -637,7 +637,7 @@
     "title": "Tržišta",
     "subtitle": "Burzovni indeksi, CME futures ugovori i plemeniti metali.",
     "indices": "Burzovni indeksi",
-    "futures": "CME futures",
+    "futures": "CME terminski ugovori",
     "metals": "Plemeniti metali",
     "asOf": "Na dan",
     "dataNote": "Odgođeni, indikativni podaci putem CNBC — nije za trgovanje.",
@@ -1122,8 +1122,8 @@
       "EXCHANGE": "Burza",
       "CUSTODY": "Skrbništvo",
       "PAYMENTS": "Plaćanja",
-      "ONRAMP": "On-ramp",
-      "OFFRAMP": "Off-ramp"
+      "ONRAMP": "Uplata",
+      "OFFRAMP": "Isplata"
     },
     "kyc": {
       "NONE": "Bez KYC-a",
@@ -1361,7 +1361,7 @@
         "rpc_error": "čvor je odbio poziv",
         "decode_failed": "nečitljiv odgovor",
         "supply_unsupported": "U ovoj mreži ponuda se može dokazati samo skeniranjem cijelog UTXO skupa, a javni čvorovi ne izvršavaju taj poziv.",
-        "vesting_unreadable": "Mreža je odgovorila o izdanju, ali ne i o zamrzavanju — količina u optjecaju ispala bi precijenjena."
+        "locks_unreadable": "Mreža je odgovorila o ponudi, ali ne i o onome što je zaključano — iznos u optjecaju ispao bi precijenjen."
       },
       "reason": {
         "card_not_found": "Kartica nije pronađena.",

@@ -17,7 +17,7 @@
     "themeDark": "Dunkel",
     "themeSystem": "System",
     "markets": "Märkte",
-    "business": "Business",
+    "business": "Unternehmen",
     "cabinet": "Kabinett",
     "fintech": "Fintech",
     "companies": "Unternehmen",
@@ -138,7 +138,7 @@
     "live": "Live",
     "jumpNavigator": "Navigator",
     "jumpExchanges": "Top-Börsen",
-    "jumpNews": "News"
+    "jumpNews": "Nachrichten"
   },
   "watchlist": {
     "title": "Beobachtungsliste",
@@ -188,7 +188,7 @@
       "coins": "Coins",
       "users": "Benutzer",
       "audit": "Audit",
-      "business": "Business",
+      "business": "Unternehmen",
       "exchanges": "Börsen",
       "fintech": "Fintech",
       "analytics": "Analytik",
@@ -1361,7 +1361,7 @@
         "rpc_error": "Knoten lehnte den Aufruf ab",
         "decode_failed": "unlesbare Antwort",
         "supply_unsupported": "In diesem Netzwerk belegt nur ein Durchlauf der gesamten UTXO-Menge den Umlauf, und öffentliche Knoten führen diesen Aufruf nicht aus.",
-        "vesting_unreadable": "Das Netzwerk antwortete zum Umlauf, aber nicht zur Sperre — der Umlauf käme zu hoch heraus."
+        "locks_unreadable": "Das Netzwerk lieferte Angaben zum Angebot, aber nicht dazu, was gesperrt ist — die zirkulierende Menge fiele überhöht aus."
       },
       "reason": {
         "card_not_found": "Karte nicht gefunden.",

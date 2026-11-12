@@ -1361,7 +1361,7 @@
         "rpc_error": "the node refused the call",
         "decode_failed": "unreadable answer",
         "supply_unsupported": "In this network supply is proven only by scanning the whole UTXO set, and public nodes do not run that call.",
-        "vesting_unreadable": "The network answered about supply, but not about the freeze — the circulating amount would come out overstated."
+        "locks_unreadable": "The network answered about supply, but not about what is locked — the circulating amount would come out overstated."
       },
       "reason": {
         "card_not_found": "Card not found.",

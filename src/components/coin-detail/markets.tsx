@@ -1,7 +1,11 @@
-import { getTranslations } from "next-intl/server";
+import Image from "next/image";
+import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
 import { formatPriceInCurrency, formatCompactInCurrency, type Currency } from "@/lib/currency";
 import type { ExchangeRates } from "@/lib/coingecko";
 import type { TopExchange } from "@/lib/listings";
+import { exchangeDirectoryByName } from "@/lib/exchange-directory";
+import { OWN_DEX_NAME } from "@/lib/coin-card-dex-market";
 
 export async function MarketsTable({
   exchanges,
@@ -15,12 +19,69 @@ export async function MarketsTable({
   const t = await getTranslations("detail");
   const top = exchanges;
   if (top.length === 0) return null;
+  const locale = await getLocale();
+  // Логотип и карточка биржи — из каталога, одним запросом на всю таблицу.
+  const directory = await exchangeDirectoryByName(top.map((e) => e.exchange));
   const r = rates ?? {};
   const fmtP = (n: number) =>
     rates ? formatPriceInCurrency(n, currency, r) : `$${n.toFixed(2)}`;
   // Объём неизвестен — так и говорим: ноль здесь означал бы «торгов не было».
   const fmtV = (n: number | null) =>
     n == null ? "—" : rates ? formatCompactInCurrency(n, currency, r) : `$${(n / 1e6).toFixed(2)}M`;
+  /**
+   * Биржа строки: знак и ссылка. Наш собственный обмен выделен цветом — он
+   * единственный здесь свой, и у него свой логотип; остальные ведут на
+   * карточку биржи, когда она у нас есть.
+   */
+  const exchangeCell = (tk: TopExchange) => {
+    const own = tk.exchange === OWN_DEX_NAME;
+    const entry = own ? null : directory.get(tk.exchange.toLowerCase());
+    const tone = own ? "text-accent" : "text-foreground";
+    const label = <span className={`${tone} truncate`}>{tk.exchange}</span>;
+    return (
+      <span className="inline-flex items-center gap-2 min-w-0">
+        {/* Место под знак занято всегда: без заглушки строки без логотипа
+            уезжают влево относительно соседних. */}
+        {own ? (
+          <Image
+            src="/logo.png"
+            alt=""
+            width={20}
+            height={20}
+            className="rounded-full border border-hairline shrink-0"
+          />
+        ) : entry?.logoUrl ? (
+          <Image
+            src={entry.logoUrl}
+            alt=""
+            width={20}
+            height={20}
+            className="rounded-full border border-hairline shrink-0"
+            unoptimized
+          />
+        ) : (
+          <span className="w-5 h-5 shrink-0 rounded-full bg-bg-tint border border-hairline" />
+        )}
+        {entry ? (
+          <Link href={`/${locale}/exchanges/${entry.id}`} className="hover:underline min-w-0">
+            {label}
+          </Link>
+        ) : tk.tradeUrl ? (
+          <a
+            href={tk.tradeUrl}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            className="hover:underline min-w-0"
+          >
+            {label}
+          </a>
+        ) : (
+          label
+        )}
+      </span>
+    );
+  };
+
   return (
     <section>
       <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
@@ -49,20 +110,7 @@ export async function MarketsTable({
                     i < top.length - 1 ? "border-b border-hairline" : ""
                   }
                 >
-                  <td className="px-5 py-4">
-                    {tk.tradeUrl ? (
-                      <a
-                        href={tk.tradeUrl}
-                        target="_blank"
-                        rel="noopener noreferrer nofollow"
-                        className="text-foreground hover:underline"
-                      >
-                        {tk.exchange}
-                      </a>
-                    ) : (
-                      <span className="text-foreground">{tk.exchange}</span>
-                    )}
-                  </td>
+                  <td className="px-5 py-4">{exchangeCell(tk)}</td>
                   <td className="px-5 py-4 text-muted">
                     {tk.base}/{tk.target}
                   </td>
@@ -85,20 +133,7 @@ export async function MarketsTable({
             className="bg-card border border-hairline rounded-[16px] p-4"
           >
             <div className="flex items-center justify-between gap-3 mb-3">
-              {tk.tradeUrl ? (
-                <a
-                  href={tk.tradeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
-                  className="font-medium text-foreground hover:underline truncate"
-                >
-                  {tk.exchange}
-                </a>
-              ) : (
-                <span className="font-medium text-foreground truncate">
-                  {tk.exchange}
-                </span>
-              )}
+              <span className="font-medium min-w-0 truncate">{exchangeCell(tk)}</span>
               <span className="num text-[12px] text-muted flex-shrink-0">
                 {tk.base}/{tk.target}
               </span>

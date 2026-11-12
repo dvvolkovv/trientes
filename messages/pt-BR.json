@@ -1361,7 +1361,7 @@
         "rpc_error": "o nó recusou a chamada",
         "decode_failed": "resposta ilegível",
         "supply_unsupported": "Nesta rede a oferta só é comprovada percorrendo todo o conjunto UTXO, e os nós públicos não executam essa chamada.",
-        "vesting_unreadable": "A rede respondeu sobre a emissão, mas não sobre o bloqueio — a quantidade em circulação sairia superestimada."
+        "locks_unreadable": "A rede respondeu sobre o fornecimento, mas não sobre o que está bloqueado — a quantidade em circulação sairia superestimada."
       },
       "reason": {
         "card_not_found": "Ficha não encontrada.",

@@ -21,7 +21,7 @@ import {
   substrateRpcUrlFor,
 } from "./substrate-chains";
 import { isSs58Address } from "./substrate-codec";
-import { readVestingLocked, VESTING_STORAGE } from "./substrate-vesting";
+import { readLockedSupply, LOCKS_STORAGE } from "./substrate-locks";
 import { resolveCosmosChain, cosmosRestUrlFor } from "./cosmos-chains";
 import { readCosmosBlock, readCosmosSupply, type HttpFetch } from "./cosmos-rest";
 import {
@@ -283,7 +283,7 @@ export type SupplyReadError =
    * другая: числа есть, но оборот по ним посчитался бы без вычета, то есть
    * завышенным. Такую карточку лучше оставить с прежними числами.
    */
-  | "vesting_unreadable"
+  | "locks_unreadable"
   | RpcErrorCode;
 
 export type SupplyFacts = {
@@ -416,16 +416,18 @@ export async function readSubstrateSupplyFacts(args: {
     }
   }
 
-  // Заморозка вестингом — такое же исключение, только адрес ему не нужен:
-  // сумма снимается со всей карты расписаний. Сбой здесь не местный, как у
-  // одного адреса: без вычета оборот вышел бы завышенным, поэтому чтение
-  // срывается целиком и прежние числа карточки остаются на месте.
-  if (chain.vestingLocked) {
+  // Заморозка — такое же исключение, только адрес ему не нужен: сумма
+  // снимается со всей карты блокировок, по максимуму на счёт (вестинг и
+  // стейкинг у Taler — одни и те же монеты, их сумма вычла бы их дважды).
+  // Сбой здесь не местный, как у одного адреса: без вычета оборот вышел бы
+  // завышенным, поэтому чтение срывается целиком и прежние числа карточки
+  // остаются на месте.
+  if (chain.locksExcluded) {
     try {
-      const locked = await readVestingLocked(url, opts);
+      const locked = await readLockedSupply(url, opts);
       balances.push({
-        address: VESTING_STORAGE,
-        label: `vesting · ${locked.accounts}`,
+        address: LOCKS_STORAGE,
+        label: `${locked.reasons.join("+") || "locks"} · ${locked.accounts}`,
         units: locked.units.toString(),
         error: null,
       });
@@ -436,7 +438,7 @@ export async function readSubstrateSupplyFacts(args: {
         decimals,
         symbol,
         genesisHash,
-        error: transport ?? "vesting_unreadable",
+        error: transport ?? "locks_unreadable",
       };
     }
   }

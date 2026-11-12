@@ -1079,7 +1079,7 @@
     "email": "邮箱",
     "phone": "电话",
     "address": "地址",
-    "logoUrl": "Logo URL",
+    "logoUrl": "徽标 URL",
     "submit": "保存",
     "submitting": "保存中…",
     "saved": "已保存。",
@@ -1175,7 +1175,7 @@
       "displayName": "显示名称",
       "website": "官网",
       "legalName": "法定名称",
-      "logoUrl": "Logo URL",
+      "logoUrl": "徽标 URL",
       "foundedYear": "成立",
       "description": "描述",
       "services": "服务",
@@ -1361,7 +1361,7 @@
         "rpc_error": "节点拒绝了调用",
         "decode_failed": "无法解析的返回值",
         "supply_unsupported": "在该网络中，供应量只能通过遍历整个 UTXO 集合来证明，而公共节点不执行该调用。",
-        "vesting_unreadable": "节点回答了发行量，却没有回答冻结量——流通量会偏高。"
+        "locks_unreadable": "网络返回了供应信息，但未提供锁定部分的数据——流通量可能会被高估。"
       },
       "reason": {
         "card_not_found": "未找到该卡片。",

@@ -52,3 +52,44 @@ export async function exchangeDirectoryForMarkets(
   }
   return out;
 }
+
+/**
+ * Строки каталога по именам бирж — для таблиц, где биржа названа словом, а не
+ * id (тикеры рыночного фида, рынки карточки). Имя фида совпадает с именем
+ * каталога: и то и другое пришло из CoinGecko. Чего там нет, ищем по реестру
+ * коннекторов — так находится и наш собственный обмен чужого написания.
+ *
+ * Ключ результата — имя в нижнем регистре.
+ */
+export async function exchangeDirectoryByName(
+  names: readonly string[],
+): Promise<Map<string, DirectoryEntry>> {
+  const wanted = [...new Set(names.map((n) => n.trim()).filter(Boolean))];
+  if (wanted.length === 0) return new Map();
+
+  // Имя и id каталога: по имени находится любая биржа фида, по id — те восемь,
+  // что мы читаем коннекторами (у них имя может быть написано иначе).
+  const byConnector = new Map<string, string>(); // directoryId → имя из запроса
+  for (const name of wanted) {
+    const connectorId = normalizeExchange(name);
+    const directoryId = connectorId ? getConnector(connectorId)?.directoryId : null;
+    if (directoryId) byConnector.set(directoryId, name);
+  }
+
+  const rows = await prisma.exchange.findMany({
+    where: { OR: [{ name: { in: wanted } }, { id: { in: [...byConnector.keys()] } }] },
+    select: { id: true, name: true, logoUrl: true },
+    // Строк на биржу бывает две (источники cg и cp): берём ту, что с логотипом
+    // и с рангом, то есть запись CoinGecko.
+    orderBy: [{ source: "asc" }, { trustScoreRank: "asc" }],
+  });
+
+  const out = new Map<string, DirectoryEntry>();
+  for (const row of rows) {
+    const keys = [row.name.toLowerCase()];
+    const viaConnector = byConnector.get(row.id);
+    if (viaConnector) keys.push(viaConnector.toLowerCase());
+    for (const key of keys) if (!out.has(key)) out.set(key, row);
+  }
+  return out;
+}
