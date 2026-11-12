@@ -4,6 +4,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { getProvenance } from "@/lib/coin-card-provenance";
 import { formatCompact, formatPercent, formatPrice } from "@/lib/format";
 import { isOwnDexMarket } from "@/lib/coin-card-dex-market";
+import { dexUrlWithLang } from "@/lib/dex-link";
 import { connectorIdOfMarket, exchangeDirectoryForMarkets } from "@/lib/exchange-directory";
 import { ProvenanceBadge } from "../provenance-badge";
 import { ExternalLink } from "../external-link";
@@ -81,7 +82,8 @@ export async function MarketsSection({
   /**
    * Биржа строки: логотип и ссылка внутрь сайта — на её карточку. У нашего
    * обмена карточки в каталоге нет, и выдумывать её незачем: страница обмена и
-   * есть его карточка, адрес лежит в `tradeUrl`.
+   * есть его карточка, адрес лежит в `tradeUrl` — и язык сайта в него
+   * дописывает рендер: в базе строка одна на все локали.
    */
   const exchangeCell = (m: Market, own: boolean) => {
     const entry = own ? null : directory.get(connectorIdOfMarket(m) ?? "");
@@ -111,7 +113,10 @@ export async function MarketsSection({
         )}
         {own ? (
           <>
-            <ExternalLink href={m.tradeUrl} className="text-accent hover:underline">
+            <ExternalLink
+              href={m.tradeUrl && dexUrlWithLang(m.tradeUrl, locale)}
+              className="text-accent hover:underline"
+            >
               {m.exchangeName}
             </ExternalLink>
             {!m.tradeUrl && m.exchangeName}

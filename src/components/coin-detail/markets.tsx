@@ -6,6 +6,7 @@ import type { ExchangeRates } from "@/lib/coingecko";
 import type { TopExchange } from "@/lib/listings";
 import { exchangeDirectoryByName } from "@/lib/exchange-directory";
 import { OWN_DEX_NAME } from "@/lib/coin-card-dex-market";
+import { dexUrlWithLang } from "@/lib/dex-link";
 
 export async function MarketsTable({
   exchanges,
@@ -68,7 +69,7 @@ export async function MarketsTable({
           </Link>
         ) : tk.tradeUrl ? (
           <a
-            href={tk.tradeUrl}
+            href={dexUrlWithLang(tk.tradeUrl, locale)}
             target="_blank"
             rel="noopener noreferrer nofollow"
             className="hover:underline min-w-0"
