@@ -515,6 +515,21 @@
         "coinpaprika": "Source: CoinPaprika"
       }
     },
+    "coins": {
+      "title": "Coins traded here",
+      "count": "{count} coins from our catalogue",
+      "columns": {
+        "coin": "Coin",
+        "pair": "Pair",
+        "price": "Price",
+        "change24h": "24h",
+        "volume24h": "24h Volume"
+      },
+      "pairsCount": "{count} stable pairs on this exchange",
+      "note": "Numbers come from the exchange’s own ticker snapshot, not from our index. A pair whose price disagrees with our reference by more than 25% is left out: the same ticker can belong to a different asset on an exchange.",
+      "unverified": "{count} more coins are traded here but hidden — we have no fresh reference price to tell them apart from same-ticker assets.",
+      "unreachable": "The exchange did not answer just now — the list will be back shortly."
+    },
     "pairs": {
       "title": "Trading pairs",
       "empty": "Market data is being indexed — check back soon.",

@@ -515,6 +515,21 @@
         "coinpaprika": "Quelle: CoinPaprika"
       }
     },
+    "coins": {
+      "title": "Hier gehandelte Coins",
+      "count": "{count} Coins aus unserem Katalog",
+      "columns": {
+        "coin": "Coin",
+        "pair": "Paar",
+        "price": "Preis",
+        "change24h": "24h",
+        "volume24h": "24h-Volumen"
+      },
+      "pairsCount": "{count} stabile Paare auf dieser Börse",
+      "note": "Die Zahlen stammen aus dem eigenen Ticker-Snapshot der Börse, nicht aus unserem Index. Ein Paar, dessen Preis von unserer Referenz um mehr als 25% abweicht, wird weggelassen: Derselbe Ticker kann auf einer Börse zu einem anderen Asset gehören.",
+      "unverified": "{count} weitere Coins werden hier gehandelt, sind aber verborgen — wir haben keinen frischen Referenzpreis, um sie von Assets mit demselben Ticker zu unterscheiden.",
+      "unreachable": "Die Börse hat gerade nicht geantwortet — die Liste ist in Kürze wieder da."
+    },
     "pairs": {
       "title": "Handelspaare",
       "empty": "Marktdaten werden indiziert — bitte später erneut prüfen.",
@@ -1160,7 +1175,7 @@
       "displayName": "Anzeigename",
       "website": "Website",
       "legalName": "Juristischer Name",
-      "logoUrl": "Logo URL",
+      "logoUrl": "Logo-URL",
       "foundedYear": "Gegründet",
       "description": "Beschreibung",
       "services": "Dienste",

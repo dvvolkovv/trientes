@@ -219,7 +219,7 @@
     },
     "addCoin": {
       "heading": "Elle coin ekle",
-      "coingeckoId": "CoinGecko ID",
+      "coingeckoId": "CoinGecko kimliği",
       "symbol": "Sembol",
       "name": "Ad",
       "add": "Ekle",
@@ -514,6 +514,21 @@
         "wikipedia": "Kaynak: Vikipedi",
         "coinpaprika": "Kaynak: CoinPaprika"
       }
+    },
+    "coins": {
+      "title": "Burada işlem gören coinler",
+      "count": "Kataloğumuzdan {count} coin",
+      "columns": {
+        "coin": "Coin",
+        "pair": "Parite",
+        "price": "Fiyat",
+        "change24h": "24s",
+        "volume24h": "24s Hacim"
+      },
+      "pairsCount": "Bu borsada {count} stabil parite",
+      "note": "Rakamlar endeksimizden değil, borsanın kendi ticker anlık görüntüsünden gelir. Fiyatı referansımızdan %25’ten fazla sapan bir parite dışarıda bırakılır: aynı ticker bir borsada farklı bir varlığa ait olabilir",
+      "unverified": "Burada işlem gören ancak gizlenen {count} coin daha var — aynı ticker’a sahip varlıklardan ayırt etmemizi sağlayacak güncel bir referans fiyatımız yok",
+      "unreachable": "Borsa şu anda yanıt vermedi — liste kısa süre içinde geri gelecek"
     },
     "pairs": {
       "title": "İşlem çiftleri",

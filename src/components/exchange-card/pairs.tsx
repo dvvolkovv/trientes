@@ -21,7 +21,13 @@ const STALE_THRESHOLD_HOURS = 48;
 const NEW_THRESHOLD_DAYS = 7;
 const TOP_N = 50;
 
-export async function ExchangeCardPairs({ exchangeId }: { exchangeId: string }) {
+export async function ExchangeCardPairs({
+  exchangeId,
+  hideWhenEmpty = false,
+}: {
+  exchangeId: string;
+  hideWhenEmpty?: boolean;
+}) {
   const t = await getTranslations("exchangeCard");
   const staleBefore = new Date(Date.now() - STALE_THRESHOLD_HOURS * 60 * 60 * 1000);
   const newAfter = new Date(Date.now() - NEW_THRESHOLD_DAYS * 24 * 60 * 60 * 1000);
@@ -37,6 +43,7 @@ export async function ExchangeCardPairs({ exchangeId }: { exchangeId: string }) 
   });
 
   if (markets.length === 0) {
+    if (hideWhenEmpty) return null;
     return (
       <section>
         <h2 className="text-[15px] font-semibold mb-3">{t("pairs.title")}</h2>

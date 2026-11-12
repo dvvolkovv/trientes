@@ -515,6 +515,21 @@
         "coinpaprika": "출처: CoinPaprika"
       }
     },
+    "coins": {
+      "title": "여기서 거래되는 코인",
+      "count": "우리 카탈로그의 코인 {count}개",
+      "columns": {
+        "coin": "코인",
+        "pair": "거래쌍",
+        "price": "가격",
+        "change24h": "24h",
+        "volume24h": "24h 거래량"
+      },
+      "pairsCount": "이 거래소의 스테이블 페어 {count}개",
+      "note": "수치는 우리의 인덱스가 아니라 거래소 자체의 티커 스냅샷에서 가져옵니다. 기준가와의 차이가 25%를 넘는 페어는 제외됩니다: 동일한 티커가 거래소에 따라 다른 자산을 의미할 수 있기 때문입니다.",
+      "unverified": "여기에서 더 많은 코인 {count}개가 거래되지만 숨겨져 있습니다 — 동일 티커 자산과 구분할 최신 기준 가격이 없습니다.",
+      "unreachable": "거래소가 방금 응답하지 않았습니다 — 곧 목록이 돌아옵니다."
+    },
     "pairs": {
       "title": "거래 페어",
       "empty": "시장 데이터를 수집 중입니다.",
@@ -1175,8 +1190,8 @@
       "hqLat": "본사 위도",
       "hqLon": "본사 경도",
       "feesSummary": "수수료 요약",
-      "appStoreUrl": "App Store URL",
-      "playStoreUrl": "Play Store URL",
+      "appStoreUrl": "앱 스토어 URL",
+      "playStoreUrl": "플레이 스토어 URL",
       "submit": "저장",
       "submitting": "저장 중…",
       "submitted": "저장했습니다 — 심사 대기 중.",

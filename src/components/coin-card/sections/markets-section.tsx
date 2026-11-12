@@ -1,14 +1,17 @@
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
 import { getProvenance } from "@/lib/coin-card-provenance";
 import { formatCompact, formatPercent, formatPrice } from "@/lib/format";
 import { isOwnDexMarket } from "@/lib/coin-card-dex-market";
+import { connectorIdOfMarket, exchangeDirectoryForMarkets } from "@/lib/exchange-directory";
 import { ProvenanceBadge } from "../provenance-badge";
 import { ExternalLink } from "../external-link";
 
 type Market = {
   id: string;
   kind: string;
+  exchangeId: string | null;
   exchangeName: string;
   pair: string;
   tradeUrl: string | null;
@@ -50,6 +53,9 @@ export async function MarketsSection({
 }) {
   const t = await getTranslations("coinCard");
   if (markets.length === 0) return null;
+  const locale = await getLocale();
+  // Логотип и адрес карточки биржи — из каталога, одним запросом на таблицу.
+  const directory = await exchangeDirectoryForMarkets(markets);
 
   const hasPrices = markets.some((m) => m.priceUsd != null);
   // Свой обмен — первой строкой: у монеты, которой нет на биржах, он
@@ -72,23 +78,57 @@ export async function MarketsSection({
   const changeClass = (m: Market) =>
     m.change24h == null ? "text-muted" : m.change24h >= 0 ? "text-up" : "text-down";
 
-  const exchangeCell = (m: Market, own: boolean) => (
-    <span className="inline-flex items-center gap-2 whitespace-nowrap">
-      {own && (
-        <Image
-          src="/logo.png"
-          alt=""
-          width={20}
-          height={20}
-          className="rounded-full border border-hairline shrink-0"
-        />
-      )}
-      <ExternalLink href={m.tradeUrl} className="text-accent hover:underline">
-        {m.exchangeName}
-      </ExternalLink>
-      {!m.tradeUrl && m.exchangeName}
-    </span>
-  );
+  /**
+   * Биржа строки: логотип и ссылка внутрь сайта — на её карточку. У нашего
+   * обмена карточки в каталоге нет, и выдумывать её незачем: страница обмена и
+   * есть его карточка, адрес лежит в `tradeUrl`.
+   */
+  const exchangeCell = (m: Market, own: boolean) => {
+    const entry = own ? null : directory.get(connectorIdOfMarket(m) ?? "");
+    return (
+      <span className="inline-flex items-center gap-2 whitespace-nowrap">
+        {own ? (
+          <Image
+            src="/logo.png"
+            alt=""
+            width={20}
+            height={20}
+            className="rounded-full border border-hairline shrink-0"
+          />
+        ) : entry?.logoUrl ? (
+          <Image
+            src={entry.logoUrl}
+            alt=""
+            width={20}
+            height={20}
+            className="rounded-full border border-hairline shrink-0"
+            unoptimized
+          />
+        ) : (
+          // Место под знак занято всегда — иначе строка биржи без логотипа
+          // уезжает влево относительно соседних.
+          <span className="w-5 h-5 shrink-0 rounded-full bg-bg-tint border border-hairline" />
+        )}
+        {own ? (
+          <>
+            <ExternalLink href={m.tradeUrl} className="text-accent hover:underline">
+              {m.exchangeName}
+            </ExternalLink>
+            {!m.tradeUrl && m.exchangeName}
+          </>
+        ) : entry ? (
+          <Link
+            href={`/${locale}/exchanges/${entry.id}`}
+            className="text-accent hover:underline"
+          >
+            {m.exchangeName}
+          </Link>
+        ) : (
+          m.exchangeName
+        )}
+      </span>
+    );
+  };
 
   const kindLabel = (m: Market) => (m.chain ? `${m.kind} · ${m.chain}` : m.kind);
 

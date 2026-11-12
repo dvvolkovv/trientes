@@ -117,7 +117,7 @@
     "loading": "Učitavanje…",
     "website": "Web-stranica",
     "explorer": "Istraživač",
-    "whitepaper": "Whitepaper",
+    "whitepaper": "Bijela knjiga",
     "github": "GitHub",
     "twitter": "Twitter",
     "reddit": "Reddit",
@@ -514,6 +514,21 @@
         "wikipedia": "Izvor: Wikipedia",
         "coinpaprika": "Izvor: CoinPaprika"
       }
+    },
+    "coins": {
+      "title": "Kovanice kojima se ovdje trguje",
+      "count": "{count} kovanica iz našeg kataloga",
+      "columns": {
+        "coin": "Kovanica",
+        "pair": "Par",
+        "price": "Cijena",
+        "change24h": "24h",
+        "volume24h": "24h volumen"
+      },
+      "pairsCount": "{count} stabilnih parova na ovoj burzi",
+      "note": "Brojke dolaze iz vlastitog snimka tickera burze, a ne iz našeg indeksa. Par čija se cijena razlikuje od naše reference za više od 25% izostavlja se: isti ticker na nekoj burzi može pripadati drugoj imovini.",
+      "unverified": "{count} dodatnih kovanica se ovdje trguje, ali su skrivene — nemamo svježu referentnu cijenu da bismo ih razlikovali od imovine s istim tickerom.",
+      "unreachable": "Burza se trenutačno ne odaziva — popis će se ubrzo vratiti."
     },
     "pairs": {
       "title": "Trgovački parovi",
@@ -915,7 +930,7 @@
       "channels": {
         "title": "Kanali isporuke",
         "telegram": "Telegram",
-        "email": "Email",
+        "email": "E-mail",
         "telegramNotLinked": "Prijavite se jednom putem Telegrama za omogućavanje.",
         "emailNotSet": "Dodajte e-mail u profil da biste omogućili",
         "emailNotVerified": "Najprije potvrdite svoj e-mail da biste omogućili",
@@ -1401,7 +1416,7 @@
       "SELF_REPORTED": "Samoprijavljeno od projekta",
       "SELF_REPORTED_short": "prijavljeno",
       "VERIFIED_ONCHAIN": "Provjereno on-chain",
-      "VERIFIED_ONCHAIN_short": "on-chain",
+      "VERIFIED_ONCHAIN_short": "na lancu",
       "AGGREGATED": "Agregirano preko tržišta",
       "AGGREGATED_short": "agregirano",
       "ADMIN_SET": "Postavljeno od moderatora",
@@ -1855,7 +1870,7 @@
       }
     },
     "policy": {
-      "title": "Multisig",
+      "title": "Višepotpis",
       "subtitle": "Potpisnici na ovoj kartici: {signers}.",
       "enable": "Zahtijevajte više potpisa za izmjene",
       "threshold": "Potrebni potpisi",

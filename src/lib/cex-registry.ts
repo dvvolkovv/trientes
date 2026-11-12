@@ -24,6 +24,13 @@ export type TickerMap = Map<string, Ticker>;
 export type CexConnector = {
   id: string;
   label: string;
+  /**
+   * id строки этой биржи в каталоге сайта (`Exchange.id`, он же id CoinGecko).
+   * Из данных не выводится: каталог заведён по id CoinGecko, коннекторы — по
+   * именам бирж, и у половины они расходятся (`coinbase` → `gdax`). Поэтому
+   * связь пришпилена здесь — рядом с адресом снимка и алиасами.
+   */
+  directoryId: string;
   /** Путь снимка относительно базового адреса. */
   path: string;
   defaultBase: string;
@@ -89,6 +96,7 @@ const KRAKEN_ALIAS: Record<string, string> = { BTC: "XBT", DOGE: "XDG" };
 export const CEX: readonly CexConnector[] = [
   {
     id: "binance",
+    directoryId: "binance",
     label: "Binance",
     path: "/api/v3/ticker/24hr",
     defaultBase: "https://api.binance.com",
@@ -98,6 +106,7 @@ export const CEX: readonly CexConnector[] = [
   },
   {
     id: "mexc",
+    directoryId: "mxc",
     label: "MEXC",
     path: "/api/v3/ticker/24hr",
     defaultBase: "https://api.mexc.com",
@@ -107,6 +116,7 @@ export const CEX: readonly CexConnector[] = [
   },
   {
     id: "okx",
+    directoryId: "okex",
     label: "OKX",
     path: "/api/v5/market/tickers?instType=SPOT",
     defaultBase: "https://www.okx.com",
@@ -130,6 +140,7 @@ export const CEX: readonly CexConnector[] = [
   },
   {
     id: "bybit",
+    directoryId: "bybit_spot",
     label: "Bybit",
     path: "/v5/market/tickers?category=spot",
     defaultBase: "https://api.bybit.com",
@@ -154,6 +165,7 @@ export const CEX: readonly CexConnector[] = [
   },
   {
     id: "kucoin",
+    directoryId: "kucoin",
     label: "KuCoin",
     path: "/api/v1/market/allTickers",
     defaultBase: "https://api.kucoin.com",
@@ -178,6 +190,7 @@ export const CEX: readonly CexConnector[] = [
   },
   {
     id: "gate",
+    directoryId: "gate",
     label: "Gate.io",
     path: "/api/v4/spot/tickers",
     defaultBase: "https://api.gateio.ws",
@@ -200,6 +213,7 @@ export const CEX: readonly CexConnector[] = [
   },
   {
     id: "kraken",
+    directoryId: "kraken",
     label: "Kraken",
     path: "/0/public/Ticker",
     defaultBase: "https://api.kraken.com",
@@ -237,6 +251,7 @@ export const CEX: readonly CexConnector[] = [
   },
   {
     id: "coinbase",
+    directoryId: "gdax",
     label: "Coinbase",
     path: "/products/stats",
     defaultBase: "https://api.exchange.coinbase.com",
@@ -268,6 +283,13 @@ const BY_ID = new Map(CEX.map((c) => [c.id, c]));
 
 export function getConnector(id: string): CexConnector | null {
   return BY_ID.get(id) ?? null;
+}
+
+const BY_DIRECTORY = new Map(CEX.map((c) => [c.directoryId, c]));
+
+/** Коннектор биржи по её id в каталоге сайта. Чужая биржа — null. */
+export function connectorForDirectory(directoryId: string | null | undefined): CexConnector | null {
+  return directoryId ? BY_DIRECTORY.get(directoryId) ?? null : null;
 }
 
 /**

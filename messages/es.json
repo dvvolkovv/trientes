@@ -515,6 +515,21 @@
         "coinpaprika": "Fuente: CoinPaprika"
       }
     },
+    "coins": {
+      "title": "Monedas negociadas aquí",
+      "count": "{count} monedas de nuestro catálogo",
+      "columns": {
+        "coin": "Moneda",
+        "pair": "Par",
+        "price": "Precio",
+        "change24h": "24h",
+        "volume24h": "Volumen 24h"
+      },
+      "pairsCount": "{count} pares estables en este exchange",
+      "note": "Las cifras provienen de la instantánea del propio ticker del exchange, no de nuestro índice. Se omite cualquier par cuyo precio difiera de nuestra referencia en más de un 25%: el mismo ticker puede pertenecer a un activo diferente en un exchange.",
+      "unverified": "{count} monedas más se negocian aquí pero están ocultas — no tenemos un precio de referencia reciente para distinguirlas de activos con el mismo ticker.",
+      "unreachable": "El exchange no respondió en este momento — la lista volverá en breve."
+    },
     "pairs": {
       "title": "Pares de negociación",
       "empty": "Los datos del mercado se están indexando — vuelve pronto.",

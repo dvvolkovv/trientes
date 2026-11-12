@@ -11,10 +11,12 @@ import { ExchangeCardDescription, type DescriptionSource } from "@/components/ex
 import { ExchangeCardSocials } from "@/components/exchange-card/socials";
 import { ExchangeOutboundCta } from "@/components/exchange-card/outbound-cta";
 import { ExchangeCardPairs } from "@/components/exchange-card/pairs";
+import { ExchangeCardCoins } from "@/components/exchange-card/coins";
 import { ExchangeCardNewPairs } from "@/components/exchange-card/new-pairs";
 import { fetchWikipediaSummary } from "@/lib/wikipedia";
 import { getFreshExchangeDetail } from "@/lib/exchange-fresh";
 import { resolveCpId } from "@/lib/coinpaprika";
+import { connectorForDirectory } from "@/lib/cex-registry";
 import { serializeJsonLd } from "@/lib/json-ld";
 import type { Exchange } from "@/lib/coingecko";
 
@@ -139,7 +141,10 @@ export default async function ExchangeDetailPage({
         feesUrl={row.feesUrl}
       />
       <ExchangeCardNewPairs exchangeId={row.id} />
-      <ExchangeCardPairs exchangeId={row.id} />
+      <ExchangeCardCoins exchangeId={row.id} />
+      {/* Пары CoinPaprika под живым списком монет не нужны пустой заглушкой:
+          у биржи с коннектором раздел прячется, когда в нём нечего показать. */}
+      <ExchangeCardPairs exchangeId={row.id} hideWhenEmpty={!!connectorForDirectory(row.id)} />
       <ExchangeCardDescription
         description={description}
         source={source}

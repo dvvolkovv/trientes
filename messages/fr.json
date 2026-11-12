@@ -229,7 +229,7 @@
     "users": {
       "title": "Utilisateurs",
       "subtitle": "Gérez les rôles des utilisateurs inscrits.",
-      "email": "Email",
+      "email": "E-mail",
       "name": "Nom",
       "providers": "Fournisseurs",
       "role": "Rôle",
@@ -514,6 +514,21 @@
         "wikipedia": "Source : Wikipédia",
         "coinpaprika": "Source : CoinPaprika"
       }
+    },
+    "coins": {
+      "title": "Actifs négociés ici",
+      "count": "{count} actifs de notre catalogue",
+      "columns": {
+        "coin": "Actif",
+        "pair": "Paire",
+        "price": "Prix",
+        "change24h": "24 h",
+        "volume24h": "Volume 24 h"
+      },
+      "pairsCount": "{count} paires stables sur cette plateforme",
+      "note": "Les chiffres proviennent de l’instantané du ticker de la plateforme, pas de notre indice. Une paire dont le prix diverge de plus de 25 % par rapport à notre référence est écartée : un même ticker peut correspondre à un autre actif sur une plateforme.",
+      "unverified": "{count} autres actifs sont négociés ici mais masqués — nous n’avons pas de prix de référence récent pour les distinguer d’actifs au même ticker.",
+      "unreachable": "La plateforme n’a pas répondu à l’instant — la liste reviendra bientôt."
     },
     "pairs": {
       "title": "Paires de trading",
@@ -915,7 +930,7 @@
       "channels": {
         "title": "Canaux de notification",
         "telegram": "Telegram",
-        "email": "Email",
+        "email": "E-mail",
         "telegramNotLinked": "Connecte-toi via Telegram pour activer.",
         "emailNotSet": "Ajoute un email dans ton profil pour activer.",
         "emailNotVerified": "Vérifie ton email d'abord pour activer.",
@@ -1061,7 +1076,7 @@
     "description": "Description",
     "website": "Site web",
     "country": "Pays",
-    "email": "Email",
+    "email": "E-mail",
     "phone": "Téléphone",
     "address": "Adresse",
     "logoUrl": "URL du logo",
@@ -1206,7 +1221,7 @@
   "companyPublic": {
     "verified": "Vérifié",
     "website": "Site",
-    "email": "Email",
+    "email": "E-mail",
     "phone": "Téléphone",
     "address": "Adresse",
     "placesTitle": "Lieux acceptant la crypto",
@@ -1431,7 +1446,7 @@
       "missingCount": "{count} restants",
       "complete": "Complet",
       "name": "Nom",
-      "symbol": "Ticker",
+      "symbol": "Symbole",
       "symbolHint": "Code court, par ex. BTC",
       "tagline": "Slogan",
       "taglineHint": "Une ligne, jusqu'à 120 caractères",
