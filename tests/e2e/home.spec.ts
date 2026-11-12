@@ -40,3 +40,21 @@ test("home page renders top-coin table with at least 10 rows", async ({ page, ba
   );
   expect(realErrors, realErrors.join("\n")).toEqual([]);
 });
+
+test("coin icons come from our own origin, not a third-party CDN", async ({ page }) => {
+  await page.goto("/en", { waitUntil: "domcontentloaded" });
+
+  const table = page.getByRole("table").first();
+  await expect(table).toBeVisible();
+
+  const srcs = await table
+    .locator("tbody tr img")
+    .evaluateAll((imgs) => imgs.map((i) => i.getAttribute("src") ?? ""));
+  expect(srcs.length).toBeGreaterThanOrEqual(10);
+
+  // A logo served straight from coin-images.coingecko.com is only as reachable
+  // as that CDN is from the visitor's network; ours is as reachable as the page
+  // they are already looking at.
+  const external = srcs.filter((s) => /^https?:\/\//.test(s));
+  expect(external, external.join("\n")).toEqual([]);
+});

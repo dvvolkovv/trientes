@@ -47,7 +47,11 @@ export function CoinRow({
               width={28}
               height={28}
               className="rounded-full"
-              unoptimized
+              // Картинка идёт через свой домен: ссылка на чужой CDN в браузере
+              // посетителя может и не открыться, а у нас всё будет «работать».
+              // Пропускаем оптимизатор только для пути не-http(s) — файл из
+              // `/uploads/` лежит мимо `public/` и оптимизатору не виден.
+              unoptimized={!row.logoUrl.startsWith("http")}
             />
           ) : (
             <div
