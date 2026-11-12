@@ -69,7 +69,15 @@ export default async function Image({ params }: { params: Promise<{ locale: stri
             <div style={{ fontSize: 80, fontWeight: 800, letterSpacing: "-0.04em", lineHeight: 1, marginTop: 6 }}>
               {name}
             </div>
-            {country ? <div style={{ fontSize: 26, color: "#9b9b9b", marginTop: 10 }}>HQ: {country}</div> : null}
+            {/* Satori требует явный display у узла с двумя детьми: «HQ: » и
+                сама страна — это два ребёнка, и без него рендер картинки
+                падал пятьсот вторым (живой случай paysera и plisio). */}
+            {country ? (
+              <div style={{ fontSize: 26, color: "#9b9b9b", marginTop: 10, display: "flex", gap: 8 }}>
+                <span>HQ:</span>
+                <span>{country}</span>
+              </div>
+            ) : null}
           </div>
         </div>
 
