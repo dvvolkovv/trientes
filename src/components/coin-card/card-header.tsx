@@ -6,6 +6,7 @@ import { PriceIndexBlock } from "./price-index-block";
 import { DexCandlesChart } from "./dex-candles-chart";
 import { isOwnDexMarket } from "@/lib/coin-card-dex-market";
 import { dexPairKey } from "@/lib/dex-candles";
+import { circulatingCoins } from "@/lib/coin-card-circulating";
 
 export async function CoinCardHeader({ card }: { card: PublicCoinCard }) {
   const t = await getTranslations("coinCard");
@@ -13,6 +14,9 @@ export async function CoinCardHeader({ card }: { card: PublicCoinCard }) {
   // которой на обмене торгуют. Признак тот же, что у цены: рынок наш.
   const ownDex = card.markets.find((m) => isOwnDexMarket(m));
   const pairKey = ownDex ? dexPairKey(ownDex.pair) : null;
+  // Под ценой стоит оборот в монетах, а не капитализация в долларах: см.
+  // circulatingCoins.
+  const circulating = circulatingCoins(card);
   return (
     <header>
       <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
@@ -36,7 +40,13 @@ export async function CoinCardHeader({ card }: { card: PublicCoinCard }) {
       {/* Цена показывается только там, где наш индекс — единственный источник:
           у монет, привязанных к CoinGecko, цену даёт общая таблица Coin. */}
       {card.priceIndex && card.coinId == null && (
-        <PriceIndexBlock index={card.priceIndex} provenance={card.provenance} />
+        <PriceIndexBlock
+          index={card.priceIndex}
+          provenance={card.provenance}
+          circulating={circulating}
+          symbol={card.symbol}
+          supplyAt={card.supply?.checkedAt ?? null}
+        />
       )}
       {pairKey && <DexCandlesChart pairKey={pairKey} />}
       {card.tags.length > 0 && (

@@ -3,7 +3,8 @@ import { formatCompact, formatPercent, formatPrice } from "@/lib/format";
 import { getProvenance } from "@/lib/coin-card-provenance";
 import { ProvenanceBadge } from "./provenance-badge";
 import { IndexMethodology } from "./index-methodology";
-import { MarketCapLine } from "./market-cap-line";
+import { CirculatingLine } from "./circulating-line";
+import type { CirculatingView } from "@/lib/coin-card-circulating";
 
 export type PriceIndexView = {
   priceUsd: number;
@@ -12,10 +13,6 @@ export type PriceIndexView = {
   marketCount: number;
   confidence: string;
   computedAt: Date | string;
-  /** Слайс E: цена, умноженная на выпуск. */
-  marketCapUsd?: number | null;
-  fdvUsd?: number | null;
-  supplySource?: string | null;
 };
 
 /**
@@ -26,9 +23,15 @@ export type PriceIndexView = {
 export async function PriceIndexBlock({
   index,
   provenance,
+  circulating,
+  symbol,
+  supplyAt,
 }: {
   index: PriceIndexView;
   provenance: unknown;
+  circulating: CirculatingView | null;
+  symbol: string;
+  supplyAt: Date | string | null;
 }) {
   const t = await getTranslations("coinCard.index");
   const up = (index.change24h ?? 0) >= 0;
@@ -55,12 +58,7 @@ export async function PriceIndexBlock({
         )}
         {t(`confidence.${index.confidence}`)} · {at} UTC
       </div>
-      <MarketCapLine
-        marketCapUsd={index.marketCapUsd ?? null}
-        fdvUsd={index.fdvUsd ?? null}
-        supplySource={index.supplySource ?? null}
-        computedAt={index.computedAt}
-      />
+      <CirculatingLine view={circulating} symbol={symbol} at={supplyAt} />
       <div className="mt-1">
         <IndexMethodology marketCount={index.marketCount} />
       </div>
