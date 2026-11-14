@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useSyncExternalStore } from "react";
 import {
   type Map as MlMap,
   LngLatBounds,
@@ -16,7 +16,14 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import "@/lib/maplibre-worker";
 import { safeHttpUrl } from "@/lib/safe-url";
 import { useLocale, useTranslations } from "next-intl";
-import type { Poi, PoiLayer, RouteResult, RouteMode, TransitLeg, GeoResult, Social, OgPreview } from "@/lib/crypto-map";
+import type { Poi, PoiLayer, RouteResult, RouteMode, RouteStep, TransitLeg, GeoResult, Social, OgPreview } from "@/lib/crypto-map";
+import { activeStep, announcementBand, cumulativeEnds } from "@/lib/route-steps";
+import {
+  ManeuverBanner,
+  StepList,
+  maneuverText,
+  spokenDistance,
+} from "@/components/coin-detail/route-steps-panel";
 import { StreetViewOverlay } from "@/components/coin-detail/street-view-overlay";
 import { CURATED_POIS, type CuratedPoi } from "@/lib/curated-pois";
 import { NavigationController, type NavigationCallbacks } from "./navigation-controller";
@@ -27,6 +34,7 @@ import {
   MAPLIBRE_ATTRIBUTION_OPTIONS,
 } from "@/lib/maplibre-attribution";
 import { tryCreateMap } from "@/lib/maplibre-map";
+import { basemapStyle } from "@/lib/basemap";
 
 
 // MapLibre flattens non-primitive feature properties to JSON strings, so `socials`
@@ -49,6 +57,22 @@ const LAYER_COLOR: Record<PoiLayer, string> = {
 
 const MODE_ICON: Record<RouteMode, string> = { walk: "🚶", car: "🚗", transit: "🚍" };
 
+const VOICE_KEY = "cmap:voice";
+
+// Speech synthesis exists only in the browser, so the server snapshot is false
+// and the voice control appears after hydration instead of mismatching it.
+const subscribeNever = () => () => {};
+const hasSpeech = () => typeof window !== "undefined" && "speechSynthesis" in window;
+
+function readVoicePreference(): boolean {
+  if (typeof window === "undefined") return true;
+  try {
+    return window.localStorage.getItem(VOICE_KEY) !== "off";
+  } catch {
+    return true; // storage blocked (private mode) — voice stays on
+  }
+}
+
 // Emoji for a transit leg by MOTIS mode; vehicles fall back to a generic train.
 const LEG_ICON: Record<string, string> = {
   WALK: "🚶",
@@ -70,12 +94,9 @@ function legIcon(mode: string): string {
   return LEG_ICON[mode.toUpperCase()] ?? "🚆";
 }
 
-// Dark vector base from OpenFreeMap — key-less and unmetered. (CARTO's keyless
-// raster endpoint started stamping an "API KEY REQUIRED" watermark on every tile
-// in Aug 2026, which is what silently blanked this map: HTTP 200, unusable pixels.)
-const BASE_STYLE_URL = "https://tiles.openfreemap.org/styles/dark";
-
-// Satellite + terrain are grafted onto that style on load and toggled at runtime.
+// The base map itself lives in src/lib/basemap.ts (openstreetmap.org raster,
+// with a one-line rollback to a vector base). Satellite + terrain are grafted
+// onto whichever style it returns, on load and toggled at runtime.
 const SATELLITE_SOURCE: SourceSpecification = {
   type: "raster",
   tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
@@ -92,7 +113,7 @@ const TERRAIN_SOURCE: SourceSpecification = {
   maxzoom: 15,
 };
 
-type Base = "dark" | "satellite";
+type Base = "map" | "satellite";
 
 function applyCoinOnlyFilter(map: MlMap, coinOnly: boolean) {
   POI_LAYERS.forEach((layer) => {
@@ -130,8 +151,8 @@ export default function CryptoNavigator({
   const routeSequenceRef = useRef(0);
   const coinOnlyRef = useRef(false);
 
-  const [base, setBase] = useState<Base>("dark");
-  const baseRef = useRef<Base>("dark");
+  const [base, setBase] = useState<Base>("map");
+  const baseRef = useRef<Base>("map");
   const [is3D, setIs3D] = useState(false);
   const is3DRef = useRef(false);
   const [visible, setVisible] = useState<Record<PoiLayer, boolean>>({
@@ -158,6 +179,7 @@ export default function CryptoNavigator({
     mode: RouteMode;
     transfers?: number;
     legs?: TransitLeg[];
+    steps?: RouteStep[];
     coordinates: [number, number][];
   } | null>(null);
   const [status, setStatus] = useState<string | null>(null);
@@ -168,6 +190,12 @@ export default function CryptoNavigator({
   const [navRemaining, setNavRemaining] = useState<{ m: number; sec: number } | null>(null);
   const [navError, setNavError] = useState<string | null>(null);
   const [pendingStart, setPendingStart] = useState(false);
+  const [stepsOpen, setStepsOpen] = useState(false);
+  const [navStep, setNavStep] = useState<{ index: number; distanceToManeuver: number } | null>(null);
+  const [voiceOn, setVoiceOn] = useState(readVoicePreference);
+  const voiceOnRef = useRef(voiceOn);
+  // Which announcement bands have already been spoken for the step being travelled.
+  const spokenRef = useRef<{ index: number; bands: Set<string> }>({ index: -1, bands: new Set() });
   const navControllerRef = useRef<NavigationController | null>(null);
   // Tracked map center for the AvailableFintechPanel — debounced inside the panel.
   const [mapCenter, setMapCenter] = useState<{ lat: number; lon: number } | null>(null);
@@ -294,6 +322,7 @@ export default function CryptoNavigator({
           mode: res.mode,
           transfers: res.transfers,
           legs: res.legs,
+          steps: res.steps,
           coordinates: coords,
         });
         if (navControllerRef.current) {
@@ -376,7 +405,7 @@ export default function CryptoNavigator({
     if (!containerRef.current) return;
     const map = tryCreateMap({
       container: containerRef.current,
-      style: BASE_STYLE_URL,
+      style: basemapStyle(),
       center: PRAGUE,
       zoom: 13,
       pitch: 0,
@@ -643,12 +672,44 @@ export default function CryptoNavigator({
     });
   }
 
+  // A browser without speech synthesis simply never shows the voice control.
+  const voiceSupported = useSyncExternalStore(subscribeNever, hasSpeech, () => false);
+
+  const speak = useCallback(
+    (text: string) => {
+      if (!voiceOnRef.current || typeof window === "undefined" || !("speechSynthesis" in window)) return;
+      try {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = locale;
+        window.speechSynthesis.speak(utterance);
+      } catch {
+        // a browser that exposes the API but refuses to speak
+      }
+    },
+    [locale],
+  );
+
+  function toggleVoice() {
+    const next = !voiceOnRef.current;
+    voiceOnRef.current = next;
+    setVoiceOn(next);
+    try {
+      window.localStorage.setItem(VOICE_KEY, next ? "on" : "off");
+    } catch {
+      // storage blocked — the toggle still holds for this session
+    }
+    if (!next && typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel();
+  }
+
   const stopNavigation = useCallback(() => {
     navControllerRef.current?.stop();
     navControllerRef.current = null;
     setNavActive(false);
     setNavOffRoute(null);
     setNavRemaining(null);
+    setNavStep(null);
+    spokenRef.current = { index: -1, bands: new Set() };
+    if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel();
     setStatus(null);
     const map = mapRef.current;
     if (map) {
@@ -667,6 +728,37 @@ export default function CryptoNavigator({
     const ctl = new NavigationController(route.coordinates);
     navControllerRef.current = ctl;
 
+    // Maneuvers are placed along the route by distance travelled, which is what
+    // the controller already measures — no second projection of the GPS fix.
+    const steps = route.steps ?? [];
+    const ends = cumulativeEnds(steps);
+    spokenRef.current = { index: -1, bands: new Set() };
+    const announce = (remainingMeters: number) => {
+      if (steps.length === 0) return;
+      const travelled = Math.max(0, route.distance - remainingMeters);
+      const current = activeStep(travelled, ends);
+      if (!current) return;
+      setNavStep(current);
+      // The maneuver to announce is the one that ENDS the step being travelled.
+      const next = steps[current.index + 1];
+      if (!next) return;
+      if (spokenRef.current.index !== current.index) {
+        spokenRef.current = { index: current.index, bands: new Set() };
+      }
+      const band = announcementBand(current.distanceToManeuver, route.mode);
+      if (!band || spokenRef.current.bands.has(band)) return;
+      spokenRef.current.bands.add(band);
+      const instruction = maneuverText(next, t);
+      speak(
+        band === "now"
+          ? instruction
+          : t("nav.inDistance", {
+              distance: spokenDistance(current.distanceToManeuver, t),
+              instruction,
+            }),
+      );
+    };
+
     const cb: NavigationCallbacks = {
       onPosition: (pos) => {
         const center: [number, number] = [pos.coords.longitude, pos.coords.latitude];
@@ -681,12 +773,14 @@ export default function CryptoNavigator({
       onProgress: (m, sec) => {
         setNavRemaining({ m, sec });
         setStatus(null);
+        announce(m);
       },
       onOffRoute: (dist) => {
         setNavOffRoute(dist);
       },
       onArrival: () => {
         setStatus(t("arrived"));
+        speak(t("nav.arrive"));
         window.setTimeout(() => stopNavigation(), 5000);
       },
       onError: (code) => {
@@ -699,7 +793,7 @@ export default function CryptoNavigator({
     setNavActive(true);
     map.easeTo({ zoom: 17, duration: 600 });
     await ctl.start(cb);
-  }, [route, t, stopNavigation]);
+  }, [route, t, stopNavigation, speak]);
 
   // Popup .cmap-start click sets pendingStart; once route settles for walk mode, fire navigation.
   useEffect(() => {
@@ -718,7 +812,7 @@ export default function CryptoNavigator({
       {/* Controls */}
       <div className="flex flex-wrap items-center gap-2">
         <div className="flex items-center gap-1">
-          <button type="button" onClick={() => switchBase("dark")} className={btn(base === "dark")}>
+          <button type="button" onClick={() => switchBase("map")} className={btn(base === "map")}>
             {t("streets")}
           </button>
           <button type="button" onClick={() => switchBase("satellite")} className={btn(base === "satellite")}>
@@ -798,7 +892,14 @@ export default function CryptoNavigator({
         ) : (
           <div ref={containerRef} className="w-full h-[420px] md:h-[520px] rounded-md overflow-hidden border border-hairline" />
         )}
-        {tooFar && (
+        {navActive && navStep && route?.steps?.[navStep.index + 1] && (
+          <ManeuverBanner
+            step={route.steps[navStep.index + 1]}
+            distanceMeters={navStep.distanceToManeuver}
+            t={t}
+          />
+        )}
+        {tooFar && !navActive && (
           <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-card/95 border border-hairline rounded-full px-4 py-1.5 text-[12px] text-muted pointer-events-none">
             {t("zoomIn")}
           </div>
@@ -925,6 +1026,28 @@ export default function CryptoNavigator({
                   )}
                 </>
               )}
+              {route.steps && route.steps.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setStepsOpen((v) => !v)}
+                  className="text-muted hover:text-foreground underline"
+                  aria-expanded={stepsOpen}
+                >
+                  {stepsOpen ? "▾" : "▸"} {t("directions")}
+                </button>
+              )}
+              {voiceSupported && (route.mode === "walk" || navActive) && (
+                <button
+                  type="button"
+                  onClick={toggleVoice}
+                  className={voiceOn ? "text-accent hover:opacity-80" : "text-muted hover:text-foreground"}
+                  aria-pressed={voiceOn}
+                  aria-label={voiceOn ? t("voiceOn") : t("voiceOff")}
+                  title={voiceOn ? t("voiceOn") : t("voiceOff")}
+                >
+                  {voiceOn ? "🔊" : "🔇"}
+                </button>
+              )}
               <button type="button" onClick={clearRoute} className="text-muted hover:text-foreground underline">
                 {t("clearRoute")}
               </button>
@@ -932,6 +1055,12 @@ export default function CryptoNavigator({
           )}
           {status && <span className="text-accent">{status}</span>}
           {navError && <span className="text-down">{navError}</span>}
+        </div>
+      )}
+
+      {stepsOpen && route?.steps && route.steps.length > 0 && (
+        <div className="border-t border-hairline pt-2">
+          <StepList steps={route.steps} t={t} />
         </div>
       )}
 

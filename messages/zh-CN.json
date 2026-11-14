@@ -631,7 +631,36 @@
     "startOnlyWalk": "仅适用于步行路线",
     "navStarting": "正在请求 GPS…",
     "coinOnly": "仅",
-    "coinOnlyHint": "仅显示接受该币的地点"
+    "coinOnlyHint": "仅显示接受该币的地点",
+    "directions": "路线",
+    "voiceOn": "语音导航已开启",
+    "voiceOff": "语音导航已关闭",
+    "nav": {
+      "depart": "出发",
+      "arrive": "您已到达",
+      "turnLeft": "左转",
+      "turnRight": "右转",
+      "turnSlightLeft": "稍向左转",
+      "turnSlightRight": "稍向右转",
+      "turnSharpLeft": "急左转",
+      "turnSharpRight": "急右转",
+      "uturn": "掉头",
+      "roundabout": "在环岛内直行",
+      "roundaboutExit": "在环岛从{exit}号出口驶出",
+      "merge": "并道",
+      "newName": "继续前行",
+      "onRamp": "进入匝道",
+      "offRamp": "驶出匝道",
+      "forkLeft": "在岔路口靠左行驶",
+      "forkRight": "在岔路口靠右行驶",
+      "endOfRoadLeft": "道路尽头左转",
+      "endOfRoadRight": "道路尽头右转",
+      "continue": "继续",
+      "onto": "驶入{name}",
+      "inDistance": "在{distance}后，{instruction}",
+      "meters": "{n} 米",
+      "kilometers": "{n} 公里"
+    }
   },
   "markets": {
     "title": "市场",
@@ -1170,7 +1199,7 @@
       "owner": "所有者"
     },
     "form": {
-      "slug": "Slug",
+      "slug": "短标识",
       "slugHint": "小写字母／数字／连字符，2–40",
       "displayName": "显示名称",
       "website": "官网",

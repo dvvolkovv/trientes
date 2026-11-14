@@ -137,6 +137,17 @@ select:focus-visible {
   outline-offset: 2px;
 }
 
+/* The base map is the light OpenStreetMap raster, so the fixed attribution
+   needs its own plate to stay readable over streets and parks. */
+.maplibregl-ctrl-attrib.maplibregl-ctrl {
+  background: rgba(255, 255, 255, 0.82);
+  color: #30303a;
+  border-radius: 4px;
+  padding: 0 5px;
+  font-size: 10px;
+  line-height: 16px;
+}
+
 /* ---- Crypto Navigator marker popup (dark Ledger detail card) ---- */
 .cmap-pop .maplibregl-popup-content {
   background: #1e1d24;

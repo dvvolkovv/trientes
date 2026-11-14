@@ -1,13 +1,13 @@
 import type { IControl, Map as MlMap } from "maplibre-gl";
+import { basemapAttribution } from "./basemap";
 
 export const MAPLIBRE_ATTRIBUTION_OPTIONS = {
   attributionControl: false,
 } as const;
 
 const STATIC_MAP_ATTRIBUTION = [
-  "© OpenStreetMap contributors",
-  "© OpenFreeMap",
-  "© Esri, Maxar, Earthstar Geographics",
+  basemapAttribution(),
+  "© Esri, Maxar, Earthstar Geographics", // satellite layer
 ].join(" | ");
 
 class StaticMapAttributionControl implements IControl {

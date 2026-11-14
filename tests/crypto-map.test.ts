@@ -422,6 +422,54 @@ describe("parseOsrm", () => {
     expect(out).toEqual({ distance: 4430.2, duration: 482.9, geometry: geom });
   });
 
+  it("collects maneuvers from every leg", () => {
+    const geom = { type: "LineString", coordinates: [[14.42, 50.08], [14.45, 50.09]] };
+    const out = parseOsrm({
+      code: "Ok",
+      routes: [
+        {
+          distance: 500,
+          duration: 100,
+          geometry: geom,
+          legs: [
+            {
+              steps: [
+                {
+                  distance: 120.4,
+                  name: "Vodičkova",
+                  maneuver: { type: "depart", modifier: "left", location: [14.42, 50.08] },
+                },
+                {
+                  distance: 80,
+                  name: "",
+                  maneuver: { type: "roundabout", exit: 2, location: [14.43, 50.085] },
+                },
+              ],
+            },
+            {
+              steps: [
+                { distance: 0, name: "", maneuver: { type: "arrive", location: [14.45, 50.09] } },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    expect(out?.steps).toEqual([
+      { type: "depart", modifier: "left", name: "Vodičkova", distance: 120.4, exit: null, location: [14.42, 50.08] },
+      { type: "roundabout", modifier: null, name: null, distance: 80, exit: 2, location: [14.43, 50.085] },
+      { type: "arrive", modifier: null, name: null, distance: 0, exit: null, location: [14.45, 50.09] },
+    ]);
+  });
+
+  // Routes cached before steps existed, and any answer without them, still ride.
+  it("leaves steps out when the answer carries none", () => {
+    const geom = { type: "LineString", coordinates: [[14.42, 50.08], [14.45, 50.09]] };
+    const out = parseOsrm({ code: "Ok", routes: [{ distance: 1, duration: 2, geometry: geom }] });
+    expect(out).not.toBeNull();
+    expect(out?.steps).toBeUndefined();
+  });
+
   it("returns null when no route is found", () => {
     expect(parseOsrm({ code: "NoRoute", routes: [] })).toBeNull();
     expect(parseOsrm({})).toBeNull();

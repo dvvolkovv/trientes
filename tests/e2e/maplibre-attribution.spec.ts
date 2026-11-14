@@ -3,6 +3,7 @@ import path from "node:path";
 import maplibrePackage from "maplibre-gl/package.json";
 import { buildSync } from "esbuild";
 import { expect, test } from "@playwright/test";
+import { basemapAttribution } from "../../src/lib/basemap";
 
 const root = process.cwd();
 const baseline = process.env.MAP_ATTRIBUTION_BASELINE === "1";
@@ -177,7 +178,7 @@ test("remote style attribution cannot execute iframe srcdoc", async ({ page }) =
   expect(result.mapConstructorType).toBe("function");
   expect(result.iframeCount).toBe(0);
   expect(result.attributionText).toContain("© OpenStreetMap contributors");
-  expect(result.attributionText).toContain("© OpenFreeMap");
+  expect(result.attributionText).toContain(basemapAttribution());
   expect(result.attributionText).not.toContain("iframe");
   expect(result.attributionVisible).toBe(true);
   expect(result.attributionLinkCount).toBe(0);

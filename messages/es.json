@@ -229,7 +229,7 @@
     "users": {
       "title": "Usuarios",
       "subtitle": "Gestiona los roles de los usuarios registrados.",
-      "email": "Email",
+      "email": "Correo electrónico",
       "name": "Nombre",
       "providers": "Proveedores",
       "role": "Rol",
@@ -488,7 +488,7 @@
     "filterAllTypes": "Todos los tipos",
     "filterAllCountries": "Todos los países",
     "filterAllRanks": "Todos los rangos",
-    "filterTopN": "Top {n}",
+    "filterTopN": "Los {n} mejores",
     "clear": "Limpiar"
   },
   "exchangeCard": {
@@ -631,7 +631,36 @@
     "startOnlyWalk": "Disponible solo para rutas a pie",
     "navStarting": "Solicitando GPS…",
     "coinOnly": "solo",
-    "coinOnlyHint": "Mostrar solo puntos que aceptan esta moneda"
+    "coinOnlyHint": "Mostrar solo puntos que aceptan esta moneda",
+    "directions": "Indicaciones",
+    "voiceOn": "Guía por voz activada",
+    "voiceOff": "Guía por voz desactivada",
+    "nav": {
+      "depart": "Comienza",
+      "arrive": "Has llegado",
+      "turnLeft": "Gira a la izquierda",
+      "turnRight": "Gira a la derecha",
+      "turnSlightLeft": "Mantente a la izquierda",
+      "turnSlightRight": "Mantente a la derecha",
+      "turnSharpLeft": "Gira pronunciadamente a la izquierda",
+      "turnSharpRight": "Gira pronunciadamente a la derecha",
+      "uturn": "Da la vuelta en U",
+      "roundabout": "En la rotonda, continúa",
+      "roundaboutExit": "En la rotonda, toma la salida {exit}",
+      "merge": "Incorpórate",
+      "newName": "Continúa",
+      "onRamp": "Toma la rampa",
+      "offRamp": "Toma la salida",
+      "forkLeft": "Mantente a la izquierda en la bifurcación",
+      "forkRight": "Mantente a la derecha en la bifurcación",
+      "endOfRoadLeft": "Al final de la carretera, gira a la izquierda",
+      "endOfRoadRight": "Al final de la carretera, gira a la derecha",
+      "continue": "Continúa",
+      "onto": "hacia {name}",
+      "inDistance": "En {distance}, {instruction}",
+      "meters": "{n} m",
+      "kilometers": "{n} km"
+    }
   },
   "markets": {
     "title": "Mercados",
@@ -1402,7 +1431,7 @@
     "links": {
       "website": "Sitio web",
       "docs": "Documentación",
-      "whitepaper": "Whitepaper",
+      "whitepaper": "Libro blanco",
       "github": "GitHub",
       "x": "X",
       "telegram": "Telegram",
@@ -1446,7 +1475,7 @@
       "missingCount": "faltan {count}",
       "complete": "Completo",
       "name": "Nombre",
-      "symbol": "Ticker",
+      "symbol": "Símbolo",
       "symbolHint": "Código corto, p. ej. BTC",
       "tagline": "Lema",
       "taglineHint": "Una línea, hasta 120 caracteres",
@@ -1506,7 +1535,7 @@
       "linksLabel": "Enlaces y comunidad",
       "links": {
         "docs": "Documentación",
-        "whitepaper": "Whitepaper",
+        "whitepaper": "Libro blanco",
         "github": "GitHub",
         "x": "X",
         "telegram": "Telegram",

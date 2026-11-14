@@ -271,6 +271,17 @@ export type OsrmRoute = {
   distance: number; // meters
   duration: number; // seconds
   geometry: { type: "LineString"; coordinates: [number, number][] };
+  steps?: RouteStep[]; // walk/car only, and absent from answers cached before steps existed
+};
+
+// One OSRM maneuver: what to do at the start of the step, and how far the step runs.
+export type RouteStep = {
+  type: string; // "turn" | "depart" | "arrive" | "roundabout" | …
+  modifier: string | null; // "left" | "slight right" | "uturn" | …
+  name: string | null; // street the step runs along
+  distance: number; // meters
+  exit: number | null; // roundabout exit number
+  location: [number, number]; // [lon,lat] of the maneuver
 };
 
 // A single leg of a public-transport itinerary — a walking connector or a vehicle ride.
@@ -291,6 +302,34 @@ export type RouteResult = OsrmRoute & {
   legs?: TransitLeg[]; // transit only
 };
 
+type RawStep = {
+  distance?: unknown;
+  name?: unknown;
+  maneuver?: { type?: unknown; modifier?: unknown; exit?: unknown; location?: unknown };
+};
+
+function parseStep(raw: RawStep): RouteStep | null {
+  const m = raw.maneuver;
+  const type = typeof m?.type === "string" ? m.type : null;
+  const loc = m?.location;
+  const distance = Number(raw.distance);
+  if (!type || !Number.isFinite(distance)) return null;
+  const location: [number, number] =
+    Array.isArray(loc) && loc.length >= 2 && Number.isFinite(Number(loc[0])) && Number.isFinite(Number(loc[1]))
+      ? [Number(loc[0]), Number(loc[1])]
+      : [0, 0];
+  const name = typeof raw.name === "string" && raw.name.trim() ? raw.name : null;
+  const exit = Number.isFinite(Number(m?.exit)) ? Number(m?.exit) : null;
+  return {
+    type,
+    modifier: typeof m?.modifier === "string" ? m.modifier : null,
+    name,
+    distance,
+    exit,
+    location,
+  };
+}
+
 export function parseOsrm(raw: unknown): OsrmRoute | null {
   const r = raw as { code?: string; routes?: Array<Record<string, unknown>> } | null;
   if (!r || r.code !== "Ok" || !Array.isArray(r.routes) || r.routes.length === 0) return null;
@@ -299,7 +338,14 @@ export function parseOsrm(raw: unknown): OsrmRoute | null {
   const duration = Number(route.duration);
   const geometry = route.geometry as OsrmRoute["geometry"] | undefined;
   if (!Number.isFinite(distance) || !Number.isFinite(duration) || !geometry?.coordinates) return null;
-  return { distance, duration, geometry };
+  const legs = Array.isArray(route.legs) ? (route.legs as Array<{ steps?: unknown }>) : [];
+  const steps = legs
+    .flatMap((leg) => (Array.isArray(leg?.steps) ? (leg.steps as RawStep[]) : []))
+    .map(parseStep)
+    .filter((s): s is RouteStep => s !== null);
+  // Absent, not empty: an answer without maneuvers must stay indistinguishable
+  // from one the renderer never asked for.
+  return steps.length > 0 ? { distance, duration, geometry, steps } : { distance, duration, geometry };
 }
 
 // ---- Public-transport routing (MOTIS / Transitous) ----
@@ -593,7 +639,7 @@ export async function fetchRoute(
       return parseMotis(await res.json());
     }
     const base = mode === "walk" ? OSRM_FOOT_URL : OSRM_CAR_URL;
-    const url = `${base}/${from[0]},${from[1]};${to[0]},${to[1]}?overview=full&geometries=geojson`;
+    const url = `${base}/${from[0]},${from[1]};${to[0]},${to[1]}?overview=full&geometries=geojson&steps=true`;
     const res = await fetch(url, {
       headers: { accept: "application/json", "user-agent": UA },
       cache: "no-store",

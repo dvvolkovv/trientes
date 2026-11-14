@@ -13,6 +13,7 @@ import {
   MAPLIBRE_ATTRIBUTION_OPTIONS,
 } from "@/lib/maplibre-attribution";
 import { tryCreateMap } from "@/lib/maplibre-map";
+import { basemapStyle } from "@/lib/basemap";
 
 
 const PRAGUE: [number, number] = [14.4212535, 50.0874654];
@@ -125,8 +126,8 @@ export function PointForm({
     if (!containerRef.current) return;
     const map = tryCreateMap({
       container: containerRef.current,
-      // Same key-less dark base as the Crypto Navigator (CARTO now watermarks keyless tiles).
-      style: "https://tiles.openfreemap.org/styles/dark",
+      // Same base map as the Crypto Navigator — see src/lib/basemap.ts.
+      style: basemapStyle(),
       center: PRAGUE, zoom: 12,
       ...MAPLIBRE_ATTRIBUTION_OPTIONS,
     });
