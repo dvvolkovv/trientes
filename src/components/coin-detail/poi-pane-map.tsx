@@ -14,6 +14,7 @@ import {
 } from "@/components/coin-detail/poi-sheet-ui";
 import { useTileGesture } from "@/components/coin-detail/poi-sheet-ui";
 import { StepList, type StepTranslator } from "@/components/coin-detail/route-steps-panel";
+import { MapControls } from "@/components/coin-detail/map-controls";
 import { footerActions } from "@/lib/poi-sheet-actions";
 import { SWIPE_EDGE_PX } from "@/lib/poi-pager";
 import { TILE_PAD_CLASS, TILE_SHELL } from "@/lib/poi-tile";
@@ -82,6 +83,10 @@ export function PoiPaneMap({
   onClearRoute,
   onLocate,
   onToggleVoice,
+  view,
+  onZoomIn,
+  onZoomOut,
+  onResetNorth,
   t,
 }: {
   poi: Poi;
@@ -103,6 +108,11 @@ export function PoiPaneMap({
   onClearRoute: () => void;
   onLocate: () => void;
   onToggleVoice: () => void;
+  /** Поворот и наклон карты — компас под окном показывает, где север. */
+  view: { bearing: number; pitch: number };
+  onZoomIn: () => void;
+  onZoomOut: () => void;
+  onResetNorth: () => void;
   t: StepTranslator;
 }) {
   const [stepsOpen, setStepsOpen] = useState(false);
@@ -131,11 +141,19 @@ export function PoiPaneMap({
         }
         style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
       >
-        {!hasOrigin && (
-          <button type="button" onClick={onLocate} className={`${SECONDARY} w-full`}>
+        <div className="flex items-center gap-2">
+          <MapControls
+            bearing={view.bearing}
+            pitch={view.pitch}
+            onZoomIn={onZoomIn}
+            onZoomOut={onZoomOut}
+            onResetNorth={onResetNorth}
+            t={t}
+          />
+          <button type="button" onClick={onLocate} className={`${SECONDARY} flex-1`}>
             📍 {t("myLocation")}
           </button>
-        )}
+        </div>
 
         <div className="grid grid-cols-3 gap-2">
           {TRAVEL_MODES.map((m) => (

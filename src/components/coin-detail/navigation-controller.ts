@@ -1,7 +1,12 @@
 import type { RouteMode } from "@/lib/crypto-map";
-import { LOOK_AHEAD_M } from "@/lib/nav-camera";
+import { LOOK_AHEAD_M, isMoving } from "@/lib/nav-camera";
 import { OffRouteWatch } from "@/lib/nav-offroute";
-import { bearingAlong, nearestOnLineString, remainingMeters } from "@/lib/route-geometry";
+import {
+  bearingAlong,
+  haversineMeters,
+  nearestOnLineString,
+  remainingMeters,
+} from "@/lib/route-geometry";
 import { acquireWakeLock, type WakeLockHandle } from "@/lib/wake-lock";
 
 /**
@@ -39,6 +44,8 @@ const DEFAULT_WALK_SPEED_MPS = 1.35;
 const ARRIVAL_RADIUS_M = 25;
 const MIN_UPDATE_INTERVAL_MS = 500;
 const SPEED_EMA_ALPHA = 0.3;
+// Прыжок GPS на сто метров за секунду — это не скорость, а ошибка отсчёта.
+const MAX_PLAUSIBLE_MPS = 60;
 
 export class NavigationController {
   private routeCoords: [number, number][];
@@ -46,7 +53,13 @@ export class NavigationController {
   private watchId: number | null = null;
   private wakeLock: WakeLockHandle | null = null;
   private lastUpdateAt = 0;
-  private smoothedSpeedMps = DEFAULT_WALK_SPEED_MPS;
+  private lastPosition: { at: number; p: [number, number] } | null = null;
+  // Две скорости с разными работами. `speed` — текущая, с нулями: по ней
+  // решается, движется человек или стоит, и стоящему карта не навязывает
+  // ничего. `pace` — темп хода, нули в него не идут: иначе ETA на светофоре
+  // уходил бы в бесконечность.
+  private speedMps = 0;
+  private paceMps = DEFAULT_WALK_SPEED_MPS;
   private callbacks: NavigationCallbacks | null = null;
   private arrived = false;
 
@@ -93,6 +106,27 @@ export class NavigationController {
     this.arrived = false;
   }
 
+  /**
+   * Скорость: от устройства, если оно её сообщает, иначе из смещения за время.
+   * Половина браузеров (и весь настольный Chrome) отдаёт `speed: null`, а без
+   * скорости ведение не умеет отличить стоящего от едущего.
+   */
+  private updateSpeed(p: [number, number], reported: number | null, now: number): void {
+    const prev = this.lastPosition;
+    this.lastPosition = { at: now, p };
+    let measured: number | null =
+      typeof reported === "number" && Number.isFinite(reported) && reported >= 0 ? reported : null;
+    if (measured === null && prev) {
+      const dt = (now - prev.at) / 1000;
+      if (dt > 0.2) measured = haversineMeters(prev.p, p) / dt;
+    }
+    if (measured === null || measured > MAX_PLAUSIBLE_MPS) return;
+    this.speedMps = SPEED_EMA_ALPHA * measured + (1 - SPEED_EMA_ALPHA) * this.speedMps;
+    if (measured > 0.3) {
+      this.paceMps = SPEED_EMA_ALPHA * measured + (1 - SPEED_EMA_ALPHA) * this.paceMps;
+    }
+  }
+
   private handlePosition(pos: GeolocationPosition): void {
     const cb = this.callbacks;
     if (!cb) return;
@@ -110,10 +144,7 @@ export class NavigationController {
         ? pos.coords.heading
         : null;
 
-    if (typeof pos.coords.speed === "number" && pos.coords.speed > 0.3) {
-      this.smoothedSpeedMps =
-        SPEED_EMA_ALPHA * pos.coords.speed + (1 - SPEED_EMA_ALPHA) * this.smoothedSpeedMps;
-    }
+    this.updateSpeed(p, pos.coords.speed, now);
 
     if (this.routeCoords.length < 2) {
       cb.onUpdate({
@@ -121,7 +152,7 @@ export class NavigationController {
         snapped: null,
         routeBearing: null,
         gpsBearing,
-        speedMps: this.smoothedSpeedMps,
+        speedMps: this.speedMps,
         remainingMeters: 0,
         etaSeconds: 0,
         offRouteMeters: null,
@@ -143,13 +174,13 @@ export class NavigationController {
         LOOK_AHEAD_M,
       ),
       gpsBearing,
-      speedMps: this.smoothedSpeedMps,
+      speedMps: this.speedMps,
       remainingMeters: remaining,
-      etaSeconds: remaining / Math.max(0.5, this.smoothedSpeedMps),
+      etaSeconds: remaining / Math.max(0.5, this.paceMps),
       offRouteMeters: off ? projection.distance : null,
     });
 
-    if (this.watch.feed(projection.distance, now)) {
+    if (this.watch.feed(projection.distance, now, isMoving(this.speedMps))) {
       cb.onReroute(p);
       return;
     }

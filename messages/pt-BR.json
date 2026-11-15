@@ -690,7 +690,11 @@
     "handoffGoogle": "Navegar com o Google Maps",
     "handoffWeb": "Abrir no Google Maps",
     "handoffHint": "Entrega o destino para o navegador do seu telefone — aquele que aparece no CarPlay e no Android Auto",
-    "rerouting": "Recalculando a rota…"
+    "rerouting": "Recalculando a rota…",
+    "zoomOut": "Reduzir zoom",
+    "zoomIn2": "Aumentar zoom",
+    "resetNorth": "Apontar o mapa para o norte",
+    "north": "N"
   },
   "markets": {
     "title": "Mercados",

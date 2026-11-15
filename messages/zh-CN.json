@@ -9,7 +9,7 @@
     "watchlist": "收藏",
     "request": "申请添加币种",
     "exchanges": "交易所",
-    "exchange": "DEX",
+    "exchange": "去中心化交易所",
     "languageLabel": "语言",
     "currencyLabel": "货币",
     "themeLabel": "主题",
@@ -690,7 +690,11 @@
     "handoffGoogle": "用 Google 地图导航",
     "handoffWeb": "在 Google 地图中打开",
     "handoffHint": "将目的地交给你手机自带的导航应用—就是在 CarPlay 和 Android Auto 上显示的那个",
-    "rerouting": "正在重新规划路线…"
+    "rerouting": "正在重新规划路线…",
+    "zoomOut": "缩小",
+    "zoomIn2": "放大",
+    "resetNorth": "指向正北",
+    "north": "N"
   },
   "markets": {
     "title": "市场",

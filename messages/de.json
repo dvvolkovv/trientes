@@ -663,7 +663,7 @@
       "endOfRoadRight": "Am Straßenende rechts abbiegen",
       "continue": "Weiterfahren",
       "onto": "auf {name}",
-      "inDistance": "In {distance}, {instruction}",
+      "inDistance": "In {distance} {instruction}",
       "meters": "{n} m",
       "kilometers": "{n} km",
       "rerouting": "Route wird neu berechnet"
@@ -690,7 +690,11 @@
     "handoffGoogle": "Mit Google Maps fahren",
     "handoffWeb": "In Google Maps öffnen",
     "handoffHint": "Übergibt das Ziel an den eigenen Navigator deines Telefons — den, der auf CarPlay und Android Auto erscheint.",
-    "rerouting": "Route wird neu berechnet…"
+    "rerouting": "Route wird neu berechnet…",
+    "zoomOut": "Verkleinern",
+    "zoomIn2": "Vergrößern",
+    "resetNorth": "Karte nach Norden ausrichten",
+    "north": "N"
   },
   "markets": {
     "title": "Märkte",

@@ -690,7 +690,11 @@
     "handoffGoogle": "Ехать с Google Maps",
     "handoffWeb": "Открыть в Google Maps",
     "handoffHint": "Передаёт пункт назначения встроенному навигатору телефона — тому, который отображается в CarPlay и Android Auto.",
-    "rerouting": "Перестраиваем маршрут…"
+    "rerouting": "Перестраиваем маршрут…",
+    "zoomOut": "Уменьшить масштаб",
+    "zoomIn2": "Увеличить масштаб",
+    "resetNorth": "Повернуть карту на север",
+    "north": "С"
   },
   "markets": {
     "title": "Рынки",

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { bearingAlong } from "@/lib/route-geometry";
-import { NAV_PITCH, cameraFor, followZoom } from "@/lib/nav-camera";
+import { NAV_PITCH, cameraFor, followZoom, isMoving } from "@/lib/nav-camera";
 
 describe("bearingAlong — курс берётся у линии, а не у компаса", () => {
   // Отрезок строго на восток, затем строго на север.
@@ -55,33 +55,62 @@ describe("cameraFor", () => {
     offRouteMeters: null,
     viewportHeight: 800,
   };
+  const need = (c: ReturnType<typeof cameraFor>) => {
+    if (!c) throw new Error("камера промолчала, а должна была вести");
+    return c;
+  };
 
   it("на маршруте ведёт по линии: центр на дороге, курс вдоль неё", () => {
-    const c = cameraFor(onRoute);
+    const c = need(cameraFor(onRoute));
     expect(c.center).toEqual([14.401, 50.0]);
     expect(c.bearing).toBe(90);
     expect(c.pitch).toBe(NAV_PITCH);
   });
 
   it("метка стоит в нижней части экрана: дорога впереди важнее пройденной", () => {
-    expect(cameraFor(onRoute).offset[1]).toBeCloseTo(160, 0);
-    expect(cameraFor(onRoute).offset[0]).toBe(0);
+    expect(need(cameraFor(onRoute)).offset[1]).toBeCloseTo(160, 0);
+    expect(need(cameraFor(onRoute)).offset[0]).toBe(0);
   });
 
   it("сошедшему с маршрута показывает сырую точку и компас", () => {
-    const c = cameraFor({ ...onRoute, offRouteMeters: 80 });
+    const c = need(cameraFor({ ...onRoute, offRouteMeters: 80 }));
     expect(c.center).toEqual([14.4, 50.0]);
     expect(c.bearing).toBe(270);
   });
 
   it("без курса вовсе карту не крутит", () => {
-    const c = cameraFor({ ...onRoute, routeBearing: null, gpsBearing: null });
-    expect(c.bearing).toBeNull();
+    expect(need(cameraFor({ ...onRoute, routeBearing: null, gpsBearing: null })).bearing).toBeNull();
   });
 
   it("приближение следует за скоростью", () => {
-    expect(cameraFor({ ...onRoute, speedMps: 0 }).zoom).toBeGreaterThan(
-      cameraFor({ ...onRoute, speedMps: 25 }).zoom,
+    expect(need(cameraFor({ ...onRoute, speedMps: 25 })).zoom).toBeLessThan(
+      need(cameraFor({ ...onRoute, speedMps: 3 })).zoom,
     );
+  });
+});
+
+describe("cameraFor — стоящего карта слушается, а не перебивает", () => {
+  const base = {
+    position: [14.4, 50.0] as [number, number],
+    snapped: [14.401, 50.0] as [number, number],
+    routeBearing: 90,
+    gpsBearing: null,
+    offRouteMeters: null,
+    viewportHeight: 800,
+  };
+
+  it("стоящему на месте камера ничего не навязывает", () => {
+    expect(cameraFor({ ...base, speedMps: 0 })).toBeNull();
+    expect(cameraFor({ ...base, speedMps: 0.3 })).toBeNull();
+  });
+
+  it("шаг вперёд — и ведение возвращается само", () => {
+    expect(isMoving(0.3)).toBe(false);
+    expect(isMoving(1.2)).toBe(true);
+    expect(cameraFor({ ...base, speedMps: 1.2 })).not.toBeNull();
+  });
+
+  it("первый отсчёт показывает человека всегда: иначе ведение начнётся вслепую", () => {
+    expect(cameraFor({ ...base, speedMps: 0, force: true })).not.toBeNull();
   });
 });

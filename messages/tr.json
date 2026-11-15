@@ -690,7 +690,11 @@
     "handoffGoogle": "Google Haritalar ile sür",
     "handoffWeb": "Google Haritalar'da aç",
     "handoffHint": "Hedefi telefonunuzun kendi navigasyon uygulamasına devreder — CarPlay ve Android Auto'da görünen uygulama",
-    "rerouting": "Rota yeniden oluşturuluyor…"
+    "rerouting": "Rota yeniden oluşturuluyor…",
+    "zoomOut": "Uzaklaştır",
+    "zoomIn2": "Yakınlaştır",
+    "resetNorth": "Haritayı kuzeye döndür",
+    "north": "N"
   },
   "markets": {
     "title": "Piyasalar",

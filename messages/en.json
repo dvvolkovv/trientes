@@ -690,7 +690,11 @@
     "handoffGoogle": "Drive with Google Maps",
     "handoffWeb": "Open in Google Maps",
     "handoffHint": "Hands the destination to your phone's own navigator — the one that shows up on CarPlay and Android Auto.",
-    "rerouting": "Rebuilding the route…"
+    "rerouting": "Rebuilding the route…",
+    "zoomOut": "Zoom out",
+    "zoomIn2": "Zoom in",
+    "resetNorth": "Point the map north",
+    "north": "N"
   },
   "markets": {
     "title": "Markets",

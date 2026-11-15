@@ -5,7 +5,6 @@ import {
   type Map as MlMap,
   LngLatBounds,
   GeolocateControl,
-  NavigationControl,
   Marker,
   type SourceSpecification,
   type GeoJSONSource,
@@ -49,6 +48,7 @@ import { CURATED_POIS, type CuratedPoi } from "@/lib/curated-pois";
 import { poiLogoSrc, showsLogoMarker } from "@/lib/poi-markers";
 import { NavigationController, type NavigationCallbacks, type NavUpdate } from "./navigation-controller";
 import { haversineMeters } from "@/lib/route-geometry";
+import { MapControls } from "@/components/coin-detail/map-controls";
 import { AvailableFintechPanel } from "@/components/fintech/available-fintech-panel";
 import {
   addStaticMapAttribution,
@@ -109,6 +109,14 @@ function readVoicePreference(): boolean {
 // The base map itself lives in src/lib/basemap.ts (openstreetmap.org raster,
 // with a one-line rollback to a vector base). Satellite + terrain are grafted
 // onto whichever style it returns, on load and toggled at runtime.
+/**
+ * Насколько надо переехать, чтобы маршрут пересчитался сам.
+ *
+ * Городской GPS гуляет на десятки метров стоя на месте; пересчёт на каждом
+ * таком отсчёте — это новый маршрут раз в секунду.
+ */
+const ORIGIN_MOVE_M = 60;
+
 const SATELLITE_SOURCE: SourceSpecification = {
   type: "raster",
   tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
@@ -168,6 +176,9 @@ export default function CryptoNavigator({
   // фильтры слоёв к ней применяются руками.
   const logoMarkersRef = useRef<{ marker: Marker; poi: Poi; el: HTMLElement }[]>([]);
   const destKeyRef = useRef<string | null>(null);
+  // Точка, из которой построен нынешний маршрут: по ней видно, переехал ли
+  // человек настолько, что маршрут стоит считать заново.
+  const lastRoutedOriginRef = useRef<[number, number] | null>(null);
   const routeCoordsRef = useRef<[number, number][]>([]);
 
   const [base, setBase] = useState<Base>("map");
@@ -238,6 +249,9 @@ export default function CryptoNavigator({
   const navDepartureRef = useRef<((r: SheetRoute) => void) | null>(null);
   // Tracked map center for the AvailableFintechPanel — debounced inside the panel.
   const [mapCenter, setMapCenter] = useState<{ lat: number; lon: number } | null>(null);
+  // Поворот и наклон карты видны компасу под ней: стрелка показывает, где
+  // сейчас север, поэтому читается прямо из карты, а не хранится отдельно.
+  const [view, setView] = useState({ bearing: 0, pitch: 0 });
   // No WebGL2 (or MapLibre failed to start): show a notice instead of the map.
   // mapRef then stays null, so every map handler below is a no-op.
   const [mapUnavailable, setMapUnavailable] = useState(false);
@@ -424,6 +438,7 @@ export default function CryptoNavigator({
       setStatus(t("pickDestination"));
       return;
     }
+    lastRoutedOriginRef.current = origin;
     const m = modeRef.current;
     const controller = new AbortController();
     routeAbortRef.current = controller;
@@ -583,7 +598,9 @@ export default function CryptoNavigator({
     addStaticMapAttribution(map);
     mapRef.current = map;
 
-    map.addControl(new NavigationControl({ visualizePitch: true }), "top-right");
+    // `NavigationControl` на карте больше не стоит: на телефоне его кнопки
+    // закрывали собой окно, ради которого карту и открыли. Те же действия
+    // живут под картой — см. `MapControls`.
     const geo = new GeolocateControl({
       positionOptions: { enableHighAccuracy: true },
       trackUserLocation: true,
@@ -592,13 +609,26 @@ export default function CryptoNavigator({
     geolocateRef.current = geo;
     map.addControl(geo, "top-right");
     geo.on("geolocate", (e: GeolocatePositionEvent) => {
-      originRef.current = [e.coords.longitude, e.coords.latitude];
-      setOriginState(originRef.current);
+      const next: [number, number] = [e.coords.longitude, e.coords.latitude];
+      originRef.current = next;
+      setOriginState(next);
       // GeolocateControl shows its own blue dot — drop the manual orange pin.
       originMarkerRef.current?.remove();
       originMarkerRef.current = null;
       setOriginLabel(t("posGps"));
-      if (destRef.current) buildRoute();
+      // Маршрут здесь больше НЕ перестраивается на каждом отсчёте, и это
+      // главная починка слайса. `trackUserLocation` шлёт событие раз в
+      // секунду; прежний безусловный `buildRoute()` на каждом из них строил
+      // новый маршрут, а новый маршрут произносил фразу отправления и
+      // вписывал всю линию в экран. Отсюда и голос, повторяющий одно и то же
+      // без остановки, и приближение, возвращающееся обратно, сколько его ни
+      // меняй. Во время ведения перестройкой занимается контроллер; вне его
+      // маршрут пересчитывается только на заметный переезд.
+      if (navControllerRef.current) return;
+      if (!destRef.current) return;
+      const prev = lastRoutedOriginRef.current;
+      if (prev && haversineMeters(prev, next) < ORIGIN_MOVE_M) return;
+      buildRoute();
     });
 
     map.on("load", () => {
@@ -708,6 +738,10 @@ export default function CryptoNavigator({
       });
     });
 
+    const onView = () => setView({ bearing: map.getBearing(), pitch: map.getPitch() });
+    map.on("rotate", onView);
+    map.on("pitch", onView);
+
     const onMoveEnd = () => {
       if (moveTimer.current) clearTimeout(moveTimer.current);
       moveTimer.current = setTimeout(loadPois, 500);
@@ -734,6 +768,18 @@ export default function CryptoNavigator({
   }, []);
 
   // ---- Control handlers ----
+  function zoomBy(delta: number) {
+    const map = mapRef.current;
+    if (!map) return;
+    map.easeTo({ zoom: map.getZoom() + delta, duration: 200 });
+  }
+
+  function resetNorth() {
+    const map = mapRef.current;
+    if (!map) return;
+    map.easeTo({ bearing: 0, pitch: 0, duration: 400 });
+  }
+
   function switchBase(next: Base) {
     const map = mapRef.current;
     baseRef.current = next;
@@ -937,10 +983,18 @@ export default function CryptoNavigator({
     [speak, phraseFor],
   );
 
-  /** Камера ведения: центр на дороге, курс вдоль линии, высота от скорости. */
+  /**
+   * Камера ведения: центр на дороге, курс вдоль линии, высота от скорости.
+   * У стоящего человека карта остаётся такой, какой он её настроил, —
+   * `cameraFor` в этом случае не отдаёт ничего. Исключение одно: самый первый
+   * отсчёт, иначе ведение начнётся не пойми где.
+   */
+  const firstFixRef = useRef(true);
   const driveCamera = useCallback((u: NavUpdate) => {
     const map = mapRef.current;
     if (!map) return;
+    const force = firstFixRef.current;
+    firstFixRef.current = false;
     const cam = cameraFor({
       position: u.position,
       snapped: u.snapped,
@@ -949,7 +1003,9 @@ export default function CryptoNavigator({
       speedMps: u.speedMps,
       offRouteMeters: u.offRouteMeters,
       viewportHeight: map.getContainer().clientHeight,
+      force,
     });
+    if (!cam) return;
     map.easeTo({
       center: cam.center,
       bearing: cam.bearing ?? map.getBearing(),
@@ -1001,6 +1057,7 @@ export default function CryptoNavigator({
     setStatus(starting);
     setNavError(null);
 
+    firstFixRef.current = true;
     const ctl = new NavigationController(route.coordinates, route.mode);
     navControllerRef.current = ctl;
 
@@ -1232,6 +1289,10 @@ export default function CryptoNavigator({
             onStreetView={() => setStreet({ lat: selected.lat, lon: selected.lon, name: selected.name })}
             onLocate={() => geolocateRef.current?.trigger()}
             onToggleVoice={toggleVoice}
+            view={view}
+            onZoomIn={() => zoomBy(1)}
+            onZoomOut={() => zoomBy(-1)}
+            onResetNorth={resetNorth}
             t={t}
           />
         )}
@@ -1298,6 +1359,16 @@ export default function CryptoNavigator({
           </div>
         )}
       </div>
+
+      {/* Масштаб и компас — под картой, кнопками под палец */}
+      <MapControls
+        bearing={view.bearing}
+        pitch={view.pitch}
+        onZoomIn={() => zoomBy(1)}
+        onZoomOut={() => zoomBy(-1)}
+        onResetNorth={resetNorth}
+        t={t}
+      />
 
       {/* Legend + counts */}
       <div className="flex flex-wrap items-center gap-2">

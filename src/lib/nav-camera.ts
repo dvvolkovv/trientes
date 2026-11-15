@@ -38,6 +38,19 @@ export function followZoom(speedMps: number): number {
   return last[1];
 }
 
+/**
+ * Скорость, ниже которой человек считается стоящим.
+ *
+ * Стоящему карта не навязывает ничего: он её сам настроил — отдалил, повернул,
+ * наклонил, — и перебивать это раз в секунду значит отнять у него управление.
+ * Полметра в секунду — это медленнее любого шага и быстрее дрожи GPS.
+ */
+export const MOVING_MPS = 0.6;
+
+export function isMoving(speedMps: number): boolean {
+  return speedMps >= MOVING_MPS;
+}
+
 export type NavCamera = {
   center: [number, number];
   /** `null` — курс неизвестен, карту крутить нечем. */
@@ -56,7 +69,10 @@ export function cameraFor(i: {
   speedMps: number;
   offRouteMeters: number | null;
   viewportHeight: number;
-}): NavCamera {
+  /** Показать человека несмотря на неподвижность — первый отсчёт ведения. */
+  force?: boolean;
+}): NavCamera | null {
+  if (!i.force && !isMoving(i.speedMps)) return null;
   // Сошедшего с маршрута на линии удерживать не за что: показываем, где он на
   // самом деле, и крутим по компасу, пока маршрут строится заново.
   const onRoute = i.offRouteMeters === null && i.snapped !== null;

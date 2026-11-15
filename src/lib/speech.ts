@@ -11,7 +11,6 @@
  */
 
 let unlocked = false;
-let keepAlive: ReturnType<typeof setInterval> | null = null;
 
 export function speechAvailable(): boolean {
   return typeof window !== "undefined" && "speechSynthesis" in window;
@@ -59,29 +58,17 @@ function utter(text: string, lang: string): void {
   const voice = pickVoice(lang);
   if (voice) u.voice = voice;
   u.rate = 1;
-  u.onend = stopKeepAlive;
-  u.onerror = stopKeepAlive;
   window.speechSynthesis.speak(u);
-  startKeepAlive();
 }
 
-// Chrome ставит синтез на паузу примерно через пятнадцать секунд и сам его не
-// снимает. Пока что-то произносится, дёргаем `resume()`.
-function startKeepAlive(): void {
-  if (keepAlive) return;
-  keepAlive = setInterval(() => {
-    if (!speechAvailable() || !window.speechSynthesis.speaking) {
-      stopKeepAlive();
-      return;
-    }
-    window.speechSynthesis.resume();
-  }, 5000);
-}
-
-function stopKeepAlive(): void {
-  if (keepAlive) clearInterval(keepAlive);
-  keepAlive = null;
-}
+// Здесь была «подпорка» против паузы Chrome: таймер раз в пять секунд дёргал
+// `resume()`, пока синтез говорит. Её пришлось снять — на телефоне она и
+// оказалась причиной бесконечного повтора. `resume()` у неприостановленного
+// синтеза перезапускает фразу с начала, а событие `onend`, которым таймер
+// должен был выключаться, на мобильном Safari приходит не всегда: таймер
+// оставался жить и заводил одну и ту же подсказку по кругу. Подпорка и не
+// нужна: она лечит фразы длиннее пятнадцати секунд, а «через 300 метров
+// поверните направо» — это три.
 
 /**
  * Отпереть синтез. Вызывать **синхронно из обработчика нажатия**, до любого
@@ -119,7 +106,6 @@ export function speakNav(text: string, lang: string): void {
 
 export function cancelSpeech(): void {
   if (!speechAvailable()) return;
-  stopKeepAlive();
   try {
     window.speechSynthesis.cancel();
   } catch {

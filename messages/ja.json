@@ -690,7 +690,11 @@
     "handoffGoogle": "Google Mapsで案内",
     "handoffWeb": "Google Mapsで開く",
     "handoffHint": "目的地をお使いのスマートフォンの標準ナビに渡します — CarPlayやAndroid Autoに表示されるものです。",
-    "rerouting": "ルートを再計算中…"
+    "rerouting": "ルートを再計算中…",
+    "zoomOut": "ズームアウト",
+    "zoomIn2": "ズームイン",
+    "resetNorth": "地図を北に向ける",
+    "north": "N"
   },
   "markets": {
     "title": "市場",

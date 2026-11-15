@@ -64,6 +64,10 @@ export function PoiSheet({
   onStreetView,
   onLocate,
   onToggleVoice,
+  view,
+  onZoomIn,
+  onZoomOut,
+  onResetNorth,
   t,
 }: {
   poi: Poi;
@@ -89,6 +93,10 @@ export function PoiSheet({
   onStreetView: () => void;
   onLocate: () => void;
   onToggleVoice: () => void;
+  view: { bearing: number; pitch: number };
+  onZoomIn: () => void;
+  onZoomOut: () => void;
+  onResetNorth: () => void;
   t: StepTranslator;
 }) {
   const phone = usePhone();
@@ -344,6 +352,10 @@ export function PoiSheet({
                   onClearRoute={onClearRoute}
                   onLocate={onLocate}
                   onToggleVoice={onToggleVoice}
+                  view={view}
+                  onZoomIn={onZoomIn}
+                  onZoomOut={onZoomOut}
+                  onResetNorth={onResetNorth}
                   t={t}
                 />
               )}
@@ -395,6 +407,10 @@ export function PoiSheet({
             onClearRoute={onClearRoute}
             onLocate={onLocate}
             onToggleVoice={onToggleVoice}
+            view={view}
+            onZoomIn={onZoomIn}
+            onZoomOut={onZoomOut}
+            onResetNorth={onResetNorth}
             t={t}
           />
         </div>

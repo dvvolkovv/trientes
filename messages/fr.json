@@ -690,7 +690,11 @@
     "handoffGoogle": "Itinéraire avec Google Maps",
     "handoffWeb": "Ouvrir dans Google Maps",
     "handoffHint": "Transfère la destination au navigateur de votre téléphone — celui qui s'affiche sur CarPlay et Android Auto.",
-    "rerouting": "Recalcul de l'itinéraire…"
+    "rerouting": "Recalcul de l'itinéraire…",
+    "zoomOut": "Dézoomer",
+    "zoomIn2": "Zoomer",
+    "resetNorth": "Orienter la carte vers le nord",
+    "north": "N"
   },
   "markets": {
     "title": "Marchés",

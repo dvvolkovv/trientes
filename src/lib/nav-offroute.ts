@@ -32,8 +32,20 @@ export class OffRouteWatch {
     return !(distanceFromRoute <= this.threshold);
   }
 
-  /** Отсчёт расстояния до линии → пора ли перестраивать. */
-  feed(distanceFromRoute: number, nowMs: number): boolean {
+  /**
+   * Отсчёт расстояния до линии → пора ли перестраивать.
+   *
+   * `moving` обязателен: стоящий человек с маршрута сойти не может, с него
+   * сходит его GPS. Городской отсчёт гуляет на сотню метров у окна и в
+   * подземном переходе, и без этого условия стоящий получал новый маршрут
+   * каждые пятнадцать секунд — вместе с фразой «перестраиваю» и фразой
+   * отправления.
+   */
+  feed(distanceFromRoute: number, nowMs: number, moving: boolean): boolean {
+    if (!moving) {
+      this.streak = 0;
+      return false;
+    }
     if (!this.offRoute(distanceFromRoute)) {
       this.streak = 0;
       return false;

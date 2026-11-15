@@ -690,7 +690,11 @@
     "handoffGoogle": "Navigirati s Google Maps",
     "handoffWeb": "Otvoriti u Google Maps",
     "handoffHint": "Predaje odredište navigatoru vašeg telefona — onome koji se prikazuje na CarPlayu i Android Autu.",
-    "rerouting": "Ponovno izračunavanje rute…"
+    "rerouting": "Ponovno izračunavanje rute…",
+    "zoomOut": "Umanjiti",
+    "zoomIn2": "Povećati",
+    "resetNorth": "Usmjeriti kartu na sjever",
+    "north": "N"
   },
   "markets": {
     "title": "Tržišta",

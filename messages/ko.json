@@ -690,7 +690,11 @@
     "handoffGoogle": "Google 지도로 길안내",
     "handoffWeb": "Google 지도에서 열기",
     "handoffHint": "목적지를 휴대폰의 기본 내비게이션 앱으로 넘깁니다 — CarPlay와 Android Auto에 표시되는 바로 그 앱입니다.",
-    "rerouting": "경로를 다시 계산하는 중…"
+    "rerouting": "경로를 다시 계산하는 중…",
+    "zoomOut": "축소",
+    "zoomIn2": "확대",
+    "resetNorth": "지도를 북쪽으로 맞추기",
+    "north": "N"
   },
   "markets": {
     "title": "시장",
