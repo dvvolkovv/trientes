@@ -14,7 +14,7 @@ import {
 import "maplibre-gl/dist/maplibre-gl.css";
 import "@/lib/maplibre-worker";
 import { useLocale, useTranslations } from "next-intl";
-import type { Poi, PoiLayer, RouteResult, RouteMode, GeoResult, Social } from "@/lib/crypto-map";
+import type { AcceptedCoin, Poi, PoiLayer, RouteResult, RouteMode, GeoResult, Social } from "@/lib/crypto-map";
 import { activeStep, announcementBand, cumulativeEnds } from "@/lib/route-steps";
 import {
   ManeuverBanner,
@@ -37,7 +37,13 @@ import { basemapStyle } from "@/lib/basemap";
 
 // MapLibre flattens non-primitive feature properties to JSON strings, so `socials`
 // rides through the GeoJSON source as a string and is parsed back when a popup opens.
-type PoiProps = Omit<Poi, "socials"> & { socials: string };
+// MapLibre сплющивает свойства фичи, поэтому всё составное едет строкой:
+// `socials`, список принимаемых монет и фотографии.
+type PoiProps = Omit<Poi, "socials" | "acceptedCoins" | "photos"> & {
+  socials: string;
+  acceptedCoins: string;
+  photos: string;
+};
 type FilterSpecification = NonNullable<Parameters<MlMap["setFilter"]>[1]>;
 
 const MIN_ZOOM = 11; // below this the bbox is too wide to return a useful number of points
@@ -238,7 +244,12 @@ export default function CryptoNavigator({
           features: pois.map((p) => ({
             type: "Feature",
             geometry: { type: "Point", coordinates: [p.lon, p.lat] },
-            properties: { ...p, socials: JSON.stringify(p.socials) },
+            properties: {
+              ...p,
+              socials: JSON.stringify(p.socials),
+              acceptedCoins: JSON.stringify(p.acceptedCoins),
+              photos: JSON.stringify(p.photos),
+            },
           })),
         });
         setCounts({
@@ -1121,12 +1132,12 @@ function escapeHtml(s: string): string {
   return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 }
 
-function parseSocialProps(raw: unknown): Social[] {
-  if (Array.isArray(raw)) return raw as Social[];
+function parseArrayProp<T>(raw: unknown): T[] {
+  if (Array.isArray(raw)) return raw as T[];
   if (typeof raw === "string" && raw) {
     try {
       const v = JSON.parse(raw);
-      return Array.isArray(v) ? (v as Social[]) : [];
+      return Array.isArray(v) ? (v as T[]) : [];
     } catch {
       return [];
     }
@@ -1134,10 +1145,17 @@ function parseSocialProps(raw: unknown): Social[] {
   return [];
 }
 
-// MapLibre flattens feature properties, so `socials` arrives as a JSON string
-// and the coordinates come from the geometry — not from the properties.
+// MapLibre flattens feature properties, so every composite field arrives as a
+// JSON string and the coordinates come from the geometry — not the properties.
 function featureToPoi(p: PoiProps, lonlat: [number, number]): Poi {
-  return { ...p, lon: lonlat[0], lat: lonlat[1], socials: parseSocialProps(p.socials) };
+  return {
+    ...p,
+    lon: lonlat[0],
+    lat: lonlat[1],
+    socials: parseArrayProp<Social>(p.socials),
+    acceptedCoins: parseArrayProp<AcceptedCoin>(p.acceptedCoins),
+    photos: parseArrayProp<string>(p.photos),
+  };
 }
 
 // A curated business shows the same card as an OSM point: its logo doubles as
@@ -1153,6 +1171,11 @@ function curatedToPoi(c: CuratedPoi): Poi {
     address: c.address,
     lightning: c.lightning,
     coinSpecific: true,
+    // Куратский список заведён под монету страницы, именами монет он не
+    // торгует — поэтому чипсов нет, а не выдуманный тикер.
+    acceptedCoins: [],
+    acceptedGeneric: true,
+    photos: [],
     website: c.website,
     openingHours: null,
     phone: c.phone,

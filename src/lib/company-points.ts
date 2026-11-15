@@ -63,6 +63,9 @@ export function companyPointToPoi(p: PointWithCompany, selector: CoinSelector): 
       selector.kind === "card"
         ? (p.acceptedCardIds ?? []).includes(selector.cardId)
         : (p.acceptedCoinIds ?? []).includes(selector.coinId.toLowerCase()),
+    acceptedCoins: [],
+    acceptedGeneric: false,
+    photos: [],
     website: p.website ?? p.company.website ?? null,
     openingHours: p.openingHours,
     phone: p.phone ?? p.company.phone ?? null,

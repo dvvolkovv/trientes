@@ -25,6 +25,10 @@ export function fintechToPoi(row: FintechHqRow): Poi {
     address: row.address,
     lightning: false,
     coinSpecific: false,
+    // Офис финтех-компании монет не заявляет: в каталоге финтеха такого поля нет.
+    acceptedCoins: [],
+    acceptedGeneric: false,
+    photos: [],
     website: row.website,
     openingHours: null,
     phone: null,

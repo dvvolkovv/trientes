@@ -55,6 +55,33 @@ const SYMBOL_TO_ID: Record<string, string> = {
 /** Общий крипто-тег OSM: всё, что мы не знаем по имени, и любой свой листинг. */
 export const GENERIC_CRYPTO_TAGS = ["payment:cryptocurrencies"];
 
+/** `SYMBOL_TO_ID` наоборот: id монеты → тикер для чипса. */
+const ID_TO_SYMBOL: Record<string, string> = Object.fromEntries(
+  Object.entries(SYMBOL_TO_ID).map(([symbol, id]) => [id, symbol.toUpperCase()]),
+);
+
+/**
+ * Какие монеты названы тегами точки. Реестр `COIN_TAGS` читается в обратную
+ * сторону: он заведён для вопроса «принимают ли выбранную монету», а здесь
+ * отвечает на «какие вообще». Логотипов в тегах OSM нет, и брать их оттуда
+ * неоткуда — чипс рисуется тикером.
+ */
+export function acceptedCoinsFromTags(tags: Record<string, string>): AcceptedCoin[] {
+  const out: AcceptedCoin[] = [];
+  for (const [id, keys] of Object.entries(COIN_TAGS)) {
+    if (!keys.some((k) => tags[k] === "yes")) continue;
+    out.push({
+      key: id,
+      symbol: ID_TO_SYMBOL[id] ?? id.toUpperCase(),
+      name: null,
+      logoUrl: null,
+      slug: id,
+      own: false,
+    });
+  }
+  return out;
+}
+
 export function coinPaymentTags(coinId: string, symbol: string): string[] {
   const byId = COIN_TAGS[coinId.toLowerCase()];
   if (byId) return byId;
@@ -90,6 +117,20 @@ export type PoiLayer = "merchant" | "atm" | "financial" | "fintech";
 
 export type Social = { network: string; url: string };
 
+/**
+ * Монета, которую в этой точке принимают. `own: true` — наш листинг
+ * (`CoinCard`), а не монета каталога: это разные пространства id, путать их
+ * нельзя, хотя страница у обоих одна — `/coin/<slug>`.
+ */
+export type AcceptedCoin = {
+  key: string;
+  symbol: string;
+  name: string | null;
+  logoUrl: string | null;
+  slug: string | null;
+  own: boolean;
+};
+
 export type Poi = {
   id: string; // "node/123"
   lat: number;
@@ -100,6 +141,12 @@ export type Poi = {
   address: string | null;
   lightning: boolean;
   coinSpecific: boolean;
+  /** Что здесь принимают по именам. Пусто — секции в карточке нет. */
+  acceptedCoins: AcceptedCoin[];
+  /** Тег `payment:cryptocurrencies`: «какая-то крипта», без тикера. */
+  acceptedGeneric: boolean;
+  /** Фотографии точки (у своих — до 5); `image` остаётся превью для маркера. */
+  photos: string[];
   website: string | null;
   openingHours: string | null;
   phone: string | null;
@@ -211,6 +258,8 @@ export function parseOverpassElements(raw: unknown, coinTags: string[]): Poi[] {
     const lightning =
       tags["payment:lightning"] === "yes" || tags["payment:lightning_contactless"] === "yes";
     const coinSpecific = coinTags.some((t) => tags[t] === "yes");
+    const acceptedCoins = acceptedCoinsFromTags(tags);
+    const acceptedGeneric = GENERIC_CRYPTO_TAGS.some((t) => tags[t] === "yes");
     out.push({
       id: `${el.type ?? "node"}/${el.id ?? 0}`,
       lat: lat as number,
@@ -221,6 +270,9 @@ export function parseOverpassElements(raw: unknown, coinTags: string[]): Poi[] {
       address: buildAddress(tags),
       lightning,
       coinSpecific,
+      acceptedCoins,
+      acceptedGeneric,
+      photos: [],
       website,
       openingHours: tags.opening_hours || null,
       phone: tags["contact:phone"] || tags.phone || null,
