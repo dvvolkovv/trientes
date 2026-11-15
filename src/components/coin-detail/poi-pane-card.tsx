@@ -1,14 +1,21 @@
 "use client";
 
+import { useState } from "react";
 import type { AcceptedCoin, Poi } from "@/lib/crypto-map";
 import type { StepTranslator } from "@/components/coin-detail/route-steps-panel";
 import { CHIP, ROW_BTN, usePoiPhoto } from "@/components/coin-detail/poi-sheet-ui";
+import { PoiPhotoOverlay } from "@/components/coin-detail/poi-photo-overlay";
+import { TILE_CLASS } from "@/lib/poi-tile";
 import { safeHttpUrl } from "@/lib/safe-url";
 
 /**
  * Страница «Карточка»: только то, что проверили мы — адрес из OSM, монеты из
  * заявки компании, часы, связь. Рассказ заведения о себе живёт на витрине: в
  * одном свитке авторство утверждений размывается.
+ *
+ * Сверху — плитка в пропорции банковской карты (`TILE_CLASS`), ровно такая же,
+ * как окно карты на соседней странице: лента в 160 px рекламой не была.
+ * Нажатие раскрывает снимок на весь экран.
  */
 export function PoiPaneCard({
   poi,
@@ -31,19 +38,18 @@ export function PoiPaneCard({
   const website = safeHttpUrl(poi.website);
   const photo = usePoiPhoto(poi, website);
   const hasAccepted = poi.acceptedCoins.length > 0 || poi.acceptedGeneric || poi.lightning;
+  const [photoOpen, setPhotoOpen] = useState(false);
 
   return (
-    <div className="space-y-5 px-4 py-4">
-      {routeSummary && (
-        <button type="button" onClick={onShowRoute} className={ROW_BTN}>
-          <span aria-hidden>{routeSummary.icon}</span>
-          <span className="num font-semibold">{routeSummary.text}</span>
-          <span className="ml-auto text-[12px] text-muted">{t("routeOnMap")} →</span>
-        </button>
-      )}
-
+    <div className="pb-4">
       {photo.image && (
-        <div className="overflow-hidden rounded-xl border border-hairline bg-bg-tint">
+        <button
+          type="button"
+          onClick={() => setPhotoOpen(true)}
+          aria-label={t("expandPhoto")}
+          data-testid="poi-photo-tile"
+          className={`${TILE_CLASS} block w-full overflow-hidden border-b border-hairline bg-bg-tint`}
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={photo.image}
@@ -51,55 +57,68 @@ export function PoiPaneCard({
             loading="lazy"
             referrerPolicy="no-referrer"
             onError={photo.onError}
-            className="h-40 w-full object-cover"
+            className="h-full w-full object-cover"
           />
-        </div>
+        </button>
       )}
       {photo.loading && !photo.image && (
-        <div className="h-40 w-full animate-pulse rounded-xl border border-hairline bg-bg-tint" />
+        <div className={`${TILE_CLASS} w-full animate-pulse border-b border-hairline bg-bg-tint`} />
+      )}
+      {photoOpen && photo.image && (
+        <PoiPhotoOverlay src={photo.image} onClose={() => setPhotoOpen(false)} t={t} />
       )}
 
-      {hasAccepted && (
-        <section className="space-y-2">
-          <h3 className="text-[11px] uppercase tracking-[0.16em] text-muted">{t("acceptedCoins")}</h3>
-          <div className="flex flex-wrap gap-2">
-            {poi.acceptedCoins.map((c) => (
-              <CoinChip key={`${c.own ? "card" : "coin"}-${c.key}`} coin={c} locale={locale} t={t} />
-            ))}
-            {poi.acceptedGeneric && poi.acceptedCoins.length === 0 && (
-              <span className={`${CHIP} text-muted`}>₿ {t("acceptedAny")}</span>
-            )}
-            {poi.lightning && <span className={`${CHIP} text-muted`}>⚡ Lightning</span>}
-          </div>
+      <div className="space-y-5 px-4 pt-4">
+        {routeSummary && (
+          <button type="button" onClick={onShowRoute} className={ROW_BTN}>
+            <span aria-hidden>{routeSummary.icon}</span>
+            <span className="num font-semibold">{routeSummary.text}</span>
+            <span className="ml-auto text-[12px] text-muted">{t("routeOnMap")} →</span>
+          </button>
+        )}
+
+        {hasAccepted && (
+          <section className="space-y-2">
+            <h3 className="text-[11px] uppercase tracking-[0.16em] text-muted">{t("acceptedCoins")}</h3>
+            <div className="flex flex-wrap gap-2">
+              {poi.acceptedCoins.map((c) => (
+                <CoinChip key={`${c.own ? "card" : "coin"}-${c.key}`} coin={c} locale={locale} t={t} />
+              ))}
+              {poi.acceptedGeneric && poi.acceptedCoins.length === 0 && (
+                <span className={`${CHIP} text-muted`}>₿ {t("acceptedAny")}</span>
+              )}
+              {poi.lightning && <span className={`${CHIP} text-muted`}>⚡ Lightning</span>}
+            </div>
+          </section>
+        )}
+
+        <section className="space-y-2.5">
+          {poi.description && <p className="text-[13px] leading-relaxed text-muted">{poi.description}</p>}
+
+          {poi.openingHours && (
+            <div className="flex gap-2 text-[13px] leading-snug">
+              <span aria-hidden className="w-5 shrink-0 text-center text-muted">
+                🕒
+              </span>
+              <span className="flex-1">{poi.openingHours}</span>
+            </div>
+          )}
+          {poi.address && (
+            <div className="flex gap-2 text-[13px] leading-snug">
+              <span aria-hidden className="w-5 shrink-0 text-center text-muted">
+                📍
+              </span>
+              <span className="flex-1">{poi.address}</span>
+            </div>
+          )}
+
+          <button type="button" onClick={onStreetView} className={`${ROW_BTN} ${near ? "border-up" : ""}`}>
+            <span aria-hidden>👁</span>
+            {t("streetview")}
+            {near && <span className="ml-auto text-[11px] text-up">{t("streetviewNear")}</span>}
+          </button>
         </section>
-      )}
-
-      <section className="space-y-2.5">
-        {poi.description && <p className="text-[13px] leading-relaxed text-muted">{poi.description}</p>}
-
-        {poi.openingHours && (
-          <div className="flex gap-2 text-[13px] leading-snug">
-            <span aria-hidden className="w-5 shrink-0 text-center text-muted">
-              🕒
-            </span>
-            <span className="flex-1">{poi.openingHours}</span>
-          </div>
-        )}
-        {poi.address && (
-          <div className="flex gap-2 text-[13px] leading-snug">
-            <span aria-hidden className="w-5 shrink-0 text-center text-muted">
-              📍
-            </span>
-            <span className="flex-1">{poi.address}</span>
-          </div>
-        )}
-
-        <button type="button" onClick={onStreetView} className={`${ROW_BTN} ${near ? "border-up" : ""}`}>
-          <span aria-hidden>👁</span>
-          {t("streetview")}
-          {near && <span className="ml-auto text-[11px] text-up">{t("streetviewNear")}</span>}
-        </button>
-      </section>
+      </div>
     </div>
   );
 }
