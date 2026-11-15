@@ -7,24 +7,22 @@ import {
   GeolocateControl,
   NavigationControl,
   Marker,
-  Popup,
   type SourceSpecification,
   type GeoJSONSource,
   type GeolocatePositionEvent,
 } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import "@/lib/maplibre-worker";
-import { safeHttpUrl } from "@/lib/safe-url";
 import { useLocale, useTranslations } from "next-intl";
-import type { Poi, PoiLayer, RouteResult, RouteMode, RouteStep, TransitLeg, GeoResult, Social, OgPreview } from "@/lib/crypto-map";
+import type { Poi, PoiLayer, RouteResult, RouteMode, GeoResult, Social } from "@/lib/crypto-map";
 import { activeStep, announcementBand, cumulativeEnds } from "@/lib/route-steps";
 import {
   ManeuverBanner,
-  StepList,
   maneuverText,
   spokenDistance,
 } from "@/components/coin-detail/route-steps-panel";
 import { StreetViewOverlay } from "@/components/coin-detail/street-view-overlay";
+import { MODE_ICON, PoiSheet, type SheetRoute } from "@/components/coin-detail/poi-sheet";
 import { CURATED_POIS, type CuratedPoi } from "@/lib/curated-pois";
 import { NavigationController, type NavigationCallbacks } from "./navigation-controller";
 import { haversineMeters } from "@/lib/route-geometry";
@@ -40,7 +38,6 @@ import { basemapStyle } from "@/lib/basemap";
 // MapLibre flattens non-primitive feature properties to JSON strings, so `socials`
 // rides through the GeoJSON source as a string and is parsed back when a popup opens.
 type PoiProps = Omit<Poi, "socials"> & { socials: string };
-type Translator = (key: string) => string;
 type FilterSpecification = NonNullable<Parameters<MlMap["setFilter"]>[1]>;
 
 const MIN_ZOOM = 11; // below this the bbox is too wide to return a useful number of points
@@ -55,14 +52,22 @@ const LAYER_COLOR: Record<PoiLayer, string> = {
   fintech: "#A855F7",
 };
 
-const MODE_ICON: Record<RouteMode, string> = { walk: "🚶", car: "🚗", transit: "🚍" };
-
 const VOICE_KEY = "cmap:voice";
 
 // Speech synthesis exists only in the browser, so the server snapshot is false
 // and the voice control appears after hydration instead of mismatching it.
 const subscribeNever = () => () => {};
 const hasSpeech = () => typeof window !== "undefined" && "speechSynthesis" in window;
+
+// Телефон или нет решает медиазапрос браузера, а не высота окна карты: от
+// этого зависит, разворачивается ли ведение на весь экран устройства.
+const PHONE_QUERY = "(max-width: 767px)";
+const subscribePhone = (onChange: () => void) => {
+  const mq = window.matchMedia(PHONE_QUERY);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+};
+const isPhoneNow = () => typeof window !== "undefined" && window.matchMedia(PHONE_QUERY).matches;
 
 function readVoicePreference(): boolean {
   if (typeof window === "undefined") return true;
@@ -71,27 +76,6 @@ function readVoicePreference(): boolean {
   } catch {
     return true; // storage blocked (private mode) — voice stays on
   }
-}
-
-// Emoji for a transit leg by MOTIS mode; vehicles fall back to a generic train.
-const LEG_ICON: Record<string, string> = {
-  WALK: "🚶",
-  SUBWAY: "🚇",
-  METRO: "🚇",
-  RAIL: "🚆",
-  REGIONAL_RAIL: "🚆",
-  REGIONAL_FAST_RAIL: "🚆",
-  LONG_DISTANCE: "🚆",
-  HIGHSPEED_RAIL: "🚄",
-  NIGHT_RAIL: "🚆",
-  BUS: "🚌",
-  COACH: "🚌",
-  TRAM: "🚊",
-  FERRY: "⛴️",
-};
-
-function legIcon(mode: string): string {
-  return LEG_ICON[mode.toUpperCase()] ?? "🚆";
 }
 
 // The base map itself lives in src/lib/basemap.ts (openstreetmap.org raster,
@@ -150,6 +134,8 @@ export default function CryptoNavigator({
   const routeAbortRef = useRef<AbortController | null>(null);
   const routeSequenceRef = useRef(0);
   const coinOnlyRef = useRef(false);
+  const destKeyRef = useRef<string | null>(null);
+  const routeCoordsRef = useRef<[number, number][]>([]);
 
   const [base, setBase] = useState<Base>("map");
   const baseRef = useRef<Base>("map");
@@ -173,15 +159,16 @@ export default function CryptoNavigator({
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [mode, setMode] = useState<RouteMode>("walk");
-  const [route, setRoute] = useState<{
-    distance: number;
-    duration: number;
-    mode: RouteMode;
-    transfers?: number;
-    legs?: TransitLeg[];
-    steps?: RouteStep[];
-    coordinates: [number, number][];
-  } | null>(null);
+  const [route, setRoute] = useState<SheetRoute | null>(null);
+  // К какой точке построен маршрут. Карточка другой точки не должна показывать
+  // чужую сводку как свою, поэтому сверяется ключ, а не наличие маршрута.
+  const [destKey, setDestKey] = useState<string | null>(null);
+  const [routePoi, setRoutePoi] = useState<Poi | null>(null);
+  // Своё положение держится и в ref (для замыканий карты), и в состоянии: от
+  // него зависит, что показывает карточка точки.
+  const [origin, setOriginState] = useState<[number, number] | null>(null);
+  const [selected, setSelected] = useState<Poi | null>(null);
+  const [sheetExpanded, setSheetExpanded] = useState(true);
   const [status, setStatus] = useState<string | null>(null);
   const [originLabel, setOriginLabel] = useState<string | null>(null);
   const [street, setStreet] = useState<{ lat: number; lon: number; name: string } | null>(null);
@@ -190,7 +177,6 @@ export default function CryptoNavigator({
   const [navRemaining, setNavRemaining] = useState<{ m: number; sec: number } | null>(null);
   const [navError, setNavError] = useState<string | null>(null);
   const [pendingStart, setPendingStart] = useState(false);
-  const [stepsOpen, setStepsOpen] = useState(false);
   const [navStep, setNavStep] = useState<{ index: number; distanceToManeuver: number } | null>(null);
   const [voiceOn, setVoiceOn] = useState(readVoicePreference);
   const voiceOnRef = useRef(voiceOn);
@@ -270,6 +256,28 @@ export default function CryptoNavigator({
       });
   }, [coinId, symbol]);
 
+  // Маршрут вписывается в ту часть карты, которую видно: на телефоне нижнюю
+  // половину занимает пристыкованная карточка, и без этого линия уезжает под
+  // неё. Высота берётся у самой карточки, а не угадывается числом.
+  function fitRoute() {
+    const map = mapRef.current;
+    const coords = routeCoordsRef.current;
+    if (!map || coords.length === 0 || navControllerRef.current) return;
+    const sheet = document.querySelector('[role="dialog"]');
+    const sheetRect = isPhoneNow() && sheet ? sheet.getBoundingClientRect() : null;
+    const bottom = sheetRect
+      ? Math.min(Math.round(sheetRect.height) + 20, Math.round(window.innerHeight * 0.7))
+      : 60;
+    const bounds = coords.reduce(
+      (bb, c) => bb.extend(c),
+      new LngLatBounds(coords[0], coords[0]),
+    );
+    map.fitBounds(bounds, {
+      padding: { top: 70, left: 24, right: 24, bottom },
+      maxZoom: 16,
+    });
+  }
+
   // ---- Routing ----
   const buildRoute = useCallback(() => {
     const map = mapRef.current;
@@ -325,17 +333,17 @@ export default function CryptoNavigator({
           steps: res.steps,
           coordinates: coords,
         });
+        // Линия нарисована — лист стыкуется к низу экрана, иначе он закрывает
+        // ровно то, за чем его открывали.
+        setSheetExpanded(false);
         if (navControllerRef.current) {
           navControllerRef.current.updateRoute(coords);
           setNavOffRoute(null);
         }
-        if (coords.length && !navControllerRef.current) {
-          const bounds = coords.reduce(
-            (bb, c) => bb.extend(c as [number, number]),
-            new LngLatBounds(coords[0] as [number, number], coords[0] as [number, number]),
-          );
-          map.fitBounds(bounds, { padding: 80, maxZoom: 15 });
-        }
+        routeCoordsRef.current = coords;
+        // Карточка стыкуется в этом же кадре — вписываем линию, когда её высота
+        // уже известна браузеру.
+        window.setTimeout(fitRoute, 160);
       })
       .catch((error: unknown) => {
         const aborted = (error as { name?: string } | null | undefined)?.name === "AbortError";
@@ -344,20 +352,27 @@ export default function CryptoNavigator({
       });
   }, [t, cancelRouteRequest]);
 
-  function switchMode(next: RouteMode) {
-    modeRef.current = next;
-    setMode(next);
-    if (originRef.current && destRef.current) buildRoute();
+  // Точка назначения карточки: сводка прежнего маршрута гасится сразу, чтобы
+  // в новой карточке не висели чужие километры, пока считается её маршрут.
+  function routeTo(poi: Poi) {
+    const key = `${poi.lon},${poi.lat}`;
+    if (destKeyRef.current !== key) setRoute(null);
+    destKeyRef.current = key;
+    setDestKey(key);
+    setRoutePoi(poi);
+    destRef.current = { lonlat: [poi.lon, poi.lat], name: poi.name };
+    if (originRef.current) buildRoute();
+    else setStatus(t("noOrigin"));
   }
 
-  const setDestination = useCallback(
-    (lonlat: [number, number], name: string) => {
-      destRef.current = { lonlat, name };
-      if (originRef.current) buildRoute();
-      else setStatus(t("noOrigin"));
-    },
-    [buildRoute, t],
-  );
+  function switchMode(next: RouteMode, poi?: Poi | null) {
+    modeRef.current = next;
+    setMode(next);
+    // Режим переключают в карточке точки — значит пересчитывать надо маршрут
+    // к ней, а не к тому, что лежало в destRef до неё.
+    if (poi) routeTo(poi);
+    else if (originRef.current && destRef.current) buildRoute();
+  }
 
   // Resolve a pin to a street address (best-effort): show a placeholder, then upgrade.
   const reverseLabel = useCallback(
@@ -380,6 +395,7 @@ export default function CryptoNavigator({
       const map = mapRef.current;
       if (!map) return;
       originRef.current = lonlat;
+      setOriginState(lonlat);
       if (originMarkerRef.current) {
         originMarkerRef.current.setLngLat(lonlat);
       } else {
@@ -388,6 +404,7 @@ export default function CryptoNavigator({
           const ll = mk.getLngLat();
           const next: [number, number] = [ll.lng, ll.lat];
           originRef.current = next;
+          setOriginState(next);
           reverseLabel(next);
           if (destRef.current) buildRoute();
         });
@@ -428,6 +445,7 @@ export default function CryptoNavigator({
     map.addControl(geo, "top-right");
     geo.on("geolocate", (e: GeolocatePositionEvent) => {
       originRef.current = [e.coords.longitude, e.coords.latitude];
+      setOriginState(originRef.current);
       // GeolocateControl shows its own blue dot — drop the manual orange pin.
       originMarkerRef.current?.remove();
       originMarkerRef.current = null;
@@ -473,30 +491,11 @@ export default function CryptoNavigator({
         },
       });
 
-      // Shared popup opener for OSM markers AND curated logo markers.
-      const openPoiPopup = (lonlat: [number, number], p: PoiProps) => {
-        const origin = originRef.current;
-        const near = origin ? haversineMeters([origin[0], origin[1]], [lonlat[0], lonlat[1]]) <= 150 : false;
-        const el = buildCard(p, t, near, modeRef.current === "walk", locale);
-        wirePhotoFallback(el);
-        const popup = new Popup({ offset: 14, closeButton: true, maxWidth: "264px", className: "cmap-pop" })
-          .setLngLat(lonlat)
-          .setDOMContent(el)
-          .addTo(map);
-        el.querySelector<HTMLButtonElement>(".cmap-route")?.addEventListener("click", () => {
-          setDestination(lonlat, p.name);
-          popup.remove();
-        });
-        el.querySelector<HTMLButtonElement>(".cmap-street")?.addEventListener("click", () => {
-          setStreet({ lat: lonlat[1], lon: lonlat[0], name: p.name });
-          popup.remove();
-        });
-        el.querySelector<HTMLButtonElement>(".cmap-start")?.addEventListener("click", () => {
-          setDestination(lonlat, p.name);
-          popup.remove();
-          setPendingStart(true);
-        });
-        hydratePhoto(el, p, t);
+      // Один и тот же лист открывают и круги слоёв, и куратские логотипы:
+      // карточка точки живёт в React (см. poi-sheet.tsx), а не в попапе карты.
+      const openPoi = (poi: Poi) => {
+        setSelected(poi);
+        setSheetExpanded(true);
       };
 
       [...POI_LAYERS].reverse().forEach((layer) => {
@@ -522,7 +521,7 @@ export default function CryptoNavigator({
           if (!f) return;
           const p = f.properties as PoiProps;
           const lonlat = (f.geometry as GeoJSON.Point).coordinates as [number, number];
-          openPoiPopup(lonlat, p);
+          openPoi(featureToPoi(p, lonlat));
         });
       });
 
@@ -547,7 +546,7 @@ export default function CryptoNavigator({
         new Marker({ element: elm, anchor: "bottom" }).setLngLat([c.lon, c.lat]).addTo(map);
         elm.addEventListener("click", (ev) => {
           ev.stopPropagation();
-          openPoiPopup([c.lon, c.lat], curatedToProps(c));
+          openPoi(curatedToPoi(c));
         });
       });
 
@@ -647,6 +646,7 @@ export default function CryptoNavigator({
     cancelRouteRequest();
     setPendingStart(false);
     originRef.current = null;
+    setOriginState(null);
     setOriginLabel(null);
     originMarkerRef.current?.remove();
     originMarkerRef.current = null;
@@ -664,6 +664,10 @@ export default function CryptoNavigator({
     cancelRouteRequest();
     setPendingStart(false);
     destRef.current = null;
+    destKeyRef.current = null;
+    routeCoordsRef.current = [];
+    setDestKey(null);
+    setRoutePoi(null);
     setRoute(null);
     setStatus(null);
     (map?.getSource("route") as GeoJSONSource | undefined)?.setData({
@@ -674,6 +678,7 @@ export default function CryptoNavigator({
 
   // A browser without speech synthesis simply never shows the voice control.
   const voiceSupported = useSyncExternalStore(subscribeNever, hasSpeech, () => false);
+  const isPhone = useSyncExternalStore(subscribePhone, isPhoneNow, () => false);
 
   const speak = useCallback(
     (text: string) => {
@@ -719,8 +724,10 @@ export default function CryptoNavigator({
 
   const startNavigation = useCallback(async () => {
     const map = mapRef.current;
-    if (!map || !route || route.mode !== "walk") return;
+    if (!map || !route) return;
     if (navControllerRef.current) return;
+    // Карточка магазина посреди движения не нужна, а экран нужен весь.
+    setSelected(null);
 
     setStatus(t("navStarting"));
     setNavError(null);
@@ -795,13 +802,31 @@ export default function CryptoNavigator({
     await ctl.start(cb);
   }, [route, t, stopNavigation, speak]);
 
-  // Popup .cmap-start click sets pendingStart; once route settles for walk mode, fire navigation.
+  // «Поехали» на карточке без маршрута означает «построй и веди»: ведение
+  // включается, когда ответ маршрутизатора пришёл.
   useEffect(() => {
-    if (pendingStart && route && route.mode === "walk") {
+    if (pendingStart && route) {
       setPendingStart(false);
       void startNavigation();
     }
   }, [pendingStart, route, startNavigation]);
+
+
+  // Карта занимает весь экран телефона, пока идёт ведение или пока карточка
+  // точки пристыкована к низу: иначе над листом видна полоса страницы, а не
+  // карта с маршрутом — ровно то, на что жаловались. MapLibre смену размера
+  // контейнера сам не замечает, поэтому размер пересчитывается явно и ещё раз
+  // следующим кадром, когда класс уже применён.
+  const mapFull = isPhone && (navActive || (!!selected && !sheetExpanded));
+  useEffect(() => {
+    if (!mapRef.current) return;
+    mapRef.current.resize();
+    const id = window.setTimeout(() => {
+      mapRef.current?.resize();
+      fitRoute();
+    }, 80);
+    return () => window.clearTimeout(id);
+  }, [mapFull]);
 
   const btn = (active: boolean) =>
     "text-[12px] px-3 py-1.5 rounded-md font-medium transition-all " +
@@ -870,18 +895,8 @@ export default function CryptoNavigator({
         <p className="text-[11px] text-muted/70">{t("clickToDrop")}</p>
       </div>
 
-      {/* Travel mode */}
-      <div className="flex flex-wrap items-center gap-1.5">
-        <span className="text-[11px] uppercase tracking-[0.16em] text-muted mr-1">{t("travelMode")}</span>
-        {(["walk", "car", "transit"] as RouteMode[]).map((m) => (
-          <button key={m} type="button" onClick={() => switchMode(m)} className={btn(mode === m)}>
-            {MODE_ICON[m]} {t(`mode_${m}`)}
-          </button>
-        ))}
-      </div>
-
       {/* Map */}
-      <div className="relative">
+      <div className={mapFull ? "fixed inset-0 z-[55] bg-bg" : "relative"}>
         {mapUnavailable ? (
           <div
             role="status"
@@ -890,7 +905,14 @@ export default function CryptoNavigator({
             {t("mapUnavailable")}
           </div>
         ) : (
-          <div ref={containerRef} className="w-full h-[420px] md:h-[520px] rounded-md overflow-hidden border border-hairline" />
+          <div
+            ref={containerRef}
+            className={
+              mapFull
+                ? "w-full h-full"
+                : "w-full h-[420px] md:h-[520px] rounded-md overflow-hidden border border-hairline"
+            }
+          />
         )}
         {navActive && navStep && route?.steps?.[navStep.index + 1] && (
           <ManeuverBanner
@@ -909,7 +931,101 @@ export default function CryptoNavigator({
             {t("loading")}
           </div>
         )}
-        <AvailableFintechPanel center={mapCenter} />
+        {!selected && !navActive && <AvailableFintechPanel center={mapCenter} />}
+
+        {selected && (
+          <PoiSheet
+            key={selected.id}
+            poi={selected}
+            locale={locale}
+            route={destKey === `${selected.lon},${selected.lat}` ? route : null}
+            mode={mode}
+            status={status}
+            hasOrigin={!!origin}
+            near={!!origin && haversineMeters(origin, [selected.lon, selected.lat]) <= 150}
+            navActive={navActive}
+            voiceOn={voiceOn}
+            voiceSupported={voiceSupported}
+            expanded={sheetExpanded}
+            onExpandedChange={setSheetExpanded}
+            onClose={() => setSelected(null)}
+            onMode={(m) => switchMode(m, selected)}
+            onBuildRoute={() => routeTo(selected)}
+            onGo={() => {
+              if (route && destKey === `${selected.lon},${selected.lat}`) {
+                void startNavigation();
+                return;
+              }
+              routeTo(selected);
+              setPendingStart(true);
+            }}
+            onClearRoute={clearRoute}
+            onStreetView={() => setStreet({ lat: selected.lat, lon: selected.lon, name: selected.name })}
+            onLocate={() => geolocateRef.current?.trigger()}
+            onToggleVoice={toggleVoice}
+            t={t}
+          />
+        )}
+
+        {/* Ведение: всё управление движением — одной полосой под большим пальцем */}
+        {navActive && (
+          <div
+            className="absolute inset-x-0 bottom-0 z-20 border-t border-hairline bg-card/95 px-3 pt-2.5 backdrop-blur"
+            style={{ paddingBottom: "max(0.625rem, env(safe-area-inset-bottom))" }}
+          >
+            <div className="flex items-center gap-2">
+              <div className="min-w-0 flex-1">
+                {navRemaining ? (
+                  <>
+                    <div className="num text-[16px] font-semibold leading-tight">
+                      {navRemaining.m >= 1000
+                        ? `${(navRemaining.m / 1000).toFixed(1)} km`
+                        : `${Math.round(navRemaining.m)} m`}
+                      {" · "}
+                      {t("etaMin", { min: Math.max(1, Math.round(navRemaining.sec / 60)) })}
+                    </div>
+                    <div className="truncate text-[11px] text-muted">
+                      {status ?? (navError ? navError : t("remaining"))}
+                    </div>
+                  </>
+                ) : (
+                  <div className="truncate text-[12px] text-muted">{status ?? t("navStarting")}</div>
+                )}
+              </div>
+              {voiceSupported && (
+                <button
+                  type="button"
+                  onClick={toggleVoice}
+                  aria-pressed={voiceOn}
+                  aria-label={voiceOn ? t("voiceOn") : t("voiceOff")}
+                  title={voiceOn ? t("voiceOn") : t("voiceOff")}
+                  className={
+                    "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border text-[17px] " +
+                    (voiceOn ? "border-accent/50 bg-accent/10" : "border-hairline text-muted")
+                  }
+                >
+                  {voiceOn ? "🔊" : "🔇"}
+                </button>
+              )}
+              {navOffRoute !== null && navOffRoute > 30 && (
+                <button
+                  type="button"
+                  onClick={() => buildRoute()}
+                  className="flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-xl border border-accent/50 bg-accent/10 px-3 text-[13px] font-medium text-foreground"
+                >
+                  ↻ {t("recompute")}
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={stopNavigation}
+                className="flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-xl bg-down px-4 text-[13px] font-semibold text-white"
+              >
+                ■ {t("stop")}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Legend + counts */}
@@ -948,119 +1064,47 @@ export default function CryptoNavigator({
         </span>
       </div>
 
-      {/* Route summary */}
-      {(route || status || navError) && (
-        <div className="flex flex-wrap items-center gap-3 text-[13px] border-t border-hairline pt-3">
+      {/* Маршрут, когда карточка закрыта: куда и сколько, вернуться, очистить */}
+      {!selected && !navActive && (route || status || navError) && (
+        <div className="flex flex-wrap items-center gap-3 border-t border-hairline pt-3 text-[13px]">
           {route && (
             <>
-              {!navActive && (
-                <span className="text-muted">
-                  {t("duration")}: <span className="num text-foreground">{Math.round(route.duration / 60)} min</span>
+              <span aria-hidden className="text-[15px]">
+                {MODE_ICON[route.mode]}
+              </span>
+              <span className="text-muted">
+                {t("duration")}:{" "}
+                <span className="num text-foreground">
+                  {t("etaMin", { min: Math.max(1, Math.round(route.duration / 60)) })}
                 </span>
-              )}
-              {navActive && navRemaining && (
-                <span className="text-muted">
-                  {t("remaining")}:{" "}
-                  <span className="num text-foreground">
-                    {(navRemaining.m / 1000).toFixed(navRemaining.m < 1000 ? 2 : 1)} km
-                  </span>
-                  {" · "}
-                  <span className="num text-foreground">
-                    {t("etaMin", { min: Math.max(1, Math.round(navRemaining.sec / 60)) })}
-                  </span>
-                </span>
-              )}
-              {route.mode === "transit" ? (
-                <>
-                  <span className="text-muted">
-                    {route.transfers ? t("transfers", { count: route.transfers }) : t("transitDirect")}
-                  </span>
-                  {route.legs && route.legs.length > 0 && (
-                    <span className="flex flex-wrap items-center gap-1">
-                      {route.legs.map((lg, i) => (
-                        <span key={i} className="inline-flex items-center gap-1">
-                          {i > 0 && <span className="text-muted/50">›</span>}
-                          <span style={{ color: lg.dashed ? undefined : lg.color }}>
-                            {legIcon(lg.mode)}
-                            {lg.line ? ` ${lg.line}` : ""}
-                          </span>
-                        </span>
-                      ))}
-                    </span>
-                  )}
-                </>
-              ) : (
-                <span className="text-muted">
-                  {t("distance")}: <span className="num text-foreground">{(route.distance / 1000).toFixed(1)} km</span>
-                </span>
-              )}
-              {route.mode === "walk" && !navActive && (
+              </span>
+              <span className="text-muted">
+                {t("distance")}:{" "}
+                <span className="num text-foreground">{(route.distance / 1000).toFixed(1)} km</span>
+              </span>
+              {routePoi && (
                 <button
                   type="button"
-                  onClick={startNavigation}
-                  className="text-accent hover:opacity-80 font-medium"
-                  aria-label={t("start")}
+                  onClick={() => {
+                    setSelected(routePoi);
+                    setSheetExpanded(false);
+                  }}
+                  className="min-h-[36px] rounded-xl border border-hairline px-3 text-[12px] font-medium text-foreground hover:border-accent"
                 >
-                  ▶ {t("start")}
+                  {t("openCard")}
                 </button>
               )}
-              {navActive && (
-                <>
-                  <button
-                    type="button"
-                    onClick={stopNavigation}
-                    className="text-down hover:opacity-80 font-medium"
-                    aria-label={t("stop")}
-                  >
-                    ■ {t("stop")}
-                  </button>
-                  {navOffRoute !== null && navOffRoute > 30 && (
-                    <button
-                      type="button"
-                      onClick={() => buildRoute()}
-                      className="text-accent hover:opacity-80 font-medium"
-                      aria-label={t("recompute")}
-                    >
-                      ↻ {t("recompute")}
-                    </button>
-                  )}
-                </>
-              )}
-              {route.steps && route.steps.length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setStepsOpen((v) => !v)}
-                  className="text-muted hover:text-foreground underline"
-                  aria-expanded={stepsOpen}
-                >
-                  {stepsOpen ? "▾" : "▸"} {t("directions")}
-                </button>
-              )}
-              {voiceSupported && (route.mode === "walk" || navActive) && (
-                <button
-                  type="button"
-                  onClick={toggleVoice}
-                  className={voiceOn ? "text-accent hover:opacity-80" : "text-muted hover:text-foreground"}
-                  aria-pressed={voiceOn}
-                  aria-label={voiceOn ? t("voiceOn") : t("voiceOff")}
-                  title={voiceOn ? t("voiceOn") : t("voiceOff")}
-                >
-                  {voiceOn ? "🔊" : "🔇"}
-                </button>
-              )}
-              <button type="button" onClick={clearRoute} className="text-muted hover:text-foreground underline">
+              <button
+                type="button"
+                onClick={clearRoute}
+                className="min-h-[36px] text-[12px] text-muted underline hover:text-foreground"
+              >
                 {t("clearRoute")}
               </button>
             </>
           )}
           {status && <span className="text-accent">{status}</span>}
           {navError && <span className="text-down">{navError}</span>}
-        </div>
-      )}
-
-      {stepsOpen && route?.steps && route.steps.length > 0 && (
-        <div className="border-t border-hairline pt-2">
-          <StepList steps={route.steps} t={t} />
         </div>
       )}
 
@@ -1077,27 +1121,6 @@ function escapeHtml(s: string): string {
   return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 }
 
-// Collapse the photo slot if its image fails to load (404, hotlink block, or an
-// http image blocked as mixed content on the https page) instead of showing a broken icon.
-function wirePhotoFallback(el: HTMLElement): void {
-  el.querySelectorAll<HTMLImageElement>(".cmap-photo img").forEach((img) => {
-    img.onerror = () => img.closest(".cmap-photo")?.remove();
-  });
-}
-
-const SOCIAL_LABELS: Record<string, string> = {
-  instagram: "Instagram",
-  facebook: "Facebook",
-  telegram: "Telegram",
-  twitter: "X",
-  x: "X",
-  youtube: "YouTube",
-  tiktok: "TikTok",
-  vk: "VK",
-  linkedin: "LinkedIn",
-  whatsapp: "WhatsApp",
-};
-
 function parseSocialProps(raw: unknown): Social[] {
   if (Array.isArray(raw)) return raw as Social[];
   if (typeof raw === "string" && raw) {
@@ -1111,86 +1134,15 @@ function parseSocialProps(raw: unknown): Social[] {
   return [];
 }
 
-function infoRow(icon: string, inner: string): string {
-  return `<div class="cmap-row"><span class="i">${icon}</span><span>${inner}</span></div>`;
+// MapLibre flattens feature properties, so `socials` arrives as a JSON string
+// and the coordinates come from the geometry — not from the properties.
+function featureToPoi(p: PoiProps, lonlat: [number, number]): Poi {
+  return { ...p, lon: lonlat[0], lat: lonlat[1], socials: parseSocialProps(p.socials) };
 }
 
-// Build the dark Ledger detail card. Photo slot leads (skeleton until the OG preview
-// resolves, or an OSM image straight away); empty fields are omitted.
-function buildCard(p: PoiProps, t: Translator, near: boolean, showStart: boolean, locale: string): HTMLDivElement {
-  const el = document.createElement("div");
-  el.className = "cmap-popup";
-
-  const website = safeHttpUrl(p.website);
-  const hasPhoto = !!p.image || !!website;
-  const photoHtml = hasPhoto
-    ? `<div class="cmap-photo">${
-        p.image
-          ? `<img src="${escapeHtml(p.image)}" alt="" loading="lazy" referrerpolicy="no-referrer"/>`
-          : `<div class="cmap-skel"></div>`
-      }</div>`
-    : "";
-
-  const rows: string[] = [];
-  if (p.openingHours) rows.push(infoRow("🕒", escapeHtml(p.openingHours)));
-  if (p.address) rows.push(infoRow("📍", escapeHtml(p.address)));
-  if (p.phone) rows.push(infoRow("📞", `<a href="tel:${escapeHtml(p.phone)}">${escapeHtml(p.phone)}</a>`));
-  if (p.email) rows.push(infoRow("✉️", `<a href="mailto:${escapeHtml(p.email)}">${escapeHtml(p.email)}</a>`));
-
-  const socials = parseSocialProps(p.socials);
-  const socialHtml = socials.length
-    ? `<div class="cmap-socials">${socials
-        .map(
-          (s) =>
-            `<a class="cmap-chip" href="${escapeHtml(s.url)}" target="_blank" rel="noopener noreferrer nofollow">${escapeHtml(
-              SOCIAL_LABELS[s.network] ?? s.network,
-            )}</a>`,
-        )
-        .join("")}</div>`
-    : "";
-
-  const descHtml = p.description
-    ? `<div class="cmap-desc">${escapeHtml(p.description)}</div>`
-    : "";
-
-  // Fintech HQ pins carry an in-app slug → render a deep-link to the profile page,
-  // styled the same as the external "Open site" link so both info-links group together.
-  const profileHtml =
-    p.layer === "fintech" && p.slug
-      ? `<a class="cmap-site" href="/${escapeHtml(locale)}/fintech/${escapeHtml(p.slug)}">${escapeHtml(
-          t("viewProfile"),
-        )} →</a>`
-      : "";
-
-  el.innerHTML = `
-    ${photoHtml}
-    <div class="cmap-body">
-      <div class="cmap-title">${escapeHtml(p.name)}</div>
-      <div class="cmap-sub">${escapeHtml(p.category)}${p.lightning ? " · ⚡ Lightning" : ""}</div>
-      ${descHtml}
-      ${rows.join("")}
-      ${socialHtml}
-      ${profileHtml}
-      ${
-        website
-          ? `<a class="cmap-site" href="${escapeHtml(website)}" target="_blank" rel="noopener noreferrer nofollow">${escapeHtml(
-              t("openSite"),
-            )} ↗</a>`
-          : ""
-      }
-      <button type="button" class="cmap-route">${escapeHtml(t("routeHere"))}</button>
-      <button type="button" class="cmap-street${near ? " is-near" : ""}">👁 ${escapeHtml(t("streetview"))}${
-        near ? `<span class="cmap-near">${escapeHtml(t("streetviewNear"))}</span>` : ""
-      }</button>
-      ${showStart ? `<button type="button" class="cmap-start">▶ ${escapeHtml(t("start"))}</button>` : ""}
-    </div>`;
-  return el;
-}
-
-
-// Adapt a curated entry into the same flattened shape an OSM popup expects, so it
-// reuses buildCard (logo doubles as the card photo; always coin-highlighted).
-function curatedToProps(c: CuratedPoi): PoiProps {
+// A curated business shows the same card as an OSM point: its logo doubles as
+// the photo, and it is always coin-highlighted.
+function curatedToPoi(c: CuratedPoi): Poi {
   return {
     id: c.id,
     lat: c.lat,
@@ -1205,41 +1157,8 @@ function curatedToProps(c: CuratedPoi): PoiProps {
     openingHours: null,
     phone: c.phone,
     email: c.email,
-    socials: JSON.stringify(c.socials),
+    socials: c.socials,
     image: c.logo,
     description: null,
   };
-}
-
-// Lazily upgrade the photo slot with the place's own OpenGraph splash. Guards against
-// the popup being closed mid-flight; prefers the source image, falls back to OSM's.
-function hydratePhoto(el: HTMLElement, p: PoiProps, t: Translator): void {
-  const website = safeHttpUrl(p.website);
-  if (!website) return; // OSM image (if any) is already shown; nothing to fetch
-  const photo = el.querySelector<HTMLElement>(".cmap-photo");
-  fetch(`/api/crypto-map/preview?url=${encodeURIComponent(website)}`)
-    .then((r) => (r.ok ? r.json() : Promise.reject(new Error("bad status"))))
-    .then((res: { preview?: OgPreview }) => {
-      if (!el.isConnected || !photo) return;
-      const og = res.preview ?? { title: null, image: null, video: null };
-      if (og.image) {
-        photo.innerHTML = `<img src="${escapeHtml(og.image)}" alt="" loading="lazy" referrerpolicy="no-referrer"/>`;
-        wirePhotoFallback(el);
-      } else if (!p.image) {
-        photo.remove();
-        return;
-      }
-      if (og.video && photo.isConnected) {
-        const a = document.createElement("a");
-        a.className = "cmap-video";
-        a.href = website;
-        a.target = "_blank";
-        a.rel = "noopener noreferrer nofollow";
-        a.textContent = `▶ ${t("watchVideo")}`;
-        photo.appendChild(a);
-      }
-    })
-    .catch(() => {
-      if (el.isConnected && !p.image) photo?.remove();
-    });
 }

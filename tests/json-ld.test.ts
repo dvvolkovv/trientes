@@ -60,10 +60,11 @@ const RAW_HTML_NAMES = new Set([
 ]);
 // Raw HTML that is not JSON-LD: expandable-description.tsx renders the output
 // of sanitizeDescription (tests/sanitize.test.ts); crypto-navigator.tsx builds
-// map popups with escapeHtml and safeHttpUrl.
+// the curated logo marker with escapeHtml (the point card itself is React —
+// см. poi-sheet.tsx, — поэтому попапных сборок HTML здесь больше нет).
 const RAW_HTML_ALLOWLIST = new Map([
   [path.join("src", "components", "coin-detail", "expandable-description.tsx"), 1],
-  [path.join("src", "components", "coin-detail", "crypto-navigator.tsx"), 3],
+  [path.join("src", "components", "coin-detail", "crypto-navigator.tsx"), 1],
 ]);
 
 function scriptKind(fileName: string): ts.ScriptKind {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 
@@ -11,6 +11,16 @@ type Item = {
   logoUrl: string | null;
   services: string[];
 };
+
+// На телефоне раскрытая панель закрывает собой почти всю карту (256 px из
+// ~320), поэтому там она начинается свёрнутой. На десктопе — как было.
+const PHONE_QUERY = "(max-width: 767px)";
+const subscribePhone = (onChange: () => void) => {
+  const mq = window.matchMedia(PHONE_QUERY);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+};
+const isPhoneNow = () => typeof window !== "undefined" && window.matchMedia(PHONE_QUERY).matches;
 
 // Side-panel that lists fintech companies advertising service in the country the
 // map is currently centered on. Reverse-geocodes the center via the existing
@@ -25,7 +35,9 @@ export function AvailableFintechPanel({
   const locale = useLocale();
   const [cc, setCc] = useState<string | null>(null);
   const [items, setItems] = useState<Item[]>([]);
-  const [open, setOpen] = useState(true);
+  const isPhone = useSyncExternalStore(subscribePhone, isPhoneNow, () => false);
+  const [collapsedByUser, setCollapsedByUser] = useState<boolean | null>(null);
+  const open = collapsedByUser ?? !isPhone;
   const [loading, setLoading] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastCcRef = useRef<string | null>(null);
@@ -68,7 +80,7 @@ export function AvailableFintechPanel({
     <div className="absolute right-3 top-3 z-10 w-64 max-w-[calc(100%-1.5rem)] rounded-xl border border-hairline bg-card/95 shadow-lg backdrop-blur">
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => setCollapsedByUser(!open)}
         className="flex w-full items-center justify-between px-3 py-2 text-[12px] font-medium text-foreground"
       >
         <span className="truncate">{t("title", { country: cc })}</span>

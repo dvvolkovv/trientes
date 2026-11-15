@@ -59,6 +59,7 @@ export class Map extends EventTarget {
     this.terrainCalls = [];
     this.flyToCalls = [];
     this.easeToCalls = [];
+    this.resizeCalls = 0;
     this.removed = false;
     this.styleLoaded = false;
     globalThis.__maps.push(this);
@@ -95,6 +96,7 @@ export class Map extends EventTarget {
     if (options && !this.sources.has(options.source)) throw new Error("setTerrain before source creation: " + options.source);
     this.terrainCalls.push(options);
   }
+  resize() { this.resizeCalls += 1; }
   isStyleLoaded() { return this.styleLoaded; }
   loaded() { return this.styleLoaded; }
   remove() { this.removed = true; }
@@ -307,7 +309,7 @@ async function loadMap(page: Page, index = 0) {
 }
 
 async function startFirstRoute(page: Page, startNavigation = false) {
-  await page.evaluate((startNavigation) => {
+  await page.evaluate(() => {
     const map = (window as any).__maps[0];
     map.emit("click", { lngLat: { lng: 14.4, lat: 50.1 }, point: { x: 0, y: 0 } });
     map.emit("click", "poi-merchant", {
@@ -321,9 +323,10 @@ async function startFirstRoute(page: Page, startNavigation = false) {
         },
       }],
     });
-    const popup = (window as any).__popups.at(-1);
-    popup.content.querySelector(startNavigation ? ".cmap-start" : ".cmap-route").click();
-  }, startNavigation);
+  });
+  // The card opens with no route yet: "Route" builds one, "Let's go" builds it
+  // and starts guidance as soon as the answer arrives.
+  await page.getByRole("button", { name: startNavigation ? "▶ cryptoMap.go" : "cryptoMap.routeHere" }).click();
   await page.waitForFunction(() => (window as any).__requests.filter((r: any) => r.url.includes("/directions?")).length === 1);
 }
 
@@ -355,7 +358,7 @@ async function startPendingSecondRoute(page: Page) {
   await startFirstRoute(page);
   await settleDirections(page, 0, "resolve");
   await page.waitForFunction(() => (window as any).__maps[0].sources.get("route").data.features.length === 1);
-  await page.getByRole("button", { name: "🚗 cryptoMap.mode_car" }).click();
+  await page.getByRole("button", { name: "cryptoMap.mode_car" }).click();
   await page.waitForFunction(() => (window as any).__requests.filter((r: any) => r.url.includes("/directions?")).length === 2);
 }
 
@@ -469,7 +472,7 @@ test("a late directions response cannot overwrite the newest route", async ({ pa
   await mountNavigator(page);
   await loadMap(page);
   await startFirstRoute(page);
-  await page.getByRole("button", { name: "🚗 cryptoMap.mode_car" }).click();
+  await page.getByRole("button", { name: "cryptoMap.mode_car" }).click();
   await page.waitForFunction(() => (window as any).__requests.filter((r: any) => r.url.includes("/directions?")).length === 2);
 
   await page.evaluate((response) => {
@@ -491,7 +494,7 @@ test("an aborted directions request does not show a routing error", async ({ pag
   await mountNavigator(page);
   await loadMap(page);
   await startFirstRoute(page);
-  await page.getByRole("button", { name: "🚗 cryptoMap.mode_car" }).click();
+  await page.getByRole("button", { name: "cryptoMap.mode_car" }).click();
   await page.waitForFunction(() => (window as any).__requests.filter((r: any) => r.url.includes("/directions?")).length === 2);
 
   await page.evaluate((response) => {
@@ -535,6 +538,58 @@ for (const outcome of ["resolve", "reject"] as const) {
     await expect(page.locator("body")).not.toContainText("cryptoMap.noTransit");
   });
 }
+
+test("the point card opens full-screen on a phone and docks once the route is drawn", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await mountNavigator(page);
+  await loadMap(page);
+  await startFirstRoute(page);
+  // The card covers the device screen, not the map window: that is the whole
+  // point of the sheet replacing the 240 px popup.
+  const sheet = page.getByRole("dialog");
+  await expect(sheet).toHaveClass(/fixed inset-0/);
+
+  await settleDirections(page, 0, "resolve");
+  await page.waitForFunction(() => (window as any).__maps[0].sources.get("route").data.features.length === 1);
+  // Route drawn → the sheet docks to the bottom, otherwise it hides the line.
+  await expect(sheet).toHaveClass(/bottom-0/);
+  await expect(sheet).not.toHaveClass(/fixed inset-0/);
+  await expect(page.getByRole("button", { name: "▶ cryptoMap.go" })).toBeVisible();
+});
+
+test("guidance on a phone takes the whole screen and resizes the map", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await mountNavigator(page);
+  await loadMap(page);
+  await startFirstRoute(page, true);
+  const resizesBefore = await page.evaluate(() => (window as any).__maps[0].resizeCalls);
+  await settleDirections(page, 0, "resolve");
+  await page.waitForFunction(() => (window as any).__navigationControllers.length === 1);
+
+  // Card closed, map full-screen, and MapLibre told about the new size.
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "■ cryptoMap.stop" })).toBeVisible();
+  expect(await page.evaluate(() => (window as any).__maps[0].container.parentElement.className)).toContain("fixed inset-0");
+  await expect
+    .poll(() => page.evaluate(() => (window as any).__maps[0].resizeCalls))
+    .toBeGreaterThan(resizesBefore);
+});
+
+test("a car route can be driven, not only walked", async ({ page }) => {
+  await mountNavigator(page);
+  await loadMap(page);
+  await startFirstRoute(page);
+  await page.getByRole("button", { name: "cryptoMap.mode_car" }).click();
+  await page.waitForFunction(() => (window as any).__requests.filter((r: any) => r.url.includes("/directions?")).length === 2);
+  await page.evaluate((response) => {
+    const requests = (window as any).__requests.filter((r: any) => r.url.includes("/directions?"));
+    requests[1].resolve(response);
+  }, route(2000, "car", 14.6));
+  await page.waitForFunction(() => (window as any).__maps[0].sources.get("route").data.features.length === 1);
+
+  await page.getByRole("button", { name: "▶ cryptoMap.go" }).click();
+  await expect.poll(() => page.evaluate(() => (window as any).__navigationControllers.length)).toBe(1);
+});
 
 test("changing coinId remounts the navigator and isolates late POI responses", async ({ page }) => {
   await setupPage(page);
