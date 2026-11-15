@@ -124,10 +124,11 @@ function CoinChip({ coin, locale, t }: { coin: AcceptedCoin; locale: string; t: 
       {coin.own && <span className="text-[10px] uppercase tracking-wide text-accent">{t("ownListing")}</span>}
     </>
   );
-  const cls = `${CHIP} text-foreground hover:border-accent`;
-  if (!coin.slug) return <span className={cls}>{inside}</span>;
+  // Классы повторены, а не вынесены в переменную: тест `poi-sheet-buttons`
+  // читает исходник и должен видеть размер под палец прямо на элементе.
+  if (!coin.slug) return <span className={`${CHIP} text-foreground`}>{inside}</span>;
   return (
-    <a href={`/${locale}/coin/${coin.slug}`} className={cls}>
+    <a href={`/${locale}/coin/${coin.slug}`} className={`${CHIP} text-foreground hover:border-accent`}>
       {inside}
     </a>
   );
