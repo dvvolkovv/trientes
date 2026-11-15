@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { PointerEvent as ReactPointerEvent } from "react";
 import type { OgPreview, Poi, RouteMode, RouteStep, TransitLeg } from "@/lib/crypto-map";
+import { settleTile } from "@/lib/poi-tile";
 
 /**
  * Общее у оболочки карточки точки и её страниц: размеры под палец, цвет слоя,
@@ -78,4 +80,44 @@ export function usePoiPhoto(poi: Poi, website: string | null): PhotoState {
   }, [website]);
 
   return { image, video, loading, onError: () => setImage(null) };
+}
+
+/**
+ * Жест плитки: вверх — раскрыть, вниз — свернуть. Решение принимает чистая
+ * `settleTile()`, здесь только сбор чисел. Высота меряется у самого элемента,
+ * а не передаётся числом: у свёрнутой плитки и у раскрытой она разная, и
+ * второй источник правды разошёлся бы с разметкой.
+ */
+export function useTileGesture(i: { expanded: boolean; onChange: (next: boolean) => void }) {
+  const start = useRef<{ x: number; y: number; at: number; height: number } | null>(null);
+  const { expanded, onChange } = i;
+
+  const onPointerDown = useCallback((e: ReactPointerEvent<HTMLElement>) => {
+    const box = e.currentTarget.getBoundingClientRect();
+    start.current = { x: e.clientX, y: e.clientY, at: e.timeStamp, height: box.height || 1 };
+  }, []);
+
+  const onPointerUp = useCallback(
+    (e: ReactPointerEvent<HTMLElement>) => {
+      const s = start.current;
+      start.current = null;
+      if (!s) return;
+      const dy = e.clientY - s.y;
+      const next = settleTile({
+        expanded,
+        dx: e.clientX - s.x,
+        dy,
+        height: s.height,
+        velocity: dy / Math.max(1, e.timeStamp - s.at),
+      });
+      if (next !== expanded) onChange(next);
+    },
+    [expanded, onChange],
+  );
+
+  const onPointerCancel = useCallback(() => {
+    start.current = null;
+  }, []);
+
+  return { onPointerDown, onPointerUp, onPointerCancel };
 }
