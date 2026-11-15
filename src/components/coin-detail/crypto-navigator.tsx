@@ -23,6 +23,7 @@ import {
 } from "@/components/coin-detail/route-steps-panel";
 import { StreetViewOverlay } from "@/components/coin-detail/street-view-overlay";
 import { MODE_ICON, PoiSheet, type SheetRoute } from "@/components/coin-detail/poi-sheet";
+import { DEFAULT_POI_PAGE, type PoiPage } from "@/lib/poi-pager";
 import { CURATED_POIS, type CuratedPoi } from "@/lib/curated-pois";
 import { NavigationController, type NavigationCallbacks } from "./navigation-controller";
 import { haversineMeters } from "@/lib/route-geometry";
@@ -174,7 +175,10 @@ export default function CryptoNavigator({
   // него зависит, что показывает карточка точки.
   const [origin, setOriginState] = useState<[number, number] | null>(null);
   const [selected, setSelected] = useState<Poi | null>(null);
-  const [sheetExpanded, setSheetExpanded] = useState(true);
+  const [poiPage, setPoiPage] = useState<PoiPage>(DEFAULT_POI_PAGE);
+  // Полосу управления страницы «Карта» мерит `fitRoute`: маршрут должен
+  // уместиться в видимую часть карты, а не уехать под полосу.
+  const routeBarRef = useRef<HTMLDivElement | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [originLabel, setOriginLabel] = useState<string | null>(null);
   const [street, setStreet] = useState<{ lat: number; lon: number; name: string } | null>(null);
@@ -267,17 +271,17 @@ export default function CryptoNavigator({
       });
   }, [coinId, symbol]);
 
-  // Маршрут вписывается в ту часть карты, которую видно: на телефоне нижнюю
-  // половину занимает пристыкованная карточка, и без этого линия уезжает под
-  // неё. Высота берётся у самой карточки, а не угадывается числом.
+  // Маршрут вписывается в ту часть карты, которую видно. Снизу мешает ровно
+  // полоса управления страницы «Карта»: её высота плывёт (у транспорта в
+  // сводке появляются пересадки), поэтому она меряется, а не угадывается
+  // числом. Сверху — шапка карточки с переключателем страниц.
   function fitRoute() {
     const map = mapRef.current;
     const coords = routeCoordsRef.current;
     if (!map || coords.length === 0 || navControllerRef.current) return;
-    const sheet = document.querySelector('[role="dialog"]');
-    const sheetRect = isPhoneNow() && sheet ? sheet.getBoundingClientRect() : null;
-    const bottom = sheetRect
-      ? Math.min(Math.round(sheetRect.height) + 20, Math.round(window.innerHeight * 0.7))
+    const barRect = isPhoneNow() ? routeBarRef.current?.getBoundingClientRect() : null;
+    const bottom = barRect
+      ? Math.min(Math.round(barRect.height) + 20, Math.round(window.innerHeight * 0.7))
       : 60;
     const bounds = coords.reduce(
       (bb, c) => bb.extend(c),
@@ -344,16 +348,16 @@ export default function CryptoNavigator({
           steps: res.steps,
           coordinates: coords,
         });
-        // Линия нарисована — лист стыкуется к низу экрана, иначе он закрывает
-        // ровно то, за чем его открывали.
-        setSheetExpanded(false);
+        // Линия нарисована — показываем её: на телефоне это страница «Карта»
+        // карточки, прозрачное окно поверх живого полотна.
+        if (isPhoneNow()) setPoiPage("map");
         if (navControllerRef.current) {
           navControllerRef.current.updateRoute(coords);
           setNavOffRoute(null);
         }
         routeCoordsRef.current = coords;
-        // Карточка стыкуется в этом же кадре — вписываем линию, когда её высота
-        // уже известна браузеру.
+        // Страница карты встаёт в этом же кадре — вписываем линию, когда высота
+        // полосы управления уже известна браузеру.
         window.setTimeout(fitRoute, 160);
       })
       .catch((error: unknown) => {
@@ -372,6 +376,9 @@ export default function CryptoNavigator({
     setDestKey(key);
     setRoutePoi(poi);
     destRef.current = { lonlat: [poi.lon, poi.lat], name: poi.name };
+    // Смысл нажатия «Маршрут сюда» — увидеть линию. Страница «Карта» и есть
+    // это зрелище; прежде ту же работу делало пристыкованное полустояние.
+    if (isPhoneNow()) setPoiPage("map");
     if (originRef.current) buildRoute();
     else setStatus(t("noOrigin"));
   }
@@ -505,8 +512,10 @@ export default function CryptoNavigator({
       // Один и тот же лист открывают и круги слоёв, и куратские логотипы:
       // карточка точки живёт в React (см. poi-sheet.tsx), а не в попапе карты.
       const openPoi = (poi: Poi) => {
+        // Свежая точка всегда открывается на фактах: нажатие на неё — это
+        // вопрос «что это за место», а не «как доехать».
+        setPoiPage(DEFAULT_POI_PAGE);
         setSelected(poi);
-        setSheetExpanded(true);
       };
 
       [...POI_LAYERS].reverse().forEach((layer) => {
@@ -828,7 +837,10 @@ export default function CryptoNavigator({
   // карта с маршрутом — ровно то, на что жаловались. MapLibre смену размера
   // контейнера сам не замечает, поэтому размер пересчитывается явно и ещё раз
   // следующим кадром, когда класс уже применён.
-  const mapFull = isPhone && (navActive || (!!selected && !sheetExpanded));
+  // Карта занимает весь экран телефона, пока открыта карточка точки или идёт
+  // ведение: карточка — листалка на весь экран, и её страница «Карта» должна
+  // смотреть в карту, а не в кусок страницы. Полустояния листа больше нет.
+  const mapFull = isPhone && (navActive || !!selected);
   useEffect(() => {
     if (!mapRef.current) return;
     mapRef.current.resize();
@@ -944,7 +956,7 @@ export default function CryptoNavigator({
         )}
         {!selected && !navActive && <AvailableFintechPanel center={mapCenter} />}
 
-        {selected && (
+        {selected && !navActive && (
           <PoiSheet
             key={selected.id}
             poi={selected}
@@ -954,11 +966,11 @@ export default function CryptoNavigator({
             status={status}
             hasOrigin={!!origin}
             near={!!origin && haversineMeters(origin, [selected.lon, selected.lat]) <= 150}
-            navActive={navActive}
             voiceOn={voiceOn}
             voiceSupported={voiceSupported}
-            expanded={sheetExpanded}
-            onExpandedChange={setSheetExpanded}
+            page={poiPage}
+            onPageChange={setPoiPage}
+            routeBarRef={routeBarRef}
             onClose={() => setSelected(null)}
             onMode={(m) => switchMode(m, selected)}
             onBuildRoute={() => routeTo(selected)}
@@ -1097,8 +1109,8 @@ export default function CryptoNavigator({
                 <button
                   type="button"
                   onClick={() => {
+                    setPoiPage("map");
                     setSelected(routePoi);
-                    setSheetExpanded(false);
                   }}
                   className="min-h-[36px] rounded-xl border border-hairline px-3 text-[12px] font-medium text-foreground hover:border-accent"
                 >
