@@ -93,6 +93,7 @@ export function PoiSheet({
 }) {
   const phone = usePhone();
   const pages = useMemo(() => pagesFor(phone), [phone]);
+  const rootRef = useRef<HTMLDivElement | null>(null);
   const deckRef = useRef<HTMLDivElement | null>(null);
   const [drag, setDrag] = useState<number | null>(null);
   const [deckWidth, setDeckWidth] = useState(0);
@@ -145,7 +146,7 @@ export function PoiSheet({
   const onPointerDown = useCallback(
     (e: ReactPointerEvent<HTMLDivElement>) => {
       if (!phone || e.pointerType === "mouse") return;
-      const box = deckRef.current?.getBoundingClientRect();
+      const box = rootRef.current?.getBoundingClientRect();
       const edge =
         !!box && (e.clientX - box.left < SWIPE_EDGE_PX || box.right - e.clientX < SWIPE_EDGE_PX);
       gesture.current = { x: e.clientX, y: e.clientY, at: e.timeStamp, edge, claimed: false };
@@ -160,13 +161,20 @@ export function PoiSheet({
       const dx = e.clientX - g.x;
       const dy = e.clientY - g.y;
       if (!g.claimed) {
-        if (!claimsSwipe({ page, dx, dy, fromEdge: g.edge })) return;
+        if (!claimsSwipe({ page, dx, dy, fromEdge: g.edge, mapExpanded })) return;
         g.claimed = true;
-        e.currentTarget.setPointerCapture(e.pointerId);
+        // Захват указателя — удобство, а не условие: палец, ушедший за край
+        // листа, продолжает тянуть страницу. Браузер отказывает, если указателя
+        // уже нет, и ронять из-за этого весь жест нельзя.
+        try {
+          e.currentTarget.setPointerCapture(e.pointerId);
+        } catch {
+          /* указатель уже отпущен — жест дорабатывает без захвата */
+        }
       }
       setDrag(dx);
     },
-    [page],
+    [page, mapExpanded],
   );
 
   const onPointerUp = useCallback(
@@ -199,15 +207,37 @@ export function PoiSheet({
   const container = [
     "z-[60] flex flex-col overflow-hidden text-foreground",
     // На странице карты карточка — окно: фона и тени нет, палец идёт к карте.
-    onMapPage ? "bg-transparent" : "bg-card shadow-[0_-10px_40px_-12px_rgba(0,0,0,0.6)]",
+    // Прозрачного фона для этого мало: элемент во весь экран ловит нажатия и
+    // без фона, поэтому на этой странице корень событий не берёт вовсе, а
+    // берут их только непрозрачные части вокруг окна.
+    onMapPage
+      ? "bg-transparent pointer-events-none"
+      : "bg-card shadow-[0_-10px_40px_-12px_rgba(0,0,0,0.6)]",
     "fixed inset-0",
-    "md:absolute md:inset-y-3 md:right-auto md:left-3 md:top-3 md:bottom-3 md:w-[380px] md:rounded-[18px] md:border md:border-hairline md:bg-card md:shadow-none",
+    "md:absolute md:inset-y-3 md:right-auto md:left-3 md:top-3 md:bottom-3 md:w-[380px] md:rounded-[18px] md:border md:border-hairline md:bg-card md:shadow-none md:pointer-events-auto",
   ].join(" ");
 
-  const chrome = onMapPage ? "bg-card/90 backdrop-blur" : "";
+  // Шапка и закладки стоят в разметке раньше окна карты, а тень-заливка
+  // вокруг окна красит всё, до чего дотянется, — без своего слоя она закрасила
+  // бы их собой.
+  const chrome = onMapPage ? "relative z-10 pointer-events-auto bg-card/90 backdrop-blur" : "";
 
   return (
-    <div className={container} role="dialog" aria-label={poi.name}>
+    <div
+      ref={rootRef}
+      className={container}
+      role="dialog"
+      aria-label={poi.name}
+      // Жест слушается со всего листа, а не только с дорожки страниц: шапка и
+      // закладки — такая же часть карточки, и палец не обязан их обходить.
+      // `pan-y` отдаёт браузеру только вертикаль: иначе он решает за нас, что
+      // начавшийся наискось жест — это прокрутка, и забирает его себе.
+      style={{ touchAction: "pan-y" }}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
+    >
       <div className={`flex shrink-0 items-start gap-2 border-b border-hairline px-4 pb-2 pt-3 ${chrome}`}>
         {poi.logoUrl ? (
           // Знак заведения: он есть у точки компании, у финтеха и у куратской
@@ -273,10 +303,6 @@ export function PoiSheet({
       <div
         ref={deckRef}
         className={"relative min-h-0 flex-1 " + (onMapPage ? "pointer-events-none" : "overflow-hidden")}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerCancel={onPointerUp}
       >
         <div
           className="flex h-full"

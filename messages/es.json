@@ -682,7 +682,9 @@
     "pageOf": "Página {n} de {total}",
     "expandMap": "Mapa en pantalla completa",
     "collapseMap": "Reducir el mapa",
-    "expandPhoto": "Abrir la foto"
+    "expandPhoto": "Abrir la foto",
+    "bannerDetails": "Detalles",
+    "bannerHideDetails": "Ocultar detalles"
   },
   "markets": {
     "title": "Mercados",
@@ -981,7 +983,7 @@
       "channels": {
         "title": "Canales de entrega",
         "telegram": "Telegram",
-        "email": "Email",
+        "email": "Correo electrónico",
         "telegramNotLinked": "Inicia sesión con Telegram para activar.",
         "emailNotSet": "Añade un email en tu perfil para activar.",
         "emailNotVerified": "Verifica tu email primero para activar.",
@@ -1127,7 +1129,7 @@
     "description": "Descripción",
     "website": "Sitio web",
     "country": "País",
-    "email": "Email",
+    "email": "Correo electrónico",
     "phone": "Teléfono",
     "address": "Dirección",
     "logoUrl": "URL del logo",
@@ -1170,7 +1172,7 @@
       "SAVINGS": "Ahorro",
       "CRYPTO_LOANS": "Préstamos cripto",
       "STAKING": "Staking",
-      "EXCHANGE": "Exchange",
+      "EXCHANGE": "Intercambio",
       "CUSTODY": "Custodia",
       "PAYMENTS": "Pagos",
       "ONRAMP": "Compra con fiat",
@@ -1423,7 +1425,7 @@
       }
     },
     "market": {
-      "exchange": "Exchange",
+      "exchange": "Intercambio",
       "pair": "Par",
       "kind": "Tipo",
       "price": "Precio",
@@ -1526,7 +1528,7 @@
       "burnMechanism": "Mecanismo de quema",
       "marketsLabel": "Dónde se negocia",
       "marketsHint": "Indica los exchanges y pools donde estás listado. Lo verificamos con nuestro propio agregador.",
-      "exchangeName": "Exchange",
+      "exchangeName": "Intercambio",
       "pair": "Par",
       "tradeUrl": "Enlace de trading",
       "poolAddress": "Dirección del pool",

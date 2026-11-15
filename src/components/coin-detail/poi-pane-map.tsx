@@ -14,7 +14,8 @@ import {
 import { useTileGesture } from "@/components/coin-detail/poi-sheet-ui";
 import { StepList, type StepTranslator } from "@/components/coin-detail/route-steps-panel";
 import { footerActions } from "@/lib/poi-sheet-actions";
-import { TILE_CLASS } from "@/lib/poi-tile";
+import { SWIPE_EDGE_PX } from "@/lib/poi-pager";
+import { TILE_PAD_CLASS, TILE_SHELL } from "@/lib/poi-tile";
 
 const TRAVEL_MODES: RouteMode[] = ["walk", "car", "transit"];
 
@@ -46,7 +47,7 @@ function legIcon(mode: string): string {
  * а непрозрачны только части страницы вокруг него.
  *
  * Окно живёт в двух состояниях. Свёрнутое — плитка в пропорции банковской
- * карты, такая же, как баннер на «Месте»; под ней, на непрозрачном фоне, всё
+ * карты с закруглёнными углами, такая же, как баннер на «Месте»; под ней, на непрозрачном фоне, всё
  * управление маршрутом. Свёрнутая плитка **берёт нажатие на себя**: нажатие на
  * пустое место карты означает «поставь сюда мою булавку», и в окошке размером с
  * кредитку это была бы ловушка. Раскрытое окно событий не берёт — палец
@@ -107,7 +108,10 @@ export function PoiPaneMap({
   const controls = (
       <div
         className={
-          "pointer-events-auto space-y-2 px-4 pt-3 " +
+          // `relative` здесь не про положение, а про порядок рисования: окно
+          // карты позиционировано, а значит рисуется поверх обычных соседей —
+          // его тень-заливка закрасила бы полосу управления собой.
+          "pointer-events-auto relative space-y-2 px-4 pt-3 " +
           (docked
             ? "bg-card"
             : expanded
@@ -245,39 +249,60 @@ export function PoiPaneMap({
 
   return (
     <div className="pointer-events-none flex h-full flex-col">
-      <div
-        ref={tileRef}
-        data-testid="poi-map-tile"
-        className={
-          "relative w-full " +
-          (expanded ? "min-h-0 flex-1" : `${TILE_CLASS} shrink-0 border-b border-hairline`)
-        }
-      >
-        {expanded ? (
-          <div className="absolute inset-x-0 top-0 flex justify-center p-2">
+      <div className={expanded ? "min-h-0 flex-1" : `shrink-0 ${TILE_PAD_CLASS}`}>
+        <div
+          ref={tileRef}
+          data-testid="poi-map-tile"
+          className={"relative " + (expanded ? "h-full w-full" : TILE_SHELL)}
+          // Окно — дыра в карточке: всё, что вокруг него, закрашивает тень
+          // самой плитки. Четыре полосы фона вокруг прямоугольника нарисовали
+          // бы то же самое, но закруглённых углов у дыры от них не бывает.
+          style={expanded ? undefined : { boxShadow: "0 0 0 100vmax var(--color-card)" }}
+        >
+          {expanded ? (
+            <>
+              <div className="absolute inset-x-0 top-0 flex justify-center p-2">
+                <button
+                  type="button"
+                  onClick={toggle}
+                  aria-label={t("collapseMap")}
+                  {...handlers}
+                  className="pointer-events-auto flex min-h-[44px] items-center gap-2 rounded-full border border-hairline bg-card/90 px-4 text-[12px] font-medium text-muted backdrop-blur hover:text-foreground"
+                >
+                  ▾ {t("collapseMap")}
+                </button>
+              </div>
+              {/* Раскрытая карта забирает палец себе, и листалке остаются две
+                  полоски у краёв — иначе уйти со страницы можно только
+                  закладкой. Прозрачные и без подписи: это не кнопка, а поле
+                  жеста, который разбирает `claimsSwipe`. */}
+              <span
+                aria-hidden
+                data-testid="poi-swipe-edge-left"
+                className="pointer-events-auto absolute inset-y-0 left-0"
+                style={{ width: SWIPE_EDGE_PX }}
+              />
+              <span
+                aria-hidden
+                data-testid="poi-swipe-edge-right"
+                className="pointer-events-auto absolute inset-y-0 right-0"
+                style={{ width: SWIPE_EDGE_PX }}
+              />
+            </>
+          ) : (
             <button
               type="button"
               onClick={toggle}
-              aria-label={t("collapseMap")}
+              aria-label={t("expandMap")}
               {...handlers}
-              className="pointer-events-auto flex min-h-[44px] items-center gap-2 rounded-full border border-hairline bg-card/90 px-4 text-[12px] font-medium text-muted backdrop-blur hover:text-foreground"
+              className="pointer-events-auto absolute inset-0 flex items-end justify-end p-2"
             >
-              ▾ {t("collapseMap")}
+              <span className="flex min-h-[32px] items-center gap-1.5 rounded-full border border-hairline bg-card/90 px-3 text-[11px] font-medium text-muted backdrop-blur">
+                ⤢ {t("expandMap")}
+              </span>
             </button>
-          </div>
-        ) : (
-          <button
-            type="button"
-            onClick={toggle}
-            aria-label={t("expandMap")}
-            {...handlers}
-            className="pointer-events-auto absolute inset-0 flex items-end justify-end p-2"
-          >
-            <span className="flex min-h-[32px] items-center gap-1.5 rounded-full border border-hairline bg-card/90 px-3 text-[11px] font-medium text-muted backdrop-blur">
-              ⤢ {t("expandMap")}
-            </span>
-          </button>
-        )}
+          )}
+        </div>
       </div>
       {controls}
     </div>

@@ -31,17 +31,52 @@ const POINT = {
   description: "Точка для e2e-прогона листалки.",
 };
 
-async function stubFeed(page: Page) {
+async function stubFeed(page: Page, over: Record<string, unknown> = {}) {
   await page.route("**/api/crypto-map/poi*", async (route) => {
     const bbox = new URL(route.request().url()).searchParams.get("bbox") ?? "";
     const [w, s, e, n] = bbox.split(",").map(Number);
-    const pois = [{ ...POINT, lon: (w + e) / 2, lat: (s + n) / 2 }];
+    const pois = [{ ...POINT, ...over, lon: (w + e) / 2, lat: (s + n) / 2 }];
     await route.fulfill({ json: { pois } });
   });
+  // Снимок места догружается с сайта заведения — в прогоне сайта нет.
+  await page.route("**/api/crypto-map/preview*", (route) =>
+    route.fulfill({ json: { preview: { title: null, image: null, video: null } } }),
+  );
 }
 
-async function gotoMap(page: Page) {
-  await stubFeed(page);
+/**
+ * Палец. Мышью листалку не проверить: жест слушается только у касания
+ * (`pointerType`), а Playwright умеет касанием лишь тапать. Поэтому события
+ * указателя рассылаются сами — ровно те, что слушает карточка.
+ */
+async function swipe(page: Page, from: { x: number; y: number }, to: { x: number; y: number }) {
+  await page.evaluate(
+    ([a, b]) => {
+      const el = document.elementFromPoint(a.x, a.y);
+      if (!el) throw new Error("под пальцем нет элемента");
+      const at = (x: number, y: number) => ({
+        pointerId: 1,
+        pointerType: "touch",
+        isPrimary: true,
+        bubbles: true,
+        cancelable: true,
+        clientX: x,
+        clientY: y,
+      });
+      el.dispatchEvent(new PointerEvent("pointerdown", at(a.x, a.y)));
+      for (let i = 1; i <= 10; i += 1) {
+        el.dispatchEvent(
+          new PointerEvent("pointermove", at(a.x + ((b.x - a.x) * i) / 10, a.y + ((b.y - a.y) * i) / 10)),
+        );
+      }
+      el.dispatchEvent(new PointerEvent("pointerup", at(b.x, b.y)));
+    },
+    [from, to],
+  );
+}
+
+async function gotoMap(page: Page, over: Record<string, unknown> = {}) {
+  await stubFeed(page, over);
   await page.goto(PAGE);
   const canvas = page.locator("canvas.maplibregl-canvas");
   await canvas.waitFor({ timeout: 30_000 });
@@ -56,8 +91,8 @@ async function gotoMap(page: Page) {
  * досыпает содержимое асинхронно и успевает съехать между замером и кликом —
  * на стоявших координатах палец попадал в соседнее место.
  */
-async function openPoi(page: Page) {
-  const canvas = await gotoMap(page);
+async function openPoi(page: Page, over: Record<string, unknown> = {}) {
+  const canvas = await gotoMap(page, over);
   // Фид уже подменён, но точка появляется после ответа — клик повторяется,
   // пока слой не отрисован.
   await expect(async () => {
@@ -110,6 +145,29 @@ test.describe("карточка точки — три страницы", () => {
     expect(Math.round(refolded?.height ?? 0)).toBe(Math.round(folded.height));
   });
 
+  test("палец листает с середины страницы, а не только от края", async ({ page }) => {
+    await openPoi(page);
+    await swipe(page, { x: 300, y: 500 }, { x: 60, y: 505 });
+    await expect(page.getByRole("tab", { name: "Витрина" })).toHaveAttribute("aria-selected", "true");
+    await swipe(page, { x: 60, y: 500 }, { x: 320, y: 495 });
+    await expect(page.getByRole("tab", { name: "Место" })).toHaveAttribute("aria-selected", "true");
+  });
+
+  test("свёрнутое окно карты листается тем же пальцем", async ({ page }) => {
+    await openPoi(page);
+    await page.getByRole("tab", { name: "Карта" }).click();
+    const tile = page.getByTestId("poi-map-tile");
+    const box = await tile.boundingBox();
+    if (!box) throw new Error("нет окна карты");
+    // Прямо по окну карты: свёрнутой плитке нечего перетаскивать.
+    await swipe(
+      page,
+      { x: box.x + box.width / 2, y: box.y + box.height / 2 },
+      { x: box.x + box.width / 2 - 200, y: box.y + box.height / 2 },
+    );
+    await expect(page.getByRole("tab", { name: "Место" })).toHaveAttribute("aria-selected", "true");
+  });
+
   test("в раскрытом окне палец достаёт до карты", async ({ page }) => {
     await openPoi(page);
     await page.getByRole("tab", { name: "Карта" }).click();
@@ -124,6 +182,36 @@ test.describe("карточка точки — три страницы", () => {
     await expect(page.getByRole("tab", { name: "Карта" })).toHaveAttribute("aria-selected", "true");
     // И полотно то же самое — карта не пересоздавалась.
     expect(await page.evaluate(() => document.querySelectorAll("canvas.maplibregl-canvas").length)).toBe(1);
+  });
+});
+
+test.describe("баннер заведения", () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
+
+  test("раскрывается на весь экран и поднимается, открывая витрину", async ({ page }) => {
+    await openPoi(page, { image: "/logo.png" });
+    await page.getByTestId("poi-photo-tile").click();
+    await expect(page.getByTestId("poi-banner-image")).toBeVisible();
+    // Поднимаем баннер: внизу появляется всё, что с этим местом можно сделать.
+    const handle = page.getByTestId("poi-banner-handle");
+    await expect(handle).toHaveAttribute("aria-expanded", "false");
+    await handle.click();
+    await expect(handle).toHaveAttribute("aria-expanded", "true");
+    // Точку никто не забрал себе — значит, видна кнопка «это мой бизнес».
+    await expect(page.getByRole("link", { name: "Это мой бизнес" })).toBeVisible();
+  });
+});
+
+test.describe("точка со знаком заведения", () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
+
+  test("показывает логотип прямо на карте и открывает карточку", async ({ page }) => {
+    await gotoMap(page, { logoUrl: "/logo.png" });
+    const marker = page.locator(".cmap-poi-logo");
+    await expect(marker).toHaveCount(1, { timeout: 30_000 });
+    await marker.click();
+    await expect(page.getByRole("dialog")).toBeVisible();
+    await expect(page.getByRole("dialog")).toContainText("Кафе на проверку");
   });
 });
 

@@ -682,7 +682,9 @@
     "pageOf": "Stranica {n} od {total}",
     "expandMap": "Proširiti kartu na cijeli zaslon",
     "collapseMap": "Smanjiti kartu",
-    "expandPhoto": "Otvoriti fotografiju"
+    "expandPhoto": "Otvoriti fotografiju",
+    "bannerDetails": "Detalji",
+    "bannerHideDetails": "Sakrijte detalje"
   },
   "markets": {
     "title": "Tržišta",

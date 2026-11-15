@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   TILE_CLASS,
   TILE_MIN_SPAN,
+  TILE_SHELL,
   settleTile,
   tileOffset,
   tilePadding,
@@ -14,6 +15,12 @@ const COLLAPSED = { top: 104, left: 0, width: 390, height: 246 };
 describe("TILE_CLASS", () => {
   it("держит пропорцию банковской карты одной строкой на оба места", () => {
     expect(TILE_CLASS).toBe("aspect-[856/540]");
+  });
+
+  it("плитка закруглена: у кредитки острых углов не бывает", () => {
+    expect(TILE_SHELL).toContain(TILE_CLASS);
+    expect(TILE_SHELL).toMatch(/\brounded-/);
+    expect(TILE_SHELL).toContain("overflow-hidden");
   });
 });
 

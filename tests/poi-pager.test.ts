@@ -28,24 +28,34 @@ describe("pageLabelKey", () => {
 });
 
 describe("claimsSwipe", () => {
+  const folded = { fromEdge: false, mapExpanded: false };
+
   it("ignores a vertical drag — that is page scrolling", () => {
-    expect(claimsSwipe({ page: "card", dx: 20, dy: 40, fromEdge: false })).toBe(false);
+    expect(claimsSwipe({ page: "card", dx: 20, dy: 40, ...folded })).toBe(false);
   });
 
   it("ignores a tremor below the threshold", () => {
-    expect(claimsSwipe({ page: "card", dx: 8, dy: 0, fromEdge: false })).toBe(false);
+    expect(claimsSwipe({ page: "card", dx: 6, dy: 0, ...folded })).toBe(false);
   });
 
   it("takes a clearly horizontal drag on the facts page from anywhere", () => {
-    expect(claimsSwipe({ page: "card", dx: -40, dy: 5, fromEdge: false })).toBe(true);
+    expect(claimsSwipe({ page: "card", dx: -40, dy: 5, ...folded })).toBe(true);
   });
 
-  it("leaves the middle of the map page to the map itself", () => {
-    expect(claimsSwipe({ page: "map", dx: -80, dy: 2, fromEdge: false })).toBe(false);
+  it("takes the same drag over the folded map window — a tile has nothing to pan", () => {
+    expect(claimsSwipe({ page: "map", dx: -80, dy: 2, ...folded })).toBe(true);
   });
 
-  it("still listens at the edge strip of the map page", () => {
-    expect(claimsSwipe({ page: "map", dx: -80, dy: 2, fromEdge: true })).toBe(true);
+  it("leaves the middle of the expanded map to the map itself", () => {
+    expect(claimsSwipe({ page: "map", dx: -80, dy: 2, fromEdge: false, mapExpanded: true })).toBe(false);
+  });
+
+  it("still listens at the edge strip of the expanded map", () => {
+    expect(claimsSwipe({ page: "map", dx: -80, dy: 2, fromEdge: true, mapExpanded: true })).toBe(true);
+  });
+
+  it("answers a short deliberate flick — the finger must not have to travel", () => {
+    expect(claimsSwipe({ page: "card", dx: -10, dy: 3, ...folded })).toBe(true);
   });
 });
 
@@ -53,16 +63,16 @@ describe("settlePage", () => {
   const base = { pages: PHONE, page: "card" as PoiPage, width: 400, velocity: 0 };
 
   it("snaps back when the drag is too short and slow", () => {
-    expect(settlePage({ ...base, dx: -60 })).toBe("card");
+    expect(settlePage({ ...base, dx: -40 })).toBe("card");
   });
 
-  it("turns the page past a quarter of the width", () => {
+  it("turns the page past a fifth of the width", () => {
     expect(settlePage({ ...base, dx: -140 })).toBe("showcase");
     expect(settlePage({ ...base, dx: 140 })).toBe("map");
   });
 
   it("turns the page on a fast short flick", () => {
-    expect(settlePage({ ...base, dx: -30, velocity: 0.9 })).toBe("showcase");
+    expect(settlePage({ ...base, dx: -30, velocity: 0.3 })).toBe("showcase");
   });
 
   it("cannot go past the ends", () => {

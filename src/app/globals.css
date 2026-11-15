@@ -172,6 +172,32 @@ select:focus-visible {
   object-fit: contain;
 }
 
+/* Логотип заведения прямо на точке: круг цвета слоя говорит, что это магазин,
+   но не говорит чей он. Знак ставится центром на точку и накрывает круг. */
+.cmap-poi-logo {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 2px;
+  background: #fff;
+  border: 2px solid #fe5c04;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  transition: transform 0.15s ease;
+}
+.cmap-poi-logo:hover { transform: scale(1.12); }
+.cmap-poi-logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
 /* ---- Homepage ticker (LED-dot scrolling strip above newsflow) ---- */
 .ticker-viewport {
   overflow: hidden;

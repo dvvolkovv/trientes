@@ -682,7 +682,9 @@
     "pageOf": "Page {n} of {total}",
     "expandMap": "Full screen map",
     "collapseMap": "Shrink the map",
-    "expandPhoto": "Open the photo"
+    "expandPhoto": "Open the photo",
+    "bannerDetails": "Details",
+    "bannerHideDetails": "Hide details"
   },
   "markets": {
     "title": "Markets",

@@ -4,8 +4,8 @@ import { useState } from "react";
 import type { AcceptedCoin, Poi } from "@/lib/crypto-map";
 import type { StepTranslator } from "@/components/coin-detail/route-steps-panel";
 import { CHIP, ROW_BTN, usePoiPhoto } from "@/components/coin-detail/poi-sheet-ui";
-import { PoiPhotoOverlay } from "@/components/coin-detail/poi-photo-overlay";
-import { TILE_CLASS } from "@/lib/poi-tile";
+import { PoiBannerOverlay } from "@/components/coin-detail/poi-banner-overlay";
+import { TILE_PAD_CLASS, TILE_SHELL } from "@/lib/poi-tile";
 import { safeHttpUrl } from "@/lib/safe-url";
 
 /**
@@ -13,9 +13,10 @@ import { safeHttpUrl } from "@/lib/safe-url";
  * заявки компании, часы, связь. Рассказ заведения о себе живёт на витрине: в
  * одном свитке авторство утверждений размывается.
  *
- * Сверху — плитка в пропорции банковской карты (`TILE_CLASS`), ровно такая же,
- * как окно карты на соседней странице: лента в 160 px рекламой не была.
- * Нажатие раскрывает снимок на весь экран.
+ * Сверху — плитка в пропорции банковской карты (`TILE_SHELL`) с закруглёнными
+ * углами, ровно такая же, как окно карты на соседней странице: лента в 160 px
+ * рекламой не была. Нажатие раскрывает баннер на весь экран, а там он
+ * поднимается вверх и открывает под собой витрину заведения.
  */
 export function PoiPaneCard({
   poi,
@@ -43,29 +44,39 @@ export function PoiPaneCard({
   return (
     <div className="pb-4">
       {photo.image && (
-        <button
-          type="button"
-          onClick={() => setPhotoOpen(true)}
-          aria-label={t("expandPhoto")}
-          data-testid="poi-photo-tile"
-          className={`${TILE_CLASS} block w-full overflow-hidden border-b border-hairline bg-bg-tint`}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={photo.image}
-            alt=""
-            loading="lazy"
-            referrerPolicy="no-referrer"
-            onError={photo.onError}
-            className="h-full w-full object-cover"
-          />
-        </button>
+        <div className={TILE_PAD_CLASS}>
+          <button
+            type="button"
+            onClick={() => setPhotoOpen(true)}
+            aria-label={t("expandPhoto")}
+            data-testid="poi-photo-tile"
+            className={`${TILE_SHELL} block bg-bg-tint`}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={photo.image}
+              alt=""
+              loading="lazy"
+              referrerPolicy="no-referrer"
+              onError={photo.onError}
+              className="h-full w-full object-cover"
+            />
+          </button>
+        </div>
       )}
       {photo.loading && !photo.image && (
-        <div className={`${TILE_CLASS} w-full animate-pulse border-b border-hairline bg-bg-tint`} />
+        <div className={TILE_PAD_CLASS}>
+          <div className={`${TILE_SHELL} animate-pulse bg-bg-tint`} />
+        </div>
       )}
       {photoOpen && photo.image && (
-        <PoiPhotoOverlay src={photo.image} onClose={() => setPhotoOpen(false)} t={t} />
+        <PoiBannerOverlay
+          src={photo.image}
+          poi={poi}
+          locale={locale}
+          onClose={() => setPhotoOpen(false)}
+          t={t}
+        />
       )}
 
       <div className="space-y-5 px-4 pt-4">

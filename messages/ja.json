@@ -682,7 +682,9 @@
     "pageOf": "全{total}ページ中{n}ページ",
     "expandMap": "全画面表示",
     "collapseMap": "全画面を終了",
-    "expandPhoto": "写真を開く"
+    "expandPhoto": "写真を開く",
+    "bannerDetails": "詳細",
+    "bannerHideDetails": "詳細を非表示"
   },
   "markets": {
     "title": "市場",

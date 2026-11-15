@@ -682,7 +682,9 @@
     "pageOf": "Sayfa {n} / {total}",
     "expandMap": "Tam ekran harita",
     "collapseMap": "Haritayı küçült",
-    "expandPhoto": "Fotoğrafı aç"
+    "expandPhoto": "Fotoğrafı aç",
+    "bannerDetails": "Detaylar",
+    "bannerHideDetails": "Detayları gizle"
   },
   "markets": {
     "title": "Piyasalar",
@@ -1221,7 +1223,7 @@
       "owner": "Sahip"
     },
     "form": {
-      "slug": "Slug",
+      "slug": "Kısa ad",
       "slugHint": "küçük harf / rakam / tire, 2–40",
       "displayName": "Görünen ad",
       "website": "Web sitesi",

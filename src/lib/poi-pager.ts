@@ -6,19 +6,20 @@
  * площади, перетаскивание карты влево перелистывало бы страницу. Правило
  * «на карте — только от края» легко потерять глазами при правке разметки,
  * поэтому оно живёт в функции, накрытой тестами, а не в обработчике событий.
+ * С раскрытием окна карты правило сузилось: край нужен только раскрытой карте.
  */
 
 export type PoiPage = "map" | "card" | "showcase";
 
 /** Жест короче — это дрожание пальца, а не листание. */
-export const SWIPE_MIN_DX = 12;
+export const SWIPE_MIN_DX = 8;
 /** Горизонтальным считается жест, который заметно длиннее по оси X. */
-export const SWIPE_AXIS_RATIO = 1.4;
+export const SWIPE_AXIS_RATIO = 1.2;
 /** Доля ширины, после которой страница переворачивается. */
-export const SWIPE_SNAP_SHARE = 0.25;
+export const SWIPE_SNAP_SHARE = 0.18;
 /** Скорость на отрыве (px/ms), при которой листает и короткий флик. */
-export const SWIPE_SNAP_VELOCITY = 0.35;
-/** Полоска у края страницы «Карта», с которой жест всё-таки слушается. */
+export const SWIPE_SNAP_VELOCITY = 0.25;
+/** Полоска у края раскрытого окна карты, с которой жест всё-таки слушается. */
 export const SWIPE_EDGE_PX = 24;
 /** Сопротивление за крайней страницей: палец идёт, лист почти не едет. */
 const EDGE_RESISTANCE = 0.3;
@@ -45,10 +46,20 @@ export function pageLabelKey(page: PoiPage): string {
   return LABEL[page];
 }
 
-export function claimsSwipe(i: { page: PoiPage; dx: number; dy: number; fromEdge: boolean }): boolean {
+export function claimsSwipe(i: {
+  page: PoiPage;
+  dx: number;
+  dy: number;
+  fromEdge: boolean;
+  /** Окно карты раскрыто во весь экран, то есть палец принадлежит карте. */
+  mapExpanded: boolean;
+}): boolean {
   if (Math.abs(i.dx) <= SWIPE_MIN_DX) return false;
   if (Math.abs(i.dx) <= Math.abs(i.dy) * SWIPE_AXIS_RATIO) return false;
-  if (i.page === "map" && !i.fromEdge) return false;
+  // Карта забирает палец себе, только когда она раскрыта во весь экран: у
+  // свёрнутой плитки перетаскивать нечего, а прежнее правило «на карте — только
+  // от края» делало страницу карты тупиком листалки.
+  if (i.page === "map" && i.mapExpanded && !i.fromEdge) return false;
   return true;
 }
 

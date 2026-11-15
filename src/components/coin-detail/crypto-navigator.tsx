@@ -26,6 +26,7 @@ import { MODE_ICON, PoiSheet, type SheetRoute } from "@/components/coin-detail/p
 import { DEFAULT_POI_PAGE, type PoiPage } from "@/lib/poi-pager";
 import { tileOffset, tilePadding } from "@/lib/poi-tile";
 import { CURATED_POIS, type CuratedPoi } from "@/lib/curated-pois";
+import { poiLogoSrc, showsLogoMarker } from "@/lib/poi-markers";
 import { NavigationController, type NavigationCallbacks } from "./navigation-controller";
 import { haversineMeters } from "@/lib/route-geometry";
 import { AvailableFintechPanel } from "@/components/fintech/available-fintech-panel";
@@ -142,6 +143,11 @@ export default function CryptoNavigator({
   const routeAbortRef = useRef<AbortController | null>(null);
   const routeSequenceRef = useRef(0);
   const coinOnlyRef = useRef(false);
+  // Метки-логотипы: элементы DOM рядом с полотном, а не слой карты. MapLibre
+  // умеет значки, но только растровые и только с заголовком CORS, а знаки
+  // заведений — это и svg, и чужие хосты. Поэтому метка живёт в DOM, а
+  // фильтры слоёв к ней применяются руками.
+  const logoMarkersRef = useRef<{ marker: Marker; poi: Poi; el: HTMLElement }[]>([]);
   const destKeyRef = useRef<string | null>(null);
   const routeCoordsRef = useRef<[number, number][]>([]);
 
@@ -210,11 +216,72 @@ export default function CryptoNavigator({
     setPoiPage(next);
   }, []);
 
+  // Один и тот же лист открывают круги слоёв, метки-логотипы и куратские
+  // точки: карточка точки живёт в React (см. poi-sheet.tsx), а не в попапе.
+  const openPoi = useCallback(
+    (poi: Poi) => {
+      // Свежая точка всегда открывается на фактах: нажатие на неё — это
+      // вопрос «что это за место», а не «как доехать».
+      changePoiPage(DEFAULT_POI_PAGE);
+      setMapExpanded(false);
+      setSelected(poi);
+    },
+    [changePoiPage],
+  );
+
   const cancelRouteRequest = useCallback(() => {
     routeSequenceRef.current += 1;
     routeAbortRef.current?.abort();
     routeAbortRef.current = null;
   }, []);
+
+  /**
+   * Метка-логотип живёт в DOM, поэтому выключенный слой и фильтр «только
+   * монета страницы» прячут её отдельно от кругов MapLibre.
+   */
+  const applyLogoMarkerVisibility = useCallback(() => {
+    logoMarkersRef.current.forEach(({ poi, el }) => {
+      const shown = showsLogoMarker(poi, {
+        visible: visibleRef.current,
+        coinOnly: coinOnlyRef.current,
+      });
+      el.style.display = shown ? "" : "none";
+    });
+  }, []);
+
+  /** Метки точек со знаком заведения: собираются заново на каждый ответ фида. */
+  const syncLogoMarkers = useCallback(
+    (map: MlMap, pois: Poi[]) => {
+      logoMarkersRef.current.forEach(({ marker }) => marker.remove());
+      logoMarkersRef.current = pois.flatMap((poi) => {
+        const src = poiLogoSrc(poi);
+        if (!src) return [];
+        const el = document.createElement("div");
+        el.className = "cmap-poi-logo";
+        // Кольцо остаётся цветом слоя: знак говорит, чьё это место, а цвет —
+        // какое оно; терять второе ради первого незачем.
+        el.style.borderColor = LAYER_COLOR[poi.layer] ?? LAYER_COLOR.merchant;
+        el.title = poi.name;
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = "";
+        img.loading = "lazy";
+        img.referrerPolicy = "no-referrer";
+        el.append(img);
+        el.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          openPoi(poi);
+        });
+        const marker = new Marker({ element: el, anchor: "center" }).setLngLat([poi.lon, poi.lat]).addTo(map);
+        // Битый знак — это белый кружок ни о чём поверх точки: метка уходит, а
+        // круг слоя под ней остаётся и говорит хотя бы вид места.
+        img.addEventListener("error", () => marker.remove());
+        return [{ marker, poi, el }];
+      });
+      applyLogoMarkerVisibility();
+    },
+    [openPoi, applyLogoMarkerVisibility],
+  );
 
   function applyDesiredMapState(map: MlMap) {
     map.setLayoutProperty("satellite", "visibility", baseRef.current === "satellite" ? "visible" : "none");
@@ -222,6 +289,7 @@ export default function CryptoNavigator({
       map.setLayoutProperty(`poi-${layer}`, "visibility", visibleRef.current[layer] ? "visible" : "none");
     });
     applyCoinOnlyFilter(map, coinOnlyRef.current);
+    applyLogoMarkerVisibility();
     if (is3DRef.current) {
       map.setTerrain({ source: "terrain", exaggeration: 1.3 });
       map.easeTo({ pitch: 60, duration: 800 });
@@ -267,6 +335,7 @@ export default function CryptoNavigator({
             },
           })),
         });
+        syncLogoMarkers(map, pois);
         setCounts({
           merchant: pois.filter((p) => p.layer === "merchant").length,
           atm: pois.filter((p) => p.layer === "atm").length,
@@ -280,7 +349,7 @@ export default function CryptoNavigator({
         poiAbortRef.current = null;
         setLoading(false);
       });
-  }, [coinId, symbol]);
+  }, [coinId, symbol, syncLogoMarkers]);
 
   // Та часть карты, которую видно: на телефоне это прямоугольник окна
   // карточки, каким бы оно сейчас ни было — плиткой в пропорции банковской
@@ -523,16 +592,6 @@ export default function CryptoNavigator({
         },
       });
 
-      // Один и тот же лист открывают и круги слоёв, и куратские логотипы:
-      // карточка точки живёт в React (см. poi-sheet.tsx), а не в попапе карты.
-      const openPoi = (poi: Poi) => {
-        // Свежая точка всегда открывается на фактах: нажатие на неё — это
-        // вопрос «что это за место», а не «как доехать».
-        changePoiPage(DEFAULT_POI_PAGE);
-        setMapExpanded(false);
-        setSelected(poi);
-      };
-
       [...POI_LAYERS].reverse().forEach((layer) => {
         map.addLayer({
           id: `poi-${layer}`,
@@ -605,6 +664,8 @@ export default function CryptoNavigator({
       poiAbortRef.current?.abort();
       poiAbortRef.current = null;
       cancelRouteRequest();
+      logoMarkersRef.current.forEach(({ marker }) => marker.remove());
+      logoMarkersRef.current = [];
       map.remove();
       mapRef.current = null;
     };
@@ -642,6 +703,7 @@ export default function CryptoNavigator({
     const next = !visibleRef.current[layer];
     visibleRef.current = { ...visibleRef.current, [layer]: next };
     setVisible(visibleRef.current);
+    applyLogoMarkerVisibility();
     if (!map || !mapReadyRef.current) return;
     map.setLayoutProperty(`poi-${layer}`, "visibility", next ? "visible" : "none");
   }
@@ -651,6 +713,7 @@ export default function CryptoNavigator({
     const next = !coinOnlyRef.current;
     coinOnlyRef.current = next;
     setCoinOnly(next);
+    applyLogoMarkerVisibility();
     if (!map || !mapReadyRef.current) return;
     applyCoinOnlyFilter(map, next);
   }

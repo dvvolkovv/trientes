@@ -14,6 +14,7 @@ const FILES = [
   "src/components/coin-detail/poi-pane-card.tsx",
   "src/components/coin-detail/poi-pane-showcase.tsx",
   "src/components/coin-detail/poi-pane-map.tsx",
+  "src/components/coin-detail/poi-banner-overlay.tsx",
 ];
 
 // `CHIP` — такой же именованный размер под палец (40 px), как `ROW_BTN` и `PRIMARY`.

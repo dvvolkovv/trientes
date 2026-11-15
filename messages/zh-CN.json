@@ -682,7 +682,9 @@
     "pageOf": "第 {n} 页，共 {total} 页",
     "expandMap": "全屏地图",
     "collapseMap": "缩小地图",
-    "expandPhoto": "打开照片"
+    "expandPhoto": "打开照片",
+    "bannerDetails": "详情",
+    "bannerHideDetails": "隐藏详情"
   },
   "markets": {
     "title": "市场",

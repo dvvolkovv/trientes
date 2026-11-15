@@ -682,7 +682,9 @@
     "pageOf": "Страница {n} из {total}",
     "expandMap": "Развернуть карту на весь экран",
     "collapseMap": "Свернуть карту",
-    "expandPhoto": "Открыть фото"
+    "expandPhoto": "Открыть фото",
+    "bannerDetails": "Подробнее",
+    "bannerHideDetails": "Скрыть подробности"
   },
   "markets": {
     "title": "Рынки",

@@ -682,7 +682,9 @@
     "pageOf": "페이지 {n}/{total}",
     "expandMap": "전체 화면 지도",
     "collapseMap": "지도 축소",
-    "expandPhoto": "사진 열기"
+    "expandPhoto": "사진 열기",
+    "bannerDetails": "세부정보",
+    "bannerHideDetails": "세부정보 숨기기"
   },
   "markets": {
     "title": "시장",
