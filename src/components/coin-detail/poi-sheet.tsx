@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import type { PointerEvent as ReactPointerEvent, RefObject } from "react";
 import type { Poi, RouteMode } from "@/lib/crypto-map";
 import {
@@ -349,15 +349,22 @@ export function PoiSheet({
   );
 }
 
-/** Тот же порог, которым карточка уже отличала телефон от десктопа. */
+/**
+ * Тот же порог, которым карточка уже отличала телефон от десктопа. Читаем
+ * медиазапрос как внешнее хранилище — тем же приёмом, что навигатор: на
+ * сервере телефона нет, а состоянием в эффекте это был бы лишний прогон.
+ */
+const PHONE_QUERY = "(max-width: 767px)";
+const subscribePhone = (onChange: () => void) => {
+  const mq = window.matchMedia(PHONE_QUERY);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+};
+
 function usePhone(): boolean {
-  const [phone, setPhone] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    setPhone(mq.matches);
-    const onChange = (e: MediaQueryListEvent) => setPhone(e.matches);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, []);
-  return phone;
+  return useSyncExternalStore(
+    subscribePhone,
+    () => window.matchMedia(PHONE_QUERY).matches,
+    () => false,
+  );
 }
