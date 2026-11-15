@@ -726,7 +726,21 @@
     "headingUpOff": "停止让地图随你的航向旋转",
     "headingUpShort": "航向",
     "arriveBy": "于{time}到达",
-    "transitPlan": "逐步查看您的行程"
+    "transitPlan": "逐步查看您的行程",
+    "searching": "正在搜索…",
+    "searchFound": "找到 {count} 条",
+    "searchClose": "隐藏列表",
+    "searchedAs": "按“{query}”搜索",
+    "available": {
+      "title": "该国的加密货币：{country}",
+      "points": "视图中的受理点",
+      "noPoints": "此视图中无受理点",
+      "exchanges": "在此注册的交易所",
+      "fintech": "此处可用的金融科技",
+      "loading": "正在加载目录…",
+      "noExchanges": "目录中没有在该国注册的交易所",
+      "noFintech": "此处尚无可用的金融科技"
+    }
   },
   "markets": {
     "title": "市场",
@@ -1306,11 +1320,6 @@
       },
       "supportedCards": "自主上架币种",
       "supportedCardsHint": "勾选您的服务支持的 Trientes 自主上架币种。"
-    },
-    "panel": {
-      "title": "{country} 可用",
-      "empty": "目前在 {country} 暂无可用的金融科技服务。",
-      "loading": "正在查找该地区的金融科技…"
     }
   },
   "companyPublic": {

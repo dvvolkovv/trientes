@@ -726,7 +726,21 @@
     "headingUpOff": "進行方向に合わせた地図の回転を停止",
     "headingUpShort": "進行方向",
     "arriveBy": "{time} に到着",
-    "transitPlan": "ステップごとの行程"
+    "transitPlan": "ステップごとの行程",
+    "searching": "検索中…",
+    "searchFound": "{count} 件見つかりました",
+    "searchClose": "リストを非表示",
+    "searchedAs": "「{query}」として検索",
+    "available": {
+      "title": "この国の暗号資産: {country}",
+      "points": "表示範囲の取扱拠点",
+      "noPoints": "この表示範囲に拠点はありません",
+      "exchanges": "ここで登録されている取引所",
+      "fintech": "ここで利用可能なフィンテック",
+      "loading": "カタログを読み込み中…",
+      "noExchanges": "この国に登録された取引所はカタログにありません",
+      "noFintech": "ここではまだフィンテックは利用できません"
+    }
   },
   "markets": {
     "title": "市場",
@@ -1306,11 +1320,6 @@
       },
       "supportedCards": "独自上場の銘柄",
       "supportedCardsHint": "対応している Trientes 独自上場の銘柄にチェックを入れてください。"
-    },
-    "panel": {
-      "title": "{country}で利用可能",
-      "empty": "{country}で利用可能なフィンテックサービスはまだありません。",
-      "loading": "この地域のフィンテックを検索中…"
     }
   },
   "companyPublic": {

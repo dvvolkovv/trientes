@@ -726,7 +726,21 @@
     "headingUpOff": "Haritayı yönünüzle birlikte döndürmeyi durdur",
     "headingUpShort": "Yön",
     "arriveBy": "Varış {time}",
-    "transitPlan": "Yolculuğunuz adım adım"
+    "transitPlan": "Yolculuğunuz adım adım",
+    "searching": "Aranıyor…",
+    "searchFound": "{count} bulundu",
+    "searchClose": "Listeyi gizle",
+    "searchedAs": "“{query}” olarak arandı",
+    "available": {
+      "title": "Bu ülkedeki kripto: {country}",
+      "points": "Görünümde kabul noktaları",
+      "noPoints": "Bu görünümde nokta yok",
+      "exchanges": "Burada kayıtlı borsalar",
+      "fintech": "Burada mevcut fintechler",
+      "loading": "Katalog yükleniyor…",
+      "noExchanges": "Katalogda bu ülkede kayıtlı borsa yok",
+      "noFintech": "Burada henüz fintech yok"
+    }
   },
   "markets": {
     "title": "Piyasalar",
@@ -1306,11 +1320,6 @@
       },
       "supportedCards": "Kendi listelemeleri",
       "supportedCardsHint": "Hizmetinizin desteklediği Trientes kendi listelemesi coinlerini işaretleyin."
-    },
-    "panel": {
-      "title": "{country} ülkesinde mevcut",
-      "empty": "{country} için henüz fintech hizmeti yok.",
-      "loading": "Bu bölgedeki fintechler aranıyor…"
     }
   },
   "companyPublic": {
@@ -1359,7 +1368,7 @@
     "kicker": "Yan yana",
     "title": "Coin karşılaştır",
     "subtitle": "En fazla dört coin seçin ve rakamlarını tek tabloda görün.",
-    "slotRequired": "Coin",
+    "slotRequired": "Koin",
     "slotOptional": "Başka coin",
     "submit": "Karşılaştır",
     "notFound": "Bulunamadı",

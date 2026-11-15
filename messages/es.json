@@ -726,7 +726,21 @@
     "headingUpOff": "Deja de girar el mapa según tu rumbo",
     "headingUpShort": "Rumbo",
     "arriveBy": "Llegada {time}",
-    "transitPlan": "Tu viaje paso a paso"
+    "transitPlan": "Tu viaje paso a paso",
+    "searching": "Buscando…",
+    "searchFound": "{count} encontrados",
+    "searchClose": "Ocultar la lista",
+    "searchedAs": "Buscado como “{query}”",
+    "available": {
+      "title": "Cripto en este país: {country}",
+      "points": "Puntos de aceptación en esta vista",
+      "noPoints": "No hay puntos en esta vista",
+      "exchanges": "Exchanges registrados aquí",
+      "fintech": "Fintech disponible aquí",
+      "loading": "Cargando el catálogo…",
+      "noExchanges": "El catálogo no tiene exchanges registrados en este país",
+      "noFintech": "Aún no hay fintech disponible aquí"
+    }
   },
   "markets": {
     "title": "Mercados",
@@ -1306,11 +1320,6 @@
       },
       "supportedCards": "Listados propios",
       "supportedCardsHint": "Marca las monedas de listado propio de Trientes que admite tu servicio."
-    },
-    "panel": {
-      "title": "Disponible en {country}",
-      "empty": "Aún no hay servicios fintech disponibles en {country}.",
-      "loading": "Buscando fintechs en esta zona…"
     }
   },
   "companyPublic": {

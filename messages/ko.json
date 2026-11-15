@@ -726,7 +726,21 @@
     "headingUpOff": "진행 방향에 따라 지도 회전을 중지",
     "headingUpShort": "진행 방향",
     "arriveBy": "{time}에 도착",
-    "transitPlan": "여정 단계별 안내"
+    "transitPlan": "여정 단계별 안내",
+    "searching": "검색 중…",
+    "searchFound": "{count}개 찾음",
+    "searchClose": "목록 숨기기",
+    "searchedAs": "“{query}”로 검색됨",
+    "available": {
+      "title": "이 국가의 암호화폐: {country}",
+      "points": "화면 내 결제 수락 지점",
+      "noPoints": "이 화면에 지점 없음",
+      "exchanges": "여기에 등록된 거래소",
+      "fintech": "여기에서 이용 가능한 핀테크",
+      "loading": "카탈로그 불러오는 중…",
+      "noExchanges": "이 국가에는 카탈로그에 등록된 거래소가 없음",
+      "noFintech": "여기에는 아직 이용 가능한 핀테크가 없음"
+    }
   },
   "markets": {
     "title": "시장",
@@ -1306,11 +1320,6 @@
       },
       "supportedCards": "자체 상장 코인",
       "supportedCardsHint": "서비스가 지원하는 Trientes 자체 상장 코인을 선택하세요."
-    },
-    "panel": {
-      "title": "{country}에서 이용 가능",
-      "empty": "{country}에서 이용할 수 있는 핀테크 서비스가 아직 없습니다.",
-      "loading": "이 지역의 핀테크 서비스를 찾는 중…"
     }
   },
   "companyPublic": {

@@ -726,7 +726,21 @@
     "headingUpOff": "Karte nicht mehr mit Ihrer Fahrtrichtung drehen",
     "headingUpShort": "Kurs",
     "arriveBy": "Ankunft {time}",
-    "transitPlan": "Ihre Route Schritt für Schritt"
+    "transitPlan": "Ihre Route Schritt für Schritt",
+    "searching": "Suche…",
+    "searchFound": "{count} gefunden",
+    "searchClose": "Liste ausblenden",
+    "searchedAs": "Gesucht als „{query}“",
+    "available": {
+      "title": "Krypto in diesem Land: {country}",
+      "points": "Akzeptanzstellen in der Ansicht",
+      "noPoints": "Keine Punkte in dieser Ansicht",
+      "exchanges": "Hier registrierte Börsen",
+      "fintech": "Fintech hier verfügbar",
+      "loading": "Katalog wird geladen…",
+      "noExchanges": "Im Katalog sind keine Börsen in diesem Land registriert",
+      "noFintech": "Hier ist noch kein Fintech verfügbar"
+    }
   },
   "markets": {
     "title": "Märkte",
@@ -1306,11 +1320,6 @@
       },
       "supportedCards": "Eigene Listings",
       "supportedCardsHint": "Markieren Sie die selbst gelisteten Trientes-Münzen, die Ihr Dienst unterstützt."
-    },
-    "panel": {
-      "title": "Verfügbar in {country}",
-      "empty": "In {country} gibt es noch keine Fintech-Dienste.",
-      "loading": "Suche Fintechs in dieser Region…"
     }
   },
   "companyPublic": {

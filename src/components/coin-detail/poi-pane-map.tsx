@@ -131,6 +131,9 @@ export function PoiPaneMap({
         }
         style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
       >
+        {/* «Моё положение» теперь кнопка самого ряда управления картой —
+            отдельной широкой кнопки рядом с ним быть не должно, иначе одна
+            и та же команда стоит в карточке дважды. */}
         <div className="flex items-center gap-2">
           <MapControls
             bearing={view.bearing}
@@ -139,11 +142,9 @@ export function PoiPaneMap({
             onZoomIn={onZoomIn}
             onZoomOut={onZoomOut}
             onCompass={onCompass}
+            onLocate={onLocate}
             t={t}
           />
-          <button type="button" onClick={onLocate} className={`${SECONDARY} flex-1`}>
-            📍 {t("myLocation")}
-          </button>
         </div>
 
         <div className="grid grid-cols-3 gap-2">

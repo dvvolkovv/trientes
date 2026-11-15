@@ -726,7 +726,21 @@
     "headingUpOff": "Prestati okretati kartu prema vašem smjeru kretanja",
     "headingUpShort": "Smjer",
     "arriveBy": "Dolazak {time}",
-    "transitPlan": "Vaše putovanje korak po korak"
+    "transitPlan": "Vaše putovanje korak po korak",
+    "searching": "Pretražuje se…",
+    "searchFound": "Pronađeno {count}",
+    "searchClose": "Sakriti popis",
+    "searchedAs": "Pretraženo kao “{query}”",
+    "available": {
+      "title": "Kripto u ovoj zemlji: {country}",
+      "points": "Lokacije prihvaćanja u prikazu",
+      "noPoints": "Nema lokacija u ovom prikazu",
+      "exchanges": "Burze registrirane ovdje",
+      "fintech": "Fintech dostupan ovdje",
+      "loading": "Učitavanje kataloga…",
+      "noExchanges": "U katalogu nema burzi registriranih u ovoj zemlji",
+      "noFintech": "Ovdje još nije dostupan fintech"
+    }
   },
   "markets": {
     "title": "Tržišta",
@@ -1306,11 +1320,6 @@
       },
       "supportedCards": "Samostalno uvrštene kovanice",
       "supportedCardsHint": "Označite Trientes samostalno uvrštene kovanice koje vaša usluga podržava."
-    },
-    "panel": {
-      "title": "Dostupno u {country}",
-      "empty": "U {country} još nema dostupnih fintech usluga.",
-      "loading": "Pretraživanje fintech usluga na ovom području…"
     }
   },
   "companyPublic": {

@@ -726,7 +726,21 @@
     "headingUpOff": "Arrêter de faire pivoter la carte selon votre cap",
     "headingUpShort": "Cap",
     "arriveBy": "Arrivée {time}",
-    "transitPlan": "Votre trajet étape par étape"
+    "transitPlan": "Votre trajet étape par étape",
+    "searching": "Recherche…",
+    "searchFound": "{count} trouvés",
+    "searchClose": "Masquer la liste",
+    "searchedAs": "Recherché sous « {query} »",
+    "available": {
+      "title": "Crypto dans ce pays : {country}",
+      "points": "Points d'acceptation visibles",
+      "noPoints": "Aucun point dans cette vue",
+      "exchanges": "Plateformes d'échange enregistrées ici",
+      "fintech": "Fintech disponibles ici",
+      "loading": "Chargement du catalogue…",
+      "noExchanges": "Le catalogue ne compte aucune plateforme d'échange enregistrée dans ce pays",
+      "noFintech": "Aucune fintech n'est disponible ici pour le moment"
+    }
   },
   "markets": {
     "title": "Marchés",
@@ -1306,11 +1320,6 @@
       },
       "supportedCards": "Listings propres",
       "supportedCardsHint": "Cochez les cryptos auto-listées sur Trientes que votre service prend en charge."
-    },
-    "panel": {
-      "title": "Disponible en {country}",
-      "empty": "Aucun service fintech disponible en {country} pour le moment.",
-      "loading": "Recherche de fintechs dans cette zone…"
     }
   },
   "companyPublic": {

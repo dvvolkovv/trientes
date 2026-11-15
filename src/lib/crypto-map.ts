@@ -290,17 +290,82 @@ export function parseOverpassElements(raw: unknown, coinTags: string[]): Poi[] {
   return out;
 }
 
-export type GeoResult = { label: string; lat: number; lon: number; countryCode?: string };
+export type GeoResult = {
+  label: string;
+  lat: number;
+  lon: number;
+  countryCode?: string;
+  /** Первая строка списка: улица с номером дома либо имя места. */
+  title?: string;
+  /** Вторая строка: индекс, населённый пункт, область, страна. */
+  subtitle?: string;
+};
+
+function str(v: unknown): string {
+  return typeof v === "string" ? v.trim() : "";
+}
+
+/**
+ * Населённый пункт у Nominatim лежит в разных полях в зависимости от его
+ * размера, и у австрийского села это `village`, а не `city`. Перечень
+ * городов и сёл с искомой улицей собирается именно из них, поэтому поля
+ * перебираются от крупного к мелкому и берётся первое непустое.
+ */
+function placeName(a: Record<string, unknown>): string {
+  return (
+    str(a.city) || str(a.town) || str(a.village) || str(a.hamlet) ||
+    str(a.municipality) || str(a.suburb) || str(a.county) || ""
+  );
+}
 
 export function parseNominatim(raw: unknown): GeoResult[] {
   if (!Array.isArray(raw)) return [];
   const out: GeoResult[] = [];
+  const seen = new Set<string>();
   for (const r of raw as Array<Record<string, unknown>>) {
     const lat = Number(r.lat);
     const lon = Number(r.lon);
-    const label = String(r.display_name ?? "").trim();
+    const label = str(r.display_name);
     if (!Number.isFinite(lat) || !Number.isFinite(lon) || !label) continue;
-    out.push({ label, lat, lon });
+
+    const a = (r.address && typeof r.address === "object" ? r.address : {}) as Record<string, unknown>;
+    const road = str(a.road);
+    const house = str(a.house_number);
+    const postcode = str(a.postcode);
+    const place = placeName(a);
+    const region = str(a.state) || str(a.province) || "";
+    const country = str(a.country);
+    const ccRaw = str(a.country_code);
+    const countryCode = /^[a-z]{2}$/i.test(ccRaw) ? ccRaw.toUpperCase() : undefined;
+
+    // Подпись собираем из частей адреса, а не из `display_name`: у Австрии
+    // тот начинается с кадастровой общины («Katastralgemeinde Ober St. Veit»),
+    // и в списке домов это шум, по которому их не отличить друг от друга.
+    //
+    // Имя объекта идёт раньше улицы: у названного места (остановка, бар)
+    // `address.road` — это улица, на которой он стоит, и живой ответ по
+    // «Gran Via 8» подписывал остановку чужой улицей Бильбао.
+    const named = str(r.name);
+    const title = named || (road ? [road, house].filter(Boolean).join(" ") : label.split(",")[0]!.trim());
+    const onRoad = named && road && !named.includes(road) ? [road, house].filter(Boolean).join(" ") : "";
+    const subtitle = [onRoad, [postcode, place].filter(Boolean).join(" "), region, country]
+      .filter(Boolean)
+      .join(", ");
+
+    // Одна улица приходит несколькими объектами OSM (дом, точка адреса,
+    // отрезок улицы) — в списке это были бы повторы одной строки.
+    const key = `${title.toLowerCase()}|${postcode}|${place.toLowerCase()}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+
+    out.push({
+      label,
+      lat,
+      lon,
+      ...(countryCode ? { countryCode } : {}),
+      ...(title ? { title } : {}),
+      ...(subtitle ? { subtitle } : {}),
+    });
   }
   return out;
 }
@@ -850,9 +915,36 @@ async function withTimeout<T>(ms: number, run: (signal: AbortSignal) => Promise<
   }
 }
 
-export async function fetchGeocode(q: string, timeoutMs = 8000): Promise<GeoResult[]> {
+/**
+ * Поиск адреса.
+ *
+ * `countryCode` — страна, в которой человек сейчас смотрит карту, и это
+ * главный рычаг: без него Nominatim ранжирует по мировой важности, и живой
+ * запрос «Hauptstrasse 8» отдавал три адреса в Германии, не показав Австрию
+ * вовсе; с `countrycodes=at` — двенадцать австрийских адресов с индексами,
+ * то есть ровно перечень городов и сёл с этой улицей.
+ *
+ * `viewbox` сознательно не посылается: рамка вокруг карты не поднимает
+ * ближние адреса, а отрезает дальние (с ней те же двенадцать превращаются в
+ * три), то есть убивает перечень по стране.
+ */
+export async function fetchGeocode(
+  q: string,
+  opts: { countryCode?: string | null; lang?: string | null; limit?: number; timeoutMs?: number } = {},
+): Promise<GeoResult[]> {
+  const { countryCode, lang, limit = 20, timeoutMs = 8000 } = opts;
   return withTimeout(timeoutMs, async (signal) => {
-    const url = `${NOMINATIM_URL}?format=jsonv2&limit=5&q=${encodeURIComponent(q)}`;
+    const params = new URLSearchParams({
+      format: "jsonv2",
+      addressdetails: "1",
+      limit: String(limit),
+      q,
+    });
+    if (countryCode && /^[a-z]{2}$/i.test(countryCode)) {
+      params.set("countrycodes", countryCode.toLowerCase());
+    }
+    if (lang && /^[a-z-]{2,8}$/i.test(lang)) params.set("accept-language", lang);
+    const url = `${NOMINATIM_URL}?${params.toString()}`;
     const res = await fetch(url, {
       headers: { accept: "application/json", "user-agent": UA },
       cache: "no-store",

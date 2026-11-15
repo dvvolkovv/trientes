@@ -63,7 +63,8 @@ import { poiLogoSrc, showsLogoMarker } from "@/lib/poi-markers";
 import { NavigationController, type NavigationCallbacks, type NavUpdate } from "./navigation-controller";
 import { haversineMeters } from "@/lib/route-geometry";
 import { MapControls } from "@/components/coin-detail/map-controls";
-import { AvailableFintechPanel } from "@/components/fintech/available-fintech-panel";
+import { AvailableNearPanel } from "@/components/coin-detail/available-near-panel";
+import { POI_LAYERS, LAYER_COLOR } from "@/lib/poi-layers";
 import {
   addStaticMapAttribution,
   MAPLIBRE_ATTRIBUTION_OPTIONS,
@@ -84,15 +85,6 @@ type PoiProps = Omit<Poi, "socials" | "acceptedCoins" | "photos"> & {
 type FilterSpecification = NonNullable<Parameters<MlMap["setFilter"]>[1]>;
 
 const MIN_ZOOM = 11; // below this the bbox is too wide to return a useful number of points
-
-const POI_LAYERS = ["merchant", "atm", "financial", "fintech"] as const satisfies readonly PoiLayer[];
-
-const LAYER_COLOR: Record<PoiLayer, string> = {
-  merchant: "#30B658",
-  atm: "#FE5C04",
-  financial: "#5B8DEF",
-  fintech: "#A855F7",
-};
 
 const VOICE_KEY = "cmap:voice";
 
@@ -216,6 +208,14 @@ export default function CryptoNavigator({
   const [tooFar, setTooFar] = useState(false);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
+  // Перечень найденных адресов. Прежде страница брала `results[0]` и улетала
+  // туда картой — сколько бы домов геокодер ни нашёл, человек видел один, и
+  // не тот, который искал. Поэтому список есть, и выбирает из него человек.
+  const [searchResults, setSearchResults] = useState<GeoResult[] | null>(null);
+  // Чем на самом деле искали: кириллический запрос уходит в геокодер
+  // латиницей, и без этой строки непонятно, почему ответ не похож на буквы.
+  const [searchedAs, setSearchedAs] = useState<string | null>(null);
+  const [searching, setSearching] = useState(false);
   const [mode, setMode] = useState<RouteMode>("walk");
   const [route, setRoute] = useState<SheetRoute | null>(null);
   // К какой точке построен маршрут. Карточка другой точки не должна показывать
@@ -267,8 +267,14 @@ export default function CryptoNavigator({
   // `buildRoute` объявлен раньше голосовых помощников и держит их через ref —
   // иначе круг зависимостей: маршрут зовёт голос, голос пересобирает маршрут.
   const navDepartureRef = useRef<((r: SheetRoute) => void) | null>(null);
-  // Tracked map center for the AvailableFintechPanel — debounced inside the panel.
+  // Центр карты и страна, в которой он лежит. Страну определяет обратное
+  // геокодирование (оно кэшировано на сервере), и она нужна сразу двум
+  // местам: полосе «Доступно в стране» над картой и поиску адреса — без
+  // `countrycodes` Nominatim ранжирует по мировой важности и страну, в
+  // которой человек стоит, не показывает вовсе.
   const [mapCenter, setMapCenter] = useState<{ lat: number; lon: number } | null>(null);
+  const [centerCc, setCenterCc] = useState<string | null>(null);
+  const ccRequestRef = useRef<string | null>(null);
   // Поворот и наклон карты видны компасу под ней: стрелка показывает, где
   // сейчас север, поэтому читается прямо из карты, а не хранится отдельно.
   const [view, setView] = useState({ bearing: 0, pitch: 0 });
@@ -960,25 +966,62 @@ export default function CryptoNavigator({
     applyCoinOnlyFilter(map, next);
   }
 
+  // Страна центра карты. Сдвиг карты на сотню метров страну не меняет,
+  // поэтому запрос идёт с задержкой и только когда центр уехал заметно: по
+  // четвёртому знаку координаты (≈11 м) ответ всё равно кэширован на сервере.
+  useEffect(() => {
+    if (!mapCenter) return;
+    const key = `${mapCenter.lat.toFixed(2)},${mapCenter.lon.toFixed(2)}`;
+    if (ccRequestRef.current === key) return;
+    const timer = setTimeout(() => {
+      ccRequestRef.current = key;
+      fetch(`/api/crypto-map/geocode?lat=${mapCenter.lat}&lon=${mapCenter.lon}`)
+        .then((r) => (r.ok ? r.json() : null))
+        .then((j: { result?: { countryCode?: string } } | null) => {
+          const cc = j?.result?.countryCode;
+          if (cc) setCenterCc(cc);
+        })
+        .catch(() => {
+          // страна неизвестна — поиск просто идёт по миру, как раньше
+        });
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [mapCenter]);
+
   function submitSearch(e: React.FormEvent) {
     e.preventDefault();
     const q = query.trim();
     if (q.length < 2) return;
     setStatus(null);
-    fetch(`/api/crypto-map/geocode?q=${encodeURIComponent(q)}`)
+    setSearching(true);
+    setSearchResults(null);
+    setSearchedAs(null);
+    const params = new URLSearchParams({ q, lang: locale });
+    // Страна центра карты — тот самый рычаг, без которого перечня нет.
+    if (centerCc) params.set("cc", centerCc);
+    fetch(`/api/crypto-map/geocode?${params.toString()}`)
       .then((r) => r.json())
-      .then((res: { results?: GeoResult[] }) => {
-        const top = res.results?.[0];
-        const map = mapRef.current;
-        if (!top || !map) {
-          setStatus(t("notFound"));
-          return;
-        }
-        const lonlat: [number, number] = [top.lon, top.lat];
-        setOrigin(lonlat, top.label, false);
-        map.flyTo({ center: lonlat, zoom: 14 });
+      .then((res: { results?: GeoResult[]; queried?: string }) => {
+        const found = res.results ?? [];
+        setSearchResults(found);
+        setSearchedAs(res.queried && res.queried !== q ? res.queried : null);
+        if (found.length === 0) setStatus(t("notFound"));
       })
-      .catch(() => setStatus(t("notFound")));
+      .catch(() => {
+        setSearchResults([]);
+        setStatus(t("notFound"));
+      })
+      .finally(() => setSearching(false));
+  }
+
+  // Выбор строки из перечня: булавка туда, карта туда, список закрыт.
+  function pickSearchResult(hit: GeoResult) {
+    const map = mapRef.current;
+    const lonlat: [number, number] = [hit.lon, hit.lat];
+    setOrigin(lonlat, hit.title ? [hit.title, hit.subtitle].filter(Boolean).join(", ") : hit.label, false);
+    setSearchResults(null);
+    setSearchedAs(null);
+    map?.flyTo({ center: lonlat, zoom: 16 });
   }
 
   function clearOrigin() {
@@ -1409,14 +1452,9 @@ export default function CryptoNavigator({
             </span>
           )}
         </div>
+        {/* Кнопка «моё положение» переехала к масштабу и компасу под картой —
+            управление картой живёт в одном месте, а не в двух. */}
         <form onSubmit={submitSearch} className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => geolocateRef.current?.trigger()}
-            className="text-[12px] px-3 py-2 rounded-md font-medium border border-hairline text-muted hover:text-foreground transition-all whitespace-nowrap"
-          >
-            📍 {t("posAuto")}
-          </button>
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -1430,8 +1468,55 @@ export default function CryptoNavigator({
             {t("search")}
           </button>
         </form>
+
+        {/* Перечень найденных адресов: улица с номером, под ней индекс,
+            город и область — то, по чему один дом отличается от другого. */}
+        {searching && <p className="text-[12px] text-muted">{t("searching")}</p>}
+        {searchResults !== null && !searching && (
+          <div className="rounded-xl border border-hairline bg-card">
+            <div className="flex items-center justify-between gap-2 border-b border-hairline px-3 py-2">
+              <span className="text-[11px] uppercase tracking-[0.16em] text-muted">
+                {searchResults.length > 0
+                  ? t("searchFound", { count: searchResults.length })
+                  : t("notFound")}
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchResults(null);
+                  setSearchedAs(null);
+                }}
+                aria-label={t("searchClose")}
+                className="text-[13px] leading-none text-muted hover:text-foreground"
+              >
+                ✕
+              </button>
+            </div>
+            {searchedAs && (
+              <p className="px-3 pt-2 text-[11px] text-muted/80">{t("searchedAs", { query: searchedAs })}</p>
+            )}
+            <ul className="max-h-72 overflow-y-auto py-1">
+              {searchResults.map((hit, i) => (
+                <li key={`${hit.lat},${hit.lon},${i}`}>
+                  <button
+                    type="button"
+                    onClick={() => pickSearchResult(hit)}
+                    className="flex w-full min-h-[48px] flex-col items-start gap-0.5 px-3 py-2 text-left hover:bg-bg-tint"
+                  >
+                    <span className="text-[13px] font-medium text-foreground">{hit.title ?? hit.label}</span>
+                    {hit.subtitle && <span className="text-[11px] text-muted">{hit.subtitle}</span>}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         <p className="text-[11px] text-muted/70">{t("clickToDrop")}</p>
       </div>
+
+      {/* Что принимает криптовалюту в этой стране — полосой НАД картой.
+          Прежде этот перечень лежал поверх карты и закрывал её собой. */}
+      {!mapFull && !navActive && <AvailableNearPanel cc={centerCc} counts={counts} />}
 
       {/* Map */}
       <div className={mapFull ? "fixed inset-0 z-[55] flex flex-col bg-bg" : "relative"}>
@@ -1491,7 +1576,6 @@ export default function CryptoNavigator({
             {t("loading")}
           </div>
         )}
-        {!selected && !navActive && <AvailableFintechPanel center={mapCenter} />}
 
         {selected && !navActive && (
           <PoiSheet
@@ -1611,6 +1695,7 @@ export default function CryptoNavigator({
         onZoomIn={() => zoomBy(1)}
         onZoomOut={() => zoomBy(-1)}
         onCompass={onCompass}
+        onLocate={() => geolocateRef.current?.trigger()}
         t={t}
       />
 

@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Масштаб и компас — кнопками под картой, а не поверх неё.
+ * Масштаб, компас и «моё положение» — кнопками под картой, а не поверх неё.
  *
  * Своё управление вместо `NavigationControl` понадобилось по простой причине:
  * на телефоне окно карты и так маленькое, а штатные кнопки стоят поверх него
@@ -29,6 +29,7 @@ export function MapControls({
   onZoomIn,
   onZoomOut,
   onCompass,
+  onLocate,
   t,
 }: {
   /** Текущий поворот карты в градусах — стрелка компаса смотрит на север. */
@@ -39,6 +40,8 @@ export function MapControls({
   onZoomIn: () => void;
   onZoomOut: () => void;
   onCompass: () => void;
+  /** «Моё положение» — та же кнопка, что у масштаба и компаса, а не в строке поиска. */
+  onLocate: () => void;
   t: (key: string) => string;
 }) {
   const following = compassMode === "heading";
@@ -82,6 +85,17 @@ export function MapControls({
           {following ? "➤" : "↑"}
         </span>
         <span className="text-[12px]">{t(labels.short)}</span>
+      </button>
+      <button
+        type="button"
+        onClick={onLocate}
+        aria-label={t("myLocation")}
+        title={t("myLocation")}
+        className={BTN}
+      >
+        <span aria-hidden className="text-[15px] leading-none">
+          📍
+        </span>
       </button>
     </div>
   );

@@ -602,7 +602,7 @@
     "noRoute": "Não foi possível traçar a rota",
     "notFound": "Local não encontrado",
     "myPosition": "Minha posição",
-    "posAuto": "Auto",
+    "posAuto": "Automático",
     "clickToDrop": "ou clique no mapa para colocar um pino",
     "posPin": "Ponto no mapa",
     "posGps": "Localização atual",
@@ -726,7 +726,21 @@
     "headingUpOff": "Parar de girar o mapa conforme o seu rumo",
     "headingUpShort": "Rumo",
     "arriveBy": "Chegue às {time}",
-    "transitPlan": "Sua viagem passo a passo"
+    "transitPlan": "Sua viagem passo a passo",
+    "searching": "Buscando…",
+    "searchFound": "{count} encontrados",
+    "searchClose": "Ocultar a lista",
+    "searchedAs": "Pesquisado como “{query}”",
+    "available": {
+      "title": "Cripto neste país: {country}",
+      "points": "Pontos de aceitação na área visível",
+      "noPoints": "Nenhum ponto nesta visualização",
+      "exchanges": "Exchanges registradas aqui",
+      "fintech": "Fintech disponível aqui",
+      "loading": "Carregando o catálogo…",
+      "noExchanges": "O catálogo não tem exchanges registradas neste país",
+      "noFintech": "Nenhuma fintech está disponível aqui ainda"
+    }
   },
   "markets": {
     "title": "Mercados",
@@ -1306,11 +1320,6 @@
       },
       "supportedCards": "Listagens próprias",
       "supportedCardsHint": "Marque as moedas de listagem própria da Trientes que o seu serviço suporta."
-    },
-    "panel": {
-      "title": "Disponível em {country}",
-      "empty": "Ainda não há fintechs disponíveis em {country}.",
-      "loading": "Procurando fintechs nesta área…"
     }
   },
   "companyPublic": {

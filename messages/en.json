@@ -726,7 +726,21 @@
     "headingUpOff": "Stop turning the map with your course",
     "headingUpShort": "Course",
     "arriveBy": "Arrive {time}",
-    "transitPlan": "Your trip step by step"
+    "transitPlan": "Your trip step by step",
+    "searching": "Searching…",
+    "searchFound": "{count} found",
+    "searchClose": "Hide the list",
+    "searchedAs": "Searched as “{query}”",
+    "available": {
+      "title": "Crypto in this country: {country}",
+      "points": "Acceptance points in view",
+      "noPoints": "No points in this view",
+      "exchanges": "Exchanges registered here",
+      "fintech": "Fintech available here",
+      "loading": "Loading the catalogue…",
+      "noExchanges": "The catalogue has no exchanges registered in this country",
+      "noFintech": "No fintech is available here yet"
+    }
   },
   "markets": {
     "title": "Markets",
@@ -1306,11 +1320,6 @@
       },
       "supportedCards": "Self-listed coins",
       "supportedCardsHint": "Tick the Trientes self-listed coins your service supports."
-    },
-    "panel": {
-      "title": "Available in {country}",
-      "empty": "No fintech services available in {country} yet.",
-      "loading": "Looking up fintech in this area…"
     }
   },
   "companyPublic": {

@@ -398,12 +398,49 @@ describe("assertUrlShape", () => {
 });
 
 describe("parseNominatim", () => {
-  it("maps results to {label, lat, lon}", () => {
+  it("maps results to {label, lat, lon} and titles them from the first segment", () => {
     const out = parseNominatim([
       { display_name: "Prague, Czechia", lat: "50.087", lon: "14.421" },
       { display_name: "no coords" },
     ]);
-    expect(out).toEqual([{ label: "Prague, Czechia", lat: 50.087, lon: 14.421 }]);
+    expect(out).toEqual([{ label: "Prague, Czechia", lat: 50.087, lon: 14.421, title: "Prague" }]);
+  });
+
+  // Живой ответ Nominatim по Австрии: `display_name` начинается с кадастровой
+  // общины, и в перечне домов это шум, по которому их не отличить. Подпись
+  // собирается из частей адреса — улица с номером, индекс, село, область.
+  it("builds the list lines out of the address parts", () => {
+    const out = parseNominatim([
+      {
+        display_name: "8, Hauptstraße, Katastralgemeinde Kalsdorf, Wagnitz, Kalsdorf, Steiermark, 8401, Österreich",
+        lat: "46.95",
+        lon: "15.53",
+        address: {
+          house_number: "8",
+          road: "Hauptstraße",
+          village: "Kalsdorf",
+          state: "Steiermark",
+          postcode: "8401",
+          country: "Österreich",
+          country_code: "at",
+        },
+      },
+    ]);
+    expect(out[0]!.title).toBe("Hauptstraße 8");
+    expect(out[0]!.subtitle).toBe("8401 Kalsdorf, Steiermark, Österreich");
+    expect(out[0]!.countryCode).toBe("AT");
+  });
+
+  // Одна улица приходит несколькими объектами OSM (дом, точка адреса, отрезок
+  // улицы) — в списке это были бы повторы одной строки.
+  it("drops repeats of the same address", () => {
+    const row = {
+      display_name: "Gemeindeberggasse 8, Wien",
+      lat: "48.18",
+      lon: "16.26",
+      address: { road: "Gemeindeberggasse", house_number: "8", city: "Wien", postcode: "1130" },
+    };
+    expect(parseNominatim([row, { ...row, lat: "48.1801" }]).length).toBe(1);
   });
 
   it("returns [] for non-array input", () => {
