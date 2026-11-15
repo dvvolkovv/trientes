@@ -666,7 +666,34 @@
       "inDistance": "{distance} sonra, {instruction}",
       "meters": "{n} m",
       "kilometers": "{n} km",
-      "rerouting": "Rota yeniden oluşturuluyor"
+      "rerouting": "Rota yeniden oluşturuluyor",
+      "transit": {
+        "vehicle_walk": "yaya",
+        "vehicle_metro": "metro",
+        "vehicle_rail": "tren",
+        "vehicle_bus": "otobüs",
+        "vehicle_tram": "tramvay",
+        "vehicle_ferry": "feribot",
+        "vehicle_transit": "araç",
+        "walkToStop": "{stop}'a {distance} yürü",
+        "walkToDestination": "Hedefine {distance} yürü",
+        "transferTo": "Aktarma: {stop}'a {distance} yürü",
+        "board": "{stop}: {headsign} yönüne giden {vehicle} {line}'e bin",
+        "boardNoHeadsign": "{stop}: {vehicle} {line}'e bin",
+        "boardTrack": "Peron {track}",
+        "waitHere": "Aracın için burada bekle",
+        "ride": "{vehicle} {line} — {stop} durağında in",
+        "rideFromTo": "{from} → {to}",
+        "towards": "{headsign} yönüne",
+        "stopsCount": "Durak: {count}",
+        "alightNext": "Sıradaki durak senin — {stop}. İnmek için hazırlan",
+        "alight": "Burada inin: {stop}",
+        "stairsUp": "Yukarı çıkış",
+        "stairsDown": "Aşağı iniş",
+        "elevator": "Asansörü kullanın",
+        "alongStreet": "{name} boyunca",
+        "scheduled": "planlı"
+      }
     },
     "pageMap": "Harita",
     "pageCard": "Yer",
@@ -697,7 +724,9 @@
     "north": "K",
     "headingUpOn": "Haritayı yönünüzle birlikte döndür",
     "headingUpOff": "Haritayı yönünüzle birlikte döndürmeyi durdur",
-    "headingUpShort": "Yön"
+    "headingUpShort": "Yön",
+    "arriveBy": "Varış {time}",
+    "transitPlan": "Yolculuğunuz adım adım"
   },
   "markets": {
     "title": "Piyasalar",

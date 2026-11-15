@@ -579,6 +579,78 @@ describe("parseMotis", () => {
     expect(out!.distance).toBeGreaterThan(0);
   });
 
+  it("keeps what a passenger needs: stop, platform, direction, stops, schedule", () => {
+    const out = parseMotis({
+      itineraries: [
+        {
+          duration: 1140,
+          transfers: 0,
+          startTime: "2026-11-15T17:37:00Z",
+          endTime: "2026-11-15T17:56:00Z",
+          legs: [
+            {
+              mode: "WALK",
+              duration: 300,
+              startTime: "2026-11-15T17:37:00Z",
+              endTime: "2026-11-15T17:42:00Z",
+              from: { name: "START", lat: 48.2082, lon: 16.3719 },
+              to: { name: "Schönbrunn", lat: 48.209, lon: 16.373, scheduledTrack: "2" },
+              legGeometry: { points: walk1, precision: 7 },
+              steps: [
+                { relativeDirection: "CONTINUE", distance: 120, streetName: "", fromLevel: 0, toLevel: 0 },
+                { relativeDirection: "CONTINUE", distance: 2, streetName: "", fromLevel: 0, toLevel: 0 },
+                { relativeDirection: "STAIRS", distance: 14, streetName: "", fromLevel: 0, toLevel: -2 },
+              ],
+            },
+            {
+              mode: "SUBWAY",
+              duration: 360,
+              routeShortName: "U4",
+              headsign: "Heiligenstadt",
+              agencyName: "Wiener Linien",
+              realTime: true,
+              from: { name: "Schönbrunn", lat: 48.209, lon: 16.373, track: "2" },
+              to: { name: "Schwedenplatz", lat: 48.2099, lon: 16.3765 },
+              intermediateStops: [
+                { name: "Karlsplatz", lat: 48.205, lon: 16.376, arrival: "2026-11-15T17:44:00Z" },
+                { name: "Nowhere", lat: null, lon: null },
+              ],
+              legGeometry: { points: ride, precision: 7 },
+            },
+          ],
+        },
+      ],
+    })!;
+    const [walk, ride_] = out.legs!;
+
+    // «START» — это наш собственный конец маршрута, а не название места.
+    expect(walk.from).toBeNull();
+    expect(walk.to).toBe("Schönbrunn");
+    expect(walk.toTrack).toBe("2"); // платформы нет — берётся та, что по расписанию
+    expect(walk.startTime).toBe("2026-11-15T17:37:00Z");
+    expect(walk.realTime).toBe(false);
+    expect(walk.meters).toBeGreaterThan(0);
+    // Двухметровый шаг пассажиру ничего не говорит, лестница — говорит.
+    expect(walk.walkSteps).toEqual([
+      { direction: "CONTINUE", streetName: null, distance: 122, level: null },
+      { direction: "STAIRS", streetName: null, distance: 14, level: "down" },
+    ]);
+
+    expect(ride_.headsign).toBe("Heiligenstadt");
+    expect(ride_.agency).toBe("Wiener Linien");
+    expect(ride_.fromTrack).toBe("2");
+    expect(ride_.realTime).toBe(true);
+    expect(ride_.fromPoint).toEqual([16.373, 48.209]);
+    // Остановка без координат — не остановка: по координатам она ставится на линию.
+    expect(ride_.stops).toEqual([
+      { name: "Karlsplatz", lat: 48.205, lon: 16.376, arrival: "2026-11-15T17:44:00Z" },
+    ]);
+    // Пешая нога остановок не везёт, рейс не везёт шагов.
+    expect(ride_.walkSteps).toEqual([]);
+    expect(walk.stops).toEqual([]);
+    expect(out.endTime).toBe("2026-11-15T17:56:00Z");
+  });
+
   it("flags walk legs dashed and colours the transit leg", () => {
     const out = parseMotis({ itineraries: [itinerary] })!;
     expect(out.legs![0].dashed).toBe(true);

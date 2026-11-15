@@ -25,6 +25,15 @@ import type {
 } from "@/lib/crypto-map";
 import { activeStep, cumulativeEnds } from "@/lib/route-steps";
 import { VoiceLog, departureAnnouncement, nextAnnouncement } from "@/lib/nav-voice";
+import {
+  SpokenPhrases,
+  departureCue,
+  legSpans,
+  nextTransitCue,
+  transitCue,
+  type LegSpan,
+  type TransitCue,
+} from "@/lib/transit-guidance";
 import { cameraFor, isMoving } from "@/lib/nav-camera";
 import { compassTap, type CompassMode } from "@/lib/compass-mode";
 import { headingChanged, pickHeading } from "@/lib/heading";
@@ -44,6 +53,7 @@ import {
   maneuverText,
   spokenDistance,
 } from "@/components/coin-detail/route-steps-panel";
+import { TransitBanner, clockTime, transitCueText } from "@/components/coin-detail/transit-itinerary";
 import { StreetViewOverlay } from "@/components/coin-detail/street-view-overlay";
 import { MODE_ICON, PoiSheet, type SheetRoute } from "@/components/coin-detail/poi-sheet";
 import { DEFAULT_POI_PAGE, type PoiPage } from "@/lib/poi-pager";
@@ -237,6 +247,12 @@ export default function CryptoNavigator({
   const [navRerouting, setNavRerouting] = useState(false);
   const [pendingStart, setPendingStart] = useState(false);
   const [navStep, setNavStep] = useState<{ index: number; distanceToManeuver: number } | null>(null);
+  // Подсказка транспорта: не манёвр, а нога — «идите до остановки», «садитесь
+  // на метро A», «выходите на следующей». Границы ног по сшитой линии считаются
+  // один раз на маршрут: на каждом отсчёте это была бы лишняя тригонометрия.
+  const [navCue, setNavCue] = useState<TransitCue | null>(null);
+  const navSpansRef = useRef<LegSpan[]>([]);
+  const spokenRef = useRef(new SpokenPhrases());
   const [voiceOn, setVoiceOn] = useState(readVoicePreference);
   const voiceOnRef = useRef(voiceOn);
   // Что голос уже сказал. Не замыкание: пересчёт маршрута меняет манёвры, и
@@ -543,6 +559,7 @@ export default function CryptoNavigator({
           legs: res.legs,
           steps: res.steps,
           coordinates: coords,
+          endTime: res.endTime ?? null,
         });
         // Страницу здесь не трогаем намеренно. Ответ приходит через секунды
         // после нажатия, и прежний переброс на карту выбивал человека с
@@ -560,6 +577,7 @@ export default function CryptoNavigator({
             legs: res.legs,
             steps: res.steps,
             coordinates: coords,
+            endTime: res.endTime ?? null,
           };
           navDepartureRef.current?.(navRouteRef.current);
           setNavRerouting(false);
@@ -1061,8 +1079,10 @@ export default function CryptoNavigator({
     setNavOffRoute(null);
     setNavRemaining(null);
     setNavStep(null);
+    setNavCue(null);
     setNavRerouting(false);
     voiceLogRef.current.reset();
+    spokenRef.current.reset();
     cancelSpeech();
     setStatus(null);
     const map = mapRef.current;
@@ -1079,8 +1099,32 @@ export default function CryptoNavigator({
   const announce = useCallback(
     (u: NavUpdate) => {
       const r = navRouteRef.current;
-      const steps = r?.steps ?? [];
-      if (!r || steps.length === 0) return;
+      if (!r) return;
+      if (r.mode === "transit") {
+        const legs = r.legs ?? [];
+        const spans = navSpansRef.current;
+        if (legs.length === 0 || spans.length !== legs.length) return;
+        // Пройденное меряется от остатка той же линии, по которой разложены
+        // ноги: сумма ног и число `distance` из ответа чуть разные, а линия
+        // одна.
+        const total = spans[spans.length - 1].end;
+        const travelled = Math.max(0, total - u.remainingMeters);
+        setNavCue(transitCue({ travelled, legs, spans }));
+        const cue = nextTransitCue({
+          travelled,
+          legs,
+          spans,
+          speedMps: u.speedMps,
+          log: voiceLogRef.current,
+        });
+        if (cue) {
+          const text = transitCueText(cue.cue, t);
+          if (spokenRef.current.claim(text)) speak(text);
+        }
+        return;
+      }
+      const steps = r.steps ?? [];
+      if (steps.length === 0) return;
       const ends = cumulativeEnds(steps);
       // Пройденное меряется от конца: остаток считается по самой линии, а
       // сумма шагов приходит от маршрутизатора, и эти два числа чуть разные.
@@ -1097,7 +1141,7 @@ export default function CryptoNavigator({
       });
       if (a) speak(phraseFor(a.step, a.distanceMeters, a.band === "now"));
     },
-    [speak, phraseFor],
+    [speak, phraseFor, t],
   );
 
   /**
@@ -1136,14 +1180,38 @@ export default function CryptoNavigator({
     });
   }, []);
 
-  /** Отправление нового маршрута — и первая фраза, если ведение уже идёт. */
+  /**
+   * Первая фраза нового маршрута — она же звучит, если ведение уже идёт.
+   * У транспорта она не о манёвре, а о ноге: «идите триста метров до остановки
+   * Staroměstská». Ровно она же отпирает синтез речи при нажатии «Поехали».
+   */
+  const departurePhrase = useCallback(
+    (r: SheetRoute): string | null => {
+      voiceLogRef.current.reset();
+      spokenRef.current.reset();
+      if (r.mode === "transit") {
+        const legs = r.legs ?? [];
+        const spans = legSpans(legs);
+        navSpansRef.current = spans;
+        const cue = departureCue(legs, spans, voiceLogRef.current);
+        if (!cue) return null;
+        setNavCue(cue);
+        const text = transitCueText(cue, t);
+        spokenRef.current.claim(text);
+        return text;
+      }
+      const d = departureAnnouncement(r.steps ?? [], voiceLogRef.current);
+      return d ? phraseFor(d.step, d.distanceMeters, false) : null;
+    },
+    [phraseFor, t],
+  );
+
   const announceDeparture = useCallback(
     (r: SheetRoute) => {
-      voiceLogRef.current.reset();
-      const d = departureAnnouncement(r.steps ?? [], voiceLogRef.current);
-      if (d) speak(phraseFor(d.step, d.distanceMeters, false));
+      const phrase = departurePhrase(r);
+      if (phrase) speak(phrase);
     },
-    [speak, phraseFor],
+    [speak, departurePhrase],
   );
 
   useEffect(() => {
@@ -1161,14 +1229,8 @@ export default function CryptoNavigator({
     // Эта функция вызывается прямо из обработчика нажатия, и только пока стек
     // принадлежит жесту, мобильный Safari разрешает говорить.
     navRouteRef.current = route;
-    voiceLogRef.current.reset();
-    const departure = departureAnnouncement(route.steps ?? [], voiceLogRef.current);
-    if (voiceOnRef.current) {
-      primeVoice(
-        departure ? phraseFor(departure.step, departure.distanceMeters, false) : t("navStarting"),
-        voiceLang,
-      );
-    }
+    const departure = departurePhrase(route);
+    if (voiceOnRef.current) primeVoice(departure ?? t("navStarting"), voiceLang);
 
     const starting = t("navStarting");
     setStatus(starting);
@@ -1219,7 +1281,7 @@ export default function CryptoNavigator({
     voiceLang,
     stopNavigation,
     speak,
-    phraseFor,
+    departurePhrase,
     announce,
     driveCamera,
     setOrigin,
@@ -1244,11 +1306,15 @@ export default function CryptoNavigator({
   const mapFull = isPhone && (navActive || !!selected);
   // Следующий манёвр: он же — признак, что над картой стоит строка подсказки.
   const maneuverStep =
-    navActive && navStep ? (route?.steps?.[navStep.index + 1] ?? null) : null;
+    navActive && navStep && route?.mode !== "transit"
+      ? (route?.steps?.[navStep.index + 1] ?? null)
+      : null;
+  // В транспорте над картой стоит та же строка, но говорит она о ноге поездки.
+  const transitRow = navActive && route?.mode === "transit" ? navCue : null;
   // Строка подсказки отнимает у полотна свою высоту, а MapLibre смену размера
   // контейнера сам не замечает — тот же пересчёт, что и при переходе в полный
   // экран.
-  const hasManeuverRow = !!maneuverStep;
+  const hasManeuverRow = !!maneuverStep || !!transitRow;
   useEffect(() => {
     if (!mapRef.current) return;
     const id = window.setTimeout(() => mapRef.current?.resize(), 60);
@@ -1289,6 +1355,16 @@ export default function CryptoNavigator({
     return () => window.clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPhone, selected, poiPage, mapExpanded]);
+
+  /**
+   * Остаток времени в транспорте — из расписания, а не из темпа хода.
+   * Полоса ведения делит остаток линии на измеренный темп, и в метро это
+   * бессмыслица: темп измерен пешком, а до выхода тридцать километров.
+   */
+  const transitArrival =
+    route?.mode === "transit" && route.endTime && clockTime(route.endTime, locale)
+      ? t("arriveBy", { time: clockTime(route.endTime, locale) as string })
+      : null;
 
   const btn = (active: boolean) =>
     "text-[12px] px-3 py-1.5 rounded-md font-medium transition-all " +
@@ -1363,7 +1439,7 @@ export default function CryptoNavigator({
             баннер лежал на карте и закрывал собой ровно тот перекрёсток, к
             которому вёл. Своя строка короче карты не делает ничего другого:
             полотно просто начинается под ней. */}
-        {maneuverStep && (
+        {(maneuverStep || transitRow) && (
           <div
             className={
               mapFull
@@ -1372,11 +1448,17 @@ export default function CryptoNavigator({
             }
             style={mapFull ? { paddingTop: "max(0.75rem, env(safe-area-inset-top))" } : undefined}
           >
-            <ManeuverBanner
-              step={maneuverStep}
-              distanceMeters={navStep?.distanceToManeuver ?? 0}
-              t={t}
-            />
+            {transitRow ? (
+              <TransitBanner cue={transitRow} t={t} />
+            ) : (
+              maneuverStep && (
+                <ManeuverBanner
+                  step={maneuverStep}
+                  distanceMeters={navStep?.distanceToManeuver ?? 0}
+                  t={t}
+                />
+              )
+            )}
           </div>
         )}
         {mapUnavailable ? (
@@ -1473,7 +1555,7 @@ export default function CryptoNavigator({
                         ? `${(navRemaining.m / 1000).toFixed(1)} km`
                         : `${Math.round(navRemaining.m)} m`}
                       {" · "}
-                      {t("etaMin", { min: Math.max(1, Math.round(navRemaining.sec / 60)) })}
+                      {transitArrival ?? t("etaMin", { min: Math.max(1, Math.round(navRemaining.sec / 60)) })}
                     </div>
                     <div className="truncate text-[11px] text-muted">
                       {navRerouting ? t("rerouting") : (status ?? navError ?? t("remaining"))}

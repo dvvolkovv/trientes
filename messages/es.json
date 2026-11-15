@@ -666,7 +666,34 @@
       "inDistance": "En {distance}, {instruction}",
       "meters": "{n} m",
       "kilometers": "{n} km",
-      "rerouting": "Recalculando la ruta"
+      "rerouting": "Recalculando la ruta",
+      "transit": {
+        "vehicle_walk": "a pie",
+        "vehicle_metro": "el metro",
+        "vehicle_rail": "el tren",
+        "vehicle_bus": "el autobús",
+        "vehicle_tram": "el tranvía",
+        "vehicle_ferry": "el ferry",
+        "vehicle_transit": "el vehículo",
+        "walkToStop": "Camina {distance} hasta {stop}",
+        "walkToDestination": "Camina {distance} hasta tu destino",
+        "transferTo": "Transbordo: camina {distance} hasta {stop}",
+        "board": "{stop}: toma {vehicle} {line} hacia {headsign}",
+        "boardNoHeadsign": "{stop}: toma {vehicle} {line}",
+        "boardTrack": "Andén {track}",
+        "waitHere": "Espera aquí tu transporte",
+        "ride": "{vehicle} {line} — bájate en {stop}",
+        "rideFromTo": "{from} → {to}",
+        "towards": "Hacia {headsign}",
+        "stopsCount": "Paradas: {count}",
+        "alightNext": "La próxima es la tuya — {stop}. Prepárate para bajar",
+        "alight": "Baja aquí: {stop}",
+        "stairsUp": "Escaleras arriba",
+        "stairsDown": "Escaleras abajo",
+        "elevator": "Toma el ascensor",
+        "alongStreet": "Por {name}",
+        "scheduled": "programado"
+      }
     },
     "pageMap": "Mapa",
     "pageCard": "Lugar",
@@ -697,7 +724,9 @@
     "north": "N",
     "headingUpOn": "Gira el mapa según tu rumbo",
     "headingUpOff": "Deja de girar el mapa según tu rumbo",
-    "headingUpShort": "Rumbo"
+    "headingUpShort": "Rumbo",
+    "arriveBy": "Llegada {time}",
+    "transitPlan": "Tu viaje paso a paso"
   },
   "markets": {
     "title": "Mercados",

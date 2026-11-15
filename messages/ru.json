@@ -666,7 +666,34 @@
       "inDistance": "Через {distance}, {instruction}",
       "meters": "{n} м",
       "kilometers": "{n} км",
-      "rerouting": "Перестраиваем маршрут"
+      "rerouting": "Перестраиваем маршрут",
+      "transit": {
+        "vehicle_walk": "пешком",
+        "vehicle_metro": "метро",
+        "vehicle_rail": "поезд",
+        "vehicle_bus": "автобус",
+        "vehicle_tram": "трамвай",
+        "vehicle_ferry": "паром",
+        "vehicle_transit": "транспорт",
+        "walkToStop": "Идите {distance} до {stop}",
+        "walkToDestination": "Идите {distance} до пункта назначения",
+        "transferTo": "Пересадка: идите {distance} до {stop}",
+        "board": "{stop}: сядьте на {vehicle} {line} в направлении {headsign}",
+        "boardNoHeadsign": "{stop}: сядьте на {vehicle} {line}",
+        "boardTrack": "Платформа {track}",
+        "waitHere": "Ждите здесь свой транспорт",
+        "ride": "{vehicle} {line} — выйдите на {stop}",
+        "rideFromTo": "{from} → {to}",
+        "towards": "В направлении {headsign}",
+        "stopsCount": "Остановки: {count}",
+        "alightNext": "Следующая остановка ваша — {stop}. Готовьтесь к выходу",
+        "alight": "Выход здесь: {stop}",
+        "stairsUp": "Лестница вверх",
+        "stairsDown": "Лестница вниз",
+        "elevator": "Воспользуйтесь лифтом",
+        "alongStreet": "Вдоль {name}",
+        "scheduled": "по расписанию"
+      }
     },
     "pageMap": "Карта",
     "pageCard": "Место",
@@ -697,7 +724,9 @@
     "north": "С",
     "headingUpOn": "Поворачивать карту по курсу",
     "headingUpOff": "Не поворачивать карту по курсу",
-    "headingUpShort": "Курс"
+    "headingUpShort": "Курс",
+    "arriveBy": "Прибытие {time}",
+    "transitPlan": "Ваша поездка шаг за шагом"
   },
   "markets": {
     "title": "Рынки",

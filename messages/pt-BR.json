@@ -666,7 +666,34 @@
       "inDistance": "Em {distance}, {instruction}",
       "meters": "{n} m",
       "kilometers": "{n} km",
-      "rerouting": "Recalculando a rota"
+      "rerouting": "Recalculando a rota",
+      "transit": {
+        "vehicle_walk": "a pé",
+        "vehicle_metro": "o metrô",
+        "vehicle_rail": "o trem",
+        "vehicle_bus": "o ônibus",
+        "vehicle_tram": "o bonde",
+        "vehicle_ferry": "a balsa",
+        "vehicle_transit": "o veículo",
+        "walkToStop": "Caminhe {distance} até {stop}",
+        "walkToDestination": "Caminhe {distance} até seu destino",
+        "transferTo": "Transferência: caminhe {distance} até {stop}",
+        "board": "{stop}: embarque em {vehicle} {line} em direção a {headsign}",
+        "boardNoHeadsign": "{stop}: embarque em {vehicle} {line}",
+        "boardTrack": "Plataforma {track}",
+        "waitHere": "Espere aqui pelo seu transporte",
+        "ride": "{vehicle} {line} — desça em {stop}",
+        "rideFromTo": "{from} → {to}",
+        "towards": "Em direção a {headsign}",
+        "stopsCount": "Paradas: {count}",
+        "alightNext": "A próxima parada é a sua — {stop}. Prepare-se para descer",
+        "alight": "Desça aqui: {stop}",
+        "stairsUp": "Escadas para cima",
+        "stairsDown": "Escadas para baixo",
+        "elevator": "Use o elevador",
+        "alongStreet": "Ao longo de {name}",
+        "scheduled": "programado"
+      }
     },
     "pageMap": "Mapa",
     "pageCard": "Local",
@@ -697,7 +724,9 @@
     "north": "N",
     "headingUpOn": "Girar o mapa conforme o seu rumo",
     "headingUpOff": "Parar de girar o mapa conforme o seu rumo",
-    "headingUpShort": "Rumo"
+    "headingUpShort": "Rumo",
+    "arriveBy": "Chegue às {time}",
+    "transitPlan": "Sua viagem passo a passo"
   },
   "markets": {
     "title": "Mercados",

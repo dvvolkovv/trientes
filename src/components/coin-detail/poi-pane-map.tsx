@@ -14,6 +14,7 @@ import {
 } from "@/components/coin-detail/poi-sheet-ui";
 import { useTileGesture } from "@/components/coin-detail/poi-sheet-ui";
 import { StepList, type StepTranslator } from "@/components/coin-detail/route-steps-panel";
+import { TransitItinerary, legIcon } from "@/components/coin-detail/transit-itinerary";
 import { MapControls } from "@/components/coin-detail/map-controls";
 import type { CompassMode } from "@/lib/compass-mode";
 import { footerActions } from "@/lib/poi-sheet-actions";
@@ -21,26 +22,6 @@ import { SWIPE_EDGE_PX } from "@/lib/poi-pager";
 import { TILE_PAD_CLASS, TILE_SHELL } from "@/lib/poi-tile";
 
 const TRAVEL_MODES: RouteMode[] = ["walk", "car", "transit"];
-
-const LEG_ICON: Record<string, string> = {
-  WALK: "🚶",
-  SUBWAY: "🚇",
-  METRO: "🚇",
-  RAIL: "🚆",
-  REGIONAL_RAIL: "🚆",
-  REGIONAL_FAST_RAIL: "🚆",
-  LONG_DISTANCE: "🚆",
-  HIGHSPEED_RAIL: "🚄",
-  NIGHT_RAIL: "🚆",
-  BUS: "🚌",
-  COACH: "🚌",
-  TRAM: "🚊",
-  FERRY: "⛴️",
-};
-
-function legIcon(mode: string): string {
-  return LEG_ICON[mode.toUpperCase()] ?? "🚆";
-}
 
 // Платформа не меняется за время жизни страницы, но спросить её можно только
 // после гидратации: на сервере `navigator` нет, а разметка должна совпасть.
@@ -119,7 +100,12 @@ export function PoiPaneMap({
   onCompass: () => void;
   t: StepTranslator;
 }) {
-  const [stepsOpen, setStepsOpen] = useState(false);
+  // `null` — человек ещё не решал, и тогда решает режим: нитку поездки в
+  // транспорте надо видеть сразу (в ней и весь ответ на «где мне садиться»),
+  // а список манёвров пешего маршрута длинный и прячется по-прежнему.
+  const [stepsOpen, setStepsOpen] = useState<boolean | null>(null);
+  const transitPlan = route?.mode === "transit";
+  const planOpen = stepsOpen ?? transitPlan;
   const actions = footerActions(!!route);
   const platform = useSyncExternalStore(subscribeNever, readPlatform, () => "web" as const);
   const { handlers, dragging } = useTileGesture({ expanded, onChange: onExpandedChange });
@@ -210,20 +196,28 @@ export function PoiPaneMap({
                 ))}
               </div>
             )}
-            {!!route.steps?.length && (
+            {/* Разбор маршрута: у пешего и автомобильного это манёвры, у
+                транспорта — нитка поездки. У составного маршрута манёвров нет
+                вовсе, и раньше кнопка просто не появлялась: человек видел
+                «3 пересадки» и ни одного имени остановки. */}
+            {(transitPlan ? !!route.legs?.length : !!route.steps?.length) && (
               <>
                 <button
                   type="button"
-                  onClick={() => setStepsOpen((v) => !v)}
-                  aria-expanded={stepsOpen}
+                  onClick={() => setStepsOpen(!planOpen)}
+                  aria-expanded={planOpen}
                   className="mt-1.5 flex min-h-[36px] items-center gap-1.5 text-[12px] text-muted hover:text-foreground"
                 >
-                  <span aria-hidden>{stepsOpen ? "▾" : "▸"}</span>
-                  {t("directions")}
+                  <span aria-hidden>{planOpen ? "▾" : "▸"}</span>
+                  {transitPlan ? t("transitPlan") : t("directions")}
                 </button>
-                {stepsOpen && (
+                {planOpen && (
                   <div className="max-h-[32vh] overflow-y-auto overscroll-contain">
-                    <StepList steps={route.steps} t={t} />
+                    {transitPlan ? (
+                      <TransitItinerary legs={route.legs ?? []} t={t} />
+                    ) : (
+                      <StepList steps={route.steps ?? []} t={t} />
+                    )}
                   </div>
                 )}
               </>

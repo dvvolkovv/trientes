@@ -28,7 +28,10 @@ export async function GET(req: Request) {
   if (!from || !to) return NextResponse.json({ error: "invalid from/to" }, { status: 400 });
 
   const key = (p: [number, number]) => `${p[0].toFixed(4)},${p[1].toFixed(4)}`;
-  const cacheKey = `cmap:route:${mode}:${key(from)}:${key(to)}`;
+  // Версия в ключе — не украшение: ответ транспорта теперь везёт остановки,
+  // платформы и расписание, а запись прежней формы жила бы в кэше ещё
+  // пятнадцать минут после выкладки и ведение по ней считать не умеет.
+  const cacheKey = `cmap:route:v2:${mode}:${key(from)}:${key(to)}`;
   try {
     if (redis.status === "wait" || redis.status === "end") await redis.connect();
     const cached = await redis.get(cacheKey);

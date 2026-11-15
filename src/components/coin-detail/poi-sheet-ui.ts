@@ -39,6 +39,8 @@ export type SheetRoute = {
   legs?: TransitLeg[];
   steps?: RouteStep[];
   coordinates: [number, number][];
+  /** Прибытие по расписанию (ISO) — в транспорте остаток времени берётся отсюда. */
+  endTime?: string | null;
 };
 
 /** Расстояние так, как его читают в сводке и в чипсе маршрута. */

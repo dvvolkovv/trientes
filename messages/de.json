@@ -666,7 +666,34 @@
       "inDistance": "In {distance} {instruction}",
       "meters": "{n} m",
       "kilometers": "{n} km",
-      "rerouting": "Route wird neu berechnet"
+      "rerouting": "Route wird neu berechnet",
+      "transit": {
+        "vehicle_walk": "zu Fuß",
+        "vehicle_metro": "die U-Bahn",
+        "vehicle_rail": "der Zug",
+        "vehicle_bus": "der Bus",
+        "vehicle_tram": "die Straßenbahn",
+        "vehicle_ferry": "die Fähre",
+        "vehicle_transit": "das Fahrzeug",
+        "walkToStop": "Gehe {distance} bis {stop}",
+        "walkToDestination": "Gehe {distance} bis zum Ziel",
+        "transferTo": "Umsteigen: Gehe {distance} bis {stop}",
+        "board": "{stop}: Steige in {vehicle} {line} Richtung {headsign} ein",
+        "boardNoHeadsign": "{stop}: Steige in {vehicle} {line} ein",
+        "boardTrack": "Bahnsteig {track}",
+        "waitHere": "Warte hier auf deine Fahrt",
+        "ride": "{vehicle} {line} — an {stop} aussteigen",
+        "rideFromTo": "{from} → {to}",
+        "towards": "Richtung {headsign}",
+        "stopsCount": "Haltestellen: {count}",
+        "alightNext": "Nächste Haltestelle ist deine — {stop}. Mach dich bereit zum Aussteigen",
+        "alight": "Hier aussteigen: {stop}",
+        "stairsUp": "Treppe hinauf",
+        "stairsDown": "Treppe hinunter",
+        "elevator": "Aufzug nehmen",
+        "alongStreet": "Entlang {name}",
+        "scheduled": "planmäßig"
+      }
     },
     "pageMap": "Karte",
     "pageCard": "Ort",
@@ -697,7 +724,9 @@
     "north": "N",
     "headingUpOn": "Karte mit Ihrer Fahrtrichtung drehen",
     "headingUpOff": "Karte nicht mehr mit Ihrer Fahrtrichtung drehen",
-    "headingUpShort": "Kurs"
+    "headingUpShort": "Kurs",
+    "arriveBy": "Ankunft {time}",
+    "transitPlan": "Ihre Route Schritt für Schritt"
   },
   "markets": {
     "title": "Märkte",

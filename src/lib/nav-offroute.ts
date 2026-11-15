@@ -8,7 +8,18 @@ import type { RouteMode } from "./crypto-map";
  * непрерывный пересчёт.
  */
 
-export const OFF_ROUTE_M: Record<"walk" | "car", number> = { walk: 25, car: 40 };
+export const OFF_ROUTE_M: Record<RouteMode, number> = { walk: 25, car: 40, transit: 120 };
+
+/**
+ * В каких режимах сход с линии просит новый маршрут.
+ *
+ * В транспорте — нет. GPS в тоннеле уходит на сотни метров, и автоматическая
+ * перестройка выдала бы человеку, который сидит в едущем вагоне, маршрут с
+ * другой пересадкой — вместе с фразой «перестраиваю» каждые пятнадцать секунд.
+ * Отход при этом считается по-прежнему: его видно в полосе ведения, а
+ * перестройку человек просит кнопкой «Пересчитать».
+ */
+export const AUTO_REROUTE: Record<RouteMode, boolean> = { walk: true, car: true, transit: false };
 
 /** Сколько отсчётов подряд должны лежать в стороне. */
 export const OFF_ROUTE_STREAK = 3;
@@ -18,13 +29,15 @@ export const REROUTE_COOLDOWN_MS = 15_000;
 
 export class OffRouteWatch {
   private readonly threshold: number;
+  private readonly autoReroute: boolean;
   private streak = 0;
   // `null`, а не ноль: первая перестройка не должна ждать выдержку от начала
   // эпохи Unix — именно этим ноль и оборачивался.
   private lastRerouteAt: number | null = null;
 
   constructor(mode: RouteMode) {
-    this.threshold = OFF_ROUTE_M[mode === "car" ? "car" : "walk"];
+    this.threshold = OFF_ROUTE_M[mode] ?? OFF_ROUTE_M.walk;
+    this.autoReroute = AUTO_REROUTE[mode] ?? true;
   }
 
   /** Лежит ли отсчёт в стороне от линии. */
@@ -42,6 +55,7 @@ export class OffRouteWatch {
    * отправления.
    */
   feed(distanceFromRoute: number, nowMs: number, moving: boolean): boolean {
+    if (!this.autoReroute) return false;
     if (!moving) {
       this.streak = 0;
       return false;

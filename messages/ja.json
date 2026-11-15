@@ -666,7 +666,34 @@
       "inDistance": "{distance} 先で{instruction}",
       "meters": "{n} m",
       "kilometers": "{n} km",
-      "rerouting": "ルートを再計算中"
+      "rerouting": "ルートを再計算中",
+      "transit": {
+        "vehicle_walk": "徒歩",
+        "vehicle_metro": "地下鉄",
+        "vehicle_rail": "列車",
+        "vehicle_bus": "バス",
+        "vehicle_tram": "トラム",
+        "vehicle_ferry": "フェリー",
+        "vehicle_transit": "車両",
+        "walkToStop": "{stop}まで{distance}歩く",
+        "walkToDestination": "目的地まで{distance}歩く",
+        "transferTo": "乗換: {stop}まで{distance}歩く",
+        "board": "{stop}: {headsign}行きの{vehicle} {line}に乗車",
+        "boardNoHeadsign": "{stop}: {vehicle} {line}に乗車",
+        "boardTrack": "のりば{track}",
+        "waitHere": "ここで乗車を待つ",
+        "ride": "{vehicle} {line} — {stop}で下車",
+        "rideFromTo": "{from} → {to}",
+        "towards": "{headsign}方面",
+        "stopsCount": "停車数: {count}",
+        "alightNext": "次はあなたの降車駅 — {stop}。降りる準備を",
+        "alight": "ここで下車: {stop}",
+        "stairsUp": "上り階段",
+        "stairsDown": "下り階段",
+        "elevator": "エレベーターを利用",
+        "alongStreet": "{name} に沿って",
+        "scheduled": "予定"
+      }
     },
     "pageMap": "地図",
     "pageCard": "場所",
@@ -697,7 +724,9 @@
     "north": "N",
     "headingUpOn": "進行方向に合わせて地図を回転",
     "headingUpOff": "進行方向に合わせた地図の回転を停止",
-    "headingUpShort": "進行方向"
+    "headingUpShort": "進行方向",
+    "arriveBy": "{time} に到着",
+    "transitPlan": "ステップごとの行程"
   },
   "markets": {
     "title": "市場",

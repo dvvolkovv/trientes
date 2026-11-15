@@ -666,7 +666,34 @@
       "inDistance": "In {distance}, {instruction}",
       "meters": "{n} m",
       "kilometers": "{n} km",
-      "rerouting": "Rebuilding the route"
+      "rerouting": "Rebuilding the route",
+      "transit": {
+        "vehicle_walk": "on foot",
+        "vehicle_metro": "the metro",
+        "vehicle_rail": "the train",
+        "vehicle_bus": "the bus",
+        "vehicle_tram": "the tram",
+        "vehicle_ferry": "the ferry",
+        "vehicle_transit": "the vehicle",
+        "walkToStop": "Walk {distance} to {stop}",
+        "walkToDestination": "Walk {distance} to your destination",
+        "transferTo": "Transfer: walk {distance} to {stop}",
+        "board": "{stop}: board {vehicle} {line} towards {headsign}",
+        "boardNoHeadsign": "{stop}: board {vehicle} {line}",
+        "boardTrack": "Platform {track}",
+        "waitHere": "Wait here for your ride",
+        "ride": "{vehicle} {line} — get off at {stop}",
+        "rideFromTo": "{from} → {to}",
+        "towards": "Towards {headsign}",
+        "stopsCount": "Stops: {count}",
+        "alightNext": "Next stop is yours — {stop}. Get ready to get off",
+        "alight": "Get off here: {stop}",
+        "stairsUp": "Stairs up",
+        "stairsDown": "Stairs down",
+        "elevator": "Take the lift",
+        "alongStreet": "Along {name}",
+        "scheduled": "scheduled"
+      }
     },
     "pageMap": "Map",
     "pageCard": "Place",
@@ -697,7 +724,9 @@
     "north": "N",
     "headingUpOn": "Turn the map with your course",
     "headingUpOff": "Stop turning the map with your course",
-    "headingUpShort": "Course"
+    "headingUpShort": "Course",
+    "arriveBy": "Arrive {time}",
+    "transitPlan": "Your trip step by step"
   },
   "markets": {
     "title": "Markets",

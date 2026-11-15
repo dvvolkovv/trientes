@@ -666,7 +666,34 @@
       "inDistance": "Za {distance}, {instruction}",
       "meters": "{n} m",
       "kilometers": "{n} km",
-      "rerouting": "Ponovno izračunavanje rute"
+      "rerouting": "Ponovno izračunavanje rute",
+      "transit": {
+        "vehicle_walk": "pješice",
+        "vehicle_metro": "metro",
+        "vehicle_rail": "vlak",
+        "vehicle_bus": "autobus",
+        "vehicle_tram": "tramvaj",
+        "vehicle_ferry": "trajekt",
+        "vehicle_transit": "vozilo",
+        "walkToStop": "Pješačite {distance} do {stop}",
+        "walkToDestination": "Pješačite {distance} do odredišta",
+        "transferTo": "Presjedanje: pješačite {distance} do {stop}",
+        "board": "{stop}: ukrcajte se na {vehicle} {line} prema {headsign}",
+        "boardNoHeadsign": "{stop}: ukrcajte se u {vehicle} {line}",
+        "boardTrack": "Peron {track}",
+        "waitHere": "Pričekajte ovdje svoje vozilo",
+        "ride": "{vehicle} {line} — izađite na {stop}",
+        "rideFromTo": "{from} → {to}",
+        "towards": "Prema {headsign}",
+        "stopsCount": "Stajališta: {count}",
+        "alightNext": "Sljedeće stajalište je vaše — {stop}. Pripremite se za izlazak",
+        "alight": "Izađite ovdje: {stop}",
+        "stairsUp": "Stepenice gore",
+        "stairsDown": "Stepenice dolje",
+        "elevator": "Upotrijebite dizalo",
+        "alongStreet": "Duž {name}",
+        "scheduled": "po rasporedu"
+      }
     },
     "pageMap": "Karta",
     "pageCard": "Lokacija",
@@ -697,7 +724,9 @@
     "north": "N",
     "headingUpOn": "Okretati kartu prema vašem smjeru kretanja",
     "headingUpOff": "Prestati okretati kartu prema vašem smjeru kretanja",
-    "headingUpShort": "Smjer"
+    "headingUpShort": "Smjer",
+    "arriveBy": "Dolazak {time}",
+    "transitPlan": "Vaše putovanje korak po korak"
   },
   "markets": {
     "title": "Tržišta",

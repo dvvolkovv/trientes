@@ -341,6 +341,31 @@ export type RouteStep = {
   location: [number, number]; // [lon,lat] of the maneuver
 };
 
+// Остановка на пути ноги: промежуточная или конечная.
+export type TransitStop = {
+  name: string;
+  lat: number;
+  lon: number;
+  /** Время прибытия (ISO); `null` — маршрутизатор его не назвал. */
+  arrival: string | null;
+};
+
+/**
+ * Шаг пешей ноги — ровно настолько, насколько о нём сказал маршрутизатор.
+ *
+ * Поворотов MOTIS в живом прогоне не знает (29 шагов на 318 м, все `CONTINUE`,
+ * улицы пустые), зато знает смену уровня — выход из вестибюля метро по
+ * лестнице. Поэтому поворот произносится только когда он действительно назван,
+ * а не достраивается нами из геометрии.
+ */
+export type TransitWalkStep = {
+  direction: string; // "CONTINUE" | "LEFT" | "STAIRS" | "ELEVATOR" | …
+  streetName: string | null;
+  distance: number; // meters
+  /** Смена уровня: вверх, вниз или без смены. */
+  level: "up" | "down" | null;
+};
+
 // A single leg of a public-transport itinerary — a walking connector or a vehicle ride.
 export type TransitLeg = {
   mode: string; // "WALK" | "SUBWAY" | "BUS" | "TRAM" | "RAIL" | …
@@ -351,12 +376,36 @@ export type TransitLeg = {
   dashed: boolean; // render dashed (walking connector)
   color: string; // line colour on the map
   coordinates: [number, number][]; // [lon,lat]
+  /**
+   * Длина ГЕОМЕТРИИ ноги в метрах. Своё число `distance` в ответе есть, но по
+   * геометрии считается продвижение по маршруту, и второе число разошлось бы с
+   * первым на глазах у человека.
+   */
+  meters: number;
+  /** В какую сторону идёт рейс — то, что написано на лбу автобуса. */
+  headsign: string | null;
+  agency: string | null;
+  fromPoint: [number, number] | null; // [lon,lat] остановки посадки
+  toPoint: [number, number] | null; // [lon,lat] остановки выхода
+  fromTrack: string | null; // платформа посадки
+  toTrack: string | null;
+  startTime: string | null; // ISO
+  endTime: string | null; // ISO
+  /** Время наблюдаемое, а не обещанное таблицей. */
+  realTime: boolean;
+  /** Промежуточные остановки — из них считается, сколько остановок ехать. */
+  stops: TransitStop[];
+  /** Шаги пешей ноги, если маршрутизатор их назвал. */
+  walkSteps: TransitWalkStep[];
 };
 
 export type RouteResult = OsrmRoute & {
   mode: RouteMode;
   transfers?: number; // transit only
   legs?: TransitLeg[]; // transit only
+  /** Расписание поездки (ISO) — в транспорте остаток времени берётся отсюда. */
+  startTime?: string | null;
+  endTime?: string | null;
 };
 
 type RawStep = {
@@ -476,15 +525,155 @@ function legLengthMeters(c: [number, number][]): number {
   return total;
 }
 
+type MotisPlace = {
+  name?: unknown;
+  lat?: unknown;
+  lon?: unknown;
+  track?: unknown;
+  scheduledTrack?: unknown;
+  arrival?: unknown;
+  departure?: unknown;
+};
+type MotisStepInstruction = {
+  relativeDirection?: unknown;
+  streetName?: unknown;
+  distance?: unknown;
+  fromLevel?: unknown;
+  toLevel?: unknown;
+};
 type MotisLeg = {
   mode?: string;
   duration?: number;
   routeShortName?: string;
-  from?: { name?: string };
-  to?: { name?: string };
+  headsign?: unknown;
+  agencyName?: unknown;
+  realTime?: unknown;
+  startTime?: unknown;
+  endTime?: unknown;
+  scheduledStartTime?: unknown;
+  scheduledEndTime?: unknown;
+  from?: MotisPlace;
+  to?: MotisPlace;
+  intermediateStops?: unknown;
+  steps?: unknown;
   legGeometry?: { points?: string; precision?: number };
 };
-type MotisItinerary = { duration?: number; transfers?: number; legs?: MotisLeg[] };
+type MotisItinerary = {
+  duration?: number;
+  transfers?: number;
+  startTime?: unknown;
+  endTime?: unknown;
+  legs?: MotisLeg[];
+};
+
+/** Непустая строка или `null` — у MOTIS пустая строка значит «не сказано». */
+function text(v: unknown): string | null {
+  return typeof v === "string" && v.trim() ? v.trim() : null;
+}
+
+/**
+ * Координата — только настоящее число.
+ *
+ * `Number(null)` — это ноль, и без строгой проверки остановка без координат
+ * уезжала на Null Island, то есть в Гвинейский залив. Тем же нулём она
+ * оказалась бы на линии в самом её начале, и «сколько остановок осталось»
+ * считалось бы не по тем остановкам.
+ */
+function coord(v: unknown): number | null {
+  return typeof v === "number" && Number.isFinite(v) ? v : null;
+}
+
+function point(latRaw: unknown, lonRaw: unknown): [number, number] | null {
+  const lat = coord(latRaw);
+  const lon = coord(lonRaw);
+  if (lat === null || lon === null) return null;
+  if (lat === 0 && lon === 0) return null; // Null Island — не место
+  return [lon, lat];
+}
+
+function place(p: MotisPlace | undefined): {
+  name: string | null;
+  point: [number, number] | null;
+  track: string | null;
+} {
+  // «START» и «END» — это наши же концы маршрута, а не названия мест.
+  const raw = text(p?.name);
+  const name = raw === "START" || raw === "END" ? null : raw;
+  return {
+    name,
+    point: point(p?.lat, p?.lon),
+    track: text(p?.track) ?? text(p?.scheduledTrack),
+  };
+}
+
+function parseStops(raw: unknown): TransitStop[] {
+  if (!Array.isArray(raw)) return [];
+  const out: TransitStop[] = [];
+  for (const item of raw as MotisPlace[]) {
+    const name = text(item?.name);
+    const at = point(item?.lat, item?.lon);
+    if (!name || !at) continue;
+    out.push({ name, lat: at[1], lon: at[0], arrival: text(item?.arrival) ?? text(item?.departure) });
+  }
+  return out;
+}
+
+/** Шаг короче этого ничего не говорит пешеходу — его метры уходят соседу. */
+const WALK_STEP_MIN_M = 20;
+/** Сколько шагов пешей ноги вообще имеет смысл везти. */
+const WALK_STEP_MAX = 30;
+
+/**
+ * Шаги пешей ноги: сначала склейка, потом отсев мелочи.
+ *
+ * Живой ответ отдаёт двадцать девять шагов на триста метров, из них половина
+ * короче трёх метров. Склеиваются идущие подряд «прямо» по той же улице, а
+ * смена уровня не склеивается никогда: лестница — единственное, что в этих
+ * данных сказано твёрдо.
+ */
+export function parseWalkSteps(raw: unknown): TransitWalkStep[] {
+  if (!Array.isArray(raw)) return [];
+  const steps: TransitWalkStep[] = [];
+  for (const item of raw as MotisStepInstruction[]) {
+    const distance = Number(item?.distance);
+    if (!Number.isFinite(distance) || distance < 0) continue;
+    const from = Number(item?.fromLevel);
+    const to = Number(item?.toLevel);
+    const level =
+      Number.isFinite(from) && Number.isFinite(to) && to !== from
+        ? to > from
+          ? "up"
+          : "down"
+        : null;
+    steps.push({
+      direction: (text(item?.relativeDirection) ?? "CONTINUE").toUpperCase(),
+      streetName: text(item?.streetName),
+      distance,
+      level,
+    });
+  }
+
+  const merged: TransitWalkStep[] = [];
+  for (const s of steps) {
+    const prev = merged[merged.length - 1];
+    const sameWay = !s.streetName || s.streetName === prev?.streetName;
+    if (prev && !prev.level && !s.level && s.direction === "CONTINUE" && sameWay) {
+      prev.distance += s.distance;
+      continue;
+    }
+    merged.push({ ...s });
+  }
+
+  const out: TransitWalkStep[] = [];
+  for (const s of merged) {
+    if (!s.level && s.distance < WALK_STEP_MIN_M && out.length) {
+      out[out.length - 1].distance += s.distance;
+      continue;
+    }
+    out.push(s);
+  }
+  return out.slice(0, WALK_STEP_MAX);
+}
 
 /** Take the first MOTIS itinerary; decode + stitch its legs into one route. */
 export function parseMotis(raw: unknown): RouteResult | null {
@@ -504,16 +693,31 @@ export function parseMotis(raw: unknown): RouteResult | null {
       if (i === 0 && coords.length && samePoint(coords[coords.length - 1], c[0])) continue;
       coords.push(c[i]);
     }
-    distance += legLengthMeters(c);
+    const meters = legLengthMeters(c);
+    distance += meters;
+    const from = place(lg.from);
+    const to = place(lg.to);
     legs.push({
       mode,
       line: lg.routeShortName ? String(lg.routeShortName) : null,
-      from: lg.from?.name ?? null,
-      to: lg.to?.name ?? null,
+      from: from.name,
+      to: to.name,
       duration: Number(lg.duration) || 0,
       dashed: mode === "WALK",
       color: transitColor(mode),
       coordinates: c,
+      meters: Math.round(meters),
+      headsign: text(lg.headsign),
+      agency: text(lg.agencyName),
+      fromPoint: from.point,
+      toPoint: to.point,
+      fromTrack: from.track,
+      toTrack: to.track,
+      startTime: text(lg.startTime) ?? text(lg.scheduledStartTime),
+      endTime: text(lg.endTime) ?? text(lg.scheduledEndTime),
+      realTime: lg.realTime === true,
+      stops: mode === "WALK" ? [] : parseStops(lg.intermediateStops),
+      walkSteps: mode === "WALK" ? parseWalkSteps(lg.steps) : [],
     });
   }
   if (coords.length < 2 || legs.length === 0) return null;
@@ -526,6 +730,8 @@ export function parseMotis(raw: unknown): RouteResult | null {
     geometry: { type: "LineString", coordinates: coords },
     transfers: Number.isFinite(transfers) ? transfers : 0,
     legs,
+    startTime: text(it.startTime),
+    endTime: text(it.endTime),
   };
 }
 

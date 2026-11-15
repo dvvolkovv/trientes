@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { OFF_ROUTE_M, OffRouteWatch, REROUTE_COOLDOWN_MS } from "@/lib/nav-offroute";
+import { AUTO_REROUTE, OFF_ROUTE_M, OffRouteWatch, REROUTE_COOLDOWN_MS } from "@/lib/nav-offroute";
 
 describe("OffRouteWatch — один плохой отсчёт маршрут не ломает", () => {
   it("порог у машины шире: соседняя полоса не сход с маршрута", () => {
@@ -76,5 +76,22 @@ describe("OffRouteWatch — один плохой отсчёт маршрут н
     const w = new OffRouteWatch("car");
     expect(w.offRoute(Number.POSITIVE_INFINITY)).toBe(true);
     expect(w.offRoute(5)).toBe(false);
+  });
+});
+
+describe("OffRouteWatch — транспорт не перестраивается на ходу", () => {
+  it("отход в транспорте считается шире: тоннель — не сход с маршрута", () => {
+    expect(OFF_ROUTE_M.transit).toBeGreaterThan(OFF_ROUTE_M.car);
+    expect(AUTO_REROUTE.transit).toBe(false);
+  });
+
+  it("сколько бы отсчётов ни ушло в сторону, нового маршрута не просит", () => {
+    const w = new OffRouteWatch("transit");
+    for (let i = 0; i < 10; i++) {
+      expect(w.feed(900, 1000 * i, true)).toBe(false);
+    }
+    // Показать отход он при этом обязан — иначе полоса ведения промолчит о том,
+    // что человек уехал не туда.
+    expect(w.offRoute(900)).toBe(true);
   });
 });

@@ -666,7 +666,34 @@
       "inDistance": "Dans {distance}, {instruction}",
       "meters": "{n} m",
       "kilometers": "{n} km",
-      "rerouting": "Recalcul de l'itinéraire"
+      "rerouting": "Recalcul de l'itinéraire",
+      "transit": {
+        "vehicle_walk": "à pied",
+        "vehicle_metro": "le métro",
+        "vehicle_rail": "le train",
+        "vehicle_bus": "le bus",
+        "vehicle_tram": "le tram",
+        "vehicle_ferry": "le ferry",
+        "vehicle_transit": "le véhicule",
+        "walkToStop": "Marchez {distance} jusqu’à {stop}",
+        "walkToDestination": "Marchez {distance} jusqu’à votre destination",
+        "transferTo": "Correspondance : marchez {distance} jusqu’à {stop}",
+        "board": "{stop} : montez dans {vehicle} {line} en direction de {headsign}",
+        "boardNoHeadsign": "{stop} : montez dans {vehicle} {line}",
+        "boardTrack": "Quai {track}",
+        "waitHere": "Attendez ici votre véhicule",
+        "ride": "{vehicle} {line} — descendez à {stop}",
+        "rideFromTo": "{from} → {to}",
+        "towards": "En direction de {headsign}",
+        "stopsCount": "Arrêts : {count}",
+        "alightNext": "Le prochain arrêt est le vôtre — {stop}. Préparez-vous à descendre",
+        "alight": "Descendez ici : {stop}",
+        "stairsUp": "Escaliers vers le haut",
+        "stairsDown": "Escaliers vers le bas",
+        "elevator": "Prenez l’ascenseur",
+        "alongStreet": "Le long de {name}",
+        "scheduled": "prévu"
+      }
     },
     "pageMap": "Carte",
     "pageCard": "Lieu",
@@ -697,7 +724,9 @@
     "north": "N",
     "headingUpOn": "Faire pivoter la carte selon votre cap",
     "headingUpOff": "Arrêter de faire pivoter la carte selon votre cap",
-    "headingUpShort": "Cap"
+    "headingUpShort": "Cap",
+    "arriveBy": "Arrivée {time}",
+    "transitPlan": "Votre trajet étape par étape"
   },
   "markets": {
     "title": "Marchés",
