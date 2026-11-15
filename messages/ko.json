@@ -522,7 +522,7 @@
         "coin": "코인",
         "pair": "거래쌍",
         "price": "가격",
-        "change24h": "24h",
+        "change24h": "24시간",
         "volume24h": "24h 거래량"
       },
       "pairsCount": "이 거래소의 스테이블 페어 {count}개",
@@ -665,7 +665,8 @@
       "onto": "{name}로 진입",
       "inDistance": "{distance} 후 {instruction}",
       "meters": "{n} m",
-      "kilometers": "{n} km"
+      "kilometers": "{n} km",
+      "rerouting": "경로를 다시 계산하는 중"
     },
     "pageMap": "지도",
     "pageCard": "장소",
@@ -684,7 +685,12 @@
     "collapseMap": "지도 축소",
     "expandPhoto": "사진 열기",
     "bannerDetails": "세부정보",
-    "bannerHideDetails": "세부정보 숨기기"
+    "bannerHideDetails": "세부정보 숨기기",
+    "handoffApple": "Apple 지도로 길안내",
+    "handoffGoogle": "Google 지도로 길안내",
+    "handoffWeb": "Google 지도에서 열기",
+    "handoffHint": "목적지를 휴대폰의 기본 내비게이션 앱으로 넘깁니다 — CarPlay와 Android Auto에 표시되는 바로 그 앱입니다.",
+    "rerouting": "경로를 다시 계산하는 중…"
   },
   "markets": {
     "title": "시장",

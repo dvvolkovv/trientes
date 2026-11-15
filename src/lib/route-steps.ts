@@ -33,24 +33,31 @@ export function activeStep(travelledMeters: number, ends: readonly number[]): Ac
   return { index: ends.length - 1, distanceToManeuver: 0 };
 }
 
-export type AnnouncementBand = "far" | "near" | "now";
+export type AnnouncementBand = "continue" | "far" | "near" | "now";
 
-// A car covers 400 m in the time a walker covers 120 — the warning has to come
-// earlier at speed and would be noise on foot.
-const BANDS: Record<"walk" | "car", { far: number; near: number; now: number }> = {
-  car: { far: 400, near: 150, now: 30 },
-  walk: { far: 120, near: 50, now: 15 },
+// Пороги в метрах — нижняя граница, а не правило. На 90 км/ч тридцать метров
+// до поворота это 1,2 секунды: фраза договаривается уже за перекрёстком.
+// Поэтому порог — максимум из метров и «скорость × секунды хода».
+const BANDS: Record<"walk" | "car", Record<AnnouncementBand, number>> = {
+  car: { continue: 1200, far: 400, near: 150, now: 30 },
+  walk: { continue: 350, far: 120, near: 50, now: 15 },
 };
+
+const SECONDS: Record<AnnouncementBand, number> = { continue: 60, far: 25, near: 10, now: 4 };
+
+const ORDER: AnnouncementBand[] = ["now", "near", "far", "continue"];
 
 /** Which announcement a distance falls into, or null while it is too far to mention. */
 export function announcementBand(
   distanceMeters: number,
   mode: RouteMode,
+  speedMps = 0,
 ): AnnouncementBand | null {
   const b = BANDS[mode === "car" ? "car" : "walk"];
-  if (distanceMeters <= b.now) return "now";
-  if (distanceMeters <= b.near) return "near";
-  if (distanceMeters <= b.far) return "far";
+  const speed = Math.max(0, speedMps);
+  for (const band of ORDER) {
+    if (distanceMeters <= Math.max(b[band], speed * SECONDS[band])) return band;
+  }
   return null;
 }
 

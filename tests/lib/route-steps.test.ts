@@ -67,9 +67,14 @@ describe("announcementBand", () => {
     expect(announcementBand(10, "walk")).toBe("now");
   });
 
+  it("breaks a long silence with a «keep going» band", () => {
+    expect(announcementBand(1200, "car")).toBe("continue");
+    expect(announcementBand(350, "walk")).toBe("continue");
+  });
+
   it("stays silent beyond the farthest band", () => {
-    expect(announcementBand(1200, "car")).toBeNull();
-    expect(announcementBand(500, "walk")).toBeNull();
+    expect(announcementBand(1201, "car")).toBeNull();
+    expect(announcementBand(351, "walk")).toBeNull();
   });
 });
 

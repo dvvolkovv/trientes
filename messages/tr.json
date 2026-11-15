@@ -665,7 +665,8 @@
       "onto": "{name} üzerine",
       "inDistance": "{distance} sonra, {instruction}",
       "meters": "{n} m",
-      "kilometers": "{n} km"
+      "kilometers": "{n} km",
+      "rerouting": "Rota yeniden oluşturuluyor"
     },
     "pageMap": "Harita",
     "pageCard": "Yer",
@@ -684,7 +685,12 @@
     "collapseMap": "Haritayı küçült",
     "expandPhoto": "Fotoğrafı aç",
     "bannerDetails": "Detaylar",
-    "bannerHideDetails": "Detayları gizle"
+    "bannerHideDetails": "Detayları gizle",
+    "handoffApple": "Apple Haritalar ile sür",
+    "handoffGoogle": "Google Haritalar ile sür",
+    "handoffWeb": "Google Haritalar'da aç",
+    "handoffHint": "Hedefi telefonunuzun kendi navigasyon uygulamasına devreder — CarPlay ve Android Auto'da görünen uygulama",
+    "rerouting": "Rota yeniden oluşturuluyor…"
   },
   "markets": {
     "title": "Piyasalar",

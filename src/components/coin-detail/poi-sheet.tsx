@@ -327,6 +327,7 @@ export function PoiSheet({
             >
               {p === "map" && (
                 <PoiPaneMap
+                  poi={poi}
                   route={route}
                   mode={mode}
                   status={status}
@@ -377,6 +378,7 @@ export function PoiSheet({
       {!phone && (
         <div className="shrink-0 border-t border-hairline">
           <PoiPaneMap
+            poi={poi}
             route={route}
             mode={mode}
             status={status}

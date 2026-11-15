@@ -14,8 +14,28 @@ import {
 import "maplibre-gl/dist/maplibre-gl.css";
 import "@/lib/maplibre-worker";
 import { useLocale, useTranslations } from "next-intl";
-import type { AcceptedCoin, Poi, PoiLayer, RouteResult, RouteMode, GeoResult, Social } from "@/lib/crypto-map";
-import { activeStep, announcementBand, cumulativeEnds } from "@/lib/route-steps";
+import type {
+  AcceptedCoin,
+  Poi,
+  PoiLayer,
+  RouteResult,
+  RouteMode,
+  RouteStep,
+  GeoResult,
+  Social,
+} from "@/lib/crypto-map";
+import { activeStep, cumulativeEnds } from "@/lib/route-steps";
+import { VoiceLog, departureAnnouncement, nextAnnouncement } from "@/lib/nav-voice";
+import { cameraFor } from "@/lib/nav-camera";
+import { primeVoice, speakNav, cancelSpeech, speechAvailable } from "@/lib/speech";
+import { speechLang } from "@/lib/locales";
+import {
+  MAP_FALLBACK_CENTER,
+  MAP_FALLBACK_ZOOM,
+  geolocationPermission,
+  shouldAutoLocate,
+} from "@/lib/map-start";
+
 import {
   ManeuverBanner,
   maneuverText,
@@ -27,7 +47,7 @@ import { DEFAULT_POI_PAGE, type PoiPage } from "@/lib/poi-pager";
 import { tileOffset, tilePadding } from "@/lib/poi-tile";
 import { CURATED_POIS, type CuratedPoi } from "@/lib/curated-pois";
 import { poiLogoSrc, showsLogoMarker } from "@/lib/poi-markers";
-import { NavigationController, type NavigationCallbacks } from "./navigation-controller";
+import { NavigationController, type NavigationCallbacks, type NavUpdate } from "./navigation-controller";
 import { haversineMeters } from "@/lib/route-geometry";
 import { AvailableFintechPanel } from "@/components/fintech/available-fintech-panel";
 import {
@@ -50,7 +70,6 @@ type PoiProps = Omit<Poi, "socials" | "acceptedCoins" | "photos"> & {
 type FilterSpecification = NonNullable<Parameters<MlMap["setFilter"]>[1]>;
 
 const MIN_ZOOM = 11; // below this the bbox is too wide to return a useful number of points
-const PRAGUE: [number, number] = [14.4212535, 50.0874654]; // dense BTCMap coverage — a non-empty default
 
 const POI_LAYERS = ["merchant", "atm", "financial", "fintech"] as const satisfies readonly PoiLayer[];
 
@@ -66,7 +85,7 @@ const VOICE_KEY = "cmap:voice";
 // Speech synthesis exists only in the browser, so the server snapshot is false
 // and the voice control appears after hydration instead of mismatching it.
 const subscribeNever = () => () => {};
-const hasSpeech = () => typeof window !== "undefined" && "speechSynthesis" in window;
+const hasSpeech = () => speechAvailable();
 
 // Телефон или нет решает медиазапрос браузера, а не высота окна карты: от
 // этого зависит, разворачивается ли ведение на весь экран устройства.
@@ -198,13 +217,25 @@ export default function CryptoNavigator({
   const [navOffRoute, setNavOffRoute] = useState<number | null>(null);
   const [navRemaining, setNavRemaining] = useState<{ m: number; sec: number } | null>(null);
   const [navError, setNavError] = useState<string | null>(null);
+  // Перестройка идёт отдельным признаком, а не строкой `status`: `buildRoute`
+  // чистит `status` первым же делом, и надпись не успевала появиться.
+  const [navRerouting, setNavRerouting] = useState(false);
   const [pendingStart, setPendingStart] = useState(false);
   const [navStep, setNavStep] = useState<{ index: number; distanceToManeuver: number } | null>(null);
   const [voiceOn, setVoiceOn] = useState(readVoicePreference);
   const voiceOnRef = useRef(voiceOn);
-  // Which announcement bands have already been spoken for the step being travelled.
-  const spokenRef = useRef<{ index: number; bands: Set<string> }>({ index: -1, bands: new Set() });
+  // Что голос уже сказал. Не замыкание: пересчёт маршрута меняет манёвры, и
+  // журнал обязан пережить замену маршрута, а не умереть вместе с ней.
+  const voiceLogRef = useRef(new VoiceLog());
+  // Маршрут, по которому идёт ведение ПРЯМО СЕЙЧАС. Прежде шаги жили в
+  // замыкании `startNavigation`, и после пересчёта голос с баннером продолжали
+  // вести по поворотам старого маршрута — ровно поэтому ручной «Пересчитать»
+  // ничего и не чинил.
+  const navRouteRef = useRef<SheetRoute | null>(null);
   const navControllerRef = useRef<NavigationController | null>(null);
+  // `buildRoute` объявлен раньше голосовых помощников и держит их через ref —
+  // иначе круг зависимостей: маршрут зовёт голос, голос пересобирает маршрут.
+  const navDepartureRef = useRef<((r: SheetRoute) => void) | null>(null);
   // Tracked map center for the AvailableFintechPanel — debounced inside the panel.
   const [mapCenter, setMapCenter] = useState<{ lat: number; lon: number } | null>(null);
   // No WebGL2 (or MapLibre failed to start): show a notice instead of the map.
@@ -436,8 +467,21 @@ export default function CryptoNavigator({
         // после нажатия, и прежний переброс на карту выбивал человека с
         // «Места» или витрины — ровно та жалоба, ради которой слайс и начат.
         if (navControllerRef.current) {
-          navControllerRef.current.updateRoute(coords);
+          navControllerRef.current.updateRoute(coords, res.mode);
           setNavOffRoute(null);
+          // Манёвры нового маршрута, а не прежнего: баннер и голос читают их
+          // отсюда. Без этой строки пересчёт вёл по старым поворотам.
+          navRouteRef.current = {
+            distance: res.distance,
+            duration: res.duration,
+            mode: res.mode,
+            transfers: res.transfers,
+            legs: res.legs,
+            steps: res.steps,
+            coordinates: coords,
+          };
+          navDepartureRef.current?.(navRouteRef.current);
+          setNavRerouting(false);
         }
         routeCoordsRef.current = coords;
         // Вписываем линию следующим кадром: размеры окна карточки браузер
@@ -447,6 +491,9 @@ export default function CryptoNavigator({
       .catch((error: unknown) => {
         const aborted = (error as { name?: string } | null | undefined)?.name === "AbortError";
         if (aborted || request !== routeSequenceRef.current || mapRef.current !== map) return;
+        // Сорвавшаяся перестройка прежний маршрут не стирает: вести по
+        // позавчерашней линии лучше, чем не вести вовсе.
+        setNavRerouting(false);
         setStatus(m === "transit" ? t("noTransit") : t("noRoute"));
       });
   }, [t, cancelRouteRequest]);
@@ -524,8 +571,8 @@ export default function CryptoNavigator({
     const map = tryCreateMap({
       container: containerRef.current,
       style: basemapStyle(),
-      center: PRAGUE,
-      zoom: 13,
+      center: MAP_FALLBACK_CENTER,
+      zoom: MAP_FALLBACK_ZOOM,
       pitch: 0,
       ...MAPLIBRE_ATTRIBUTION_OPTIONS,
     });
@@ -645,6 +692,20 @@ export default function CryptoNavigator({
       });
 
       loadPois();
+
+      // Карта открывается там, где человек стоит. Запрос идёт сам: «где я» —
+      // первый вопрос, с которым заходят в навигатор, и заставлять ради него
+      // искать кнопку незачем. Отказавшего не переспрашиваем — он останется в
+      // городе по умолчанию, и кнопка «моё положение» никуда не делась.
+      void geolocationPermission().then((state) => {
+        if (!shouldAutoLocate(state)) return;
+        if (mapRef.current !== map) return;
+        try {
+          geo.trigger();
+        } catch {
+          // контроль ещё не готов — кнопка остаётся человеку
+        }
+      });
     });
 
     const onMoveEnd = () => {
@@ -778,18 +839,40 @@ export default function CryptoNavigator({
   const voiceSupported = useSyncExternalStore(subscribeNever, hasSpeech, () => false);
   const isPhone = useSyncExternalStore(subscribePhone, isPhoneNow, () => false);
 
+  // Голос говорит на языке страницы: код локали интерфейса браузеру мало —
+  // ему нужен полный тег, иначе он берёт случайный голос из семьи языка.
+  const voiceLang = speechLang(locale);
+
   const speak = useCallback(
     (text: string) => {
-      if (!voiceOnRef.current || typeof window === "undefined" || !("speechSynthesis" in window)) return;
-      try {
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = locale;
-        window.speechSynthesis.speak(utterance);
-      } catch {
-        // a browser that exposes the API but refuses to speak
-      }
+      if (!voiceOnRef.current) return;
+      speakNav(text, voiceLang);
     },
-    [locale],
+    [voiceLang],
+  );
+
+  /**
+   * Отпереть синтез речи. Зовётся только из обработчиков нажатия и только
+   * синхронно: мобильный Safari разрешает первую фразу лишь внутри жеста, а
+   * жест кончается на первом же уходе в микрозадачу.
+   */
+  const prime = useCallback(
+    (text: string) => {
+      if (!voiceOnRef.current) return;
+      primeVoice(text, voiceLang);
+    },
+    [voiceLang],
+  );
+
+  /** Фраза манёвра: «через 300 метров поверните направо» или просто манёвр. */
+  const phraseFor = useCallback(
+    (step: RouteStep, distanceMeters: number, immediate: boolean) => {
+      const instruction = maneuverText(step, t);
+      return immediate
+        ? instruction
+        : t("nav.inDistance", { distance: spokenDistance(distanceMeters, t), instruction });
+    },
+    [t],
   );
 
   function toggleVoice() {
@@ -801,24 +884,98 @@ export default function CryptoNavigator({
     } catch {
       // storage blocked — the toggle still holds for this session
     }
-    if (!next && typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel();
+    // Включение посреди поездки — тоже жест, и единственный шанс отпереть
+    // синтез тому, кто выехал с выключенным голосом.
+    if (next) primeVoice(t("voiceOn"), voiceLang);
+    else cancelSpeech();
   }
 
   const stopNavigation = useCallback(() => {
     navControllerRef.current?.stop();
     navControllerRef.current = null;
+    navRouteRef.current = null;
     setNavActive(false);
     setNavOffRoute(null);
     setNavRemaining(null);
     setNavStep(null);
-    spokenRef.current = { index: -1, bands: new Set() };
-    if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel();
+    setNavRerouting(false);
+    voiceLogRef.current.reset();
+    cancelSpeech();
     setStatus(null);
     const map = mapRef.current;
     if (map) {
-      map.easeTo({ pitch: 0, bearing: 0, duration: 600 });
+      map.easeTo({ pitch: 0, bearing: 0, duration: 600, offset: [0, 0] });
     }
   }, []);
+
+  /**
+   * Подсказка на этот отсчёт: баннер всегда, голос — когда полоса объявления
+   * пройдена впервые. Полосы считаются от скорости, а не только от метров:
+   * тридцать метров до поворота на 90 км/ч — это полторы секунды.
+   */
+  const announce = useCallback(
+    (u: NavUpdate) => {
+      const r = navRouteRef.current;
+      const steps = r?.steps ?? [];
+      if (!r || steps.length === 0) return;
+      const ends = cumulativeEnds(steps);
+      // Пройденное меряется от конца: остаток считается по самой линии, а
+      // сумма шагов приходит от маршрутизатора, и эти два числа чуть разные.
+      const travelled = Math.max(0, r.distance - u.remainingMeters);
+      const current = activeStep(travelled, ends);
+      setNavStep(current);
+      const a = nextAnnouncement({
+        travelled,
+        ends,
+        steps,
+        mode: r.mode,
+        speedMps: u.speedMps,
+        log: voiceLogRef.current,
+      });
+      if (a) speak(phraseFor(a.step, a.distanceMeters, a.band === "now"));
+    },
+    [speak, phraseFor],
+  );
+
+  /** Камера ведения: центр на дороге, курс вдоль линии, высота от скорости. */
+  const driveCamera = useCallback((u: NavUpdate) => {
+    const map = mapRef.current;
+    if (!map) return;
+    const cam = cameraFor({
+      position: u.position,
+      snapped: u.snapped,
+      routeBearing: u.routeBearing,
+      gpsBearing: u.gpsBearing,
+      speedMps: u.speedMps,
+      offRouteMeters: u.offRouteMeters,
+      viewportHeight: map.getContainer().clientHeight,
+    });
+    map.easeTo({
+      center: cam.center,
+      bearing: cam.bearing ?? map.getBearing(),
+      zoom: cam.zoom,
+      pitch: cam.pitch,
+      offset: cam.offset,
+      // Длительность под шаг отсчётов и линейный разгон: иначе анимации встают
+      // в очередь и карта едет толчками.
+      duration: 900,
+      easing: (x: number) => x,
+    });
+  }, []);
+
+  /** Отправление нового маршрута — и первая фраза, если ведение уже идёт. */
+  const announceDeparture = useCallback(
+    (r: SheetRoute) => {
+      voiceLogRef.current.reset();
+      const d = departureAnnouncement(r.steps ?? [], voiceLogRef.current);
+      if (d) speak(phraseFor(d.step, d.distanceMeters, false));
+    },
+    [speak, phraseFor],
+  );
+
+  useEffect(() => {
+    navDepartureRef.current = announceDeparture;
+  }, [announceDeparture]);
 
   const startNavigation = useCallback(async () => {
     const map = mapRef.current;
@@ -827,61 +984,42 @@ export default function CryptoNavigator({
     // Карточка магазина посреди движения не нужна, а экран нужен весь.
     setSelected(null);
 
-    setStatus(t("navStarting"));
+    // ВАЖНО: отпирание синтеза и первая фраза — здесь, до любого `await`.
+    // Эта функция вызывается прямо из обработчика нажатия, и только пока стек
+    // принадлежит жесту, мобильный Safari разрешает говорить.
+    navRouteRef.current = route;
+    voiceLogRef.current.reset();
+    const departure = departureAnnouncement(route.steps ?? [], voiceLogRef.current);
+    if (voiceOnRef.current) {
+      primeVoice(
+        departure ? phraseFor(departure.step, departure.distanceMeters, false) : t("navStarting"),
+        voiceLang,
+      );
+    }
+
+    const starting = t("navStarting");
+    setStatus(starting);
     setNavError(null);
 
-    const ctl = new NavigationController(route.coordinates);
+    const ctl = new NavigationController(route.coordinates, route.mode);
     navControllerRef.current = ctl;
 
-    // Maneuvers are placed along the route by distance travelled, which is what
-    // the controller already measures — no second projection of the GPS fix.
-    const steps = route.steps ?? [];
-    const ends = cumulativeEnds(steps);
-    spokenRef.current = { index: -1, bands: new Set() };
-    const announce = (remainingMeters: number) => {
-      if (steps.length === 0) return;
-      const travelled = Math.max(0, route.distance - remainingMeters);
-      const current = activeStep(travelled, ends);
-      if (!current) return;
-      setNavStep(current);
-      // The maneuver to announce is the one that ENDS the step being travelled.
-      const next = steps[current.index + 1];
-      if (!next) return;
-      if (spokenRef.current.index !== current.index) {
-        spokenRef.current = { index: current.index, bands: new Set() };
-      }
-      const band = announcementBand(current.distanceToManeuver, route.mode);
-      if (!band || spokenRef.current.bands.has(band)) return;
-      spokenRef.current.bands.add(band);
-      const instruction = maneuverText(next, t);
-      speak(
-        band === "now"
-          ? instruction
-          : t("nav.inDistance", {
-              distance: spokenDistance(current.distanceToManeuver, t),
-              instruction,
-            }),
-      );
-    };
-
     const cb: NavigationCallbacks = {
-      onPosition: (pos) => {
-        const center: [number, number] = [pos.coords.longitude, pos.coords.latitude];
-        const bearing =
-          typeof pos.coords.heading === "number" &&
-          typeof pos.coords.speed === "number" &&
-          pos.coords.speed > 0.5
-            ? pos.coords.heading
-            : map.getBearing();
-        map.easeTo({ center, bearing, pitch: 45, duration: 800 });
+      onUpdate: (u) => {
+        driveCamera(u);
+        setNavRemaining({ m: u.remainingMeters, sec: u.etaSeconds });
+        setNavOffRoute(u.offRouteMeters);
+        // Гасим только «запускаю ведение»: прежний безусловный сброс стирал
+        // и «вы приехали» — следующий же отсчёт приходил через секунду.
+        setStatus((prev) => (prev === starting ? null : prev));
+        if (u.offRouteMeters === null) announce(u);
       },
-      onProgress: (m, sec) => {
-        setNavRemaining({ m, sec });
-        setStatus(null);
-        announce(m);
-      },
-      onOffRoute: (dist) => {
-        setNavOffRoute(dist);
+      onReroute: (pos) => {
+        setNavRerouting(true);
+        speak(t("nav.rerouting"));
+        // Дальше работает то, что уже написано: новое «моё положение»
+        // перестраивает маршрут, а `buildRoute` отдаёт его контроллеру.
+        setOrigin(pos, t("posGps"), false);
       },
       onArrival: () => {
         setStatus(t("arrived"));
@@ -896,9 +1034,8 @@ export default function CryptoNavigator({
     };
 
     setNavActive(true);
-    map.easeTo({ zoom: 17, duration: 600 });
     await ctl.start(cb);
-  }, [route, t, stopNavigation, speak]);
+  }, [route, t, voiceLang, stopNavigation, speak, phraseFor, announce, driveCamera, setOrigin]);
 
   // «Поехали» на карточке без маршрута означает «построй и веди»: ведение
   // включается, когда ответ маршрутизатора пришёл.
@@ -1079,9 +1216,15 @@ export default function CryptoNavigator({
             onBuildRoute={() => routeTo(selected)}
             onGo={() => {
               if (route && destKey === `${selected.lon},${selected.lat}`) {
+                // Синхронно из нажатия: `startNavigation` сама отпирает голос
+                // первой фразой, пока стек ещё принадлежит жесту.
                 void startNavigation();
                 return;
               }
+              // Маршрута ещё нет — ведение включит эффект, когда придёт ответ
+              // маршрутизатора. Это уже не жест, поэтому голос отпирается
+              // здесь и сейчас, иначе на айфоне он промолчит всю поездку.
+              prime(t("navStarting"));
               routeTo(selected);
               setPendingStart(true);
             }}
@@ -1111,11 +1254,13 @@ export default function CryptoNavigator({
                       {t("etaMin", { min: Math.max(1, Math.round(navRemaining.sec / 60)) })}
                     </div>
                     <div className="truncate text-[11px] text-muted">
-                      {status ?? (navError ? navError : t("remaining"))}
+                      {navRerouting ? t("rerouting") : (status ?? navError ?? t("remaining"))}
                     </div>
                   </>
                 ) : (
-                  <div className="truncate text-[12px] text-muted">{status ?? t("navStarting")}</div>
+                  <div className="truncate text-[12px] text-muted">
+                    {navRerouting ? t("rerouting") : (status ?? t("navStarting"))}
+                  </div>
                 )}
               </div>
               {voiceSupported && (

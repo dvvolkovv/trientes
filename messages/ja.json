@@ -665,7 +665,8 @@
       "onto": "{name} に入る",
       "inDistance": "{distance} 先で{instruction}",
       "meters": "{n} m",
-      "kilometers": "{n} km"
+      "kilometers": "{n} km",
+      "rerouting": "ルートを再計算中"
     },
     "pageMap": "地図",
     "pageCard": "場所",
@@ -684,7 +685,12 @@
     "collapseMap": "全画面を終了",
     "expandPhoto": "写真を開く",
     "bannerDetails": "詳細",
-    "bannerHideDetails": "詳細を非表示"
+    "bannerHideDetails": "詳細を非表示",
+    "handoffApple": "Apple Mapsで案内",
+    "handoffGoogle": "Google Mapsで案内",
+    "handoffWeb": "Google Mapsで開く",
+    "handoffHint": "目的地をお使いのスマートフォンの標準ナビに渡します — CarPlayやAndroid Autoに表示されるものです。",
+    "rerouting": "ルートを再計算中…"
   },
   "markets": {
     "title": "市場",

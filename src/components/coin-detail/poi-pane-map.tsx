@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import type { RefObject } from "react";
-import type { RouteMode } from "@/lib/crypto-map";
+import type { Poi, RouteMode } from "@/lib/crypto-map";
+import { handoffPlatform, handoffUrl } from "@/lib/nav-handoff";
 import {
   MODE_ICON,
   PRIMARY,
@@ -39,6 +40,13 @@ function legIcon(mode: string): string {
   return LEG_ICON[mode.toUpperCase()] ?? "🚆";
 }
 
+// Платформа не меняется за время жизни страницы, но спросить её можно только
+// после гидратации: на сервере `navigator` нет, а разметка должна совпасть.
+const subscribeNever = () => () => {};
+const readPlatform = () => handoffPlatform(navigator.userAgent);
+
+const HANDOFF_LABEL = { apple: "handoffApple", google: "handoffGoogle", web: "handoffWeb" } as const;
+
 /**
  * Страница «Карта» — не карта, а окно в неё. Полотно MapLibre живёт в
  * навигаторе и никуда не переезжает: перенос канваса в другое место DOM
@@ -57,6 +65,7 @@ function legIcon(mode: string): string {
  * окна, каким бы оно сейчас ни было.
  */
 export function PoiPaneMap({
+  poi,
   route,
   mode,
   status,
@@ -75,6 +84,7 @@ export function PoiPaneMap({
   onToggleVoice,
   t,
 }: {
+  poi: Poi;
   route: SheetRoute | null;
   mode: RouteMode;
   status: string | null;
@@ -97,6 +107,7 @@ export function PoiPaneMap({
 }) {
   const [stepsOpen, setStepsOpen] = useState(false);
   const actions = footerActions(!!route);
+  const platform = useSyncExternalStore(subscribeNever, readPlatform, () => "web" as const);
   const { handlers, dragging } = useTileGesture({ expanded, onChange: onExpandedChange });
   const toggle = () => {
     // Протяжка заканчивается щелчком по тому же элементу — её решение уже
@@ -196,6 +207,21 @@ export function PoiPaneMap({
             )}
           </div>
         )}
+
+        {/* Передача родному навигатору: единственная дорога на экран машины.
+            CarPlay и Android Auto рисуют нативными шаблонами, в которые
+            WebView не вставляется, — зато родной навигатор телефона в этих
+            шаблонах уже живёт. Отдаём ему точку, маршрут он построит свой. */}
+        <a
+          href={handoffUrl(platform, { lat: poi.lat, lon: poi.lon, name: poi.name }, mode)}
+          target={platform === "web" ? "_blank" : undefined}
+          rel={platform === "web" ? "noopener noreferrer" : undefined}
+          className={`${SECONDARY} w-full`}
+        >
+          <span aria-hidden>🚘</span>
+          {t(HANDOFF_LABEL[platform])}
+        </a>
+        <p className="text-[11px] leading-snug text-muted/70">{t("handoffHint")}</p>
 
         {voiceSupported && (
           <button

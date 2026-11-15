@@ -665,7 +665,8 @@
       "onto": "na {name}",
       "inDistance": "Za {distance}, {instruction}",
       "meters": "{n} m",
-      "kilometers": "{n} km"
+      "kilometers": "{n} km",
+      "rerouting": "Ponovno izračunavanje rute"
     },
     "pageMap": "Karta",
     "pageCard": "Lokacija",
@@ -684,7 +685,12 @@
     "collapseMap": "Smanjiti kartu",
     "expandPhoto": "Otvoriti fotografiju",
     "bannerDetails": "Detalji",
-    "bannerHideDetails": "Sakrijte detalje"
+    "bannerHideDetails": "Sakrijte detalje",
+    "handoffApple": "Navigirati s Apple Maps",
+    "handoffGoogle": "Navigirati s Google Maps",
+    "handoffWeb": "Otvoriti u Google Maps",
+    "handoffHint": "Predaje odredište navigatoru vašeg telefona — onome koji se prikazuje na CarPlayu i Android Autu.",
+    "rerouting": "Ponovno izračunavanje rute…"
   },
   "markets": {
     "title": "Tržišta",

@@ -119,6 +119,20 @@ test.describe("карточка точки — три страницы", () => {
     await expect(page.getByRole("button", { name: /Маршрут|Поехали/ }).first()).toBeVisible();
   });
 
+  test("отдаёт точку родному навигатору — это и есть дорога в CarPlay", async ({ page }) => {
+    await openPoi(page);
+    await page.getByRole("tab", { name: "Карта" }).click();
+    // В прогоне браузер настольный, поэтому платформа — «web»: Apple Maps и
+    // Google Maps проверяются юнит-тестом адреса, здесь важно, что ссылка
+    // вообще есть, ведёт на точку и знает выбранный режим.
+    const link = page.getByRole("dialog").locator('a[href*="google.com/maps/dir/"]');
+    await expect(link).toBeVisible();
+    const href = await link.getAttribute("href");
+    expect(href).toContain("travelmode=walking");
+    await page.getByRole("button", { name: /Авто|Car/ }).click();
+    await expect(page.getByRole("dialog").locator('a[href*="travelmode=driving"]')).toBeVisible();
+  });
+
   test("витрина показывает контент заведения", async ({ page }) => {
     await openPoi(page);
     await page.getByRole("tab", { name: "Витрина" }).click();

@@ -665,7 +665,8 @@
       "onto": "sur {name}",
       "inDistance": "Dans {distance}, {instruction}",
       "meters": "{n} m",
-      "kilometers": "{n} km"
+      "kilometers": "{n} km",
+      "rerouting": "Recalcul de l'itinéraire"
     },
     "pageMap": "Carte",
     "pageCard": "Lieu",
@@ -684,7 +685,12 @@
     "collapseMap": "Réduire la carte",
     "expandPhoto": "Ouvrir la photo",
     "bannerDetails": "Détails",
-    "bannerHideDetails": "Masquer les détails"
+    "bannerHideDetails": "Masquer les détails",
+    "handoffApple": "Itinéraire avec Apple Maps",
+    "handoffGoogle": "Itinéraire avec Google Maps",
+    "handoffWeb": "Ouvrir dans Google Maps",
+    "handoffHint": "Transfère la destination au navigateur de votre téléphone — celui qui s'affiche sur CarPlay et Android Auto.",
+    "rerouting": "Recalcul de l'itinéraire…"
   },
   "markets": {
     "title": "Marchés",

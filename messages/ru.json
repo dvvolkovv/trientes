@@ -665,7 +665,8 @@
       "onto": "на {name}",
       "inDistance": "Через {distance}, {instruction}",
       "meters": "{n} м",
-      "kilometers": "{n} км"
+      "kilometers": "{n} км",
+      "rerouting": "Перестраиваем маршрут"
     },
     "pageMap": "Карта",
     "pageCard": "Место",
@@ -684,7 +685,12 @@
     "collapseMap": "Свернуть карту",
     "expandPhoto": "Открыть фото",
     "bannerDetails": "Подробнее",
-    "bannerHideDetails": "Скрыть подробности"
+    "bannerHideDetails": "Скрыть подробности",
+    "handoffApple": "Ехать с Apple Maps",
+    "handoffGoogle": "Ехать с Google Maps",
+    "handoffWeb": "Открыть в Google Maps",
+    "handoffHint": "Передаёт пункт назначения встроенному навигатору телефона — тому, который отображается в CarPlay и Android Auto.",
+    "rerouting": "Перестраиваем маршрут…"
   },
   "markets": {
     "title": "Рынки",

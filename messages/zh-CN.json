@@ -665,7 +665,8 @@
       "onto": "驶入{name}",
       "inDistance": "在{distance}后，{instruction}",
       "meters": "{n} 米",
-      "kilometers": "{n} 公里"
+      "kilometers": "{n} 公里",
+      "rerouting": "正在重新规划路线"
     },
     "pageMap": "地图",
     "pageCard": "地点",
@@ -684,7 +685,12 @@
     "collapseMap": "缩小地图",
     "expandPhoto": "打开照片",
     "bannerDetails": "详情",
-    "bannerHideDetails": "隐藏详情"
+    "bannerHideDetails": "隐藏详情",
+    "handoffApple": "用 Apple 地图导航",
+    "handoffGoogle": "用 Google 地图导航",
+    "handoffWeb": "在 Google 地图中打开",
+    "handoffHint": "将目的地交给你手机自带的导航应用—就是在 CarPlay 和 Android Auto 上显示的那个",
+    "rerouting": "正在重新规划路线…"
   },
   "markets": {
     "title": "市场",

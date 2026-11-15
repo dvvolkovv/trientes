@@ -665,7 +665,8 @@
       "onto": "para {name}",
       "inDistance": "Em {distance}, {instruction}",
       "meters": "{n} m",
-      "kilometers": "{n} km"
+      "kilometers": "{n} km",
+      "rerouting": "Recalculando a rota"
     },
     "pageMap": "Mapa",
     "pageCard": "Local",
@@ -684,7 +685,12 @@
     "collapseMap": "Encolher o mapa",
     "expandPhoto": "Abrir a foto",
     "bannerDetails": "Detalhes",
-    "bannerHideDetails": "Ocultar detalhes"
+    "bannerHideDetails": "Ocultar detalhes",
+    "handoffApple": "Navegar com o Apple Maps",
+    "handoffGoogle": "Navegar com o Google Maps",
+    "handoffWeb": "Abrir no Google Maps",
+    "handoffHint": "Entrega o destino para o navegador do seu telefone — aquele que aparece no CarPlay e no Android Auto",
+    "rerouting": "Recalculando a rota…"
   },
   "markets": {
     "title": "Mercados",

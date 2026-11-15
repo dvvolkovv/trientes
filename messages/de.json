@@ -665,7 +665,8 @@
       "onto": "auf {name}",
       "inDistance": "In {distance}, {instruction}",
       "meters": "{n} m",
-      "kilometers": "{n} km"
+      "kilometers": "{n} km",
+      "rerouting": "Route wird neu berechnet"
     },
     "pageMap": "Karte",
     "pageCard": "Ort",
@@ -684,7 +685,12 @@
     "collapseMap": "Karte verkleinern",
     "expandPhoto": "Foto öffnen",
     "bannerDetails": "Details",
-    "bannerHideDetails": "Details ausblenden"
+    "bannerHideDetails": "Details ausblenden",
+    "handoffApple": "Mit Apple Karten fahren",
+    "handoffGoogle": "Mit Google Maps fahren",
+    "handoffWeb": "In Google Maps öffnen",
+    "handoffHint": "Übergibt das Ziel an den eigenen Navigator deines Telefons — den, der auf CarPlay und Android Auto erscheint.",
+    "rerouting": "Route wird neu berechnet…"
   },
   "markets": {
     "title": "Märkte",
