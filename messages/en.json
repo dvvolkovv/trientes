@@ -694,7 +694,10 @@
     "zoomOut": "Zoom out",
     "zoomIn2": "Zoom in",
     "resetNorth": "Point the map north",
-    "north": "N"
+    "north": "N",
+    "headingUpOn": "Turn the map with your course",
+    "headingUpOff": "Stop turning the map with your course",
+    "headingUpShort": "Course"
   },
   "markets": {
     "title": "Markets",

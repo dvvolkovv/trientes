@@ -694,7 +694,10 @@
     "zoomOut": "축소",
     "zoomIn2": "확대",
     "resetNorth": "지도를 북쪽으로 맞추기",
-    "north": "N"
+    "north": "N",
+    "headingUpOn": "진행 방향에 따라 지도를 회전",
+    "headingUpOff": "진행 방향에 따라 지도 회전을 중지",
+    "headingUpShort": "진행 방향"
   },
   "markets": {
     "title": "시장",

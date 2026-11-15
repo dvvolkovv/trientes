@@ -694,7 +694,10 @@
     "zoomOut": "ズームアウト",
     "zoomIn2": "ズームイン",
     "resetNorth": "地図を北に向ける",
-    "north": "N"
+    "north": "N",
+    "headingUpOn": "進行方向に合わせて地図を回転",
+    "headingUpOff": "進行方向に合わせた地図の回転を停止",
+    "headingUpShort": "進行方向"
   },
   "markets": {
     "title": "市場",

@@ -23,6 +23,7 @@ import {
   type SheetRoute,
 } from "@/components/coin-detail/poi-sheet-ui";
 import type { StepTranslator } from "@/components/coin-detail/route-steps-panel";
+import type { CompassMode } from "@/lib/compass-mode";
 
 export { MODE_ICON };
 export type { SheetRoute };
@@ -65,9 +66,10 @@ export function PoiSheet({
   onLocate,
   onToggleVoice,
   view,
+  compassMode,
   onZoomIn,
   onZoomOut,
-  onResetNorth,
+  onCompass,
   t,
 }: {
   poi: Poi;
@@ -94,9 +96,10 @@ export function PoiSheet({
   onLocate: () => void;
   onToggleVoice: () => void;
   view: { bearing: number; pitch: number };
+  compassMode: CompassMode;
   onZoomIn: () => void;
   onZoomOut: () => void;
-  onResetNorth: () => void;
+  onCompass: () => void;
   t: StepTranslator;
 }) {
   const phone = usePhone();
@@ -227,8 +230,11 @@ export function PoiSheet({
 
   // Шапка и закладки стоят в разметке раньше окна карты, а тень-заливка
   // вокруг окна красит всё, до чего дотянется, — без своего слоя она закрасила
-  // бы их собой.
-  const chrome = onMapPage ? "relative z-10 pointer-events-auto bg-card/90 backdrop-blur" : "";
+  // бы их собой. Полупрозрачной шапка бывает только на отстоявшейся странице
+  // карты: пока палец тянет лист к «Месту», сквозь неё видна живая карта.
+  const chrome = onMapPage
+    ? "relative z-10 pointer-events-auto " + (drag === null ? "bg-card/90 backdrop-blur" : "bg-card")
+    : "";
 
   return (
     <div
@@ -326,10 +332,16 @@ export function PoiSheet({
               role="tabpanel"
               aria-hidden={p !== page}
               className={
+                // Фон страницы — на самой странице, а не на корне листа.
+                // Корень на странице карты прозрачен (он окно), и пока палец
+                // тянет лист к «Месту», страница заведения ехала поверх живой
+                // карты без всякой подложки: карта просвечивала сквозь неё.
+                // Своя непрозрачная обёртка у каждой страницы, кроме карты,
+                // закрывает её в любой момент жеста, а не только в конце.
                 "h-full " +
                 (p === "map"
                   ? "pointer-events-none overflow-hidden"
-                  : "pointer-events-auto overflow-y-auto overscroll-contain")
+                  : "pointer-events-auto overflow-y-auto overscroll-contain bg-card")
               }
               style={{ width: `${100 / pages.length}%` }}
             >
@@ -353,9 +365,10 @@ export function PoiSheet({
                   onLocate={onLocate}
                   onToggleVoice={onToggleVoice}
                   view={view}
+                  compassMode={compassMode}
                   onZoomIn={onZoomIn}
                   onZoomOut={onZoomOut}
-                  onResetNorth={onResetNorth}
+                  onCompass={onCompass}
                   t={t}
                 />
               )}
@@ -408,9 +421,10 @@ export function PoiSheet({
             onLocate={onLocate}
             onToggleVoice={onToggleVoice}
             view={view}
+            compassMode={compassMode}
             onZoomIn={onZoomIn}
             onZoomOut={onZoomOut}
-            onResetNorth={onResetNorth}
+            onCompass={onCompass}
             t={t}
           />
         </div>

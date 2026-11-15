@@ -8,11 +8,15 @@
  * и закрывают собой ту часть, ради которой карту и открыли. Под картой места
  * сколько угодно, и палец попадает в кнопку не глядя.
  *
- * Стрелка компаса поворачивается вместе с картой, поэтому она показывает, где
- * сейчас север, а не просто «нажми сюда». Нажатие возвращает север вверх и
- * снимает наклон одним движением — заблудиться в повёрнутой карте легче
- * всего, и выход из этого должен быть один.
+ * У компаса два состояния. «Север вверх»: стрелка поворачивается вместе с
+ * картой и показывает, где сейчас север, нажатие выпрямляет карту. «По
+ * движению»: карта сама поворачивается туда, куда человек едет, — без этого
+ * едущий на юг видел свою дорогу снизу вверх, то есть «назад». Решение, что
+ * делает нажатие, принимает `compassTap`: повёрнутую пальцами карту первое
+ * нажатие выпрямляет, и только второе включает слежение.
  */
+
+import { compassLabelKeys, isStraight, type CompassMode } from "@/lib/compass-mode";
 
 const BTN =
   "flex h-11 min-w-[44px] items-center justify-center gap-1.5 rounded-xl border border-hairline " +
@@ -21,20 +25,25 @@ const BTN =
 export function MapControls({
   bearing,
   pitch,
+  compassMode,
   onZoomIn,
   onZoomOut,
-  onResetNorth,
+  onCompass,
   t,
 }: {
   /** Текущий поворот карты в градусах — стрелка компаса смотрит на север. */
   bearing: number;
   pitch: number;
+  /** Режим компаса: север вверх или карта по курсу движения. */
+  compassMode: CompassMode;
   onZoomIn: () => void;
   onZoomOut: () => void;
-  onResetNorth: () => void;
+  onCompass: () => void;
   t: (key: string) => string;
 }) {
-  const north = Math.abs(bearing) < 0.5 && pitch < 0.5;
+  const following = compassMode === "heading";
+  const north = isStraight({ bearing, pitch });
+  const labels = compassLabelKeys({ mode: compassMode, straight: north });
   return (
     <div className="flex items-center gap-2">
       <button type="button" onClick={onZoomOut} aria-label={t("zoomOut")} title={t("zoomOut")} className={BTN}>
@@ -49,22 +58,30 @@ export function MapControls({
       </button>
       <button
         type="button"
-        onClick={onResetNorth}
-        aria-label={t("resetNorth")}
-        title={t("resetNorth")}
-        aria-pressed={north}
-        className={BTN + (north ? "" : " border-accent/50 bg-accent/10")}
+        onClick={onCompass}
+        aria-label={t(labels.aria)}
+        title={t(labels.aria)}
+        aria-pressed={following}
+        className={
+          BTN +
+          (following
+            ? " border-accent bg-accent/15 text-accent"
+            : north
+              ? ""
+              : " border-accent/50 bg-accent/10")
+        }
       >
         <span
           aria-hidden
           className="text-[15px] leading-none"
-          // Стрелка показывает, где север: карта повёрнута на `bearing`, значит
-          // север ушёл против этого поворота.
-          style={{ transform: `rotate(${-bearing}deg)`, display: "inline-block" }}
+          // В режиме слежения стрелка смотрит вперёд по движению — она и так
+          // всегда вверх экрана. В обычном режиме она показывает, где север:
+          // карта повёрнута на `bearing`, значит север ушёл против поворота.
+          style={following ? undefined : { transform: `rotate(${-bearing}deg)`, display: "inline-block" }}
         >
-          ↑
+          {following ? "➤" : "↑"}
         </span>
-        <span className="text-[12px]">{t("north")}</span>
+        <span className="text-[12px]">{t(labels.short)}</span>
       </button>
     </div>
   );

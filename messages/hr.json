@@ -67,9 +67,9 @@
     "rank": "#",
     "name": "Naziv",
     "price": "Cijena",
-    "change1h": "1h %",
-    "change24h": "24h %",
-    "change7d": "7d %",
+    "change1h": "1 h %",
+    "change24h": "24 h %",
+    "change7d": "7 d %",
     "marketCap": "Tržišna kapitalizacija",
     "volume24h": "Volumen (24h)",
     "loadingFallback": "Dohvaćanje najnovijih podataka…",
@@ -522,7 +522,7 @@
         "coin": "Kovanica",
         "pair": "Par",
         "price": "Cijena",
-        "change24h": "24h",
+        "change24h": "24 h",
         "volume24h": "24h volumen"
       },
       "pairsCount": "{count} stabilnih parova na ovoj burzi",
@@ -694,7 +694,10 @@
     "zoomOut": "Umanjiti",
     "zoomIn2": "Povećati",
     "resetNorth": "Usmjeriti kartu na sjever",
-    "north": "N"
+    "north": "N",
+    "headingUpOn": "Okretati kartu prema vašem smjeru kretanja",
+    "headingUpOff": "Prestati okretati kartu prema vašem smjeru kretanja",
+    "headingUpShort": "Smjer"
   },
   "markets": {
     "title": "Tržišta",

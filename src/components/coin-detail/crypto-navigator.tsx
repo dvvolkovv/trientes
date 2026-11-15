@@ -25,7 +25,11 @@ import type {
 } from "@/lib/crypto-map";
 import { activeStep, cumulativeEnds } from "@/lib/route-steps";
 import { VoiceLog, departureAnnouncement, nextAnnouncement } from "@/lib/nav-voice";
-import { cameraFor } from "@/lib/nav-camera";
+import { cameraFor, isMoving } from "@/lib/nav-camera";
+import { compassTap, type CompassMode } from "@/lib/compass-mode";
+import { headingChanged, pickHeading } from "@/lib/heading";
+import { requestCompassPermission, watchCompass } from "@/lib/compass-sensor";
+import { createHeadingBeamElement } from "@/lib/heading-beam";
 import { primeVoice, speakNav, cancelSpeech, speechAvailable } from "@/lib/speech";
 import { speechLang } from "@/lib/locales";
 import {
@@ -252,9 +256,71 @@ export default function CryptoNavigator({
   // Поворот и наклон карты видны компасу под ней: стрелка показывает, где
   // сейчас север, поэтому читается прямо из карты, а не хранится отдельно.
   const [view, setView] = useState({ bearing: 0, pitch: 0 });
+  // Режим компаса и курс человека. Курс держится в ref, а не в состоянии:
+  // отсчёты идут по нескольку раз в секунду, и перерисовывать ради них всю
+  // страницу незачем — карту и луч двигает сам обработчик.
+  const [compassMode, setCompassMode] = useState<CompassMode>("north");
+  const compassModeRef = useRef<CompassMode>("north");
+  const headingRef = useRef<number | null>(null);
+  const appliedHeadingRef = useRef<number | null>(null);
+  const gpsHeadingRef = useRef<number | null>(null);
+  const gpsSpeedRef = useRef<number | null>(null);
+  const compassHeadingRef = useRef<number | null>(null);
+  const gpsPositionRef = useRef<[number, number] | null>(null);
+  const beamRef = useRef<Marker | null>(null);
+  const compassStopRef = useRef<(() => void) | null>(null);
   // No WebGL2 (or MapLibre failed to start): show a notice instead of the map.
   // mapRef then stays null, so every map handler below is a no-op.
   const [mapUnavailable, setMapUnavailable] = useState(false);
+
+  /**
+   * Новый отсчёт курса: луч у своей точки и, если включено слежение, поворот
+   * карты. Зовётся и из геолокации карты, и из отсчётов ведения — источник
+   * один и тот же GPS, просто читают его два разных потребителя.
+   */
+  const applyHeading = useCallback(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const next = pickHeading({
+      gpsHeading: gpsHeadingRef.current,
+      speedMps: gpsSpeedRef.current,
+      compassHeading: compassHeadingRef.current,
+    });
+    headingRef.current = next;
+
+    const pos = gpsPositionRef.current;
+    if (next === null || !pos) {
+      beamRef.current?.remove();
+      beamRef.current = null;
+    } else {
+      let beam = beamRef.current;
+      if (!beam) {
+        beam = new Marker({
+          element: createHeadingBeamElement(),
+          // Луч привязан к сторонам света: повернули карту — он продолжает
+          // показывать ту же сторону, а не ту же сторону экрана.
+          rotationAlignment: "map",
+          pitchAlignment: "map",
+        });
+        // Координата — ДО `addTo`: метка без неё падает на первой же
+        // перерисовке карты (живой прогон поймал `undefined.lng`), и метка
+        // остаётся в разметке мёртвой.
+        beam.setLngLat(pos);
+        beam.addTo(map);
+        beamRef.current = beam;
+      }
+      beam.setLngLat(pos);
+      beam.setRotation(next);
+    }
+
+    if (compassModeRef.current !== "heading" || next === null) return;
+    // Во время ведения карту крутит маршрут: едущему она и так показывает
+    // дорогу вперёд, и два источника поворота спорили бы друг с другом.
+    if (navControllerRef.current && isMoving(gpsSpeedRef.current ?? 0)) return;
+    if (!headingChanged(appliedHeadingRef.current, next)) return;
+    appliedHeadingRef.current = next;
+    map.easeTo({ bearing: next, duration: 300 });
+  }, []);
 
   const changePoiPage = useCallback((next: PoiPage) => {
     poiPageRef.current = next;
@@ -612,6 +678,12 @@ export default function CryptoNavigator({
       const next: [number, number] = [e.coords.longitude, e.coords.latitude];
       originRef.current = next;
       setOriginState(next);
+      // Курс и скорость приходят тем же отсчётом: по ним рисуется луч у синей
+      // точки, а в режиме слежения поворачивается и сама карта.
+      gpsPositionRef.current = next;
+      gpsHeadingRef.current = e.coords.heading ?? null;
+      gpsSpeedRef.current = e.coords.speed ?? null;
+      applyHeading();
       // GeolocateControl shows its own blue dot — drop the manual orange pin.
       originMarkerRef.current?.remove();
       originMarkerRef.current = null;
@@ -761,6 +833,10 @@ export default function CryptoNavigator({
       cancelRouteRequest();
       logoMarkersRef.current.forEach(({ marker }) => marker.remove());
       logoMarkersRef.current = [];
+      compassStopRef.current?.();
+      compassStopRef.current = null;
+      beamRef.current?.remove();
+      beamRef.current = null;
       map.remove();
       mapRef.current = null;
     };
@@ -774,10 +850,51 @@ export default function CryptoNavigator({
     map.easeTo({ zoom: map.getZoom() + delta, duration: 200 });
   }
 
-  function resetNorth() {
+  /**
+   * Нажатие на компас. Решение принимает `compassTap`: повёрнутую пальцами
+   * карту первое нажатие выпрямляет, и только второе включает слежение за
+   * курсом — иначе выхода из повёрнутой карты не остаётся, кнопка-то одна.
+   *
+   * Разрешение на компас спрашивается прямо отсюда: на iOS его дают только из
+   * жеста, из эффекта спросить нельзя.
+   */
+  function onCompass() {
     const map = mapRef.current;
-    if (!map) return;
-    map.easeTo({ bearing: 0, pitch: 0, duration: 400 });
+    const decision = compassTap({
+      mode: compassModeRef.current,
+      bearing: map?.getBearing() ?? 0,
+      pitch: map?.getPitch() ?? 0,
+    });
+    compassModeRef.current = decision.mode;
+    setCompassMode(decision.mode);
+
+    if (decision.mode === "north") {
+      compassStopRef.current?.();
+      compassStopRef.current = null;
+      compassHeadingRef.current = null;
+      appliedHeadingRef.current = null;
+    }
+    if (decision.straighten) {
+      map?.easeTo({ bearing: 0, pitch: 0, duration: 400 });
+      return;
+    }
+
+    void requestCompassPermission().then((granted) => {
+      if (!granted || compassModeRef.current !== "heading" || compassStopRef.current) return;
+      compassStopRef.current = watchCompass((deg) => {
+        compassHeadingRef.current = deg;
+        applyHeading();
+      });
+    });
+    // Без своего положения курса не будет вовсе — просим его тем же нажатием.
+    if (!gpsPositionRef.current) {
+      try {
+        geolocateRef.current?.trigger();
+      } catch {
+        // контроль ещё не готов — человек нажмёт «моё положение» сам
+      }
+    }
+    applyHeading();
   }
 
   function switchBase(next: Base) {
@@ -1064,6 +1181,10 @@ export default function CryptoNavigator({
     const cb: NavigationCallbacks = {
       onUpdate: (u) => {
         driveCamera(u);
+        gpsPositionRef.current = u.position;
+        gpsHeadingRef.current = u.gpsBearing;
+        gpsSpeedRef.current = u.speedMps;
+        applyHeading();
         setNavRemaining({ m: u.remainingMeters, sec: u.etaSeconds });
         setNavOffRoute(u.offRouteMeters);
         // Гасим только «запускаю ведение»: прежний безусловный сброс стирал
@@ -1092,7 +1213,18 @@ export default function CryptoNavigator({
 
     setNavActive(true);
     await ctl.start(cb);
-  }, [route, t, voiceLang, stopNavigation, speak, phraseFor, announce, driveCamera, setOrigin]);
+  }, [
+    route,
+    t,
+    voiceLang,
+    stopNavigation,
+    speak,
+    phraseFor,
+    announce,
+    driveCamera,
+    setOrigin,
+    applyHeading,
+  ]);
 
   // «Поехали» на карточке без маршрута означает «построй и веди»: ведение
   // включается, когда ответ маршрутизатора пришёл.
@@ -1110,6 +1242,18 @@ export default function CryptoNavigator({
   // MapLibre смену размера контейнера сам не замечает, поэтому размер
   // пересчитывается явно и ещё раз следующим кадром, когда класс уже применён.
   const mapFull = isPhone && (navActive || !!selected);
+  // Следующий манёвр: он же — признак, что над картой стоит строка подсказки.
+  const maneuverStep =
+    navActive && navStep ? (route?.steps?.[navStep.index + 1] ?? null) : null;
+  // Строка подсказки отнимает у полотна свою высоту, а MapLibre смену размера
+  // контейнера сам не замечает — тот же пересчёт, что и при переходе в полный
+  // экран.
+  const hasManeuverRow = !!maneuverStep;
+  useEffect(() => {
+    if (!mapRef.current) return;
+    const id = window.setTimeout(() => mapRef.current?.resize(), 60);
+    return () => window.clearTimeout(id);
+  }, [hasManeuverRow]);
   useEffect(() => {
     if (!mapRef.current) return;
     mapRef.current.resize();
@@ -1214,7 +1358,27 @@ export default function CryptoNavigator({
       </div>
 
       {/* Map */}
-      <div className={mapFull ? "fixed inset-0 z-[55] bg-bg" : "relative"}>
+      <div className={mapFull ? "fixed inset-0 z-[55] flex flex-col bg-bg" : "relative"}>
+        {/* Куда поворачивать — строкой НАД картой, а не поверх неё. Прежде
+            баннер лежал на карте и закрывал собой ровно тот перекрёсток, к
+            которому вёл. Своя строка короче карты не делает ничего другого:
+            полотно просто начинается под ней. */}
+        {maneuverStep && (
+          <div
+            className={
+              mapFull
+                ? "shrink-0 border-b border-hairline bg-card px-3 pb-2 pt-3"
+                : "mb-2"
+            }
+            style={mapFull ? { paddingTop: "max(0.75rem, env(safe-area-inset-top))" } : undefined}
+          >
+            <ManeuverBanner
+              step={maneuverStep}
+              distanceMeters={navStep?.distanceToManeuver ?? 0}
+              t={t}
+            />
+          </div>
+        )}
         {mapUnavailable ? (
           <div
             role="status"
@@ -1225,18 +1389,14 @@ export default function CryptoNavigator({
         ) : (
           <div
             ref={containerRef}
+            // `relative` — не украшение: полотно MapLibre внутри позиционировано
+            // абсолютно, и без своего начала отсчёта оно растягивалось на весь
+            // `fixed`-экран, накрывая собой строку подсказки над картой.
             className={
               mapFull
-                ? "w-full h-full"
-                : "w-full h-[420px] md:h-[520px] rounded-md overflow-hidden border border-hairline"
+                ? "relative w-full min-h-0 flex-1 overflow-hidden"
+                : "relative w-full h-[420px] md:h-[520px] rounded-md overflow-hidden border border-hairline"
             }
-          />
-        )}
-        {navActive && navStep && route?.steps?.[navStep.index + 1] && (
-          <ManeuverBanner
-            step={route.steps[navStep.index + 1]}
-            distanceMeters={navStep.distanceToManeuver}
-            t={t}
           />
         )}
         {tooFar && !navActive && (
@@ -1290,9 +1450,10 @@ export default function CryptoNavigator({
             onLocate={() => geolocateRef.current?.trigger()}
             onToggleVoice={toggleVoice}
             view={view}
+            compassMode={compassMode}
             onZoomIn={() => zoomBy(1)}
             onZoomOut={() => zoomBy(-1)}
-            onResetNorth={resetNorth}
+            onCompass={onCompass}
             t={t}
           />
         )}
@@ -1364,9 +1525,10 @@ export default function CryptoNavigator({
       <MapControls
         bearing={view.bearing}
         pitch={view.pitch}
+        compassMode={compassMode}
         onZoomIn={() => zoomBy(1)}
         onZoomOut={() => zoomBy(-1)}
-        onResetNorth={resetNorth}
+        onCompass={onCompass}
         t={t}
       />
 

@@ -694,7 +694,10 @@
     "zoomOut": "Dézoomer",
     "zoomIn2": "Zoomer",
     "resetNorth": "Orienter la carte vers le nord",
-    "north": "N"
+    "north": "N",
+    "headingUpOn": "Faire pivoter la carte selon votre cap",
+    "headingUpOff": "Arrêter de faire pivoter la carte selon votre cap",
+    "headingUpShort": "Cap"
   },
   "markets": {
     "title": "Marchés",

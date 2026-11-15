@@ -694,7 +694,10 @@
     "zoomOut": "Alejar",
     "zoomIn2": "Acercar",
     "resetNorth": "Orientar el mapa al norte",
-    "north": "N"
+    "north": "N",
+    "headingUpOn": "Gira el mapa según tu rumbo",
+    "headingUpOff": "Deja de girar el mapa según tu rumbo",
+    "headingUpShort": "Rumbo"
   },
   "markets": {
     "title": "Mercados",

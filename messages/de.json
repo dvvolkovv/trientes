@@ -694,7 +694,10 @@
     "zoomOut": "Verkleinern",
     "zoomIn2": "Vergrößern",
     "resetNorth": "Karte nach Norden ausrichten",
-    "north": "N"
+    "north": "N",
+    "headingUpOn": "Karte mit Ihrer Fahrtrichtung drehen",
+    "headingUpOff": "Karte nicht mehr mit Ihrer Fahrtrichtung drehen",
+    "headingUpShort": "Kurs"
   },
   "markets": {
     "title": "Märkte",

@@ -15,6 +15,7 @@ import {
 import { useTileGesture } from "@/components/coin-detail/poi-sheet-ui";
 import { StepList, type StepTranslator } from "@/components/coin-detail/route-steps-panel";
 import { MapControls } from "@/components/coin-detail/map-controls";
+import type { CompassMode } from "@/lib/compass-mode";
 import { footerActions } from "@/lib/poi-sheet-actions";
 import { SWIPE_EDGE_PX } from "@/lib/poi-pager";
 import { TILE_PAD_CLASS, TILE_SHELL } from "@/lib/poi-tile";
@@ -84,9 +85,10 @@ export function PoiPaneMap({
   onLocate,
   onToggleVoice,
   view,
+  compassMode,
   onZoomIn,
   onZoomOut,
-  onResetNorth,
+  onCompass,
   t,
 }: {
   poi: Poi;
@@ -110,9 +112,11 @@ export function PoiPaneMap({
   onToggleVoice: () => void;
   /** Поворот и наклон карты — компас под окном показывает, где север. */
   view: { bearing: number; pitch: number };
+  /** Север вверх или карта по курсу движения. */
+  compassMode: CompassMode;
   onZoomIn: () => void;
   onZoomOut: () => void;
-  onResetNorth: () => void;
+  onCompass: () => void;
   t: StepTranslator;
 }) {
   const [stepsOpen, setStepsOpen] = useState(false);
@@ -145,9 +149,10 @@ export function PoiPaneMap({
           <MapControls
             bearing={view.bearing}
             pitch={view.pitch}
+            compassMode={compassMode}
             onZoomIn={onZoomIn}
             onZoomOut={onZoomOut}
-            onResetNorth={onResetNorth}
+            onCompass={onCompass}
             t={t}
           />
           <button type="button" onClick={onLocate} className={`${SECONDARY} flex-1`}>

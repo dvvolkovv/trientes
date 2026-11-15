@@ -694,7 +694,10 @@
     "zoomOut": "Uzaklaştır",
     "zoomIn2": "Yakınlaştır",
     "resetNorth": "Haritayı kuzeye döndür",
-    "north": "N"
+    "north": "K",
+    "headingUpOn": "Haritayı yönünüzle birlikte döndür",
+    "headingUpOff": "Haritayı yönünüzle birlikte döndürmeyi durdur",
+    "headingUpShort": "Yön"
   },
   "markets": {
     "title": "Piyasalar",

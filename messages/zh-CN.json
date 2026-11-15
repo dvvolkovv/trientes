@@ -694,7 +694,10 @@
     "zoomOut": "缩小",
     "zoomIn2": "放大",
     "resetNorth": "指向正北",
-    "north": "N"
+    "north": "N",
+    "headingUpOn": "让地图随你的航向旋转",
+    "headingUpOff": "停止让地图随你的航向旋转",
+    "headingUpShort": "航向"
   },
   "markets": {
     "title": "市场",

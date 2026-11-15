@@ -694,7 +694,10 @@
     "zoomOut": "Reduzir zoom",
     "zoomIn2": "Aumentar zoom",
     "resetNorth": "Apontar o mapa para o norte",
-    "north": "N"
+    "north": "N",
+    "headingUpOn": "Girar o mapa conforme o seu rumo",
+    "headingUpOff": "Parar de girar o mapa conforme o seu rumo",
+    "headingUpShort": "Rumo"
   },
   "markets": {
     "title": "Mercados",

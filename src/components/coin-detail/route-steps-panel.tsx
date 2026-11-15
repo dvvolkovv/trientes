@@ -53,7 +53,13 @@ export function shortDistance(meters: number): string {
   return meters >= 1000 ? `${(meters / 1000).toFixed(1)} km` : `${Math.round(meters)} m`;
 }
 
-/** The maneuver banner shown while navigation is running. */
+/**
+ * Подсказка «куда сейчас поворачивать», пока идёт ведение.
+ *
+ * Стоит СТРОКОЙ НАД картой, а не поверх неё: лёжа на полотне, баннер закрывал
+ * собой тот самый перекрёсток, к которому вёл. Поэтому здесь нет ни
+ * `absolute`, ни полупрозрачного фона — место ему отводит разметка снаружи.
+ */
 export function ManeuverBanner({
   step,
   distanceMeters,
@@ -64,7 +70,7 @@ export function ManeuverBanner({
   t: StepTranslator;
 }) {
   return (
-    <div className="absolute top-3 left-3 right-3 z-10 flex items-center gap-3 rounded-[14px] border border-hairline bg-card/95 px-3 py-2 shadow-lg backdrop-blur">
+    <div className="flex items-center gap-3 rounded-[14px] border border-hairline bg-card px-3 py-2">
       <span aria-hidden className="text-[22px] leading-none text-accent">
         {maneuverArrow(step)}
       </span>
