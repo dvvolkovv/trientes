@@ -61,3 +61,73 @@ describe("companyPointToPoi", () => {
     expect(p.socials).toEqual([{ network: "telegram", url: "https://t.me/ok" }]);
   });
 });
+
+describe("companyPointToPoi — что здесь принимают", () => {
+  const registry = {
+    coins: new Map([
+      ["bitcoin", { symbol: "btc", name: "Bitcoin", logoUrl: "/i/btc.png", slug: "bitcoin" }],
+    ]),
+    cards: new Map([
+      ["card1", { symbol: "tal", name: "Taler", logoUrl: "/i/tal.png", slug: "taler" }],
+    ]),
+  };
+
+  const point = (over: Record<string, unknown> = {}) =>
+    ({
+      id: "p1",
+      type: "SHOP",
+      name: "Shop",
+      description: "Point story",
+      lat: 10,
+      lon: 20,
+      address: "Street 1",
+      acceptedCoinIds: ["bitcoin", "unknown-coin"],
+      acceptedCardIds: ["card1"],
+      logoUrl: null,
+      photos: [{ url: "https://x.test/a.jpg" }, { url: "javascript:alert(1)" }],
+      openingHours: null,
+      phone: null,
+      website: null,
+      socials: null,
+      company: {
+        displayName: "Acme",
+        logoUrl: null,
+        website: null,
+        socials: null,
+        description: "Company story",
+        email: null,
+        phone: null,
+      },
+      ...over,
+    }) as never;
+
+  it("names both catalogue coins and our own listings", () => {
+    const poi = companyPointToPoi(point(), BTC, registry);
+    expect(poi.acceptedCoins.map((c) => c.symbol)).toEqual(["BTC", "TAL"]);
+    expect(poi.acceptedCoins.find((c) => c.symbol === "TAL")?.own).toBe(true);
+  });
+
+  it("drops a coin the catalogue does not know — a chip without a ticker says nothing", () => {
+    const poi = companyPointToPoi(point(), BTC, registry);
+    expect(poi.acceptedCoins.map((c) => c.key)).not.toContain("unknown-coin");
+  });
+
+  it("never raises the generic flag for our own point — it declared names", () => {
+    expect(companyPointToPoi(point(), BTC, registry).acceptedGeneric).toBe(false);
+  });
+
+  it("carries every photo, sanitized the way socials are", () => {
+    const poi = companyPointToPoi(point(), BTC, registry);
+    expect(poi.photos).toEqual(["https://x.test/a.jpg"]);
+  });
+
+  it("keeps at most five photos", () => {
+    const many = Array.from({ length: 8 }, (_, i) => ({ url: `https://x.test/${i}.jpg` }));
+    const poi = companyPointToPoi(point({ photos: many }), BTC, registry);
+    expect(poi.photos).toHaveLength(5);
+  });
+
+  it("works without a registry at all — the feed may not have built one", () => {
+    expect(companyPointToPoi(point(), BTC).acceptedCoins).toEqual([]);
+  });
+});

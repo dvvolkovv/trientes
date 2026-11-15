@@ -1,6 +1,6 @@
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import type { Bbox, CoinSelector, Poi, PoiLayer, Social } from "@/lib/crypto-map";
+import type { AcceptedCoin, Bbox, CoinSelector, Poi, PoiLayer, Social } from "@/lib/crypto-map";
 
 // Shape returned by the prisma query in fetchApprovedPointsInBbox (point + its company).
 export type PointWithCompany = Prisma.CompanyPointGetPayload<{
@@ -37,10 +37,77 @@ function asSocials(raw: unknown): Social[] {
   return out;
 }
 
+/** Тикеры, имена и логотипы для чипсов — один справочник на весь ответ фида. */
+export type CoinRegistry = {
+  coins: Map<string, { symbol: string; name: string; logoUrl: string | null; slug: string }>;
+  cards: Map<string, { symbol: string; name: string; logoUrl: string | null; slug: string }>;
+};
+
+export const EMPTY_COIN_REGISTRY: CoinRegistry = { coins: new Map(), cards: new Map() };
+
+/** Не больше пяти, как в форме точки, и только http(s) — те же правила, что у `socials`. */
+function asPhotos(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  const out: string[] = [];
+  for (const item of raw) {
+    if (!item || typeof item !== "object") continue;
+    const url = (item as { url?: unknown }).url;
+    if (typeof url !== "string") continue;
+    // Загрузки точек лежат под /uploads/points/, то есть приходят путём, а не
+    // абсолютным адресом: база нужна только чтобы отсечь javascript: и data:.
+    try {
+      const u = new URL(url, "https://trientes.org");
+      if (u.protocol !== "http:" && u.protocol !== "https:") continue;
+    } catch {
+      continue;
+    }
+    out.push(url);
+    if (out.length === 5) break;
+  }
+  return out;
+}
+
+/**
+ * Монеты, которые компания заявила у этой точки. Монета, которой нет в
+ * справочнике, выпадает молча: чипс без тикера и логотипа ничего не сообщает.
+ */
+function acceptedCoinsFor(p: PointWithCompany, registry: CoinRegistry): AcceptedCoin[] {
+  const out: AcceptedCoin[] = [];
+  for (const id of p.acceptedCoinIds ?? []) {
+    const row = registry.coins.get(id);
+    if (!row) continue;
+    out.push({
+      key: id,
+      symbol: row.symbol.toUpperCase(),
+      name: row.name,
+      logoUrl: row.logoUrl,
+      slug: row.slug,
+      own: false,
+    });
+  }
+  for (const id of p.acceptedCardIds ?? []) {
+    const row = registry.cards.get(id);
+    if (!row) continue;
+    out.push({
+      key: id,
+      symbol: row.symbol.toUpperCase(),
+      name: row.name,
+      logoUrl: row.logoUrl,
+      slug: row.slug,
+      own: true,
+    });
+  }
+  return out;
+}
+
 // Convert a company-submitted point into the same Poi shape OSM points use, so the
 // existing navigator card/markers render it unchanged. Company-level fields are the
 // fallback when the point omits its own (point description first, then company about).
-export function companyPointToPoi(p: PointWithCompany, selector: CoinSelector): Poi {
+export function companyPointToPoi(
+  p: PointWithCompany,
+  selector: CoinSelector,
+  registry: CoinRegistry = EMPTY_COIN_REGISTRY,
+): Poi {
   const pointSocials = asSocials(p.socials);
   // Caller (fetchApprovedPointsInBbox) already filters by lat/lon bounds, which
   // implicitly excludes ONLINE-type points (their coords are null). The non-null
@@ -63,9 +130,10 @@ export function companyPointToPoi(p: PointWithCompany, selector: CoinSelector): 
       selector.kind === "card"
         ? (p.acceptedCardIds ?? []).includes(selector.cardId)
         : (p.acceptedCoinIds ?? []).includes(selector.coinId.toLowerCase()),
-    acceptedCoins: [],
+    acceptedCoins: acceptedCoinsFor(p, registry),
+    // Своя точка называет монеты по именам, поэтому «какая-то крипта» ей не нужна.
     acceptedGeneric: false,
-    photos: [],
+    photos: asPhotos(p.photos),
     website: p.website ?? p.company.website ?? null,
     openingHours: p.openingHours,
     phone: p.phone ?? p.company.phone ?? null,
@@ -146,5 +214,31 @@ export async function fetchApprovedPointsInBbox(
       },
     },
   });
-  return rows.map((r) => companyPointToPoi(r, selector));
+  // Один запрос на весь кадр, а не на точку: в кадре бывает двести точек, и
+  // справочник на каждую превратил бы фид в двести запросов.
+  const coinIds = Array.from(new Set(rows.flatMap((r) => r.acceptedCoinIds ?? [])));
+  const cardIds = Array.from(new Set(rows.flatMap((r) => r.acceptedCardIds ?? [])));
+  const [coinRows, cardRows] = await Promise.all([
+    coinIds.length
+      ? prisma.coin.findMany({
+          where: { id: { in: coinIds } },
+          select: { id: true, symbol: true, name: true, logoUrl: true, slug: true },
+        })
+      : Promise.resolve([]),
+    cardIds.length
+      ? prisma.coinCard.findMany({
+          where: { id: { in: cardIds }, status: "APPROVED" },
+          select: { id: true, symbol: true, name: true, logoUrl: true, slug: true },
+        })
+      : Promise.resolve([]),
+  ]);
+  const registry: CoinRegistry = {
+    coins: new Map(
+      coinRows.map((c) => [c.id, { symbol: c.symbol, name: c.name, logoUrl: c.logoUrl, slug: c.slug }]),
+    ),
+    cards: new Map(
+      cardRows.map((c) => [c.id, { symbol: c.symbol, name: c.name, logoUrl: c.logoUrl, slug: c.slug }]),
+    ),
+  };
+  return rows.map((r) => companyPointToPoi(r, selector, registry));
 }
