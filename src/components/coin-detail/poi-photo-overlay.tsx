@@ -21,7 +21,7 @@ export function PoiPhotoOverlay({
   onClose: () => void;
   t: StepTranslator;
 }) {
-  const gesture = useTileGesture({ expanded: true, onChange: (next) => !next && onClose() });
+  const { handlers } = useTileGesture({ expanded: true, onChange: (next) => !next && onClose() });
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -40,7 +40,7 @@ export function PoiPhotoOverlay({
       className="fixed inset-0 z-[80] flex flex-col bg-black/95"
       role="dialog"
       aria-modal="true"
-      {...gesture}
+      {...handlers}
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div className="flex justify-end p-2">

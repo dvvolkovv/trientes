@@ -36,6 +36,10 @@ export type { SheetRoute };
  *
  * Пристыкованного полустояния (55vh) здесь больше нет: его работу — показать
  * линию маршрута, не закрывая её карточкой, — делает страница «Карта».
+ *
+ * Страницу выбирает только человек: закладка, жест или открытие карточки.
+ * Ответ маршрутизатора её не трогает — прежде он швырял человека с «Места»
+ * обратно на карту через секунду после нажатия «Маршрут сюда».
  */
 export function PoiSheet({
   poi,
@@ -49,7 +53,9 @@ export function PoiSheet({
   voiceSupported,
   page,
   onPageChange,
-  routeBarRef,
+  mapExpanded,
+  onMapExpandedChange,
+  mapTileRef,
   onClose,
   onMode,
   onBuildRoute,
@@ -71,7 +77,10 @@ export function PoiSheet({
   voiceSupported: boolean;
   page: PoiPage;
   onPageChange: (next: PoiPage) => void;
-  routeBarRef: RefObject<HTMLDivElement | null>;
+  /** Окно карты раскрыто на весь экран, а не плиткой. */
+  mapExpanded: boolean;
+  onMapExpandedChange: (next: boolean) => void;
+  mapTileRef: RefObject<HTMLDivElement | null>;
   onClose: () => void;
   onMode: (next: RouteMode) => void;
   onBuildRoute: () => void;
@@ -200,11 +209,24 @@ export function PoiSheet({
   return (
     <div className={container} role="dialog" aria-label={poi.name}>
       <div className={`flex shrink-0 items-start gap-2 border-b border-hairline px-4 pb-2 pt-3 ${chrome}`}>
-        <span
-          aria-hidden
-          className="mt-[7px] inline-block h-2.5 w-2.5 shrink-0 rounded-full"
-          style={{ background: LAYER_DOT[poi.layer] ?? "#30B658" }}
-        />
+        {poi.logoUrl ? (
+          // Знак заведения: он есть у точки компании, у финтеха и у куратской
+          // точки. У точки зеркала BTC Map его нет — там остаётся кружок слоя.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={poi.logoUrl}
+            alt=""
+            loading="lazy"
+            referrerPolicy="no-referrer"
+            className="h-9 w-9 shrink-0 rounded-[10px] border border-hairline bg-bg-tint object-cover"
+          />
+        ) : (
+          <span
+            aria-hidden
+            className="mt-[7px] inline-block h-2.5 w-2.5 shrink-0 rounded-full"
+            style={{ background: LAYER_DOT[poi.layer] ?? "#30B658" }}
+          />
+        )}
         <div className="min-w-0 flex-1">
           <div className="truncate text-[16px] font-semibold leading-tight">{poi.name}</div>
           <div className="truncate text-[12px] text-muted">
@@ -285,8 +307,10 @@ export function PoiSheet({
                   hasOrigin={hasOrigin}
                   voiceOn={voiceOn}
                   voiceSupported={voiceSupported}
-                  barRef={routeBarRef}
+                  tileRef={mapTileRef}
+                  expanded={mapExpanded}
                   docked={false}
+                  onExpandedChange={onMapExpandedChange}
                   onMode={onMode}
                   onBuildRoute={onBuildRoute}
                   onGo={onGo}
@@ -333,8 +357,10 @@ export function PoiSheet({
             hasOrigin={hasOrigin}
             voiceOn={voiceOn}
             voiceSupported={voiceSupported}
-            barRef={routeBarRef}
+            tileRef={mapTileRef}
+            expanded={false}
             docked
+            onExpandedChange={onMapExpandedChange}
             onMode={onMode}
             onBuildRoute={onBuildRoute}
             onGo={onGo}

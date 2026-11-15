@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import type { OgPreview, Poi, RouteMode, RouteStep, TransitLeg } from "@/lib/crypto-map";
-import { settleTile } from "@/lib/poi-tile";
+import { TILE_DRAG_MIN, settleTile } from "@/lib/poi-tile";
 
 /**
  * Общее у оболочки карточки точки и её страниц: размеры под палец, цвет слоя,
@@ -90,6 +90,9 @@ export function usePoiPhoto(poi: Poi, website: string | null): PhotoState {
  */
 export function useTileGesture(i: { expanded: boolean; onChange: (next: boolean) => void }) {
   const start = useRef<{ x: number; y: number; at: number; height: number } | null>(null);
+  // Жест заканчивается щелчком по тому же элементу, поэтому обработчик нажатия
+  // обязан уметь спросить: это было нажатие или всё-таки протяжка?
+  const dragged = useRef(false);
   const { expanded, onChange } = i;
 
   const onPointerDown = useCallback((e: ReactPointerEvent<HTMLElement>) => {
@@ -103,6 +106,7 @@ export function useTileGesture(i: { expanded: boolean; onChange: (next: boolean)
       start.current = null;
       if (!s) return;
       const dy = e.clientY - s.y;
+      dragged.current = Math.hypot(e.clientX - s.x, dy) > TILE_DRAG_MIN;
       const next = settleTile({
         expanded,
         dx: e.clientX - s.x,
@@ -119,5 +123,7 @@ export function useTileGesture(i: { expanded: boolean; onChange: (next: boolean)
     start.current = null;
   }, []);
 
-  return { onPointerDown, onPointerUp, onPointerCancel };
+  const dragging = useCallback(() => dragged.current, []);
+
+  return { handlers: { onPointerDown, onPointerUp, onPointerCancel }, dragging };
 }
