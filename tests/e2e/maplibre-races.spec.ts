@@ -324,6 +324,10 @@ async function startFirstRoute(page: Page, startNavigation = false) {
       }],
     });
   });
+  // On a phone the route controls live on the card's "Map" page; on a desktop
+  // that page does not exist and the same bar is the panel's footer.
+  const mapTab = page.getByRole("tab", { name: "cryptoMap.pageMap" });
+  if (await mapTab.count()) await mapTab.click();
   // The card opens with no route yet: "Route" builds one, "Let's go" builds it
   // and starts guidance as soon as the answer arrives.
   await page.getByRole("button", { name: startNavigation ? "▶ cryptoMap.go" : "cryptoMap.routeHere" }).click();
@@ -539,7 +543,7 @@ for (const outcome of ["resolve", "reject"] as const) {
   });
 }
 
-test("the point card opens full-screen on a phone and docks once the route is drawn", async ({ page }) => {
+test("the point card stays full-screen on a phone and shows the route on its map page", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await mountNavigator(page);
   await loadMap(page);
@@ -551,9 +555,11 @@ test("the point card opens full-screen on a phone and docks once the route is dr
 
   await settleDirections(page, 0, "resolve");
   await page.waitForFunction(() => (window as any).__maps[0].sources.get("route").data.features.length === 1);
-  // Route drawn → the sheet docks to the bottom, otherwise it hides the line.
-  await expect(sheet).toHaveClass(/bottom-0/);
-  await expect(sheet).not.toHaveClass(/fixed inset-0/);
+  // There is no docked half-state any more: the drawn line is shown by the
+  // card's "Map" page — a transparent window over the live canvas.
+  await expect(page.getByRole("tab", { name: "cryptoMap.pageMap" })).toHaveAttribute("aria-selected", "true");
+  await expect(sheet).toHaveClass(/fixed inset-0/);
+  await expect(sheet).toHaveClass(/bg-transparent/);
   await expect(page.getByRole("button", { name: "▶ cryptoMap.go" })).toBeVisible();
 });
 
@@ -561,18 +567,24 @@ test("guidance on a phone takes the whole screen and resizes the map", async ({ 
   await page.setViewportSize({ width: 390, height: 844 });
   await mountNavigator(page);
   await loadMap(page);
-  await startFirstRoute(page, true);
   const resizesBefore = await page.evaluate(() => (window as any).__maps[0].resizeCalls);
-  await settleDirections(page, 0, "resolve");
-  await page.waitForFunction(() => (window as any).__navigationControllers.length === 1);
+  await startFirstRoute(page, true);
 
-  // Card closed, map full-screen, and MapLibre told about the new size.
-  await expect(page.getByRole("dialog")).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "■ cryptoMap.stop" })).toBeVisible();
+  // The card itself is full-screen now, so the map behind it goes full-screen
+  // as soon as the card opens — its "Map" page must look at the live canvas,
+  // not at a slice of the page. MapLibre is told about the new size there.
   expect(await page.evaluate(() => (window as any).__maps[0].container.parentElement.className)).toContain("fixed inset-0");
   await expect
     .poll(() => page.evaluate(() => (window as any).__maps[0].resizeCalls))
     .toBeGreaterThan(resizesBefore);
+
+  await settleDirections(page, 0, "resolve");
+  await page.waitForFunction(() => (window as any).__navigationControllers.length === 1);
+
+  // Guidance closes the card and keeps the map full-screen.
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "■ cryptoMap.stop" })).toBeVisible();
+  expect(await page.evaluate(() => (window as any).__maps[0].container.parentElement.className)).toContain("fixed inset-0");
 });
 
 test("a car route can be driven, not only walked", async ({ page }) => {
