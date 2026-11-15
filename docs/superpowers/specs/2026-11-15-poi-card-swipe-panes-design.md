@@ -134,13 +134,18 @@
 
 ```ts
 // src/lib/poi-pager.ts
-export const POI_PAGES = ["map", "card", "showcase"] as const;
-export type PoiPage = (typeof POI_PAGES)[number];
+export type PoiPage = "map" | "card" | "showcase";
 
-export function resolveSwipe(input: {
-  page: PoiPage; dx: number; dy: number; width: number;
-  velocity: number; fromEdge: boolean; captured: boolean;
-}): { claim: boolean; next: PoiPage | null };
+/** Телефон — три страницы, десктоп — две (страницы карты там нет). */
+export function pagesFor(phone: boolean): PoiPage[];
+
+/** Забираем ли жест себе: иначе он принадлежит карте или прокрутке. */
+export function claimsSwipe(i: { page: PoiPage; dx: number; dy: number; fromEdge: boolean }): boolean;
+
+/** Где лист останавливается, когда палец отпущен. */
+export function settlePage(i: {
+  pages: PoiPage[]; page: PoiPage; dx: number; width: number; velocity: number;
+}): PoiPage;
 ```
 
 Так её поведение закрывается юнит-тестами, а не ручным тыканьем в телефон.
@@ -177,8 +182,9 @@ acceptedCoins: { key: string; symbol: string; name: string | null; logoUrl: stri
   `payment:ethereum`, … — девять монет), плюс ⚡ Lightning отдельным чипсом.
   Реестр сейчас используется в обратную сторону — «принимают ли выбранную
   монету»; здесь тот же словарь читается как «какие монеты названы тегами».
-  Тег `payment:cryptocurrencies` даёт чипс «крипта» без тикера: он и означает
-  «какая-то», называть её биткойном нельзя.
+  Тег `payment:cryptocurrencies` не выдумывает тикер: он поднимает отдельный
+  флаг `acceptedGeneric`, и чипс говорит «принимают криптовалюту». Назвать её
+  биткойном нельзя — тег именно про «какую-то».
 - Пусто — секции нет. Выдумывать «вероятно, биткойн» нельзя.
 
 Чипсы монет рисуются на странице «Карточка»: логотип 20 px, тикер, у своих
@@ -246,9 +252,12 @@ acceptedCoins: { key: string; symbol: string; name: string | null; logoUrl: stri
 
 ### Переводы
 
-Новые ключи — в `cryptoMap.sheet.*` (`pageMap`, `pageCard`, `pageShowcase`,
-`acceptedCoins`, `showcasePhotos`, `aboutCompany`, `claimTitle`, `claimCta`,
-`editPoint`, `openCompany`). После правки `messages/en.json` — `npm run i18n`
+Новые ключи — в `cryptoMap.*` плоско, как весь этот раздел переводов
+(`pageMap`, `pageCard`, `pageShowcase`, `acceptedCoins`, `acceptedAny`,
+`showcasePhotos`, `aboutCompany`, `claimTitle`, `claimCta`, `openCompany`).
+Ключи `expandCard` и `collapseCard` удаляются вместе с полустоянием: скрипт
+перевода пересобирает файл по форме английского, поэтому удаление само
+разъезжается по локалям. После правки `messages/en.json` — `npm run i18n`
 (все 11 локалей из `SUPPORTED_LOCALES`), граница — `tests/messages-parity.test.ts`.
 
 ## Проверка
