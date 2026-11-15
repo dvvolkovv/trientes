@@ -628,8 +628,6 @@
     "call": "Позвонить",
     "write": "Эл. почта",
     "openCard": "Открыть карточку",
-    "expandCard": "Развернуть карточку",
-    "collapseCard": "Показать карту",
     "stop": "Стоп",
     "recompute": "Пересчитать",
     "remaining": "Осталось",
@@ -668,7 +666,20 @@
       "inDistance": "Через {distance}, {instruction}",
       "meters": "{n} м",
       "kilometers": "{n} км"
-    }
+    },
+    "pageMap": "Карта",
+    "pageCard": "Место",
+    "pageShowcase": "Витрина",
+    "acceptedCoins": "Здесь принимают",
+    "acceptedAny": "Принимают криптовалюту",
+    "ownListing": "Свой листинг",
+    "showcasePhotos": "Фото",
+    "aboutCompany": "О компании",
+    "openCompany": "Профиль компании",
+    "claimTitle": "Это место ещё не заявлено в Trientes.",
+    "claimCta": "Это мой бизнес",
+    "routeOnMap": "Показать на карте",
+    "pageOf": "Страница {n} из {total}"
   },
   "markets": {
     "title": "Рынки",

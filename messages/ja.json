@@ -628,8 +628,6 @@
     "call": "電話",
     "write": "メール",
     "openCard": "カードを開く",
-    "expandCard": "カードを展開",
-    "collapseCard": "地図を表示",
     "stop": "ストップ",
     "recompute": "再計算",
     "remaining": "残り",
@@ -668,7 +666,20 @@
       "inDistance": "{distance} 先で{instruction}",
       "meters": "{n} m",
       "kilometers": "{n} km"
-    }
+    },
+    "pageMap": "地図",
+    "pageCard": "場所",
+    "pageShowcase": "ショーケース",
+    "acceptedCoins": "ここで使える通貨",
+    "acceptedAny": "暗号資産利用可",
+    "ownListing": "自分の掲載",
+    "showcasePhotos": "写真",
+    "aboutCompany": "会社概要",
+    "openCompany": "企業プロフィール",
+    "claimTitle": "この場所はまだTrientesで申請されていません",
+    "claimCta": "これは私のビジネスです",
+    "routeOnMap": "地図で表示",
+    "pageOf": "全{total}ページ中{n}ページ"
   },
   "markets": {
     "title": "市場",

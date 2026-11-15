@@ -628,8 +628,6 @@
     "call": "Nazvati",
     "write": "Poslati e-mail",
     "openCard": "Otvoriti karticu",
-    "expandCard": "Proširiti karticu",
-    "collapseCard": "Prikazati kartu",
     "stop": "Zaustavite",
     "recompute": "Ponovno izračunati",
     "remaining": "Preostalo",
@@ -668,7 +666,20 @@
       "inDistance": "Za {distance}, {instruction}",
       "meters": "{n} m",
       "kilometers": "{n} km"
-    }
+    },
+    "pageMap": "Karta",
+    "pageCard": "Lokacija",
+    "pageShowcase": "Izlog",
+    "acceptedCoins": "Prihvaćene kovanice",
+    "acceptedAny": "Prihvaća kripto",
+    "ownListing": "Vlastito uvrštenje",
+    "showcasePhotos": "Fotografije",
+    "aboutCompany": "O tvrtki",
+    "openCompany": "Profil tvrtke",
+    "claimTitle": "Ova lokacija još nije preuzeta na Trientes.",
+    "claimCta": "Ovo je moja tvrtka",
+    "routeOnMap": "Prikažite na karti",
+    "pageOf": "Stranica {n} od {total}"
   },
   "markets": {
     "title": "Tržišta",

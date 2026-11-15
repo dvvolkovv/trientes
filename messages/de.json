@@ -628,8 +628,6 @@
     "call": "Anrufen",
     "write": "E-Mail",
     "openCard": "Karte öffnen",
-    "expandCard": "Karte ausklappen",
-    "collapseCard": "Karte anzeigen",
     "stop": "Stopp",
     "recompute": "Neu berechnen",
     "remaining": "Verbleibend",
@@ -668,7 +666,20 @@
       "inDistance": "In {distance}, {instruction}",
       "meters": "{n} m",
       "kilometers": "{n} km"
-    }
+    },
+    "pageMap": "Karte",
+    "pageCard": "Ort",
+    "pageShowcase": "Showcase",
+    "acceptedCoins": "Hier akzeptiert",
+    "acceptedAny": "Krypto akzeptiert",
+    "ownListing": "Eigener Eintrag",
+    "showcasePhotos": "Fotos",
+    "aboutCompany": "Über das Unternehmen",
+    "openCompany": "Unternehmensprofil",
+    "claimTitle": "Dieser Ort wurde auf Trientes noch nicht beansprucht.",
+    "claimCta": "Das ist mein Unternehmen",
+    "routeOnMap": "Auf der Karte anzeigen",
+    "pageOf": "Seite {n} von {total}"
   },
   "markets": {
     "title": "Märkte",

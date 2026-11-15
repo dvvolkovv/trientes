@@ -628,8 +628,6 @@
     "call": "전화",
     "write": "이메일",
     "openCard": "카드 열기",
-    "expandCard": "카드 확장",
-    "collapseCard": "지도 표시",
     "stop": "정지",
     "recompute": "다시 계산",
     "remaining": "남음",
@@ -668,7 +666,20 @@
       "inDistance": "{distance} 후 {instruction}",
       "meters": "{n} m",
       "kilometers": "{n} km"
-    }
+    },
+    "pageMap": "지도",
+    "pageCard": "장소",
+    "pageShowcase": "쇼케이스",
+    "acceptedCoins": "여기서 결제 가능",
+    "acceptedAny": "암호화폐 결제 가능",
+    "ownListing": "내 등록",
+    "showcasePhotos": "사진",
+    "aboutCompany": "회사 소개",
+    "openCompany": "회사 프로필",
+    "claimTitle": "이 장소는 아직 Trientes에서 본인 등록이 되지 않았습니다.",
+    "claimCta": "내 사업장입니다",
+    "routeOnMap": "지도에서 보기",
+    "pageOf": "페이지 {n}/{total}"
   },
   "markets": {
     "title": "시장",

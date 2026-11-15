@@ -81,7 +81,7 @@
     "fng": {
       "extremeFear": "Miedo extremo",
       "fear": "Miedo",
-      "neutral": "Neutral",
+      "neutral": "Neutro",
       "greed": "Codicia",
       "extremeGreed": "Codicia extrema"
     },
@@ -628,8 +628,6 @@
     "call": "Llamar",
     "write": "Correo",
     "openCard": "Abrir tarjeta",
-    "expandCard": "Expandir la tarjeta",
-    "collapseCard": "Mostrar el mapa",
     "stop": "Detener",
     "recompute": "Recalcular",
     "remaining": "Restante",
@@ -668,7 +666,20 @@
       "inDistance": "En {distance}, {instruction}",
       "meters": "{n} m",
       "kilometers": "{n} km"
-    }
+    },
+    "pageMap": "Mapa",
+    "pageCard": "Lugar",
+    "pageShowcase": "Escaparate",
+    "acceptedCoins": "Se aceptan aquí",
+    "acceptedAny": "Se acepta cripto",
+    "ownListing": "Propio listado",
+    "showcasePhotos": "Fotos",
+    "aboutCompany": "Acerca de la empresa",
+    "openCompany": "Perfil de la empresa",
+    "claimTitle": "Este lugar aún no se ha reclamado en Trientes.",
+    "claimCta": "Este es mi negocio",
+    "routeOnMap": "Mostrar en el mapa",
+    "pageOf": "Página {n} de {total}"
   },
   "markets": {
     "title": "Mercados",

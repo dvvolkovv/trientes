@@ -628,8 +628,6 @@
     "call": "Call",
     "write": "Email",
     "openCard": "Open card",
-    "expandCard": "Expand the card",
-    "collapseCard": "Show the map",
     "stop": "Stop",
     "recompute": "Recompute",
     "remaining": "Remaining",
@@ -668,7 +666,20 @@
       "inDistance": "In {distance}, {instruction}",
       "meters": "{n} m",
       "kilometers": "{n} km"
-    }
+    },
+    "pageMap": "Map",
+    "pageCard": "Place",
+    "pageShowcase": "Showcase",
+    "acceptedCoins": "Accepted here",
+    "acceptedAny": "Crypto accepted",
+    "ownListing": "Own listing",
+    "showcasePhotos": "Photos",
+    "aboutCompany": "About the company",
+    "openCompany": "Company profile",
+    "claimTitle": "This place has not claimed itself on Trientes yet.",
+    "claimCta": "This is my business",
+    "routeOnMap": "Show on the map",
+    "pageOf": "Page {n} of {total}"
   },
   "markets": {
     "title": "Markets",
