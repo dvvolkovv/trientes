@@ -679,7 +679,10 @@
     "claimTitle": "Este lugar aún no se ha reclamado en Trientes.",
     "claimCta": "Este es mi negocio",
     "routeOnMap": "Mostrar en el mapa",
-    "pageOf": "Página {n} de {total}"
+    "pageOf": "Página {n} de {total}",
+    "expandMap": "Mapa en pantalla completa",
+    "collapseMap": "Reducir el mapa",
+    "expandPhoto": "Abrir la foto"
   },
   "markets": {
     "title": "Mercados",
@@ -1269,7 +1272,7 @@
   "companyPublic": {
     "verified": "Verificado",
     "website": "Sitio web",
-    "email": "Email",
+    "email": "Correo electrónico",
     "phone": "Teléfono",
     "address": "Dirección",
     "placesTitle": "Lugares que aceptan cripto",

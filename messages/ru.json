@@ -679,7 +679,10 @@
     "claimTitle": "Это место ещё не заявлено в Trientes.",
     "claimCta": "Это мой бизнес",
     "routeOnMap": "Показать на карте",
-    "pageOf": "Страница {n} из {total}"
+    "pageOf": "Страница {n} из {total}",
+    "expandMap": "Развернуть карту на весь экран",
+    "collapseMap": "Свернуть карту",
+    "expandPhoto": "Открыть фото"
   },
   "markets": {
     "title": "Рынки",

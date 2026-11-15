@@ -679,7 +679,10 @@
     "claimTitle": "此地点尚未在 Trientes 上认领。",
     "claimCta": "这是我的商家",
     "routeOnMap": "在地图上显示",
-    "pageOf": "第 {n} 页，共 {total} 页"
+    "pageOf": "第 {n} 页，共 {total} 页",
+    "expandMap": "全屏地图",
+    "collapseMap": "缩小地图",
+    "expandPhoto": "打开照片"
   },
   "markets": {
     "title": "市场",

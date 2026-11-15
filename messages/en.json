@@ -679,7 +679,10 @@
     "claimTitle": "This place has not claimed itself on Trientes yet.",
     "claimCta": "This is my business",
     "routeOnMap": "Show on the map",
-    "pageOf": "Page {n} of {total}"
+    "pageOf": "Page {n} of {total}",
+    "expandMap": "Full screen map",
+    "collapseMap": "Shrink the map",
+    "expandPhoto": "Open the photo"
   },
   "markets": {
     "title": "Markets",

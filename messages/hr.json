@@ -679,7 +679,10 @@
     "claimTitle": "Ova lokacija još nije preuzeta na Trientes.",
     "claimCta": "Ovo je moja tvrtka",
     "routeOnMap": "Prikažite na karti",
-    "pageOf": "Stranica {n} od {total}"
+    "pageOf": "Stranica {n} od {total}",
+    "expandMap": "Proširiti kartu na cijeli zaslon",
+    "collapseMap": "Smanjiti kartu",
+    "expandPhoto": "Otvoriti fotografiju"
   },
   "markets": {
     "title": "Tržišta",
@@ -1238,8 +1241,8 @@
       "hqLat": "Zemljopisna širina sjedišta",
       "hqLon": "Zemljopisna dužina sjedišta",
       "feesSummary": "Sažetak naknada",
-      "appStoreUrl": "App Store URL",
-      "playStoreUrl": "Play Store URL",
+      "appStoreUrl": "URL za App Store",
+      "playStoreUrl": "URL za Play Store",
       "submit": "Spremite",
       "submitting": "Spremanje…",
       "submitted": "Spremljeno — čeka pregled.",

@@ -679,7 +679,10 @@
     "claimTitle": "Ce lieu n’a pas encore été revendiqué sur Trientes",
     "claimCta": "C’est mon établissement",
     "routeOnMap": "Afficher sur la carte",
-    "pageOf": "Page {n} sur {total}"
+    "pageOf": "Page {n} sur {total}",
+    "expandMap": "Carte en plein écran",
+    "collapseMap": "Réduire la carte",
+    "expandPhoto": "Ouvrir la photo"
   },
   "markets": {
     "title": "Marchés",

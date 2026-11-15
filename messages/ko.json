@@ -679,7 +679,10 @@
     "claimTitle": "이 장소는 아직 Trientes에서 본인 등록이 되지 않았습니다.",
     "claimCta": "내 사업장입니다",
     "routeOnMap": "지도에서 보기",
-    "pageOf": "페이지 {n}/{total}"
+    "pageOf": "페이지 {n}/{total}",
+    "expandMap": "전체 화면 지도",
+    "collapseMap": "지도 축소",
+    "expandPhoto": "사진 열기"
   },
   "markets": {
     "title": "시장",

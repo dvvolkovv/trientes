@@ -669,7 +669,7 @@
     },
     "pageMap": "Karte",
     "pageCard": "Ort",
-    "pageShowcase": "Showcase",
+    "pageShowcase": "Präsentation",
     "acceptedCoins": "Hier akzeptiert",
     "acceptedAny": "Krypto akzeptiert",
     "ownListing": "Eigener Eintrag",
@@ -679,7 +679,10 @@
     "claimTitle": "Dieser Ort wurde auf Trientes noch nicht beansprucht.",
     "claimCta": "Das ist mein Unternehmen",
     "routeOnMap": "Auf der Karte anzeigen",
-    "pageOf": "Seite {n} von {total}"
+    "pageOf": "Seite {n} von {total}",
+    "expandMap": "Karte im Vollbild",
+    "collapseMap": "Karte verkleinern",
+    "expandPhoto": "Foto öffnen"
   },
   "markets": {
     "title": "Märkte",
@@ -1504,7 +1507,7 @@
       "logo": "Logo",
       "logoHint": "PNG, JPG oder WebP, bis 6 MB. Quadratisch ist am besten.",
       "nativeCoin": "Native Coin einer eigenen Blockchain (kein Token-Contract)",
-      "contract": "Contract",
+      "contract": "Smart Contract",
       "chain": "Netzwerk",
       "address": "Contract-Adresse",
       "addressHint": "Die exakte On-chain-Adresse — sie unterscheidet Ihren Token von einer Fälschung mit gleichem Ticker",

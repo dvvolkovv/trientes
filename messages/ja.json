@@ -679,7 +679,10 @@
     "claimTitle": "この場所はまだTrientesで申請されていません",
     "claimCta": "これは私のビジネスです",
     "routeOnMap": "地図で表示",
-    "pageOf": "全{total}ページ中{n}ページ"
+    "pageOf": "全{total}ページ中{n}ページ",
+    "expandMap": "全画面表示",
+    "collapseMap": "全画面を終了",
+    "expandPhoto": "写真を開く"
   },
   "markets": {
     "title": "市場",

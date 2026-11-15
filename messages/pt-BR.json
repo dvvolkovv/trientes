@@ -679,7 +679,10 @@
     "claimTitle": "Este local ainda não reivindicou seu perfil no Trientes",
     "claimCta": "Este é meu negócio",
     "routeOnMap": "Mostrar no mapa",
-    "pageOf": "Página {n} de {total}"
+    "pageOf": "Página {n} de {total}",
+    "expandMap": "Mapa em tela cheia",
+    "collapseMap": "Encolher o mapa",
+    "expandPhoto": "Abrir a foto"
   },
   "markets": {
     "title": "Mercados",

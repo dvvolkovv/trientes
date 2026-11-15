@@ -679,7 +679,10 @@
     "claimTitle": "Bu yer henüz Trientes'te kendini talep etmedi.",
     "claimCta": "Bu benim işletmem",
     "routeOnMap": "Haritada göster",
-    "pageOf": "Sayfa {n} / {total}"
+    "pageOf": "Sayfa {n} / {total}",
+    "expandMap": "Tam ekran harita",
+    "collapseMap": "Haritayı küçült",
+    "expandPhoto": "Fotoğrafı aç"
   },
   "markets": {
     "title": "Piyasalar",
