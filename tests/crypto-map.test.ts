@@ -84,6 +84,24 @@ describe("parseOverpassElements", () => {
     });
   });
 
+  it("у точки зеркала BTC Map логотипа нет и взять его неоткуда", () => {
+    const pois = parseOverpassElements(
+      {
+        elements: [
+          {
+            type: "node",
+            id: 1,
+            lat: 50.1,
+            lon: 14.4,
+            tags: { amenity: "cafe", "payment:bitcoin": "yes", name: "Kafe" },
+          },
+        ],
+      },
+      btcTags,
+    );
+    expect(pois[0].logoUrl).toBeNull();
+  });
+
   it("categorizes a shop accepting bitcoin into the merchant layer", () => {
     const pois = parseOverpassElements(
       {

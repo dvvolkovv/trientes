@@ -141,6 +141,9 @@ export function companyPointToPoi(
     socials: pointSocials.length ? pointSocials : asSocials(p.company.socials),
     // Storefront photo wins over generic logo for navigator-popup imagery.
     image: firstPhoto?.url ?? p.logoUrl ?? p.company.logoUrl ?? null,
+    // А в шапке карточки стоит именно знак заведения: логотип точки, иначе
+    // логотип компании. Фотография витрины сюда не годится.
+    logoUrl: p.logoUrl ?? p.company.logoUrl ?? null,
     description: p.description ?? p.company.description ?? null,
   };
 }

@@ -1161,6 +1161,8 @@ function featureToPoi(p: PoiProps, lonlat: [number, number]): Poi {
     ...p,
     lon: lonlat[0],
     lat: lonlat[1],
+    // MapLibre пустое свойство отдаёт как undefined, а карточка ждёт `null`.
+    logoUrl: typeof p.logoUrl === "string" && p.logoUrl ? p.logoUrl : null,
     socials: parseArrayProp<Social>(p.socials),
     acceptedCoins: parseArrayProp<AcceptedCoin>(p.acceptedCoins),
     photos: parseArrayProp<string>(p.photos),
@@ -1191,6 +1193,7 @@ function curatedToPoi(c: CuratedPoi): Poi {
     email: c.email,
     socials: c.socials,
     image: c.logo,
+    logoUrl: c.logo,
     description: null,
   };
 }

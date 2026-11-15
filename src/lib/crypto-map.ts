@@ -153,6 +153,8 @@ export type Poi = {
   email: string | null;
   socials: Social[];
   image: string | null;
+  /** Логотип заведения для шапки карточки; у точки зеркала BTC Map его нет. */
+  logoUrl: string | null;
   description: string | null;
   // Optional in-app deep-link slug. Set only for fintech HQs (→ /{locale}/fintech/{slug}).
   slug?: string;
@@ -279,6 +281,9 @@ export function parseOverpassElements(raw: unknown, coinTags: string[]): Poi[] {
       email: tags["contact:email"] || tags.email || null,
       socials: parseSocials(tags),
       image: parseOsmImage(tags),
+      // У точки зеркала BTC Map логотипа нет и взять его неоткуда: снимок
+      // места логотипом не является, подставлять его было бы выдумкой.
+      logoUrl: null,
       description: tags.description || null,
     });
   }

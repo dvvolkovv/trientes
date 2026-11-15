@@ -47,6 +47,12 @@ describe("companyPointToPoi", () => {
     expect(p.image).toBe("https://x/c.png");
     expect(p.website).toBe("https://acme.co");
   });
+  it("отдаёт логотип точки, а при его отсутствии — логотип компании", () => {
+    expect(companyPointToPoi(row as never, BTC).logoUrl).toBe("https://x/y.png");
+    expect(companyPointToPoi({ ...row, logoUrl: null } as never, BTC).logoUrl).toBe("https://x/c.png");
+    const bare = { ...row, logoUrl: null, company: { ...row.company, logoUrl: null } };
+    expect(companyPointToPoi(bare as never, BTC).logoUrl).toBeNull();
+  });
   it("drops socials with non-http(s) urls (XSS guard)", () => {
     const dirty = {
       ...row,

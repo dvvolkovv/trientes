@@ -35,6 +35,7 @@ export function fintechToPoi(row: FintechHqRow): Poi {
     email: null,
     socials: sanitizeFintechSocials(row.socials),
     image: row.logoUrl,
+    logoUrl: row.logoUrl,
     description: row.description,
     slug: row.slug,
   };
