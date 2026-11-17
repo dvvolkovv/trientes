@@ -192,7 +192,8 @@
       "exchanges": "Exchanges",
       "fintech": "Fintech",
       "analytics": "Analytics",
-      "coinCards": "Coin cards"
+      "coinCards": "Coin cards",
+      "queues": "Queues"
     },
     "status": {
       "PENDING": "Pending",
@@ -468,6 +469,65 @@
         "decimals_invalid": "Decimals must be between 0 and 36.",
         "not_pending": "This item is no longer pending.",
         "unknown": "Something went wrong."
+      }
+    },
+    "queues": {
+      "title": "Queues",
+      "subtitle": "{count} cases waiting for a decision",
+      "oldest": "oldest — {days}d",
+      "left": "due in {d}d {h}h",
+      "late": "overdue",
+      "paused": "waiting for applicant",
+      "empty": "queue is empty",
+      "names": {
+        "coinCards": "Coin cards",
+        "companies": "Companies",
+        "points": "Map points",
+        "exchanges": "Exchanges",
+        "fintech": "Fintech",
+        "kyb": "KYB documents",
+        "coinRequests": "Coin requests",
+        "pointReports": "Point reports"
+      }
+    },
+    "case": {
+      "status": {
+        "NEW": "new",
+        "IN_REVIEW": "in review",
+        "WAITING_APPLICANT": "waiting for applicant",
+        "READY_FOR_APPROVAL": "ready for approval",
+        "APPROVED": "approved",
+        "REJECTED": "rejected",
+        "CLOSED": "closed"
+      },
+      "risk": {
+        "LOW": "low risk",
+        "MEDIUM": "medium risk",
+        "HIGH": "high risk"
+      },
+      "due": "Due in",
+      "handled": "Time spent",
+      "claim": "Take this case",
+      "release": "Release the case",
+      "takenBy": "Taken by {name}",
+      "sections": {
+        "form": "Application form",
+        "formSummary": "{count} fields",
+        "applicant": "Applicant",
+        "journal": "Case journal",
+        "journalSummary": "{count} entries, immutable",
+        "subjectGone": "The object behind this case no longer exists"
+      },
+      "journal": {
+        "opened": "opened the case",
+        "claimed": "took the case",
+        "released": "released the case",
+        "statusChanged": "changed status: {from} → {to}",
+        "clockPaused": "stopped the clock — waiting for the applicant",
+        "clockResumed": "restarted the clock",
+        "timeAdjusted": "adjusted time by {minutes} min — {note}",
+        "note": "left a note",
+        "decided": "made a decision"
       }
     }
   },
