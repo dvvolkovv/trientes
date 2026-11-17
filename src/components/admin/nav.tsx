@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { AdminBell } from "./admin-bell";
 
 const TABS = [
   { key: "queues", path: "queues" },
@@ -32,6 +33,7 @@ export async function AdminNav({ locale, active }: { locale: string; active: str
             {t(`tabs.${tab.key}`)}
           </Link>
         ))}
+        <AdminBell locale={locale} />
       </div>
     </nav>
   );
