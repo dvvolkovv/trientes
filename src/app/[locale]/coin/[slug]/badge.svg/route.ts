@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
+import { LIVE_CARD_COMPANY } from "@/lib/company-visibility";
 import { buildAcceptBadgeSvg } from "@/lib/coin-card-badge";
 
 export async function GET(
@@ -11,7 +12,7 @@ export async function GET(
   // Бейдж есть и у собственного листинга, и у обычной монеты — ставят его на
   // свой сайт продавцы, а не только проекты.
   const card = await prisma.coinCard.findFirst({
-    where: { slug, status: "APPROVED" },
+    where: { slug, status: "APPROVED", ...LIVE_CARD_COMPANY },
     select: { symbol: true },
   });
   const symbol =

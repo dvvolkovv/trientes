@@ -2,6 +2,7 @@ import Link from "next/link";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { PUBLIC_COMPANY } from "@/lib/company-visibility";
 
 export const dynamic = "force-dynamic";
 
@@ -29,7 +30,7 @@ export default async function OnlineServicesDirectory({
   const where: Prisma.CompanyPointWhereInput = {
     status: "APPROVED",
     type: "ONLINE",
-    company: { status: "APPROVED", deletedAt: null },
+    company: { ...PUBLIC_COMPANY },
     deletedAt: null,
   };
   if (q.length >= 2) {
@@ -40,7 +41,7 @@ export default async function OnlineServicesDirectory({
   }
   // Сохраняем deletedAt: null из начального where — иначе фильтр по стране
   // незаметно открыл бы удалённые компании.
-  if (/^[A-Z]{2}$/.test(cc)) where.company = { ...(where.company as object), countryCode: cc };
+  if (/^[A-Z]{2}$/.test(cc)) where.company = { ...PUBLIC_COMPANY, countryCode: cc };
   if (coin) where.acceptedCoinIds = { has: coin };
 
   const [total, rows] = await Promise.all([

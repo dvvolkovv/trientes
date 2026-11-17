@@ -1,5 +1,6 @@
 import type { PointType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { PUBLIC_COMPANY } from "@/lib/company-visibility";
 
 /** Шесть точек превью — ровно столько, сколько требует спека F1. */
 export const ACCEPTANCE_PREVIEW = 6;
@@ -70,7 +71,7 @@ export function aggregateAcceptance(
 export async function getAcceptanceSummary(cardId: string): Promise<AcceptanceSummary> {
   const where = {
     status: "APPROVED" as const,
-    company: { status: "APPROVED" as const, deletedAt: null },
+    company: { ...PUBLIC_COMPANY },
     deletedAt: null,
     acceptedCardIds: { has: cardId },
   };

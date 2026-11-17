@@ -1,5 +1,6 @@
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { PUBLIC_COMPANY } from "@/lib/company-visibility";
 import type { AcceptedCoin, Bbox, CoinSelector, Poi, PoiLayer, Social } from "@/lib/crypto-map";
 
 // Shape returned by the prisma query in fetchApprovedPointsInBbox (point + its company).
@@ -166,7 +167,7 @@ export async function searchApprovedPointsByName(q: string, limit = 5): Promise<
   const rows = await prisma.companyPoint.findMany({
     where: {
       status: "APPROVED",
-      company: { status: "APPROVED", deletedAt: null },
+      company: PUBLIC_COMPANY,
       deletedAt: null,
       // Exclude ONLINE-only points — search bar drives a map fly-to, useless
       // without coordinates.
@@ -205,7 +206,7 @@ export async function fetchApprovedPointsInBbox(
   const rows = await prisma.companyPoint.findMany({
     where: {
       status: "APPROVED",
-      company: { status: "APPROVED", deletedAt: null },
+      company: PUBLIC_COMPANY,
       deletedAt: null,
       // Снятая надзором точка с карты уходит; статус APPROVED при этом цел.
       suspendedAt: null,

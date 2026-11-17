@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { LIVE_CARD_COMPANY } from "@/lib/company-visibility";
 import { collectCardProse } from "@/lib/coin-card-prose";
 import { localizedProse } from "@/lib/localized-prose";
 
@@ -33,7 +34,7 @@ export async function listSelfListedCards(
   locale?: string,
 ): Promise<SelfListedCard[]> {
   const rows = await prisma.coinCard.findMany({
-    where: { status: "APPROVED", coinId: null },
+    where: { status: "APPROVED", coinId: null, ...LIVE_CARD_COMPANY },
     orderBy: [{ trust: "desc" }, { completeness: "desc" }, { createdAt: "desc" }],
     take: limit,
     select: {
@@ -84,5 +85,7 @@ async function localizedTagline(card: TaglineSource, locale: string): Promise<st
 
 /** Count for the listing tab badge — cheaper than loading the rows. */
 export async function countSelfListedCards(): Promise<number> {
-  return prisma.coinCard.count({ where: { status: "APPROVED", coinId: null } });
+  return prisma.coinCard.count({
+    where: { status: "APPROVED", coinId: null, ...LIVE_CARD_COMPANY },
+  });
 }

@@ -4,7 +4,7 @@
  * и правило видимости — ровно такой же случай: до слайса AR на статус компании
  * не смотрели ни карточки монет, ни каталог услуг.
  */
-import type { CaseRisk } from "@prisma/client";
+import type { CaseRisk, Prisma } from "@prisma/client";
 
 /** Фрагмент `where` для связи `company` в публичных выборках. */
 export const PUBLIC_COMPANY = { status: "APPROVED", deletedAt: null, suspendedAt: null } as const;
@@ -12,10 +12,13 @@ export const PUBLIC_COMPANY = { status: "APPROVED", deletedAt: null, suspendedAt
 /**
  * Карточка монеты: у посеянных нами компании нет вовсе, и прятать их не за что.
  * Поэтому условие пропускает `companyId = null` явно, а не молча через связь.
+ *
+ * Подмешивается `...LIVE_CARD_COMPANY` — значит в том же `where` своего `OR`
+ * быть не должно: второй перезаписал бы первый.
  */
-export const LIVE_CARD_COMPANY = {
+export const LIVE_CARD_COMPANY: Prisma.CoinCardWhereInput = {
   OR: [{ companyId: null }, { company: { deletedAt: null, suspendedAt: null } }],
-} as const;
+};
 
 /** За сколько дней до срока пересмотра звонит колокольчик. */
 export const REVIEW_NOTICE_DAYS = 30;

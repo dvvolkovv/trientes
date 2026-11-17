@@ -47,6 +47,10 @@ const KEYS: Record<CaseEventKind, string> = {
   POINT_ASKED: "pointAsked",
   POINT_WARNED: "pointWarned",
   POINT_SUSPENDED: "pointSuspended",
+  COMPANY_WARNED: "companyWarned",
+  COMPANY_SUSPENDED: "companySuspended",
+  COMPANY_RESTORED: "companyRestored",
+  REVIEW_PASSED: "reviewPassed",
 };
 
 /** Событие → ключ перевода `admin.case.journal.<key>` и его параметры. */

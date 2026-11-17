@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { NOT_DELETED } from "@/lib/soft-delete";
+import { PUBLIC_COMPANY } from "@/lib/company-visibility";
 import { localizedProse } from "@/lib/localized-prose";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { TranslatedBadge } from "@/components/coin-card/translated-badge";
@@ -20,9 +21,9 @@ export async function generateMetadata({
   const { locale, id } = await params;
   const row = await prisma.company.findFirst({
     where: { id, ...NOT_DELETED },
-    select: { displayName: true, legalName: true, description: true, logoUrl: true, country: true, city: true, status: true, kybStatus: true },
+    select: { displayName: true, legalName: true, description: true, logoUrl: true, country: true, city: true, status: true, kybStatus: true, suspendedAt: true },
   });
-  if (!row || row.status !== "APPROVED") return {};
+  if (!row || row.status !== "APPROVED" || row.suspendedAt) return {};
   const verifiedPrefix = row.kybStatus === "APPROVED" ? "✓ " : "";
   const title = `${verifiedPrefix}${row.displayName} — crypto-friendly business`;
   const location = [row.city, row.country].filter(Boolean).join(", ");
@@ -62,7 +63,9 @@ export default async function PublicCompanyPage({
       },
     },
   });
-  if (!company || company.status !== "APPROVED") notFound();
+  // Снятое надзором предприятие страницы не имеет: иначе снятие с витрины
+  // было бы половинчатым — точки ушли, а страница осталась.
+  if (!company || company.status !== "APPROVED" || company.suspendedAt) notFound();
 
   const t = await getTranslations("companyPublic");
   const tk = await getTranslations("business.kyb");

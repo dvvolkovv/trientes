@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
+import { LIVE_CARD_COMPANY } from "@/lib/company-visibility";
 import { SUPPORTED_LOCALES, DEFAULT_LOCALE } from "@/lib/locales";
 import { NOT_DELETED } from "@/lib/soft-delete";
 
@@ -38,7 +39,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }),
     // Self-listed cards have their own slugs and are not in the Coin table.
     prisma.coinCard.findMany({
-      where: { status: "APPROVED", coinId: null },
+      where: { status: "APPROVED", coinId: null, ...LIVE_CARD_COMPANY },
       orderBy: { completeness: "desc" },
       take: 500,
       select: { slug: true, updatedAt: true },

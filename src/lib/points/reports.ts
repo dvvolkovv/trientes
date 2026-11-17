@@ -1,5 +1,6 @@
 import type { PointReportReason } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { PUBLIC_COMPANY } from "@/lib/company-visibility";
 import { ensureCase } from "@/lib/cases/ensure";
 import { appendCaseEvent } from "@/lib/cases/journal";
 import { raiseAndNotify } from "@/lib/cases/admin-notify";
@@ -61,7 +62,7 @@ export async function submitPointReport(input: {
       id: parsed.pointId,
       status: "APPROVED",
       deletedAt: null,
-      company: { status: "APPROVED", deletedAt: null },
+      company: PUBLIC_COMPANY,
     },
     include: { company: { select: { ownerUserId: true, displayName: true } } },
   });

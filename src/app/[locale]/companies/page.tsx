@@ -2,7 +2,7 @@ import Link from "next/link";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { NOT_DELETED } from "@/lib/soft-delete";
+import { PUBLIC_COMPANY } from "@/lib/company-visibility";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +26,8 @@ export default async function CompaniesDirectory({
   const cc = (sp.cc ?? "").trim().toUpperCase();
   const page = Math.max(1, Number(sp.page ?? "1"));
 
-  const where: Prisma.CompanyWhereInput = { status: "APPROVED", ...NOT_DELETED };
+  // Снятое надзором предприятие из каталога уходит — ровно как с карты.
+  const where: Prisma.CompanyWhereInput = { ...PUBLIC_COMPANY };
   if (q.length >= 2) {
     where.OR = [
       { displayName: { contains: q, mode: "insensitive" } },
