@@ -371,7 +371,7 @@ export default async function AdminCasePage({
                 case_closed: t("case.checklist.errors.case_closed"),
                 failed: t("case.checklist.errors.failed"),
                 unauth: t("case.checklist.errors.failed"),
-                not_admin: t("case.checklist.errors.failed"),
+                no_access: t("case.checklist.errors.failed"),
                 not_found: t("case.checklist.errors.failed"),
               },
             }}
@@ -404,7 +404,7 @@ export default async function AdminCasePage({
                 note_required: t("case.docs.errors.note_required"),
                 failed: t("case.docs.errors.failed"),
                 unauth: t("case.docs.errors.failed"),
-                not_admin: t("case.docs.errors.failed"),
+                no_access: t("case.docs.errors.failed"),
                 not_found: t("case.docs.errors.failed"),
               },
             }}
@@ -490,7 +490,7 @@ export default async function AdminCasePage({
                   not_pending: t("case.decision.errors.not_pending"),
                   failed: t("case.decision.errors.failed"),
                   unauth: t("case.decision.errors.failed"),
-                  not_admin: t("case.decision.errors.failed"),
+                  no_access: t("case.decision.errors.failed"),
                 },
               }}
             />

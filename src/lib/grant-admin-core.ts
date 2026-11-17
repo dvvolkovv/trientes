@@ -41,7 +41,7 @@ export async function grantAdminCore(
   if (!userId) return { ok: false, reason: "not_found" };
   await prisma.user.update({
     where: { id: userId },
-    data: { role: "ADMIN" },
+    data: { role: "OWNER" },
   });
   return { ok: true, userId };
 }

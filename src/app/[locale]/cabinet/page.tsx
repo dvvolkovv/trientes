@@ -3,6 +3,7 @@ import { setRequestLocale } from "next-intl/server";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { isStaffRole, type ViewerRole } from "@/lib/authz/policy";
 import { ensureUsername } from "@/lib/ensure-username";
 import { ProfileSection } from "@/components/cabinet/profile-section";
 import { SettingsSection } from "@/components/cabinet/settings-section";
@@ -90,7 +91,7 @@ export default async function CabinetPage({
 
       <ExchangesSection locale={locale} />
 
-      {user.role === "ADMIN" ? <AdminSection locale={locale} /> : null}
+      {isStaffRole(user.role as ViewerRole) ? <AdminSection locale={locale} /> : null}
     </main>
   );
 }

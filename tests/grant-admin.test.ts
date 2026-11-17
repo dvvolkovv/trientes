@@ -20,7 +20,7 @@ function fakePrisma(db: FakeDB) {
         if (w.id) return db.users.find((u) => u.id === w.id) ?? null;
         return null;
       }),
-      update: vi.fn(async ({ where, data }: { where: { id: string }; data: { role: "ADMIN" } }) => {
+      update: vi.fn(async ({ where, data }: { where: { id: string }; data: { role: "OWNER" } }) => {
         const u = db.users.find((u) => u.id === where.id);
         if (!u) throw new Error("not found");
         u.role = data.role;
@@ -51,7 +51,7 @@ describe("grantAdminCore", () => {
       email: "foo@bar.com",
     });
     expect(result).toEqual({ ok: true, userId: "u1" });
-    expect(db.users[0].role).toBe("ADMIN");
+    expect(db.users[0].role).toBe("OWNER");
   });
 
   it("promotes by github id (via accounts)", async () => {
@@ -65,7 +65,7 @@ describe("grantAdminCore", () => {
       github: "98765",
     });
     expect(result).toEqual({ ok: true, userId: "u2" });
-    expect(db.users[0].role).toBe("ADMIN");
+    expect(db.users[0].role).toBe("OWNER");
   });
 
   it("promotes by telegram id (via accounts)", async () => {
@@ -79,7 +79,7 @@ describe("grantAdminCore", () => {
       telegram: "42",
     });
     expect(result).toEqual({ ok: true, userId: "u3" });
-    expect(db.users[0].role).toBe("ADMIN");
+    expect(db.users[0].role).toBe("OWNER");
   });
 
   it("returns not_found when no match", async () => {

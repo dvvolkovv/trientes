@@ -11,7 +11,7 @@ function makeFakePrisma() {
     id: string; symbol: string; name: string; slug: string; rank: number; source: string;
     addedByAdminId: string | null; approvedFromRequestId: string | null; isActive: boolean;
   }> = {};
-  const users: Record<string, { id: string; role: "USER" | "ADMIN" }> = {};
+  const users: Record<string, { id: string; role: "USER" | "STAFF" | "OWNER" }> = {};
 
   return {
     state: { requests, coins, users },
@@ -41,7 +41,9 @@ function makeFakePrisma() {
           return users[where.id];
         }),
         count: vi.fn(async ({ where }: any) => {
-          if (where.role === "ADMIN") return Object.values(users).filter((u) => u.role === "ADMIN").length;
+          const roles: string[] | undefined = where?.role?.in;
+          if (roles) return Object.values(users).filter((u) => roles.includes(u.role)).length;
+          if (where?.role) return Object.values(users).filter((u) => u.role === where.role).length;
           return Object.keys(users).length;
         }),
       },
@@ -150,21 +152,21 @@ describe("approveRequestCore", () => {
 });
 
 describe("setUserRoleCore", () => {
-  it("promotes USER to ADMIN", async () => {
+  it("promotes USER to OWNER", async () => {
     const fake = makeFakePrisma();
     fake.state.users["u1"] = { id: "u1", role: "USER" };
-    fake.state.users["admin1"] = { id: "admin1", role: "ADMIN" };
+    fake.state.users["owner1"] = { id: "owner1", role: "OWNER" };
     const res = await setUserRoleCore(fake.prisma as never, {
-      userId: "u1", role: "ADMIN", actorId: "admin1",
+      userId: "u1", role: "OWNER", actorId: "owner1",
     });
     expect(res).toEqual({ ok: true });
-    expect(fake.state.users["u1"].role).toBe("ADMIN");
+    expect(fake.state.users["u1"].role).toBe("OWNER");
   });
 
-  it("demotes ADMIN to USER", async () => {
+  it("demotes OWNER to USER while another owner remains", async () => {
     const fake = makeFakePrisma();
-    fake.state.users["a1"] = { id: "a1", role: "ADMIN" };
-    fake.state.users["a2"] = { id: "a2", role: "ADMIN" };
+    fake.state.users["a1"] = { id: "a1", role: "OWNER" };
+    fake.state.users["a2"] = { id: "a2", role: "OWNER" };
     const res = await setUserRoleCore(fake.prisma as never, {
       userId: "a1", role: "USER", actorId: "a2",
     });
@@ -172,20 +174,29 @@ describe("setUserRoleCore", () => {
     expect(fake.state.users["a1"].role).toBe("USER");
   });
 
-  it("refuses to demote the last admin", async () => {
+  it("refuses to demote the last owner", async () => {
     const fake = makeFakePrisma();
-    fake.state.users["only-admin"] = { id: "only-admin", role: "ADMIN" };
+    fake.state.users["only-owner"] = { id: "only-owner", role: "OWNER" };
     const res = await setUserRoleCore(fake.prisma as never, {
-      userId: "only-admin", role: "USER", actorId: "only-admin",
+      userId: "only-owner", role: "USER", actorId: "only-owner",
     });
-    expect(res).toEqual({ ok: false, reason: "last_admin" });
-    expect(fake.state.users["only-admin"].role).toBe("ADMIN");
+    expect(res).toEqual({ ok: false, reason: "last_owner" });
+    expect(fake.state.users["only-owner"].role).toBe("OWNER");
+  });
+
+  it("demoting the last owner to STAFF is refused too", async () => {
+    const fake = makeFakePrisma();
+    fake.state.users["only-owner"] = { id: "only-owner", role: "OWNER" };
+    const res = await setUserRoleCore(fake.prisma as never, {
+      userId: "only-owner", role: "STAFF", actorId: "only-owner",
+    });
+    expect(res).toEqual({ ok: false, reason: "last_owner" });
   });
 
   it("returns not_found for unknown user", async () => {
     const fake = makeFakePrisma();
     const res = await setUserRoleCore(fake.prisma as never, {
-      userId: "nope", role: "ADMIN", actorId: "a",
+      userId: "nope", role: "OWNER", actorId: "a",
     });
     expect(res).toEqual({ ok: false, reason: "not_found" });
   });

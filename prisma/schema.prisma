@@ -9,7 +9,22 @@ datasource db {
 
 enum Role {
   USER
+  /// Сотрудник комплайнса: может ровно то, что выдано строками StaffGrant.
+  STAFF
+  /// Владелец: все очереди на уровне APPROVE плюс то, что делом не является.
+  OWNER
+  /// Наследие. Читается политикой как OWNER (src/lib/authz/policy.ts): убрать
+  /// значение из типа Postgres внутри одной миграции нельзя, а оставить его
+  /// бесправным значило бы запереть живую запись владельца.
   ADMIN
+}
+
+/// Уровень доступа сотрудника к одной очереди дел. Порядок значим:
+/// APPROVE включает HANDLE, HANDLE включает VIEW.
+enum StaffLevel {
+  VIEW
+  HANDLE
+  APPROVE
 }
 
 model User {
@@ -68,6 +83,13 @@ model User {
   caseTimeEntries          CaseTimeEntry[]           @relation("CaseTimeUser")
   caseMessages             CaseMessage[]             @relation("CaseMessageAuthor")
   adminNotifications       AdminNotification[]       @relation("AdminNotificationUser")
+  staffMember              StaffMember?
+  staffGrants              StaffGrant[]
+  staffGrantsMade          StaffGrant[]              @relation("StaffGrantGranter")
+  staffInvitesMade         StaffInvite[]             @relation("StaffInviteCreator")
+  staffInvitesGot          StaffInvite[]             @relation("StaffInviteAcceptor")
+  staffMembersInvited      StaffMember[]             @relation("StaffMemberInviter")
+  staffAccessRevoked       StaffMember[]             @relation("StaffMemberRevoker")
   pointReports             PointReport[]             @relation("PointReporter")
   casesReviewed            ComplianceCase[]          @relation("CaseReviewer")
   casesApproved            ComplianceCase[]          @relation("CaseApprover")
@@ -435,6 +457,12 @@ enum AdminAction {
   UNSUSPEND_COMPANY
   WARN_COMPANY
   REVIEW_PASSED
+  STAFF_INVITED
+  STAFF_INVITE_REVOKED
+  STAFF_ACCESS_CHANGED
+  STAFF_ACCESS_REVOKED
+  STAFF_ACCESS_RESTORED
+  ACCESS_REVIEW_PASSED
 }
 
 model AdminAuditLog {
@@ -1352,6 +1380,7 @@ enum AdminNotificationKind {
   APPLICANT_SILENT
   POINT_REPORTED
   REVIEW_DUE
+  ACCESS_REVIEW_DUE
 }
 
 model ComplianceCase {
@@ -1540,4 +1569,79 @@ model CaseDocument {
   @@unique([caseId, url])
   @@index([caseId])
   @@index([verdictById, verdictAt])
+}
+
+/// Запись сотрудника комплайнса: должность словами, срок пересмотра доступа,
+/// отзыв. Отдельная таблица, а не поля в User: у посетителя их нет и быть не
+/// должно.
+model StaffMember {
+  id          String  @id @default(cuid())
+  userId      String  @unique
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// Должность: «старший проверяющий». Видна в аналитике труда.
+  title       String?
+  /// Обязанности своими словами — то, что владелец пишет при приглашении.
+  duties      String?
+  invitedById String?
+  invitedBy   User?   @relation("StaffMemberInviter", fields: [invitedById], references: [id], onDelete: SetNull)
+
+  startedAt DateTime @default(now())
+  /// Когда владельцу напомнить пересмотреть права: полгода — обычная частота
+  /// ревизии доступа в SOC 2 и ISO 27001.
+  accessReviewAt DateTime
+
+  /// Доступ отозван. Строка остаётся: журнал решений должен читаться, а
+  /// удаление человека стёрло бы, кто что решал.
+  revokedAt    DateTime?
+  revokedById  String?
+  revokedBy    User?     @relation("StaffMemberRevoker", fields: [revokedById], references: [id], onDelete: SetNull)
+  revokeReason String?
+}
+
+/// Право на одну очередь дел. Нет строки — нет доступа (запрет по умолчанию).
+model StaffGrant {
+  id     String     @id @default(cuid())
+  userId String
+  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// Ключ очереди из src/lib/cases/queues.ts. Строка, не enum: список очередей
+  /// — дело кода, и новая очередь не должна требовать миграции.
+  queue  String
+  level  StaffLevel
+
+  /// Необязательный срок: доступ «до конца проверки» не живёт вечно.
+  expiresAt   DateTime?
+  grantedById String?
+  grantedBy   User?     @relation("StaffGrantGranter", fields: [grantedById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, queue])
+  @@index([queue, level])
+}
+
+/// Приглашение сотрудника: пакет доступа в одной строке. Права отмечаются в
+/// момент приглашения и применяются в момент принятия.
+model StaffInvite {
+  id String @id @default(cuid())
+  /// Только sha256 ссылки: дамп таблицы не должен давать доступ к админке.
+  tokenHash String @unique
+  /// Кому предназначено, если звали по адресу или логину; у открытой ссылки null.
+  identifier String?
+  title      String?
+  duties     String?
+  /// Отмеченные права: [{ queue, level, expiresAt? }].
+  grants     Json
+
+  invitedById String
+  invitedBy   User   @relation("StaffInviteCreator", fields: [invitedById], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime  @default(now())
+  expiresAt    DateTime
+  acceptedAt   DateTime?
+  acceptedById String?
+  acceptedBy   User?     @relation("StaffInviteAcceptor", fields: [acceptedById], references: [id], onDelete: SetNull)
+  revokedAt    DateTime?
+
+  @@index([invitedById])
 }

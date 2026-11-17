@@ -37,10 +37,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         try {
           await prisma.user.update({
             where: { id: user.id },
-            data: { role: "ADMIN" },
+            data: { role: "OWNER" },
           });
         } catch (err) {
-          console.error("[auth] createUser ADMIN-promotion failed:", err);
+          console.error("[auth] createUser OWNER-promotion failed:", err);
         }
       }
     },
@@ -65,10 +65,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         try {
           await prisma.user.update({
             where: { id: user.id },
-            data: { role: "ADMIN" },
+            data: { role: "OWNER" },
           });
         } catch (err) {
-          console.error("[auth] linkAccount ADMIN-promotion failed:", err);
+          console.error("[auth] linkAccount OWNER-promotion failed:", err);
         }
       }
     },

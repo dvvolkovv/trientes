@@ -3,13 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { requireQueue } from "@/lib/authz/guard";
 import { approveCoinCardCore, rejectCoinCardCore } from "@/lib/admin/approve-coin-card";
 
+/** Публикация карточки монеты — право утверждать в очереди карточек. */
 async function requireAdmin(): Promise<string | null> {
-  const session = await auth();
-  const user = session?.user as { id?: string; role?: string } | undefined;
-  if (!user?.id || user.role !== "ADMIN") return null;
-  return user.id;
+  const r = await requireQueue("coinCards", "APPROVE");
+  return r.ok ? r.userId : null;
 }
 
 export async function approveCoinCard(

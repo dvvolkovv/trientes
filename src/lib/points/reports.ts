@@ -112,7 +112,22 @@ export async function submitPointReport(input: {
   // считает ежедневный прогон.
   const total = await prisma.pointReport.count({ where: { pointId: point.id } });
   if (total === 1) {
-    const admins = await prisma.user.findMany({ where: { role: "ADMIN" }, select: { id: true } });
+    // Звоним тем, кто эту очередь действительно видит: владельцам и
+    // сотрудникам с правом на жалобы или на точки. Прежде звонок уходил всем
+    // `ADMIN` — другого понятия доступа в проекте не было.
+    const admins = await prisma.user.findMany({
+      where: {
+        OR: [
+          { role: { in: ["OWNER", "ADMIN"] } },
+          {
+            role: "STAFF",
+            staffMember: { is: { revokedAt: null } },
+            staffGrants: { some: { queue: { in: ["pointReports", "points"] } } },
+          },
+        ],
+      },
+      select: { id: true },
+    });
     for (const a of admins) {
       await raiseAndNotify({
         userId: a.id,

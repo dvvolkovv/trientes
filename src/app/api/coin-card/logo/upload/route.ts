@@ -4,6 +4,7 @@ import { writeFile, mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { requireQueue } from "@/lib/authz/guard";
 import { canEditSection } from "@/lib/coin-card-access";
 
 export const runtime = "nodejs";
@@ -41,7 +42,7 @@ export async function POST(req: Request) {
     },
   });
   if (!card) return NextResponse.json({ error: "not_found" }, { status: 404 });
-  const isSiteAdmin = user?.role === "ADMIN";
+  const isSiteAdmin = (await requireQueue("coinCards", "APPROVE")).ok;
   if (!isSiteAdmin && !canEditSection(card.members[0] ?? null, "IDENTITY")) {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }

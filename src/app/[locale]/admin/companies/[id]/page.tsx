@@ -96,7 +96,7 @@ export default async function AdminCompanyPage({
       not_found: t("company.errors.not_found"),
       failed: t("company.errors.failed"),
       unauth: t("company.errors.failed"),
-      not_admin: t("company.errors.failed"),
+      no_access: t("company.errors.failed"),
       forbidden: t("company.errors.failed"),
       empty: t("company.errors.reason_too_short"),
       too_long: t("company.errors.failed"),

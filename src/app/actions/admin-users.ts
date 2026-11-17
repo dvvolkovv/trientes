@@ -2,12 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { checkAdmin } from "@/lib/is-admin";
-import { setUserRoleCore } from "@/lib/admin/set-user-role";
+import { requireOwner } from "@/lib/authz/guard";
+import { setUserRoleCore, type ManagedRole } from "@/lib/admin/set-user-role";
 import { logAdminAction } from "@/lib/admin/audit";
 
-export async function setUserRole(input: { userId: string; role: "USER" | "ADMIN" }) {
-  const admin = await checkAdmin();
+// Роли выдаёт только владелец: это управление системой, а не работа по заявке.
+export async function setUserRole(input: { userId: string; role: ManagedRole }) {
+  const admin = await requireOwner();
   if (!admin.ok) return { ok: false, reason: admin.reason };
   const res = await setUserRoleCore(prisma as never, {
     userId: input.userId,

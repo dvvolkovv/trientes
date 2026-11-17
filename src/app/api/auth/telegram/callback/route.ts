@@ -73,7 +73,7 @@ export async function POST(req: Request) {
   if (isAdminWhitelisted(adminWhitelist, { telegramId: providerAccountId })) {
     await prisma.user.update({
       where: { id: userId },
-      data: { role: "ADMIN" },
+      data: { role: "OWNER" },
     });
   }
 

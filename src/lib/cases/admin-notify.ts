@@ -12,6 +12,7 @@ const TELEGRAM_LINE: Record<AdminNotificationKind, string> = {
   APPLICANT_SILENT: "🕸 Applicant silent for 14 days",
   POINT_REPORTED: "🚩 New report on a map point",
   REVIEW_DUE: "🗓 Periodic review due",
+  ACCESS_REVIEW_DUE: "🔑 Staff access review due",
 };
 
 export type RaiseInput = {

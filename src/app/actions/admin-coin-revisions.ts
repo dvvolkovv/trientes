@@ -3,16 +3,16 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { requireQueue } from "@/lib/authz/guard";
 import { applyRevisionNow } from "@/app/actions/coin-card-revisions";
 import { notifyUser } from "@/lib/notify";
 
 const MIN_REJECT_REASON = 3;
 
+/** Правки карточки монеты судит тот, кто вправе утверждать в этой очереди. */
 async function requireAdmin(): Promise<string | null> {
-  const session = await auth();
-  const user = session?.user as { id?: string; role?: string } | undefined;
-  if (!user?.id || user.role !== "ADMIN") return null;
-  return user.id;
+  const r = await requireQueue("coinCards", "APPROVE");
+  return r.ok ? r.userId : null;
 }
 
 export type AdminRevisionResult = { ok: true } | { ok: false; reason: string };

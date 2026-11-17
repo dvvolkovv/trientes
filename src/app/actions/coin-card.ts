@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { requireQueue } from "@/lib/authz/guard";
 import { ensureCase } from "@/lib/cases/ensure";
 import { mailListingDesk, listingDeskAdminUrl } from "@/lib/listing-desk";
 import { validateCardBasics, type BasicsData } from "@/lib/coin-card-validate";
@@ -165,7 +166,9 @@ export async function saveCoinCardSection(input: {
   if (!card) return { ok: false, reason: "not_found" };
 
   const member = card.members.find((m) => m.userId === userId) ?? null;
-  if (!canEditCardDirectly(card, member, input.section, user?.role === "ADMIN")) {
+  // Правка чужой карточки сотрудником — то же право, что её публикация.
+  const siteSide = (await requireQueue("coinCards", "APPROVE")).ok;
+  if (!canEditCardDirectly(card, member, input.section, siteSide)) {
     return { ok: false, reason: "forbidden" };
   }
 

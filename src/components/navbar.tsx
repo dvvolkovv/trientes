@@ -8,6 +8,7 @@ import { MobileNav } from "./mobile-nav";
 import { GlobalSearch } from "./global-search";
 import { getCurrency } from "@/lib/get-currency";
 import { dexHref } from "@/lib/dex-link";
+import { isStaffRole, type ViewerRole } from "@/lib/authz/policy";
 
 export async function Navbar() {
   const session = await auth();
@@ -15,8 +16,11 @@ export async function Navbar() {
   const t = await getTranslations("common");
   const currency = await getCurrency();
   const exchangeHref = dexHref(locale);
-  const isAdmin =
-    (session?.user as { role?: string } | undefined)?.role === "ADMIN";
+  // Сотруднику ссылка нужна так же, как владельцу: что ему видно внутри,
+  // решают права по очередям.
+  const isAdmin = isStaffRole(
+    ((session?.user as { role?: string } | undefined)?.role ?? "USER") as ViewerRole,
+  );
   const cabinetHref = `/${locale}/cabinet`;
   const cabinetLabel = t("cabinet");
   const showCabinetLink = !!session?.user;

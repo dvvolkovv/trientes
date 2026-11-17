@@ -97,7 +97,7 @@ export default async function AdminUsersPage({
                 <td className="px-5 py-4">
                   <span
                     className={
-                      u.role === "ADMIN"
+                      u.role === "OWNER" || u.role === "ADMIN"
                         ? "bg-accent/15 text-accent num text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-sm font-medium"
                         : "bg-card-alt text-muted num text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-sm font-medium"
                     }
@@ -134,7 +134,7 @@ export default async function AdminUsersPage({
               </div>
               <span
                 className={
-                  u.role === "ADMIN"
+                  u.role === "OWNER" || u.role === "ADMIN"
                     ? "bg-accent/15 text-accent num text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-sm font-medium flex-shrink-0"
                     : "bg-card-alt text-muted num text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-sm font-medium flex-shrink-0"
                 }
