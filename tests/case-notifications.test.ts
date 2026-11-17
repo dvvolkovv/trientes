@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   DUE_SOON_SECONDS,
   SILENT_WAIT_SECONDS,
+  alreadyRaised,
   dueNotificationFor,
 } from "@/lib/cases/notifications";
 
@@ -81,5 +82,19 @@ describe("пороги", () => {
   it("сутки и четырнадцать дней", () => {
     expect(DUE_SOON_SECONDS).toBe(86400);
     expect(SILENT_WAIT_SECONDS).toBe(14 * 86400);
+  });
+});
+
+describe("alreadyRaised", () => {
+  it("тот же повод по тому же делу второй раз не звонит", () => {
+    const seen = new Set(["u1|DUE_SOON|c1"]);
+    expect(alreadyRaised(seen, "u1", "DUE_SOON", "c1")).toBe(true);
+  });
+
+  it("другой повод или другое дело — звонит", () => {
+    const seen = new Set(["u1|DUE_SOON|c1"]);
+    expect(alreadyRaised(seen, "u1", "CASE_OVERDUE", "c1")).toBe(false);
+    expect(alreadyRaised(seen, "u1", "DUE_SOON", "c2")).toBe(false);
+    expect(alreadyRaised(seen, "u2", "DUE_SOON", "c1")).toBe(false);
   });
 });

@@ -29,6 +29,7 @@ import { syncChainFacts } from "../src/lib/coin-card-chain-facts";
 import { syncCardSupply } from "../src/lib/coin-card-supply";
 import { runListingSweep } from "../src/lib/coin-card-listing-sweep";
 import { sendHealthReport } from "../src/lib/health-report";
+import { runCaseDueSweep } from "../src/lib/cases/due-sweep";
 import { startBinance, stopBinance } from "./binance";
 
 async function runPriceSync() {
@@ -236,6 +237,20 @@ async function runRevisionExpiry() {
     }
   } catch (err) {
     console.error("[worker] coin revision expiry failed:", err);
+  }
+}
+
+async function runCaseDueJob() {
+  const t0 = Date.now();
+  try {
+    const stats = await runCaseDueSweep(prisma);
+    if (stats.raised > 0) {
+      console.log(
+        `[worker] case due sweep ok: ${stats.raised} raised, ${stats.skipped} already known, ${stats.checked} checked in ${Date.now() - t0}ms`,
+      );
+    }
+  } catch (err) {
+    console.error("[worker] case due sweep failed:", err);
   }
 }
 
@@ -527,6 +542,8 @@ async function main() {
   // race with that job's read of latest snapshots.
   cron.schedule("50 * * * *", () => void runRevisionExpiry());
   cron.schedule("55 * * * *", () => void runDeletionRequestExpiry());
+  // Сроки дел — раз в час. Просрочка не событие: её надо заметить самому.
+  cron.schedule("10 * * * *", () => void runCaseDueJob());
   // Прогрев переводов: дважды в сутки, чтобы правка карточки доехала до всех
   // локалей раньше, чем в неё зайдёт первый посетитель или робот.
   cron.schedule("25 3,15 * * *", () => void runProseWarmup());

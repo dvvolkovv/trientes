@@ -36,3 +36,20 @@ export function dueNotificationFor(input: DueInput, now: Date): AdminNotificatio
   if (left <= DUE_SOON_SECONDS) return "DUE_SOON";
   return null;
 }
+
+/**
+ * Ключ «этот повод по этому делу уже звонил». Проверяется по всем звонкам, а не
+ * только непрочитанным: прочитанный DUE_SOON не должен звонить каждый час снова.
+ */
+export function raisedKey(userId: string, kind: AdminNotificationKind, caseId: string): string {
+  return `${userId}|${kind}|${caseId}`;
+}
+
+export function alreadyRaised(
+  seen: Set<string>,
+  userId: string,
+  kind: AdminNotificationKind,
+  caseId: string,
+): boolean {
+  return seen.has(raisedKey(userId, kind, caseId));
+}
