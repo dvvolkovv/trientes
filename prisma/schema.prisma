@@ -561,6 +561,13 @@ model Company {
   kybReviewedAt      DateTime?
   kybRejectionReason String?
 
+  // Надзор: предприятие снято с витрины до выяснения. Статус APPROVED при этом
+  // не трогаем — это мера надзора, а не отмена решения модератора, и вернуть
+  // предприятие должно быть одним действием, а не проходом через очередь.
+  suspendedAt   DateTime?
+  suspendReason String?
+  suspendedById String?
+
   coinCards CoinCard[]
 
   // Мягкое удаление: данные остаются, но объект выпадает из всех выборок.
@@ -575,6 +582,7 @@ model Company {
   @@index([status, createdAt])
   @@index([kybStatus])
   @@index([deletedAt])
+  @@index([suspendedAt])
 }
 
 model CompanyPoint {
@@ -1296,6 +1304,10 @@ enum CaseEventKind {
   POINT_ASKED
   POINT_WARNED
   POINT_SUSPENDED
+  COMPANY_WARNED
+  COMPANY_SUSPENDED
+  COMPANY_RESTORED
+  REVIEW_PASSED
 }
 
 enum CaseTimeSource {
@@ -1335,6 +1347,7 @@ enum AdminNotificationKind {
   CASE_OVERDUE
   APPLICANT_SILENT
   POINT_REPORTED
+  REVIEW_DUE
 }
 
 model ComplianceCase {
@@ -1380,6 +1393,11 @@ model ComplianceCase {
   /// Когда сотрудник впервые написал заявителю. Считается один раз и только
   /// вперёд: это показатель отзывчивости, его нельзя пересчитать потом.
   firstResponseAt DateTime?
+
+  /// Срок следующего пересмотра залистованного предприятия. Выводится из риска
+  /// (12 месяцев, при высоком 6) — своей колонки под интервал нет, иначе её
+  /// пришлось бы держать в согласии с риском руками.
+  nextReviewAt DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
