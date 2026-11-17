@@ -5,6 +5,8 @@ import {
   isSoleSignOff,
   rejectBlockers,
   type ApprovalInput,
+  countApprovers,
+  type ApproverRow,
 } from "@/lib/cases/approval";
 
 const base: ApprovalInput = {
@@ -62,5 +64,47 @@ describe("rejectBlockers", () => {
 
   it("второй подписи отказ не требует", () => {
     expect(rejectBlockers("скан не читается")).toEqual([]);
+  });
+});
+
+describe("countApprovers — вторая подпись по очереди", () => {
+  const NOW = new Date("2026-11-18T10:00:00Z");
+
+  function row(p: Partial<ApproverRow> & { userId: string }): ApproverRow {
+    return { level: "APPROVE", expiresAt: null, revokedAt: null, role: "STAFF", ...p };
+  }
+
+  it("право «ведёт» второй подписью не считается", () => {
+    expect(countApprovers([row({ userId: "u2", level: "HANDLE" })], "u1", NOW)).toBe(0);
+  });
+
+  it("право «утверждает» считается, проверивший — нет", () => {
+    const rows = [row({ userId: "u1" }), row({ userId: "u2" })];
+    expect(countApprovers(rows, "u1", NOW)).toBe(1);
+  });
+
+  it("отозванный и истёкший не считаются", () => {
+    const rows = [
+      row({ userId: "u2", revokedAt: NOW }),
+      row({ userId: "u3", expiresAt: new Date("2026-11-17T00:00:00Z") }),
+    ];
+    expect(countApprovers(rows, "u1", NOW)).toBe(0);
+  });
+
+  it("владелец считается второй подписью и без грантов", () => {
+    expect(countApprovers([row({ userId: "u9", level: null, role: "OWNER" })], "u1", NOW)).toBe(1);
+  });
+
+  it("наследие ADMIN тоже владелец", () => {
+    expect(countApprovers([row({ userId: "u9", level: null, role: "ADMIN" })], "u1", NOW)).toBe(1);
+  });
+
+  it("один человек двумя строками прав — один утверждающий", () => {
+    const rows = [row({ userId: "u2" }), row({ userId: "u2" })];
+    expect(countApprovers(rows, "u1", NOW)).toBe(1);
+  });
+
+  it("посетитель с грантом не утверждающий", () => {
+    expect(countApprovers([row({ userId: "u2", role: "USER" })], "u1", NOW)).toBe(0);
   });
 });

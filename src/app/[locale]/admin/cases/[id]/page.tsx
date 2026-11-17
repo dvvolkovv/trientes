@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
+import { countOtherApprovers } from "@/lib/cases/approvers";
 import { auth } from "@/auth";
 import { AdminNav } from "@/components/admin/nav";
 import { CaseSection } from "@/components/admin/case-section";
@@ -134,9 +135,10 @@ export default async function AdminCasePage({
   const judgedDocs = documents.filter((doc) => doc.verdict !== "PENDING").length;
 
   // --- Подписи -------------------------------------------------------------
-  const otherApproversCount = await prisma.user.count({
-    where: { role: "ADMIN", id: { not: c.reviewedById ?? meId ?? "" } },
-  });
+  const otherApproversCount = await countOtherApprovers(
+    c.subjectType,
+    c.reviewedById ?? meId ?? "",
+  );
   const gate = {
     requiredPending: progress.requiredPending,
     resubmitDocs,

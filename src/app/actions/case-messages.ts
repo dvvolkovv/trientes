@@ -5,6 +5,8 @@ import type { CaseStatus, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { checkAdmin } from "@/lib/is-admin";
+import { requireSubject } from "@/lib/authz/guard";
+import { caseConflict } from "@/lib/authz/conflict";
 import { appendCaseEvent } from "@/lib/cases/journal";
 import { pausePatch, resumePatch } from "@/lib/cases/sla";
 import { normalizeBody, statusAfterApplicantMessage, statusAfterStaffMessage } from "@/lib/cases/messages";
@@ -14,7 +16,10 @@ import { raiseAndNotify } from "@/lib/cases/admin-notify";
 
 export type SendResult =
   | { ok: true }
-  | { ok: false; reason: "unauth" | "forbidden" | "not_found" | "empty" | "too_long" };
+  | {
+      ok: false;
+      reason: "unauth" | "forbidden" | "not_found" | "empty" | "too_long" | "conflict_of_interest";
+    };
 
 const PREVIEW = 300;
 
@@ -25,11 +30,22 @@ export async function sendStaffMessage(input: {
   attachments?: unknown;
   needsReply?: boolean;
 }): Promise<SendResult> {
-  const admin = await checkAdmin();
-  if (!admin.ok) return { ok: false, reason: admin.reason === "unauth" ? "unauth" : "forbidden" };
-
+  // Сначала дело, потом право: по коду отказа не должно быть видно, какие дела
+  // существуют. Писать заявителю — уровень «ведёт» в очереди этого дела.
   const c = await prisma.complianceCase.findUnique({ where: { id: input.caseId } });
   if (!c) return { ok: false, reason: "not_found" };
+
+  const admin = await requireSubject(c.subjectType, "HANDLE");
+  if (!admin.ok) return { ok: false, reason: admin.reason === "unauth" ? "unauth" : "forbidden" };
+
+  const conflict = await caseConflict({
+    caseId: c.id,
+    subjectType: c.subjectType,
+    subjectId: c.subjectId,
+    applicantUserId: c.applicantUserId,
+    userId: admin.userId,
+  });
+  if (conflict) return { ok: false, reason: conflict };
 
   const files = parseAttachments(input.attachments);
   const text = normalizeBody(input.body, files.length > 0);
@@ -178,7 +194,7 @@ export async function markCaseRead(input: { caseId: string }): Promise<{ ok: boo
 
   const c = await prisma.complianceCase.findUnique({
     where: { id: input.caseId },
-    select: { applicantUserId: true },
+    select: { applicantUserId: true, subjectType: true },
   });
   if (!c) return { ok: false };
   const now = new Date();
@@ -191,7 +207,9 @@ export async function markCaseRead(input: { caseId: string }): Promise<{ ok: boo
     return { ok: true };
   }
 
-  const admin = await checkAdmin();
+  // Непрочитанное гасится по стороне, а не по человеку, поэтому гасить его
+  // вправе только тот, кому эта очередь видна.
+  const admin = await requireSubject(c.subjectType, "VIEW");
   if (!admin.ok) return { ok: false };
   await prisma.caseMessage.updateMany({
     where: { caseId: input.caseId, side: "APPLICANT", readByStaffAt: null },

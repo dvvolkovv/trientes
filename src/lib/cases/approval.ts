@@ -8,6 +8,38 @@
  * отсутствия правила.
  */
 
+export type ApproverRow = {
+  userId: string;
+  /** Уровень в очереди дела; `null` — гранта нет (владелец). */
+  level: "VIEW" | "HANDLE" | "APPROVE" | null;
+  expiresAt: Date | null;
+  /** Отзыв доступа сотрудника. */
+  revokedAt: Date | null;
+  role: "USER" | "STAFF" | "OWNER" | "ADMIN";
+};
+
+/**
+ * Сколько людей, кроме проверившего, вправе поставить вторую подпись **в этой
+ * очереди**. Прежде считались все `ADMIN` подряд, и правило четырёх глаз было
+ * декорацией: три записи одного владельца выглядели как три человека, а
+ * сотрудник с правом «ведёт» засчитывался утверждающим.
+ */
+export function countApprovers(rows: ApproverRow[], reviewedById: string, now: Date): number {
+  const seen = new Set<string>();
+  for (const r of rows) {
+    if (r.userId === reviewedById) continue;
+    if (r.revokedAt) continue;
+    const owner = r.role === "OWNER" || r.role === "ADMIN";
+    if (!owner) {
+      if (r.role !== "STAFF") continue;
+      if (r.level !== "APPROVE") continue;
+      if (r.expiresAt && r.expiresAt.getTime() <= now.getTime()) continue;
+    }
+    seen.add(r.userId);
+  }
+  return seen.size;
+}
+
 export type ApprovalBlocker =
   | "checks_pending"
   | "documents_resubmit"

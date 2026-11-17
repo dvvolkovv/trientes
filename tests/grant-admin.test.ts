@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { grantAdminCore } from "@/lib/grant-admin-core";
 
 type FakeDB = {
-  users: Array<{ id: string; email: string | null; role: "USER" | "ADMIN" }>;
+  users: Array<{ id: string; email: string | null; role: "USER" | "OWNER" }>;
   accounts: Array<{
     userId: string;
     provider: string;

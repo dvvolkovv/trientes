@@ -3,14 +3,28 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { checkAdmin } from "@/lib/is-admin";
+import { requireSubject } from "@/lib/authz/guard";
+import { caseConflict } from "@/lib/authz/conflict";
 import { appendCaseEvent } from "@/lib/cases/journal";
 import { beatPatch, closePatch, IDLE_MS, isStale } from "@/lib/cases/time";
 
 export async function claimCase(input: { caseId: string }) {
-  const admin = await checkAdmin();
-  if (!admin.ok) return { ok: false as const, reason: admin.reason };
+  // Сначала дело, потом право: по коду отказа не должно быть видно, какие дела
+  // существуют.
   const c = await prisma.complianceCase.findUnique({ where: { id: input.caseId } });
   if (!c) return { ok: false as const, reason: "not_found" as const };
+
+  const admin = await requireSubject(c.subjectType, "HANDLE");
+  if (!admin.ok) return { ok: false as const, reason: admin.reason };
+  const conflict = await caseConflict({
+    caseId: c.id,
+    subjectType: c.subjectType,
+    subjectId: c.subjectId,
+    applicantUserId: c.applicantUserId,
+    userId: admin.userId,
+  });
+  if (conflict) return { ok: false as const, reason: conflict };
+
   if (c.assigneeId && c.assigneeId !== admin.userId) return { ok: false as const, reason: "taken" as const };
 
   await prisma.complianceCase.update({
@@ -30,6 +44,7 @@ export async function claimCase(input: { caseId: string }) {
   return { ok: true as const };
 }
 
+/** Отпустить дело можно всегда: право отбирают, а брошенное дело не вредит. */
 export async function releaseCase(input: { caseId: string }) {
   const admin = await checkAdmin();
   if (!admin.ok) return { ok: false as const, reason: admin.reason };
@@ -50,7 +65,14 @@ export async function releaseCase(input: { caseId: string }) {
  * задним числом последним биением — простой работой не считается.
  */
 export async function caseHeartbeat(input: { caseId: string }) {
-  const admin = await checkAdmin();
+  const c = await prisma.complianceCase.findUnique({
+    where: { id: input.caseId },
+    select: { subjectType: true },
+  });
+  if (!c) return { ok: false as const, reason: "not_found" as const };
+  // Сеанс времени открывается только тому, кто дело ведёт: смотрящему
+  // засчитывать труд не за что.
+  const admin = await requireSubject(c.subjectType, "HANDLE");
   if (!admin.ok) return { ok: false as const, reason: admin.reason };
   const now = new Date();
 
@@ -80,8 +102,21 @@ export async function caseHeartbeat(input: { caseId: string }) {
 }
 
 export async function adjustCaseTime(input: { caseId: string; minutes: number; note: string }) {
-  const admin = await checkAdmin();
+  const c = await prisma.complianceCase.findUnique({
+    where: { id: input.caseId },
+    select: { id: true, subjectType: true, subjectId: true, applicantUserId: true },
+  });
+  if (!c) return { ok: false as const, reason: "not_found" as const };
+  const admin = await requireSubject(c.subjectType, "HANDLE");
   if (!admin.ok) return { ok: false as const, reason: admin.reason };
+  const conflict = await caseConflict({
+    caseId: c.id,
+    subjectType: c.subjectType,
+    subjectId: c.subjectId,
+    applicantUserId: c.applicantUserId,
+    userId: admin.userId,
+  });
+  if (conflict) return { ok: false as const, reason: conflict };
   const note = input.note.trim();
   // Тихая правка обессмыслила бы показатель: причина обязательна.
   if (note.length < 3) return { ok: false as const, reason: "note_too_short" as const };

@@ -3,11 +3,13 @@
 import { revalidatePath } from "next/cache";
 import type { CaseCheckState, CaseDocumentVerdict } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { checkAdmin } from "@/lib/is-admin";
+import { requireSubject } from "@/lib/authz/guard";
+import { caseConflict } from "@/lib/authz/conflict";
 import { appendCaseEvent } from "@/lib/cases/journal";
 import { nextReviewAt } from "@/lib/company-visibility";
 import { checklistFor, checklistProgress, noteRequired } from "@/lib/cases/checklists";
 import { approvalBlockers, isSoleSignOff, rejectBlockers } from "@/lib/cases/approval";
+import { countOtherApprovers } from "@/lib/cases/approvers";
 import { applyDecision, isAlreadySettled } from "@/lib/cases/decide";
 import { closePatch } from "@/lib/cases/time";
 import { isOpen } from "@/lib/cases/types";
@@ -21,14 +23,15 @@ export async function setCaseCheck(input: {
   state: CaseCheckState;
   note?: string;
 }) {
-  const admin = await checkAdmin();
-  if (!admin.ok) return { ok: false as const, reason: admin.reason };
-
   const c = await prisma.complianceCase.findUnique({
     where: { id: input.caseId },
-    select: { id: true, subjectType: true, status: true },
+    select: { id: true, subjectType: true, subjectId: true, applicantUserId: true, status: true },
   });
   if (!c) return { ok: false as const, reason: "not_found" as const };
+  const admin = await requireSubject(c.subjectType, "HANDLE");
+  if (!admin.ok) return { ok: false as const, reason: admin.reason };
+  const conflict = await caseConflict({ ...c, caseId: c.id, userId: admin.userId });
+  if (conflict) return { ok: false as const, reason: conflict };
   if (!isOpen(c.status)) return { ok: false as const, reason: "case_closed" as const };
   if (!checklistFor(c.subjectType).some((d) => d.key === input.key)) {
     return { ok: false as const, reason: "unknown_check" as const };
@@ -68,14 +71,29 @@ export async function setDocumentVerdict(input: {
   verdict: CaseDocumentVerdict;
   note?: string;
 }) {
-  const admin = await checkAdmin();
-  if (!admin.ok) return { ok: false as const, reason: admin.reason };
-
   const doc = await prisma.caseDocument.findUnique({
     where: { id: input.documentId },
-    select: { id: true, caseId: true, label: true, kind: true },
+    select: {
+      id: true,
+      caseId: true,
+      label: true,
+      kind: true,
+      case: {
+        select: { id: true, subjectType: true, subjectId: true, applicantUserId: true },
+      },
+    },
   });
   if (!doc) return { ok: false as const, reason: "not_found" as const };
+  const admin = await requireSubject(doc.case.subjectType, "HANDLE");
+  if (!admin.ok) return { ok: false as const, reason: admin.reason };
+  const docConflict = await caseConflict({
+    caseId: doc.case.id,
+    subjectType: doc.case.subjectType,
+    subjectId: doc.case.subjectId,
+    applicantUserId: doc.case.applicantUserId,
+    userId: admin.userId,
+  });
+  if (docConflict) return { ok: false as const, reason: docConflict };
 
   const note = (input.note ?? "").trim();
   if ((input.verdict === "REJECTED" || input.verdict === "RESUBMIT") && note.length < NOTE_MIN) {
@@ -107,14 +125,21 @@ export async function setDocumentVerdict(input: {
  * «проверил» ничего не значило бы.
  */
 export async function markReviewed(input: { caseId: string }) {
-  const admin = await checkAdmin();
-  if (!admin.ok) return { ok: false as const, reason: admin.reason };
-
   const c = await prisma.complianceCase.findUnique({
     where: { id: input.caseId },
     include: { checks: { select: { key: true, state: true } } },
   });
   if (!c) return { ok: false as const, reason: "not_found" as const };
+  const admin = await requireSubject(c.subjectType, "HANDLE");
+  if (!admin.ok) return { ok: false as const, reason: admin.reason };
+  const reviewConflict = await caseConflict({
+    caseId: c.id,
+    subjectType: c.subjectType,
+    subjectId: c.subjectId,
+    applicantUserId: c.applicantUserId,
+    userId: admin.userId,
+  });
+  if (reviewConflict) return { ok: false as const, reason: reviewConflict };
   if (!isOpen(c.status)) return { ok: false as const, reason: "case_closed" as const };
 
   const progress = checklistProgress(c.subjectType, c.checks);
@@ -154,14 +179,21 @@ export async function decideCase(input: {
   decision: "APPROVED" | "REJECTED";
   reason?: string;
 }) {
-  const admin = await checkAdmin();
-  if (!admin.ok) return { ok: false as const, reason: admin.reason };
-
   const c = await prisma.complianceCase.findUnique({
     where: { id: input.caseId },
     include: { checks: { select: { key: true, state: true } } },
   });
   if (!c) return { ok: false as const, reason: "not_found" as const };
+  const admin = await requireSubject(c.subjectType, "APPROVE");
+  if (!admin.ok) return { ok: false as const, reason: admin.reason };
+  const decideConflict = await caseConflict({
+    caseId: c.id,
+    subjectType: c.subjectType,
+    subjectId: c.subjectId,
+    applicantUserId: c.applicantUserId,
+    userId: admin.userId,
+  });
+  if (decideConflict) return { ok: false as const, reason: decideConflict };
   if (!isOpen(c.status)) return { ok: false as const, reason: "case_closed" as const };
 
   const reason = (input.reason ?? "").trim();
@@ -172,9 +204,10 @@ export async function decideCase(input: {
     const resubmit = await prisma.caseDocument.count({
       where: { caseId: c.id, verdict: "RESUBMIT" },
     });
-    const otherApproversCount = await prisma.user.count({
-      where: { role: "ADMIN", id: { not: c.reviewedById ?? admin.userId } },
-    });
+    const otherApproversCount = await countOtherApprovers(
+      c.subjectType,
+      c.reviewedById ?? admin.userId,
+    );
     const gate = {
       requiredPending: progress.requiredPending,
       resubmitDocs: resubmit,
