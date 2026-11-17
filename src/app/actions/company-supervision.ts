@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { checkAdmin } from "@/lib/is-admin";
+import { requireQueue } from "@/lib/authz/guard";
 import { logAdminAction } from "@/lib/admin/audit";
 import { appendCaseEvent } from "@/lib/cases/journal";
 import { ensureCompanyCase } from "@/lib/cases/company-case";
@@ -27,7 +27,8 @@ export async function warnCompany(input: {
   companyId: string;
   body: string;
 }): Promise<SupervisionResult> {
-  const admin = await checkAdmin();
+  // Просто письмо — работа, а не надзорное решение: хватает уровня «ведёт».
+  const admin = await requireQueue("companies", "HANDLE");
   if (!admin.ok) return { ok: false, reason: admin.reason };
   const body = input.body.trim();
   if (body.length < MIN_REASON) return { ok: false, reason: "reason_too_short" };
@@ -58,7 +59,8 @@ export async function messageCompany(input: {
   body: string;
   needsReply?: boolean;
 }): Promise<SupervisionResult> {
-  const admin = await checkAdmin();
+  // Просто письмо — работа, а не надзорное решение: хватает уровня «ведёт».
+  const admin = await requireQueue("companies", "HANDLE");
   if (!admin.ok) return { ok: false, reason: admin.reason };
   const body = input.body.trim();
   if (body.length < MIN_REASON) return { ok: false, reason: "reason_too_short" };
@@ -88,7 +90,7 @@ export async function suspendCompany(input: {
   companyId: string;
   reason: string;
 }): Promise<SupervisionResult> {
-  const admin = await checkAdmin();
+  const admin = await requireQueue("companies", "APPROVE");
   if (!admin.ok) return { ok: false, reason: admin.reason };
   const reason = input.reason.trim();
   if (reason.length < MIN_REASON) return { ok: false, reason: "reason_too_short" };
@@ -134,7 +136,7 @@ export async function suspendCompany(input: {
 export async function restoreCompanyListing(input: {
   companyId: string;
 }): Promise<SupervisionResult> {
-  const admin = await checkAdmin();
+  const admin = await requireQueue("companies", "APPROVE");
   if (!admin.ok) return { ok: false, reason: admin.reason };
 
   const company = await prisma.company.findUnique({ where: { id: input.companyId } });
@@ -166,7 +168,7 @@ export async function restoreCompanyListing(input: {
 
 /** Пересмотр пройден: событие в журнал и следующая дата. */
 export async function passReview(input: { companyId: string }): Promise<SupervisionResult> {
-  const admin = await checkAdmin();
+  const admin = await requireQueue("companies", "APPROVE");
   if (!admin.ok) return { ok: false, reason: admin.reason };
 
   const company = await prisma.company.findUnique({ where: { id: input.companyId } });

@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+import { requireOwner } from "@/lib/authz/guard";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { AdminNav } from "@/components/admin/nav";
@@ -13,6 +15,8 @@ export default async function AdminCoinsPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  // Управление системой, а не работа по заявке: только владелец.
+  if (!(await requireOwner()).ok) redirect(`/${locale}/admin/queues`);
   const t = await getTranslations("admin");
 
   const coins = await prisma.coin.findMany({

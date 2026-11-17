@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { checkAdmin } from "@/lib/is-admin";
+import { requireAnyQueue, requireQueue } from "@/lib/authz/guard";
 import { logAdminAction } from "@/lib/admin/audit";
 import { notifyUser } from "@/lib/notify";
 import { tally } from "@/lib/multisig";
@@ -34,8 +34,12 @@ async function roleIn(companyId: string, userId: string): Promise<CompanyRole | 
   return m?.role ?? null;
 }
 
+/**
+ * Сторона сайта в удалении предприятия — право утверждать по предприятиям или
+ * по точкам: удаляются именно эти два объекта.
+ */
 async function isSiteAdmin(): Promise<boolean> {
-  return (await checkAdmin()).ok;
+  return (await requireAnyQueue(["companies", "points"], "APPROVE")).ok;
 }
 
 /** Мягкое удаление: запись остаётся, объект выпадает из всех выборок. */
@@ -331,7 +335,7 @@ export async function withdrawDeletion(input: { requestId: string }): Promise<Re
  * удаление.
  */
 export async function adminRestoreCompany(input: { companyId: string }): Promise<Result> {
-  const admin = await checkAdmin();
+  const admin = await requireQueue("companies", "APPROVE");
   if (!admin.ok) return { ok: false, reason: admin.reason };
   const r = await prisma.company.updateMany({
     where: { id: input.companyId, deletedAt: { not: null } },
@@ -347,7 +351,7 @@ export async function adminRestoreCompany(input: { companyId: string }): Promise
 }
 
 export async function adminRestorePoint(input: { pointId: string }): Promise<Result> {
-  const admin = await checkAdmin();
+  const admin = await requireQueue("points", "APPROVE");
   if (!admin.ok) return { ok: false, reason: admin.reason };
   const r = await prisma.companyPoint.updateMany({
     where: { id: input.pointId, deletedAt: { not: null } },

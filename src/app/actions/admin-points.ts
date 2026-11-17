@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { checkAdmin } from "@/lib/is-admin";
+import { requireQueue } from "@/lib/authz/guard";
 import { logAdminAction } from "@/lib/admin/audit";
 import { notifyGeoForPoint } from "@/lib/geo-alerts-notify";
 import { notifyUser } from "@/lib/notify";
@@ -14,7 +14,7 @@ async function ownerIdOfPoint(companyId: string): Promise<string | null> {
 }
 
 export async function approvePoint(input: { pointId: string }) {
-  const admin = await checkAdmin();
+  const admin = await requireQueue("points", "APPROVE");
   if (!admin.ok) return { ok: false, reason: admin.reason };
   const point = await prisma.companyPoint.findFirst({ where: { id: input.pointId, ...LIVE_POINT } });
   if (!point) return { ok: false, reason: "not_found" };
@@ -45,7 +45,7 @@ export async function approvePoint(input: { pointId: string }) {
 }
 
 export async function rejectPoint(input: { pointId: string; rejectReason: string }) {
-  const admin = await checkAdmin();
+  const admin = await requireQueue("points", "APPROVE");
   if (!admin.ok) return { ok: false, reason: admin.reason };
   const reason = input.rejectReason.trim();
   if (reason.length < 3) return { ok: false, reason: "reason_too_short" };

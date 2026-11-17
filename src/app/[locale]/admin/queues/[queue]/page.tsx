@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
+import { requireQueue } from "@/lib/authz/guard";
 import { AdminNav } from "@/components/admin/nav";
 import { CaseRowCard } from "@/components/admin/case-row";
 import { queueByKey } from "@/lib/cases/queues";
@@ -20,6 +21,9 @@ export default async function AdminQueuePage({
   setRequestLocale(locale);
   const def = queueByKey(queue);
   if (!def) notFound();
+  // Недоступная очередь отвечает «нет такой страницы»: по коду отказа не должно
+  // быть видно, какие очереди в системе есть.
+  if (!(await requireQueue(def.key, "VIEW")).ok) notFound();
 
   const t = await getTranslations("admin");
   const now = new Date();

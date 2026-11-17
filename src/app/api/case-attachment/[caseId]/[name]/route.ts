@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { checkAdmin } from "@/lib/is-admin";
+import { requireSubject } from "@/lib/authz/guard";
 import { isSafeAttachmentName } from "@/lib/cases/attachments";
 
 export const runtime = "nodejs";
@@ -35,13 +35,15 @@ export async function GET(
 
   const c = await prisma.complianceCase.findUnique({
     where: { id: caseId },
-    select: { applicantUserId: true },
+    select: { applicantUserId: true, subjectType: true },
   });
   if (!c) return NextResponse.json({ error: "not_found" }, { status: 404 });
 
   if (c.applicantUserId !== userId) {
-    const admin = await checkAdmin();
-    if (!admin.ok) return NextResponse.json({ error: "forbidden" }, { status: 403 });
+    // В переписке комплайнса ходят уставы и паспорта: сотрудник видит их только
+    // в своей очереди, а не по одному факту работы в админке.
+    const staff = await requireSubject(c.subjectType, "VIEW");
+    if (!staff.ok) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 
   const bytes = await readFile(join(ROOT, caseId, name)).catch(() => null);

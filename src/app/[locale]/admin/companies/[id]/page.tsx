@@ -1,3 +1,4 @@
+import { requireQueue } from "@/lib/authz/guard";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -26,6 +27,8 @@ export default async function AdminCompanyPage({
 }) {
   const { locale, id } = await params;
   setRequestLocale(locale);
+  // История решений по своей очереди: нет доступа — нет страницы.
+  if (!(await requireQueue("companies", "VIEW")).ok) notFound();
   const t = await getTranslations("admin");
 
   const company = await prisma.company.findUnique({

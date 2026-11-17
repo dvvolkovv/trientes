@@ -2,13 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { checkAdmin } from "@/lib/is-admin";
+import { requireQueue } from "@/lib/authz/guard";
 import { logAdminAction } from "@/lib/admin/audit";
 import { notifyUser } from "@/lib/notify";
 import { logoForDomain } from "@/lib/logo";
 
 export async function approveExchange(input: { exchangeId: string }) {
-  const admin = await checkAdmin();
+  const admin = await requireQueue("exchanges", "APPROVE");
   if (!admin.ok) return { ok: false, reason: admin.reason };
   const exchange = await prisma.registeredExchange.findUnique({ where: { id: input.exchangeId } });
   if (!exchange) return { ok: false, reason: "not_found" };
@@ -40,7 +40,7 @@ export async function approveExchange(input: { exchangeId: string }) {
 }
 
 export async function rejectExchange(input: { exchangeId: string; rejectionReason: string }) {
-  const admin = await checkAdmin();
+  const admin = await requireQueue("exchanges", "APPROVE");
   if (!admin.ok) return { ok: false, reason: admin.reason };
   const reason = input.rejectionReason.trim();
   if (reason.length < 3) return { ok: false, reason: "reason_too_short" };

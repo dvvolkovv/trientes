@@ -13,6 +13,8 @@ export type DecisionLabels = {
   soleHint: string;
   rejectHint: string;
   closedWithoutDecision: string;
+  /** Подпись вместо кнопок решения тому, у кого права решать нет. */
+  noDecideRight: string;
   /** Причина недоступности кнопки — строкой под кнопкой, как велит спека. */
   blockers: Record<string, string>;
   errors: Record<string, string>;
@@ -28,6 +30,7 @@ export function CaseDecision({
   approveBlockers,
   reviewBlockers,
   wouldBeSole,
+  canDecide,
   labels,
 }: {
   caseId: string;
@@ -35,6 +38,8 @@ export function CaseDecision({
   approveBlockers: string[];
   reviewBlockers: string[];
   wouldBeSole: boolean;
+  /** Решение — право «утверждает»; ведущий дело видит только первую подпись. */
+  canDecide: boolean;
   labels: DecisionLabels;
 }) {
   const [reason, setReason] = useState("");
@@ -79,6 +84,8 @@ export function CaseDecision({
         </div>
       )}
 
+      {canDecide ? (
+      <>
       <div>
         <button
           type="button"
@@ -116,6 +123,10 @@ export function CaseDecision({
         </button>
         <p className="mt-1.5 text-[11px] leading-snug text-muted">{labels.rejectHint}</p>
       </div>
+      </>
+      ) : (
+        <p className="text-[11px] leading-snug text-muted">{labels.noDecideRight}</p>
+      )}
 
       {notice ? <p className="text-[11px] leading-snug text-muted">{notice}</p> : null}
       {error ? <p className="text-[11px] text-down">{error}</p> : null}

@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
+import { mySubjectLevel, requireSubject } from "@/lib/authz/guard";
+import { caseConflict } from "@/lib/authz/conflict";
 import { countOtherApprovers } from "@/lib/cases/approvers";
 import { auth } from "@/auth";
 import { AdminNav } from "@/components/admin/nav";
@@ -59,10 +61,28 @@ export default async function AdminCasePage({
     },
   });
   if (!c) notFound();
+  if (!(await requireSubject(c.subjectType, "VIEW")).ok) notFound();
 
   const session = await auth();
   const meId = (session?.user as { id?: string } | undefined)?.id ?? null;
   const mine = !!meId && c.assigneeId === meId;
+
+  // Кнопки рисуются по уровню: смотрящий не должен видеть «взять дело», а
+  // ведущий — «одобрить». Серверная проверка остаётся на месте: скрытая кнопка
+  // не защита.
+  const level = await mySubjectLevel(c.subjectType);
+  const canHandle = level === "HANDLE" || level === "APPROVE";
+  const canDecide = level === "APPROVE";
+  const conflict = meId
+    ? await caseConflict({
+        caseId: c.id,
+        subjectType: c.subjectType,
+        subjectId: c.subjectId,
+        applicantUserId: c.applicantUserId,
+        userId: meId,
+      })
+    : null;
+  const mayWork = canHandle && !conflict;
 
   // Документы собираются из уже существующих источников (анкета KYB и вложения
   // заявителя), а не загружаются в деле заново.
@@ -261,6 +281,7 @@ export default async function AdminCasePage({
         </div>
       </div>
 
+      {mayWork ? (
       <div className="mb-4">
         <CaseClaim
           caseId={c.id}
@@ -273,6 +294,11 @@ export default async function AdminCasePage({
           })}
         />
       </div>
+      ) : (
+        <p className="mb-4 text-[12px] text-muted">
+          {conflict ? t("case.access.conflict") : t("case.access.readOnly")}
+        </p>
+      )}
 
       {c.subjectType === "COMPANY" || c.subjectType === "KYB" ? (
         <div className="mb-4">
@@ -351,6 +377,7 @@ export default async function AdminCasePage({
         >
           <CaseChecklist
             caseId={c.id}
+            readOnly={!mayWork}
             items={checklist}
             labels={{
               required: t("case.checklist.required"),
@@ -440,10 +467,14 @@ export default async function AdminCasePage({
             applicantLabel={t("case.thread.applicant")}
             emptyLabel={t("case.thread.empty")}
           />
-          {c.applicantUserId ? (
+          {!c.applicantUserId ? (
+            <p className="mt-3 text-[12px] text-muted">{t("case.thread.noApplicant")}</p>
+          ) : mayWork ? (
             <CaseComposer caseId={c.id} side="STAFF" templates={templates} labels={threadLabels} />
           ) : (
-            <p className="mt-3 text-[12px] text-muted">{t("case.thread.noApplicant")}</p>
+            <p className="mt-3 text-[12px] text-muted">
+              {conflict ? t("case.access.conflict") : t("case.access.readOnly")}
+            </p>
           )}
         </CaseSection>
 
@@ -463,13 +494,14 @@ export default async function AdminCasePage({
           }
           open={isOpen(c.status)}
         >
-          {isOpen(c.status) ? (
+          {isOpen(c.status) && mayWork ? (
             <CaseDecision
               caseId={c.id}
               reviewedByName={reviewerName}
               approveBlockers={approveBlocks}
               reviewBlockers={reviewBlocks}
               wouldBeSole={isSoleSignOff(gate)}
+              canDecide={canDecide}
               labels={{
                 review: t("case.decision.review"),
                 reviewedBy: t.raw("case.decision.reviewedBy") as string,
@@ -479,6 +511,7 @@ export default async function AdminCasePage({
                 soleHint: t("case.decision.soleHint"),
                 rejectHint: t("case.decision.rejectHint"),
                 closedWithoutDecision: t("case.decision.closedWithoutDecision"),
+                noDecideRight: t("case.decision.noDecideRight"),
                 blockers: {
                   checks_pending: t("case.decision.blockers.checks_pending"),
                   documents_resubmit: t("case.decision.blockers.documents_resubmit"),

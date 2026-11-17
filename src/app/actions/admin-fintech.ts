@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { checkAdmin } from "@/lib/is-admin";
+import { requireQueue } from "@/lib/authz/guard";
 import { logAdminAction } from "@/lib/admin/audit";
 import {
   fintechCreateSchema,
@@ -50,7 +50,7 @@ function toData(data: FintechCreateInput): Prisma.FintechCompanyCreateInput {
 }
 
 export async function approveFintech(input: { id: string }) {
-  const admin = await checkAdmin();
+  const admin = await requireQueue("fintech", "APPROVE");
   if (!admin.ok) return { ok: false as const, reason: admin.reason };
   const row = await prisma.fintechCompany.findUnique({ where: { id: input.id } });
   if (!row) return { ok: false as const, reason: "not_found" as const };
@@ -91,7 +91,7 @@ export async function approveFintech(input: { id: string }) {
 }
 
 export async function rejectFintech(input: { id: string; rejectionReason: string }) {
-  const admin = await checkAdmin();
+  const admin = await requireQueue("fintech", "APPROVE");
   if (!admin.ok) return { ok: false as const, reason: admin.reason };
   const reason = input.rejectionReason.trim();
   if (reason.length < 3) return { ok: false as const, reason: "reason_too_short" as const };
@@ -122,7 +122,7 @@ export async function rejectFintech(input: { id: string; rejectionReason: string
 }
 
 export async function createCuratedFintech(input: unknown) {
-  const admin = await checkAdmin();
+  const admin = await requireQueue("fintech", "APPROVE");
   if (!admin.ok) return { ok: false as const, reason: admin.reason };
   const parsed = fintechCreateSchema.safeParse(input);
   if (!parsed.success) return { ok: false as const, reason: "invalid" as const, details: parsed.error.flatten() };
@@ -154,7 +154,7 @@ export async function createCuratedFintech(input: unknown) {
 }
 
 export async function editFintech(input: { id: string; payload: unknown }) {
-  const admin = await checkAdmin();
+  const admin = await requireQueue("fintech", "APPROVE");
   if (!admin.ok) return { ok: false as const, reason: admin.reason };
   const parsed = fintechCreateSchema.safeParse(input.payload);
   if (!parsed.success) return { ok: false as const, reason: "invalid" as const, details: parsed.error.flatten() };
@@ -180,7 +180,7 @@ export async function editFintech(input: { id: string; payload: unknown }) {
 }
 
 export async function deleteFintech(input: { id: string }) {
-  const admin = await checkAdmin();
+  const admin = await requireQueue("fintech", "APPROVE");
   if (!admin.ok) return { ok: false as const, reason: admin.reason };
   const row = await prisma.fintechCompany.findUnique({ where: { id: input.id }, select: { availableIn: true } });
   if (!row) return { ok: false as const, reason: "not_found" as const };

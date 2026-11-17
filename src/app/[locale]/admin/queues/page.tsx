@@ -1,5 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
+import { loadViewerAccess } from "@/lib/authz/guard";
+import { visibleQueues } from "@/lib/authz/policy";
 import { AdminNav } from "@/components/admin/nav";
 import { QueueTileCard } from "@/components/admin/queue-tile";
 import { buildTiles, queueOfSubject, type CaseRow } from "@/lib/cases/queues";
@@ -39,7 +41,11 @@ export default async function AdminQueuesPage({ params }: { params: Promise<{ lo
   });
   const unreadByCase = new Map(unreadRows.map((r) => [r.caseId, r._count._all]));
 
-  const tiles = buildTiles(rows, now, unreadByCase);
+  // Плитки — только выданные очереди: число непрочитанного по чужой очереди
+  // выдавало бы её содержимое.
+  const access = await loadViewerAccess();
+  const allowed = new Set(access ? visibleQueues(access, now) : []);
+  const tiles = buildTiles(rows, now, unreadByCase).filter((tile) => allowed.has(tile.key));
   const totalOpen = tiles.reduce((sum, x) => sum + x.open, 0);
 
   // Худший остаток по очереди — для подписи под точкой срока.
@@ -69,6 +75,10 @@ export default async function AdminQueuesPage({ params }: { params: Promise<{ lo
         <h1 className="mb-1 text-[32px] font-bold tracking-[-0.03em]">{t("queues.title")}</h1>
         <p className="text-sm text-muted">{t("queues.subtitle", { count: totalOpen })}</p>
       </header>
+
+      {tiles.length === 0 ? (
+        <p className="text-center text-sm text-muted">{t("errors.no_access")}</p>
+      ) : null}
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
         {tiles.map((tile) => {

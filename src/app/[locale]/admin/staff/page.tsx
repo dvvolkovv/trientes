@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+import { requireOwner } from "@/lib/authz/guard";
 import Link from "next/link";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
@@ -30,6 +32,8 @@ export default async function AdminStaffPage({
   const { locale } = await params;
   const { w } = await searchParams;
   setRequestLocale(locale);
+  // Управление системой, а не работа по заявке: только владелец.
+  if (!(await requireOwner()).ok) redirect(`/${locale}/admin/queues`);
   const t = await getTranslations("admin");
 
   const win = asWindow(w);

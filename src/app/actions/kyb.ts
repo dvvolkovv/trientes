@@ -4,8 +4,8 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { requireQueue } from "@/lib/authz/guard";
 import { logAdminAction } from "@/lib/admin/audit";
-import { checkAdmin } from "@/lib/is-admin";
 import { notifyUser } from "@/lib/notify";
 import { NOT_DELETED } from "@/lib/soft-delete";
 
@@ -88,7 +88,7 @@ export async function withdrawKyb(input: { companyId: string }) {
 }
 
 export async function approveKyb(input: { companyId: string }) {
-  const admin = await checkAdmin();
+  const admin = await requireQueue("kyb", "APPROVE");
   if (!admin.ok) return { ok: false as const, reason: admin.reason };
   const company = await prisma.company.findFirst({
     where: { id: input.companyId, ...NOT_DELETED },
@@ -114,7 +114,7 @@ export async function approveKyb(input: { companyId: string }) {
 }
 
 export async function rejectKyb(input: { companyId: string; reason: string }) {
-  const admin = await checkAdmin();
+  const admin = await requireQueue("kyb", "APPROVE");
   if (!admin.ok) return { ok: false as const, reason: admin.reason };
   const reason = input.reason.trim();
   if (reason.length < 3) return { ok: false as const, reason: "reason_too_short" as const };

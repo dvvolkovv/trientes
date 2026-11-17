@@ -36,10 +36,13 @@ function Item({
   caseId,
   item,
   labels,
+  readOnly,
 }: {
   caseId: string;
   item: ChecklistItem;
   labels: ChecklistLabels;
+  /** Смотрящий видит отметки, но не ставит их. */
+  readOnly?: boolean;
 }) {
   const [note, setNote] = useState(item.note ?? "");
   const [error, setError] = useState<string | null>(null);
@@ -74,6 +77,10 @@ function Item({
         </span>
       </div>
 
+      {readOnly ? (
+        item.note ? <p className="text-[11px] text-muted">{item.note}</p> : null
+      ) : (
+        <>
       {/* Примечание нужно до нажатия: «проблема» и «не применимо» без причины не сохранятся. */}
       <input
         value={note}
@@ -104,6 +111,8 @@ function Item({
         <p className="mt-2 text-[11px] text-muted">{item.note}</p>
       ) : null}
       {error ? <p className="mt-2 text-[11px] text-down">{error}</p> : null}
+        </>
+      )}
     </div>
   );
 }
@@ -112,16 +121,18 @@ export function CaseChecklist({
   caseId,
   items,
   labels,
+  readOnly,
 }: {
   caseId: string;
   items: ChecklistItem[];
   labels: ChecklistLabels;
+  readOnly?: boolean;
 }) {
   return (
     <div>
       <p className="mb-2 text-[11px] leading-snug text-muted">{labels.hint}</p>
       {items.map((item) => (
-        <Item key={item.key} caseId={caseId} item={item} labels={labels} />
+        <Item key={item.key} caseId={caseId} item={item} labels={labels} readOnly={readOnly} />
       ))}
     </div>
   );

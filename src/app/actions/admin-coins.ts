@@ -2,11 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { checkAdmin } from "@/lib/is-admin";
+import { requireOwner } from "@/lib/authz/guard";
 import { logAdminAction } from "@/lib/admin/audit";
 
 export async function toggleCoinActive(coinId: string) {
-  const admin = await checkAdmin();
+  const admin = await requireOwner();
   if (!admin.ok) return { ok: false, reason: admin.reason };
   const c = await prisma.coin.findUnique({ where: { id: coinId }, select: { isActive: true } });
   if (!c) return { ok: false, reason: "not_found" };
@@ -23,7 +23,7 @@ export async function toggleCoinActive(coinId: string) {
 }
 
 export async function addAdminCoin(input: { coingeckoId: string; symbol: string; name: string }) {
-  const admin = await checkAdmin();
+  const admin = await requireOwner();
   if (!admin.ok) return { ok: false, reason: admin.reason };
   const id = input.coingeckoId.trim().toLowerCase();
   const symbol = input.symbol.trim().toUpperCase();

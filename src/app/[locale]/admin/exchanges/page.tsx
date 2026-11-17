@@ -1,3 +1,5 @@
+import { notFound } from "next/navigation";
+import { requireQueue } from "@/lib/authz/guard";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { AdminNav } from "@/components/admin/nav";
@@ -16,6 +18,8 @@ export default async function AdminExchangesPage({
   const { locale } = await params;
   const { tab } = await searchParams;
   setRequestLocale(locale);
+  // История решений по своей очереди: нет доступа — нет страницы.
+  if (!(await requireQueue("exchanges", "VIEW")).ok) notFound();
 
   const t = await getTranslations("admin");
   const status =

@@ -250,7 +250,12 @@
       "invalid_symbol": "Invalid symbol.",
       "invalid_name": "Invalid name.",
       "last_admin": "Cannot demote the last admin.",
-      "unknown_error": "Something went wrong."
+      "unknown_error": "Something went wrong.",
+      "no_access": "You have no access to this queue. Ask the owner to grant it.",
+      "conflict_of_interest": "You are connected to this subject, so you cannot work on its case.",
+      "self_grant": "You cannot grant access to yourself.",
+      "owner_target": "The owner is not a staff member; access cannot be changed here.",
+      "last_owner": "The last owner cannot be demoted."
     },
     "audit": {
       "title": "Audit log",
@@ -702,7 +707,8 @@
         "pointReport": {
           "approve": "Confirm reports — take the place off the map",
           "reject": "Dismiss reports — keep the place on the map"
-        }
+        },
+        "noDecideRight": "You may prepare and review this case, but approving it needs someone with decision rights in this queue."
       },
       "reports": {
         "title": "Reports",
@@ -715,6 +721,10 @@
           "WRONG_ADDRESS": "Wrong address or location",
           "OTHER": "Something else"
         }
+      },
+      "access": {
+        "readOnly": "Read-only access to this queue: you can read the case, but not change it.",
+        "conflict": "You are connected to this subject — someone else has to handle this case."
       }
     },
     "bell": {

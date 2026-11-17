@@ -2,14 +2,14 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { checkAdmin } from "@/lib/is-admin";
+import { requireQueue } from "@/lib/authz/guard";
 import { logAdminAction } from "@/lib/admin/audit";
 import { notifyUser } from "@/lib/notify";
 import { logoForDomain } from "@/lib/logo";
 import { NOT_DELETED } from "@/lib/soft-delete";
 
 export async function approveCompany(input: { companyId: string }) {
-  const admin = await checkAdmin();
+  const admin = await requireQueue("companies", "APPROVE");
   if (!admin.ok) return { ok: false, reason: admin.reason };
   const company = await prisma.company.findFirst({ where: { id: input.companyId, ...NOT_DELETED } });
   if (!company) return { ok: false, reason: "not_found" };
@@ -43,7 +43,7 @@ export async function approveCompany(input: { companyId: string }) {
 }
 
 export async function rejectCompany(input: { companyId: string; rejectionReason: string }) {
-  const admin = await checkAdmin();
+  const admin = await requireQueue("companies", "APPROVE");
   if (!admin.ok) return { ok: false, reason: admin.reason };
   const reason = input.rejectionReason.trim();
   if (reason.length < 3) return { ok: false, reason: "reason_too_short" };

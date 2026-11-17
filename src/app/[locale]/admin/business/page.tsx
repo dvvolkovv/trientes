@@ -1,3 +1,5 @@
+import { notFound } from "next/navigation";
+import { requireAnyQueue } from "@/lib/authz/guard";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { AdminNav } from "@/components/admin/nav";
@@ -22,6 +24,8 @@ export default async function AdminBusinessPage({
   const { locale } = await params;
   const { tab, scope: scopeParam } = await searchParams;
   setRequestLocale(locale);
+  // Один экран на три очереди: предприятия, точки и KYB.
+  if (!(await requireAnyQueue(["companies", "points", "kyb"], "VIEW")).ok) notFound();
 
   const t = await getTranslations("admin");
   const scope: Scope =

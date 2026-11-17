@@ -2,13 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { checkAdmin } from "@/lib/is-admin";
+import { requireQueue } from "@/lib/authz/guard";
 import { approveRequestCore } from "@/lib/admin/approve-request";
 import { logAdminAction } from "@/lib/admin/audit";
 import { notifyUser } from "@/lib/notify";
 
 export async function approveRequest(input: { requestId: string; coingeckoIdOverride?: string }) {
-  const admin = await checkAdmin();
+  const admin = await requireQueue("coinRequests", "APPROVE");
   if (!admin.ok) return { ok: false, reason: admin.reason };
   const res = await approveRequestCore(prisma as never, {
     requestId: input.requestId,
@@ -46,7 +46,7 @@ export async function approveRequest(input: { requestId: string; coingeckoIdOver
 }
 
 export async function rejectRequest(input: { requestId: string; rejectReason: string }) {
-  const admin = await checkAdmin();
+  const admin = await requireQueue("coinRequests", "APPROVE");
   if (!admin.ok) return { ok: false, reason: admin.reason };
   const reason = input.rejectReason.trim();
   if (reason.length < 3) return { ok: false, reason: "reason_too_short" };
