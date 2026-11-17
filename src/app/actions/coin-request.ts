@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { ensureCase } from "@/lib/cases/ensure";
 import { mailListingDesk, listingDeskAdminUrl } from "@/lib/listing-desk";
 import { validateCoinRequest } from "@/lib/coin-request";
 
@@ -74,6 +75,12 @@ export async function submitCoinRequest(input: {
       reason: validated.data.reason,
     },
     include: { user: { select: { email: true, username: true } } },
+  });
+  await ensureCase({
+    subjectType: "COIN_REQUEST",
+    subjectId: request.id,
+    title: `${request.name} (${request.symbol})`,
+    applicantUserId: request.userId,
   });
   void notifyListingDesk(request);
   revalidatePath("/", "layout");

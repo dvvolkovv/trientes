@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { ensureCase } from "@/lib/cases/ensure";
 import {
   validateCompanyProfile,
   validateCompanyPoint,
@@ -69,6 +70,12 @@ export async function createCompany(input: { legalName: string; displayName: str
       members: { create: { userId, role: "OWNER" } },
     },
   });
+  await ensureCase({
+    subjectType: "COMPANY",
+    subjectId: company.id,
+    title: company.displayName,
+    applicantUserId: company.ownerUserId,
+  });
   revalidatePath("/", "layout");
   return { ok: true as const, id: company.id };
 }
@@ -114,7 +121,7 @@ export async function submitCompanyPoint(
       return { ok: false as const, reason: "coin_not_selectable" as const };
     }
   }
-  await prisma.companyPoint.create({
+  const point = await prisma.companyPoint.create({
     data: {
       companyId: company.id,
       type: v.data.type as PointType,
@@ -137,6 +144,12 @@ export async function submitCompanyPoint(
       website: v.data.website,
       socials: Array.isArray(input.socials) ? input.socials : undefined,
     },
+  });
+  await ensureCase({
+    subjectType: "POINT",
+    subjectId: point.id,
+    title: point.name,
+    applicantUserId: company.ownerUserId,
   });
   revalidatePath("/", "layout");
   return { ok: true as const };

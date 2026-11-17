@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { ensureCase } from "@/lib/cases/ensure";
 import { mailListingDesk, listingDeskAdminUrl } from "@/lib/listing-desk";
 import { validateCardBasics, type BasicsData } from "@/lib/coin-card-validate";
 import { buildSlugCandidates } from "@/lib/coin-card-slug";
@@ -111,6 +112,12 @@ export async function createCoinCard(input: {
           createdAt: true,
           steward: { select: { email: true, username: true } },
         },
+      });
+      await ensureCase({
+        subjectType: "COIN_CARD",
+        subjectId: card.id,
+        title: `${v.data.name} (${v.data.symbol})`,
+        applicantUserId: userId,
       });
       void notifyListingDesk(card, userId, v.data);
       revalidatePath("/", "layout");

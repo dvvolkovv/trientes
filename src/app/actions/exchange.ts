@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { ensureCase } from "@/lib/cases/ensure";
 import { validateExchangeProfile, type ExchangeProfileInput } from "@/lib/exchange";
 
 async function requireUser(): Promise<string | null> {
@@ -30,6 +31,12 @@ export async function createExchange(input: ExchangeProfileInput) {
       socials: Array.isArray(input.socials) ? input.socials : undefined,
       status: "PENDING",
     },
+  });
+  await ensureCase({
+    subjectType: "EXCHANGE",
+    subjectId: exchange.id,
+    title: exchange.displayName,
+    applicantUserId: exchange.ownerUserId,
   });
   revalidatePath("/", "layout");
   return { ok: true as const, id: exchange.id };

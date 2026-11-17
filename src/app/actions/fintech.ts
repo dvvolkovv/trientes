@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { ensureCase } from "@/lib/cases/ensure";
 import {
   fintechCreateSchema,
   sanitizeFintechSocials,
@@ -143,6 +144,12 @@ export async function saveOwnFintech(input: unknown, fintechId?: string) {
         status: "PENDING",
         ownerUserId: userId,
       },
+    });
+    await ensureCase({
+      subjectType: "FINTECH",
+      subjectId: row.id,
+      title: row.displayName,
+      applicantUserId: row.ownerUserId ?? null,
     });
     await bustAvailabilityCache(data.availableIn);
     revalidatePath("/", "layout");
