@@ -43,6 +43,10 @@ const KEYS: Record<CaseEventKind, string> = {
   CHECK_SET: "checkSet",
   DOCUMENT_VERDICT: "documentVerdict",
   DECIDED: "decided",
+  POINT_REPORTED: "pointReported",
+  POINT_ASKED: "pointAsked",
+  POINT_WARNED: "pointWarned",
+  POINT_SUSPENDED: "pointSuspended",
 };
 
 /** Событие → ключ перевода `admin.case.journal.<key>` и его параметры. */

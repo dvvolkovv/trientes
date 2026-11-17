@@ -10,6 +10,7 @@ const TELEGRAM_LINE: Record<AdminNotificationKind, string> = {
   DUE_SOON: "⏰ Case due within 24 hours",
   CASE_OVERDUE: "🔴 Case overdue",
   APPLICANT_SILENT: "🕸 Applicant silent for 14 days",
+  POINT_REPORTED: "🚩 New report on a map point",
 };
 
 export type RaiseInput = {
