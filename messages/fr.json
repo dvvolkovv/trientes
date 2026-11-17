@@ -318,7 +318,8 @@
         "reason_too_short": "Au moins 3 caractères.",
         "generic": "Quelque chose s'est mal passé."
       },
-      "delete": "Supprimer"
+      "delete": "Supprimer",
+      "supervision": "Supervision"
     },
     "analytics": {
       "title": "Analyse",
@@ -541,7 +542,11 @@
         "pointReported": "un visiteur a signalé le point: {reason}",
         "pointAsked": "a interrogé l'entreprise au sujet des signalements",
         "pointWarned": "a averti l'entreprise — aucune réponse depuis 14 jours",
-        "pointSuspended": "a retiré le point de la carte — les signalements sont restés sans réponse"
+        "pointSuspended": "a retiré le point de la carte — les signalements sont restés sans réponse",
+        "companyWarned": "avertissement émis à l'entreprise",
+        "companySuspended": "entreprise retirée de la liste : {reason}",
+        "companyRestored": "entreprise réintégrée à la liste",
+        "reviewPassed": "révision périodique réussie ; prochaine le {next}"
       },
       "thread": {
         "title": "Correspondance",
@@ -722,7 +727,8 @@
         "DUE_SOON": "Échéance dans 24 heures",
         "CASE_OVERDUE": "En retard",
         "APPLICANT_SILENT": "Le demandeur est silencieux depuis 14 jours",
-        "POINT_REPORTED": "Un visiteur a signalé un point sur la carte"
+        "POINT_REPORTED": "Un visiteur a signalé un point sur la carte",
+        "REVIEW_DUE": "Révision périodique arrivée à échéance"
       }
     },
     "movedToQueues": {
@@ -752,6 +758,60 @@
         "secondSignatures": "Secondes signatures",
         "soleSignOffs": "Approbations uniques",
         "resubmits": "Demandes de renvoi"
+      }
+    },
+    "company": {
+      "kicker": "Entreprise répertoriée",
+      "openSupervision": "Ouvrir le panneau de supervision",
+      "done": "Terminé.",
+      "numbers": {
+        "points": "Lieux sur la carte",
+        "reports": "Signalements, 90 jours",
+        "warnings": "Avertissements"
+      },
+      "supervision": {
+        "title": "Supervision",
+        "summary": "Prochain examen le {date}",
+        "summaryNone": "Aucun examen prévu pour le moment",
+        "dueBadge": "Examen à effectuer",
+        "approvedBy": "Approuvé par",
+        "approvedAt": "Approuvé le",
+        "kyb": "KYB",
+        "risk": "Risque",
+        "nextReview": "Prochain examen",
+        "passReview": "Examen réussi"
+      },
+      "contact": {
+        "title": "Contact",
+        "summary": "Écrit dans le fil du dossier; le propriétaire le reçoit par e-mail et sur Telegram",
+        "summaryNoCase": "Un dossier sera ouvert avec le premier message",
+        "placeholder": "Que doit savoir le propriétaire ?",
+        "send": "Envoyer le message",
+        "warn": "Émettre un avertissement",
+        "openCase": "Ouvrir le dossier"
+      },
+      "objects": {
+        "title": "Objets",
+        "summary": "{points} lieux · {cards} annonces",
+        "empty": "Cette entreprise n'a pas encore de lieux ni d'annonces.",
+        "pointSuspended": "retiré de la carte",
+        "pointUnderReview": "en cours d'examen"
+      },
+      "listing": {
+        "title": "Annonce",
+        "summaryLive": "En ligne sur le site",
+        "summarySuspended": "Retiré : {reason}",
+        "suspendedBadge": "Retiré",
+        "suspendedAt": "Retiré le {date}",
+        "hint": "Retirer une entreprise masque ses lieux, services et annonces. L'approbation elle-même reste, donc la remettre en ligne ne demande qu'une action.",
+        "reasonPlaceholder": "Pourquoi est-elle retirée ? Le propriétaire lira ceci.",
+        "suspend": "Retirer l'annonce",
+        "restore": "Remettre l'annonce en ligne"
+      },
+      "errors": {
+        "reason_too_short": "Veuillez écrire au moins quelques mots.",
+        "not_found": "Cette entreprise n'existe plus.",
+        "failed": "Impossible d'effectuer cette action. Veuillez réessayer."
       }
     }
   },
@@ -1271,7 +1331,12 @@
     "pointSaved": "Point enregistré.",
     "pointBackToModeration": "Enregistré et renvoyé en validation : le lieu ou les cryptos acceptées ont changé.",
     "editPointHint": "Vous modifiez un point existant.",
-    "cancelEdit": "annuler la modification"
+    "cancelEdit": "annuler la modification",
+    "suspended": {
+      "title": "Votre entreprise est retirée de la liste",
+      "noReason": "Aucune raison n'a été enregistrée.",
+      "hint": "Répondez dans le fil de votre dossier et nous le réexaminerons."
+    }
   },
   "cabinet": {
     "kicker": "Section · Espace personnel",

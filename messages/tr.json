@@ -318,7 +318,8 @@
         "reason_too_short": "En az 3 karakter.",
         "generic": "Bir şeyler ters gitti."
       },
-      "delete": "Sil"
+      "delete": "Sil",
+      "supervision": "Gözetim"
     },
     "analytics": {
       "title": "Analitik",
@@ -541,7 +542,11 @@
         "pointReported": "bir ziyaretçi noktayı raporladı: {reason}",
         "pointAsked": "işletmeye raporlar hakkında soru soruldu",
         "pointWarned": "işletme uyarıldı — 14 gündür yanıt yok",
-        "pointSuspended": "noktayı haritadan kaldırdı — raporlar yanıtsız kaldı"
+        "pointSuspended": "noktayı haritadan kaldırdı — raporlar yanıtsız kaldı",
+        "companyWarned": "işletmeye uyarı verildi",
+        "companySuspended": "işletme listeden çıkarıldı: {reason}",
+        "companyRestored": "işletme listeye geri alındı",
+        "reviewPassed": "periyodik inceleme geçildi; sonraki {next} tarihinde"
       },
       "thread": {
         "title": "Yazışma",
@@ -722,7 +727,8 @@
         "DUE_SOON": "24 saat içinde süre doluyor",
         "CASE_OVERDUE": "Gecikmiş",
         "APPLICANT_SILENT": "Başvuran 14 gündür sessiz",
-        "POINT_REPORTED": "Bir ziyaretçi bir harita noktasını raporladı"
+        "POINT_REPORTED": "Bir ziyaretçi bir harita noktasını raporladı",
+        "REVIEW_DUE": "Periyodik inceleme zamanı geldi"
       }
     },
     "movedToQueues": {
@@ -752,6 +758,60 @@
         "secondSignatures": "İkinci imzalar",
         "soleSignOffs": "Tek imzalı onaylar",
         "resubmits": "Yeniden gönderim istekleri"
+      }
+    },
+    "company": {
+      "kicker": "Listelenen işletme",
+      "openSupervision": "Gözetim panelini aç",
+      "done": "Bitti.",
+      "numbers": {
+        "points": "Haritadaki yerler",
+        "reports": "Raporlar, 90 gün",
+        "warnings": "Uyarılar"
+      },
+      "supervision": {
+        "title": "Gözetim",
+        "summary": "Sonraki inceleme {date} tarihinde",
+        "summaryNone": "Henüz bir inceleme planlanmadı",
+        "dueBadge": "İnceleme zamanı geldi",
+        "approvedBy": "Onaylayan",
+        "approvedAt": "Onay tarihi",
+        "kyb": "KYB",
+        "risk": "Risk",
+        "nextReview": "Sonraki inceleme",
+        "passReview": "İnceleme geçildi"
+      },
+      "contact": {
+        "title": "İletişim",
+        "summary": "Destek kaydı dizisine yazar; sahibi bunu e-posta ve Telegram ile alır",
+        "summaryNoCase": "İlk mesajla bir destek kaydı açılacak",
+        "placeholder": "Sahibin neyi bilmesi gerekir?",
+        "send": "Mesaj gönder",
+        "warn": "Uyarı ver",
+        "openCase": "Destek kaydını aç"
+      },
+      "objects": {
+        "title": "Öğeler",
+        "summary": "{points} yer · {cards} liste",
+        "empty": "Bu işletmenin henüz yeri veya listesi yok.",
+        "pointSuspended": "haritada değil",
+        "pointUnderReview": "incelemede"
+      },
+      "listing": {
+        "title": "Liste",
+        "summaryLive": "Sitede yayında",
+        "summarySuspended": "Kaldırıldı: {reason}",
+        "suspendedBadge": "Kaldırıldı",
+        "suspendedAt": "{date} tarihinde kaldırıldı",
+        "hint": "Bir işletmeyi kaldırmak, yerlerini, hizmetlerini ve listelerini gizler. Onayın kendisi kalır, bu yüzden geri koymak tek işlemdir.",
+        "reasonPlaceholder": "Neden kaldırılıyor? Bunu sahibi okuyacak.",
+        "suspend": "Listeyi kaldır",
+        "restore": "Listeye geri al"
+      },
+      "errors": {
+        "reason_too_short": "Lütfen en az birkaç kelime yazın.",
+        "not_found": "Bu işletme artık mevcut değil.",
+        "failed": "Bunu yapamadık. Lütfen tekrar deneyin."
       }
     }
   },
@@ -1271,7 +1331,12 @@
     "pointSaved": "Nokta kaydedildi.",
     "pointBackToModeration": "Kaydedildi ve yeniden incelemeye gönderildi: yer ya da kabul edilen coinler değişti.",
     "editPointHint": "Var olan bir noktayı düzenliyorsunuz.",
-    "cancelEdit": "düzenlemeyi iptal et"
+    "cancelEdit": "düzenlemeyi iptal et",
+    "suspended": {
+      "title": "İşletmeniz listeden kaldırıldı",
+      "noReason": "Herhangi bir neden kaydedilmedi.",
+      "hint": "Destek kaydınızda yanıtlayın, tekrar inceleyelim."
+    }
   },
   "cabinet": {
     "kicker": "Bölüm · Kabin",

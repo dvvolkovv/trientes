@@ -4,6 +4,7 @@
 // комиссий у него уже есть.
 
 import { prisma } from "@/lib/prisma";
+import { LIVE_CARD_COMPANY } from "@/lib/company-visibility";
 
 /** Сколько сервисов показываем в карточке, прежде чем уводить в каталог. */
 export const FIAT_ROUTE_LIMIT = 6;
@@ -102,8 +103,9 @@ export async function getFiatRoutes(cardId: string): Promise<FiatRoutes> {
 /** Одобренные собственные листинги для выбора в форме финтех-сервиса. */
 export async function listSelectableCards() {
   return prisma.coinCard.findMany({
-    // У CoinCard мягкого удаления нет — карточку отклоняют, а не удаляют.
-    where: { status: "APPROVED" },
+    // У CoinCard мягкого удаления нет — карточку отклоняют, а не удаляют;
+    // зато её предприятие могли снять с витрины надзором.
+    where: { status: "APPROVED", ...LIVE_CARD_COMPANY },
     orderBy: [{ trust: "desc" }, { name: "asc" }],
     take: 200,
     select: { id: true, name: true, symbol: true, logoUrl: true },

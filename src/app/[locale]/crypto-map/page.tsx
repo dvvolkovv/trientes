@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
+import { LIVE_CARD_COMPANY } from "@/lib/company-visibility";
 import { parseCoinSelector } from "@/lib/crypto-map";
 import { CryptoMapSection } from "@/components/coin-detail/crypto-map-section";
 
@@ -43,7 +44,7 @@ export default async function CryptoMapPage({
   if (selector.kind === "card") {
     const card = selector.cardId
       ? await prisma.coinCard.findFirst({
-          where: { id: selector.cardId, status: "APPROVED" },
+          where: { id: selector.cardId, status: "APPROVED", ...LIVE_CARD_COMPANY },
           select: { id: true, name: true, symbol: true },
         })
       : null;

@@ -318,7 +318,8 @@
         "reason_too_short": "Razlog mora imati najmanje 3 znaka.",
         "generic": "Nešto je pošlo po zlu."
       },
-      "delete": "Izbrišite"
+      "delete": "Izbrišite",
+      "supervision": "Nadzor"
     },
     "analytics": {
       "title": "Analitika",
@@ -541,7 +542,11 @@
         "pointReported": "posjetitelj je prijavio lokaciju: {reason}",
         "pointAsked": "poslovni subjekt upitan o prijavama",
         "pointWarned": "upozoren je poslovni subjekt — nema odgovora 14 dana",
-        "pointSuspended": "lokacija je uklonjena s karte — na prijave nije odgovoreno"
+        "pointSuspended": "lokacija je uklonjena s karte — na prijave nije odgovoreno",
+        "companyWarned": "poslovnom subjektu izdano upozorenje",
+        "companySuspended": "poslovni subjekt uklonjen s uvrštenja: {reason}",
+        "companyRestored": "poslovni subjekt ponovno uvršten",
+        "reviewPassed": "periodični pregled uspješno obavljen; sljedeći {next}"
       },
       "thread": {
         "title": "Korespondencija",
@@ -722,7 +727,8 @@
         "DUE_SOON": "Rok istječe za 24 sata",
         "CASE_OVERDUE": "Istekao rok",
         "APPLICANT_SILENT": "Podnositelj se nije javio 14 dana",
-        "POINT_REPORTED": "Posjetitelj je prijavio lokaciju na karti"
+        "POINT_REPORTED": "Posjetitelj je prijavio lokaciju na karti",
+        "REVIEW_DUE": "Dospio je periodični pregled"
       }
     },
     "movedToQueues": {
@@ -752,6 +758,60 @@
         "secondSignatures": "Drugi potpisi",
         "soleSignOffs": "Samostalna odobrenja",
         "resubmits": "Zahtjevi za ponovno slanje"
+      }
+    },
+    "company": {
+      "kicker": "Uvršteni poslovni subjekt",
+      "openSupervision": "Otvoriti nadzorni panel",
+      "done": "Gotovo.",
+      "numbers": {
+        "points": "Lokacije na karti",
+        "reports": "Prijave, 90 dana",
+        "warnings": "Upozorenja"
+      },
+      "supervision": {
+        "title": "Nadzor",
+        "summary": "Sljedeći pregled {date}",
+        "summaryNone": "Pregled još nije zakazan",
+        "dueBadge": "Rok za pregled",
+        "approvedBy": "Odobrio/la",
+        "approvedAt": "Odobreno",
+        "kyb": "KYB",
+        "risk": "Rizik",
+        "nextReview": "Sljedeći pregled",
+        "passReview": "Pregled uspješno završen"
+      },
+      "contact": {
+        "title": "Kontakt",
+        "summary": "Piše u temu predmeta; vlasnik to prima e‑poštom i na Telegramu",
+        "summaryNoCase": "Predmet će se otvoriti s prvom porukom",
+        "placeholder": "Što vlasnik treba znati?",
+        "send": "Poslati poruku",
+        "warn": "Izdati upozorenje",
+        "openCase": "Otvoriti predmet"
+      },
+      "objects": {
+        "title": "Objekti",
+        "summary": "{points} lokacija · {cards} uvrštenja",
+        "empty": "Ovaj poslovni subjekt još nema lokacije ni uvrštenja.",
+        "pointSuspended": "uklonjeno s karte",
+        "pointUnderReview": "u pregledu"
+      },
+      "listing": {
+        "title": "Uvrštenje",
+        "summaryLive": "Aktivno na web-mjestu",
+        "summarySuspended": "Uklonjeno: {reason}",
+        "suspendedBadge": "Uklonjeno",
+        "suspendedAt": "Uklonjeno {date}",
+        "hint": "Uklanjanje poslovnog subjekta skriva njegove lokacije, usluge i uvrštenja. Samo odobrenje ostaje, pa je vraćanje jedna radnja.",
+        "reasonPlaceholder": "Zašto se uklanja? Vlasnik će to pročitati.",
+        "suspend": "Ukloniti uvrštenje",
+        "restore": "Vratiti uvrštenje"
+      },
+      "errors": {
+        "reason_too_short": "Napišite barem nekoliko riječi.",
+        "not_found": "Ovaj poslovni subjekt više ne postoji.",
+        "failed": "To nije bilo moguće. Pokušajte ponovno."
       }
     }
   },
@@ -1271,7 +1331,12 @@
     "pointSaved": "Lokacija je spremljena.",
     "pointBackToModeration": "Spremljeno i poslano natrag na pregled: promijenjena je lokacija ili prihvaćene kovanice.",
     "editPointHint": "Uređujete postojeću lokaciju.",
-    "cancelEdit": "otkaži uređivanje"
+    "cancelEdit": "otkaži uređivanje",
+    "suspended": {
+      "title": "Vaš je poslovni profil uklonjen s uvrštenja",
+      "noReason": "Razlog nije zabilježen",
+      "hint": "Odgovorite u temi vašeg slučaja i ponovno ćemo to razmotriti"
+    }
   },
   "cabinet": {
     "kicker": "Odjeljak · Profil",
