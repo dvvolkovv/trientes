@@ -10,6 +10,7 @@ export function CaseRowCard({
   sla,
   assigneeLabel,
   handledLabel,
+  unreadLabel,
 }: {
   href: string;
   title: string;
@@ -18,6 +19,7 @@ export function CaseRowCard({
   sla: SlaState;
   assigneeLabel: string | null;
   handledLabel: string;
+  unreadLabel: string | null;
 }) {
   return (
     <Link
@@ -26,8 +28,15 @@ export function CaseRowCard({
     >
       <div className="mb-1.5 flex items-start justify-between gap-3">
         <b className="text-[14px] font-semibold leading-tight">{title}</b>
-        <span className="shrink-0 rounded-full bg-card-alt px-2 py-1 text-[10px] font-semibold text-muted-strong">
-          {statusLabel}
+        <span className="flex shrink-0 items-center gap-1.5">
+          {unreadLabel ? (
+            <span className="rounded-full bg-accent px-2 py-1 text-[10px] font-bold text-accent-foreground">
+              🔔 {unreadLabel}
+            </span>
+          ) : null}
+          <span className="rounded-full bg-card-alt px-2 py-1 text-[10px] font-semibold text-muted-strong">
+            {statusLabel}
+          </span>
         </span>
       </div>
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted">

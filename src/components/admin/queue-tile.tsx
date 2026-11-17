@@ -9,6 +9,7 @@ export function QueueTileCard({
   ageLabel,
   slaLabel,
   emptyLabel,
+  unreadLabel,
 }: {
   tile: Tile;
   label: string;
@@ -16,6 +17,7 @@ export function QueueTileCard({
   ageLabel: string | null;
   slaLabel: string | null;
   emptyLabel: string;
+  unreadLabel: string | null;
 }) {
   const hot = tile.worst === "late" || tile.worst === "warn";
   return (
@@ -23,6 +25,14 @@ export function QueueTileCard({
       href={href}
       className={`${ADMIN_TILE} ${hot ? "border-accent/45" : ""} transition-colors hover:border-accent/60`}
     >
+      {tile.unread > 0 && unreadLabel ? (
+        <span
+          title={unreadLabel}
+          className="absolute right-3 top-3 flex h-6 min-w-6 items-center justify-center rounded-full bg-accent px-1.5 text-[11px] font-bold text-accent-foreground"
+        >
+          🔔 {tile.unread}
+        </span>
+      ) : null}
       <div className="flex h-9 w-9 items-center justify-center rounded-[11px] bg-card-alt text-base">
         {tile.icon}
       </div>

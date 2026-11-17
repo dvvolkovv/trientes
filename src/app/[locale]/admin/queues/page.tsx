@@ -22,6 +22,7 @@ export default async function AdminQueuesPage({ params }: { params: Promise<{ lo
   const rows = (await prisma.complianceCase.findMany({
     where: { status: { in: OPEN_STATUSES } },
     select: {
+      id: true,
       subjectType: true,
       status: true,
       openedAt: true,
@@ -31,7 +32,14 @@ export default async function AdminQueuesPage({ params }: { params: Promise<{ lo
     },
   })) as CaseRow[];
 
-  const tiles = buildTiles(rows, now);
+  const unreadRows = await prisma.caseMessage.groupBy({
+    by: ["caseId"],
+    where: { caseId: { in: rows.map((r) => r.id) }, side: "APPLICANT", readByStaffAt: null },
+    _count: { _all: true },
+  });
+  const unreadByCase = new Map(unreadRows.map((r) => [r.caseId, r._count._all]));
+
+  const tiles = buildTiles(rows, now, unreadByCase);
   const totalOpen = tiles.reduce((sum, x) => sum + x.open, 0);
 
   // Худший остаток по очереди — для подписи под точкой срока.
@@ -88,6 +96,7 @@ export default async function AdminQueuesPage({ params }: { params: Promise<{ lo
                       : null
               }
               emptyLabel={t("queues.empty")}
+              unreadLabel={tile.unread > 0 ? t("queues.unread", { count: tile.unread }) : null}
             />
           );
         })}

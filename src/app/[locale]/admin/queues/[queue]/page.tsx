@@ -31,6 +31,13 @@ export default async function AdminQueuePage({
     include: { assignee: { select: { name: true, username: true } } },
   });
 
+  const unreadRows = await prisma.caseMessage.groupBy({
+    by: ["caseId"],
+    where: { caseId: { in: cases.map((c) => c.id) }, side: "APPLICANT", readByStaffAt: null },
+    _count: { _all: true },
+  });
+  const unreadByCase = new Map(unreadRows.map((r) => [r.caseId, r._count._all]));
+
   return (
     <div className={ADMIN_COLUMN}>
       <AdminNav locale={locale} active="queues" />
@@ -70,6 +77,11 @@ export default async function AdminQueuePage({
                 }
                 assigneeLabel={c.assignee ? (c.assignee.name ?? c.assignee.username) : null}
                 handledLabel={formatHandled(c.handledSeconds)}
+                unreadLabel={
+                  unreadByCase.get(c.id)
+                    ? t("queues.unread", { count: unreadByCase.get(c.id)! })
+                    : null
+                }
               />
             );
           })}

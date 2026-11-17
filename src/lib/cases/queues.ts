@@ -38,6 +38,8 @@ export function queueByKey(key: string): QueueDef | null {
 }
 
 export type CaseRow = {
+  /** Нужен, чтобы сопоставить дело с числом непрочитанного. */
+  id: string;
   subjectType: CaseSubjectType;
   status: CaseStatus;
   openedAt: Date;
@@ -52,17 +54,25 @@ export type QueueTile = {
   open: number;
   oldestOpenedAt: Date | null;
   worst: SlaState | null;
+  /** Сообщений заявителей, которых не читала ни одна смена. */
+  unread: number;
 };
 
 const SEVERITY: Record<SlaState, number> = { ok: 0, paused: 1, warn: 2, late: 3 };
 
-export function buildTiles(rows: CaseRow[], now: Date): QueueTile[] {
+export function buildTiles(
+  rows: CaseRow[],
+  now: Date,
+  unreadByCase?: Map<string, number>,
+): QueueTile[] {
   return QUEUES.map((q) => {
     const mine = rows.filter((r) => q.subjectTypes.includes(r.subjectType) && isOpen(r.status));
     let oldest: Date | null = null;
     let worst: SlaState | null = null;
+    let unread = 0;
     for (const r of mine) {
       if (!oldest || r.openedAt < oldest) oldest = r.openedAt;
+      unread += unreadByCase?.get(r.id) ?? 0;
       const { state } = slaState({
         now,
         dueAt: r.dueAt,
@@ -71,6 +81,6 @@ export function buildTiles(rows: CaseRow[], now: Date): QueueTile[] {
       });
       if (!worst || SEVERITY[state] > SEVERITY[worst]) worst = state;
     }
-    return { key: q.key, icon: q.icon, open: mine.length, oldestOpenedAt: oldest, worst };
+    return { key: q.key, icon: q.icon, open: mine.length, oldestOpenedAt: oldest, worst, unread };
   });
 }

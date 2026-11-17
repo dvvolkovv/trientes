@@ -6,6 +6,7 @@ const NOW = T("2026-11-17T10:00:00Z");
 
 function row(over: Partial<CaseRow> = {}): CaseRow {
   return {
+    id: "c1",
     subjectType: "COMPANY",
     status: "IN_REVIEW",
     openedAt: T("2026-11-16T10:00:00Z"),
@@ -72,5 +73,36 @@ describe("сборка плиток", () => {
     const tiles = buildTiles([], NOW);
     expect(tiles).toHaveLength(QUEUES.length);
     expect(tiles.every((t) => t.open === 0 && t.worst === null)).toBe(true);
+  });
+});
+
+describe("buildTiles — непрочитанное", () => {
+  const row = (subjectType: "COIN_CARD" | "POINT", id: string) => ({
+    id,
+    subjectType,
+    status: "IN_REVIEW" as const,
+    openedAt: new Date("2026-11-10T10:00:00Z"),
+    dueAt: new Date("2026-11-20T10:00:00Z"),
+    slaSeconds: 864000,
+    clockStoppedAt: null,
+  });
+
+  it("складывает непрочитанное по делам очереди", () => {
+    const tiles = buildTiles(
+      [row("COIN_CARD", "a"), row("COIN_CARD", "b"), row("POINT", "c")],
+      new Date("2026-11-17T10:00:00Z"),
+      new Map([
+        ["a", 2],
+        ["c", 1],
+      ]),
+    );
+    expect(tiles.find((t) => t.key === "coinCards")!.unread).toBe(2);
+    expect(tiles.find((t) => t.key === "points")!.unread).toBe(1);
+    expect(tiles.find((t) => t.key === "companies")!.unread).toBe(0);
+  });
+
+  it("без карты непрочитанного плитка просто молчит", () => {
+    const tiles = buildTiles([row("COIN_CARD", "a")], new Date("2026-11-17T10:00:00Z"));
+    expect(tiles.find((t) => t.key === "coinCards")!.unread).toBe(0);
   });
 });
