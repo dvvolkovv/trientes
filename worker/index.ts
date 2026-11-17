@@ -30,6 +30,7 @@ import { syncCardSupply } from "../src/lib/coin-card-supply";
 import { runListingSweep } from "../src/lib/coin-card-listing-sweep";
 import { sendHealthReport } from "../src/lib/health-report";
 import { runCaseDueSweep } from "../src/lib/cases/due-sweep";
+import { runPointReportSweep } from "../src/lib/points/report-sweep";
 import { startBinance, stopBinance } from "./binance";
 
 async function runPriceSync() {
@@ -237,6 +238,20 @@ async function runRevisionExpiry() {
     }
   } catch (err) {
     console.error("[worker] coin revision expiry failed:", err);
+  }
+}
+
+async function runPointReportJob() {
+  const t0 = Date.now();
+  try {
+    const stats = await runPointReportSweep();
+    if (stats.reviewed || stats.warned || stats.suspended) {
+      console.log(
+        `[worker] point reports ok: ${stats.reviewed} under review, ${stats.warned} warned, ${stats.suspended} suspended, ${stats.checked} checked in ${Date.now() - t0}ms`,
+      );
+    }
+  } catch (err) {
+    console.error("[worker] point report sweep failed:", err);
   }
 }
 
@@ -544,6 +559,9 @@ async function main() {
   cron.schedule("55 * * * *", () => void runDeletionRequestExpiry());
   // Сроки дел — раз в час. Просрочка не событие: её надо заметить самому.
   cron.schedule("10 * * * *", () => void runCaseDueJob());
+  // Жалобы на точки — раз в сутки: шаги лестницы считаются днями, частый
+  // прогон ничего не ускорит.
+  cron.schedule("20 5 * * *", () => void runPointReportJob());
   // Прогрев переводов: дважды в сутки, чтобы правка карточки доехала до всех
   // локалей раньше, чем в неё зайдёт первый посетитель или робот.
   cron.schedule("25 3,15 * * *", () => void runProseWarmup());
