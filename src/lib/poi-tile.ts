@@ -99,3 +99,13 @@ export function tileOffset(i: { tile: TileRect; viewport: TileViewport }): [numb
     Math.round(i.tile.top + i.tile.height / 2 - i.viewport.height / 2),
   ];
 }
+
+/**
+ * Жалоба принимается только на нашу точку. У точки зеркала BTC Map нет ни
+ * владельца, которому писать, ни способа её снять: ночной синк вернёт её
+ * обратно — кнопка там обещала бы то, чего мы не сделаем.
+ */
+export function reportablePointId(poiId: string): string | null {
+  const m = /^company\/(.+)$/.exec(poiId);
+  return m ? m[1] : null;
+}

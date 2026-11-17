@@ -5,7 +5,8 @@ import type { AcceptedCoin, Poi } from "@/lib/crypto-map";
 import type { StepTranslator } from "@/components/coin-detail/route-steps-panel";
 import { CHIP, ROW_BTN, usePoiPhoto } from "@/components/coin-detail/poi-sheet-ui";
 import { PoiBannerOverlay } from "@/components/coin-detail/poi-banner-overlay";
-import { TILE_PAD_CLASS, TILE_SHELL } from "@/lib/poi-tile";
+import { PoiReportDialog } from "@/components/coin-detail/poi-report-dialog";
+import { reportablePointId, TILE_PAD_CLASS, TILE_SHELL } from "@/lib/poi-tile";
 import { safeHttpUrl } from "@/lib/safe-url";
 
 /**
@@ -40,6 +41,9 @@ export function PoiPaneCard({
   const photo = usePoiPhoto(poi, website);
   const hasAccepted = poi.acceptedCoins.length > 0 || poi.acceptedGeneric || poi.lightning;
   const [photoOpen, setPhotoOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
+  // Жалоба — только на нашу точку: чужую мы снять не можем (см. reportablePointId).
+  const reportId = reportablePointId(poi.id);
 
   return (
     <div className="pb-4">
@@ -128,8 +132,29 @@ export function PoiPaneCard({
             {t("streetview")}
             {near && <span className="ml-auto text-[11px] text-up">{t("streetviewNear")}</span>}
           </button>
+
+          {poi.underReview && (
+            <p className="rounded-xl bg-bg-tint px-3 py-2 text-[12px] leading-snug text-muted">
+              ⚠️ {t("report.underReview")}
+            </p>
+          )}
+
+          {reportId && (
+            <button
+              type="button"
+              onClick={() => setReportOpen(true)}
+              className={`${ROW_BTN} text-muted`}
+            >
+              <span aria-hidden>🚩</span>
+              {t("report.button")}
+            </button>
+          )}
         </section>
       </div>
+
+      {reportOpen && reportId && (
+        <PoiReportDialog pointId={reportId} onClose={() => setReportOpen(false)} t={t} />
+      )}
     </div>
   );
 }
