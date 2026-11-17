@@ -68,6 +68,7 @@ model User {
   caseTimeEntries          CaseTimeEntry[]           @relation("CaseTimeUser")
   caseMessages             CaseMessage[]             @relation("CaseMessageAuthor")
   adminNotifications       AdminNotification[]       @relation("AdminNotificationUser")
+  pointReports             PointReport[]             @relation("PointReporter")
   casesReviewed            ComplianceCase[]          @relation("CaseReviewer")
   casesApproved            ComplianceCase[]          @relation("CaseApprover")
   caseChecks               CaseCheck[]               @relation("CaseCheckUser")
@@ -605,6 +606,13 @@ model CompanyPoint {
   reviewer        User?         @relation("PointReviewer", fields: [reviewedById], references: [id])
   reviewedAt      DateTime?
   rejectReason    String?
+  // Жалоб набралось достаточно: точка видна на карте с пометкой «проверяется».
+  underReviewAt   DateTime?
+  // Точка снята с карты до выяснения. Статус APPROVED при этом не трогаем:
+  // снятие — мера надзора, а не отмена прошлого решения модератора.
+  suspendedAt     DateTime?
+  suspendReason   String?
+  reports         PointReport[]
   // Мягкое удаление, как у компании.
   deletedAt       DateTime?
   deletedById     String?
@@ -617,6 +625,36 @@ model CompanyPoint {
   @@index([lat, lon])
   @@index([acceptedCardIds(ops: ArrayOps)], type: Gin)
   @@index([deletedAt])
+  @@index([suspendedAt])
+}
+
+/// Причина жалобы. Свободный текст лежит в comment — перечисление нужно, чтобы
+/// считать однотипные жалобы, а не читать двести предложений.
+enum PointReportReason {
+  CLOSED
+  NO_CRYPTO
+  WRONG_ADDRESS
+  OTHER
+}
+
+/// Жалоба посетителя на точку. Одна строка на жалобу; все жалобы по одной точке
+/// собираются в одно дело (ComplianceCase с subjectType = POINT_REPORT).
+model PointReport {
+  id             String            @id @default(cuid())
+  pointId        String
+  point          CompanyPoint      @relation(fields: [pointId], references: [id], onDelete: Cascade)
+  reporterUserId String?
+  reporter       User?             @relation("PointReporter", fields: [reporterUserId], references: [id], onDelete: SetNull)
+  /// sha256 адреса с солью: сам адрес хранить незачем, считать независимость — да.
+  reporterIpHash String
+  reason         PointReportReason
+  comment        String?           @db.Text
+  /// Спека называет фото; форма его пока не принимает (границы слайса AQ).
+  photoUrl       String?
+  createdAt      DateTime          @default(now())
+
+  @@index([pointId, createdAt])
+  @@index([reporterIpHash, pointId, createdAt])
 }
 
 model LoginAttempt {
@@ -1252,6 +1290,10 @@ enum CaseEventKind {
   CHECK_SET
   DOCUMENT_VERDICT
   DECIDED
+  POINT_REPORTED
+  POINT_ASKED
+  POINT_WARNED
+  POINT_SUSPENDED
 }
 
 enum CaseTimeSource {
@@ -1290,6 +1332,7 @@ enum AdminNotificationKind {
   DUE_SOON
   CASE_OVERDUE
   APPLICANT_SILENT
+  POINT_REPORTED
 }
 
 model ComplianceCase {
