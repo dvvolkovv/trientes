@@ -11,7 +11,7 @@ import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { clientIp } from "@/lib/client-ip";
 import { sendEmail } from "@/lib/email";
-import { SUPPORTED_LOCALES, DEFAULT_LOCALE, type Locale } from "@/lib/locales";
+import { pickLocale } from "@/lib/locales";
 import { checkResetRateLimit, recordLoginAttempt } from "@/lib/rate-limit";
 import {
   RESET_MAX_BY_IP_IDENT,
@@ -25,10 +25,6 @@ import {
 } from "@/lib/password-reset";
 
 const SITE_ORIGIN = process.env.PUBLIC_ORIGIN ?? "https://trientes.org";
-
-function pickLocale(value: unknown): Locale {
-  return SUPPORTED_LOCALES.includes(value as Locale) ? (value as Locale) : DEFAULT_LOCALE;
-}
 
 export async function POST(req: Request) {
   const ip = clientIp(req);

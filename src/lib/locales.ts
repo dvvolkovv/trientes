@@ -56,3 +56,8 @@ export const SPEECH_LANG: Record<Locale, string> = {
 export function speechLang(locale: string): string {
   return SPEECH_LANG[locale as Locale] ?? locale;
 }
+
+/** Непроверенное значение (из базы, из тела запроса) → поддерживаемая локаль. */
+export function pickLocale(value: unknown): Locale {
+  return SUPPORTED_LOCALES.includes(value as Locale) ? (value as Locale) : DEFAULT_LOCALE;
+}
