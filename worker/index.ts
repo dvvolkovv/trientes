@@ -31,6 +31,7 @@ import { runListingSweep } from "../src/lib/coin-card-listing-sweep";
 import { sendHealthReport } from "../src/lib/health-report";
 import { runCaseDueSweep } from "../src/lib/cases/due-sweep";
 import { runPointReportSweep } from "../src/lib/points/report-sweep";
+import { runCompanyReviewSweep } from "../src/lib/cases/company-review-sweep";
 import { startBinance, stopBinance } from "./binance";
 
 async function runPriceSync() {
@@ -238,6 +239,20 @@ async function runRevisionExpiry() {
     }
   } catch (err) {
     console.error("[worker] coin revision expiry failed:", err);
+  }
+}
+
+async function runCompanyReviewJob() {
+  const t0 = Date.now();
+  try {
+    const stats = await runCompanyReviewSweep();
+    if (stats.opened || stats.backfilled || stats.rang || stats.reopened || stats.noAddressee) {
+      console.log(
+        `[worker] company review ok: ${stats.rang} rang, ${stats.reopened} reopened, ${stats.opened} cases opened, ${stats.backfilled} dates backfilled, ${stats.noAddressee} without addressee, ${stats.checked} checked in ${Date.now() - t0}ms`,
+      );
+    }
+  } catch (err) {
+    console.error("[worker] company review sweep failed:", err);
   }
 }
 
@@ -562,6 +577,9 @@ async function main() {
   // Жалобы на точки — раз в сутки: шаги лестницы считаются днями, частый
   // прогон ничего не ускорит.
   cron.schedule("20 5 * * *", () => void runPointReportJob());
+  // Пересмотр залистованных предприятий — сразу после лестницы жалоб: шаги
+  // тоже считаются днями.
+  cron.schedule("35 5 * * *", () => void runCompanyReviewJob());
   // Прогрев переводов: дважды в сутки, чтобы правка карточки доехала до всех
   // локалей раньше, чем в неё зайдёт первый посетитель или робот.
   cron.schedule("25 3,15 * * *", () => void runProseWarmup());
