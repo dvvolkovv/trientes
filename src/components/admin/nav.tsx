@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 const TABS = [
+  { key: "queues", path: "queues" },
   { key: "requests", path: "requests" },
   { key: "coinCards", path: "coin-cards" },
   { key: "business", path: "business" },
