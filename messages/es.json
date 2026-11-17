@@ -1160,6 +1160,51 @@
       "missing_fields": "Rellena ambos campos."
     }
   },
+  "reset": {
+    "kicker": "Restablecer contraseña",
+    "requestTitle": "¿Olvidaste tu contraseña?",
+    "requestSubtitle": "Introduce la dirección de correo electrónico con la que está registrada tu cuenta. Te enviaremos un enlace para establecer una nueva contraseña.",
+    "email": "Correo electrónico",
+    "send": "Enviar enlace de restablecimiento",
+    "sending": "Enviando…",
+    "sentTitle": "Revisa tu bandeja de entrada",
+    "sentBody": "Si hay una cuenta registrada con esa dirección, un enlace de restablecimiento va en camino. El enlace funciona una vez y caduca en una hora.",
+    "sentHint": "¿No llegó el correo? Mira en la carpeta de spam, luego inténtalo de nuevo.",
+    "tryAgain": "Usar una dirección diferente",
+    "backToLogin": "Volver a iniciar sesión",
+    "forgotLink": "¿Olvidaste tu contraseña?",
+    "newTitle": "Establece una nueva contraseña",
+    "newSubtitle": "Elige una nueva contraseña para {username}. Te iniciaremos sesión enseguida.",
+    "newPassword": "Nueva contraseña",
+    "confirmPassword": "Repite la nueva contraseña",
+    "passwordHint": "Al menos 8 caracteres.",
+    "submit": "Guardar nueva contraseña",
+    "submitting": "Guardando…",
+    "requestAgain": "Solicitar un nuevo enlace",
+    "state": {
+      "invalid": "Este enlace de restablecimiento no es válido.",
+      "expired": "Este enlace de restablecimiento ha expirado — los enlaces son válidos por una hora.",
+      "used": "Este enlace de restablecimiento ya se ha usado. Inicia sesión con la nueva contraseña, o solicita otro enlace."
+    },
+    "errors": {
+      "unknown_error": "Algo salió mal. Por favor, inténtalo de nuevo.",
+      "rate_limited": "Demasiadas solicitudes. Por favor, inténtalo más tarde.",
+      "email_invalid": "Por favor, ingresa una dirección de correo electrónico válida.",
+      "missing_fields": "Por favor, completa ambos campos.",
+      "password_too_short": "La contraseña debe tener al menos 8 caracteres.",
+      "password_too_long": "La contraseña es demasiado larga.",
+      "password_mismatch": "Las dos contraseñas no coinciden.",
+      "invalid_token": "Este enlace de restablecimiento no es válido. Solicita uno nuevo.",
+      "expired_token": "Este enlace de restablecimiento ha expirado. Solicita uno nuevo.",
+      "used_token": "Este enlace de restablecimiento ya se ha usado. Solicita uno nuevo."
+    },
+    "mail": {
+      "subject": "Restablece tu contraseña de Trientes",
+      "greeting": "¡Hola, {username}!",
+      "body": "Alguien pidió establecer una nueva contraseña para tu cuenta de Trientes. Abre el enlace de abajo para elegir una. Funciona una vez y caduca en una hora.",
+      "ignore": "Si no fuiste tú, ignora este correo — tu contraseña actual sigue funcionando."
+    }
+  },
   "invite": {
     "kicker": "Invitación",
     "title": "Unirse a {company}",

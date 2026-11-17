@@ -1160,6 +1160,51 @@
       "missing_fields": "Preencha os dois campos."
     }
   },
+  "reset": {
+    "kicker": "Redefinição de senha",
+    "requestTitle": "Esqueceu sua senha?",
+    "requestSubtitle": "Insira o endereço de email com o qual sua conta está registrada. Enviaremos um link para definir uma nova senha.",
+    "email": "Email",
+    "send": "Enviar link de redefinição",
+    "sending": "Enviando…",
+    "sentTitle": "Verifique sua caixa de entrada",
+    "sentBody": "Se uma conta estiver registrada com esse endereço, um link de redefinição já está a caminho. O link funciona uma vez e expira em uma hora.",
+    "sentHint": "Nenhum email? Procure na pasta de spam e tente novamente.",
+    "tryAgain": "Usar um endereço diferente",
+    "backToLogin": "Voltar para entrar",
+    "forgotLink": "Esqueceu sua senha?",
+    "newTitle": "Defina uma nova senha",
+    "newSubtitle": "Escolha uma nova senha para {username}. Você entrará em seguida.",
+    "newPassword": "Nova senha",
+    "confirmPassword": "Repita a nova senha",
+    "passwordHint": "Pelo menos 8 caracteres.",
+    "submit": "Salvar nova senha",
+    "submitting": "Salvando…",
+    "requestAgain": "Solicitar um novo link",
+    "state": {
+      "invalid": "Este link de redefinição não é válido.",
+      "expired": "Este link de redefinição expirou — os links valem por uma hora.",
+      "used": "Este link de redefinição já foi usado. Entre com a nova senha ou solicite outro link."
+    },
+    "errors": {
+      "unknown_error": "Algo deu errado. Tente novamente.",
+      "rate_limited": "Solicitações em excesso. Tente novamente mais tarde.",
+      "email_invalid": "Insira um endereço de email válido.",
+      "missing_fields": "Preencha ambos os campos.",
+      "password_too_short": "A senha deve ter pelo menos 8 caracteres.",
+      "password_too_long": "A senha é muito longa.",
+      "password_mismatch": "As duas senhas não coincidem.",
+      "invalid_token": "Este link de redefinição não é válido. Solicite um novo.",
+      "expired_token": "Este link de redefinição expirou. Solicite um novo.",
+      "used_token": "Este link de redefinição já foi usado. Solicite um novo."
+    },
+    "mail": {
+      "subject": "Redefina sua senha da Trientes",
+      "greeting": "Olá, {username}!",
+      "body": "Alguém solicitou definir uma nova senha para sua conta Trientes. Abra o link abaixo para escolhê-la. Ele funciona uma vez e expira em uma hora.",
+      "ignore": "Se não foi você, ignore este e-mail — sua senha atual continua funcionando."
+    }
+  },
   "invite": {
     "kicker": "Convite",
     "title": "Entrar em {company}",

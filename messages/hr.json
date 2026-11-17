@@ -1160,6 +1160,51 @@
       "missing_fields": "Ispunite oba polja."
     }
   },
+  "reset": {
+    "kicker": "Reset lozinke",
+    "requestTitle": "Zaboravili ste lozinku?",
+    "requestSubtitle": "Unesite adresu e-pošte s kojom je vaš račun registriran. Poslat ćemo vam poveznicu za postavljanje nove lozinke.",
+    "email": "E-mail",
+    "send": "Poslati poveznicu za ponovno postavljanje",
+    "sending": "Slanje…",
+    "sentTitle": "Provjerite pristiglu poštu",
+    "sentBody": "Ako je s tom adresom registriran račun, poveznica za ponovno postavljanje je na putu. Poveznica vrijedi jednom i istječe za jedan sat.",
+    "sentHint": "Nema poruke? Provjerite mapu neželjene pošte pa pokušajte ponovno.",
+    "tryAgain": "Upotrijebiti drugu adresu",
+    "backToLogin": "Natrag na prijavu",
+    "forgotLink": "Zaboravili ste lozinku?",
+    "newTitle": "Postavite novu lozinku",
+    "newSubtitle": "Odaberite novu lozinku za {username}. Prijavit ćemo vas odmah nakon toga.",
+    "newPassword": "Nova lozinka",
+    "confirmPassword": "Ponovite novu lozinku",
+    "passwordHint": "Najmanje 8 znakova.",
+    "submit": "Spremiti novu lozinku",
+    "submitting": "Spremanje…",
+    "requestAgain": "Zatražiti novu poveznicu",
+    "state": {
+      "invalid": "Ova poveznica za ponovno postavljanje nije valjana.",
+      "expired": "Ova poveznica za ponovno postavljanje je istekla — poveznice vrijede jedan sat.",
+      "used": "Ova poveznica za ponovno postavljanje je već iskorištena. Prijavite se novom lozinkom ili zatražite drugu poveznicu."
+    },
+    "errors": {
+      "unknown_error": "Nešto je pošlo po zlu. Pokušajte ponovno.",
+      "rate_limited": "Previše zahtjeva. Pokušajte kasnije.",
+      "email_invalid": "Unesite valjanu e-mail adresu.",
+      "missing_fields": "Ispunite oba polja.",
+      "password_too_short": "Lozinka mora imati najmanje 8 znakova.",
+      "password_too_long": "Lozinka je preduga.",
+      "password_mismatch": "Dvije lozinke se ne podudaraju.",
+      "invalid_token": "Ova poveznica za ponovno postavljanje nije valjana. Zatražite novu.",
+      "expired_token": "Ova poveznica za ponovno postavljanje je istekla. Zatražite novu.",
+      "used_token": "Ova poveznica za ponovno postavljanje je već iskorištena. Zatražite novu."
+    },
+    "mail": {
+      "subject": "Ponovno postavite lozinku za Trientes",
+      "greeting": "Pozdrav, {username}!",
+      "body": "Netko je zatražio postavljanje nove lozinke za vaš Trientes račun. Otvorite poveznicu u nastavku kako biste je postavili. Vrijedi jednom i istječe za jedan sat.",
+      "ignore": "Ako to niste bili vi, zanemarite ovu poruku — vaša trenutačna lozinka i dalje vrijedi."
+    }
+  },
   "invite": {
     "kicker": "Pozivnica",
     "title": "Pridružite se {company}",
@@ -1550,7 +1595,7 @@
       "missingCount": "{count} preostalo",
       "complete": "Dovršite",
       "name": "Naziv",
-      "symbol": "Ticker",
+      "symbol": "Tiker",
       "symbolHint": "Kratki kod, npr. BTC",
       "tagline": "Slogan",
       "taglineHint": "Jedan redak, do 120 znakova",

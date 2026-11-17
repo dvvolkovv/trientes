@@ -1160,6 +1160,51 @@
       "missing_fields": "Lütfen iki alanı da doldurun."
     }
   },
+  "reset": {
+    "kicker": "Şifre sıfırlama",
+    "requestTitle": "Şifrenizi mi unuttunuz?",
+    "requestSubtitle": "Hesabınızın kayıtlı olduğu e-posta adresini girin. Yeni bir şifre belirlemeniz için size bir bağlantı göndereceğiz.",
+    "email": "E-posta",
+    "send": "Sıfırlama bağlantısını gönder",
+    "sending": "Gönderiliyor…",
+    "sentTitle": "Gelen kutunuzu kontrol edin",
+    "sentBody": "Bu adresle kayıtlı bir hesap varsa, bir sıfırlama bağlantısı yola çıktı. Bağlantı bir kez çalışır ve bir saat içinde sona erer.",
+    "sentHint": "E-posta gelmedi mi? Önce spam klasörüne bakın, sonra tekrar deneyin.",
+    "tryAgain": "Farklı bir adres kullan",
+    "backToLogin": "Girişe geri dön",
+    "forgotLink": "Şifrenizi mi unuttunuz?",
+    "newTitle": "Yeni bir parola belirle",
+    "newSubtitle": "{username} için yeni bir parola seçin. Hemen ardından oturumunuzu açacağız.",
+    "newPassword": "Yeni parola",
+    "confirmPassword": "Yeni parolayı tekrar edin",
+    "passwordHint": "En az 8 karakter.",
+    "submit": "Yeni parolayı kaydet",
+    "submitting": "Kaydediliyor…",
+    "requestAgain": "Yeni bir bağlantı iste",
+    "state": {
+      "invalid": "Bu sıfırlama bağlantısı geçerli değil.",
+      "expired": "Bu sıfırlama bağlantısının süresi dolmuş — bağlantılar bir saat boyunca geçerlidir.",
+      "used": "Bu sıfırlama bağlantısı zaten kullanılmış. Yeni parolayla oturum açın veya başka bir bağlantı isteyin."
+    },
+    "errors": {
+      "unknown_error": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
+      "rate_limited": "Çok fazla istek. Lütfen daha sonra tekrar deneyin.",
+      "email_invalid": "Lütfen geçerli bir e-posta adresi girin.",
+      "missing_fields": "Lütfen her iki alanı da doldurun.",
+      "password_too_short": "Parola en az 8 karakter olmalıdır.",
+      "password_too_long": "Parola çok uzun.",
+      "password_mismatch": "İki parola eşleşmiyor.",
+      "invalid_token": "Bu sıfırlama bağlantısı geçerli değil. Yenisini isteyin.",
+      "expired_token": "Bu sıfırlama bağlantısının süresi dolmuş. Yenisini isteyin.",
+      "used_token": "Bu sıfırlama bağlantısı zaten kullanılmış. Yenisini isteyin."
+    },
+    "mail": {
+      "subject": "Trientes parolanızı sıfırlayın",
+      "greeting": "Merhaba, {username}!",
+      "body": "Birisi Trientes hesabınız için yeni bir parola belirlemek istedi. Aşağıdaki bağlantıyı açarak birini seçin. Bağlantı bir kez çalışır ve bir saat içinde sona erer.",
+      "ignore": "Bu siz değilseniz bu iletiyi yok sayın — mevcut parolanız çalışmaya devam eder."
+    }
+  },
   "invite": {
     "kicker": "Davet",
     "title": "{company} ekibine katıl",

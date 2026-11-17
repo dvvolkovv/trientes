@@ -1160,6 +1160,51 @@
       "missing_fields": "请填写完整两项。"
     }
   },
+  "reset": {
+    "kicker": "重置密码",
+    "requestTitle": "忘记密码？",
+    "requestSubtitle": "输入与你的账户关联的电子邮箱。我们会发送用于设置新密码的链接。",
+    "email": "邮箱",
+    "send": "发送重置链接",
+    "sending": "正在发送…",
+    "sentTitle": "检查收件箱",
+    "sentBody": "如果该地址已注册账户，我们已发送重置链接。该链接一次性有效，1小时后过期。",
+    "sentHint": "没收到？请查看垃圾邮件夹，然后再试一次。",
+    "tryAgain": "使用其他地址",
+    "backToLogin": "返回登录",
+    "forgotLink": "忘记密码？",
+    "newTitle": "设置新密码",
+    "newSubtitle": "为 {username} 设置新密码。完成后将自动登录。",
+    "newPassword": "新密码",
+    "confirmPassword": "重复新密码",
+    "passwordHint": "至少8个字符。",
+    "submit": "保存新密码",
+    "submitting": "正在保存…",
+    "requestAgain": "请求新链接",
+    "state": {
+      "invalid": "此重置链接无效。",
+      "expired": "此重置链接已过期—链接有效期为一小时。",
+      "used": "此重置链接已被使用。请使用新密码登录，或请求另一条链接。"
+    },
+    "errors": {
+      "unknown_error": "出错了。请重试。",
+      "rate_limited": "请求过多。请稍后再试。",
+      "email_invalid": "请输入有效的邮箱地址。",
+      "missing_fields": "请填写两个字段。",
+      "password_too_short": "密码至少为 8 个字符。",
+      "password_too_long": "密码过长。",
+      "password_mismatch": "两次输入的密码不一致。",
+      "invalid_token": "此重置链接无效。请请求新的链接。",
+      "expired_token": "此重置链接已过期。请请求新的链接。",
+      "used_token": "此重置链接已被使用。请请求新的链接。"
+    },
+    "mail": {
+      "subject": "重置你的 Trientes 密码",
+      "greeting": "你好，{username}！",
+      "body": "有人请求为你的 Trientes 账户设置新密码。打开下面的链接进行设置。该链接仅可使用一次，并在一小时后失效。",
+      "ignore": "如果不是你本人，请忽略此邮件—你当前的密码仍然有效"
+    }
+  },
   "invite": {
     "kicker": "邀请",
     "title": "加入 {company}",

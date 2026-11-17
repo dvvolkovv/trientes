@@ -9,6 +9,7 @@ const fieldCls =
 
 export function PasswordLoginForm({ locale, next }: { locale: string; next?: string }) {
   const t = useTranslations("register");
+  const tr = useTranslations("reset");
   const router = useRouter();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -68,6 +69,9 @@ export function PasswordLoginForm({ locale, next }: { locale: string; next?: str
       >
         {pending ? t("submitting") : t("signIn")}
       </button>
+      <p className="text-xs text-muted text-center">
+        <a href={`/${locale}/forgot-password`} className="underline">{tr("forgotLink")}</a>
+      </p>
       <p className="text-xs text-muted text-center">
         {t("noAccount")}{" "}
         <a href={`/${locale}/register`} className="underline">{t("createAccount")}</a>

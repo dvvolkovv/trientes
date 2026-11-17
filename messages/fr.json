@@ -1160,6 +1160,51 @@
       "missing_fields": "Veuillez remplir les deux champs."
     }
   },
+  "reset": {
+    "kicker": "Réinitialisation du mot de passe",
+    "requestTitle": "Mot de passe oublié ?",
+    "requestSubtitle": "Saisissez l’adresse e‑mail associée à votre compte. Nous vous enverrons un lien pour définir un nouveau mot de passe.",
+    "email": "E-mail",
+    "send": "Envoyer le lien de réinitialisation",
+    "sending": "Envoi…",
+    "sentTitle": "Vérifiez votre boîte de réception",
+    "sentBody": "Si un compte est enregistré avec cette adresse, un lien de réinitialisation est en route. Ce lien ne fonctionne qu’une seule fois et expire dans une heure.",
+    "sentHint": "Rien reçu ? Vérifiez le dossier courrier indésirable, puis réessayez.",
+    "tryAgain": "Utiliser une autre adresse",
+    "backToLogin": "Retour à la connexion",
+    "forgotLink": "Mot de passe oublié ?",
+    "newTitle": "Définir un nouveau mot de passe",
+    "newSubtitle": "Choisissez un nouveau mot de passe pour {username}. Vous serez connecté juste après.",
+    "newPassword": "Nouveau mot de passe",
+    "confirmPassword": "Répéter le nouveau mot de passe",
+    "passwordHint": "Au moins 8 caractères.",
+    "submit": "Enregistrer le nouveau mot de passe",
+    "submitting": "Enregistrement…",
+    "requestAgain": "Demander un nouveau lien",
+    "state": {
+      "invalid": "Ce lien de réinitialisation n’est pas valide.",
+      "expired": "Ce lien de réinitialisation a expiré — les liens sont valables une heure.",
+      "used": "Ce lien de réinitialisation a déjà été utilisé. Connectez-vous avec le nouveau mot de passe ou demandez un autre lien."
+    },
+    "errors": {
+      "unknown_error": "Un problème est survenu. Veuillez réessayer.",
+      "rate_limited": "Trop de demandes. Veuillez réessayer plus tard.",
+      "email_invalid": "Veuillez saisir une adresse e‑mail valide.",
+      "missing_fields": "Veuillez remplir les deux champs.",
+      "password_too_short": "Le mot de passe doit comporter au moins 8 caractères.",
+      "password_too_long": "Le mot de passe est trop long.",
+      "password_mismatch": "Les deux mots de passe ne correspondent pas.",
+      "invalid_token": "Ce lien de réinitialisation n’est pas valide. Demandez-en un nouveau.",
+      "expired_token": "Ce lien de réinitialisation a expiré. Demandez-en un nouveau.",
+      "used_token": "Ce lien de réinitialisation a déjà été utilisé. Demandez-en un nouveau."
+    },
+    "mail": {
+      "subject": "Réinitialisez votre mot de passe Trientes",
+      "greeting": "Bonjour, {username}!",
+      "body": "Quelqu'un a demandé de définir un nouveau mot de passe pour votre compte Trientes. Ouvrez le lien ci-dessous pour en choisir un. Il fonctionne une seule fois et expire dans une heure.",
+      "ignore": "Si ce n'était pas vous, ignorez ce message — votre mot de passe actuel continue de fonctionner."
+    }
+  },
   "invite": {
     "kicker": "Invitation",
     "title": "Rejoindre {company}",

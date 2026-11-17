@@ -1160,6 +1160,51 @@
       "missing_fields": "두 항목을 모두 입력해주세요."
     }
   },
+  "reset": {
+    "kicker": "비밀번호 재설정",
+    "requestTitle": "비밀번호를 잊으셨나요?",
+    "requestSubtitle": "계정에 등록된 이메일 주소를 입력하세요. 새 비밀번호를 설정할 수 있는 링크를 보내드립니다.",
+    "email": "이메일",
+    "send": "재설정 링크 보내기",
+    "sending": "보내는 중…",
+    "sentTitle": "받은편지함을 확인하세요",
+    "sentBody": "해당 주소로 계정이 등록되어 있다면 재설정 링크를 곧 보내드립니다. 이 링크는 한 번만 사용할 수 있으며 1시간 후 만료됩니다.",
+    "sentHint": "메일이 없나요? 스팸함을 확인한 뒤 다시 시도하세요.",
+    "tryAgain": "다른 주소 사용",
+    "backToLogin": "로그인으로 돌아가기",
+    "forgotLink": "비밀번호를 잊으셨나요?",
+    "newTitle": "새 비밀번호 설정",
+    "newSubtitle": "{username}의 새 비밀번호를 설정하세요. 바로 로그인됩니다.",
+    "newPassword": "새 비밀번호",
+    "confirmPassword": "새 비밀번호 다시 입력",
+    "passwordHint": "8자 이상.",
+    "submit": "새 비밀번호 저장",
+    "submitting": "저장 중…",
+    "requestAgain": "새 링크 요청",
+    "state": {
+      "invalid": "이 재설정 링크는 유효하지 않습니다.",
+      "expired": "이 재설정 링크의 유효기간이 만료되었습니다 — 링크는 1시간 동안만 유효합니다.",
+      "used": "이 재설정 링크는 이미 사용되었습니다. 새 비밀번호로 로그인하거나 다른 링크를 요청하세요."
+    },
+    "errors": {
+      "unknown_error": "문제가 발생했습니다. 다시 시도해 주세요.",
+      "rate_limited": "요청이 너무 많습니다. 나중에 다시 시도해 주세요.",
+      "email_invalid": "유효한 이메일 주소를 입력해 주세요.",
+      "missing_fields": "두 항목을 모두 입력해 주세요.",
+      "password_too_short": "비밀번호는 최소 8자여야 합니다.",
+      "password_too_long": "비밀번호가 너무 깁니다.",
+      "password_mismatch": "두 비밀번호가 일치하지 않습니다.",
+      "invalid_token": "이 재설정 링크는 유효하지 않습니다. 새 링크를 요청하세요.",
+      "expired_token": "이 재설정 링크의 유효기간이 만료되었습니다. 새 링크를 요청하세요.",
+      "used_token": "이 재설정 링크는 이미 사용되었습니다. 새 링크를 요청하세요."
+    },
+    "mail": {
+      "subject": "Trientes 비밀번호 재설정",
+      "greeting": "안녕하세요, {username}님!",
+      "body": "누군가 귀하의 Trientes 계정에 새 비밀번호 설정을 요청했습니다. 아래 링크를 열어 비밀번호를 선택하세요. 이 링크는 한 번만 작동하며 1시간 후 만료됩니다.",
+      "ignore": "본인이 아니라면 이 메일을 무시하세요 — 현재 비밀번호는 계속 유효합니다."
+    }
+  },
   "invite": {
     "kicker": "초대",
     "title": "{company} 합류",

@@ -1,4 +1,10 @@
 import { prisma } from "@/lib/prisma";
+import {
+  RESET_IDENTIFIER_PREFIX,
+  RESET_WINDOW_MS,
+  evalResetLimit,
+  resetIdentifier,
+} from "@/lib/password-reset";
 
 // Spec: 10 failed attempts per IP per 10 minutes → block for ~15 minutes.
 // Implemented as a 15-minute sliding window with a 10-failure threshold: once
@@ -64,4 +70,27 @@ export async function recordLoginAttempt(input: {
   await prisma.loginAttempt.deleteMany({
     where: { createdAt: { lt: new Date(Date.now() - 24 * 60 * 60 * 1000) } },
   });
+}
+
+// Просьбы о сбросе пароля. Считаются по тем же строкам LoginAttempt: запись
+// несёт приставку `__reset__`, поэтому счёт по адресу берёт только их, а не
+// попытки входа.
+export async function checkResetRateLimit(
+  ip: string,
+  email: string,
+): Promise<{ blocked: boolean }> {
+  const since = new Date(Date.now() - RESET_WINDOW_MS);
+  const [requestsByIp, requestsByIpAndIdentifier] = await Promise.all([
+    prisma.loginAttempt.count({
+      where: {
+        ip,
+        identifier: { startsWith: RESET_IDENTIFIER_PREFIX },
+        createdAt: { gte: since },
+      },
+    }),
+    prisma.loginAttempt.count({
+      where: { ip, identifier: resetIdentifier(email), createdAt: { gte: since } },
+    }),
+  ]);
+  return evalResetLimit({ requestsByIp, requestsByIpAndIdentifier });
 }

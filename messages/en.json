@@ -1160,6 +1160,51 @@
       "missing_fields": "Please fill in both fields."
     }
   },
+  "reset": {
+    "kicker": "Password reset",
+    "requestTitle": "Forgot your password?",
+    "requestSubtitle": "Enter the email address your account is registered with. We will send you a link for setting a new password.",
+    "email": "Email",
+    "send": "Send reset link",
+    "sending": "Sending…",
+    "sentTitle": "Check your inbox",
+    "sentBody": "If an account is registered with that address, a reset link is on its way. The link works once and expires in an hour.",
+    "sentHint": "No letter? Look in the spam folder, then try again.",
+    "tryAgain": "Use a different address",
+    "backToLogin": "Back to sign in",
+    "forgotLink": "Forgot your password?",
+    "newTitle": "Set a new password",
+    "newSubtitle": "Pick a new password for {username}. Signing you in right after.",
+    "newPassword": "New password",
+    "confirmPassword": "Repeat new password",
+    "passwordHint": "At least 8 characters.",
+    "submit": "Save new password",
+    "submitting": "Saving…",
+    "requestAgain": "Request a new link",
+    "state": {
+      "invalid": "This reset link is not valid.",
+      "expired": "This reset link has expired — links are good for one hour.",
+      "used": "This reset link has already been used. Sign in with the new password, or request another link."
+    },
+    "errors": {
+      "unknown_error": "Something went wrong. Please try again.",
+      "rate_limited": "Too many requests. Please try again later.",
+      "email_invalid": "Please enter a valid email address.",
+      "missing_fields": "Please fill in both fields.",
+      "password_too_short": "Password must be at least 8 characters.",
+      "password_too_long": "Password is too long.",
+      "password_mismatch": "The two passwords do not match.",
+      "invalid_token": "This reset link is not valid. Request a new one.",
+      "expired_token": "This reset link has expired. Request a new one.",
+      "used_token": "This reset link has already been used. Request a new one."
+    },
+    "mail": {
+      "subject": "Reset your Trientes password",
+      "greeting": "Hello, {username}!",
+      "body": "Someone asked to set a new password for your Trientes account. Open the link below to choose one. It works once and expires in an hour.",
+      "ignore": "If this wasn't you, ignore this letter — your current password keeps working."
+    }
+  },
   "invite": {
     "kicker": "Invitation",
     "title": "Join {company}",
