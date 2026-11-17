@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { NOT_DELETED } from "@/lib/soft-delete";
+import { LIVE_CARD_COMPANY, PUBLIC_COMPANY } from "@/lib/company-visibility";
 
 export const dynamic = "force-dynamic";
 
@@ -42,6 +42,9 @@ export async function GET(req: Request) {
       where: {
         status: "APPROVED",
         coinId: null,
+        // Через AND, а не россыпью: у этого `where` уже есть свой `OR` под
+        // поиск по имени, и подмешанный сверху перезаписал бы его.
+        AND: [LIVE_CARD_COMPANY],
         OR: [
           { name: { contains: q, mode: "insensitive" } },
           { symbol: { contains: q, mode: "insensitive" } },
@@ -77,8 +80,7 @@ export async function GET(req: Request) {
     }),
     prisma.company.findMany({
       where: {
-        status: "APPROVED",
-        ...NOT_DELETED,
+        ...PUBLIC_COMPANY,
         OR: [
           { displayName: { contains: q, mode: "insensitive" } },
           { legalName: { contains: q, mode: "insensitive" } },

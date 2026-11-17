@@ -773,45 +773,45 @@
         "title": "Nadzor",
         "summary": "Sljedeći pregled {date}",
         "summaryNone": "Pregled još nije zakazan",
-        "dueBadge": "Rok za pregled",
+        "dueBadge": "Pregled na redu",
         "approvedBy": "Odobrio/la",
-        "approvedAt": "Odobreno",
+        "approvedAt": "Odobreno dana",
         "kyb": "KYB",
         "risk": "Rizik",
         "nextReview": "Sljedeći pregled",
-        "passReview": "Pregled uspješno završen"
+        "passReview": "Pregled prošao"
       },
       "contact": {
         "title": "Kontakt",
-        "summary": "Piše u temu predmeta; vlasnik to prima e‑poštom i na Telegramu",
+        "summary": "Ulazi u nit slučaja; vlasnik to prima e-poštom i putem Telegrama",
         "summaryNoCase": "Predmet će se otvoriti s prvom porukom",
-        "placeholder": "Što vlasnik treba znati?",
+        "placeholder": "Što bi vlasnik trebao znati?",
         "send": "Poslati poruku",
         "warn": "Izdati upozorenje",
         "openCase": "Otvoriti predmet"
       },
       "objects": {
         "title": "Objekti",
-        "summary": "{points} lokacija · {cards} uvrštenja",
-        "empty": "Ovaj poslovni subjekt još nema lokacije ni uvrštenja.",
-        "pointSuspended": "uklonjeno s karte",
-        "pointUnderReview": "u pregledu"
+        "summary": "Lokacije: {points} · Uvrštenja: {cards}",
+        "empty": "Ovaj poslovni subjekt još nema lokacije niti uvrštenja.",
+        "pointSuspended": "izvan karte",
+        "pointUnderReview": "na pregledu"
       },
       "listing": {
         "title": "Uvrštenje",
-        "summaryLive": "Aktivno na web-mjestu",
-        "summarySuspended": "Uklonjeno: {reason}",
-        "suspendedBadge": "Uklonjeno",
-        "suspendedAt": "Uklonjeno {date}",
-        "hint": "Uklanjanje poslovnog subjekta skriva njegove lokacije, usluge i uvrštenja. Samo odobrenje ostaje, pa je vraćanje jedna radnja.",
-        "reasonPlaceholder": "Zašto se uklanja? Vlasnik će to pročitati.",
-        "suspend": "Ukloniti uvrštenje",
+        "summaryLive": "Aktivno na webu",
+        "summarySuspended": "Skinuto: {reason}",
+        "suspendedBadge": "Skinuto",
+        "suspendedAt": "Skinuto dana {date}",
+        "hint": "Skidanjem poslovnog subjekta skrivaju se njegove lokacije, usluge i uvrštenja. Samo odobrenje ostaje, pa je vraćanje jedna radnja.",
+        "reasonPlaceholder": "Zašto se skida? Vlasnik će to pročitati.",
+        "suspend": "Skinuti uvrštenje",
         "restore": "Vratiti uvrštenje"
       },
       "errors": {
         "reason_too_short": "Napišite barem nekoliko riječi.",
         "not_found": "Ovaj poslovni subjekt više ne postoji.",
-        "failed": "To nije bilo moguće. Pokušajte ponovno."
+        "failed": "Nije uspjelo. Pokušajte ponovno."
       }
     }
   },
@@ -1333,9 +1333,9 @@
     "editPointHint": "Uređujete postojeću lokaciju.",
     "cancelEdit": "otkaži uređivanje",
     "suspended": {
-      "title": "Vaš je poslovni profil uklonjen s uvrštenja",
-      "noReason": "Razlog nije zabilježen",
-      "hint": "Odgovorite u temi vašeg slučaja i ponovno ćemo to razmotriti"
+      "title": "Vaš poslovni subjekt je skinut s uvrštenja",
+      "noReason": "Nije zabilježen razlog.",
+      "hint": "Odgovorite u niti vašeg slučaja i ponovno ćemo to razmotriti."
     }
   },
   "cabinet": {

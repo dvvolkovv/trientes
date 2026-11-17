@@ -761,20 +761,20 @@
       }
     },
     "company": {
-      "kicker": "已上架企业",
+      "kicker": "已收录企业",
       "openSupervision": "打开监管面板",
       "done": "完成。",
       "numbers": {
         "points": "地图上的地点",
-        "reports": "报告，90天",
+        "reports": "报告，90 天",
         "warnings": "警告"
       },
       "supervision": {
         "title": "监管",
-        "summary": "下次审核在{date}",
+        "summary": "下次审核于 {date}",
         "summaryNone": "尚未安排审核",
-        "dueBadge": "审核到期",
-        "approvedBy": "批准者",
+        "dueBadge": "待审核",
+        "approvedBy": "批准人",
         "approvedAt": "批准于",
         "kyb": "KYB",
         "risk": "风险",
@@ -783,35 +783,35 @@
       },
       "contact": {
         "title": "联系",
-        "summary": "写入案件线程；所有者将通过电子邮件和Telegram收到",
-        "summaryNoCase": "将在首条消息时开启案件",
-        "placeholder": "业主需要知道什么？",
+        "summary": "将进入案件线程；所有者会通过电子邮件和 Telegram 收到",
+        "summaryNoCase": "发送第一条消息时会开启一个案件",
+        "placeholder": "需要让所有者知道什么？",
         "send": "发送消息",
         "warn": "发出警告",
         "openCase": "打开案件"
       },
       "objects": {
         "title": "对象",
-        "summary": "{points} 个地点 · {cards} 个列表",
+        "summary": "地点：{points} · 列表：{cards}",
         "empty": "此商家尚无地点或列表。",
         "pointSuspended": "已从地图移除",
         "pointUnderReview": "审核中"
       },
       "listing": {
-        "title": "列表",
-        "summaryLive": "已在站点上线",
+        "title": "上架状态",
+        "summaryLive": "已在网站上线",
         "summarySuspended": "已下架：{reason}",
         "suspendedBadge": "已下架",
-        "suspendedAt": "于 {date} 下架",
-        "hint": "下架商家会隐藏其地点、服务和列表。审批本身保留，因此恢复只需一步。",
-        "reasonPlaceholder": "为何要下架？业主会看到此说明。",
-        "suspend": "下架该列表",
-        "restore": "重新上架该列表"
+        "suspendedAt": "于{date}下架",
+        "hint": "将商家下架会隐藏其地点、服务和列表。审批本身保留，因此恢复只需一次操作。",
+        "reasonPlaceholder": "为何下架？所有者将会看到此说明。",
+        "suspend": "下架该条目",
+        "restore": "重新上架该条目"
       },
       "errors": {
-        "reason_too_short": "请至少写几句话。",
+        "reason_too_short": "请至少写上几个词。",
         "not_found": "该商家已不存在。",
-        "failed": "操作失败。请重试。"
+        "failed": "无法完成此操作。请重试。"
       }
     }
   },
@@ -1335,7 +1335,7 @@
     "suspended": {
       "title": "您的商家已被下架",
       "noReason": "未记录原因。",
-      "hint": "请在您的案件讨论串中回复，我们会重新审核。"
+      "hint": "请在您的案件帖中回复，我们会重新审核。"
     }
   },
   "cabinet": {

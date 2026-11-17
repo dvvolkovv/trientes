@@ -766,7 +766,7 @@
       "done": "Hecho.",
       "numbers": {
         "points": "Lugares en el mapa",
-        "reports": "Reportes, 90 días",
+        "reports": "Informes, 90 días",
         "warnings": "Advertencias"
       },
       "supervision": {
@@ -779,11 +779,11 @@
         "kyb": "KYB",
         "risk": "Riesgo",
         "nextReview": "Próxima revisión",
-        "passReview": "Revisión superada"
+        "passReview": "Revisión aprobada"
       },
       "contact": {
         "title": "Contacto",
-        "summary": "Escribe en el hilo del caso; el propietario lo recibe por correo electrónico y Telegram",
+        "summary": "Va al hilo del caso; el propietario lo recibe por correo electrónico y Telegram",
         "summaryNoCase": "Se abrirá un caso con el primer mensaje",
         "placeholder": "¿Qué debe saber el propietario?",
         "send": "Enviar mensaje",
@@ -792,24 +792,24 @@
       },
       "objects": {
         "title": "Objetos",
-        "summary": "{points} lugares · {cards} listados",
-        "empty": "Este negocio aún no tiene lugares ni listados",
+        "summary": "Lugares: {points} · Listados: {cards}",
+        "empty": "Este negocio aún no tiene lugares ni listados.",
         "pointSuspended": "fuera del mapa",
         "pointUnderReview": "en revisión"
       },
       "listing": {
         "title": "Listado",
-        "summaryLive": "Activo en el sitio",
+        "summaryLive": "Visible en el sitio",
         "summarySuspended": "Retirado: {reason}",
         "suspendedBadge": "Retirado",
         "suspendedAt": "Retirado el {date}",
-        "hint": "Retirar un negocio oculta sus lugares, servicios y listados. La aprobación se mantiene, por lo que volver a ponerlo es una sola acción",
-        "reasonPlaceholder": "¿Por qué se retira? El propietario leerá esto",
+        "hint": "Retirar un negocio oculta sus lugares, servicios y listados. La aprobación en sí se mantiene, así que volver a ponerlo es una sola acción.",
+        "reasonPlaceholder": "¿Por qué se retira? El propietario leerá esto.",
         "suspend": "Retirar el listado",
         "restore": "Volver a poner el listado"
       },
       "errors": {
-        "reason_too_short": "Por favor, escribe al menos unas palabras.",
+        "reason_too_short": "Escribe al menos unas pocas palabras.",
         "not_found": "Este negocio ya no existe.",
         "failed": "No se pudo hacer eso. Inténtalo de nuevo."
       }
@@ -1335,7 +1335,7 @@
     "suspended": {
       "title": "Tu negocio está fuera del listado",
       "noReason": "No se registró ningún motivo.",
-      "hint": "Responde en el hilo de tu caso y lo revisaremos de nuevo."
+      "hint": "Responde en el hilo de tu caso y lo volveremos a revisar."
     }
   },
   "cabinet": {

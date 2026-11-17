@@ -763,55 +763,55 @@
     "company": {
       "kicker": "Gelistetes Unternehmen",
       "openSupervision": "Überwachungsbereich öffnen",
-      "done": "Fertig.",
+      "done": "Erledigt.",
       "numbers": {
         "points": "Orte auf der Karte",
         "reports": "Meldungen, 90 Tage",
-        "warnings": "Warnungen"
+        "warnings": "Verwarnungen"
       },
       "supervision": {
         "title": "Überwachung",
-        "summary": "Nächste Überprüfung am {date}",
-        "summaryNone": "Noch keine Überprüfung geplant",
-        "dueBadge": "Überprüfung fällig",
+        "summary": "Nächste Prüfung am {date}",
+        "summaryNone": "Noch keine Prüfung geplant",
+        "dueBadge": "Prüfung fällig",
         "approvedBy": "Genehmigt von",
         "approvedAt": "Genehmigt am",
         "kyb": "KYB",
         "risk": "Risiko",
-        "nextReview": "Nächste Überprüfung",
-        "passReview": "Überprüfung bestanden"
+        "nextReview": "Nächste Prüfung",
+        "passReview": "Prüfung bestanden"
       },
       "contact": {
         "title": "Kontakt",
-        "summary": "Schreibt in den Fall-Thread; der Inhaber erhält es per E-Mail und Telegram",
-        "summaryNoCase": "Ein Fall wird mit der ersten Nachricht eröffnet",
+        "summary": "Geht in den Fall-Thread; der Inhaber erhält es per E-Mail und Telegram",
+        "summaryNoCase": "Mit der ersten Nachricht wird ein Fall eröffnet",
         "placeholder": "Was sollte der Inhaber wissen?",
         "send": "Nachricht senden",
-        "warn": "Warnung aussprechen",
+        "warn": "Verwarnung aussprechen",
         "openCase": "Fall öffnen"
       },
       "objects": {
         "title": "Objekte",
-        "summary": "{points} Orte · {cards} Einträge",
-        "empty": "Dieses Unternehmen hat noch keine Orte oder Einträge.",
+        "summary": "Orte: {points} · Listings: {cards}",
+        "empty": "Dieses Unternehmen hat noch keine Orte oder Listings.",
         "pointSuspended": "von der Karte entfernt",
         "pointUnderReview": "in Prüfung"
       },
       "listing": {
-        "title": "Eintrag",
-        "summaryLive": "Live auf der Seite",
-        "summarySuspended": "Deaktiviert: {reason}",
-        "suspendedBadge": "Deaktiviert",
-        "suspendedAt": "Am {date} deaktiviert",
-        "hint": "Ein Unternehmen zu deaktivieren verbirgt seine Standorte, Services und Einträge. Die Freigabe bleibt bestehen, daher ist das Wiederaktivieren ein einzelner Schritt.",
-        "reasonPlaceholder": "Warum wird es deaktiviert? Der Inhaber wird dies lesen.",
-        "suspend": "Eintrag deaktivieren",
-        "restore": "Eintrag wieder aktivieren"
+        "title": "Listing",
+        "summaryLive": "Live auf der Website",
+        "summarySuspended": "Abgeschaltet: {reason}",
+        "suspendedBadge": "Abgeschaltet",
+        "suspendedAt": "Abgeschaltet am {date}",
+        "hint": "Ein Unternehmen abzuschalten blendet seine Orte, Dienste und Listings aus. Die Genehmigung selbst bleibt bestehen, daher ist das Wiederherstellen eine einzige Aktion.",
+        "reasonPlaceholder": "Warum wird es abgeschaltet? Der Inhaber wird dies lesen.",
+        "suspend": "Aus dem Listing entfernen",
+        "restore": "Wieder ins Listing aufnehmen"
       },
       "errors": {
-        "reason_too_short": "Bitte schreiben Sie zumindest ein paar Worte.",
+        "reason_too_short": "Bitte schreiben Sie mindestens ein paar Wörter.",
         "not_found": "Dieses Unternehmen existiert nicht mehr.",
-        "failed": "Das konnte nicht durchgeführt werden. Bitte erneut versuchen."
+        "failed": "Das konnte nicht ausgeführt werden. Bitte versuchen Sie es erneut."
       }
     }
   },
@@ -1333,9 +1333,9 @@
     "editPointHint": "Sie bearbeiten einen bestehenden Standort.",
     "cancelEdit": "Bearbeitung abbrechen",
     "suspended": {
-      "title": "Ihr Unternehmen ist im Listing deaktiviert",
+      "title": "Ihr Unternehmen ist nicht mehr gelistet",
       "noReason": "Es wurde kein Grund angegeben.",
-      "hint": "Antworten Sie in Ihrem Fall-Thread, und wir prüfen es erneut."
+      "hint": "Antworten Sie in Ihrem Fall-Thread und wir schauen es uns erneut an."
     }
   },
   "cabinet": {

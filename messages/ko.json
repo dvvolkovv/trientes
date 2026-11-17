@@ -761,55 +761,55 @@
       }
     },
     "company": {
-      "kicker": "등록된 업체",
+      "kicker": "상장된 업체",
       "openSupervision": "감독 패널 열기",
       "done": "완료.",
       "numbers": {
-        "points": "지도상의 지점",
-        "reports": "신고, 최근 90일",
+        "points": "지도상의 장소",
+        "reports": "신고, 90일",
         "warnings": "경고"
       },
       "supervision": {
         "title": "감독",
-        "summary": "다음 심사일 {date}",
-        "summaryNone": "아직 예정된 심사가 없음",
-        "dueBadge": "심사 예정",
+        "summary": "{date}에 다음 검토",
+        "summaryNone": "아직 예정된 검토 없음",
+        "dueBadge": "검토 필요",
         "approvedBy": "승인자",
-        "approvedAt": "승인일",
+        "approvedAt": "승인 일시",
         "kyb": "KYB",
-        "risk": "위험도",
-        "nextReview": "다음 심사",
-        "passReview": "심사 통과"
+        "risk": "위험",
+        "nextReview": "다음 검토",
+        "passReview": "검토 통과"
       },
       "contact": {
-        "title": "문의",
-        "summary": "케이스 스레드에 작성합니다; 소유자는 이메일과 Telegram으로 받습니다",
-        "summaryNoCase": "첫 메시지와 함께 케이스가 열립니다",
-        "placeholder": "소유자가 알아야 할 내용은 무엇인가요?",
+        "title": "연락",
+        "summary": "케이스 스레드에 기록되며 소유자는 이메일과 Telegram으로 받습니다",
+        "summaryNoCase": "첫 메시지와 함께 케이스가 개설됩니다",
+        "placeholder": "소유자가 알아야 할 내용은?",
         "send": "메시지 보내기",
-        "warn": "경고 보내기",
+        "warn": "경고 발부",
         "openCase": "케이스 열기"
       },
       "objects": {
-        "title": "항목",
-        "summary": "{points} 장소 · {cards} 리스팅",
+        "title": "개체",
+        "summary": "장소: {points} · 리스팅: {cards}",
         "empty": "이 비즈니스에는 아직 장소나 리스팅이 없습니다.",
-        "pointSuspended": "지도에서 제외",
+        "pointSuspended": "지도에서 숨김",
         "pointUnderReview": "검토 중"
       },
       "listing": {
         "title": "리스팅",
-        "summaryLive": "사이트에 공개됨",
+        "summaryLive": "사이트에서 공개 중",
         "summarySuspended": "내림: {reason}",
         "suspendedBadge": "내림",
         "suspendedAt": "{date}에 내림",
-        "hint": "비즈니스를 내리면 해당 장소, 서비스, 리스팅이 숨겨집니다. 승인 자체는 유지되므로 다시 올리는 데 한 번의 작업이면 됩니다.",
-        "reasonPlaceholder": "왜 내리나요? 소유자가 이를 읽습니다.",
+        "hint": "비즈니스를 내리면 해당 장소, 서비스, 리스팅이 숨겨집니다. 승인 상태는 유지되므로 다시 올리는 데에는 한 번의 작업이면 됩니다.",
+        "reasonPlaceholder": "왜 내리나요? 소유자가 이 내용을 읽습니다.",
         "suspend": "리스팅 내리기",
         "restore": "리스팅 다시 올리기"
       },
       "errors": {
-        "reason_too_short": "최소한 몇 마디 이상 작성해 주세요.",
+        "reason_too_short": "몇 마디 이상으로 작성해 주세요.",
         "not_found": "이 비즈니스는 더 이상 존재하지 않습니다.",
         "failed": "실행할 수 없습니다. 다시 시도해 주세요."
       }
@@ -1333,7 +1333,7 @@
     "editPointHint": "기존 지점을 수정하고 있습니다.",
     "cancelEdit": "수정 취소",
     "suspended": {
-      "title": "귀하의 비즈니스가 리스팅에서 내려졌습니다",
+      "title": "귀하의 비즈니스가 리스팅에서 내려갔습니다",
       "noReason": "사유가 기록되지 않았습니다.",
       "hint": "케이스 스레드에 답장해 주시면 다시 검토하겠습니다."
     }

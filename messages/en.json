@@ -783,7 +783,7 @@
       },
       "contact": {
         "title": "Contact",
-        "summary": "Writes into the case thread; the owner gets it by email and Telegram",
+        "summary": "Goes into the case thread; the owner gets it by email and Telegram",
         "summaryNoCase": "A case will be opened with the first message",
         "placeholder": "What should the owner know?",
         "send": "Send message",
@@ -792,7 +792,7 @@
       },
       "objects": {
         "title": "Objects",
-        "summary": "{points} places · {cards} listings",
+        "summary": "Places: {points} · Listings: {cards}",
         "empty": "This business has no places or listings yet.",
         "pointSuspended": "off the map",
         "pointUnderReview": "under review"

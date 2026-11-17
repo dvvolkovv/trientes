@@ -766,14 +766,14 @@
       "done": "Terminé.",
       "numbers": {
         "points": "Lieux sur la carte",
-        "reports": "Signalements, 90 jours",
+        "reports": "Rapports, 90 jours",
         "warnings": "Avertissements"
       },
       "supervision": {
         "title": "Supervision",
         "summary": "Prochain examen le {date}",
-        "summaryNone": "Aucun examen prévu pour le moment",
-        "dueBadge": "Examen à effectuer",
+        "summaryNone": "Aucun examen planifié pour le moment",
+        "dueBadge": "À examiner",
         "approvedBy": "Approuvé par",
         "approvedAt": "Approuvé le",
         "kyb": "KYB",
@@ -783,7 +783,7 @@
       },
       "contact": {
         "title": "Contact",
-        "summary": "Écrit dans le fil du dossier; le propriétaire le reçoit par e-mail et sur Telegram",
+        "summary": "Va dans le fil du dossier ; le propriétaire le reçoit par e-mail et Telegram",
         "summaryNoCase": "Un dossier sera ouvert avec le premier message",
         "placeholder": "Que doit savoir le propriétaire ?",
         "send": "Envoyer le message",
@@ -792,21 +792,21 @@
       },
       "objects": {
         "title": "Objets",
-        "summary": "{points} lieux · {cards} annonces",
-        "empty": "Cette entreprise n'a pas encore de lieux ni d'annonces.",
+        "summary": "Lieux : {points} · Fiches : {cards}",
+        "empty": "Cette entreprise n'a pas encore de lieux ni de fiches.",
         "pointSuspended": "retiré de la carte",
         "pointUnderReview": "en cours d'examen"
       },
       "listing": {
-        "title": "Annonce",
+        "title": "Fiche",
         "summaryLive": "En ligne sur le site",
         "summarySuspended": "Retiré : {reason}",
         "suspendedBadge": "Retiré",
         "suspendedAt": "Retiré le {date}",
-        "hint": "Retirer une entreprise masque ses lieux, services et annonces. L'approbation elle-même reste, donc la remettre en ligne ne demande qu'une action.",
+        "hint": "Retirer une entreprise masque ses lieux, services et fiches. L'approbation elle-même reste, donc la remettre en ligne est une seule action.",
         "reasonPlaceholder": "Pourquoi est-elle retirée ? Le propriétaire lira ceci.",
-        "suspend": "Retirer l'annonce",
-        "restore": "Remettre l'annonce en ligne"
+        "suspend": "Retirer la fiche",
+        "restore": "Remettre la fiche en ligne"
       },
       "errors": {
         "reason_too_short": "Veuillez écrire au moins quelques mots.",

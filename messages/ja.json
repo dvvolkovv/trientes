@@ -761,56 +761,56 @@
       }
     },
     "company": {
-      "kicker": "掲載事業者",
+      "kicker": "掲載企業",
       "openSupervision": "監督パネルを開く",
-      "done": "完了。",
+      "done": "完了.",
       "numbers": {
-        "points": "地図上の拠点数",
+        "points": "地図上の場所",
         "reports": "報告件数（過去90日）",
         "warnings": "警告"
       },
       "supervision": {
         "title": "監督",
-        "summary": "次回審査 {date}",
-        "summaryNone": "審査予定なし",
-        "dueBadge": "要審査",
+        "summary": "次回レビューは{date}に予定",
+        "summaryNone": "レビューはまだ予定されていません",
+        "dueBadge": "レビュー期限",
         "approvedBy": "承認者",
         "approvedAt": "承認日",
         "kyb": "KYB",
         "risk": "リスク",
-        "nextReview": "次回審査",
-        "passReview": "審査通過"
+        "nextReview": "次回レビュー",
+        "passReview": "レビュー合格"
       },
       "contact": {
-        "title": "連絡先",
-        "summary": "案件スレッドに書き込み、オーナーはメールと Telegram で受け取ります",
-        "summaryNoCase": "最初のメッセージで案件が開かれます",
-        "placeholder": "オーナーに何を伝えますか？",
+        "title": "連絡",
+        "summary": "ケーススレッドに追加され、オーナーはメールとTelegramで受け取ります",
+        "summaryNoCase": "最初のメッセージでケースが開かれます",
+        "placeholder": "オーナーに何を伝えるべきですか?",
         "send": "メッセージを送信",
-        "warn": "警告を出す",
-        "openCase": "案件を開く"
+        "warn": "警告を発行",
+        "openCase": "ケースを開く"
       },
       "objects": {
         "title": "オブジェクト",
-        "summary": "{points}件の場所 · {cards}件の掲載",
-        "empty": "このビジネスにはまだ場所や掲載がありません。",
-        "pointSuspended": "地図から非表示",
+        "summary": "場所: {points} · 掲載: {cards}",
+        "empty": "このビジネスには、まだ場所や掲載がありません。",
+        "pointSuspended": "地図から除外",
         "pointUnderReview": "審査中"
       },
       "listing": {
         "title": "掲載",
         "summaryLive": "サイトで公開中",
-        "summarySuspended": "取り下げ: {reason}",
-        "suspendedBadge": "取り下げ",
-        "suspendedAt": "{date}に取り下げ",
-        "hint": "ビジネスを取り下げると、その場所・サービス・掲載が非表示になります。承認自体は保持されるため、元に戻すのは1回の操作です。",
-        "reasonPlaceholder": "なぜ取り下げるのですか？オーナーが読みます。",
-        "suspend": "掲載を取り下げる",
-        "restore": "掲載を元に戻す"
+        "summarySuspended": "掲載停止: {reason}",
+        "suspendedBadge": "掲載停止",
+        "suspendedAt": "{date} に掲載停止",
+        "hint": "ビジネスを掲載停止にすると、その場所、サービス、掲載が非表示になります。承認自体は維持されるため、元に戻すのは1回の操作です。",
+        "reasonPlaceholder": "なぜ掲載停止にするのですか？オーナーが読みます。",
+        "suspend": "掲載を停止する",
+        "restore": "掲載を再開する"
       },
       "errors": {
-        "reason_too_short": "数語以上で記入してください。",
-        "not_found": "このビジネスはすでに存在しません。",
+        "reason_too_short": "最低でも数語は記入してください。",
+        "not_found": "このビジネスは存在しません。",
         "failed": "実行できませんでした。もう一度お試しください。"
       }
     }
@@ -1333,9 +1333,9 @@
     "editPointHint": "既存の拠点を編集しています。",
     "cancelEdit": "編集をやめる",
     "suspended": {
-      "title": "あなたのビジネスは掲載から外されています",
+      "title": "あなたのビジネスは掲載停止になっています",
       "noReason": "理由は記録されていません。",
-      "hint": "案件スレッドで返信いただければ、再度確認します。"
+      "hint": "ケースのスレッドで返信してください。再確認します。"
     }
   },
   "cabinet": {

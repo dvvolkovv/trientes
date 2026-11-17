@@ -144,8 +144,9 @@ export function MarkCaptcha({ onSolved }: { onSolved: (s: CaptchaSolution | null
       >
         {challenge ? (
           <>
-            {/* Рамка знака — видно, куда целиться. */}
-            <div style={partStyle("none", "rgba(141,135,160,.34)", challenge.home)} />
+            {/* Рамка знака — видно, куда целиться. Светлее, чем в макете:
+                на живом экране 34 % на тёмной подложке не читались вовсе. */}
+            <div style={partStyle("none", "rgba(168,162,180,.5)", challenge.home)} />
             <div
               style={partStyle(
                 `inset(0 0 ${((1 - challenge.cut.top) * 100).toFixed(2)}% 0)`,

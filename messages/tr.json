@@ -762,18 +762,18 @@
     },
     "company": {
       "kicker": "Listelenen işletme",
-      "openSupervision": "Gözetim panelini aç",
+      "openSupervision": "Denetim panelini aç",
       "done": "Bitti.",
       "numbers": {
-        "points": "Haritadaki yerler",
+        "points": "Haritadaki noktalar",
         "reports": "Raporlar, 90 gün",
         "warnings": "Uyarılar"
       },
       "supervision": {
-        "title": "Gözetim",
-        "summary": "Sonraki inceleme {date} tarihinde",
-        "summaryNone": "Henüz bir inceleme planlanmadı",
-        "dueBadge": "İnceleme zamanı geldi",
+        "title": "Denetim",
+        "summary": "Bir sonraki inceleme {date} tarihinde",
+        "summaryNone": "Henüz inceleme planlanmadı",
+        "dueBadge": "İnceleme zamanı",
         "approvedBy": "Onaylayan",
         "approvedAt": "Onay tarihi",
         "kyb": "KYB",
@@ -783,35 +783,35 @@
       },
       "contact": {
         "title": "İletişim",
-        "summary": "Destek kaydı dizisine yazar; sahibi bunu e-posta ve Telegram ile alır",
-        "summaryNoCase": "İlk mesajla bir destek kaydı açılacak",
-        "placeholder": "Sahibin neyi bilmesi gerekir?",
+        "summary": "Vaka dizisine gider; sahibi bunu e-posta ve Telegram ile alır",
+        "summaryNoCase": "İlk mesajla bir vaka açılacak",
+        "placeholder": "Sahibi ne bilmeli?",
         "send": "Mesaj gönder",
         "warn": "Uyarı ver",
-        "openCase": "Destek kaydını aç"
+        "openCase": "Talebi aç"
       },
       "objects": {
-        "title": "Öğeler",
-        "summary": "{points} yer · {cards} liste",
-        "empty": "Bu işletmenin henüz yeri veya listesi yok.",
+        "title": "Ögeler",
+        "summary": "Yerler: {points} · İlanlar: {cards}",
+        "empty": "Bu işletmenin henüz yeri veya ilanı yok.",
         "pointSuspended": "haritada değil",
         "pointUnderReview": "incelemede"
       },
       "listing": {
-        "title": "Liste",
+        "title": "İlan",
         "summaryLive": "Sitede yayında",
         "summarySuspended": "Kaldırıldı: {reason}",
         "suspendedBadge": "Kaldırıldı",
         "suspendedAt": "{date} tarihinde kaldırıldı",
-        "hint": "Bir işletmeyi kaldırmak, yerlerini, hizmetlerini ve listelerini gizler. Onayın kendisi kalır, bu yüzden geri koymak tek işlemdir.",
-        "reasonPlaceholder": "Neden kaldırılıyor? Bunu sahibi okuyacak.",
-        "suspend": "Listeyi kaldır",
-        "restore": "Listeye geri al"
+        "hint": "Bir işletmeyi kaldırmak, yerlerini, hizmetlerini ve ilanlarını gizler. Onayın kendisi kalır, bu yüzden geri koymak tek bir işlemdir.",
+        "reasonPlaceholder": "Neden kaldırılıyor? Sahibi bunu okuyacak.",
+        "suspend": "İlanı kaldır",
+        "restore": "İlanı geri koy"
       },
       "errors": {
         "reason_too_short": "Lütfen en az birkaç kelime yazın.",
-        "not_found": "Bu işletme artık mevcut değil.",
-        "failed": "Bunu yapamadık. Lütfen tekrar deneyin."
+        "not_found": "Bu işletme artık yok.",
+        "failed": "Bu yapılamadı. Lütfen tekrar deneyin."
       }
     }
   },
@@ -1334,8 +1334,8 @@
     "cancelEdit": "düzenlemeyi iptal et",
     "suspended": {
       "title": "İşletmeniz listeden kaldırıldı",
-      "noReason": "Herhangi bir neden kaydedilmedi.",
-      "hint": "Destek kaydınızda yanıtlayın, tekrar inceleyelim."
+      "noReason": "Bir neden kaydedilmedi.",
+      "hint": "Talebinizde yanıt verin, tekrar inceleyelim."
     }
   },
   "cabinet": {
