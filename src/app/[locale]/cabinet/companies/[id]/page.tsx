@@ -104,6 +104,19 @@ export default async function CompanyManagementPage({
           ) : null}
         </div>
         <p className="text-muted mb-6">{t("profileIntro")}</p>
+        {company.suspendedAt && (
+          // Снятое предприятие не видно на витрине, и владелец должен узнать об
+          // этом здесь, а не по пропавшим точкам.
+          <div className="mb-6 p-4 rounded-md border border-red-500/30 bg-red-500/10">
+            <div className="text-xs uppercase tracking-wider text-red-400 mb-1">
+              {t("suspended.title")}
+            </div>
+            <div className="text-sm text-red-300">
+              {company.suspendReason ?? t("suspended.noReason")}
+            </div>
+            <div className="mt-1 text-xs text-muted">{t("suspended.hint")}</div>
+          </div>
+        )}
         {company.status === "REJECTED" && company.rejectionReason && (
           <div className="mb-6 p-4 rounded-md border border-red-500/30 bg-red-500/10">
             <div className="text-xs uppercase tracking-wider text-red-400 mb-1">{t("rejectionReasonLabel")}</div>

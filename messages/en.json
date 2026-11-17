@@ -318,7 +318,8 @@
         "reason_too_short": "Reason must be at least 3 chars.",
         "generic": "Something went wrong."
       },
-      "delete": "Delete"
+      "delete": "Delete",
+      "supervision": "Supervision"
     },
     "analytics": {
       "title": "Analytics",
@@ -541,7 +542,11 @@
         "pointReported": "a visitor reported the point: {reason}",
         "pointAsked": "asked the business about the reports",
         "pointWarned": "warned the business — no answer for 14 days",
-        "pointSuspended": "took the point off the map — reports went unanswered"
+        "pointSuspended": "took the point off the map — reports went unanswered",
+        "companyWarned": "warning issued to the business",
+        "companySuspended": "business taken off the listing: {reason}",
+        "companyRestored": "business put back on the listing",
+        "reviewPassed": "periodic review passed; next one on {next}"
       },
       "thread": {
         "title": "Correspondence",
@@ -722,7 +727,8 @@
         "DUE_SOON": "Due within 24 hours",
         "CASE_OVERDUE": "Overdue",
         "APPLICANT_SILENT": "Applicant has been silent for 14 days",
-        "POINT_REPORTED": "A visitor reported a map point"
+        "POINT_REPORTED": "A visitor reported a map point",
+        "REVIEW_DUE": "Periodic review is due"
       }
     },
     "movedToQueues": {
@@ -752,6 +758,60 @@
         "secondSignatures": "Second signatures",
         "soleSignOffs": "Sole sign-offs",
         "resubmits": "Resend requests"
+      }
+    },
+    "company": {
+      "kicker": "Listed business",
+      "openSupervision": "Open supervision panel",
+      "done": "Done.",
+      "numbers": {
+        "points": "Places on the map",
+        "reports": "Reports, 90 days",
+        "warnings": "Warnings"
+      },
+      "supervision": {
+        "title": "Supervision",
+        "summary": "Next review on {date}",
+        "summaryNone": "No review scheduled yet",
+        "dueBadge": "Review due",
+        "approvedBy": "Approved by",
+        "approvedAt": "Approved on",
+        "kyb": "KYB",
+        "risk": "Risk",
+        "nextReview": "Next review",
+        "passReview": "Review passed"
+      },
+      "contact": {
+        "title": "Contact",
+        "summary": "Writes into the case thread; the owner gets it by email and Telegram",
+        "summaryNoCase": "A case will be opened with the first message",
+        "placeholder": "What should the owner know?",
+        "send": "Send message",
+        "warn": "Issue a warning",
+        "openCase": "Open the case"
+      },
+      "objects": {
+        "title": "Objects",
+        "summary": "{points} places · {cards} listings",
+        "empty": "This business has no places or listings yet.",
+        "pointSuspended": "off the map",
+        "pointUnderReview": "under review"
+      },
+      "listing": {
+        "title": "Listing",
+        "summaryLive": "Live on the site",
+        "summarySuspended": "Taken off: {reason}",
+        "suspendedBadge": "Taken off",
+        "suspendedAt": "Taken off on {date}",
+        "hint": "Taking a business off hides its places, services and listings. The approval itself stays, so putting it back is one action.",
+        "reasonPlaceholder": "Why is it being taken off? The owner will read this.",
+        "suspend": "Take off the listing",
+        "restore": "Put back on the listing"
+      },
+      "errors": {
+        "reason_too_short": "Please write at least a few words.",
+        "not_found": "This business no longer exists.",
+        "failed": "Could not do that. Please try again."
       }
     }
   },
@@ -1271,7 +1331,12 @@
     "pointSaved": "Location saved.",
     "pointBackToModeration": "Saved and sent back for review: the place or the accepted coins changed.",
     "editPointHint": "You are editing an existing location.",
-    "cancelEdit": "cancel editing"
+    "cancelEdit": "cancel editing",
+    "suspended": {
+      "title": "Your business is off the listing",
+      "noReason": "No reason was recorded.",
+      "hint": "Reply in your case thread and we will look at it again."
+    }
   },
   "cabinet": {
     "kicker": "Section · Cabinet",

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { approveCompany, rejectCompany } from "@/app/actions/admin-company";
 import { requestOrDeleteCompany } from "@/app/actions/company-deletion";
@@ -25,6 +26,7 @@ export type CompanyRowData = {
 export function CompanyRow({ row }: { row: CompanyRowData }) {
   const t = useTranslations("admin.companies");
   const router = useRouter();
+  const locale = (useParams() as { locale?: string }).locale ?? "en";
   const [pending, startTransition] = useTransition();
   const [showReject, setShowReject] = useState(false);
   const [reason, setReason] = useState("");
@@ -67,6 +69,14 @@ export function CompanyRow({ row }: { row: CompanyRowData }) {
           {row.website && (
             <a href={row.website} target="_blank" rel="noopener noreferrer"
               className="text-xs text-accent break-all">{row.website}</a>
+          )}
+          {row.status === "APPROVED" && (
+            <Link
+              href={`/${locale}/admin/companies/${row.id}`}
+              className="mt-2 inline-flex h-9 items-center rounded-[12px] border border-hairline bg-card-alt px-3 text-xs font-semibold"
+            >
+              {t("supervision")}
+            </Link>
           )}
         </div>
         {row.status === "PENDING" && (

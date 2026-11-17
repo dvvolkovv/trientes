@@ -31,6 +31,8 @@ export function PoiReportDialog({
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [error, setError] = useState("failed");
   const [captcha, setCaptcha] = useState<CaptchaSolution | null>(null);
+  // Отказ по капче гасит задачу: ключ меняется — лист берёт новую.
+  const [captchaAttempt, setCaptchaAttempt] = useState(0);
 
   async function send() {
     setState("sending");
@@ -45,7 +47,9 @@ export function PoiReportDialog({
         return;
       }
       const data = (await res.json().catch(() => ({}))) as { error?: string };
-      setError(data.error ?? "failed");
+      const code = data.error ?? "failed";
+      if (code.startsWith("captcha_")) setCaptchaAttempt((n) => n + 1);
+      setError(code);
       setState("error");
     } catch {
       setError("failed");
@@ -98,7 +102,7 @@ export function PoiReportDialog({
               className="mb-3 w-full rounded-xl border border-hairline bg-bg-tint/40 p-2.5 text-[13px]"
             />
             <div className="mb-3">
-              <MarkCaptcha onSolved={setCaptcha} />
+              <MarkCaptcha key={captchaAttempt} onSolved={setCaptcha} />
             </div>
             {state === "error" && (
               <p className="mb-2 text-[12px] text-down">{t(`report.errors.${error}`)}</p>

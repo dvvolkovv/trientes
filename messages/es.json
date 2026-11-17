@@ -318,7 +318,8 @@
         "reason_too_short": "Mínimo 3 caracteres.",
         "generic": "Algo salió mal."
       },
-      "delete": "Eliminar"
+      "delete": "Eliminar",
+      "supervision": "Supervisión"
     },
     "analytics": {
       "title": "Analítica",
@@ -541,7 +542,11 @@
         "pointReported": "un visitante reportó el punto: {reason}",
         "pointAsked": "se consultó al negocio sobre los reportes",
         "pointWarned": "se advirtió al negocio — sin respuesta durante 14 días",
-        "pointSuspended": "se retiró el punto del mapa — los reportes no fueron respondidos"
+        "pointSuspended": "se retiró el punto del mapa — los reportes no fueron respondidos",
+        "companyWarned": "advertencia emitida a la empresa",
+        "companySuspended": "empresa retirada del listado: {reason}",
+        "companyRestored": "empresa reincorporada al listado",
+        "reviewPassed": "revisión periódica aprobada; la próxima el {next}"
       },
       "thread": {
         "title": "Correspondencia",
@@ -722,7 +727,8 @@
         "DUE_SOON": "Vence en 24 horas",
         "CASE_OVERDUE": "Vencido",
         "APPLICANT_SILENT": "El solicitante no responde desde hace 14 días",
-        "POINT_REPORTED": "Un visitante reportó un punto del mapa"
+        "POINT_REPORTED": "Un visitante reportó un punto del mapa",
+        "REVIEW_DUE": "Revisión periódica pendiente"
       }
     },
     "movedToQueues": {
@@ -752,6 +758,60 @@
         "secondSignatures": "Segundas firmas",
         "soleSignOffs": "Aprobaciones en solitario",
         "resubmits": "Solicitudes de reenvío"
+      }
+    },
+    "company": {
+      "kicker": "Empresa listada",
+      "openSupervision": "Abrir panel de supervisión",
+      "done": "Hecho.",
+      "numbers": {
+        "points": "Lugares en el mapa",
+        "reports": "Reportes, 90 días",
+        "warnings": "Advertencias"
+      },
+      "supervision": {
+        "title": "Supervisión",
+        "summary": "Próxima revisión el {date}",
+        "summaryNone": "Aún no hay revisión programada",
+        "dueBadge": "Revisión pendiente",
+        "approvedBy": "Aprobado por",
+        "approvedAt": "Aprobado el",
+        "kyb": "KYB",
+        "risk": "Riesgo",
+        "nextReview": "Próxima revisión",
+        "passReview": "Revisión superada"
+      },
+      "contact": {
+        "title": "Contacto",
+        "summary": "Escribe en el hilo del caso; el propietario lo recibe por correo electrónico y Telegram",
+        "summaryNoCase": "Se abrirá un caso con el primer mensaje",
+        "placeholder": "¿Qué debe saber el propietario?",
+        "send": "Enviar mensaje",
+        "warn": "Emitir una advertencia",
+        "openCase": "Abrir el caso"
+      },
+      "objects": {
+        "title": "Objetos",
+        "summary": "{points} lugares · {cards} listados",
+        "empty": "Este negocio aún no tiene lugares ni listados",
+        "pointSuspended": "fuera del mapa",
+        "pointUnderReview": "en revisión"
+      },
+      "listing": {
+        "title": "Listado",
+        "summaryLive": "Activo en el sitio",
+        "summarySuspended": "Retirado: {reason}",
+        "suspendedBadge": "Retirado",
+        "suspendedAt": "Retirado el {date}",
+        "hint": "Retirar un negocio oculta sus lugares, servicios y listados. La aprobación se mantiene, por lo que volver a ponerlo es una sola acción",
+        "reasonPlaceholder": "¿Por qué se retira? El propietario leerá esto",
+        "suspend": "Retirar el listado",
+        "restore": "Volver a poner el listado"
+      },
+      "errors": {
+        "reason_too_short": "Por favor, escribe al menos unas palabras.",
+        "not_found": "Este negocio ya no existe.",
+        "failed": "No se pudo hacer eso. Inténtalo de nuevo."
       }
     }
   },
@@ -1271,7 +1331,12 @@
     "pointSaved": "Punto guardado.",
     "pointBackToModeration": "Guardado y enviado a revisión de nuevo: cambió el lugar o las monedas aceptadas.",
     "editPointHint": "Estás editando un punto existente.",
-    "cancelEdit": "cancelar la edición"
+    "cancelEdit": "cancelar la edición",
+    "suspended": {
+      "title": "Tu negocio está fuera del listado",
+      "noReason": "No se registró ningún motivo.",
+      "hint": "Responde en el hilo de tu caso y lo revisaremos de nuevo."
+    }
   },
   "cabinet": {
     "kicker": "Sección · Panel",

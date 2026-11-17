@@ -318,7 +318,8 @@
         "reason_too_short": "原因至少 3 个字符。",
         "generic": "出错了。"
       },
-      "delete": "删除"
+      "delete": "删除",
+      "supervision": "监管"
     },
     "analytics": {
       "title": "分析",
@@ -541,7 +542,11 @@
         "pointReported": "一位访客举报了该点：{reason}",
         "pointAsked": "已就举报询问了该商家",
         "pointWarned": "已警告该商家——14天未回复",
-        "pointSuspended": "已将该点从地图移除——举报未获回应"
+        "pointSuspended": "已将该点从地图移除——举报未获回应",
+        "companyWarned": "已向该企业发出警告",
+        "companySuspended": "该企业已从列表下架：{reason}",
+        "companyRestored": "该企业已重新上架",
+        "reviewPassed": "定期审核通过；下次在{next}"
       },
       "thread": {
         "title": "往来通信",
@@ -722,7 +727,8 @@
         "DUE_SOON": "24小时内到期",
         "CASE_OVERDUE": "已逾期",
         "APPLICANT_SILENT": "申请人已沉默14天",
-        "POINT_REPORTED": "访客举报了一个地图点位"
+        "POINT_REPORTED": "访客举报了一个地图点位",
+        "REVIEW_DUE": "定期审核到期"
       }
     },
     "movedToQueues": {
@@ -752,6 +758,60 @@
         "secondSignatures": "二次签名",
         "soleSignOffs": "单人签署",
         "resubmits": "重新提交"
+      }
+    },
+    "company": {
+      "kicker": "已上架企业",
+      "openSupervision": "打开监管面板",
+      "done": "完成。",
+      "numbers": {
+        "points": "地图上的地点",
+        "reports": "报告，90天",
+        "warnings": "警告"
+      },
+      "supervision": {
+        "title": "监管",
+        "summary": "下次审核在{date}",
+        "summaryNone": "尚未安排审核",
+        "dueBadge": "审核到期",
+        "approvedBy": "批准者",
+        "approvedAt": "批准于",
+        "kyb": "KYB",
+        "risk": "风险",
+        "nextReview": "下次审核",
+        "passReview": "审核通过"
+      },
+      "contact": {
+        "title": "联系",
+        "summary": "写入案件线程；所有者将通过电子邮件和Telegram收到",
+        "summaryNoCase": "将在首条消息时开启案件",
+        "placeholder": "业主需要知道什么？",
+        "send": "发送消息",
+        "warn": "发出警告",
+        "openCase": "打开案件"
+      },
+      "objects": {
+        "title": "对象",
+        "summary": "{points} 个地点 · {cards} 个列表",
+        "empty": "此商家尚无地点或列表。",
+        "pointSuspended": "已从地图移除",
+        "pointUnderReview": "审核中"
+      },
+      "listing": {
+        "title": "列表",
+        "summaryLive": "已在站点上线",
+        "summarySuspended": "已下架：{reason}",
+        "suspendedBadge": "已下架",
+        "suspendedAt": "于 {date} 下架",
+        "hint": "下架商家会隐藏其地点、服务和列表。审批本身保留，因此恢复只需一步。",
+        "reasonPlaceholder": "为何要下架？业主会看到此说明。",
+        "suspend": "下架该列表",
+        "restore": "重新上架该列表"
+      },
+      "errors": {
+        "reason_too_short": "请至少写几句话。",
+        "not_found": "该商家已不存在。",
+        "failed": "操作失败。请重试。"
       }
     }
   },
@@ -1271,7 +1331,12 @@
     "pointSaved": "网点已保存。",
     "pointBackToModeration": "已保存并重新提交审核：地点或受理币种发生了变化。",
     "editPointHint": "您正在编辑一个已有网点。",
-    "cancelEdit": "取消编辑"
+    "cancelEdit": "取消编辑",
+    "suspended": {
+      "title": "您的商家已被下架",
+      "noReason": "未记录原因。",
+      "hint": "请在您的案件讨论串中回复，我们会重新审核。"
+    }
   },
   "cabinet": {
     "kicker": "板块 · 个人中心",

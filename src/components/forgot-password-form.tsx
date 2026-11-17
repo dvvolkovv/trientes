@@ -16,6 +16,8 @@ export function ForgotPasswordForm({ locale }: { locale: string }) {
   const [sent, setSent] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [captcha, setCaptcha] = useState<CaptchaSolution | null>(null);
+  // Отказ по капче гасит задачу: ключ меняется — лист берёт новую.
+  const [captchaAttempt, setCaptchaAttempt] = useState(0);
   const [pending, start] = useTransition();
 
   if (sent) {
@@ -59,7 +61,9 @@ export function ForgotPasswordForm({ locale }: { locale: string }) {
             setSent(asked);
             return;
           }
-          setError(data.error ?? "unknown_error");
+          const code = data.error ?? "unknown_error";
+          if (code.startsWith("captcha_")) setCaptchaAttempt((n) => n + 1);
+          setError(code);
         });
       }}
     >
@@ -76,7 +80,7 @@ export function ForgotPasswordForm({ locale }: { locale: string }) {
           required
         />
       </label>
-      <MarkCaptcha onSolved={setCaptcha} />
+      <MarkCaptcha key={captchaAttempt} onSolved={setCaptcha} />
       {error ? (
         <p className="text-sm text-red-500">
           {t.has(`errors.${error}`) ? t(`errors.${error}`) : t("errors.unknown_error")}

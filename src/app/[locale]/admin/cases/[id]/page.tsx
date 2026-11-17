@@ -25,7 +25,7 @@ import { queueOfSubject } from "@/lib/cases/queues";
 import { slaState } from "@/lib/cases/sla";
 import { formatHandled } from "@/lib/cases/time";
 import { isOpen } from "@/lib/cases/types";
-import { ADMIN_COLUMN, SLA_DOT } from "@/lib/admin-ui";
+import { ADMIN_BUTTON_SECONDARY, ADMIN_COLUMN, SLA_DOT } from "@/lib/admin-ui";
 
 export const dynamic = "force-dynamic";
 
@@ -271,6 +271,17 @@ export default async function AdminCasePage({
           })}
         />
       </div>
+
+      {c.subjectType === "COMPANY" || c.subjectType === "KYB" ? (
+        <div className="mb-4">
+          <a
+            href={`/${locale}/admin/companies/${c.subjectId}`}
+            className={ADMIN_BUTTON_SECONDARY}
+          >
+            {t("company.openSupervision")}
+          </a>
+        </div>
+      ) : null}
 
       <div className="flex flex-col gap-3 pb-10">
         <CaseSection
