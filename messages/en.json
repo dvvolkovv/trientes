@@ -488,7 +488,8 @@
         "kyb": "KYB documents",
         "coinRequests": "Coin requests",
         "pointReports": "Point reports"
-      }
+      },
+      "unread": "{count} unread"
     },
     "case": {
       "status": {
@@ -527,7 +528,56 @@
         "clockResumed": "restarted the clock",
         "timeAdjusted": "adjusted time by {minutes} min — {note}",
         "note": "left a note",
-        "decided": "made a decision"
+        "decided": "made a decision",
+        "messageSent": "wrote to the applicant",
+        "messageReceived": "applicant replied"
+      },
+      "thread": {
+        "title": "Correspondence",
+        "summary": "{count} messages",
+        "unreadSummary": "{count} messages, {unread} unread",
+        "empty": "No messages yet. The applicant sees whatever you send here.",
+        "staff": "Us",
+        "applicant": "Applicant",
+        "placeholder": "Write to the applicant…",
+        "send": "Send to applicant",
+        "needsReply": "I expect an answer (stops the clock)",
+        "templates": "Ready-made",
+        "templateLabels": {
+          "requestDocument": "Request a document",
+          "clarifyData": "Clarify data",
+          "needTranslation": "Need a translation",
+          "deadline7": "Answer within 7 days"
+        },
+        "attach": "Attach a file",
+        "attaching": "Uploading…",
+        "attached": "{count} attached",
+        "noApplicant": "This case has no registered applicant — there is nobody to write to.",
+        "errors": {
+          "empty": "Write something or attach a file",
+          "too_long": "Too long — 4000 characters max",
+          "too_large": "File is over 8 MB",
+          "bad_type": "Only PDF, PNG, JPEG or WebP",
+          "failed": "Could not send — try again"
+        }
+      },
+      "templates": {
+        "requestDocument": "Hello! To continue the review we need a document confirming the data in your application. Please attach a scan or a photo in reply to this message.",
+        "clarifyData": "Hello! Some details in your application need clarification. Please check the data and reply here with the correct values.",
+        "needTranslation": "Hello! The document you sent is in a language we cannot verify. Please attach a translation into English.",
+        "deadline7": "Please reply within 7 days. Without an answer we will have to close the application without a decision."
+      }
+    },
+    "bell": {
+      "title": "Notifications",
+      "subtitle": "{count} unread",
+      "empty": "Nothing new",
+      "open": "Open the case",
+      "kinds": {
+        "APPLICANT_REPLIED": "Applicant replied",
+        "DUE_SOON": "Due within 24 hours",
+        "CASE_OVERDUE": "Overdue",
+        "APPLICANT_SILENT": "Applicant has been silent for 14 days"
       }
     }
   },
@@ -1189,6 +1239,24 @@
       "title": "Admin panel",
       "subtitle": "You have site administrator rights. Moderation queues and site data are below.",
       "open": "Open admin panel"
+    },
+    "cases": {
+      "title": "Your applications",
+      "subtitle": "Correspondence with the moderators about everything you have submitted.",
+      "empty": "You have no applications under review.",
+      "unread": "{count} new",
+      "open": "Open correspondence",
+      "placeholder": "Write to the moderators…",
+      "send": "Send",
+      "status": {
+        "NEW": "received, waiting for a reviewer",
+        "IN_REVIEW": "under review",
+        "WAITING_APPLICANT": "waiting for your answer",
+        "READY_FOR_APPROVAL": "awaiting approval",
+        "APPROVED": "approved",
+        "REJECTED": "rejected",
+        "CLOSED": "closed"
+      }
     }
   },
   "register": {
@@ -2531,6 +2599,12 @@
       "decimals_invalid": "Decimals must be between 0 and 36.",
       "not_pending": "This item is no longer pending.",
       "unknown": "Something went wrong."
+    }
+  },
+  "notify": {
+    "caseMessage": {
+      "subject": "Trientes: a question about \"{title}\"",
+      "body": "The moderators wrote to you about your application \"{title}\". Open the link below to read it and reply."
     }
   }
 }
