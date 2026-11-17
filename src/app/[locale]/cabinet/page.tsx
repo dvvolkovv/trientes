@@ -7,6 +7,7 @@ import { ensureUsername } from "@/lib/ensure-username";
 import { ProfileSection } from "@/components/cabinet/profile-section";
 import { SettingsSection } from "@/components/cabinet/settings-section";
 import { AlertsSection } from "@/components/cabinet/alerts-section";
+import { CasesSection } from "@/components/cabinet/cases-section";
 import { CompaniesSection } from "@/components/cabinet/companies-section";
 import { ExchangesSection } from "@/components/cabinet/exchanges-section";
 import { CoinsSection } from "@/components/cabinet/coins-section";
@@ -80,6 +81,8 @@ export default async function CabinetPage({
         hasTelegramLinked={!!telegramAccount}
         locale={locale}
       />
+
+      <CasesSection locale={locale} userId={user.id} />
 
       <CompaniesSection locale={locale} cardParam={cardParam} />
 
