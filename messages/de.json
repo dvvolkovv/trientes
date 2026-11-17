@@ -192,7 +192,8 @@
       "exchanges": "Börsen",
       "fintech": "Fintech",
       "analytics": "Analytik",
-      "coinCards": "Coin-Karten"
+      "coinCards": "Coin-Karten",
+      "queues": "Warteschlangen"
     },
     "status": {
       "PENDING": "Wartend",
@@ -468,6 +469,65 @@
         "decimals_invalid": "Decimals müssen zwischen 0 und 36 liegen.",
         "not_pending": "Dieser Eintrag wartet nicht mehr auf eine Entscheidung.",
         "unknown": "Etwas ist schiefgelaufen."
+      }
+    },
+    "queues": {
+      "title": "Warteschlangen",
+      "subtitle": "{count} Fälle warten auf eine Entscheidung",
+      "oldest": "älteste — {days}T",
+      "left": "fällig in {d}T {h}Std",
+      "late": "überfällig",
+      "paused": "wartet auf Antragsteller",
+      "empty": "Warteschlange ist leer",
+      "names": {
+        "coinCards": "Coin-Karten",
+        "companies": "Unternehmen",
+        "points": "Kartenpunkte",
+        "exchanges": "Börsen",
+        "fintech": "Fintech",
+        "kyb": "KYB-Dokumente",
+        "coinRequests": "Coin-Anfragen",
+        "pointReports": "Punktmeldungen"
+      }
+    },
+    "case": {
+      "status": {
+        "NEW": "neu",
+        "IN_REVIEW": "in Prüfung",
+        "WAITING_APPLICANT": "wartet auf Antragsteller",
+        "READY_FOR_APPROVAL": "bereit zur Genehmigung",
+        "APPROVED": "genehmigt",
+        "REJECTED": "abgelehnt",
+        "CLOSED": "geschlossen"
+      },
+      "risk": {
+        "LOW": "geringes Risiko",
+        "MEDIUM": "mittleres Risiko",
+        "HIGH": "hohes Risiko"
+      },
+      "due": "Fällig in",
+      "handled": "Aufgewendete Zeit",
+      "claim": "Diesen Fall übernehmen",
+      "release": "Fall freigeben",
+      "takenBy": "Übernommen von {name}",
+      "sections": {
+        "form": "Antragsformular",
+        "formSummary": "{count} Felder",
+        "applicant": "Antragsteller",
+        "journal": "Fallprotokoll",
+        "journalSummary": "{count} Einträge, unveränderlich",
+        "subjectGone": "Das Objekt hinter diesem Fall existiert nicht mehr"
+      },
+      "journal": {
+        "opened": "hat den Fall eröffnet",
+        "claimed": "hat den Fall übernommen",
+        "released": "hat den Fall freigegeben",
+        "statusChanged": "Status geändert: {from} → {to}",
+        "clockPaused": "Uhr angehalten — wartet auf den Antragsteller",
+        "clockResumed": "die Uhr neu gestartet",
+        "timeAdjusted": "Zeit um {minutes} Min angepasst — {note}",
+        "note": "eine Notiz hinterlassen",
+        "decided": "eine Entscheidung getroffen"
       }
     }
   },

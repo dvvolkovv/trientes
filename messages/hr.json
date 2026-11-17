@@ -192,7 +192,8 @@
       "exchanges": "Burze",
       "fintech": "Fintech",
       "analytics": "Analitika",
-      "coinCards": "Kartice kovanica"
+      "coinCards": "Kartice kovanica",
+      "queues": "Redovi"
     },
     "status": {
       "PENDING": "Na čekanju",
@@ -468,6 +469,65 @@
         "decimals_invalid": "Broj decimala mora biti između 0 i 36.",
         "not_pending": "Ova stavka više nije na čekanju.",
         "unknown": "Nešto je pošlo po zlu."
+      }
+    },
+    "queues": {
+      "title": "Redovi",
+      "subtitle": "{count} predmeta čeka odluku",
+      "oldest": "najstarije — {days}d",
+      "left": "dospijeva za {d}d {h}h",
+      "late": "istekao rok",
+      "paused": "čeka podnositelja",
+      "empty": "red je prazan",
+      "names": {
+        "coinCards": "Kartice kovanica",
+        "companies": "Tvrtke",
+        "points": "Lokacije na karti",
+        "exchanges": "Burze",
+        "fintech": "Fintech",
+        "kyb": "KYB dokumenti",
+        "coinRequests": "Zahtjevi za kovanice",
+        "pointReports": "Izvješća o lokacijama"
+      }
+    },
+    "case": {
+      "status": {
+        "NEW": "novo",
+        "IN_REVIEW": "u pregledu",
+        "WAITING_APPLICANT": "čeka podnositelja",
+        "READY_FOR_APPROVAL": "spremno za odobrenje",
+        "APPROVED": "odobreno",
+        "REJECTED": "odbijeno",
+        "CLOSED": "zatvoreno"
+      },
+      "risk": {
+        "LOW": "nizak rizik",
+        "MEDIUM": "srednji rizik",
+        "HIGH": "visok rizik"
+      },
+      "due": "Istječe za",
+      "handled": "Utrošeno vrijeme",
+      "claim": "Preuzeti slučaj",
+      "release": "Osloboditi slučaj",
+      "takenBy": "Preuzeo/la {name}",
+      "sections": {
+        "form": "Prijavni obrazac",
+        "formSummary": "{count} polja",
+        "applicant": "Podnositelj zahtjeva",
+        "journal": "Dnevnik slučaja",
+        "journalSummary": "{count} unosa, nepromjenjivo",
+        "subjectGone": "Objekt povezan s ovim slučajem više ne postoji"
+      },
+      "journal": {
+        "opened": "otvorio/la slučaj",
+        "claimed": "preuzeo/la slučaj",
+        "released": "oslobodio/la slučaj",
+        "statusChanged": "promijenio/la status: {from} → {to}",
+        "clockPaused": "zaustavio/la sat — čeka se podnositelj",
+        "clockResumed": "ponovno pokrenuo/la sat",
+        "timeAdjusted": "prilagodio/la vrijeme za {minutes} min — {note}",
+        "note": "ostavio/la bilješku",
+        "decided": "donio/la odluku"
       }
     }
   },

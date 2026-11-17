@@ -192,7 +192,8 @@
       "exchanges": "取引所",
       "fintech": "フィンテック",
       "analytics": "アナリティクス",
-      "coinCards": "コインカード"
+      "coinCards": "コインカード",
+      "queues": "キュー"
     },
     "status": {
       "PENDING": "審査中",
@@ -468,6 +469,65 @@
         "decimals_invalid": "decimals は0〜36の範囲にしてください。",
         "not_pending": "この項目はすでに処理済みです。",
         "unknown": "問題が発生しました。"
+      }
+    },
+    "queues": {
+      "title": "キュー",
+      "subtitle": "{count} 件の案件が決定待ち",
+      "oldest": "最古 — {days}日",
+      "left": "期限まで {d}日 {h}時間",
+      "late": "期限超過",
+      "paused": "申請者待ち",
+      "empty": "キューは空です",
+      "names": {
+        "coinCards": "コインカード",
+        "companies": "企業",
+        "points": "地図ポイント",
+        "exchanges": "取引所",
+        "fintech": "フィンテック",
+        "kyb": "KYB書類",
+        "coinRequests": "コイン申請",
+        "pointReports": "地点報告"
+      }
+    },
+    "case": {
+      "status": {
+        "NEW": "新規",
+        "IN_REVIEW": "審査中",
+        "WAITING_APPLICANT": "申請者待ち",
+        "READY_FOR_APPROVAL": "承認準備完了",
+        "APPROVED": "承認済み",
+        "REJECTED": "却下",
+        "CLOSED": "終了"
+      },
+      "risk": {
+        "LOW": "低リスク",
+        "MEDIUM": "中リスク",
+        "HIGH": "高リスク"
+      },
+      "due": "期限まで",
+      "handled": "対応時間",
+      "claim": "このケースを引き受ける",
+      "release": "このケースの担当を解除",
+      "takenBy": "{name} が担当",
+      "sections": {
+        "form": "申請フォーム",
+        "formSummary": "{count} 項目",
+        "applicant": "申請者",
+        "journal": "ケース記録",
+        "journalSummary": "{count} 件、改ざん不可",
+        "subjectGone": "このケースの対象は既に存在しません"
+      },
+      "journal": {
+        "opened": "ケースを開いた",
+        "claimed": "ケースを引き受けた",
+        "released": "ケースの担当を解除した",
+        "statusChanged": "ステータスを変更: {from} → {to}",
+        "clockPaused": "計時を停止 — 申請者待ち",
+        "clockResumed": "計時を再開した",
+        "timeAdjusted": "時間を{minutes} 分調整 — {note}",
+        "note": "メモを残した",
+        "decided": "決定を下した"
       }
     }
   },

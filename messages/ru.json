@@ -192,7 +192,8 @@
       "exchanges": "Биржи",
       "fintech": "Финтех",
       "analytics": "Аналитика",
-      "coinCards": "Карточки монет"
+      "coinCards": "Карточки монет",
+      "queues": "Очереди"
     },
     "status": {
       "PENDING": "Ожидает",
@@ -468,6 +469,65 @@
         "decimals_invalid": "Decimals — от 0 до 36.",
         "not_pending": "Эта запись больше не ждёт решения.",
         "unknown": "Что-то пошло не так."
+      }
+    },
+    "queues": {
+      "title": "Очереди",
+      "subtitle": "{count} дел ожидают решения",
+      "oldest": "самое старое — {days}д",
+      "left": "срок через {d}д {h}ч",
+      "late": "просрочено",
+      "paused": "ожидание заявителя",
+      "empty": "очередь пуста",
+      "names": {
+        "coinCards": "Карточки монет",
+        "companies": "Компании",
+        "points": "Точки на карте",
+        "exchanges": "Биржи",
+        "fintech": "Финтех",
+        "kyb": "Документы KYB",
+        "coinRequests": "Запросы на монеты",
+        "pointReports": "Отчеты о точках"
+      }
+    },
+    "case": {
+      "status": {
+        "NEW": "новое",
+        "IN_REVIEW": "на рассмотрении",
+        "WAITING_APPLICANT": "ожидание заявителя",
+        "READY_FOR_APPROVAL": "готово к утверждению",
+        "APPROVED": "утверждено",
+        "REJECTED": "отклонено",
+        "CLOSED": "закрыто"
+      },
+      "risk": {
+        "LOW": "низкий риск",
+        "MEDIUM": "средний риск",
+        "HIGH": "высокий риск"
+      },
+      "due": "Срок через",
+      "handled": "Затраченное время",
+      "claim": "Взять дело",
+      "release": "Освободить дело",
+      "takenBy": "Взято {name}",
+      "sections": {
+        "form": "Форма заявки",
+        "formSummary": "{count} полей",
+        "applicant": "Заявитель",
+        "journal": "Журнал дела",
+        "journalSummary": "{count} записей, неизменяемые",
+        "subjectGone": "Объект, связанный с этим делом, больше не существует"
+      },
+      "journal": {
+        "opened": "открыл дело",
+        "claimed": "взял дело",
+        "released": "освободил дело",
+        "statusChanged": "изменил статус: {from} → {to}",
+        "clockPaused": "остановил таймер — ожидание заявителя",
+        "clockResumed": "перезапустил таймер",
+        "timeAdjusted": "скорректировал время на {minutes} мин — {note}",
+        "note": "оставил заметку",
+        "decided": "принял решение"
       }
     }
   },

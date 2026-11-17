@@ -59,6 +59,16 @@ export async function ensureCaseCore(
   }
 }
 
-export async function ensureCase(input: EnsureCaseInput): Promise<string> {
-  return ensureCaseCore(prisma, input);
+/**
+ * Обёртка для мест подачи заявки. Сбой заведения дела не должен ронять саму
+ * подачу — заявка человека дороже строки в очереди; осиротевшую заявку
+ * подберёт `scripts/backfill-cases.ts` (он идемпотентен и ходит по PENDING).
+ */
+export async function ensureCase(input: EnsureCaseInput): Promise<string | null> {
+  try {
+    return await ensureCaseCore(prisma, input);
+  } catch (err) {
+    console.error(`[cases] failed to open case for ${input.subjectType}:${input.subjectId}`, err);
+    return null;
+  }
 }

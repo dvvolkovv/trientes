@@ -192,7 +192,8 @@
       "exchanges": "Borsalar",
       "fintech": "Fintek",
       "analytics": "Analitik",
-      "coinCards": "Coin kartları"
+      "coinCards": "Coin kartları",
+      "queues": "Kuyruklar"
     },
     "status": {
       "PENDING": "Beklemede",
@@ -468,6 +469,65 @@
         "decimals_invalid": "Ondalık basamak 0 ile 36 arasında olmalı.",
         "not_pending": "Bu kayıt artık beklemede değil.",
         "unknown": "Bir şeyler ters gitti."
+      }
+    },
+    "queues": {
+      "title": "Kuyruklar",
+      "subtitle": "{count} dosya karar bekliyor",
+      "oldest": "en eski — {days}g",
+      "left": "son tarih {d}g {h}s içinde",
+      "late": "gecikmiş",
+      "paused": "başvuran bekleniyor",
+      "empty": "kuyruk boş",
+      "names": {
+        "coinCards": "Coin kartları",
+        "companies": "Şirketler",
+        "points": "Harita noktaları",
+        "exchanges": "Borsalar",
+        "fintech": "Fintek",
+        "kyb": "KYB belgeleri",
+        "coinRequests": "Coin talepleri",
+        "pointReports": "Nokta raporları"
+      }
+    },
+    "case": {
+      "status": {
+        "NEW": "yeni",
+        "IN_REVIEW": "incelemede",
+        "WAITING_APPLICANT": "başvuran bekleniyor",
+        "READY_FOR_APPROVAL": "onay için hazır",
+        "APPROVED": "onaylandı",
+        "REJECTED": "reddedildi",
+        "CLOSED": "kapalı"
+      },
+      "risk": {
+        "LOW": "düşük risk",
+        "MEDIUM": "orta risk",
+        "HIGH": "yüksek risk"
+      },
+      "due": "Kalan süre",
+      "handled": "Harcanan süre",
+      "claim": "Bu vakayı al",
+      "release": "Vakayı bırak",
+      "takenBy": "{name} tarafından alındı",
+      "sections": {
+        "form": "Başvuru formu",
+        "formSummary": "{count} alan",
+        "applicant": "Başvuran",
+        "journal": "Vaka günlüğü",
+        "journalSummary": "{count} kayıt, değiştirilemez",
+        "subjectGone": "Bu vakaya konu nesne artık mevcut değil"
+      },
+      "journal": {
+        "opened": "vakayı açtı",
+        "claimed": "vakayı aldı",
+        "released": "vakayı bıraktı",
+        "statusChanged": "durumu değiştirdi: {from} → {to}",
+        "clockPaused": "zamanlayıcıyı durdurdu — başvuran bekleniyor",
+        "clockResumed": "zamanlayıcıyı yeniden başlattı",
+        "timeAdjusted": "süreyi {minutes} dk ayarladı — {note}",
+        "note": "not bıraktı",
+        "decided": "karar verdi"
       }
     }
   },

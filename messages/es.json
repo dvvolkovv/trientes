@@ -192,7 +192,8 @@
       "exchanges": "Intercambios",
       "fintech": "Fintech",
       "analytics": "Analítica",
-      "coinCards": "Fichas de monedas"
+      "coinCards": "Fichas de monedas",
+      "queues": "Colas"
     },
     "status": {
       "PENDING": "Pendiente",
@@ -468,6 +469,65 @@
         "decimals_invalid": "Los decimales deben estar entre 0 y 36.",
         "not_pending": "Este elemento ya no está pendiente.",
         "unknown": "Algo ha ido mal."
+      }
+    },
+    "queues": {
+      "title": "Colas",
+      "subtitle": "{count} casos esperando una decisión",
+      "oldest": "más antiguo — {days}d",
+      "left": "vence en {d}d {h}h",
+      "late": "vencido",
+      "paused": "esperando al solicitante",
+      "empty": "la cola está vacía",
+      "names": {
+        "coinCards": "Tarjetas de monedas",
+        "companies": "Empresas",
+        "points": "Puntos del mapa",
+        "exchanges": "Intercambios",
+        "fintech": "Fintech",
+        "kyb": "Documentos KYB",
+        "coinRequests": "Solicitudes de monedas",
+        "pointReports": "Informes de puntos"
+      }
+    },
+    "case": {
+      "status": {
+        "NEW": "nuevo",
+        "IN_REVIEW": "en revisión",
+        "WAITING_APPLICANT": "esperando al solicitante",
+        "READY_FOR_APPROVAL": "listo para aprobación",
+        "APPROVED": "aprobado",
+        "REJECTED": "rechazado",
+        "CLOSED": "cerrado"
+      },
+      "risk": {
+        "LOW": "riesgo bajo",
+        "MEDIUM": "riesgo medio",
+        "HIGH": "riesgo alto"
+      },
+      "due": "Vence en",
+      "handled": "Tiempo invertido",
+      "claim": "Tomar este caso",
+      "release": "Liberar el caso",
+      "takenBy": "Tomado por {name}",
+      "sections": {
+        "form": "Formulario de solicitud",
+        "formSummary": "{count} campos",
+        "applicant": "Solicitante",
+        "journal": "Registro del caso",
+        "journalSummary": "{count} entradas, inmutable",
+        "subjectGone": "El objeto detrás de este caso ya no existe"
+      },
+      "journal": {
+        "opened": "abrió el caso",
+        "claimed": "tomó el caso",
+        "released": "liberó el caso",
+        "statusChanged": "cambió el estado: {from} → {to}",
+        "clockPaused": "detuvo el reloj — esperando al solicitante",
+        "clockResumed": "reinició el reloj",
+        "timeAdjusted": "ajustó el tiempo en {minutes} min — {note}",
+        "note": "dejó una nota",
+        "decided": "tomó una decisión"
       }
     }
   },

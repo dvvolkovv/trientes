@@ -192,7 +192,8 @@
       "exchanges": "交易所",
       "fintech": "金融科技",
       "analytics": "分析",
-      "coinCards": "币种卡片"
+      "coinCards": "币种卡片",
+      "queues": "队列"
     },
     "status": {
       "PENDING": "待审核",
@@ -468,6 +469,65 @@
         "decimals_invalid": "decimals 必须在 0 到 36 之间。",
         "not_pending": "该条目已不在待处理状态。",
         "unknown": "出了点问题。"
+      }
+    },
+    "queues": {
+      "title": "队列",
+      "subtitle": "{count} 个案件等待决策",
+      "oldest": "最早 — {days}天",
+      "left": "距截止 {d}天 {h}小时",
+      "late": "逾期",
+      "paused": "等待申请人",
+      "empty": "队列为空",
+      "names": {
+        "coinCards": "币种卡片",
+        "companies": "公司",
+        "points": "地图点位",
+        "exchanges": "交易所",
+        "fintech": "金融科技",
+        "kyb": "KYB 文档",
+        "coinRequests": "币种请求",
+        "pointReports": "点位报告"
+      }
+    },
+    "case": {
+      "status": {
+        "NEW": "新建",
+        "IN_REVIEW": "审核中",
+        "WAITING_APPLICANT": "等待申请人",
+        "READY_FOR_APPROVAL": "待批准",
+        "APPROVED": "已批准",
+        "REJECTED": "已拒绝",
+        "CLOSED": "已关闭"
+      },
+      "risk": {
+        "LOW": "低风险",
+        "MEDIUM": "中风险",
+        "HIGH": "高风险"
+      },
+      "due": "距截止",
+      "handled": "已用时间",
+      "claim": "接手此案件",
+      "release": "释放案件",
+      "takenBy": "由{name}接手",
+      "sections": {
+        "form": "申请表",
+        "formSummary": "{count} 个字段",
+        "applicant": "申请人",
+        "journal": "案件日志",
+        "journalSummary": "{count} 条记录，不可更改",
+        "subjectGone": "此案件所对应的对象已不存在"
+      },
+      "journal": {
+        "opened": "打开了案件",
+        "claimed": "接手了案件",
+        "released": "释放了案件",
+        "statusChanged": "更改了状态：{from} → {to}",
+        "clockPaused": "已停止计时 — 等待申请人",
+        "clockResumed": "重新开始计时",
+        "timeAdjusted": "将时间调整了 {minutes} 分钟 — {note}",
+        "note": "留下了备注",
+        "decided": "作出了决定"
       }
     }
   },

@@ -128,8 +128,8 @@
     "indicators": "Indicateurs",
     "volumePane": "Volume",
     "reducedGranularity": "Données limitées : cette pièce n'est pas sur Binance, affichage des bougies journalières",
-    "ma": "MA",
-    "ema": "EMA",
+    "ma": "MM",
+    "ema": "MME",
     "bollinger": "Bollinger",
     "rsi": "RSI",
     "macd": "MACD",
@@ -192,7 +192,8 @@
       "exchanges": "Plateformes",
       "fintech": "Fintech",
       "analytics": "Analyse",
-      "coinCards": "Fiches de monnaies"
+      "coinCards": "Fiches de monnaies",
+      "queues": "Files d'attente"
     },
     "status": {
       "PENDING": "En attente",
@@ -468,6 +469,65 @@
         "decimals_invalid": "Les décimales doivent être entre 0 et 36.",
         "not_pending": "Cet élément n'est plus en attente.",
         "unknown": "Une erreur est survenue."
+      }
+    },
+    "queues": {
+      "title": "Files d'attente",
+      "subtitle": "{count} dossiers en attente d'une décision",
+      "oldest": "le plus ancien — {days}j",
+      "left": "échéance dans {d}j {h}h",
+      "late": "en retard",
+      "paused": "en attente du demandeur",
+      "empty": "la file est vide",
+      "names": {
+        "coinCards": "Fiches crypto",
+        "companies": "Entreprises",
+        "points": "Points sur la carte",
+        "exchanges": "Bourses",
+        "fintech": "Fintech",
+        "kyb": "Documents KYB",
+        "coinRequests": "Demandes de coins",
+        "pointReports": "Rapports de points"
+      }
+    },
+    "case": {
+      "status": {
+        "NEW": "nouveau",
+        "IN_REVIEW": "en cours d'examen",
+        "WAITING_APPLICANT": "en attente du demandeur",
+        "READY_FOR_APPROVAL": "prêt pour approbation",
+        "APPROVED": "approuvé",
+        "REJECTED": "refusé",
+        "CLOSED": "clos"
+      },
+      "risk": {
+        "LOW": "risque faible",
+        "MEDIUM": "risque moyen",
+        "HIGH": "risque élevé"
+      },
+      "due": "Échéance dans",
+      "handled": "Temps passé",
+      "claim": "Prendre ce dossier",
+      "release": "Libérer le dossier",
+      "takenBy": "Pris par {name}",
+      "sections": {
+        "form": "Formulaire de demande",
+        "formSummary": "{count} champs",
+        "applicant": "Demandeur",
+        "journal": "Journal du dossier",
+        "journalSummary": "{count} entrées, immuables",
+        "subjectGone": "L'objet associé à ce dossier n'existe plus"
+      },
+      "journal": {
+        "opened": "a ouvert le dossier",
+        "claimed": "a pris le dossier",
+        "released": "a libéré le dossier",
+        "statusChanged": "a changé le statut : {from} → {to}",
+        "clockPaused": "a arrêté l'horloge — en attente du demandeur",
+        "clockResumed": "a relancé l'horloge",
+        "timeAdjusted": "a ajusté le temps de {minutes} min — {note}",
+        "note": "a laissé une note",
+        "decided": "a pris une décision"
       }
     }
   },
@@ -1571,7 +1631,7 @@
       "SELF_REPORTED": "Déclaré par le projet lui-même",
       "SELF_REPORTED_short": "déclaré",
       "VERIFIED_ONCHAIN": "Vérifié on-chain",
-      "VERIFIED_ONCHAIN_short": "on-chain",
+      "VERIFIED_ONCHAIN_short": "sur chaîne",
       "AGGREGATED": "Agrégé sur les marchés",
       "AGGREGATED_short": "agrégé",
       "ADMIN_SET": "Défini par un modérateur",

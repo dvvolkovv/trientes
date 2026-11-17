@@ -192,7 +192,8 @@
       "exchanges": "거래소",
       "fintech": "핀테크",
       "analytics": "애널리틱스",
-      "coinCards": "코인 카드"
+      "coinCards": "코인 카드",
+      "queues": "대기열"
     },
     "status": {
       "PENDING": "검토 중",
@@ -468,6 +469,65 @@
         "decimals_invalid": "decimals 는 0~36 이어야 합니다.",
         "not_pending": "이 항목은 더 이상 대기 중이 아닙니다.",
         "unknown": "문제가 발생했습니다."
+      }
+    },
+    "queues": {
+      "title": "대기열",
+      "subtitle": "{count}건의 케이스가 결정 대기 중",
+      "oldest": "가장 오래됨 — {days}d",
+      "left": "마감까지 {d}d {h}h 남음",
+      "late": "기한 초과",
+      "paused": "신청자 대기 중",
+      "empty": "대기열이 비어 있음",
+      "names": {
+        "coinCards": "코인 카드",
+        "companies": "기업",
+        "points": "지도 포인트",
+        "exchanges": "거래소",
+        "fintech": "핀테크",
+        "kyb": "KYB 문서",
+        "coinRequests": "코인 요청",
+        "pointReports": "포인트 신고"
+      }
+    },
+    "case": {
+      "status": {
+        "NEW": "신규",
+        "IN_REVIEW": "검토 중",
+        "WAITING_APPLICANT": "신청자 대기 중",
+        "READY_FOR_APPROVAL": "승인 준비됨",
+        "APPROVED": "승인됨",
+        "REJECTED": "거절됨",
+        "CLOSED": "종결됨"
+      },
+      "risk": {
+        "LOW": "낮은 위험",
+        "MEDIUM": "중간 위험",
+        "HIGH": "높은 위험"
+      },
+      "due": "마감까지",
+      "handled": "소요 시간",
+      "claim": "담당하기",
+      "release": "담당 해제",
+      "takenBy": "{name} 담당",
+      "sections": {
+        "form": "신청서",
+        "formSummary": "{count}개 필드",
+        "applicant": "신청인",
+        "journal": "케이스 기록",
+        "journalSummary": "{count}개 항목, 변경 불가",
+        "subjectGone": "이 케이스의 대상이 더 이상 존재하지 않습니다"
+      },
+      "journal": {
+        "opened": "케이스를 열음",
+        "claimed": "케이스를 맡음",
+        "released": "케이스를 해제함",
+        "statusChanged": "상태 변경: {from} → {to}",
+        "clockPaused": "타이머 중지 — 신청인 대기 중",
+        "clockResumed": "타이머 재시작",
+        "timeAdjusted": "시간 {minutes}분 조정 — {note}",
+        "note": "메모를 남김",
+        "decided": "결정함"
       }
     }
   },
