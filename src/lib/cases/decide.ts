@@ -6,6 +6,7 @@ import { approveExchange, rejectExchange } from "@/app/actions/admin-exchange";
 import { approveFintech, rejectFintech } from "@/app/actions/admin-fintech";
 import { approveRequest, rejectRequest } from "@/app/actions/admin-requests";
 import { approveKyb, rejectKyb } from "@/app/actions/kyb";
+import { clearPointReview, suspendPoint } from "@/app/actions/point-supervision";
 
 /**
  * Применение решения дела к самому объекту заявки.
@@ -70,9 +71,15 @@ export async function applyDecision(input: {
           : await rejectRequest({ requestId: subjectId, rejectReason: reason }),
       );
     case "POINT_REPORT":
-      // У жалобы на точку своего статуса нет: решение по ней живёт в самом деле.
-      // Объектную часть заводит слайс AQ.
-      return { ok: true };
+      // «Одобрено» по делу жалобы значит «жалоба подтверждена»: точка уходит с
+      // карты. «Отклонено» — жалоба не подтвердилась, точка возвращается.
+      // Подписи кнопок на экране свои (`admin.case.decision.pointReport.*`),
+      // иначе это читалось бы как «одобрить точку».
+      return normalize(
+        approve
+          ? await suspendPoint({ pointId: subjectId, reason })
+          : await clearPointReview({ pointId: subjectId }),
+      );
   }
 }
 

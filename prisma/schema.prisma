@@ -429,6 +429,8 @@ enum AdminAction {
   DELETE_POINT
   RESTORE_COMPANY
   RESTORE_POINT
+  SUSPEND_POINT
+  UNSUSPEND_POINT
 }
 
 model AdminAuditLog {

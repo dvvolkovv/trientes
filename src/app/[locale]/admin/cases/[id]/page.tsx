@@ -208,6 +208,16 @@ export default async function AdminCasePage({
 
   // Номер раздела считается, а не вписан руками: раздел «Жалобы» появляется
   // только у дел по жалобам, и вписанные номера разъехались бы.
+  // У дела по жалобе «одобрить» значит «подтвердить жалобу»: подписи кнопок
+  // свои, иначе это читается как «одобрить точку».
+  const decisionLabels =
+    c.subjectType === "POINT_REPORT"
+      ? {
+          approve: t("case.decision.pointReport.approve"),
+          reject: t("case.decision.pointReport.reject"),
+        }
+      : { approve: t("case.decision.approve"), reject: t("case.decision.reject") };
+
   let sectionNo = 0;
   const nextNo = () => String(++sectionNo);
 
@@ -450,8 +460,8 @@ export default async function AdminCasePage({
               labels={{
                 review: t("case.decision.review"),
                 reviewedBy: t.raw("case.decision.reviewedBy") as string,
-                approve: t("case.decision.approve"),
-                reject: t("case.decision.reject"),
+                approve: decisionLabels.approve,
+                reject: decisionLabels.reject,
                 reasonPlaceholder: t("case.decision.reasonPlaceholder"),
                 soleHint: t("case.decision.soleHint"),
                 rejectHint: t("case.decision.rejectHint"),
