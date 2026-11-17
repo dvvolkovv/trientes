@@ -37,6 +37,8 @@ const KEYS: Record<CaseEventKind, string> = {
   CLOCK_RESUMED: "clockResumed",
   TIME_ADJUSTED: "timeAdjusted",
   NOTE: "note",
+  MESSAGE_SENT: "messageSent",
+  MESSAGE_RECEIVED: "messageReceived",
   DECIDED: "decided",
 };
 
