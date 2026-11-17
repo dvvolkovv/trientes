@@ -5,6 +5,7 @@ import type { CaseCheckState, CaseDocumentVerdict } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { checkAdmin } from "@/lib/is-admin";
 import { appendCaseEvent } from "@/lib/cases/journal";
+import { nextReviewAt } from "@/lib/company-visibility";
 import { checklistFor, checklistProgress, noteRequired } from "@/lib/cases/checklists";
 import { approvalBlockers, isSoleSignOff, rejectBlockers } from "@/lib/cases/approval";
 import { applyDecision, isAlreadySettled } from "@/lib/cases/decide";
@@ -228,6 +229,12 @@ export async function decideCase(input: {
       clockStoppedAt: null,
       soleSignOff: sole,
       ...(input.decision === "APPROVED" ? { approvedById: admin.userId, approvedAt: now } : {}),
+      // Залистованное предприятие пересматривают периодически: срок ставится
+      // здесь, в момент листинга, а не отдельным делом — у дела @@unique на
+      // объект, второго дела у той же компании быть не может.
+      ...(input.decision === "APPROVED" && c.subjectType === "COMPANY"
+        ? { nextReviewAt: nextReviewAt(now, c.risk) }
+        : {}),
     },
   });
   await appendCaseEvent({
