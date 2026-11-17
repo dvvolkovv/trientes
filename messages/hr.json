@@ -1124,6 +1124,11 @@
         "APPROVED": "Objavljeno",
         "REJECTED": "Odbijeno"
       }
+    },
+    "admin": {
+      "title": "Administratorski panel",
+      "subtitle": "Imate administratorska prava na web-mjestu. Redovi za moderiranje i podaci web-mjesta su u nastavku.",
+      "open": "Otvoriti administratorski panel"
     }
   },
   "register": {

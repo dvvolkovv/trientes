@@ -1124,6 +1124,11 @@
         "APPROVED": "已发布",
         "REJECTED": "已拒绝"
       }
+    },
+    "admin": {
+      "title": "管理面板",
+      "subtitle": "你拥有站点管理员权限。下方是审核队列和站点数据",
+      "open": "打开管理面板"
     }
   },
   "register": {

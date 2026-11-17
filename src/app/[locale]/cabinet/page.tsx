@@ -10,6 +10,7 @@ import { AlertsSection } from "@/components/cabinet/alerts-section";
 import { CompaniesSection } from "@/components/cabinet/companies-section";
 import { ExchangesSection } from "@/components/cabinet/exchanges-section";
 import { CoinsSection } from "@/components/cabinet/coins-section";
+import { AdminSection } from "@/components/cabinet/admin-section";
 
 export default async function CabinetPage({
   params,
@@ -85,6 +86,8 @@ export default async function CabinetPage({
       <CoinsSection locale={locale} />
 
       <ExchangesSection locale={locale} />
+
+      {user.role === "ADMIN" ? <AdminSection locale={locale} /> : null}
     </main>
   );
 }

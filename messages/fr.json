@@ -1124,6 +1124,11 @@
         "APPROVED": "Publiée",
         "REJECTED": "Refusée"
       }
+    },
+    "admin": {
+      "title": "Panneau d’administration",
+      "subtitle": "Vous disposez des droits d’administrateur du site. Les files de modération et les données du site se trouvent ci-dessous.",
+      "open": "Ouvrir le panneau d’administration"
     }
   },
   "register": {

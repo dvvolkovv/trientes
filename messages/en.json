@@ -1124,6 +1124,11 @@
         "APPROVED": "Published",
         "REJECTED": "Rejected"
       }
+    },
+    "admin": {
+      "title": "Admin panel",
+      "subtitle": "You have site administrator rights. Moderation queues and site data are below.",
+      "open": "Open admin panel"
     }
   },
   "register": {

@@ -219,7 +219,7 @@
     },
     "addCoin": {
       "heading": "Adicionar uma moeda manualmente",
-      "coingeckoId": "CoinGecko ID",
+      "coingeckoId": "ID da CoinGecko",
       "symbol": "Símbolo",
       "name": "Nome",
       "add": "Adicionar",
@@ -1124,6 +1124,11 @@
         "APPROVED": "Publicada",
         "REJECTED": "Recusada"
       }
+    },
+    "admin": {
+      "title": "Painel de administração",
+      "subtitle": "Você tem direitos de administrador do site. As filas de moderação e os dados do site estão abaixo.",
+      "open": "Abrir painel de administração"
     }
   },
   "register": {
@@ -1648,7 +1653,7 @@
       "investorsHint": "Um por linha",
       "pitch": "Apresentação breve",
       "pitchHint": "Pelo menos 80 caracteres para contar",
-      "roadmap": "Roadmap",
+      "roadmap": "Roteiro",
       "milestoneTitle": "Marco",
       "addMilestone": "Adicionar marco",
       "mediaKit": "Link do kit de mídia",

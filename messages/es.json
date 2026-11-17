@@ -1124,6 +1124,11 @@
         "APPROVED": "Publicada",
         "REJECTED": "Rechazada"
       }
+    },
+    "admin": {
+      "title": "Panel de administración",
+      "subtitle": "Tienes permisos de administrador del sitio. A continuación se muestran las colas de moderación y los datos del sitio.",
+      "open": "Abrir panel de administración"
     }
   },
   "register": {

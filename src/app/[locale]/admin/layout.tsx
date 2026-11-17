@@ -15,7 +15,15 @@ export default async function AdminLayout({
   setRequestLocale(locale);
 
   const admin = await checkAdmin();
-  if (!admin.ok) redirect(`/${locale}/login`);
+  // A signed-in non-admin sent to /login would just bounce back here; the
+  // cabinet is the honest destination for them.
+  if (!admin.ok) {
+    redirect(
+      admin.reason === "unauth"
+        ? `/${locale}/login?next=/${locale}/admin`
+        : `/${locale}/cabinet`,
+    );
+  }
 
   return (
     <div className="max-w-[1600px] mx-auto px-4 md:px-12 xl:px-20 py-12">

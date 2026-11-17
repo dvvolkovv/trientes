@@ -1124,6 +1124,11 @@
         "APPROVED": "Veröffentlicht",
         "REJECTED": "Abgelehnt"
       }
+    },
+    "admin": {
+      "title": "Admin-Panel",
+      "subtitle": "Sie haben Administratorrechte für die Website. Unten finden Sie Moderationswarteschlangen und Seitendaten.",
+      "open": "Admin-Panel öffnen"
     }
   },
   "register": {
