@@ -66,6 +66,8 @@ model User {
   casesAssigned            ComplianceCase[]          @relation("CaseAssignee")
   caseEvents               CaseEvent[]               @relation("CaseEventActor")
   caseTimeEntries          CaseTimeEntry[]           @relation("CaseTimeUser")
+  caseMessages             CaseMessage[]             @relation("CaseMessageAuthor")
+  adminNotifications       AdminNotification[]       @relation("AdminNotificationUser")
 }
 
 model PushSubscription {
@@ -1240,12 +1242,28 @@ enum CaseEventKind {
   CLOCK_RESUMED
   TIME_ADJUSTED
   NOTE
+  MESSAGE_SENT
+  MESSAGE_RECEIVED
   DECIDED
 }
 
 enum CaseTimeSource {
   AUTO
   MANUAL
+}
+
+/// У сообщения ровно две стороны. Третье значение (SYSTEM из CaseActorSide)
+/// нечем было бы нарисовать в нитке, поэтому перечисление своё.
+enum CaseMessageSide {
+  STAFF
+  APPLICANT
+}
+
+enum AdminNotificationKind {
+  APPLICANT_REPLIED
+  DUE_SOON
+  CASE_OVERDUE
+  APPLICANT_SILENT
 }
 
 model ComplianceCase {
@@ -1272,12 +1290,17 @@ model ComplianceCase {
   clockStoppedAt DateTime?
   handledSeconds Int       @default(0)
   decidedAt      DateTime?
+  /// Когда сотрудник впервые написал заявителю. Считается один раз и только
+  /// вперёд: это показатель отзывчивости, его нельзя пересчитать потом.
+  firstResponseAt DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  events      CaseEvent[]
-  timeEntries CaseTimeEntry[]
+  events        CaseEvent[]
+  timeEntries   CaseTimeEntry[]
+  messages      CaseMessage[]
+  notifications AdminNotification[]
 
   @@unique([subjectType, subjectId])
   @@index([status, dueAt])
@@ -1316,4 +1339,48 @@ model CaseTimeEntry {
 
   @@index([caseId, startedAt])
   @@index([userId, startedAt])
+}
+
+/// Одна нитка на дело: слева заявитель, справа мы.
+model CaseMessage {
+  id       String          @id @default(cuid())
+  caseId   String
+  case     ComplianceCase  @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  authorId String?
+  author   User?           @relation("CaseMessageAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  side     CaseMessageSide
+  body     String
+  /// [{ name, filename, size, mime }] — разбирается через parseAttachments.
+  attachments Json?
+
+  /// Непрочитанное считается по стороне, а не по человеку: общий стол заявок.
+  readByStaffAt     DateTime?
+  readByApplicantAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([caseId, createdAt])
+  @@index([side, readByStaffAt])
+}
+
+/// Личный колокольчик сотрудника. Непрочитанное с тем же (userId, kind, caseId)
+/// не плодится, а обновляется — иначе пять ответов дают пять звонков.
+model AdminNotification {
+  id     String                @id @default(cuid())
+  userId String
+  user   User                  @relation("AdminNotificationUser", fields: [userId], references: [id], onDelete: Cascade)
+  kind   AdminNotificationKind
+  caseId String?
+  case   ComplianceCase?       @relation(fields: [caseId], references: [id], onDelete: Cascade)
+
+  /// Снимок названия дела: список должен читаться, даже если дело удалили.
+  title  String
+  body   String?
+  readAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, readAt])
+  @@index([userId, createdAt])
+  @@index([kind, caseId])
 }
