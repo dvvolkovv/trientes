@@ -537,7 +537,11 @@
         "messageReceived": "申请人已回复",
         "reviewed": "已签署«checked»",
         "checkSet": "检查 «{key}»: {state}",
-        "documentVerdict": "文件 «{label}»: {verdict}"
+        "documentVerdict": "文件 «{label}»: {verdict}",
+        "pointReported": "一位访客举报了该点：{reason}",
+        "pointAsked": "已就举报询问了该商家",
+        "pointWarned": "已警告该商家——14天未回复",
+        "pointSuspended": "已将该点从地图移除——举报未获回应"
       },
       "thread": {
         "title": "往来通信",
@@ -689,6 +693,22 @@
           "not_found": "此案件已不存在",
           "failed": "无法保存—请重试",
           "not_pending": "该对象不再等待决定"
+        },
+        "pointReport": {
+          "approve": "确认举报——将该地点从地图移除",
+          "reject": "驳回举报——保留该地点在地图上"
+        }
+      },
+      "reports": {
+        "title": "举报",
+        "summary": "收到{count}条",
+        "empty": "暂无举报.",
+        "anonymous": "匿名访客",
+        "reason": {
+          "CLOSED": "永久停业",
+          "NO_CRYPTO": "不接受加密货币",
+          "WRONG_ADDRESS": "地址或位置错误",
+          "OTHER": "其他"
         }
       }
     },
@@ -701,7 +721,8 @@
         "APPLICANT_REPLIED": "申请人已回复",
         "DUE_SOON": "24小时内到期",
         "CASE_OVERDUE": "已逾期",
-        "APPLICANT_SILENT": "申请人已沉默14天"
+        "APPLICANT_SILENT": "申请人已沉默14天",
+        "POINT_REPORTED": "访客举报了一个地图点位"
       }
     },
     "movedToQueues": {
@@ -1003,6 +1024,31 @@
       "loading": "正在加载目录…",
       "noExchanges": "目录中没有在该国注册的交易所",
       "noFintech": "此处尚无可用的金融科技"
+    },
+    "report": {
+      "button": "报告问题",
+      "title": "报告问题",
+      "underReview": "多位访客在此报告了问题。我们正在与商家核实。",
+      "reason": {
+        "CLOSED": "永久停业",
+        "NO_CRYPTO": "不接受加密货币",
+        "WRONG_ADDRESS": "地址或位置错误",
+        "OTHER": "其他"
+      },
+      "commentPlaceholder": "出了什么问题？（选择“其他”时必填）",
+      "submit": "发送报告",
+      "sending": "正在发送…",
+      "cancel": "取消",
+      "close": "关闭",
+      "sent": "谢谢。我们会与商家核实。单个报告不会让该地点从地图上移除。",
+      "errors": {
+        "too_soon": "你今天已报告过此地点。",
+        "comment_required": "请告诉我们哪里有问题。",
+        "comment_too_long": "请将内容控制在1000个字符以内。",
+        "bad_reason": "请选择原因。",
+        "not_found": "此地点已不在地图上。",
+        "failed": "发送失败。请重试。"
+      }
     }
   },
   "markets": {
@@ -2758,6 +2804,11 @@
     "caseMessage": {
       "subject": "Trientes：关于“{title}”的一个问题",
       "body": "管理员就你的申请“{title}”给你发了消息。打开下面的链接阅读并回复。"
+    },
+    "pointReport": {
+      "asked": "我们已收到关于您地点«{point}»的多份报告。请确认其仍在营业并接受加密货币，或更正其详细信息。",
+      "warned": "关于«{point}»我们已14天未收到回复。若在接下来的14天内仍无答复，该地点将从地图上移除，直至情况澄清。",
+      "suspended": "由于关于其的报告未获回应，«{point}»已从地图上移除。在此回复后我们会将其恢复。"
     }
   }
 }

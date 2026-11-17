@@ -537,7 +537,11 @@
         "messageReceived": "Antragsteller hat geantwortet",
         "reviewed": "«geprüft» signiert",
         "checkSet": "Prüfung «{key}»: {state}",
-        "documentVerdict": "Dokument «{label}»: {verdict}"
+        "documentVerdict": "Dokument «{label}»: {verdict}",
+        "pointReported": "Ein Besucher hat den Punkt gemeldet: {reason}",
+        "pointAsked": "das Unternehmen zu den Meldungen befragt",
+        "pointWarned": "das Unternehmen verwarnt — seit 14 Tagen keine Antwort",
+        "pointSuspended": "den Standort von der Karte entfernt — Meldungen blieben unbeantwortet"
       },
       "thread": {
         "title": "Korrespondenz",
@@ -689,6 +693,22 @@
           "not_found": "Der Fall ist nicht mehr vorhanden",
           "failed": "Konnte nicht speichern — versuchen Sie es erneut",
           "not_pending": "Das Objekt wartet nicht mehr auf eine Entscheidung"
+        },
+        "pointReport": {
+          "approve": "Meldungen bestätigen — Ort von der Karte entfernen",
+          "reject": "Meldungen verwerfen — Ort auf der Karte behalten"
+        }
+      },
+      "reports": {
+        "title": "Meldungen",
+        "summary": "{count} eingegangen",
+        "empty": "Keine Meldungen.",
+        "anonymous": "Anonymer Besucher",
+        "reason": {
+          "CLOSED": "Dauerhaft geschlossen",
+          "NO_CRYPTO": "Akzeptiert keine Krypto",
+          "WRONG_ADDRESS": "Falsche Adresse oder Standort",
+          "OTHER": "Etwas anderes"
         }
       }
     },
@@ -701,7 +721,8 @@
         "APPLICANT_REPLIED": "Antragsteller hat geantwortet",
         "DUE_SOON": "Fällig innerhalb von 24 Stunden",
         "CASE_OVERDUE": "Überfällig",
-        "APPLICANT_SILENT": "Antragsteller hat seit 14 Tagen nicht geantwortet"
+        "APPLICANT_SILENT": "Antragsteller hat seit 14 Tagen nicht geantwortet",
+        "POINT_REPORTED": "Ein Besucher hat einen Kartenpunkt gemeldet"
       }
     },
     "movedToQueues": {
@@ -1003,6 +1024,31 @@
       "loading": "Katalog wird geladen…",
       "noExchanges": "Im Katalog sind keine Börsen in diesem Land registriert",
       "noFintech": "Hier ist noch kein Fintech verfügbar"
+    },
+    "report": {
+      "button": "Problem melden",
+      "title": "Problem melden",
+      "underReview": "Mehrere Besucher haben hier ein Problem gemeldet. Wir prüfen dies mit dem Unternehmen.",
+      "reason": {
+        "CLOSED": "Dauerhaft geschlossen",
+        "NO_CRYPTO": "Akzeptiert keine Kryptowährungen",
+        "WRONG_ADDRESS": "Falsche Adresse oder Standort",
+        "OTHER": "Etwas anderes"
+      },
+      "commentPlaceholder": "Was stimmt nicht? (erforderlich für «Etwas anderes»)",
+      "submit": "Meldung senden",
+      "sending": "Wird gesendet…",
+      "cancel": "Abbrechen",
+      "close": "Schließen",
+      "sent": "Danke. Wir prüfen dies mit dem Unternehmen. Eine einzelne Meldung entfernt einen Ort nie von der Karte.",
+      "errors": {
+        "too_soon": "Sie haben diesen Ort heute bereits gemeldet.",
+        "comment_required": "Bitte sagen Sie uns, was nicht stimmt.",
+        "comment_too_long": "Bitte bleiben Sie unter 1000 Zeichen.",
+        "bad_reason": "Bitte wählen Sie einen Grund.",
+        "not_found": "Dieser Ort ist nicht mehr auf der Karte.",
+        "failed": "Senden fehlgeschlagen. Bitte versuchen Sie es erneut."
+      }
     }
   },
   "markets": {
@@ -2758,6 +2804,11 @@
     "caseMessage": {
       "subject": "Trientes: eine Frage zu \"{title}\"",
       "body": "Die Moderatoren haben Ihnen zu Ihrem Antrag \"{title}\" geschrieben. Öffnen Sie den untenstehenden Link, um ihn zu lesen und zu antworten."
+    },
+    "pointReport": {
+      "asked": "Wir haben mehrere Meldungen zu Ihrem Standort «{point}» erhalten. Bitte bestätigen Sie, dass er geöffnet ist und weiterhin Krypto akzeptiert, oder korrigieren Sie seine Angaben.",
+      "warned": "Wir haben seit 14 Tagen keine Antwort zu «{point}» erhalten. Ohne Rückmeldung innerhalb weiterer 14 Tage wird der Standort von der Karte entfernt, bis die Angelegenheit geklärt ist.",
+      "suspended": "«{point}» wurde von der Karte entfernt, weil die Meldungen dazu unbeantwortet geblieben sind. Antworten Sie hier und wir setzen ihn wieder auf die Karte."
     }
   }
 }

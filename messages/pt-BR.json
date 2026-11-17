@@ -537,7 +537,11 @@
         "messageReceived": "o solicitante respondeu",
         "reviewed": "assinou «checked»",
         "checkSet": "verificação «{key}»: {state}",
-        "documentVerdict": "documento «{label}»: {verdict}"
+        "documentVerdict": "documento «{label}»: {verdict}",
+        "pointReported": "um visitante relatou o ponto: {reason}",
+        "pointAsked": "perguntou ao estabelecimento sobre os relatos",
+        "pointWarned": "advertiu o estabelecimento — sem resposta por 14 dias",
+        "pointSuspended": "removeu o ponto do mapa — os relatos não foram respondidos"
       },
       "thread": {
         "title": "Correspondência",
@@ -689,6 +693,22 @@
           "not_found": "O caso não existe mais",
           "failed": "Não foi possível salvar — tente novamente",
           "not_pending": "O objeto não está mais aguardando uma decisão"
+        },
+        "pointReport": {
+          "approve": "Confirmar relatos — remover o local do mapa",
+          "reject": "Rejeitar relatos — manter o local no mapa"
+        }
+      },
+      "reports": {
+        "title": "Relatos",
+        "summary": "{count} recebidos",
+        "empty": "Nenhum relato.",
+        "anonymous": "Visitante anônimo",
+        "reason": {
+          "CLOSED": "Fechado permanentemente",
+          "NO_CRYPTO": "Não aceita cripto",
+          "WRONG_ADDRESS": "Endereço ou localização incorretos",
+          "OTHER": "Outra coisa"
         }
       }
     },
@@ -701,7 +721,8 @@
         "APPLICANT_REPLIED": "Solicitante respondeu",
         "DUE_SOON": "Vence em 24 horas",
         "CASE_OVERDUE": "Em atraso",
-        "APPLICANT_SILENT": "O solicitante está em silêncio há 14 dias"
+        "APPLICANT_SILENT": "O solicitante está em silêncio há 14 dias",
+        "POINT_REPORTED": "Um visitante relatou um ponto no mapa"
       }
     },
     "movedToQueues": {
@@ -889,7 +910,7 @@
     "routeTitle": "Rota",
     "detailsTitle": "Sobre este lugar",
     "call": "Ligar",
-    "write": "Email",
+    "write": "E-mail",
     "openCard": "Abrir cartão",
     "stop": "Parar",
     "recompute": "Recalcular",
@@ -1003,6 +1024,31 @@
       "loading": "Carregando o catálogo…",
       "noExchanges": "O catálogo não tem exchanges registradas neste país",
       "noFintech": "Nenhuma fintech está disponível aqui ainda"
+    },
+    "report": {
+      "button": "Reportar um problema",
+      "title": "Reportar um problema",
+      "underReview": "Vários visitantes relataram um problema aqui. Estamos verificando com o estabelecimento.",
+      "reason": {
+        "CLOSED": "Fechado permanentemente",
+        "NO_CRYPTO": "Não aceita cripto",
+        "WRONG_ADDRESS": "Endereço ou localização incorretos",
+        "OTHER": "Outra coisa"
+      },
+      "commentPlaceholder": "O que há de errado? (obrigatório para «Outra coisa»)",
+      "submit": "Enviar relato",
+      "sending": "Enviando…",
+      "cancel": "Cancelar",
+      "close": "Fechar",
+      "sent": "Obrigado. Vamos verificar com o estabelecimento. Um único relato nunca remove um lugar do mapa.",
+      "errors": {
+        "too_soon": "Você já relatou este lugar hoje.",
+        "comment_required": "Por favor, diga o que há de errado.",
+        "comment_too_long": "Por favor, mantenha abaixo de 1000 caracteres.",
+        "bad_reason": "Por favor, selecione um motivo.",
+        "not_found": "Este lugar não está mais no mapa.",
+        "failed": "Não foi possível enviar. Tente novamente."
+      }
     }
   },
   "markets": {
@@ -2758,6 +2804,11 @@
     "caseMessage": {
       "subject": "Trientes: uma pergunta sobre \"{title}\"",
       "body": "Os moderadores escreveram para você sobre sua solicitação \"{title}\". Abra o link abaixo para ler e responder."
+    },
+    "pointReport": {
+      "asked": "Recebemos vários relatos sobre sua localização «{point}». Confirme que está aberta e ainda aceita cripto, ou corrija seus detalhes.",
+      "warned": "Não recebemos resposta sobre «{point}» há 14 dias. Sem retorno em mais 14 dias a localização será removida do mapa até que a questão seja esclarecida.",
+      "suspended": "«{point}» foi removida do mapa porque os relatos sobre ela não foram respondidos. Responda aqui e nós a recolocaremos."
     }
   }
 }

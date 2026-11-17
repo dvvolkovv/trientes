@@ -537,7 +537,11 @@
         "messageReceived": "podnositelj je odgovorio",
         "reviewed": "potpisano «checked»",
         "checkSet": "provjera «{key}»: {state}",
-        "documentVerdict": "dokument «{label}»: {verdict}"
+        "documentVerdict": "dokument «{label}»: {verdict}",
+        "pointReported": "posjetitelj je prijavio lokaciju: {reason}",
+        "pointAsked": "poslovni subjekt upitan o prijavama",
+        "pointWarned": "upozoren je poslovni subjekt — nema odgovora 14 dana",
+        "pointSuspended": "lokacija je uklonjena s karte — na prijave nije odgovoreno"
       },
       "thread": {
         "title": "Korespondencija",
@@ -689,6 +693,22 @@
           "not_found": "Slučaj je nestao",
           "failed": "Spremanje nije uspjelo — pokušajte ponovno",
           "not_pending": "Objekt više ne čeka na odluku"
+        },
+        "pointReport": {
+          "approve": "Potvrditi prijave — ukloniti lokaciju s karte",
+          "reject": "Odbaciti prijave — zadržati lokaciju na karti"
+        }
+      },
+      "reports": {
+        "title": "Prijave",
+        "summary": "{count} zaprimljeno",
+        "empty": "Nema prijava.",
+        "anonymous": "Anonimni posjetitelj",
+        "reason": {
+          "CLOSED": "Trajno zatvoreno",
+          "NO_CRYPTO": "Ne prihvaća kripto",
+          "WRONG_ADDRESS": "Pogrešna adresa ili lokacija",
+          "OTHER": "Nešto drugo"
         }
       }
     },
@@ -701,7 +721,8 @@
         "APPLICANT_REPLIED": "Podnositelj je odgovorio",
         "DUE_SOON": "Rok istječe za 24 sata",
         "CASE_OVERDUE": "Istekao rok",
-        "APPLICANT_SILENT": "Podnositelj se nije javio 14 dana"
+        "APPLICANT_SILENT": "Podnositelj se nije javio 14 dana",
+        "POINT_REPORTED": "Posjetitelj je prijavio lokaciju na karti"
       }
     },
     "movedToQueues": {
@@ -1003,6 +1024,31 @@
       "loading": "Učitavanje kataloga…",
       "noExchanges": "U katalogu nema burzi registriranih u ovoj zemlji",
       "noFintech": "Ovdje još nije dostupan fintech"
+    },
+    "report": {
+      "button": "Prijavi problem",
+      "title": "Prijava problema",
+      "underReview": "Nekoliko je posjetitelja ovdje prijavilo problem. Provjeravamo s trgovcem.",
+      "reason": {
+        "CLOSED": "Trajno zatvoreno",
+        "NO_CRYPTO": "Ne prihvaća kripto",
+        "WRONG_ADDRESS": "Pogrešna adresa ili lokacija",
+        "OTHER": "Nešto drugo"
+      },
+      "commentPlaceholder": "Što nije u redu? (obvezno za «Nešto drugo»)",
+      "submit": "Pošalji prijavu",
+      "sending": "Slanje…",
+      "cancel": "Odustani",
+      "close": "Zatvori",
+      "sent": "Hvala. Provjerit ćemo s trgovcem. Jedna prijava sama po sebi nikad ne uklanja lokaciju s karte.",
+      "errors": {
+        "too_soon": "Već ste danas prijavili ovu lokaciju.",
+        "comment_required": "Navedite što nije u redu.",
+        "comment_too_long": "Molimo, zadržite ispod 1000 znakova.",
+        "bad_reason": "Odaberite razlog.",
+        "not_found": "Ova lokacija više nije na karti.",
+        "failed": "Slanje nije uspjelo. Pokušajte ponovno."
+      }
     }
   },
   "markets": {
@@ -2758,6 +2804,11 @@
     "caseMessage": {
       "subject": "Trientes: pitanje o \"{title}\"",
       "body": "Moderatori su vam pisali o vašem zahtjevu \"{title}\". Otvorite poveznicu u nastavku kako biste pročitali i odgovorili."
+    },
+    "pointReport": {
+      "asked": "Primili smo nekoliko prijava o vašoj lokaciji «{point}». Molimo potvrdite da je otvorena i da i dalje prihvaća kripto, ili ispravite njezine podatke.",
+      "warned": "Nismo dobili odgovor o «{point}» već 14 dana. Ako ne odgovorite u sljedećih 14 dana, lokacija će biti uklonjena s karte dok se stvar ne razjasni.",
+      "suspended": "«{point}» je uklonjena s karte jer prijave o njoj nisu dobile odgovor. Odgovorite ovdje i vratit ćemo je."
     }
   }
 }

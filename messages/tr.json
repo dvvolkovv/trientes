@@ -537,7 +537,11 @@
         "messageReceived": "başvuru sahibi yanıtladı",
         "reviewed": "«kontrol edildi» olarak imzalandı",
         "checkSet": "kontrol «{key}»: {state}",
-        "documentVerdict": "belge «{label}»: {verdict}"
+        "documentVerdict": "belge «{label}»: {verdict}",
+        "pointReported": "bir ziyaretçi noktayı raporladı: {reason}",
+        "pointAsked": "işletmeye raporlar hakkında soru soruldu",
+        "pointWarned": "işletme uyarıldı — 14 gündür yanıt yok",
+        "pointSuspended": "noktayı haritadan kaldırdı — raporlar yanıtsız kaldı"
       },
       "thread": {
         "title": "Yazışma",
@@ -689,6 +693,22 @@
           "not_found": "Dosya yok",
           "failed": "Kaydedilemedi — tekrar deneyin",
           "not_pending": "Nesne artık bir karar beklemiyor"
+        },
+        "pointReport": {
+          "approve": "Raporları onayla — yeri haritadan kaldır",
+          "reject": "Raporları reddet — yeri haritada tut"
+        }
+      },
+      "reports": {
+        "title": "Raporlar",
+        "summary": "{count} alındı",
+        "empty": "Rapor yok.",
+        "anonymous": "Anonim ziyaretçi",
+        "reason": {
+          "CLOSED": "Kalıcı olarak kapalı",
+          "NO_CRYPTO": "Kripto kabul etmiyor",
+          "WRONG_ADDRESS": "Yanlış adres veya konum",
+          "OTHER": "Başka bir şey"
         }
       }
     },
@@ -701,7 +721,8 @@
         "APPLICANT_REPLIED": "Başvuran yanıtladı",
         "DUE_SOON": "24 saat içinde süre doluyor",
         "CASE_OVERDUE": "Gecikmiş",
-        "APPLICANT_SILENT": "Başvuran 14 gündür sessiz"
+        "APPLICANT_SILENT": "Başvuran 14 gündür sessiz",
+        "POINT_REPORTED": "Bir ziyaretçi bir harita noktasını raporladı"
       }
     },
     "movedToQueues": {
@@ -1003,6 +1024,31 @@
       "loading": "Katalog yükleniyor…",
       "noExchanges": "Katalogda bu ülkede kayıtlı borsa yok",
       "noFintech": "Burada henüz fintech yok"
+    },
+    "report": {
+      "button": "Bir sorun bildir",
+      "title": "Bir sorun bildir",
+      "underReview": "Birkaç ziyaretçi burada bir sorun bildirdi. İşletmeyle kontrol ediyoruz.",
+      "reason": {
+        "CLOSED": "Kalıcı olarak kapalı",
+        "NO_CRYPTO": "Kripto kabul etmiyor",
+        "WRONG_ADDRESS": "Yanlış adres veya konum",
+        "OTHER": "Başka bir şey"
+      },
+      "commentPlaceholder": "Ne sorun var? («Başka bir şey» için zorunlu)",
+      "submit": "Raporu gönder",
+      "sending": "Gönderiliyor…",
+      "cancel": "İptal",
+      "close": "Kapat",
+      "sent": "Teşekkürler. İşletmeyle kontrol edeceğiz. Tek bir rapor, tek başına bir yeri haritadan kaldırmaz.",
+      "errors": {
+        "too_soon": "Bu yeri bugün zaten bildirdiniz.",
+        "comment_required": "Lütfen neyin yanlış olduğunu söyleyin.",
+        "comment_too_long": "Lütfen 1000 karakterin altında tutun.",
+        "bad_reason": "Lütfen bir neden seçin.",
+        "not_found": "Bu yer artık haritada değil.",
+        "failed": "Gönderilemedi. Lütfen tekrar deneyin."
+      }
     }
   },
   "markets": {
@@ -2758,6 +2804,11 @@
     "caseMessage": {
       "subject": "Trientes: \"{title}\" hakkında bir soru",
       "body": "Moderatörler, \"{title}\" başvurunuz hakkında size yazdı. Okumak ve yanıtlamak için aşağıdaki bağlantıyı açın."
+    },
+    "pointReport": {
+      "asked": "Konumunuz «{point}» hakkında birkaç rapor aldık. Lütfen açık olduğunu ve hâlâ kripto kabul ettiğini doğrulayın ya da ayrıntılarını düzeltin.",
+      "warned": "«{point}» hakkında 14 gündür yanıt almadık. Önümüzdeki 14 gün içinde yanıt gelmezse, konu netleşene kadar konum haritadan kaldırılacaktır.",
+      "suspended": "«{point}», hakkındaki raporlar yanıtsız kaldığı için haritadan kaldırıldı. Buradan yanıt verin, geri ekleyelim."
     }
   }
 }

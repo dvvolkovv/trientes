@@ -537,7 +537,11 @@
         "messageReceived": "申請者が返信",
         "reviewed": "«checked» に署名済み",
         "checkSet": "チェック «{key}»: {state}",
-        "documentVerdict": "書類 «{label}»: {verdict}"
+        "documentVerdict": "書類 «{label}»: {verdict}",
+        "pointReported": "訪問者がこのポイントを報告: {reason}",
+        "pointAsked": "事業者に報告内容を確認しました",
+        "pointWarned": "事業者に警告 — 14日間回答なし",
+        "pointSuspended": "地図からポイントを外しました — 報告に未回答"
       },
       "thread": {
         "title": "やり取り",
@@ -689,6 +693,22 @@
           "not_found": "案件はなくなりました",
           "failed": "保存できませんでした — もう一度お試しください",
           "not_pending": "対象はもはや決定待ちではありません"
+        },
+        "pointReport": {
+          "approve": "報告を承認 — 地図から場所を外す",
+          "reject": "報告を却下 — 地図に場所を残す"
+        }
+      },
+      "reports": {
+        "title": "報告",
+        "summary": "{count} 件受理",
+        "empty": "報告はありません",
+        "anonymous": "匿名の訪問者",
+        "reason": {
+          "CLOSED": "恒久的に閉鎖",
+          "NO_CRYPTO": "暗号資産を受け付けない",
+          "WRONG_ADDRESS": "住所または位置が間違っている",
+          "OTHER": "その他"
         }
       }
     },
@@ -701,7 +721,8 @@
         "APPLICANT_REPLIED": "申請者が返信しました",
         "DUE_SOON": "24時間以内に期限",
         "CASE_OVERDUE": "期限切れ",
-        "APPLICANT_SILENT": "申請者が14日間無返信"
+        "APPLICANT_SILENT": "申請者が14日間無返信",
+        "POINT_REPORTED": "訪問者が地図上のポイントを報告"
       }
     },
     "movedToQueues": {
@@ -1003,6 +1024,31 @@
       "loading": "カタログを読み込み中…",
       "noExchanges": "この国に登録された取引所はカタログにありません",
       "noFintech": "ここではまだフィンテックは利用できません"
+    },
+    "report": {
+      "button": "問題を報告",
+      "title": "問題を報告",
+      "underReview": "複数の訪問者がここで問題を報告しています。事業者に確認中です。",
+      "reason": {
+        "CLOSED": "恒久的に閉鎖",
+        "NO_CRYPTO": "暗号資産を受け付けない",
+        "WRONG_ADDRESS": "住所または場所が違う",
+        "OTHER": "その他"
+      },
+      "commentPlaceholder": "何が問題ですか？（«その他» の場合は必須）",
+      "submit": "報告を送信",
+      "sending": "送信中…",
+      "cancel": "キャンセル",
+      "close": "閉じる",
+      "sent": "ありがとうございます。事業者に確認します。1件の報告だけで地図から削除されることはありません。",
+      "errors": {
+        "too_soon": "本日はこの場所を既に報告しています。",
+        "comment_required": "問題点を教えてください。",
+        "comment_too_long": "1000文字以内にしてください。",
+        "bad_reason": "理由を選択してください。",
+        "not_found": "この場所は地図上にもうありません。",
+        "failed": "送信できませんでした。もう一度お試しください。"
+      }
     }
   },
   "markets": {
@@ -2758,6 +2804,11 @@
     "caseMessage": {
       "subject": "Trientes: \"{title}\"に関する質問",
       "body": "モデレーターがあなたの申請 \"{title}\" について連絡しました。下のリンクを開いて内容を確認し、返信してください"
+    },
+    "pointReport": {
+      "asked": "あなたの拠点「{point}」について複数の報告を受け取りました。現在も営業しており暗号資産を受け付けているかご確認いただくか、詳細を修正してください。",
+      "warned": "「{point}」について14日間ご回答がありません。さらに14日以内にご返信がない場合、この拠点は問題が解決するまで地図から非表示になります。",
+      "suspended": "報告にご回答がなかったため「{point}」は地図から非表示になりました。ここにご返信いただければ地図に戻します。"
     }
   }
 }

@@ -537,7 +537,11 @@
         "messageReceived": "el solicitante respondió",
         "reviewed": "marcó «checked»",
         "checkSet": "verificación «{key}»: {state}",
-        "documentVerdict": "documento «{label}»: {verdict}"
+        "documentVerdict": "documento «{label}»: {verdict}",
+        "pointReported": "un visitante reportó el punto: {reason}",
+        "pointAsked": "se consultó al negocio sobre los reportes",
+        "pointWarned": "se advirtió al negocio — sin respuesta durante 14 días",
+        "pointSuspended": "se retiró el punto del mapa — los reportes no fueron respondidos"
       },
       "thread": {
         "title": "Correspondencia",
@@ -689,6 +693,22 @@
           "not_found": "El caso ya no existe",
           "failed": "No se pudo guardar — inténtalo de nuevo",
           "not_pending": "El objeto ya no está esperando una decisión"
+        },
+        "pointReport": {
+          "approve": "Confirmar reportes — retirar el lugar del mapa",
+          "reject": "Descartar reportes — mantener el lugar en el mapa"
+        }
+      },
+      "reports": {
+        "title": "Reportes",
+        "summary": "{count} recibidos",
+        "empty": "Sin reportes.",
+        "anonymous": "Visitante anónimo",
+        "reason": {
+          "CLOSED": "Cerrado permanentemente",
+          "NO_CRYPTO": "No acepta cripto",
+          "WRONG_ADDRESS": "Dirección o ubicación incorrecta",
+          "OTHER": "Algo más"
         }
       }
     },
@@ -701,7 +721,8 @@
         "APPLICANT_REPLIED": "El solicitante respondió",
         "DUE_SOON": "Vence en 24 horas",
         "CASE_OVERDUE": "Vencido",
-        "APPLICANT_SILENT": "El solicitante no responde desde hace 14 días"
+        "APPLICANT_SILENT": "El solicitante no responde desde hace 14 días",
+        "POINT_REPORTED": "Un visitante reportó un punto del mapa"
       }
     },
     "movedToQueues": {
@@ -1003,6 +1024,31 @@
       "loading": "Cargando el catálogo…",
       "noExchanges": "El catálogo no tiene exchanges registrados en este país",
       "noFintech": "Aún no hay fintech disponible aquí"
+    },
+    "report": {
+      "button": "Reportar un problema",
+      "title": "Reportar un problema",
+      "underReview": "Varios visitantes han reportado un problema aquí. Estamos verificándolo con el negocio.",
+      "reason": {
+        "CLOSED": "Cerrado permanentemente",
+        "NO_CRYPTO": "No acepta criptomonedas",
+        "WRONG_ADDRESS": "Dirección o ubicación incorrecta",
+        "OTHER": "Otra cosa"
+      },
+      "commentPlaceholder": "¿Qué está mal? (obligatorio para «Otra cosa»)",
+      "submit": "Enviar reporte",
+      "sending": "Enviando…",
+      "cancel": "Cancelar",
+      "close": "Cerrar",
+      "sent": "Gracias. Lo verificaremos con el negocio. Un solo reporte nunca elimina un lugar del mapa.",
+      "errors": {
+        "too_soon": "Ya has reportado este lugar hoy.",
+        "comment_required": "Por favor, dinos qué está mal.",
+        "comment_too_long": "Por favor, manténlo por debajo de 1000 caracteres.",
+        "bad_reason": "Por favor, elige un motivo.",
+        "not_found": "Este lugar ya no está en el mapa.",
+        "failed": "No se pudo enviar. Inténtalo de nuevo."
+      }
     }
   },
   "markets": {
@@ -2758,6 +2804,11 @@
     "caseMessage": {
       "subject": "Trientes: una pregunta sobre \"{title}\"",
       "body": "Los moderadores te escribieron sobre tu solicitud \"{title}\". Abre el enlace de abajo para leerla y responder."
+    },
+    "pointReport": {
+      "asked": "Hemos recibido varios reportes sobre tu ubicación «{point}». Por favor confirma que está abierta y aún acepta cripto, o corrige sus datos.",
+      "warned": "No hemos recibido respuesta sobre «{point}» desde hace 14 días. Sin una respuesta dentro de otros 14 días la ubicación se retirará del mapa hasta que se aclare el asunto.",
+      "suspended": "«{point}» se ha retirado del mapa porque los reportes sobre ella no recibieron respuesta. Responde aquí y la volveremos a poner."
     }
   }
 }

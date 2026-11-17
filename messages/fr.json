@@ -537,7 +537,11 @@
         "messageReceived": "le demandeur a répondu",
         "reviewed": "signé «checked»",
         "checkSet": "vérification «{key}»: {state}",
-        "documentVerdict": "document «{label}»: {verdict}"
+        "documentVerdict": "document «{label}»: {verdict}",
+        "pointReported": "un visiteur a signalé le point: {reason}",
+        "pointAsked": "a interrogé l'entreprise au sujet des signalements",
+        "pointWarned": "a averti l'entreprise — aucune réponse depuis 14 jours",
+        "pointSuspended": "a retiré le point de la carte — les signalements sont restés sans réponse"
       },
       "thread": {
         "title": "Correspondance",
@@ -689,6 +693,22 @@
           "not_found": "Le dossier n'existe plus",
           "failed": "Impossible d'enregistrer — réessayez",
           "not_pending": "L'objet n'attend plus de décision"
+        },
+        "pointReport": {
+          "approve": "Confirmer les signalements — retirer le lieu de la carte",
+          "reject": "Rejeter les signalements — garder le lieu sur la carte"
+        }
+      },
+      "reports": {
+        "title": "Signalements",
+        "summary": "{count} reçus",
+        "empty": "Aucun signalement.",
+        "anonymous": "Visiteur anonyme",
+        "reason": {
+          "CLOSED": "Définitivement fermé",
+          "NO_CRYPTO": "N’accepte pas la crypto",
+          "WRONG_ADDRESS": "Adresse ou emplacement incorrect",
+          "OTHER": "Autre chose"
         }
       }
     },
@@ -701,7 +721,8 @@
         "APPLICANT_REPLIED": "Le demandeur a répondu",
         "DUE_SOON": "Échéance dans 24 heures",
         "CASE_OVERDUE": "En retard",
-        "APPLICANT_SILENT": "Le demandeur est silencieux depuis 14 jours"
+        "APPLICANT_SILENT": "Le demandeur est silencieux depuis 14 jours",
+        "POINT_REPORTED": "Un visiteur a signalé un point sur la carte"
       }
     },
     "movedToQueues": {
@@ -1003,6 +1024,31 @@
       "loading": "Chargement du catalogue…",
       "noExchanges": "Le catalogue ne compte aucune plateforme d'échange enregistrée dans ce pays",
       "noFintech": "Aucune fintech n'est disponible ici pour le moment"
+    },
+    "report": {
+      "button": "Signaler un problème",
+      "title": "Signaler un problème",
+      "underReview": "Plusieurs visiteurs ont signalé un problème ici. Nous vérifions auprès de l’établissement.",
+      "reason": {
+        "CLOSED": "Définitivement fermé",
+        "NO_CRYPTO": "N’accepte pas la crypto",
+        "WRONG_ADDRESS": "Adresse ou emplacement incorrect",
+        "OTHER": "Autre chose"
+      },
+      "commentPlaceholder": "Quel est le problème ? (requis pour « Autre chose »)",
+      "submit": "Envoyer le signalement",
+      "sending": "Envoi…",
+      "cancel": "Annuler",
+      "close": "Fermer",
+      "sent": "Merci. Nous vérifierons auprès du commerçant. Un seul signalement ne retire jamais un lieu de la carte.",
+      "errors": {
+        "too_soon": "Vous avez déjà signalé ce lieu aujourd'hui.",
+        "comment_required": "Veuillez nous dire ce qui ne va pas.",
+        "comment_too_long": "Veuillez ne pas dépasser 1000 caractères.",
+        "bad_reason": "Veuillez choisir un motif.",
+        "not_found": "Ce lieu n'est plus sur la carte.",
+        "failed": "Envoi impossible. Veuillez réessayer."
+      }
     }
   },
   "markets": {
@@ -2758,6 +2804,11 @@
     "caseMessage": {
       "subject": "Trientes : une question au sujet de « {title} »",
       "body": "Les modérateurs vous ont écrit au sujet de votre candidature « {title} ». Ouvrez le lien ci-dessous pour la lire et y répondre."
+    },
+    "pointReport": {
+      "asked": "Nous avons reçu plusieurs signalements concernant votre emplacement «{point}». Veuillez confirmer qu'il est ouvert et accepte toujours la crypto, ou corriger ses informations.",
+      "warned": "Nous n'avons reçu aucune réponse concernant «{point}» depuis 14 jours. Sans réponse sous 14 jours supplémentaires l'emplacement sera retiré de la carte jusqu'à clarification.",
+      "suspended": "«{point}» a été retiré de la carte car les signalements à son sujet sont restés sans réponse. Répondez ici et nous le remettrons."
     }
   }
 }
