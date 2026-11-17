@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 import type { StepTranslator } from "@/components/coin-detail/route-steps-panel";
 import { PRIMARY, ROW_BTN, SECONDARY } from "@/components/coin-detail/poi-sheet-ui";
+import { MarkCaptcha, type CaptchaSolution } from "@/components/captcha/mark-captcha";
 
 const REASONS = ["CLOSED", "NO_CRYPTO", "WRONG_ADDRESS", "OTHER"] as const;
 
@@ -29,6 +30,7 @@ export function PoiReportDialog({
   const [comment, setComment] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [error, setError] = useState("failed");
+  const [captcha, setCaptcha] = useState<CaptchaSolution | null>(null);
 
   async function send() {
     setState("sending");
@@ -36,7 +38,7 @@ export function PoiReportDialog({
       const res = await fetch("/api/point-report", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ pointId, reason, comment }),
+        body: JSON.stringify({ pointId, reason, comment, captcha }),
       });
       if (res.ok) {
         setState("sent");
@@ -95,6 +97,9 @@ export function PoiReportDialog({
               placeholder={t("report.commentPlaceholder")}
               className="mb-3 w-full rounded-xl border border-hairline bg-bg-tint/40 p-2.5 text-[13px]"
             />
+            <div className="mb-3">
+              <MarkCaptcha onSolved={setCaptcha} />
+            </div>
             {state === "error" && (
               <p className="mb-2 text-[12px] text-down">{t(`report.errors.${error}`)}</p>
             )}
@@ -105,7 +110,7 @@ export function PoiReportDialog({
               <button
                 type="button"
                 onClick={send}
-                disabled={state === "sending"}
+                disabled={state === "sending" || !captcha}
                 className={PRIMARY}
               >
                 {state === "sending" ? t("report.sending") : t("report.submit")}

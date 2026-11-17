@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { clientIp } from "@/lib/client-ip";
 import { submitPointReport } from "@/lib/points/reports";
+import { requireCaptcha } from "@/lib/captcha-guard";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +25,10 @@ export async function POST(req: Request) {
   // Вошедший считается по учётной записи, а не по адресу (independentReporters).
   const session = await auth();
   const userId = (session?.user as { id?: string } | undefined)?.id ?? null;
+
+  // Вошедший капчу не видит: `requireCaptcha` сам пропускает его.
+  const captcha = await requireCaptcha(req, body.captcha);
+  if (!captcha.ok) return NextResponse.json({ error: captcha.reason }, { status: 400 });
 
   const res = await submitPointReport({
     pointId: body.pointId,

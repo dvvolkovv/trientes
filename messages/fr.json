@@ -1047,7 +1047,11 @@
         "comment_too_long": "Veuillez ne pas dépasser 1000 caractères.",
         "bad_reason": "Veuillez choisir un motif.",
         "not_found": "Ce lieu n'est plus sur la carte.",
-        "failed": "Envoi impossible. Veuillez réessayer."
+        "failed": "Envoi impossible. Veuillez réessayer.",
+        "captcha_required": "Veuillez d'abord assembler la marque.",
+        "captcha_invalid": "La vérification a échoué. Relevez un autre défi et réessayez.",
+        "captcha_expired": "Le défi a expiré. Prenez-en un nouveau.",
+        "captcha_too_fast": "C'était trop rapide. Veuillez réessayer."
       }
     }
   },
@@ -1489,7 +1493,11 @@
       "password_too_short": "Le mot de passe doit faire au moins 8 caractères.",
       "password_too_long": "Le mot de passe est trop long.",
       "invalid_credentials": "Nom d'utilisateur ou mot de passe incorrect.",
-      "missing_fields": "Veuillez remplir les deux champs."
+      "missing_fields": "Veuillez remplir les deux champs.",
+      "captcha_required": "Veuillez d'abord assembler la marque.",
+      "captcha_invalid": "La vérification a échoué. Relevez un autre défi et réessayez.",
+      "captcha_expired": "Le défi a expiré. Prenez-en un nouveau.",
+      "captcha_too_fast": "C'était trop rapide. Veuillez réessayer."
     }
   },
   "reset": {
@@ -1529,7 +1537,11 @@
       "password_mismatch": "Les deux mots de passe ne correspondent pas.",
       "invalid_token": "Ce lien de réinitialisation n’est pas valide. Demandez-en un nouveau.",
       "expired_token": "Ce lien de réinitialisation a expiré. Demandez-en un nouveau.",
-      "used_token": "Ce lien de réinitialisation a déjà été utilisé. Demandez-en un nouveau."
+      "used_token": "Ce lien de réinitialisation a déjà été utilisé. Demandez-en un nouveau.",
+      "captcha_required": "Veuillez d'abord assembler la marque.",
+      "captcha_invalid": "La vérification a échoué. Relevez un autre défi et réessayez.",
+      "captcha_expired": "Le défi a expiré. Prenez-en un nouveau.",
+      "captcha_too_fast": "C'était trop rapide. Veuillez réessayer."
     },
     "mail": {
       "subject": "Réinitialisez votre mot de passe Trientes",
@@ -2809,6 +2821,21 @@
       "asked": "Nous avons reçu plusieurs signalements concernant votre emplacement «{point}». Veuillez confirmer qu'il est ouvert et accepte toujours la crypto, ou corriger ses informations.",
       "warned": "Nous n'avons reçu aucune réponse concernant «{point}» depuis 14 jours. Sans réponse sous 14 jours supplémentaires l'emplacement sera retiré de la carte jusqu'à clarification.",
       "suspended": "«{point}» a été retiré de la carte car les signalements à son sujet sont restés sans réponse. Répondez ici et nous le remettrons."
+    }
+  },
+  "captcha": {
+    "title": "Assemblez le repère",
+    "hint": "Faites glisser la pièce orange à sa place — le repère doit s'assembler.",
+    "idle": "Une pièce n'est pas à sa place",
+    "ok": "Le repère est complet",
+    "bad": "Pas tout à fait — réessayez",
+    "keyboard": "Clavier : Tab → flèches → Entrée.",
+    "reload": "Un autre défi",
+    "errors": {
+      "captcha_required": "Veuillez d'abord assembler le repère.",
+      "captcha_invalid": "La vérification a échoué. Prenez un autre défi et réessayez.",
+      "captcha_expired": "Le défi a expiré. Prenez-en un nouveau.",
+      "captcha_too_fast": "C'était trop rapide. Veuillez réessayer."
     }
   }
 }

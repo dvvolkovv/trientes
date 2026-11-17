@@ -1047,7 +1047,11 @@
         "comment_too_long": "Bitte bleiben Sie unter 1000 Zeichen.",
         "bad_reason": "Bitte wählen Sie einen Grund.",
         "not_found": "Dieser Ort ist nicht mehr auf der Karte.",
-        "failed": "Senden fehlgeschlagen. Bitte versuchen Sie es erneut."
+        "failed": "Senden fehlgeschlagen. Bitte versuchen Sie es erneut.",
+        "captcha_required": "Bitte setzen Sie zuerst die Markierung zusammen.",
+        "captcha_invalid": "Die Überprüfung ist fehlgeschlagen. Nehmen Sie eine neue Aufgabe und versuchen Sie es erneut.",
+        "captcha_expired": "Die Aufgabe ist abgelaufen. Nehmen Sie eine neue.",
+        "captcha_too_fast": "Das ging zu schnell. Bitte versuchen Sie es erneut."
       }
     }
   },
@@ -1489,7 +1493,11 @@
       "password_too_short": "Passwort muss mindestens 8 Zeichen lang sein.",
       "password_too_long": "Passwort ist zu lang.",
       "invalid_credentials": "Benutzername oder Passwort ist falsch.",
-      "missing_fields": "Bitte beide Felder ausfüllen."
+      "missing_fields": "Bitte beide Felder ausfüllen.",
+      "captcha_required": "Bitte setzen Sie zuerst die Markierung zusammen.",
+      "captcha_invalid": "Die Überprüfung ist fehlgeschlagen. Nehmen Sie eine neue Aufgabe und versuchen Sie es erneut.",
+      "captcha_expired": "Die Aufgabe ist abgelaufen. Nehmen Sie eine neue.",
+      "captcha_too_fast": "Das ging zu schnell. Bitte versuchen Sie es erneut."
     }
   },
   "reset": {
@@ -1529,7 +1537,11 @@
       "password_mismatch": "Die beiden Passwörter stimmen nicht überein.",
       "invalid_token": "Dieser Reset-Link ist nicht gültig. Fordern Sie einen neuen an.",
       "expired_token": "Dieser Reset-Link ist abgelaufen. Fordern Sie einen neuen an.",
-      "used_token": "Dieser Reset-Link wurde bereits verwendet. Fordern Sie einen neuen an."
+      "used_token": "Dieser Reset-Link wurde bereits verwendet. Fordern Sie einen neuen an.",
+      "captcha_required": "Bitte setzen Sie zuerst die Markierung zusammen.",
+      "captcha_invalid": "Die Prüfung wurde nicht bestanden. Nimm eine neue Aufgabe und versuche es erneut.",
+      "captcha_expired": "Die Aufgabe ist abgelaufen. Nimm eine neue.",
+      "captcha_too_fast": "Das ging zu schnell. Bitte versuche es erneut."
     },
     "mail": {
       "subject": "Setzen Sie Ihr Trientes-Passwort zurück",
@@ -2809,6 +2821,21 @@
       "asked": "Wir haben mehrere Meldungen zu Ihrem Standort «{point}» erhalten. Bitte bestätigen Sie, dass er geöffnet ist und weiterhin Krypto akzeptiert, oder korrigieren Sie seine Angaben.",
       "warned": "Wir haben seit 14 Tagen keine Antwort zu «{point}» erhalten. Ohne Rückmeldung innerhalb weiterer 14 Tage wird der Standort von der Karte entfernt, bis die Angelegenheit geklärt ist.",
       "suspended": "«{point}» wurde von der Karte entfernt, weil die Meldungen dazu unbeantwortet geblieben sind. Antworten Sie hier und wir setzen ihn wieder auf die Karte."
+    }
+  },
+  "captcha": {
+    "title": "Setze das Zeichen zusammen",
+    "hint": "Ziehe das orangefarbene Teil an die richtige Stelle — das Zeichen muss zusammenpassen",
+    "idle": "Ein Teil ist fehl am Platz",
+    "ok": "Das Zeichen ist vollständig",
+    "bad": "Nicht ganz — versuche es noch einmal",
+    "keyboard": "Tastatur: Tab → Pfeiltasten → Enter.",
+    "reload": "Neue Aufgabe",
+    "errors": {
+      "captcha_required": "Bitte setze zuerst die Markierung zusammen.",
+      "captcha_invalid": "Die Prüfung wurde nicht bestanden. Nimm eine neue Aufgabe und versuche es erneut.",
+      "captcha_expired": "Die Aufgabe ist abgelaufen. Nimm eine neue.",
+      "captcha_too_fast": "Das ging zu schnell. Bitte versuche es erneut."
     }
   }
 }

@@ -1047,7 +1047,11 @@
         "comment_too_long": "Lütfen 1000 karakterin altında tutun.",
         "bad_reason": "Lütfen bir neden seçin.",
         "not_found": "Bu yer artık haritada değil.",
-        "failed": "Gönderilemedi. Lütfen tekrar deneyin."
+        "failed": "Gönderilemedi. Lütfen tekrar deneyin.",
+        "captcha_required": "Lütfen önce işareti birleştirin.",
+        "captcha_invalid": "Doğrulama başarısız oldu. Başka bir doğrulama alıp tekrar deneyin.",
+        "captcha_expired": "Doğrulamanın süresi doldu. Yenisini alın.",
+        "captcha_too_fast": "Bu çok hızlıydı. Lütfen tekrar deneyin."
       }
     }
   },
@@ -1489,7 +1493,11 @@
       "password_too_short": "Parola en az 8 karakter olmalı.",
       "password_too_long": "Parola çok uzun.",
       "invalid_credentials": "Kullanıcı adı veya parola hatalı.",
-      "missing_fields": "Lütfen iki alanı da doldurun."
+      "missing_fields": "Lütfen iki alanı da doldurun.",
+      "captcha_required": "Lütfen önce işareti birleştirin.",
+      "captcha_invalid": "Doğrulama başarısız oldu. Başka bir doğrulama alıp tekrar deneyin.",
+      "captcha_expired": "Doğrulamanın süresi doldu. Yenisini alın.",
+      "captcha_too_fast": "Bu çok hızlıydı. Lütfen tekrar deneyin."
     }
   },
   "reset": {
@@ -1529,7 +1537,11 @@
       "password_mismatch": "İki parola eşleşmiyor.",
       "invalid_token": "Bu sıfırlama bağlantısı geçerli değil. Yenisini isteyin.",
       "expired_token": "Bu sıfırlama bağlantısının süresi dolmuş. Yenisini isteyin.",
-      "used_token": "Bu sıfırlama bağlantısı zaten kullanılmış. Yenisini isteyin."
+      "used_token": "Bu sıfırlama bağlantısı zaten kullanılmış. Yenisini isteyin.",
+      "captcha_required": "Lütfen önce işareti birleştirin.",
+      "captcha_invalid": "Kontrol geçmedi. Başka bir görev alıp tekrar deneyin.",
+      "captcha_expired": "Görev süresi doldu. Yenisini alın.",
+      "captcha_too_fast": "Bu çok hızlıydı. Lütfen tekrar deneyin."
     },
     "mail": {
       "subject": "Trientes parolanızı sıfırlayın",
@@ -2809,6 +2821,21 @@
       "asked": "Konumunuz «{point}» hakkında birkaç rapor aldık. Lütfen açık olduğunu ve hâlâ kripto kabul ettiğini doğrulayın ya da ayrıntılarını düzeltin.",
       "warned": "«{point}» hakkında 14 gündür yanıt almadık. Önümüzdeki 14 gün içinde yanıt gelmezse, konu netleşene kadar konum haritadan kaldırılacaktır.",
       "suspended": "«{point}», hakkındaki raporlar yanıtsız kaldığı için haritadan kaldırıldı. Buradan yanıt verin, geri ekleyelim."
+    }
+  },
+  "captcha": {
+    "title": "İşareti birleştir",
+    "hint": "Turuncu parçayı yerine sürükleyin — işaret bir araya gelmeli.",
+    "idle": "Bir parça yerinde değil",
+    "ok": "İşaret tamam",
+    "bad": "Tam değil — tekrar deneyin",
+    "keyboard": "Klavye: Sekme → yön tuşları → Enter.",
+    "reload": "Başka bir görev",
+    "errors": {
+      "captcha_required": "Lütfen önce işareti birleştirin.",
+      "captcha_invalid": "Doğrulama geçmedi. Başka bir görev alın ve tekrar deneyin.",
+      "captcha_expired": "Görev süresi doldu. Yenisini alın.",
+      "captcha_too_fast": "Bu çok hızlıydı. Lütfen yeniden deneyin."
     }
   }
 }

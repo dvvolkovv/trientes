@@ -1,19 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { CAPTCHA_STAGE, isSolved, type Geometry, type Point } from "@/lib/captcha";
 
 export type CaptchaSolution = { token: string; x: number; y: number };
-
-export type CaptchaLabels = {
-  title: string;
-  hint: string;
-  idle: string;
-  ok: string;
-  bad: string;
-  keyboard: string;
-  reload: string;
-};
 
 type Challenge = Geometry & { token: string };
 
@@ -36,13 +27,10 @@ const MASK: React.CSSProperties = {
  * Вошедшему капчи нет вовсе: маршрут выдачи отвечает `{ needed: false }`, и
  * тогда компонент ничего не рисует, а форме сразу отдаётся пустое решение.
  */
-export function MarkCaptcha({
-  onSolved,
-  labels,
-}: {
-  onSolved: (s: CaptchaSolution | null) => void;
-  labels: CaptchaLabels;
-}) {
+export function MarkCaptcha({ onSolved }: { onSolved: (s: CaptchaSolution | null) => void }) {
+  // Строки читаются своим namespace, а не прокидываются свойством: иначе те же
+  // семь подписей пришлось бы повторить в каждой форме, где стоит капча.
+  const t = useTranslations("captcha");
   const [challenge, setChallenge] = useState<Challenge | null>(null);
   const [needed, setNeeded] = useState<boolean | null>(null);
   const [pos, setPos] = useState<Point>({ x: 0, y: 0 });
@@ -51,14 +39,15 @@ export function MarkCaptcha({
   const stageRef = useRef<HTMLDivElement | null>(null);
   const dragRef = useRef<{ ox: number; oy: number } | null>(null);
   // Замыкание родителя меняется на каждый рендер, а эффект зовётся один раз:
-  // без ref задача запрашивалась бы бесконечно.
+  // без ref задача запрашивалась бы бесконечно. Присваивание — в эффекте, а не
+  // в теле: ссылка во время отрисовки не трогается.
   const onSolvedRef = useRef(onSolved);
-  onSolvedRef.current = onSolved;
+  useEffect(() => {
+    onSolvedRef.current = onSolved;
+  }, [onSolved]);
 
-  const load = useCallback(async () => {
-    setSolved(false);
-    setBad(false);
-    onSolvedRef.current(null);
+  /** Спросить задачу. Первая запись состояния — после ответа, а не до него. */
+  const fetchChallenge = useCallback(async () => {
     try {
       const res = await fetch("/api/captcha", { cache: "no-store" });
       const data = (await res.json()) as Partial<Challenge> & { needed?: boolean };
@@ -79,9 +68,21 @@ export function MarkCaptcha({
     }
   }, []);
 
+  /** Другая проверка: гасим прежнее решение и просим новую задачу. */
+  const reload = useCallback(() => {
+    setSolved(false);
+    setBad(false);
+    onSolvedRef.current(null);
+    void fetchChallenge();
+  }, [fetchChallenge]);
+
   useEffect(() => {
-    void load();
-  }, [load]);
+    // Задачу просим при появлении листа: другого источника у неё нет, а правило
+    // «не писать состояние в эффекте» рассчитано на то, что состояние выводится
+    // из свойств. Здесь оно приходит из сети.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void fetchChallenge();
+  }, [fetchChallenge]);
 
   const settle = useCallback((c: Challenge, next: Point) => {
     if (!isSolved(c.home, next)) {
@@ -118,8 +119,8 @@ export function MarkCaptcha({
 
   return (
     <div className="rounded-[18px] border border-hairline bg-card p-4">
-      <h3 className="text-[14px] font-semibold">{labels.title}</h3>
-      <p className="mt-0.5 text-[11.5px] leading-snug text-muted">{labels.hint}</p>
+      <h3 className="text-[14px] font-semibold">{t("title")}</h3>
+      <p className="mt-0.5 text-[11.5px] leading-snug text-muted">{t("hint")}</p>
 
       <div
         ref={stageRef}
@@ -162,7 +163,7 @@ export function MarkCaptcha({
             <div
               role="button"
               tabIndex={0}
-              aria-label={labels.title}
+              aria-label={t("title")}
               className="cursor-grab touch-none outline-none focus-visible:ring-2 focus-visible:ring-accent"
               style={{
                 ...partStyle(
@@ -207,19 +208,19 @@ export function MarkCaptcha({
             solved ? "font-semibold text-up" : bad ? "font-semibold text-down" : "text-muted"
           }`}
         >
-          {solved ? labels.ok : bad ? labels.bad : labels.idle}
+          {solved ? t("ok") : bad ? t("bad") : t("idle")}
         </span>
         <button
           type="button"
-          onClick={() => void load()}
-          aria-label={labels.reload}
-          title={labels.reload}
+          onClick={reload}
+          aria-label={t("reload")}
+          title={t("reload")}
           className="h-9 min-w-9 rounded-full bg-card-alt px-3 text-[15px] text-muted-strong"
         >
           ↻
         </button>
       </div>
-      <p className="mt-2 text-[10.5px] leading-snug text-muted">{labels.keyboard}</p>
+      <p className="mt-2 text-[10.5px] leading-snug text-muted">{t("keyboard")}</p>
     </div>
   );
 }

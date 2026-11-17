@@ -772,7 +772,7 @@
     "filterAllTypes": "Sve vrste",
     "filterAllCountries": "Sve zemlje",
     "filterAllRanks": "Svi rangovi",
-    "filterTopN": "Top {n}",
+    "filterTopN": "Najboljih {n}",
     "clear": "Očistite"
   },
   "exchangeCard": {
@@ -1047,7 +1047,11 @@
         "comment_too_long": "Molimo, zadržite ispod 1000 znakova.",
         "bad_reason": "Odaberite razlog.",
         "not_found": "Ova lokacija više nije na karti.",
-        "failed": "Slanje nije uspjelo. Pokušajte ponovno."
+        "failed": "Slanje nije uspjelo. Pokušajte ponovno.",
+        "captcha_required": "Najprije sastavite oznaku.",
+        "captcha_invalid": "Provjera nije uspjela. Uzmite novi zadatak i pokušajte ponovno.",
+        "captcha_expired": "Zadatak je istekao. Uzmite novi.",
+        "captcha_too_fast": "To je bilo prebrzo. Pokušajte ponovno."
       }
     }
   },
@@ -1489,7 +1493,11 @@
       "password_too_short": "Lozinka mora imati najmanje 8 znakova.",
       "password_too_long": "Lozinka je preduga.",
       "invalid_credentials": "Neispravno korisničko ime ili lozinka.",
-      "missing_fields": "Ispunite oba polja."
+      "missing_fields": "Ispunite oba polja.",
+      "captcha_required": "Najprije sastavite oznaku.",
+      "captcha_invalid": "Provjera nije uspjela. Uzmite novi zadatak i pokušajte ponovno.",
+      "captcha_expired": "Zadatak je istekao. Uzmite novi.",
+      "captcha_too_fast": "To je bilo prebrzo. Pokušajte ponovno."
     }
   },
   "reset": {
@@ -1529,7 +1537,11 @@
       "password_mismatch": "Dvije lozinke se ne podudaraju.",
       "invalid_token": "Ova poveznica za ponovno postavljanje nije valjana. Zatražite novu.",
       "expired_token": "Ova poveznica za ponovno postavljanje je istekla. Zatražite novu.",
-      "used_token": "Ova poveznica za ponovno postavljanje je već iskorištena. Zatražite novu."
+      "used_token": "Ova poveznica za ponovno postavljanje je već iskorištena. Zatražite novu.",
+      "captcha_required": "Najprije sastavite oznaku.",
+      "captcha_invalid": "Provjera nije uspjela. Uzmite novi zadatak i pokušajte ponovno.",
+      "captcha_expired": "Zadatak je istekao. Uzmite novi.",
+      "captcha_too_fast": "To je bilo prebrzo. Pokušajte ponovno."
     },
     "mail": {
       "subject": "Ponovno postavite lozinku za Trientes",
@@ -1988,7 +2000,7 @@
       "linksLabel": "Poveznice i zajednica",
       "links": {
         "docs": "Dokumentacija",
-        "whitepaper": "Whitepaper",
+        "whitepaper": "Bijela knjiga",
         "github": "GitHub",
         "x": "X",
         "telegram": "Telegram",
@@ -2809,6 +2821,21 @@
       "asked": "Primili smo nekoliko prijava o vašoj lokaciji «{point}». Molimo potvrdite da je otvorena i da i dalje prihvaća kripto, ili ispravite njezine podatke.",
       "warned": "Nismo dobili odgovor o «{point}» već 14 dana. Ako ne odgovorite u sljedećih 14 dana, lokacija će biti uklonjena s karte dok se stvar ne razjasni.",
       "suspended": "«{point}» je uklonjena s karte jer prijave o njoj nisu dobile odgovor. Odgovorite ovdje i vratit ćemo je."
+    }
+  },
+  "captcha": {
+    "title": "Sastavite oznaku",
+    "hint": "Povucite narančasti dio na mjesto — oznaka se mora spojiti.",
+    "idle": "Jedan dio nije na mjestu",
+    "ok": "Oznaka je cjelovita",
+    "bad": "Ne baš — pokušajte ponovno",
+    "keyboard": "Tipkovnica: Tab → strelice → Enter.",
+    "reload": "Novi izazov",
+    "errors": {
+      "captcha_required": "Najprije sastavite oznaku.",
+      "captcha_invalid": "Provjera nije uspjela. Uzmite novi izazov i pokušajte ponovno.",
+      "captcha_expired": "Izazov je istekao. Uzmite novi izazov.",
+      "captcha_too_fast": "To je bilo prebrzo. Pokušajte ponovno."
     }
   }
 }

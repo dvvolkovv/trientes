@@ -1047,7 +1047,11 @@
         "comment_too_long": "Por favor, manténlo por debajo de 1000 caracteres.",
         "bad_reason": "Por favor, elige un motivo.",
         "not_found": "Este lugar ya no está en el mapa.",
-        "failed": "No se pudo enviar. Inténtalo de nuevo."
+        "failed": "No se pudo enviar. Inténtalo de nuevo.",
+        "captcha_required": "Primero, ensambla la marca.",
+        "captcha_invalid": "La verificación no se superó. Toma otro desafío e inténtalo de nuevo.",
+        "captcha_expired": "El desafío caducó. Toma uno nuevo.",
+        "captcha_too_fast": "Eso fue demasiado rápido. Por favor, inténtalo de nuevo."
       }
     }
   },
@@ -1489,7 +1493,11 @@
       "password_too_short": "La contraseña debe tener al menos 8 caracteres.",
       "password_too_long": "La contraseña es demasiado larga.",
       "invalid_credentials": "Usuario o contraseña incorrectos.",
-      "missing_fields": "Rellena ambos campos."
+      "missing_fields": "Rellena ambos campos.",
+      "captcha_required": "Primero arma la marca.",
+      "captcha_invalid": "La verificación no se superó. Elige otro desafío e inténtalo de nuevo.",
+      "captcha_expired": "El desafío expiró. Elige uno nuevo.",
+      "captcha_too_fast": "Eso fue demasiado rápido. Por favor, inténtalo de nuevo."
     }
   },
   "reset": {
@@ -1529,7 +1537,11 @@
       "password_mismatch": "Las dos contraseñas no coinciden.",
       "invalid_token": "Este enlace de restablecimiento no es válido. Solicita uno nuevo.",
       "expired_token": "Este enlace de restablecimiento ha expirado. Solicita uno nuevo.",
-      "used_token": "Este enlace de restablecimiento ya se ha usado. Solicita uno nuevo."
+      "used_token": "Este enlace de restablecimiento ya se ha usado. Solicita uno nuevo.",
+      "captcha_required": "Primero arma la marca.",
+      "captcha_invalid": "La verificación no se superó. Elige otro desafío e inténtalo de nuevo.",
+      "captcha_expired": "El desafío expiró. Elige uno nuevo.",
+      "captcha_too_fast": "Eso fue demasiado rápido. Por favor, inténtalo de nuevo."
     },
     "mail": {
       "subject": "Restablece tu contraseña de Trientes",
@@ -2809,6 +2821,21 @@
       "asked": "Hemos recibido varios reportes sobre tu ubicación «{point}». Por favor confirma que está abierta y aún acepta cripto, o corrige sus datos.",
       "warned": "No hemos recibido respuesta sobre «{point}» desde hace 14 días. Sin una respuesta dentro de otros 14 días la ubicación se retirará del mapa hasta que se aclare el asunto.",
       "suspended": "«{point}» se ha retirado del mapa porque los reportes sobre ella no recibieron respuesta. Responde aquí y la volveremos a poner."
+    }
+  },
+  "captcha": {
+    "title": "Arma la marca",
+    "hint": "Arrastra la pieza naranja a su lugar — la marca debe quedar completa.",
+    "idle": "Una pieza está fuera de lugar",
+    "ok": "La marca está completa",
+    "bad": "No del todo — inténtalo de nuevo",
+    "keyboard": "Teclado: Tab → flechas → Enter.",
+    "reload": "Otro desafío",
+    "errors": {
+      "captcha_required": "Por favor, arma la marca primero.",
+      "captcha_invalid": "La verificación no se superó. Toma otro desafío e inténtalo de nuevo.",
+      "captcha_expired": "El desafío venció. Toma uno nuevo.",
+      "captcha_too_fast": "Eso fue demasiado rápido. Por favor, inténtalo de nuevo."
     }
   }
 }

@@ -8,6 +8,7 @@ import { validateUsername } from "@/lib/username";
 import { checkRegisterRateLimit, recordLoginAttempt } from "@/lib/rate-limit";
 import { createDatabaseSession } from "@/lib/session";
 import { notifyUser } from "@/lib/notify";
+import { requireCaptcha } from "@/lib/captcha-guard";
 
 const SITE_ORIGIN = process.env.PUBLIC_ORIGIN ?? "https://trientes.org";
 
@@ -21,12 +22,24 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   }
 
-  let body: { username?: unknown; password?: unknown; email?: unknown; locale?: unknown; next?: unknown };
+  let body: {
+    username?: unknown;
+    password?: unknown;
+    email?: unknown;
+    locale?: unknown;
+    next?: unknown;
+    captcha?: unknown;
+  };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "bad_json" }, { status: 400 });
   }
+
+  // Капча проверяется после разбора тела, но до записи в LoginAttempt: иначе
+  // непройденная проверка тикала бы ограничитель честного человека.
+  const captcha = await requireCaptcha(req, body.captcha);
+  if (!captcha.ok) return NextResponse.json({ error: captcha.reason }, { status: 400 });
 
   const v = validateUsername(String(body.username ?? ""));
   if (!v.ok) return NextResponse.json({ error: v.reason }, { status: 400 });

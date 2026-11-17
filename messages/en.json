@@ -1047,7 +1047,11 @@
         "comment_too_long": "Please keep it under 1000 characters.",
         "bad_reason": "Please pick a reason.",
         "not_found": "This place is no longer on the map.",
-        "failed": "Could not send. Please try again."
+        "failed": "Could not send. Please try again.",
+        "captcha_required": "Please assemble the mark first.",
+        "captcha_invalid": "The check did not pass. Take another challenge and try again.",
+        "captcha_expired": "The challenge expired. Take a new one.",
+        "captcha_too_fast": "That was too fast. Please try again."
       }
     }
   },
@@ -1489,7 +1493,11 @@
       "password_too_short": "Password must be at least 8 characters.",
       "password_too_long": "Password is too long.",
       "invalid_credentials": "Incorrect username or password.",
-      "missing_fields": "Please fill in both fields."
+      "missing_fields": "Please fill in both fields.",
+      "captcha_required": "Please assemble the mark first.",
+      "captcha_invalid": "The check did not pass. Take another challenge and try again.",
+      "captcha_expired": "The challenge expired. Take a new one.",
+      "captcha_too_fast": "That was too fast. Please try again."
     }
   },
   "reset": {
@@ -1529,7 +1537,11 @@
       "password_mismatch": "The two passwords do not match.",
       "invalid_token": "This reset link is not valid. Request a new one.",
       "expired_token": "This reset link has expired. Request a new one.",
-      "used_token": "This reset link has already been used. Request a new one."
+      "used_token": "This reset link has already been used. Request a new one.",
+      "captcha_required": "Please assemble the mark first.",
+      "captcha_invalid": "The check did not pass. Take another challenge and try again.",
+      "captcha_expired": "The challenge expired. Take a new one.",
+      "captcha_too_fast": "That was too fast. Please try again."
     },
     "mail": {
       "subject": "Reset your Trientes password",
@@ -2809,6 +2821,21 @@
       "asked": "We have received several reports about your location «{point}». Please confirm it is open and still accepts crypto, or correct its details.",
       "warned": "We have had no answer about «{point}» for 14 days. Without a reply within another 14 days the location will be taken off the map until the matter is clarified.",
       "suspended": "«{point}» has been taken off the map because the reports about it went unanswered. Reply here and we will put it back."
+    }
+  },
+  "captcha": {
+    "title": "Assemble the mark",
+    "hint": "Drag the orange piece into place — the mark must come together.",
+    "idle": "A piece is out of place",
+    "ok": "The mark is whole",
+    "bad": "Not quite — try again",
+    "keyboard": "Keyboard: Tab → arrow keys → Enter.",
+    "reload": "Another challenge",
+    "errors": {
+      "captcha_required": "Please assemble the mark first.",
+      "captcha_invalid": "The check did not pass. Take another challenge and try again.",
+      "captcha_expired": "The challenge expired. Take a new one.",
+      "captcha_too_fast": "That was too fast. Please try again."
     }
   }
 }

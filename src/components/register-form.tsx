@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { MarkCaptcha, type CaptchaSolution } from "@/components/captcha/mark-captcha";
 
 const fieldCls =
   "w-full bg-card border border-hairline rounded-md px-3 py-2 text-sm placeholder:text-muted focus:ring-1 focus:ring-accent outline-none";
@@ -14,6 +15,7 @@ export function RegisterForm({ locale, next }: { locale: string; next?: string }
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [captcha, setCaptcha] = useState<CaptchaSolution | null>(null);
   const [pending, start] = useTransition();
 
   return (
@@ -26,7 +28,14 @@ export function RegisterForm({ locale, next }: { locale: string; next?: string }
           const res = await fetch("/api/auth/password/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password, email: email || undefined, locale, next }),
+            body: JSON.stringify({
+              username,
+              password,
+              email: email || undefined,
+              locale,
+              next,
+              captcha,
+            }),
           });
           const data = (await res.json().catch(() => ({}))) as { ok?: boolean; redirect?: string; error?: string };
           if (res.ok && data.redirect) {
@@ -74,12 +83,13 @@ export function RegisterForm({ locale, next }: { locale: string; next?: string }
           onChange={(e) => setEmail(e.target.value)}
         />
       </label>
+      <MarkCaptcha onSolved={setCaptcha} />
       {error ? (
         <p className="text-sm text-red-500">{t.has(`errors.${error}`) ? t(`errors.${error}`) : t("errors.unknown_error")}</p>
       ) : null}
       <button
         type="submit"
-        disabled={pending}
+        disabled={pending || !captcha}
         className="bg-accent text-accent-foreground rounded-full px-4 py-2.5 text-sm font-semibold uppercase tracking-wider hover:brightness-110 transition-all disabled:opacity-50"
       >
         {pending ? t("submitting") : t("submit")}

@@ -13,6 +13,7 @@ import { clientIp } from "@/lib/client-ip";
 import { sendEmail } from "@/lib/email";
 import { pickLocale } from "@/lib/locales";
 import { checkResetRateLimit, recordLoginAttempt } from "@/lib/rate-limit";
+import { requireCaptcha } from "@/lib/captcha-guard";
 import {
   RESET_MAX_BY_IP_IDENT,
   RESET_WINDOW_MS,
@@ -29,12 +30,17 @@ const SITE_ORIGIN = process.env.PUBLIC_ORIGIN ?? "https://trientes.org";
 export async function POST(req: Request) {
   const ip = clientIp(req);
 
-  let body: { identifier?: unknown; email?: unknown; locale?: unknown };
+  let body: { identifier?: unknown; email?: unknown; locale?: unknown; captcha?: unknown };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "bad_json" }, { status: 400 });
   }
+
+  // Письмо уходит на чужой ящик — значит это способ его засыпать: анонимная
+  // просьба проходит через капчу.
+  const captcha = await requireCaptcha(req, body.captcha);
+  if (!captcha.ok) return NextResponse.json({ error: captcha.reason }, { status: 400 });
 
   // Негодное имя или сломанный адрес отвергаем вслух: это ничего не говорит
   // о том, есть ли у нас такой кабинет.

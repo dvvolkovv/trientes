@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
+import { MarkCaptcha, type CaptchaSolution } from "@/components/captcha/mark-captcha";
 
 const fieldCls =
   "w-full bg-card border border-hairline rounded-md px-3 py-2 text-sm placeholder:text-muted focus:ring-1 focus:ring-accent outline-none";
@@ -14,6 +15,7 @@ export function ForgotPasswordForm({ locale }: { locale: string }) {
   // человеку набранное обратно.
   const [sent, setSent] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [captcha, setCaptcha] = useState<CaptchaSolution | null>(null);
   const [pending, start] = useTransition();
 
   if (sent) {
@@ -50,7 +52,7 @@ export function ForgotPasswordForm({ locale }: { locale: string }) {
           const res = await fetch("/api/auth/password/forgot", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ identifier: asked, locale }),
+            body: JSON.stringify({ identifier: asked, locale, captcha }),
           });
           const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
           if (res.ok && data.ok) {
@@ -74,6 +76,7 @@ export function ForgotPasswordForm({ locale }: { locale: string }) {
           required
         />
       </label>
+      <MarkCaptcha onSolved={setCaptcha} />
       {error ? (
         <p className="text-sm text-red-500">
           {t.has(`errors.${error}`) ? t(`errors.${error}`) : t("errors.unknown_error")}
@@ -81,7 +84,7 @@ export function ForgotPasswordForm({ locale }: { locale: string }) {
       ) : null}
       <button
         type="submit"
-        disabled={pending}
+        disabled={pending || !captcha}
         className="bg-accent text-accent-foreground rounded-full px-4 py-2.5 text-sm font-semibold uppercase tracking-wider hover:brightness-110 transition-all disabled:opacity-50"
       >
         {pending ? t("sending") : t("send")}

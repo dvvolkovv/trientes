@@ -1047,7 +1047,11 @@
         "comment_too_long": "Por favor, mantenha abaixo de 1000 caracteres.",
         "bad_reason": "Por favor, selecione um motivo.",
         "not_found": "Este lugar não está mais no mapa.",
-        "failed": "Não foi possível enviar. Tente novamente."
+        "failed": "Não foi possível enviar. Tente novamente.",
+        "captcha_required": "Por favor, monte a marca primeiro.",
+        "captcha_invalid": "A verificação não foi aprovada. Pegue outro desafio e tente novamente.",
+        "captcha_expired": "O desafio expirou. Pegue um novo.",
+        "captcha_too_fast": "Isso foi rápido demais. Tente novamente."
       }
     }
   },
@@ -1489,7 +1493,11 @@
       "password_too_short": "A senha deve ter ao menos 8 caracteres.",
       "password_too_long": "A senha é muito longa.",
       "invalid_credentials": "Nome de usuário ou senha incorretos.",
-      "missing_fields": "Preencha os dois campos."
+      "missing_fields": "Preencha os dois campos.",
+      "captcha_required": "Por favor, monte a marca primeiro.",
+      "captcha_invalid": "A verificação não foi aprovada. Pegue outro desafio e tente novamente.",
+      "captcha_expired": "O desafio expirou. Pegue um novo.",
+      "captcha_too_fast": "Isso foi rápido demais. Tente novamente."
     }
   },
   "reset": {
@@ -1529,7 +1537,11 @@
       "password_mismatch": "As duas senhas não coincidem.",
       "invalid_token": "Este link de redefinição não é válido. Solicite um novo.",
       "expired_token": "Este link de redefinição expirou. Solicite um novo.",
-      "used_token": "Este link de redefinição já foi usado. Solicite um novo."
+      "used_token": "Este link de redefinição já foi usado. Solicite um novo.",
+      "captcha_required": "Por favor, monte a marca primeiro.",
+      "captcha_invalid": "A verificação não foi aprovada. Pegue outro desafio e tente novamente.",
+      "captcha_expired": "O desafio expirou. Pegue um novo.",
+      "captcha_too_fast": "Isso foi rápido demais. Tente novamente."
     },
     "mail": {
       "subject": "Redefina sua senha da Trientes",
@@ -2809,6 +2821,21 @@
       "asked": "Recebemos vários relatos sobre sua localização «{point}». Confirme que está aberta e ainda aceita cripto, ou corrija seus detalhes.",
       "warned": "Não recebemos resposta sobre «{point}» há 14 dias. Sem retorno em mais 14 dias a localização será removida do mapa até que a questão seja esclarecida.",
       "suspended": "«{point}» foi removida do mapa porque os relatos sobre ela não foram respondidos. Responda aqui e nós a recolocaremos."
+    }
+  },
+  "captcha": {
+    "title": "Monte a marca",
+    "hint": "Arraste a peça laranja para o lugar — a marca deve se completar.",
+    "idle": "Uma peça está fora do lugar",
+    "ok": "A marca está completa",
+    "bad": "Ainda não — tente novamente",
+    "keyboard": "Teclado: Tab → setas → Enter.",
+    "reload": "Outro desafio",
+    "errors": {
+      "captcha_required": "Por favor, monte a marca primeiro.",
+      "captcha_invalid": "A verificação não passou. Faça outro desafio e tente novamente.",
+      "captcha_expired": "O desafio expirou. Faça um novo.",
+      "captcha_too_fast": "Foi rápido demais. Por favor, tente novamente."
     }
   }
 }

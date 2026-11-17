@@ -1047,7 +1047,11 @@
         "comment_too_long": "请将内容控制在1000个字符以内。",
         "bad_reason": "请选择原因。",
         "not_found": "此地点已不在地图上。",
-        "failed": "发送失败。请重试。"
+        "failed": "发送失败。请重试。",
+        "captcha_required": "请先完成拼图。",
+        "captcha_invalid": "验证未通过。请重新挑战并重试。",
+        "captcha_expired": "挑战已过期。请重新开始。",
+        "captcha_too_fast": "操作过快。请重试。"
       }
     }
   },
@@ -1489,7 +1493,11 @@
       "password_too_short": "密码至少需要 8 个字符。",
       "password_too_long": "密码过长。",
       "invalid_credentials": "用户名或密码不正确。",
-      "missing_fields": "请填写完整两项。"
+      "missing_fields": "请填写完整两项。",
+      "captcha_required": "请先完成拼图。",
+      "captcha_invalid": "验证未通过。请重新挑战并重试。",
+      "captcha_expired": "挑战已过期。请重新开始。",
+      "captcha_too_fast": "操作过快。请重试。"
     }
   },
   "reset": {
@@ -1529,7 +1537,11 @@
       "password_mismatch": "两次输入的密码不一致。",
       "invalid_token": "此重置链接无效。请请求新的链接。",
       "expired_token": "此重置链接已过期。请请求新的链接。",
-      "used_token": "此重置链接已被使用。请请求新的链接。"
+      "used_token": "此重置链接已被使用。请请求新的链接。",
+      "captcha_required": "请先完成拼图。",
+      "captcha_invalid": "验证未通过。请重新挑战并重试。",
+      "captcha_expired": "挑战已过期。请重新开始。",
+      "captcha_too_fast": "操作过快。请重试。"
     },
     "mail": {
       "subject": "重置你的 Trientes 密码",
@@ -2809,6 +2821,21 @@
       "asked": "我们已收到关于您地点«{point}»的多份报告。请确认其仍在营业并接受加密货币，或更正其详细信息。",
       "warned": "关于«{point}»我们已14天未收到回复。若在接下来的14天内仍无答复，该地点将从地图上移除，直至情况澄清。",
       "suspended": "由于关于其的报告未获回应，«{point}»已从地图上移除。在此回复后我们会将其恢复。"
+    }
+  },
+  "captcha": {
+    "title": "拼合标记",
+    "hint": "将橙色拼块拖到位 — 标记必须拼合完整。",
+    "idle": "有一块未到位",
+    "ok": "标记已完整",
+    "bad": "还不对 — 请重试",
+    "keyboard": "键盘：Tab → 方向键 → Enter。",
+    "reload": "换一个挑战",
+    "errors": {
+      "captcha_required": "请先拼合标记。",
+      "captcha_invalid": "校验未通过。换一个挑战再试。",
+      "captcha_expired": "挑战已过期。请重新获取。",
+      "captcha_too_fast": "操作过快。请重试。"
     }
   }
 }
