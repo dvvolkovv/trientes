@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { checkAdmin } from "@/lib/is-admin";
 import { logAdminAction } from "@/lib/admin/audit";
 import { appendCaseEvent } from "@/lib/cases/journal";
-import { ensureCase } from "@/lib/cases/ensure";
+import { ensureCompanyCase } from "@/lib/cases/company-case";
 import { sendStaffMessage } from "@/app/actions/case-messages";
 import { nextReviewAt } from "@/lib/company-visibility";
 
@@ -13,26 +13,6 @@ export type SupervisionResult = { ok: true } | { ok: false; reason: string };
 
 /** Тот же порог, что у причины отказа: «не применимо» без слов ничего не значит. */
 const MIN_REASON = 3;
-
-/**
- * Дело предприятия. У поданной заявки оно уже есть; у предприятия, одобренного
- * до слайса AN, может не быть — заводим идемпотентно, а не отказываем: надзор
- * без нитки переписки был бы монологом.
- */
-async function caseOf(company: { id: string; displayName: string; ownerUserId: string }) {
-  const key = {
-    subjectType_subjectId: { subjectType: "COMPANY" as const, subjectId: company.id },
-  };
-  const existing = await prisma.complianceCase.findUnique({ where: key });
-  if (existing) return existing;
-  const id = await ensureCase({
-    subjectType: "COMPANY",
-    subjectId: company.id,
-    title: company.displayName,
-    applicantUserId: company.ownerUserId,
-  });
-  return id ? await prisma.complianceCase.findUnique({ where: { id } }) : null;
-}
 
 /**
  * Предупреждение — сообщение в нитку дела плюс событие журнала. Отдельной
@@ -54,13 +34,13 @@ export async function warnCompany(input: {
 
   const company = await prisma.company.findUnique({ where: { id: input.companyId } });
   if (!company) return { ok: false, reason: "not_found" };
-  const c = await caseOf(company);
-  if (!c) return { ok: false, reason: "failed" };
+  const caseId = await ensureCompanyCase(company);
+  if (!caseId) return { ok: false, reason: "failed" };
 
-  const sent = await sendStaffMessage({ caseId: c.id, body, needsReply: true });
+  const sent = await sendStaffMessage({ caseId, body, needsReply: true });
   if (!sent.ok) return { ok: false, reason: sent.reason };
 
-  await appendCaseEvent({ caseId: c.id, actorId: admin.userId, kind: "COMPANY_WARNED" });
+  await appendCaseEvent({ caseId, actorId: admin.userId, kind: "COMPANY_WARNED" });
   await logAdminAction({
     actorId: admin.userId,
     action: "WARN_COMPANY",
@@ -85,11 +65,11 @@ export async function messageCompany(input: {
 
   const company = await prisma.company.findUnique({ where: { id: input.companyId } });
   if (!company) return { ok: false, reason: "not_found" };
-  const c = await caseOf(company);
-  if (!c) return { ok: false, reason: "failed" };
+  const caseId = await ensureCompanyCase(company);
+  if (!caseId) return { ok: false, reason: "failed" };
 
   const sent = await sendStaffMessage({
-    caseId: c.id,
+    caseId,
     body,
     needsReply: input.needsReply !== false,
   });
@@ -125,14 +105,14 @@ export async function suspendCompany(input: {
     },
   });
 
-  const c = await caseOf(company);
-  if (c) {
+  const caseId = await ensureCompanyCase(company);
+  if (caseId) {
     // Сбой переписки снятие не отменяет: предприятие уже снято, а причина
     // записана в самой компании.
-    const sent = await sendStaffMessage({ caseId: c.id, body: reason, needsReply: true });
-    if (!sent.ok) console.error("[company-supervision] message failed", { caseId: c.id, reason: sent.reason });
+    const sent = await sendStaffMessage({ caseId, body: reason, needsReply: true });
+    if (!sent.ok) console.error("[company-supervision] message failed", { caseId, reason: sent.reason });
     await appendCaseEvent({
-      caseId: c.id,
+      caseId,
       actorId: admin.userId,
       kind: "COMPANY_SUSPENDED",
       payload: { reason: reason.slice(0, 200) },
@@ -164,10 +144,15 @@ export async function restoreCompanyListing(input: {
     where: { id: company.id },
     data: { suspendedAt: null, suspendReason: null, suspendedById: null },
   });
-  const c = await prisma.complianceCase.findUnique({
+  // Дела может не быть вовсе (предприятие никогда не снимали из этого экрана);
+  // заводить его ради одной записи незачем.
+  const existing = await prisma.complianceCase.findUnique({
     where: { subjectType_subjectId: { subjectType: "COMPANY", subjectId: company.id } },
+    select: { id: true },
   });
-  if (c) await appendCaseEvent({ caseId: c.id, actorId: admin.userId, kind: "COMPANY_RESTORED" });
+  if (existing) {
+    await appendCaseEvent({ caseId: existing.id, actorId: admin.userId, kind: "COMPANY_RESTORED" });
+  }
 
   await logAdminAction({
     actorId: admin.userId,
@@ -186,20 +171,24 @@ export async function passReview(input: { companyId: string }): Promise<Supervis
 
   const company = await prisma.company.findUnique({ where: { id: input.companyId } });
   if (!company) return { ok: false, reason: "not_found" };
-  const c = await caseOf(company);
-  if (!c) return { ok: false, reason: "failed" };
+  const caseId = await ensureCompanyCase(company);
+  if (!caseId) return { ok: false, reason: "failed" };
 
+  const c = await prisma.complianceCase.findUnique({
+    where: { id: caseId },
+    select: { risk: true },
+  });
   const now = new Date();
-  const due = nextReviewAt(now, c.risk);
-  await prisma.complianceCase.update({ where: { id: c.id }, data: { nextReviewAt: due } });
+  const due = nextReviewAt(now, c?.risk ?? "MEDIUM");
+  await prisma.complianceCase.update({ where: { id: caseId }, data: { nextReviewAt: due } });
   await appendCaseEvent({
-    caseId: c.id,
+    caseId,
     actorId: admin.userId,
     kind: "REVIEW_PASSED",
     payload: { next: due.toISOString().slice(0, 10) },
   });
   // Звонок о пересмотре больше не нужен: пересмотр только что прошёл.
-  await prisma.adminNotification.deleteMany({ where: { caseId: c.id, kind: "REVIEW_DUE" } });
+  await prisma.adminNotification.deleteMany({ where: { caseId, kind: "REVIEW_DUE" } });
   await logAdminAction({
     actorId: admin.userId,
     action: "REVIEW_PASSED",

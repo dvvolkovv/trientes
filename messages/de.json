@@ -318,7 +318,8 @@
         "reason_too_short": "Mindestens 3 Zeichen.",
         "generic": "Etwas ist schiefgelaufen."
       },
-      "delete": "Löschen"
+      "delete": "Löschen",
+      "supervision": "Aufsicht"
     },
     "analytics": {
       "title": "Analytik",
@@ -541,7 +542,11 @@
         "pointReported": "Ein Besucher hat den Punkt gemeldet: {reason}",
         "pointAsked": "das Unternehmen zu den Meldungen befragt",
         "pointWarned": "das Unternehmen verwarnt — seit 14 Tagen keine Antwort",
-        "pointSuspended": "den Standort von der Karte entfernt — Meldungen blieben unbeantwortet"
+        "pointSuspended": "den Standort von der Karte entfernt — Meldungen blieben unbeantwortet",
+        "companyWarned": "Warnung an das Unternehmen ausgesprochen",
+        "companySuspended": "Unternehmen von der Liste entfernt: {reason}",
+        "companyRestored": "Unternehmen wieder in die Liste aufgenommen",
+        "reviewPassed": "regelmäßige Überprüfung bestanden; nächste am {next}"
       },
       "thread": {
         "title": "Korrespondenz",
@@ -722,7 +727,8 @@
         "DUE_SOON": "Fällig innerhalb von 24 Stunden",
         "CASE_OVERDUE": "Überfällig",
         "APPLICANT_SILENT": "Antragsteller hat seit 14 Tagen nicht geantwortet",
-        "POINT_REPORTED": "Ein Besucher hat einen Kartenpunkt gemeldet"
+        "POINT_REPORTED": "Ein Besucher hat einen Kartenpunkt gemeldet",
+        "REVIEW_DUE": "Regelmäßige Überprüfung fällig"
       }
     },
     "movedToQueues": {
@@ -752,6 +758,60 @@
         "secondSignatures": "Zweitunterschriften",
         "soleSignOffs": "Alleinige Abzeichnungen",
         "resubmits": "Aufforderungen zum erneuten Senden"
+      }
+    },
+    "company": {
+      "kicker": "Gelistetes Unternehmen",
+      "openSupervision": "Überwachungsbereich öffnen",
+      "done": "Fertig.",
+      "numbers": {
+        "points": "Orte auf der Karte",
+        "reports": "Meldungen, 90 Tage",
+        "warnings": "Warnungen"
+      },
+      "supervision": {
+        "title": "Überwachung",
+        "summary": "Nächste Überprüfung am {date}",
+        "summaryNone": "Noch keine Überprüfung geplant",
+        "dueBadge": "Überprüfung fällig",
+        "approvedBy": "Genehmigt von",
+        "approvedAt": "Genehmigt am",
+        "kyb": "KYB",
+        "risk": "Risiko",
+        "nextReview": "Nächste Überprüfung",
+        "passReview": "Überprüfung bestanden"
+      },
+      "contact": {
+        "title": "Kontakt",
+        "summary": "Schreibt in den Fall-Thread; der Inhaber erhält es per E-Mail und Telegram",
+        "summaryNoCase": "Ein Fall wird mit der ersten Nachricht eröffnet",
+        "placeholder": "Was sollte der Inhaber wissen?",
+        "send": "Nachricht senden",
+        "warn": "Warnung aussprechen",
+        "openCase": "Fall öffnen"
+      },
+      "objects": {
+        "title": "Objekte",
+        "summary": "{points} Orte · {cards} Einträge",
+        "empty": "Dieses Unternehmen hat noch keine Orte oder Einträge.",
+        "pointSuspended": "von der Karte entfernt",
+        "pointUnderReview": "in Prüfung"
+      },
+      "listing": {
+        "title": "Eintrag",
+        "summaryLive": "Live auf der Seite",
+        "summarySuspended": "Deaktiviert: {reason}",
+        "suspendedBadge": "Deaktiviert",
+        "suspendedAt": "Am {date} deaktiviert",
+        "hint": "Ein Unternehmen zu deaktivieren verbirgt seine Standorte, Services und Einträge. Die Freigabe bleibt bestehen, daher ist das Wiederaktivieren ein einzelner Schritt.",
+        "reasonPlaceholder": "Warum wird es deaktiviert? Der Inhaber wird dies lesen.",
+        "suspend": "Eintrag deaktivieren",
+        "restore": "Eintrag wieder aktivieren"
+      },
+      "errors": {
+        "reason_too_short": "Bitte schreiben Sie zumindest ein paar Worte.",
+        "not_found": "Dieses Unternehmen existiert nicht mehr.",
+        "failed": "Das konnte nicht durchgeführt werden. Bitte erneut versuchen."
       }
     }
   },
@@ -1271,7 +1331,12 @@
     "pointSaved": "Standort gespeichert.",
     "pointBackToModeration": "Gespeichert und erneut zur Prüfung geschickt: Ort oder akzeptierte Coins haben sich geändert.",
     "editPointHint": "Sie bearbeiten einen bestehenden Standort.",
-    "cancelEdit": "Bearbeitung abbrechen"
+    "cancelEdit": "Bearbeitung abbrechen",
+    "suspended": {
+      "title": "Ihr Unternehmen ist im Listing deaktiviert",
+      "noReason": "Es wurde kein Grund angegeben.",
+      "hint": "Antworten Sie in Ihrem Fall-Thread, und wir prüfen es erneut."
+    }
   },
   "cabinet": {
     "kicker": "Bereich · Kabinett",

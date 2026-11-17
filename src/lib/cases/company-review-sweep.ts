@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { nextReviewAt, reviewDueSoon } from "@/lib/company-visibility";
 import { raiseAndNotify } from "./admin-notify";
 import { appendCaseEvent } from "./journal";
+import { ensureCompanyCase } from "./company-case";
 import { computeDue } from "./sla";
 import { isOpen } from "./types";
 
@@ -72,57 +73,6 @@ export function reviewAction(input: {
   return input.decision === null ? "REOPEN" : "NONE";
 }
 
-type CompanyRow = {
-  id: string;
-  displayName: string;
-  ownerUserId: string;
-  createdAt: Date;
-  reviewedAt: Date | null;
-  reviewedById: string | null;
-};
-
-/**
- * Дело для предприятия, залистованного до того, как дела появились.
- *
- * Заводится **уже решённым** (`status: APPROVED`), но **без решения**
- * (`decision: null`): решение принималось на старом экране, а не здесь, и
- * записать его сюда значило бы приписать сотруднику работу, которой в деле не
- * было — аналитика считает именно `decision != null`. Открытым его заводить
- * нельзя тем более: дело повисло бы в очереди с просроченным сроком.
- */
-async function openSettledCase(company: CompanyRow): Promise<string | null> {
-  const openedAt = company.reviewedAt ?? company.createdAt;
-  const { dueAt, slaSeconds } = computeDue(openedAt, "COMPANY");
-  try {
-    const created = await prisma.complianceCase.create({
-      data: {
-        subjectType: "COMPANY",
-        subjectId: company.id,
-        title: company.displayName.slice(0, 200),
-        applicantUserId: company.ownerUserId,
-        status: "APPROVED",
-        openedAt,
-        dueAt,
-        slaSeconds,
-        decidedAt: company.reviewedAt,
-      },
-    });
-    await appendCaseEvent({
-      caseId: created.id,
-      actorSide: "SYSTEM",
-      kind: "OPENED",
-      payload: { title: company.displayName.slice(0, 200), backfilled: 1 },
-    });
-    return created.id;
-  } catch (err) {
-    // Параллельный прогон или заведение дела из экрана надзора — у объекта
-    // ровно одно дело, и это нормальный исход, а не сбой.
-    if ((err as { code?: string }).code === "P2002") return null;
-    console.error("[company-review] failed to open case", { companyId: company.id, err });
-    return null;
-  }
-}
-
 /**
  * Суточный прогон: за 30 дней до срока пересмотра звонит колокольчик.
  *
@@ -176,7 +126,7 @@ export async function runCompanyReviewSweep(now: Date = new Date()): Promise<Rev
     stats.checked += 1;
     let c = byCompany.get(company.id);
     if (!c) {
-      const id = await openSettledCase(company);
+      const id = await ensureCompanyCase({ ...company, status: "APPROVED" });
       if (!id) continue;
       stats.opened += 1;
       c = {

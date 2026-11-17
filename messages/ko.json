@@ -318,7 +318,8 @@
         "reason_too_short": "사유는 3자 이상이어야 합니다.",
         "generic": "오류가 발생했습니다."
       },
-      "delete": "삭제"
+      "delete": "삭제",
+      "supervision": "감독"
     },
     "analytics": {
       "title": "애널리틱스",
@@ -541,7 +542,11 @@
         "pointReported": "방문자가 해당 지점을 신고함: {reason}",
         "pointAsked": "업체에 신고 건에 대해 문의함",
         "pointWarned": "업체에 경고함 — 14일 동안 답변 없음",
-        "pointSuspended": "지점을 지도에서 제거함 — 신고에 응답이 없음"
+        "pointSuspended": "지점을 지도에서 제거함 — 신고에 응답이 없음",
+        "companyWarned": "해당 업체에 경고가 발부됨",
+        "companySuspended": "업체가 목록에서 제외됨: {reason}",
+        "companyRestored": "업체가 목록에 복구됨",
+        "reviewPassed": "정기 심사를 통과함; 다음 일정은 {next}"
       },
       "thread": {
         "title": "대화",
@@ -722,7 +727,8 @@
         "DUE_SOON": "24시간 내 마감",
         "CASE_OVERDUE": "기한 초과",
         "APPLICANT_SILENT": "신청자가 14일째 무응답",
-        "POINT_REPORTED": "방문자가 지도 지점을 신고함"
+        "POINT_REPORTED": "방문자가 지도 지점을 신고함",
+        "REVIEW_DUE": "정기 심사 기한 도래"
       }
     },
     "movedToQueues": {
@@ -752,6 +758,60 @@
         "secondSignatures": "2차 서명",
         "soleSignOffs": "단독 승인",
         "resubmits": "재전송 요청"
+      }
+    },
+    "company": {
+      "kicker": "등록된 업체",
+      "openSupervision": "감독 패널 열기",
+      "done": "완료.",
+      "numbers": {
+        "points": "지도상의 지점",
+        "reports": "신고, 최근 90일",
+        "warnings": "경고"
+      },
+      "supervision": {
+        "title": "감독",
+        "summary": "다음 심사일 {date}",
+        "summaryNone": "아직 예정된 심사가 없음",
+        "dueBadge": "심사 예정",
+        "approvedBy": "승인자",
+        "approvedAt": "승인일",
+        "kyb": "KYB",
+        "risk": "위험도",
+        "nextReview": "다음 심사",
+        "passReview": "심사 통과"
+      },
+      "contact": {
+        "title": "문의",
+        "summary": "케이스 스레드에 작성합니다; 소유자는 이메일과 Telegram으로 받습니다",
+        "summaryNoCase": "첫 메시지와 함께 케이스가 열립니다",
+        "placeholder": "소유자가 알아야 할 내용은 무엇인가요?",
+        "send": "메시지 보내기",
+        "warn": "경고 보내기",
+        "openCase": "케이스 열기"
+      },
+      "objects": {
+        "title": "항목",
+        "summary": "{points} 장소 · {cards} 리스팅",
+        "empty": "이 비즈니스에는 아직 장소나 리스팅이 없습니다.",
+        "pointSuspended": "지도에서 제외",
+        "pointUnderReview": "검토 중"
+      },
+      "listing": {
+        "title": "리스팅",
+        "summaryLive": "사이트에 공개됨",
+        "summarySuspended": "내림: {reason}",
+        "suspendedBadge": "내림",
+        "suspendedAt": "{date}에 내림",
+        "hint": "비즈니스를 내리면 해당 장소, 서비스, 리스팅이 숨겨집니다. 승인 자체는 유지되므로 다시 올리는 데 한 번의 작업이면 됩니다.",
+        "reasonPlaceholder": "왜 내리나요? 소유자가 이를 읽습니다.",
+        "suspend": "리스팅 내리기",
+        "restore": "리스팅 다시 올리기"
+      },
+      "errors": {
+        "reason_too_short": "최소한 몇 마디 이상 작성해 주세요.",
+        "not_found": "이 비즈니스는 더 이상 존재하지 않습니다.",
+        "failed": "실행할 수 없습니다. 다시 시도해 주세요."
       }
     }
   },
@@ -1271,7 +1331,12 @@
     "pointSaved": "지점을 저장했습니다.",
     "pointBackToModeration": "저장하고 재심사로 보냈습니다: 위치 또는 취급 코인이 변경되었습니다.",
     "editPointHint": "기존 지점을 수정하고 있습니다.",
-    "cancelEdit": "수정 취소"
+    "cancelEdit": "수정 취소",
+    "suspended": {
+      "title": "귀하의 비즈니스가 리스팅에서 내려졌습니다",
+      "noReason": "사유가 기록되지 않았습니다.",
+      "hint": "케이스 스레드에 답장해 주시면 다시 검토하겠습니다."
+    }
   },
   "cabinet": {
     "kicker": "섹션 · 캐비닛",

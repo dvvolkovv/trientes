@@ -318,7 +318,8 @@
         "reason_too_short": "理由は3文字以上必要です。",
         "generic": "問題が発生しました。"
       },
-      "delete": "削除"
+      "delete": "削除",
+      "supervision": "監督"
     },
     "analytics": {
       "title": "アナリティクス",
@@ -541,7 +542,11 @@
         "pointReported": "訪問者がこのポイントを報告: {reason}",
         "pointAsked": "事業者に報告内容を確認しました",
         "pointWarned": "事業者に警告 — 14日間回答なし",
-        "pointSuspended": "地図からポイントを外しました — 報告に未回答"
+        "pointSuspended": "地図からポイントを外しました — 報告に未回答",
+        "companyWarned": "事業者に警告を発出",
+        "companySuspended": "掲載停止: {reason}",
+        "companyRestored": "掲載再開",
+        "reviewPassed": "定期審査に合格、次回は{next}"
       },
       "thread": {
         "title": "やり取り",
@@ -722,7 +727,8 @@
         "DUE_SOON": "24時間以内に期限",
         "CASE_OVERDUE": "期限切れ",
         "APPLICANT_SILENT": "申請者が14日間無返信",
-        "POINT_REPORTED": "訪問者が地図上のポイントを報告"
+        "POINT_REPORTED": "訪問者が地図上のポイントを報告",
+        "REVIEW_DUE": "定期審査の期限到来"
       }
     },
     "movedToQueues": {
@@ -752,6 +758,60 @@
         "secondSignatures": "第二署名",
         "soleSignOffs": "単独承認",
         "resubmits": "再送リクエスト"
+      }
+    },
+    "company": {
+      "kicker": "掲載事業者",
+      "openSupervision": "監督パネルを開く",
+      "done": "完了。",
+      "numbers": {
+        "points": "地図上の拠点数",
+        "reports": "報告件数（過去90日）",
+        "warnings": "警告"
+      },
+      "supervision": {
+        "title": "監督",
+        "summary": "次回審査 {date}",
+        "summaryNone": "審査予定なし",
+        "dueBadge": "要審査",
+        "approvedBy": "承認者",
+        "approvedAt": "承認日",
+        "kyb": "KYB",
+        "risk": "リスク",
+        "nextReview": "次回審査",
+        "passReview": "審査通過"
+      },
+      "contact": {
+        "title": "連絡先",
+        "summary": "案件スレッドに書き込み、オーナーはメールと Telegram で受け取ります",
+        "summaryNoCase": "最初のメッセージで案件が開かれます",
+        "placeholder": "オーナーに何を伝えますか？",
+        "send": "メッセージを送信",
+        "warn": "警告を出す",
+        "openCase": "案件を開く"
+      },
+      "objects": {
+        "title": "オブジェクト",
+        "summary": "{points}件の場所 · {cards}件の掲載",
+        "empty": "このビジネスにはまだ場所や掲載がありません。",
+        "pointSuspended": "地図から非表示",
+        "pointUnderReview": "審査中"
+      },
+      "listing": {
+        "title": "掲載",
+        "summaryLive": "サイトで公開中",
+        "summarySuspended": "取り下げ: {reason}",
+        "suspendedBadge": "取り下げ",
+        "suspendedAt": "{date}に取り下げ",
+        "hint": "ビジネスを取り下げると、その場所・サービス・掲載が非表示になります。承認自体は保持されるため、元に戻すのは1回の操作です。",
+        "reasonPlaceholder": "なぜ取り下げるのですか？オーナーが読みます。",
+        "suspend": "掲載を取り下げる",
+        "restore": "掲載を元に戻す"
+      },
+      "errors": {
+        "reason_too_short": "数語以上で記入してください。",
+        "not_found": "このビジネスはすでに存在しません。",
+        "failed": "実行できませんでした。もう一度お試しください。"
       }
     }
   },
@@ -1271,7 +1331,12 @@
     "pointSaved": "拠点を保存しました。",
     "pointBackToModeration": "保存し、再審査に回しました：場所または取扱銘柄が変わりました。",
     "editPointHint": "既存の拠点を編集しています。",
-    "cancelEdit": "編集をやめる"
+    "cancelEdit": "編集をやめる",
+    "suspended": {
+      "title": "あなたのビジネスは掲載から外されています",
+      "noReason": "理由は記録されていません。",
+      "hint": "案件スレッドで返信いただければ、再度確認します。"
+    }
   },
   "cabinet": {
     "kicker": "セクション · キャビネット",
