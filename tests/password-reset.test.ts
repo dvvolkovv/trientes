@@ -8,6 +8,7 @@ import {
   generateResetToken,
   hashResetToken,
   normalizeEmail,
+  parseResetIdentifier,
   resetExpiry,
   resetIdentifier,
   resetTokenState,
@@ -107,5 +108,44 @@ describe("buildResetUrl", () => {
     expect(buildResetUrl("https://trientes.org/", "ru", "abc")).toBe(
       "https://trientes.org/ru/reset-password/abc",
     );
+  });
+});
+
+// Человек, забывший пароль, помнит либо ящик, либо имя входа — страница входа
+// принимает и то и другое, и просьба о сбросе обязана принимать столько же.
+describe("parseResetIdentifier", () => {
+  it("видит адрес почты", () => {
+    expect(parseResetIdentifier("  BioTecBank@me.com ")).toEqual({
+      kind: "email",
+      value: "biotecbank@me.com",
+    });
+  });
+
+  it("видит имя входа", () => {
+    expect(parseResetIdentifier("BiotecBank")).toEqual({
+      kind: "username",
+      value: "biotecbank",
+    });
+  });
+
+  // Со «собакой» это попытка назвать ящик, и сломанный адрес надо отвергнуть
+  // вслух: ответить «посмотрите почту» на `a@b` значит отправить человека
+  // ждать письмо, которого никто не писал.
+  it("отвергает сломанный адрес, а не принимает его за имя входа", () => {
+    for (const bad of ["a@b", "@me.com", "biotecbank@", "a b@c.de"]) {
+      expect(parseResetIdentifier(bad)).toBeNull();
+    }
+  });
+
+  it("отвергает пустое и пробелы", () => {
+    for (const bad of ["", "   ", "\n"]) {
+      expect(parseResetIdentifier(bad)).toBeNull();
+    }
+  });
+
+  // Строка с переводом строки в заголовке письма — приставка `Bcc:`; ящик
+  // собирается из этого значения, поэтому сюда она попасть не должна.
+  it("отвергает подклейку заголовка", () => {
+    expect(parseResetIdentifier("a@b.c\nbcc: x@y.z")).toBeNull();
   });
 });

@@ -76,6 +76,31 @@ export function normalizeEmail(value: unknown): string | null {
   return EMAIL_SHAPE.test(email) ? email : null;
 }
 
+export type ResetIdentifier = {
+  kind: "email" | "username";
+  value: string;
+};
+
+/**
+ * Что человек назвал в просьбе о сбросе. Страница входа принимает и ящик, и
+ * имя входа, поэтому и здесь принимается столько же: забывший пароль часто
+ * помнит имя, но не помнит, какой из ящиков он указывал.
+ *
+ * Со «собакой» внутри — это попытка назвать ящик, и сломанный адрес мы
+ * отвергаем вслух, а не принимаем за имя входа: ответить «посмотрите почту»
+ * на `a@b` значит отправить человека ждать письмо, которого никто не писал.
+ */
+export function parseResetIdentifier(value: unknown): ResetIdentifier | null {
+  const raw = String(value ?? "").trim().toLowerCase();
+  if (!raw) return null;
+  if (raw.includes("@")) {
+    const email = normalizeEmail(raw);
+    return email ? { kind: "email", value: email } : null;
+  }
+  // Имя входа: те же знаки, что разрешает validateUsername при заведении.
+  return /^[a-z0-9_]{3,32}$/.test(raw) ? { kind: "username", value: raw } : null;
+}
+
 /**
  * Запись в `LoginAttempt` для счёта просьб. Приставка обязательна: счёт по
  * адресу считает строки по ней, и строка без приставки ускользнула бы от
