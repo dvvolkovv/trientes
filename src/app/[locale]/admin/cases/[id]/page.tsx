@@ -10,6 +10,7 @@ import { CaseTimer } from "@/components/admin/case-timer";
 import { CaseChecklist, type ChecklistItem } from "@/components/admin/case-checklist";
 import { CaseDocuments, type CaseDocumentItem } from "@/components/admin/case-documents";
 import { CaseDecision } from "@/components/admin/case-decision";
+import { CaseReports } from "@/components/admin/case-reports";
 import { CaseThread } from "@/components/cases/case-thread";
 import { CaseComposer } from "@/components/cases/case-composer";
 import { CaseReadMarker } from "@/components/cases/case-read-marker";
@@ -71,6 +72,17 @@ export default async function AdminCasePage({
   });
 
   const subject = await loadSubject(c.subjectType, c.subjectId);
+
+  // Жалобы читаются только у своего типа дела: остальным это лишний запрос.
+  const reports =
+    c.subjectType === "POINT_REPORT"
+      ? await prisma.pointReport.findMany({
+          where: { pointId: c.subjectId },
+          orderBy: { createdAt: "desc" },
+          take: 100,
+          include: { reporter: { select: { name: true, username: true } } },
+        })
+      : [];
   const now = new Date();
   const s = slaState({
     now,
@@ -194,6 +206,11 @@ export default async function AdminCasePage({
     };
   });
 
+  // Номер раздела считается, а не вписан руками: раздел «Жалобы» появляется
+  // только у дел по жалобам, и вписанные номера разъехались бы.
+  let sectionNo = 0;
+  const nextNo = () => String(++sectionNo);
+
   return (
     <div className={ADMIN_COLUMN}>
       <AdminNav locale={locale} active="queues" />
@@ -247,7 +264,7 @@ export default async function AdminCasePage({
 
       <div className="flex flex-col gap-3 pb-10">
         <CaseSection
-          n="1"
+          n={nextNo()}
           title={t("case.sections.form")}
           summary={t("case.sections.formSummary", { count: subject?.fields.length ?? 0 })}
         >
@@ -269,7 +286,7 @@ export default async function AdminCasePage({
         </CaseSection>
 
         <CaseSection
-          n="2"
+          n={nextNo()}
           title={t("case.sections.applicant")}
           summary={c.applicant?.email ?? "—"}
         >
@@ -279,8 +296,28 @@ export default async function AdminCasePage({
           </div>
         </CaseSection>
 
+        {c.subjectType === "POINT_REPORT" && (
+          <CaseSection
+            n={nextNo()}
+            title={t("case.reports.title")}
+            summary={t("case.reports.summary", { count: reports.length })}
+            open
+          >
+            <CaseReports
+              emptyLabel={t("case.reports.empty")}
+              items={reports.map((r) => ({
+                id: r.id,
+                reasonLabel: t(`case.reports.reason.${r.reason}`),
+                comment: r.comment,
+                who: r.reporter?.name ?? r.reporter?.username ?? t("case.reports.anonymous"),
+                createdAt: r.createdAt,
+              }))}
+            />
+          </CaseSection>
+        )}
+
         <CaseSection
-          n="3"
+          n={nextNo()}
           title={t("case.checklist.title")}
           summary={
             progress.requiredPending > 0
@@ -321,7 +358,7 @@ export default async function AdminCasePage({
         </CaseSection>
 
         <CaseSection
-          n="4"
+          n={nextNo()}
           title={t("case.docs.title")}
           summary={t("case.docs.summary", { judged: judgedDocs, total: documents.length })}
         >
@@ -354,7 +391,7 @@ export default async function AdminCasePage({
         </CaseSection>
 
         <CaseSection
-          n="5"
+          n={nextNo()}
           title={t("case.thread.title")}
           summary={
             unread > 0
@@ -388,7 +425,7 @@ export default async function AdminCasePage({
         </CaseSection>
 
         <CaseSection
-          n="6"
+          n={nextNo()}
           title={t("case.decision.title")}
           summary={
             c.decision
@@ -451,7 +488,7 @@ export default async function AdminCasePage({
         </CaseSection>
 
         <CaseSection
-          n="7"
+          n={nextNo()}
           title={t("case.sections.journal")}
           summary={t("case.sections.journalSummary", { count: c.events.length })}
         >
