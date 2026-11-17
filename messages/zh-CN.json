@@ -488,7 +488,8 @@
         "kyb": "KYB 文档",
         "coinRequests": "币种请求",
         "pointReports": "点位报告"
-      }
+      },
+      "unread": "{count} 条未读"
     },
     "case": {
       "status": {
@@ -527,7 +528,56 @@
         "clockResumed": "重新开始计时",
         "timeAdjusted": "将时间调整了 {minutes} 分钟 — {note}",
         "note": "留下了备注",
-        "decided": "作出了决定"
+        "decided": "作出了决定",
+        "messageSent": "已向申请人发送消息",
+        "messageReceived": "申请人已回复"
+      },
+      "thread": {
+        "title": "往来通信",
+        "summary": "{count} 条消息",
+        "unreadSummary": "{count} 条消息，{unread} 条未读",
+        "empty": "尚无消息。申请人会看到你在此处发送的任何内容。",
+        "staff": "我们",
+        "applicant": "申请人",
+        "placeholder": "写给申请人…",
+        "send": "发送给申请人",
+        "needsReply": "我期待回复（暂停计时）",
+        "templates": "现成模板",
+        "templateLabels": {
+          "requestDocument": "请求提供文件",
+          "clarifyData": "澄清数据",
+          "needTranslation": "需要翻译",
+          "deadline7": "7 天内答复"
+        },
+        "attach": "附加文件",
+        "attaching": "正在上传…",
+        "attached": "{count} 个已附加",
+        "noApplicant": "此案件没有已注册的申请人——无人可联系。",
+        "errors": {
+          "empty": "请写点内容或附加一个文件",
+          "too_long": "内容过长——最多 4000 个字符",
+          "too_large": "文件超过 8 MB",
+          "bad_type": "仅支持 PDF、PNG、JPEG 或 WebP",
+          "failed": "无法发送——请重试"
+        }
+      },
+      "templates": {
+        "requestDocument": "您好！为继续审核，我们需要一份证明您申请中数据的文件。请在回复此消息时附上扫描件或照片。",
+        "clarifyData": "您好！您申请中的某些细节需要澄清。请核对数据，并在此回复正确的数值。",
+        "needTranslation": "您好！您发送的文件所用语言我们无法核验。请附上英文译文。",
+        "deadline7": "请在7天内回复。若未收到答复，我们将不得不在未作出决定的情况下关闭申请。"
+      }
+    },
+    "bell": {
+      "title": "通知",
+      "subtitle": "{count} 条未读",
+      "empty": "没有新内容",
+      "open": "打开申请",
+      "kinds": {
+        "APPLICANT_REPLIED": "申请人已回复",
+        "DUE_SOON": "24小时内到期",
+        "CASE_OVERDUE": "已逾期",
+        "APPLICANT_SILENT": "申请人已沉默14天"
       }
     }
   },
@@ -1189,6 +1239,24 @@
       "title": "管理面板",
       "subtitle": "你拥有站点管理员权限。下方是审核队列和站点数据",
       "open": "打开管理面板"
+    },
+    "cases": {
+      "title": "您的申请",
+      "subtitle": "与审核员就您提交的所有内容进行沟通。",
+      "empty": "您没有正在审核的申请。",
+      "unread": "{count} 条新消息",
+      "open": "打开对话",
+      "placeholder": "给审核员写消息…",
+      "send": "发送",
+      "status": {
+        "NEW": "已收到，等待分配审核员",
+        "IN_REVIEW": "审核中",
+        "WAITING_APPLICANT": "等待您的回复",
+        "READY_FOR_APPROVAL": "等待批准",
+        "APPROVED": "已批准",
+        "REJECTED": "已拒绝",
+        "CLOSED": "已关闭"
+      }
     }
   },
   "register": {
@@ -2531,6 +2599,12 @@
       "decimals_invalid": "decimals 必须在 0 到 36 之间。",
       "not_pending": "该条目已不在待处理状态。",
       "unknown": "出了点问题。"
+    }
+  },
+  "notify": {
+    "caseMessage": {
+      "subject": "Trientes：关于“{title}”的一个问题",
+      "body": "管理员就你的申请“{title}”给你发了消息。打开下面的链接阅读并回复。"
     }
   }
 }

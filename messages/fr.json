@@ -488,7 +488,8 @@
         "kyb": "Documents KYB",
         "coinRequests": "Demandes de coins",
         "pointReports": "Rapports de points"
-      }
+      },
+      "unread": "{count} non lus"
     },
     "case": {
       "status": {
@@ -527,7 +528,56 @@
         "clockResumed": "a relancé l'horloge",
         "timeAdjusted": "a ajusté le temps de {minutes} min — {note}",
         "note": "a laissé une note",
-        "decided": "a pris une décision"
+        "decided": "a pris une décision",
+        "messageSent": "a écrit au demandeur",
+        "messageReceived": "le demandeur a répondu"
+      },
+      "thread": {
+        "title": "Correspondance",
+        "summary": "{count} messages",
+        "unreadSummary": "{count} messages, {unread} non lus",
+        "empty": "Pas encore de messages. Le demandeur voit tout ce que vous envoyez ici.",
+        "staff": "Nous",
+        "applicant": "Demandeur",
+        "placeholder": "Écrire au demandeur…",
+        "send": "Envoyer au demandeur",
+        "needsReply": "J'attends une réponse (arrête le chronomètre)",
+        "templates": "Prêts à l'emploi",
+        "templateLabels": {
+          "requestDocument": "Demander un document",
+          "clarifyData": "Préciser les données",
+          "needTranslation": "Besoin d’une traduction",
+          "deadline7": "Répondre sous 7 jours"
+        },
+        "attach": "Joindre un fichier",
+        "attaching": "Téléversement…",
+        "attached": "{count} pièce(s) jointe(s)",
+        "noApplicant": "Ce dossier n’a aucun demandeur enregistré — il n’y a personne à qui écrire",
+        "errors": {
+          "empty": "Écrivez quelque chose ou joignez un fichier",
+          "too_long": "Trop long — 4000 caractères max",
+          "too_large": "Le fichier dépasse 8 Mo",
+          "bad_type": "Uniquement PDF, PNG, JPEG ou WebP",
+          "failed": "Envoi impossible — réessayez"
+        }
+      },
+      "templates": {
+        "requestDocument": "Bonjour ! Pour poursuivre l’examen nous avons besoin d’un document confirmant les données de votre demande. Veuillez joindre un scan ou une photo en réponse à ce message.",
+        "clarifyData": "Bonjour ! Certains éléments de votre demande nécessitent des précisions. Veuillez vérifier les données et répondre ici avec les valeurs correctes.",
+        "needTranslation": "Bonjour ! Le document que vous avez envoyé est dans une langue que nous ne pouvons pas vérifier. Veuillez joindre une traduction en anglais.",
+        "deadline7": "Veuillez répondre sous 7 jours. Sans réponse nous devrons clôturer la demande sans décision."
+      }
+    },
+    "bell": {
+      "title": "Notifications",
+      "subtitle": "{count} non lues",
+      "empty": "Rien de nouveau",
+      "open": "Ouvrir le dossier",
+      "kinds": {
+        "APPLICANT_REPLIED": "Le demandeur a répondu",
+        "DUE_SOON": "Échéance dans 24 heures",
+        "CASE_OVERDUE": "En retard",
+        "APPLICANT_SILENT": "Le demandeur est silencieux depuis 14 jours"
       }
     }
   },
@@ -1189,6 +1239,24 @@
       "title": "Panneau d’administration",
       "subtitle": "Vous disposez des droits d’administrateur du site. Les files de modération et les données du site se trouvent ci-dessous.",
       "open": "Ouvrir le panneau d’administration"
+    },
+    "cases": {
+      "title": "Vos demandes",
+      "subtitle": "Correspondance avec les modérateurs concernant tout ce que vous avez soumis.",
+      "empty": "Vous n'avez aucune demande en cours d'examen.",
+      "unread": "{count} nouveaux",
+      "open": "Ouvrir la correspondance",
+      "placeholder": "Écrire aux modérateurs…",
+      "send": "Envoyer",
+      "status": {
+        "NEW": "reçu, en attente d'un examinateur",
+        "IN_REVIEW": "en cours d'examen",
+        "WAITING_APPLICANT": "en attente de votre réponse",
+        "READY_FOR_APPROVAL": "en attente d'approbation",
+        "APPROVED": "approuvé",
+        "REJECTED": "refusé",
+        "CLOSED": "fermé"
+      }
     }
   },
   "register": {
@@ -2531,6 +2599,12 @@
       "decimals_invalid": "Les décimales doivent être entre 0 et 36.",
       "not_pending": "Cet élément n'est plus en attente.",
       "unknown": "Une erreur est survenue."
+    }
+  },
+  "notify": {
+    "caseMessage": {
+      "subject": "Trientes : une question au sujet de « {title} »",
+      "body": "Les modérateurs vous ont écrit au sujet de votre candidature « {title} ». Ouvrez le lien ci-dessous pour la lire et y répondre."
     }
   }
 }

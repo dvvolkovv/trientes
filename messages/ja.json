@@ -488,7 +488,8 @@
         "kyb": "KYB書類",
         "coinRequests": "コイン申請",
         "pointReports": "地点報告"
-      }
+      },
+      "unread": "{count} 件の未読"
     },
     "case": {
       "status": {
@@ -527,7 +528,56 @@
         "clockResumed": "計時を再開した",
         "timeAdjusted": "時間を{minutes} 分調整 — {note}",
         "note": "メモを残した",
-        "decided": "決定を下した"
+        "decided": "決定を下した",
+        "messageSent": "申請者に送信",
+        "messageReceived": "申請者が返信"
+      },
+      "thread": {
+        "title": "やり取り",
+        "summary": "{count} 件のメッセージ",
+        "unreadSummary": "{count} 件のメッセージ、未読 {unread} 件",
+        "empty": "まだメッセージはありません。ここで送信した内容は申請者に表示されます。",
+        "staff": "スタッフ",
+        "applicant": "申請者",
+        "placeholder": "申請者にメッセージを書く…",
+        "send": "申請者に送信",
+        "needsReply": "回答を待つ（進行を一時停止）",
+        "templates": "定型文",
+        "templateLabels": {
+          "requestDocument": "書類の提出を依頼",
+          "clarifyData": "データの確認",
+          "needTranslation": "翻訳が必要",
+          "deadline7": "7日以内に回答"
+        },
+        "attach": "ファイルを添付",
+        "attaching": "アップロード中…",
+        "attached": "{count} 件を添付",
+        "noApplicant": "この案件には申請者が登録されていません—送信先がありません。",
+        "errors": {
+          "empty": "メッセージを書くか、ファイルを添付してください",
+          "too_long": "長すぎます — 最大 4000 文字",
+          "too_large": "ファイルが 8 MB を超えています",
+          "bad_type": "PDF、PNG、JPEG、または WebP のみ",
+          "failed": "送信できませんでした — もう一度お試しください"
+        }
+      },
+      "templates": {
+        "requestDocument": "こんにちは。審査を続行するには、申請内容を裏付ける書類が必要です。本メッセージへの返信で、スキャンまたは写真を添付してください。",
+        "clarifyData": "こんにちは。申請内容の一部について確認が必要です。データを確認のうえ、正しい値をこちらにご返信ください。",
+        "needTranslation": "こんにちは。お送りいただいた書類は、当方で確認できない言語です。英語訳を添付してください。",
+        "deadline7": "7日以内にご返信ください。ご回答がない場合、申請は不決のままクローズする必要があります。"
+      }
+    },
+    "bell": {
+      "title": "通知",
+      "subtitle": "{count}件の未読",
+      "empty": "新着はありません",
+      "open": "案件を開く",
+      "kinds": {
+        "APPLICANT_REPLIED": "申請者が返信しました",
+        "DUE_SOON": "24時間以内に期限",
+        "CASE_OVERDUE": "期限切れ",
+        "APPLICANT_SILENT": "申請者が14日間無返信"
       }
     }
   },
@@ -1189,6 +1239,24 @@
       "title": "管理者パネル",
       "subtitle": "あなたはサイト管理者権限を持っています。モデレーションキューとサイトデータは以下にあります。",
       "open": "管理者パネルを開く"
+    },
+    "cases": {
+      "title": "あなたの申請",
+      "subtitle": "提出物に関するモデレーターとのやり取り。",
+      "empty": "審査中の申請はありません。",
+      "unread": "{count}件の新着",
+      "open": "やり取りを開く",
+      "placeholder": "モデレーターにメッセージを書く…",
+      "send": "送信",
+      "status": {
+        "NEW": "受領、レビュアー待ち",
+        "IN_REVIEW": "審査中",
+        "WAITING_APPLICANT": "あなたの回答待ち",
+        "READY_FOR_APPROVAL": "承認待ち",
+        "APPROVED": "承認済み",
+        "REJECTED": "却下",
+        "CLOSED": "クローズ"
+      }
     }
   },
   "register": {
@@ -2531,6 +2599,12 @@
       "decimals_invalid": "decimals は0〜36の範囲にしてください。",
       "not_pending": "この項目はすでに処理済みです。",
       "unknown": "問題が発生しました。"
+    }
+  },
+  "notify": {
+    "caseMessage": {
+      "subject": "Trientes: \"{title}\"に関する質問",
+      "body": "モデレーターがあなたの申請 \"{title}\" について連絡しました。下のリンクを開いて内容を確認し、返信してください"
     }
   }
 }

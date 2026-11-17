@@ -488,7 +488,8 @@
         "kyb": "KYB dokumenti",
         "coinRequests": "Zahtjevi za kovanice",
         "pointReports": "Izvješća o lokacijama"
-      }
+      },
+      "unread": "{count} nepročitanih"
     },
     "case": {
       "status": {
@@ -527,7 +528,56 @@
         "clockResumed": "ponovno pokrenuo/la sat",
         "timeAdjusted": "prilagodio/la vrijeme za {minutes} min — {note}",
         "note": "ostavio/la bilješku",
-        "decided": "donio/la odluku"
+        "decided": "donio/la odluku",
+        "messageSent": "poslali poruku podnositelju",
+        "messageReceived": "podnositelj je odgovorio"
+      },
+      "thread": {
+        "title": "Korespondencija",
+        "summary": "{count} poruka",
+        "unreadSummary": "{count} poruka, {unread} nepročitanih",
+        "empty": "Još nema poruka. Podnositelj vidi sve što ovdje pošaljete.",
+        "staff": "Mi",
+        "applicant": "Podnositelj",
+        "placeholder": "Napišite podnositelju…",
+        "send": "Poslati podnositelju",
+        "needsReply": "Očekujem odgovor (zaustavlja sat)",
+        "templates": "Gotovi predlošci",
+        "templateLabels": {
+          "requestDocument": "Zatražiti dokument",
+          "clarifyData": "Pojašniti podatke",
+          "needTranslation": "Potrebno prevođenje",
+          "deadline7": "Odgovoriti u roku od 7 dana"
+        },
+        "attach": "Priložiti datoteku",
+        "attaching": "Učitavanje…",
+        "attached": "{count} priloženo",
+        "noApplicant": "Ovaj predmet nema registriranog podnositelja — nema kome pisati.",
+        "errors": {
+          "empty": "Napišite nešto ili priložite datoteku",
+          "too_long": "Predugo — najviše 4000 znakova",
+          "too_large": "Datoteka je veća od 8 MB",
+          "bad_type": "Samo PDF, PNG, JPEG ili WebP",
+          "failed": "Slanje nije uspjelo — pokušajte ponovno"
+        }
+      },
+      "templates": {
+        "requestDocument": "Dobar dan! Za nastavak pregleda potreban je dokument koji potvrđuje podatke u vašoj prijavi. Priložite sken ili fotografiju kao odgovor na ovu poruku.",
+        "clarifyData": "Dobar dan! Neke pojedinosti u vašoj prijavi treba pojasniti. Provjerite podatke i ovdje odgovorite točnim podacima.",
+        "needTranslation": "Dobar dan! Dokument koji ste poslali je na jeziku koji ne možemo provjeriti. Priložite prijevod na engleski.",
+        "deadline7": "Odgovorite u roku od 7 dana. Bez odgovora morat ćemo zatvoriti prijavu bez odluke."
+      }
+    },
+    "bell": {
+      "title": "Obavijesti",
+      "subtitle": "{count} nepročitanih",
+      "empty": "Ništa novo",
+      "open": "Otvoriti predmet",
+      "kinds": {
+        "APPLICANT_REPLIED": "Podnositelj je odgovorio",
+        "DUE_SOON": "Rok istječe za 24 sata",
+        "CASE_OVERDUE": "Istekao rok",
+        "APPLICANT_SILENT": "Podnositelj se nije javio 14 dana"
       }
     }
   },
@@ -1189,6 +1239,24 @@
       "title": "Administratorski panel",
       "subtitle": "Imate administratorska prava na web-mjestu. Redovi za moderiranje i podaci web-mjesta su u nastavku.",
       "open": "Otvoriti administratorski panel"
+    },
+    "cases": {
+      "title": "Vaše prijave",
+      "subtitle": "Dopisivanje s moderatorima o svemu što ste poslali.",
+      "empty": "Nemate prijava na pregledu.",
+      "unread": "{count} novih",
+      "open": "Otvoriti korespondenciju",
+      "placeholder": "Napišite moderatorima…",
+      "send": "Poslati",
+      "status": {
+        "NEW": "zaprimljeno, čeka pregledavatelja",
+        "IN_REVIEW": "u pregledu",
+        "WAITING_APPLICANT": "čeka vaš odgovor",
+        "READY_FOR_APPROVAL": "čeka odobrenje",
+        "APPROVED": "odobreno",
+        "REJECTED": "odbijeno",
+        "CLOSED": "zatvoreno"
+      }
     }
   },
   "register": {
@@ -2531,6 +2599,12 @@
       "decimals_invalid": "Decimale moraju biti između 0 i 36.",
       "not_pending": "Ova stavka više nije na čekanju.",
       "unknown": "Nešto je pošlo po zlu."
+    }
+  },
+  "notify": {
+    "caseMessage": {
+      "subject": "Trientes: pitanje o \"{title}\"",
+      "body": "Moderatori su vam pisali o vašem zahtjevu \"{title}\". Otvorite poveznicu u nastavku kako biste pročitali i odgovorili."
     }
   }
 }

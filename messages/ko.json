@@ -488,7 +488,8 @@
         "kyb": "KYB 문서",
         "coinRequests": "코인 요청",
         "pointReports": "포인트 신고"
-      }
+      },
+      "unread": "{count}개 미읽음"
     },
     "case": {
       "status": {
@@ -527,7 +528,56 @@
         "clockResumed": "타이머 재시작",
         "timeAdjusted": "시간 {minutes}분 조정 — {note}",
         "note": "메모를 남김",
-        "decided": "결정함"
+        "decided": "결정함",
+        "messageSent": "신청자에게 보냄",
+        "messageReceived": "신청자가 회신함"
+      },
+      "thread": {
+        "title": "대화",
+        "summary": "{count}개 메시지",
+        "unreadSummary": "{count}개 메시지, 미읽음 {unread}개",
+        "empty": "아직 메시지가 없습니다. 여기서 보내는 내용은 신청자가 보게 됩니다.",
+        "staff": "직원",
+        "applicant": "신청자",
+        "placeholder": "신청자에게 메시지 작성…",
+        "send": "신청자에게 전송",
+        "needsReply": "답변을 기대함(타이머 중지)",
+        "templates": "템플릿",
+        "templateLabels": {
+          "requestDocument": "서류 요청",
+          "clarifyData": "정보 확인",
+          "needTranslation": "번역 필요",
+          "deadline7": "7일 내 답변"
+        },
+        "attach": "파일 첨부",
+        "attaching": "업로드 중…",
+        "attached": "{count}개 첨부됨",
+        "noApplicant": "이 케이스에는 등록된 신청자가 없어 보낼 대상이 없습니다.",
+        "errors": {
+          "empty": "메시지를 입력하거나 파일을 첨부하세요",
+          "too_long": "너무 깁니다 — 최대 4000자",
+          "too_large": "파일이 8 MB를 초과함",
+          "bad_type": "PDF, PNG, JPEG 또는 WebP만 가능",
+          "failed": "전송할 수 없습니다 — 다시 시도하세요"
+        }
+      },
+      "templates": {
+        "requestDocument": "안녕하세요! 심사를 계속하려면 신청서의 정보를 확인할 수 있는 문서가 필요합니다. 이 메시지에 대한 회신으로 스캔본이나 사진을 첨부해 주세요.",
+        "clarifyData": "안녕하세요! 신청서의 일부 세부정보에 확인이 필요합니다. 데이터를 확인하시고 올바른 값으로 여기에서 회신해 주세요.",
+        "needTranslation": "안녕하세요! 보내주신 문서는 저희가 검증할 수 없는 언어로 되어 있습니다. 영어 번역본을 첨부해 주세요.",
+        "deadline7": "7일 이내에 회신해 주세요. 답변이 없으면 결론 없이 신청을 종료해야 합니다."
+      }
+    },
+    "bell": {
+      "title": "알림",
+      "subtitle": "{count}개 읽지 않음",
+      "empty": "새 소식 없음",
+      "open": "케이스 열기",
+      "kinds": {
+        "APPLICANT_REPLIED": "신청자가 회신함",
+        "DUE_SOON": "24시간 내 마감",
+        "CASE_OVERDUE": "기한 초과",
+        "APPLICANT_SILENT": "신청자가 14일째 무응답"
       }
     }
   },
@@ -1189,6 +1239,24 @@
       "title": "관리자 패널",
       "subtitle": "사이트 관리자 권한이 있습니다. 검토 대기열과 사이트 데이터가 아래에 있습니다.",
       "open": "관리자 패널 열기"
+    },
+    "cases": {
+      "title": "내 신청서",
+      "subtitle": "제출하신 모든 항목에 관해 모더레이터와의 대화입니다.",
+      "empty": "검토 중인 신청이 없습니다.",
+      "unread": "{count}개 새로 있음",
+      "open": "대화 열기",
+      "placeholder": "모더레이터에게 메시지를 작성하세요…",
+      "send": "보내기",
+      "status": {
+        "NEW": "접수됨, 검토자 대기 중",
+        "IN_REVIEW": "검토 중",
+        "WAITING_APPLICANT": "회원님의 답변 대기 중",
+        "READY_FOR_APPROVAL": "승인 대기 중",
+        "APPROVED": "승인됨",
+        "REJECTED": "거부됨",
+        "CLOSED": "종료됨"
+      }
     }
   },
   "register": {
@@ -2531,6 +2599,12 @@
       "decimals_invalid": "decimals 는 0~36 이어야 합니다.",
       "not_pending": "이 항목은 더 이상 대기 중이 아닙니다.",
       "unknown": "문제가 발생했습니다."
+    }
+  },
+  "notify": {
+    "caseMessage": {
+      "subject": "Trientes: \"{title}\"에 대한 질문",
+      "body": "모더레이터가 귀하의 신청 \"{title}\"에 대해 메시지를 보냈습니다. 아래 링크를 열어 내용을 읽고 회신하세요."
     }
   }
 }

@@ -488,7 +488,8 @@
         "kyb": "Documentos de KYB",
         "coinRequests": "Solicitações de moedas",
         "pointReports": "Relatórios de pontos"
-      }
+      },
+      "unread": "{count} não lidas"
     },
     "case": {
       "status": {
@@ -527,7 +528,56 @@
         "clockResumed": "reiniciou o relógio",
         "timeAdjusted": "ajustou o tempo em {minutes} min — {note}",
         "note": "deixou uma nota",
-        "decided": "tomou uma decisão"
+        "decided": "tomou uma decisão",
+        "messageSent": "escreveu ao solicitante",
+        "messageReceived": "o solicitante respondeu"
+      },
+      "thread": {
+        "title": "Correspondência",
+        "summary": "{count} mensagens",
+        "unreadSummary": "{count} mensagens, {unread} não lidas",
+        "empty": "Ainda não há mensagens. O solicitante vê tudo o que você enviar aqui.",
+        "staff": "Nós",
+        "applicant": "Solicitante",
+        "placeholder": "Escreva para o solicitante…",
+        "send": "Enviar ao solicitante",
+        "needsReply": "Espero uma resposta (pausa o relógio)",
+        "templates": "Prontos",
+        "templateLabels": {
+          "requestDocument": "Solicitar um documento",
+          "clarifyData": "Esclarecer dados",
+          "needTranslation": "Precisa de tradução",
+          "deadline7": "Responda em até 7 dias"
+        },
+        "attach": "Anexar um arquivo",
+        "attaching": "Enviando…",
+        "attached": "{count} anexos",
+        "noApplicant": "Este caso não tem solicitante registrado — não há ninguém para quem escrever.",
+        "errors": {
+          "empty": "Escreva algo ou anexe um arquivo",
+          "too_long": "Muito longo — 4000 caracteres no máximo",
+          "too_large": "O arquivo tem mais de 8 MB",
+          "bad_type": "Apenas PDF, PNG, JPEG ou WebP",
+          "failed": "Não foi possível enviar — tente novamente"
+        }
+      },
+      "templates": {
+        "requestDocument": "Olá! Para continuar a análise, precisamos de um documento que comprove os dados da sua solicitação. Por favor, anexe um escaneamento ou uma foto em resposta a esta mensagem.",
+        "clarifyData": "Olá! Alguns detalhes na sua solicitação precisam de esclarecimento. Por favor, verifique os dados e responda aqui com os valores corretos.",
+        "needTranslation": "Olá! O documento que você enviou está em um idioma que não podemos verificar. Por favor, anexe uma tradução para o inglês.",
+        "deadline7": "Responda em até 7 dias. Sem uma resposta, teremos que encerrar a solicitação sem uma decisão."
+      }
+    },
+    "bell": {
+      "title": "Notificações",
+      "subtitle": "{count} não lidas",
+      "empty": "Nada de novo",
+      "open": "Abrir o caso",
+      "kinds": {
+        "APPLICANT_REPLIED": "Solicitante respondeu",
+        "DUE_SOON": "Vence em 24 horas",
+        "CASE_OVERDUE": "Em atraso",
+        "APPLICANT_SILENT": "O solicitante está em silêncio há 14 dias"
       }
     }
   },
@@ -1189,6 +1239,24 @@
       "title": "Painel de administração",
       "subtitle": "Você tem direitos de administrador do site. As filas de moderação e os dados do site estão abaixo.",
       "open": "Abrir painel de administração"
+    },
+    "cases": {
+      "title": "Suas solicitações",
+      "subtitle": "Correspondência com os moderadores sobre tudo o que você enviou.",
+      "empty": "Você não tem solicitações em análise.",
+      "unread": "{count} novas",
+      "open": "Abrir correspondência",
+      "placeholder": "Escreva para os moderadores…",
+      "send": "Enviar",
+      "status": {
+        "NEW": "recebido, aguardando um revisor",
+        "IN_REVIEW": "em análise",
+        "WAITING_APPLICANT": "aguardando sua resposta",
+        "READY_FOR_APPROVAL": "aguardando aprovação",
+        "APPROVED": "aprovado",
+        "REJECTED": "rejeitado",
+        "CLOSED": "encerrado"
+      }
     }
   },
   "register": {
@@ -2531,6 +2599,12 @@
       "decimals_invalid": "Os decimais devem ficar entre 0 e 36.",
       "not_pending": "Este item já não está pendente.",
       "unknown": "Algo deu errado."
+    }
+  },
+  "notify": {
+    "caseMessage": {
+      "subject": "Trientes: uma pergunta sobre \"{title}\"",
+      "body": "Os moderadores escreveram para você sobre sua solicitação \"{title}\". Abra o link abaixo para ler e responder."
     }
   }
 }

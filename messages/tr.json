@@ -488,7 +488,8 @@
         "kyb": "KYB belgeleri",
         "coinRequests": "Coin talepleri",
         "pointReports": "Nokta raporları"
-      }
+      },
+      "unread": "{count} okunmamış"
     },
     "case": {
       "status": {
@@ -527,7 +528,56 @@
         "clockResumed": "zamanlayıcıyı yeniden başlattı",
         "timeAdjusted": "süreyi {minutes} dk ayarladı — {note}",
         "note": "not bıraktı",
-        "decided": "karar verdi"
+        "decided": "karar verdi",
+        "messageSent": "başvuru sahibine yazdı",
+        "messageReceived": "başvuru sahibi yanıtladı"
+      },
+      "thread": {
+        "title": "Yazışma",
+        "summary": "{count} mesaj",
+        "unreadSummary": "{count} mesaj, {unread} okunmamış",
+        "empty": "Henüz mesaj yok. Buraya gönderdiğiniz her şeyi başvuru sahibi görür.",
+        "staff": "Biz",
+        "applicant": "Başvuru sahibi",
+        "placeholder": "Başvuru sahibine yazın…",
+        "send": "Başvuru sahibine gönder",
+        "needsReply": "Yanıt bekliyorum (süreyi durdurur)",
+        "templates": "Hazır",
+        "templateLabels": {
+          "requestDocument": "Belge iste",
+          "clarifyData": "Verileri netleştir",
+          "needTranslation": "Çeviri gerekli",
+          "deadline7": "7 gün içinde yanıt verin"
+        },
+        "attach": "Dosya ekle",
+        "attaching": "Yükleniyor…",
+        "attached": "{count} ekli",
+        "noApplicant": "Bu dosyada kayıtlı başvuru sahibi yok — yazılacak kimse yok.",
+        "errors": {
+          "empty": "Bir şey yazın veya bir dosya ekleyin",
+          "too_long": "Çok uzun — en fazla 4000 karakter",
+          "too_large": "Dosya 8 MB'ı aşıyor",
+          "bad_type": "Yalnızca PDF, PNG, JPEG veya WebP",
+          "failed": "Gönderilemedi — tekrar deneyin"
+        }
+      },
+      "templates": {
+        "requestDocument": "Merhaba! İncelemeye devam edebilmemiz için başvurunuzdaki verileri doğrulayan bir belgeye ihtiyacımız var. Lütfen bu mesaja yanıt olarak bir tarama veya fotoğraf ekleyin.",
+        "clarifyData": "Merhaba! Başvurunuzdaki bazı ayrıntıların netleştirilmesi gerekiyor. Lütfen verileri kontrol edin ve doğru değerlerle burada yanıtlayın.",
+        "needTranslation": "Merhaba! Gönderdiğiniz belge doğrulama yapamayacağımız bir dilde. Lütfen İngilizceye bir çeviri ekleyin.",
+        "deadline7": "Lütfen 7 gün içinde yanıt verin. Yanıt olmazsa başvuruyu karara bağlamadan kapatmak zorunda kalacağız."
+      }
+    },
+    "bell": {
+      "title": "Bildirimler",
+      "subtitle": "{count} okunmamış",
+      "empty": "Yeni bir şey yok",
+      "open": "Dosyayı aç",
+      "kinds": {
+        "APPLICANT_REPLIED": "Başvuran yanıtladı",
+        "DUE_SOON": "24 saat içinde süre doluyor",
+        "CASE_OVERDUE": "Gecikmiş",
+        "APPLICANT_SILENT": "Başvuran 14 gündür sessiz"
       }
     }
   },
@@ -1189,6 +1239,24 @@
       "title": "Yönetici paneli",
       "subtitle": "Site yöneticisi haklarına sahipsiniz. Moderasyon kuyrukları ve site verileri aşağıdadır.",
       "open": "Yönetici panelini aç"
+    },
+    "cases": {
+      "title": "Başvurularınız",
+      "subtitle": "Gönderdiğiniz her şey hakkında moderatörlerle yazışma.",
+      "empty": "İncelemede olan bir başvurunuz yok.",
+      "unread": "{count} yeni",
+      "open": "Yazışmayı aç",
+      "placeholder": "Moderatörlere yazın…",
+      "send": "Gönder",
+      "status": {
+        "NEW": "alındı, bir inceleyen bekleniyor",
+        "IN_REVIEW": "incelemede",
+        "WAITING_APPLICANT": "yanıtınız bekleniyor",
+        "READY_FOR_APPROVAL": "onay bekliyor",
+        "APPROVED": "onaylandı",
+        "REJECTED": "reddedildi",
+        "CLOSED": "kapalı"
+      }
     }
   },
   "register": {
@@ -2531,6 +2599,12 @@
       "decimals_invalid": "Ondalık basamak 0 ile 36 arasında olmalı.",
       "not_pending": "Bu kayıt artık beklemede değil.",
       "unknown": "Bir şeyler ters gitti."
+    }
+  },
+  "notify": {
+    "caseMessage": {
+      "subject": "Trientes: \"{title}\" hakkında bir soru",
+      "body": "Moderatörler, \"{title}\" başvurunuz hakkında size yazdı. Okumak ve yanıtlamak için aşağıdaki bağlantıyı açın."
     }
   }
 }

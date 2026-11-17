@@ -488,7 +488,8 @@
         "kyb": "KYB-Dokumente",
         "coinRequests": "Coin-Anfragen",
         "pointReports": "Punktmeldungen"
-      }
+      },
+      "unread": "{count} ungelesen"
     },
     "case": {
       "status": {
@@ -527,7 +528,56 @@
         "clockResumed": "die Uhr neu gestartet",
         "timeAdjusted": "Zeit um {minutes} Min angepasst — {note}",
         "note": "eine Notiz hinterlassen",
-        "decided": "eine Entscheidung getroffen"
+        "decided": "eine Entscheidung getroffen",
+        "messageSent": "an den Antragsteller geschrieben",
+        "messageReceived": "Antragsteller hat geantwortet"
+      },
+      "thread": {
+        "title": "Korrespondenz",
+        "summary": "{count} Nachrichten",
+        "unreadSummary": "{count} Nachrichten, {unread} ungelesen",
+        "empty": "Noch keine Nachrichten. Der Antragsteller sieht alles, was Sie hier senden.",
+        "staff": "Wir",
+        "applicant": "Antragsteller",
+        "placeholder": "An den Antragsteller schreiben…",
+        "send": "An den Antragsteller senden",
+        "needsReply": "Ich erwarte eine Antwort (pausiert die Frist)",
+        "templates": "Vorlagen",
+        "templateLabels": {
+          "requestDocument": "Dokument anfordern",
+          "clarifyData": "Daten klären",
+          "needTranslation": "Übersetzung benötigt",
+          "deadline7": "Antwort innerhalb von 7 Tagen"
+        },
+        "attach": "Datei anhängen",
+        "attaching": "Wird hochgeladen…",
+        "attached": "{count} angehängt",
+        "noApplicant": "Für diesen Fall ist kein Antragsteller registriert — es gibt niemanden, dem man schreiben kann.",
+        "errors": {
+          "empty": "Schreiben Sie etwas oder hängen Sie eine Datei an",
+          "too_long": "Zu lang — maximal 4000 Zeichen",
+          "too_large": "Datei ist größer als 8 MB",
+          "bad_type": "Nur PDF, PNG, JPEG oder WebP",
+          "failed": "Konnte nicht gesendet werden — bitte erneut versuchen"
+        }
+      },
+      "templates": {
+        "requestDocument": "Hallo! Für die weitere Prüfung benötigen wir ein Dokument, das die Angaben in Ihrem Antrag bestätigt. Bitte fügen Sie als Antwort auf diese Nachricht einen Scan oder ein Foto an.",
+        "clarifyData": "Hallo! Einige Angaben in Ihrem Antrag benötigen eine Klarstellung. Bitte prüfen Sie die Daten und antworten Sie hier mit den korrekten Werten.",
+        "needTranslation": "Hallo! Das von Ihnen gesendete Dokument ist in einer Sprache, die wir nicht verifizieren können. Bitte fügen Sie eine Übersetzung ins Englische bei.",
+        "deadline7": "Bitte antworten Sie innerhalb von 7 Tagen. Ohne Antwort müssen wir den Antrag ohne Entscheidung schließen."
+      }
+    },
+    "bell": {
+      "title": "Benachrichtigungen",
+      "subtitle": "{count} ungelesen",
+      "empty": "Nichts Neues",
+      "open": "Fall öffnen",
+      "kinds": {
+        "APPLICANT_REPLIED": "Antragsteller hat geantwortet",
+        "DUE_SOON": "Fällig innerhalb von 24 Stunden",
+        "CASE_OVERDUE": "Überfällig",
+        "APPLICANT_SILENT": "Antragsteller hat seit 14 Tagen nicht geantwortet"
       }
     }
   },
@@ -1189,6 +1239,24 @@
       "title": "Admin-Panel",
       "subtitle": "Sie haben Administratorrechte für die Website. Unten finden Sie Moderationswarteschlangen und Seitendaten.",
       "open": "Admin-Panel öffnen"
+    },
+    "cases": {
+      "title": "Ihre Anträge",
+      "subtitle": "Korrespondenz mit den Moderatoren zu allem, was Sie eingereicht haben.",
+      "empty": "Sie haben keine Anträge in Prüfung.",
+      "unread": "{count} neu",
+      "open": "Korrespondenz öffnen",
+      "placeholder": "An die Moderatoren schreiben…",
+      "send": "Senden",
+      "status": {
+        "NEW": "eingegangen, wartet auf Prüfer",
+        "IN_REVIEW": "in Prüfung",
+        "WAITING_APPLICANT": "wartet auf Ihre Antwort",
+        "READY_FOR_APPROVAL": "wartet auf Genehmigung",
+        "APPROVED": "genehmigt",
+        "REJECTED": "abgelehnt",
+        "CLOSED": "geschlossen"
+      }
     }
   },
   "register": {
@@ -2531,6 +2599,12 @@
       "decimals_invalid": "Decimals müssen zwischen 0 und 36 liegen.",
       "not_pending": "Dieser Eintrag wartet nicht mehr auf eine Entscheidung.",
       "unknown": "Etwas ist schiefgelaufen."
+    }
+  },
+  "notify": {
+    "caseMessage": {
+      "subject": "Trientes: eine Frage zu \"{title}\"",
+      "body": "Die Moderatoren haben Ihnen zu Ihrem Antrag \"{title}\" geschrieben. Öffnen Sie den untenstehenden Link, um ihn zu lesen und zu antworten."
     }
   }
 }
