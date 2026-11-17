@@ -14,6 +14,11 @@ export type PointWithCompany = Prisma.CompanyPointGetPayload<{
   };
 }>;
 
+/** Пометка «проверяется» — отдельное поле, а не статус: точка остаётся одобренной. */
+export function pointUnderReview(p: { underReviewAt: Date | null }): boolean {
+  return p.underReviewAt !== null;
+}
+
 function layerFor(type: PointWithCompany["type"]): PoiLayer {
   return type === "ATM" ? "atm" : "merchant";
 }
@@ -144,6 +149,7 @@ export function companyPointToPoi(
     // А в шапке карточки стоит именно знак заведения: логотип точки, иначе
     // логотип компании. Фотография витрины сюда не годится.
     logoUrl: p.logoUrl ?? p.company.logoUrl ?? null,
+    underReview: pointUnderReview(p),
     description: p.description ?? p.company.description ?? null,
   };
 }
@@ -201,6 +207,8 @@ export async function fetchApprovedPointsInBbox(
       status: "APPROVED",
       company: { status: "APPROVED", deletedAt: null },
       deletedAt: null,
+      // Снятая надзором точка с карты уходит; статус APPROVED при этом цел.
+      suspendedAt: null,
       lat: { gte: bbox.minLat, lte: bbox.maxLat },
       lon: { gte: bbox.minLon, lte: bbox.maxLon },
       ...(selector.kind === "card"
