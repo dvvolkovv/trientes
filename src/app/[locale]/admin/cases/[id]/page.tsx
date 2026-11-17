@@ -7,7 +7,13 @@ import { CaseSection } from "@/components/admin/case-section";
 import { CaseJournal } from "@/components/admin/case-journal";
 import { CaseClaim } from "@/components/admin/case-claim";
 import { CaseTimer } from "@/components/admin/case-timer";
+import { CaseThread } from "@/components/cases/case-thread";
+import { CaseComposer } from "@/components/cases/case-composer";
+import { CaseReadMarker } from "@/components/cases/case-read-marker";
 import { loadSubject } from "@/lib/cases/subject";
+import { parseAttachments } from "@/lib/cases/attachments";
+import { TEMPLATE_KEYS, unreadCount } from "@/lib/cases/messages";
+import { pickLocale } from "@/lib/locales";
 import { queueOfSubject } from "@/lib/cases/queues";
 import { slaState } from "@/lib/cases/sla";
 import { formatHandled } from "@/lib/cases/time";
@@ -28,7 +34,11 @@ export default async function AdminCasePage({
     where: { id },
     include: {
       assignee: { select: { id: true, name: true, username: true } },
-      applicant: { select: { name: true, username: true, email: true } },
+      applicant: { select: { name: true, username: true, email: true, preferredLocale: true } },
+      messages: {
+        orderBy: { createdAt: "asc" },
+        include: { author: { select: { name: true, username: true } } },
+      },
       events: {
         orderBy: { createdAt: "desc" },
         take: 50,
@@ -53,6 +63,45 @@ export default async function AdminCasePage({
   const d = Math.floor(s.remainingSeconds / 86400);
   const h = Math.floor((s.remainingSeconds % 86400) / 3600);
   const queueKey = queueOfSubject(c.subjectType)?.key ?? "companies";
+
+  const unread = unreadCount(
+    c.messages.map((m) => ({
+      side: m.side,
+      readByStaffAt: m.readByStaffAt,
+      readByApplicantAt: m.readByApplicantAt,
+    })),
+    "STAFF",
+  );
+
+  // Заготовки — на языке кабинета заявителя: читать их будет он.
+  const applicantLocale = pickLocale(c.applicant?.preferredLocale);
+  const tpl = await getTranslations({ locale: applicantLocale, namespace: "admin.case.templates" });
+  const templates = TEMPLATE_KEYS.map((key) => ({
+    key,
+    label: t(`case.thread.templateLabels.${key}`),
+    text: tpl(key),
+  }));
+
+  const threadLabels = {
+    placeholder: t("case.thread.placeholder"),
+    send: t("case.thread.send"),
+    needsReply: t("case.thread.needsReply"),
+    templates: t("case.thread.templates"),
+    attach: t("case.thread.attach"),
+    attaching: t("case.thread.attaching"),
+    // .raw — потому что {count} подставит клиент, когда файл уже приложен.
+    attached: t.raw("case.thread.attached") as string,
+    errors: {
+      empty: t("case.thread.errors.empty"),
+      too_long: t("case.thread.errors.too_long"),
+      too_large: t("case.thread.errors.too_large"),
+      bad_type: t("case.thread.errors.bad_type"),
+      failed: t("case.thread.errors.failed"),
+      forbidden: t("case.thread.errors.failed"),
+      unauth: t("case.thread.errors.failed"),
+      not_found: t("case.thread.errors.failed"),
+    },
+  };
 
   return (
     <div className={ADMIN_COLUMN}>
@@ -142,6 +191,40 @@ export default async function AdminCasePage({
 
         <CaseSection
           n="3"
+          title={t("case.thread.title")}
+          summary={
+            unread > 0
+              ? t("case.thread.unreadSummary", { count: c.messages.length, unread })
+              : t("case.thread.summary", { count: c.messages.length })
+          }
+          open
+        >
+          {unread > 0 ? <CaseReadMarker caseId={c.id} /> : null}
+          <CaseThread
+            caseId={c.id}
+            locale={locale}
+            mySide="STAFF"
+            messages={c.messages.map((m) => ({
+              id: m.id,
+              side: m.side,
+              body: m.body,
+              attachments: parseAttachments(m.attachments),
+              createdAt: m.createdAt,
+              authorName: m.author?.name ?? m.author?.username ?? null,
+            }))}
+            staffLabel={t("case.thread.staff")}
+            applicantLabel={t("case.thread.applicant")}
+            emptyLabel={t("case.thread.empty")}
+          />
+          {c.applicantUserId ? (
+            <CaseComposer caseId={c.id} side="STAFF" templates={templates} labels={threadLabels} />
+          ) : (
+            <p className="mt-3 text-[12px] text-muted">{t("case.thread.noApplicant")}</p>
+          )}
+        </CaseSection>
+
+        <CaseSection
+          n="4"
           title={t("case.sections.journal")}
           summary={t("case.sections.journalSummary", { count: c.events.length })}
           open
