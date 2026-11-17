@@ -193,7 +193,8 @@
       "fintech": "Fintech",
       "analytics": "Analytics",
       "coinCards": "Coin cards",
-      "queues": "Queues"
+      "queues": "Queues",
+      "staff": "Staff"
     },
     "status": {
       "PENDING": "Pending",
@@ -517,7 +518,10 @@
         "applicant": "Applicant",
         "journal": "Case journal",
         "journalSummary": "{count} entries, immutable",
-        "subjectGone": "The object behind this case no longer exists"
+        "subjectGone": "The object behind this case no longer exists",
+        "checks": "Checks",
+        "documents": "Documents",
+        "decision": "Decision"
       },
       "journal": {
         "opened": "opened the case",
@@ -530,7 +534,10 @@
         "note": "left a note",
         "decided": "made a decision",
         "messageSent": "wrote to the applicant",
-        "messageReceived": "applicant replied"
+        "messageReceived": "applicant replied",
+        "reviewed": "signed «checked»",
+        "checkSet": "check «{key}»: {state}",
+        "documentVerdict": "document «{label}»: {verdict}"
       },
       "thread": {
         "title": "Correspondence",
@@ -566,6 +573,123 @@
         "clarifyData": "Hello! Some details in your application need clarification. Please check the data and reply here with the correct values.",
         "needTranslation": "Hello! The document you sent is in a language we cannot verify. Please attach a translation into English.",
         "deadline7": "Please reply within 7 days. Without an answer we will have to close the application without a decision."
+      },
+      "checks": {
+        "legalNameMatchesRegistry": "Legal name matches the public registry",
+        "addressPlausible": "Address exists and looks real",
+        "websiteLive": "Website opens and belongs to the applicant",
+        "sanctionsScreened": "Screened against sanctions lists",
+        "contactReachable": "Contact person answers",
+        "registrationCert": "Certificate of incorporation provided",
+        "documentsLegible": "Documents are legible",
+        "signatoryIdentified": "Signatory identified",
+        "taxCert": "Tax registration provided",
+        "uboDisclosed": "Beneficial owners disclosed",
+        "coordsOnSite": "Pin sits on the venue, not nearby",
+        "addressMatchesCoords": "Address matches the coordinates",
+        "acceptsCryptoEvidence": "Evidence the venue accepts crypto",
+        "photoRelevant": "Photo shows this venue",
+        "contractsVerified": "Contract addresses verified on-chain",
+        "linksLive": "Links open and are not borrowed",
+        "noMisleadingClaims": "No misleading or promissory claims",
+        "supplyPlausible": "Stated supply matches the chain",
+        "teamDisclosed": "Team is disclosed",
+        "coinExists": "The coin exists and trades",
+        "coingeckoIdMatches": "CoinGecko id points at this coin",
+        "notDuplicate": "Not already in the catalogue",
+        "legalEntityStated": "Operating legal entity stated",
+        "servicesMatchSite": "Declared services match the site",
+        "availabilityPlausible": "Declared countries look plausible",
+        "reportsIndependent": "Reports come from independent people",
+        "ownerAsked": "The business was asked about it",
+        "pointStillListed": "The point is still on the map"
+      },
+      "checklist": {
+        "title": "Checks",
+        "summary": "{answered} of {total} answered",
+        "requiredLeft": "{count} required still unanswered",
+        "allAnswered": "every required check answered",
+        "required": "required",
+        "state": {
+          "TODO": "no answer",
+          "OK": "ok",
+          "FAIL": "problem",
+          "NA": "not applicable"
+        },
+        "set": {
+          "OK": "OK",
+          "FAIL": "Problem",
+          "NA": "N/A"
+        },
+        "notePlaceholder": "Why? Required for a problem or «not applicable»",
+        "checkedBy": "{name}",
+        "hint": "A «problem» does not block approval — it is a reason to reject. What blocks is an unanswered required check.",
+        "errors": {
+          "note_required": "Write a reason — 3 characters at least",
+          "unknown_check": "This check does not belong to this type of application",
+          "case_closed": "The case is already decided",
+          "failed": "Could not save — try again"
+        }
+      },
+      "docs": {
+        "title": "Documents",
+        "summary": "{judged} of {total} judged",
+        "empty": "No documents yet. They show up here from the KYB form and from the applicant's attachments — nothing is uploaded in the case itself.",
+        "verdict": {
+          "PENDING": "not judged",
+          "ACCEPTED": "accepted",
+          "REJECTED": "rejected",
+          "RESUBMIT": "resend requested"
+        },
+        "set": {
+          "ACCEPTED": "Accept",
+          "REJECTED": "Reject",
+          "RESUBMIT": "Ask to resend"
+        },
+        "notePlaceholder": "What is wrong with the document?",
+        "open": "Open the file",
+        "kinds": {
+          "KYB_REGISTRATION_CERT": "Incorporation certificate",
+          "KYB_TAX_CERT": "Tax registration",
+          "KYB_ID": "Identity document",
+          "KYB_OTHER": "Document",
+          "MESSAGE_ATTACHMENT": "Attached in the correspondence"
+        },
+        "errors": {
+          "note_required": "Write what is wrong — 3 characters at least",
+          "failed": "Could not save — try again"
+        }
+      },
+      "decision": {
+        "title": "Decision",
+        "summary": "not decided yet",
+        "summaryReviewed": "checked, waiting for a second pair of eyes",
+        "summaryDecided": "{decision}",
+        "summaryClosed": "closed without a decision",
+        "review": "I checked this case",
+        "reviewedBy": "Checked by {name}",
+        "approve": "Approve",
+        "reject": "Reject",
+        "reasonPlaceholder": "Reason — the applicant will read it",
+        "soleHint": "You are the only staff member here, so your approval is recorded as a sole sign-off: «approved by one person, there was no second one».",
+        "sole": "Approved by one person — there was no second staff member",
+        "approvedBy": "Approved by {name}",
+        "decidedAt": "{when}",
+        "rejectHint": "A rejection does not need a second signature — it publishes nothing and the applicant can apply again. A reason is required.",
+        "blockers": {
+          "checks_pending": "Approval is blocked: a required check has no answer yet",
+          "documents_resubmit": "Approval is blocked: a document is waiting to be sent again",
+          "not_reviewed": "Approval is blocked: nobody has signed «checked» yet",
+          "same_person": "Approval is blocked: you checked this case, so somebody else has to approve it"
+        },
+        "closedWithoutDecision": "The object had already been decided outside this case, so the case is closed without a decision.",
+        "errors": {
+          "reason_too_short": "Write a reason — 3 characters at least",
+          "case_closed": "The case is already decided",
+          "not_found": "The case is gone",
+          "failed": "Could not save — try again",
+          "not_pending": "The object is no longer waiting for a decision"
+        }
       }
     },
     "bell": {
@@ -578,6 +702,35 @@
         "DUE_SOON": "Due within 24 hours",
         "CASE_OVERDUE": "Overdue",
         "APPLICANT_SILENT": "Applicant has been silent for 14 days"
+      }
+    },
+    "movedToQueues": {
+      "title": "This queue now lives in cases",
+      "body": "Pending applications are decided in a case: there is a checklist, a correspondence thread with the applicant and two signatures. A decision made here would walk past all three, so there is only one door left.",
+      "cta": "Open the queues"
+    },
+    "staff": {
+      "title": "Staff",
+      "subtitle": "Work on decided cases, {window}",
+      "windows": {
+        "30d": "last 30 days",
+        "90d": "last 90 days",
+        "all": "all time"
+      },
+      "empty": "No decided cases in this window yet.",
+      "unattributed": "{count} decided cases have nobody to count them on — they were decided before the case layer existed.",
+      "hint": "Time in hand is an approximate measure: it counts the time a case was open on screen, not the time spent thinking about it.",
+      "cols": {
+        "decided": "Decided",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "rejectShare": "Rejection share",
+        "avgHandled": "Average time in hand",
+        "avgFirstResponse": "Average time to first reply",
+        "overdue": "Past the deadline",
+        "secondSignatures": "Second signatures",
+        "soleSignOffs": "Sole sign-offs",
+        "resubmits": "Resend requests"
       }
     }
   },

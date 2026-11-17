@@ -2,6 +2,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { AdminNav } from "@/components/admin/nav";
 import { AdminFintechRow, type AdminFintechRowData } from "@/components/fintech/admin-fintech-row";
+import { QueueMoved } from "@/components/admin/queue-moved";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +21,7 @@ export default async function AdminFintechPage({
   const status =
     tab === "approved" ? "APPROVED" : tab === "rejected" ? "REJECTED" : "PENDING";
 
-  const rows = await prisma.fintechCompany.findMany({
+  const rows = status === "PENDING" ? [] : await prisma.fintechCompany.findMany({
     where: { status },
     orderBy: [{ status: "asc" }, { createdAt: "desc" }],
     take: 200,
@@ -68,7 +69,8 @@ export default async function AdminFintechPage({
         </div>
       </div>
 
-      {data.length === 0 ? (
+      {status === "PENDING" ? <QueueMoved locale={locale} queue="fintech" /> : null}
+      {status === "PENDING" ? null : data.length === 0 ? (
         <div className="bg-card border border-hairline rounded-[20px] p-8 text-center text-muted">
           {t("fintech.admin.empty")}
         </div>

@@ -193,7 +193,8 @@
       "fintech": "Fintech",
       "analytics": "Análises",
       "coinCards": "Fichas de moedas",
-      "queues": "Filas"
+      "queues": "Filas",
+      "staff": "Equipe"
     },
     "status": {
       "PENDING": "Pendente",
@@ -230,7 +231,7 @@
     "users": {
       "title": "Usuários",
       "subtitle": "Gerencie os papéis dos usuários cadastrados.",
-      "email": "Email",
+      "email": "E-mail",
       "name": "Nome",
       "providers": "Provedores",
       "role": "Papel",
@@ -483,7 +484,7 @@
         "coinCards": "Cartões de moedas",
         "companies": "Empresas",
         "points": "Pontos no mapa",
-        "exchanges": "Exchanges",
+        "exchanges": "Corretoras",
         "fintech": "Fintech",
         "kyb": "Documentos de KYB",
         "coinRequests": "Solicitações de moedas",
@@ -517,7 +518,10 @@
         "applicant": "Solicitante",
         "journal": "Registro do caso",
         "journalSummary": "{count} entradas, imutáveis",
-        "subjectGone": "O objeto por trás deste caso não existe mais"
+        "subjectGone": "O objeto por trás deste caso não existe mais",
+        "checks": "Verificações",
+        "documents": "Documentos",
+        "decision": "Decisão"
       },
       "journal": {
         "opened": "abriu o caso",
@@ -530,7 +534,10 @@
         "note": "deixou uma nota",
         "decided": "tomou uma decisão",
         "messageSent": "escreveu ao solicitante",
-        "messageReceived": "o solicitante respondeu"
+        "messageReceived": "o solicitante respondeu",
+        "reviewed": "assinou «checked»",
+        "checkSet": "verificação «{key}»: {state}",
+        "documentVerdict": "documento «{label}»: {verdict}"
       },
       "thread": {
         "title": "Correspondência",
@@ -566,6 +573,123 @@
         "clarifyData": "Olá! Alguns detalhes na sua solicitação precisam de esclarecimento. Por favor, verifique os dados e responda aqui com os valores corretos.",
         "needTranslation": "Olá! O documento que você enviou está em um idioma que não podemos verificar. Por favor, anexe uma tradução para o inglês.",
         "deadline7": "Responda em até 7 dias. Sem uma resposta, teremos que encerrar a solicitação sem uma decisão."
+      },
+      "checks": {
+        "legalNameMatchesRegistry": "Razão social corresponde ao registro público",
+        "addressPlausible": "Endereço existe e parece real",
+        "websiteLive": "Site abre e pertence ao solicitante",
+        "sanctionsScreened": "Verificado contra listas de sanções",
+        "contactReachable": "Pessoa de contato responde",
+        "registrationCert": "Certificado de constituição fornecido",
+        "documentsLegible": "Documentos são legíveis",
+        "signatoryIdentified": "Signatário identificado",
+        "taxCert": "Registro fiscal fornecido",
+        "uboDisclosed": "Proprietários beneficiários divulgados",
+        "coordsOnSite": "Pino fica no local, não nas proximidades",
+        "addressMatchesCoords": "Endereço corresponde às coordenadas",
+        "acceptsCryptoEvidence": "Evidência de que o local aceita cripto",
+        "photoRelevant": "Foto mostra este local",
+        "contractsVerified": "Endereços de contrato verificados on-chain",
+        "linksLive": "Links abrem e não são copiados",
+        "noMisleadingClaims": "Sem alegações enganosas ou promessas",
+        "supplyPlausible": "Oferta declarada corresponde à blockchain",
+        "teamDisclosed": "Equipe divulgada",
+        "coinExists": "A moeda existe e é negociada",
+        "coingeckoIdMatches": "id do CoinGecko aponta para esta moeda",
+        "notDuplicate": "Ainda não está no catálogo",
+        "legalEntityStated": "Entidade legal operante informada",
+        "servicesMatchSite": "Serviços declarados correspondem ao site",
+        "availabilityPlausible": "Países declarados parecem plausíveis",
+        "reportsIndependent": "Relatos vêm de pessoas independentes",
+        "ownerAsked": "A empresa foi consultada sobre isso",
+        "pointStillListed": "O ponto ainda está no mapa"
+      },
+      "checklist": {
+        "title": "Verificações",
+        "summary": "{answered} de {total} respondidas",
+        "requiredLeft": "{count} obrigatórias ainda sem resposta",
+        "allAnswered": "todas as verificações obrigatórias respondidas",
+        "required": "obrigatória",
+        "state": {
+          "TODO": "sem resposta",
+          "OK": "ok",
+          "FAIL": "problema",
+          "NA": "não se aplica"
+        },
+        "set": {
+          "OK": "OK",
+          "FAIL": "Problema",
+          "NA": "N/A"
+        },
+        "notePlaceholder": "Por quê? Obrigatório para problema ou «não se aplica»",
+        "checkedBy": "{name}",
+        "hint": "Um «problema» não bloqueia a aprovação — é um motivo para rejeitar. O que bloqueia é uma verificação obrigatória sem resposta",
+        "errors": {
+          "note_required": "Escreva um motivo — pelo menos 3 caracteres",
+          "unknown_check": "Esta verificação não pertence a este tipo de solicitação",
+          "case_closed": "O caso já foi decidido",
+          "failed": "Não foi possível salvar — tente novamente"
+        }
+      },
+      "docs": {
+        "title": "Documentos",
+        "summary": "{judged} de {total} avaliados",
+        "empty": "Ainda não há documentos. Eles aparecem aqui a partir do formulário KYB e dos anexos do solicitante — nada é enviado no próprio caso",
+        "verdict": {
+          "PENDING": "não avaliado",
+          "ACCEPTED": "aceito",
+          "REJECTED": "rejeitado",
+          "RESUBMIT": "reenvio solicitado"
+        },
+        "set": {
+          "ACCEPTED": "Aceitar",
+          "REJECTED": "Rejeitar",
+          "RESUBMIT": "Pedir para reenviar"
+        },
+        "notePlaceholder": "O que há de errado com o documento?",
+        "open": "Abrir o arquivo",
+        "kinds": {
+          "KYB_REGISTRATION_CERT": "Certificado de constituição",
+          "KYB_TAX_CERT": "Registro fiscal",
+          "KYB_ID": "Documento de identidade",
+          "KYB_OTHER": "Documento",
+          "MESSAGE_ATTACHMENT": "Anexado na correspondência"
+        },
+        "errors": {
+          "note_required": "Escreva o que está errado — pelo menos 3 caracteres",
+          "failed": "Não foi possível salvar — tente novamente"
+        }
+      },
+      "decision": {
+        "title": "Decisão",
+        "summary": "ainda não decidido",
+        "summaryReviewed": "verificado, aguardando segunda revisão",
+        "summaryDecided": "{decision}",
+        "summaryClosed": "encerrado sem decisão",
+        "review": "Eu verifiquei este caso",
+        "reviewedBy": "Verificado por {name}",
+        "approve": "Aprovar",
+        "reject": "Rejeitar",
+        "reasonPlaceholder": "Motivo — o solicitante vai ler",
+        "soleHint": "Você é o único membro da equipe aqui, então sua aprovação é registrada como assinatura única: «aprovado por uma pessoa, não havia uma segunda».",
+        "sole": "Aprovado por uma pessoa — não havia um segundo membro da equipe",
+        "approvedBy": "Aprovado por {name}",
+        "decidedAt": "{when}",
+        "rejectHint": "Uma rejeição não precisa de segunda assinatura — nada é publicado e o solicitante pode se candidatar novamente. Um motivo é obrigatório.",
+        "blockers": {
+          "checks_pending": "A aprovação está bloqueada: uma verificação obrigatória ainda não tem resposta",
+          "documents_resubmit": "A aprovação está bloqueada: um documento está aguardando ser reenviado",
+          "not_reviewed": "A aprovação está bloqueada: ninguém assinou «verificado» ainda",
+          "same_person": "A aprovação está bloqueada: você verificou este caso, então outra pessoa precisa aprová-lo"
+        },
+        "closedWithoutDecision": "O objeto já havia sido decidido fora deste caso, então o caso é encerrado sem decisão.",
+        "errors": {
+          "reason_too_short": "Escreva um motivo — pelo menos 3 caracteres",
+          "case_closed": "O caso já está decidido",
+          "not_found": "O caso não existe mais",
+          "failed": "Não foi possível salvar — tente novamente",
+          "not_pending": "O objeto não está mais aguardando uma decisão"
+        }
       }
     },
     "bell": {
@@ -578,6 +702,35 @@
         "DUE_SOON": "Vence em 24 horas",
         "CASE_OVERDUE": "Em atraso",
         "APPLICANT_SILENT": "O solicitante está em silêncio há 14 dias"
+      }
+    },
+    "movedToQueues": {
+      "title": "Esta fila agora está em casos",
+      "body": "Solicitações pendentes são decididas em um caso: há uma checklist, um tópico de correspondência com o solicitante e duas assinaturas. Uma decisão tomada aqui ignoraria os três, então só resta uma porta.",
+      "cta": "Abrir as filas"
+    },
+    "staff": {
+      "title": "Equipe",
+      "subtitle": "Trabalho em casos decididos, {window}",
+      "windows": {
+        "30d": "últimos 30 dias",
+        "90d": "últimos 90 dias",
+        "all": "todo o período"
+      },
+      "empty": "Ainda não há casos decididos neste período.",
+      "unattributed": "{count} casos decididos não têm ninguém a quem atribuí-los — foram decididos antes de existir a camada de casos.",
+      "hint": "O tempo em mãos é uma medida aproximada: conta o tempo em que um caso ficou aberto na tela, não o tempo gasto pensando nele.",
+      "cols": {
+        "decided": "Decididos",
+        "approved": "Aprovados",
+        "rejected": "Rejeitados",
+        "rejectShare": "Taxa de rejeição",
+        "avgHandled": "Tempo médio em mãos",
+        "avgFirstResponse": "Tempo médio até a primeira resposta",
+        "overdue": "Fora do prazo",
+        "secondSignatures": "Segundas assinaturas",
+        "soleSignOffs": "Aprovações individuais",
+        "resubmits": "Solicitações de reenvio"
       }
     }
   },

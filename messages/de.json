@@ -193,7 +193,8 @@
       "fintech": "Fintech",
       "analytics": "Analytik",
       "coinCards": "Coin-Karten",
-      "queues": "Warteschlangen"
+      "queues": "Warteschlangen",
+      "staff": "Team"
     },
     "status": {
       "PENDING": "Wartend",
@@ -517,7 +518,10 @@
         "applicant": "Antragsteller",
         "journal": "Fallprotokoll",
         "journalSummary": "{count} Einträge, unveränderlich",
-        "subjectGone": "Das Objekt hinter diesem Fall existiert nicht mehr"
+        "subjectGone": "Das Objekt hinter diesem Fall existiert nicht mehr",
+        "checks": "Prüfungen",
+        "documents": "Dokumente",
+        "decision": "Entscheidung"
       },
       "journal": {
         "opened": "hat den Fall eröffnet",
@@ -530,7 +534,10 @@
         "note": "eine Notiz hinterlassen",
         "decided": "eine Entscheidung getroffen",
         "messageSent": "an den Antragsteller geschrieben",
-        "messageReceived": "Antragsteller hat geantwortet"
+        "messageReceived": "Antragsteller hat geantwortet",
+        "reviewed": "«geprüft» signiert",
+        "checkSet": "Prüfung «{key}»: {state}",
+        "documentVerdict": "Dokument «{label}»: {verdict}"
       },
       "thread": {
         "title": "Korrespondenz",
@@ -566,6 +573,123 @@
         "clarifyData": "Hallo! Einige Angaben in Ihrem Antrag benötigen eine Klarstellung. Bitte prüfen Sie die Daten und antworten Sie hier mit den korrekten Werten.",
         "needTranslation": "Hallo! Das von Ihnen gesendete Dokument ist in einer Sprache, die wir nicht verifizieren können. Bitte fügen Sie eine Übersetzung ins Englische bei.",
         "deadline7": "Bitte antworten Sie innerhalb von 7 Tagen. Ohne Antwort müssen wir den Antrag ohne Entscheidung schließen."
+      },
+      "checks": {
+        "legalNameMatchesRegistry": "Rechtlicher Name entspricht dem öffentlichen Register",
+        "addressPlausible": "Adresse existiert und wirkt echt",
+        "websiteLive": "Website ist erreichbar und gehört dem Antragsteller",
+        "sanctionsScreened": "Gegen Sanktionslisten abgeglichen",
+        "contactReachable": "Ansprechperson antwortet",
+        "registrationCert": "Gründungsurkunde vorgelegt",
+        "documentsLegible": "Dokumente sind lesbar",
+        "signatoryIdentified": "Unterzeichner identifiziert",
+        "taxCert": "Steuerregistrierung vorgelegt",
+        "uboDisclosed": "Wirtschaftlich Berechtigte offengelegt",
+        "coordsOnSite": "Pin liegt auf dem Standort, nicht daneben",
+        "addressMatchesCoords": "Adresse passt zu den Koordinaten",
+        "acceptsCryptoEvidence": "Nachweis, dass der Ort Krypto akzeptiert",
+        "photoRelevant": "Foto zeigt diesen Ort",
+        "contractsVerified": "Contract-Adressen on-chain verifiziert",
+        "linksLive": "Links öffnen und sind nicht übernommen",
+        "noMisleadingClaims": "Keine irreführenden oder gewinnversprechenden Aussagen",
+        "supplyPlausible": "Angegebene Umlaufmenge entspricht der Chain",
+        "teamDisclosed": "Team ist offengelegt",
+        "coinExists": "Der Coin existiert und wird gehandelt",
+        "coingeckoIdMatches": "CoinGecko-ID verweist auf diesen Coin",
+        "notDuplicate": "Noch nicht im Katalog",
+        "legalEntityStated": "Betreibende juristische Person angegeben",
+        "servicesMatchSite": "Angegebene Dienste entsprechen der Website",
+        "availabilityPlausible": "Angegebene Länder wirken plausibel",
+        "reportsIndependent": "Berichte stammen von unabhängigen Personen",
+        "ownerAsked": "Das Unternehmen wurde dazu befragt",
+        "pointStillListed": "Der Punkt ist noch auf der Karte"
+      },
+      "checklist": {
+        "title": "Prüfungen",
+        "summary": "{answered} von {total} beantwortet",
+        "requiredLeft": "{count} erforderlich noch unbeantwortet",
+        "allAnswered": "alle erforderlichen Prüfungen beantwortet",
+        "required": "erforderlich",
+        "state": {
+          "TODO": "keine Antwort",
+          "OK": "ok",
+          "FAIL": "Problem",
+          "NA": "nicht zutreffend"
+        },
+        "set": {
+          "OK": "OK",
+          "FAIL": "Fehler",
+          "NA": "N/A"
+        },
+        "notePlaceholder": "Warum? Erforderlich bei «Problem» oder «nicht zutreffend»",
+        "checkedBy": "{name}",
+        "hint": "Ein «Problem» blockiert die Genehmigung nicht — es ist ein Ablehnungsgrund. Blockierend ist eine unbeantwortete Pflichtprüfung",
+        "errors": {
+          "note_required": "Schreibe eine Begründung — mindestens 3 Zeichen",
+          "unknown_check": "Diese Prüfung gehört nicht zu diesem Antragstyp",
+          "case_closed": "Der Fall ist bereits entschieden",
+          "failed": "Konnte nicht speichern — bitte erneut versuchen"
+        }
+      },
+      "docs": {
+        "title": "Dokumente",
+        "summary": "{judged} von {total} beurteilt",
+        "empty": "Noch keine Dokumente. Sie erscheinen hier aus dem KYB-Formular und aus den Anhängen des Antragstellers — im Fall selbst wird nichts hochgeladen.",
+        "verdict": {
+          "PENDING": "nicht beurteilt",
+          "ACCEPTED": "akzeptiert",
+          "REJECTED": "abgelehnt",
+          "RESUBMIT": "Erneute Einsendung angefordert"
+        },
+        "set": {
+          "ACCEPTED": "Akzeptieren",
+          "REJECTED": "Ablehnen",
+          "RESUBMIT": "Um erneute Einsendung bitten"
+        },
+        "notePlaceholder": "Was stimmt mit dem Dokument nicht?",
+        "open": "Datei öffnen",
+        "kinds": {
+          "KYB_REGISTRATION_CERT": "Gründungsurkunde",
+          "KYB_TAX_CERT": "Steuerregistrierung",
+          "KYB_ID": "Ausweisdokument",
+          "KYB_OTHER": "Dokument",
+          "MESSAGE_ATTACHMENT": "In der Korrespondenz angehängt"
+        },
+        "errors": {
+          "note_required": "Beschreibe das Problem — mindestens 3 Zeichen",
+          "failed": "Konnte nicht speichern — bitte erneut versuchen"
+        }
+      },
+      "decision": {
+        "title": "Entscheidung",
+        "summary": "noch nicht entschieden",
+        "summaryReviewed": "geprüft, wartet auf eine zweite Prüfung",
+        "summaryDecided": "{decision}",
+        "summaryClosed": "ohne Entscheidung geschlossen",
+        "review": "Ich habe diesen Fall geprüft",
+        "reviewedBy": "Geprüft von {name}",
+        "approve": "Genehmigen",
+        "reject": "Ablehnen",
+        "reasonPlaceholder": "Begründung — der Antragsteller liest sie",
+        "soleHint": "Sie sind hier das einzige Teammitglied, daher wird Ihre Genehmigung als alleinige Abzeichnung vermerkt: «von einer Person genehmigt, es gab keine zweite».",
+        "sole": "Von einer Person genehmigt — es gab kein zweites Teammitglied",
+        "approvedBy": "Genehmigt von {name}",
+        "decidedAt": "{when}",
+        "rejectHint": "Eine Ablehnung benötigt keine zweite Unterschrift — sie veröffentlicht nichts und der Antragsteller kann erneut beantragen. Eine Begründung ist erforderlich.",
+        "blockers": {
+          "checks_pending": "Genehmigung blockiert: Eine erforderliche Prüfung hat noch keine Antwort",
+          "documents_resubmit": "Genehmigung blockiert: Ein Dokument wartet darauf, erneut gesendet zu werden",
+          "not_reviewed": "Genehmigung blockiert: «Geprüft» ist noch nicht unterschrieben",
+          "same_person": "Genehmigung blockiert: Sie haben diesen Fall geprüft, daher muss jemand anderes ihn genehmigen"
+        },
+        "closedWithoutDecision": "Das Objekt wurde bereits außerhalb dieses Falls entschieden, daher wird der Fall ohne Entscheidung geschlossen.",
+        "errors": {
+          "reason_too_short": "Schreiben Sie eine Begründung — mindestens 3 Zeichen",
+          "case_closed": "Der Fall ist bereits entschieden",
+          "not_found": "Der Fall ist nicht mehr vorhanden",
+          "failed": "Konnte nicht speichern — versuchen Sie es erneut",
+          "not_pending": "Das Objekt wartet nicht mehr auf eine Entscheidung"
+        }
       }
     },
     "bell": {
@@ -578,6 +702,35 @@
         "DUE_SOON": "Fällig innerhalb von 24 Stunden",
         "CASE_OVERDUE": "Überfällig",
         "APPLICANT_SILENT": "Antragsteller hat seit 14 Tagen nicht geantwortet"
+      }
+    },
+    "movedToQueues": {
+      "title": "Diese Warteschlange lebt jetzt in Fällen",
+      "body": "Ausstehende Anträge werden in einem Fall entschieden: Es gibt eine Checkliste, einen Korrespondenz-Thread mit dem Antragsteller und zwei Unterschriften. Eine hier getroffene Entscheidung ginge an allen drei vorbei, daher bleibt nur eine Tür übrig.",
+      "cta": "Warteschlangen öffnen"
+    },
+    "staff": {
+      "title": "Team",
+      "subtitle": "Arbeit an entschiedenen Fällen, {window}",
+      "windows": {
+        "30d": "letzte 30 Tage",
+        "90d": "letzte 90 Tage",
+        "all": "gesamter Zeitraum"
+      },
+      "empty": "In diesem Zeitraum noch keine entschiedenen Fälle.",
+      "unattributed": "{count} entschiedene Fälle lassen sich niemandem zuschreiben — sie wurden entschieden, bevor die Fall-Ebene existierte.",
+      "hint": "Die Bearbeitungszeit ist ein Näherungswert: Sie zählt die Zeit, in der ein Fall auf dem Bildschirm geöffnet war, nicht die Zeit, die fürs Nachdenken aufgewendet wurde.",
+      "cols": {
+        "decided": "Entschieden",
+        "approved": "Genehmigt",
+        "rejected": "Abgelehnt",
+        "rejectShare": "Ablehnungsanteil",
+        "avgHandled": "Durchschnittliche Bearbeitungszeit",
+        "avgFirstResponse": "Durchschnittliche Zeit bis zur ersten Antwort",
+        "overdue": "Frist überschritten",
+        "secondSignatures": "Zweitunterschriften",
+        "soleSignOffs": "Alleinige Abzeichnungen",
+        "resubmits": "Aufforderungen zum erneuten Senden"
       }
     }
   },
@@ -705,7 +858,7 @@
     "duration": "Dauer",
     "clearRoute": "Route löschen",
     "routeHere": "Route hierhin",
-    "openSite": "Website",
+    "openSite": "Webseite",
     "viewProfile": "Profil ansehen",
     "noOrigin": "Legen Sie zuerst Ihren Standort fest (📍 oder Adresse suchen)",
     "pickDestination": "Ziel auf der Karte wählen",
@@ -1699,7 +1852,7 @@
       "SELF_REPORTED": "Vom Projekt selbst angegeben",
       "SELF_REPORTED_short": "angegeben",
       "VERIFIED_ONCHAIN": "On-chain verifiziert",
-      "VERIFIED_ONCHAIN_short": "on-chain",
+      "VERIFIED_ONCHAIN_short": "On-Chain",
       "AGGREGATED": "Über Märkte aggregiert",
       "AGGREGATED_short": "aggregiert",
       "ADMIN_SET": "Von einem Moderator gesetzt",

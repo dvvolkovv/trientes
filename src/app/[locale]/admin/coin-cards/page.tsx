@@ -1,7 +1,7 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { AdminNav } from "@/components/admin/nav";
-import { CoinCardRow } from "@/components/admin/coin-card-row";
+import { QueueMoved } from "@/components/admin/queue-moved";
 import { CoinRevisionRow, type AdminRevision } from "@/components/admin/coin-revision-row";
 import type { DiffEntry } from "@/lib/coin-card-diff";
 import { CoinCardOwnershipRow, type OwnershipCard } from "@/components/admin/coin-card-ownership";
@@ -20,16 +20,6 @@ export default async function AdminCoinCardsPage({
   const to = await getTranslations("admin.coinOwnership");
 
   // The ADMIN gate lives in admin/layout.tsx — no second check needed here.
-  const cards = await prisma.coinCard.findMany({
-    where: { status: "PENDING" },
-    orderBy: { createdAt: "desc" },
-    include: {
-      contracts: true,
-      markets: { take: 20 },
-      steward: { select: { username: true, name: true, email: true } },
-    },
-  });
-
   const revisions = await prisma.coinCardRevision.findMany({
     where: { status: { in: ["PENDING_ADMIN", "PENDING_SIGNERS", "EXPIRED"] } },
     orderBy: [{ status: "asc" }, { createdAt: "asc" }],
@@ -90,15 +80,7 @@ export default async function AdminCoinCardsPage({
       <AdminNav locale={locale} active="coinCards" />
       <h1 className="text-2xl font-semibold mb-1">{t("title")}</h1>
       <p className="text-muted text-sm mb-6">{t("subtitle")}</p>
-      {cards.length === 0 ? (
-        <p className="text-muted text-sm">{t("empty")}</p>
-      ) : (
-        <div className="space-y-4">
-          {cards.map((c) => (
-            <CoinCardRow key={c.id} card={JSON.parse(JSON.stringify(c))} />
-          ))}
-        </div>
-      )}
+      <QueueMoved locale={locale} queue="coinCards" />
 
       <h2 className="text-xl font-semibold mt-12 mb-1">{to("title")}</h2>
       <p className="text-muted text-sm mb-6">{to("subtitle")}</p>

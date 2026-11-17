@@ -6,6 +6,7 @@ import { CompanyRow, type CompanyRowData } from "@/components/admin/company-row"
 import { KybRow } from "@/components/admin/kyb-row";
 import { LIVE_POINT, NOT_DELETED } from "@/lib/soft-delete";
 import { RestoreRow } from "@/components/admin/restore-row";
+import { QueueMoved } from "@/components/admin/queue-moved";
 
 export const dynamic = "force-dynamic";
 
@@ -121,7 +122,7 @@ export default async function AdminBusinessPage({
   if (scope === "kyb") {
     const kybStatus =
       tab === "approved" ? "APPROVED" : tab === "rejected" ? "REJECTED" : "PENDING";
-    const companies = await prisma.company.findMany({
+    const companies = kybStatus === "PENDING" ? [] : await prisma.company.findMany({
       where: { kybStatus, ...NOT_DELETED },
       orderBy: { kybSubmittedAt: "desc" },
       take: 100,
@@ -136,7 +137,8 @@ export default async function AdminBusinessPage({
           <p className="text-muted">{t("business.kyb.subtitle")}</p>
         </header>
         {tabsRow}
-        {companies.length === 0 ? (
+        {kybStatus === "PENDING" ? <QueueMoved locale={locale} queue="kyb" /> : null}
+        {kybStatus === "PENDING" ? null : companies.length === 0 ? (
           <div className="bg-card border border-hairline rounded-[20px] p-8 text-center text-muted">
             {t("business.empty")}
           </div>
@@ -162,7 +164,7 @@ export default async function AdminBusinessPage({
   }
 
   if (scope === "points") {
-    const points = await prisma.companyPoint.findMany({
+    const points = status === "PENDING" ? [] : await prisma.companyPoint.findMany({
       where: { status, ...LIVE_POINT }, orderBy: { createdAt: "desc" }, take: 50,
       include: { company: { select: { displayName: true } } },
     });
@@ -182,7 +184,8 @@ export default async function AdminBusinessPage({
           <p className="text-muted">{t("business.subtitle")}</p>
         </header>
         {tabsRow}
-        {rows.length === 0 ? (
+        {status === "PENDING" ? <QueueMoved locale={locale} queue="points" /> : null}
+        {status === "PENDING" ? null : rows.length === 0 ? (
           <div className="bg-card border border-hairline rounded-[20px] p-8 text-center text-muted">
             {t("business.empty")}
           </div>
@@ -193,7 +196,7 @@ export default async function AdminBusinessPage({
     );
   }
 
-  const companies = await prisma.company.findMany({
+  const companies = status === "PENDING" ? [] : await prisma.company.findMany({
     where: { status, ...NOT_DELETED }, orderBy: { createdAt: "desc" }, take: 100,
     include: { owner: { select: { username: true } } },
   });
@@ -214,7 +217,8 @@ export default async function AdminBusinessPage({
         <p className="text-muted">{t("companies.subtitle")}</p>
       </header>
       {tabsRow}
-      {rows.length === 0 ? (
+      {status === "PENDING" ? <QueueMoved locale={locale} queue="companies" /> : null}
+      {status === "PENDING" ? null : rows.length === 0 ? (
         <div className="bg-card border border-hairline rounded-[20px] p-8 text-center text-muted">
           {t("companies.empty")}
         </div>

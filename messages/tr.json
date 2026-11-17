@@ -193,7 +193,8 @@
       "fintech": "Fintek",
       "analytics": "Analitik",
       "coinCards": "Coin kartları",
-      "queues": "Kuyruklar"
+      "queues": "Kuyruklar",
+      "staff": "Personel"
     },
     "status": {
       "PENDING": "Beklemede",
@@ -517,7 +518,10 @@
         "applicant": "Başvuran",
         "journal": "Vaka günlüğü",
         "journalSummary": "{count} kayıt, değiştirilemez",
-        "subjectGone": "Bu vakaya konu nesne artık mevcut değil"
+        "subjectGone": "Bu vakaya konu nesne artık mevcut değil",
+        "checks": "Kontroller",
+        "documents": "Belgeler",
+        "decision": "Karar"
       },
       "journal": {
         "opened": "vakayı açtı",
@@ -530,7 +534,10 @@
         "note": "not bıraktı",
         "decided": "karar verdi",
         "messageSent": "başvuru sahibine yazdı",
-        "messageReceived": "başvuru sahibi yanıtladı"
+        "messageReceived": "başvuru sahibi yanıtladı",
+        "reviewed": "«kontrol edildi» olarak imzalandı",
+        "checkSet": "kontrol «{key}»: {state}",
+        "documentVerdict": "belge «{label}»: {verdict}"
       },
       "thread": {
         "title": "Yazışma",
@@ -566,6 +573,123 @@
         "clarifyData": "Merhaba! Başvurunuzdaki bazı ayrıntıların netleştirilmesi gerekiyor. Lütfen verileri kontrol edin ve doğru değerlerle burada yanıtlayın.",
         "needTranslation": "Merhaba! Gönderdiğiniz belge doğrulama yapamayacağımız bir dilde. Lütfen İngilizceye bir çeviri ekleyin.",
         "deadline7": "Lütfen 7 gün içinde yanıt verin. Yanıt olmazsa başvuruyu karara bağlamadan kapatmak zorunda kalacağız."
+      },
+      "checks": {
+        "legalNameMatchesRegistry": "Resmi ad kamu siciliyle eşleşiyor",
+        "addressPlausible": "Adres mevcut ve gerçek görünüyor",
+        "websiteLive": "Web sitesi açılıyor ve başvuru sahibine ait",
+        "sanctionsScreened": "Yaptırım listelerine karşı tarandı",
+        "contactReachable": "İrtibat kişisi cevap veriyor",
+        "registrationCert": "Kuruluş belgesi sunuldu",
+        "documentsLegible": "Belgeler okunaklı",
+        "signatoryIdentified": "İmza yetkilisi tanımlandı",
+        "taxCert": "Vergi kaydı sunuldu",
+        "uboDisclosed": "Nihai faydalanıcılar açıklandı",
+        "coordsOnSite": "İşaret mekânın üzerinde, yakında değil",
+        "addressMatchesCoords": "Adres koordinatlarla eşleşiyor",
+        "acceptsCryptoEvidence": "Mekânın kripto kabul ettiğine dair kanıt",
+        "photoRelevant": "Fotoğraf bu mekânı gösteriyor",
+        "contractsVerified": "Sözleşme adresleri zincir üzerinde doğrulandı",
+        "linksLive": "Bağlantılar açılıyor ve kopya değil",
+        "noMisleadingClaims": "Yanıltıcı veya vaat içeren iddialar yok",
+        "supplyPlausible": "Belirtilen arz zincirle eşleşiyor",
+        "teamDisclosed": "Ekip açıklanmış",
+        "coinExists": "Coin mevcut ve işlem görüyor",
+        "coingeckoIdMatches": "CoinGecko id bu coin'e işaret ediyor",
+        "notDuplicate": "Zaten katalogda değil",
+        "legalEntityStated": "Faaliyet gösteren tüzel kişi belirtilmiş",
+        "servicesMatchSite": "Beyan edilen hizmetler siteyle uyuşuyor",
+        "availabilityPlausible": "Beyan edilen ülkeler makul görünüyor",
+        "reportsIndependent": "Raporlar bağımsız kişilerden geliyor",
+        "ownerAsked": "İşletmeye bununla ilgili soruldu",
+        "pointStillListed": "Nokta hâlâ haritada"
+      },
+      "checklist": {
+        "title": "Kontroller",
+        "summary": "{total} üzerinden {answered} yanıtlandı",
+        "requiredLeft": "{count} gerekli hâlâ yanıtlanmadı",
+        "allAnswered": "gerekli tüm kontroller yanıtlandı",
+        "required": "gerekli",
+        "state": {
+          "TODO": "yanıt yok",
+          "OK": "tamam",
+          "FAIL": "sorun",
+          "NA": "uygulanamaz"
+        },
+        "set": {
+          "OK": "Tamam",
+          "FAIL": "Sorun",
+          "NA": "Uygulanamaz"
+        },
+        "notePlaceholder": "Neden? «sorun» veya «uygulanamaz» için zorunlu",
+        "checkedBy": "{name}",
+        "hint": "Bir «sorun» onayı engellemez — reddetmek için bir nedendir. Engelleyen, yanıtsız kalan gerekli bir kontroldür",
+        "errors": {
+          "note_required": "Bir neden yazın — en az 3 karakter",
+          "unknown_check": "Bu kontrol bu başvuru türüne ait değil",
+          "case_closed": "Vaka zaten karara bağlandı",
+          "failed": "Kaydedilemedi — tekrar deneyin"
+        }
+      },
+      "docs": {
+        "title": "Belgeler",
+        "summary": "{total} üzerinden {judged} değerlendirildi",
+        "empty": "Henüz belge yok. KYB formundan ve başvuru sahibinin eklerinden burada görünürler — davanın içine doğrudan hiçbir şey yüklenmez.",
+        "verdict": {
+          "PENDING": "değerlendirilmedi",
+          "ACCEPTED": "kabul edildi",
+          "REJECTED": "reddedildi",
+          "RESUBMIT": "yeniden gönderme istendi"
+        },
+        "set": {
+          "ACCEPTED": "Kabul et",
+          "REJECTED": "Reddet",
+          "RESUBMIT": "Yeniden göndermesini iste"
+        },
+        "notePlaceholder": "Belgede ne sorun var?",
+        "open": "Dosyayı aç",
+        "kinds": {
+          "KYB_REGISTRATION_CERT": "Kuruluş belgesi",
+          "KYB_TAX_CERT": "Vergi kaydı",
+          "KYB_ID": "Kimlik belgesi",
+          "KYB_OTHER": "Belge",
+          "MESSAGE_ATTACHMENT": "Yazışmaya eklenmiş"
+        },
+        "errors": {
+          "note_required": "Neyin yanlış olduğunu yazın — en az 3 karakter",
+          "failed": "Kaydedilemedi — tekrar deneyin"
+        }
+      },
+      "decision": {
+        "title": "Karar",
+        "summary": "henüz karar verilmedi",
+        "summaryReviewed": "kontrol edildi, ikinci bir göz bekleniyor",
+        "summaryDecided": "{decision}",
+        "summaryClosed": "karar verilmeden kapatıldı",
+        "review": "Bu dosyayı kontrol ettim",
+        "reviewedBy": "{name} tarafından kontrol edildi",
+        "approve": "Onayla",
+        "reject": "Reddet",
+        "reasonPlaceholder": "Gerekçe — başvuru sahibi bunu okuyacak",
+        "soleHint": "Burada tek personel sizsiniz, bu yüzden onayınız tek imza olarak kaydedilir: «bir kişi tarafından onaylandı, ikinci kişi yoktu».",
+        "sole": "Bir kişi tarafından onaylandı — ikinci personel yoktu",
+        "approvedBy": "{name} tarafından onaylandı",
+        "decidedAt": "{when}",
+        "rejectHint": "Reddetme ikinci imza gerektirmez — hiçbir şey yayımlanmaz ve başvuru sahibi yeniden başvurabilir. Bir gerekçe zorunludur.",
+        "blockers": {
+          "checks_pending": "Onay engellendi: gerekli bir kontrolün henüz cevabı yok",
+          "documents_resubmit": "Onay engellendi: bir belge yeniden gönderilmeyi bekliyor",
+          "not_reviewed": "Onay engellendi: henüz kimse «kontrol edildi» olarak imzalamadı",
+          "same_person": "Onay engellendi: bu dosyayı siz kontrol ettiniz, bu yüzden bir başkası onaylamalı"
+        },
+        "closedWithoutDecision": "Bu dosyanın dışında nesne hakkında zaten karar verilmişti, bu nedenle dosya bir karar verilmeden kapatıldı.",
+        "errors": {
+          "reason_too_short": "Bir gerekçe yazın — en az 3 karakter",
+          "case_closed": "Dosyaya zaten karar verildi",
+          "not_found": "Dosya yok",
+          "failed": "Kaydedilemedi — tekrar deneyin",
+          "not_pending": "Nesne artık bir karar beklemiyor"
+        }
       }
     },
     "bell": {
@@ -578,6 +702,35 @@
         "DUE_SOON": "24 saat içinde süre doluyor",
         "CASE_OVERDUE": "Gecikmiş",
         "APPLICANT_SILENT": "Başvuran 14 gündür sessiz"
+      }
+    },
+    "movedToQueues": {
+      "title": "Bu kuyruk artık dosyalarda",
+      "body": "Bekleyen başvurular bir dosyada karara bağlanır: bir kontrol listesi, başvuru sahibiyle bir yazışma dizisi ve iki imza vardır. Burada verilecek bir karar bu üçünün de dışından geçerdi, bu yüzden geriye tek bir kapı kaldı.",
+      "cta": "Kuyrukları aç"
+    },
+    "staff": {
+      "title": "Personel",
+      "subtitle": "Karara bağlanmış dosyalar üzerinde çalışın, {window}",
+      "windows": {
+        "30d": "son 30 gün",
+        "90d": "son 90 gün",
+        "all": "tüm zamanlar"
+      },
+      "empty": "Bu zaman aralığında henüz karara bağlanan vaka yok",
+      "unattributed": "{count} karara bağlanan vaka kimseye atfedilemiyor — vaka katmanı mevcut olmadan önce karara bağlanmışlardı",
+      "hint": "Eldeki süre yaklaşık bir ölçümdür: bir vakanın ekranda açık kaldığı zamanı sayar, üzerinde düşünmeye harcanan zamanı değil",
+      "cols": {
+        "decided": "Karara bağlandı",
+        "approved": "Onaylandı",
+        "rejected": "Reddedildi",
+        "rejectShare": "Red oranı",
+        "avgHandled": "Ortalama eldeki süre",
+        "avgFirstResponse": "İlk yanıta kadar ortalama süre",
+        "overdue": "Süresi geçmiş",
+        "secondSignatures": "İkinci imzalar",
+        "soleSignOffs": "Tek imzalı onaylar",
+        "resubmits": "Yeniden gönderim istekleri"
       }
     }
   },

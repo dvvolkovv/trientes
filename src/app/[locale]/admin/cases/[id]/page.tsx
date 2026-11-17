@@ -7,16 +7,23 @@ import { CaseSection } from "@/components/admin/case-section";
 import { CaseJournal } from "@/components/admin/case-journal";
 import { CaseClaim } from "@/components/admin/case-claim";
 import { CaseTimer } from "@/components/admin/case-timer";
+import { CaseChecklist, type ChecklistItem } from "@/components/admin/case-checklist";
+import { CaseDocuments, type CaseDocumentItem } from "@/components/admin/case-documents";
+import { CaseDecision } from "@/components/admin/case-decision";
 import { CaseThread } from "@/components/cases/case-thread";
 import { CaseComposer } from "@/components/cases/case-composer";
 import { CaseReadMarker } from "@/components/cases/case-read-marker";
 import { loadSubject } from "@/lib/cases/subject";
 import { parseAttachments } from "@/lib/cases/attachments";
 import { TEMPLATE_KEYS, unreadCount } from "@/lib/cases/messages";
+import { checklistFor, checklistProgress } from "@/lib/cases/checklists";
+import { approvalBlockers, isSoleSignOff } from "@/lib/cases/approval";
+import { syncCaseDocuments } from "@/lib/cases/documents";
 import { pickLocale } from "@/lib/locales";
 import { queueOfSubject } from "@/lib/cases/queues";
 import { slaState } from "@/lib/cases/sla";
 import { formatHandled } from "@/lib/cases/time";
+import { isOpen } from "@/lib/cases/types";
 import { ADMIN_COLUMN, SLA_DOT } from "@/lib/admin-ui";
 
 export const dynamic = "force-dynamic";
@@ -34,7 +41,10 @@ export default async function AdminCasePage({
     where: { id },
     include: {
       assignee: { select: { id: true, name: true, username: true } },
+      reviewer: { select: { id: true, name: true, username: true } },
+      approver: { select: { id: true, name: true, username: true } },
       applicant: { select: { name: true, username: true, email: true, preferredLocale: true } },
+      checks: { include: { checkedBy: { select: { name: true, username: true } } } },
       messages: {
         orderBy: { createdAt: "asc" },
         include: { author: { select: { name: true, username: true } } },
@@ -51,6 +61,14 @@ export default async function AdminCasePage({
   const session = await auth();
   const meId = (session?.user as { id?: string } | undefined)?.id ?? null;
   const mine = !!meId && c.assigneeId === meId;
+
+  // Документы собираются из уже существующих источников (анкета KYB и вложения
+  // заявителя), а не загружаются в деле заново.
+  await syncCaseDocuments({ caseId: c.id, subjectType: c.subjectType, subjectId: c.subjectId });
+  const documents = await prisma.caseDocument.findMany({
+    where: { caseId: c.id },
+    orderBy: { createdAt: "asc" },
+  });
 
   const subject = await loadSubject(c.subjectType, c.subjectId);
   const now = new Date();
@@ -72,6 +90,53 @@ export default async function AdminCasePage({
     })),
     "STAFF",
   );
+
+  // --- Лист проверок -------------------------------------------------------
+  const checkByKey = new Map(c.checks.map((row) => [row.key, row]));
+  const checklist: ChecklistItem[] = checklistFor(c.subjectType).map((def) => {
+    const row = checkByKey.get(def.key);
+    return {
+      key: def.key,
+      label: t(`case.checks.${def.key}`),
+      required: def.required,
+      state: row?.state ?? "TODO",
+      note: row?.note ?? null,
+      checkedByName: row?.checkedBy?.name ?? row?.checkedBy?.username ?? null,
+    };
+  });
+  const progress = checklistProgress(
+    c.subjectType,
+    c.checks.map((row) => ({ key: row.key, state: row.state })),
+  );
+
+  // --- Документы -----------------------------------------------------------
+  const docItems: CaseDocumentItem[] = documents.map((doc) => ({
+    id: doc.id,
+    kindLabel: t(`case.docs.kinds.${doc.kind}`),
+    label: doc.label ?? t(`case.docs.kinds.${doc.kind}`),
+    url: doc.url,
+    verdict: doc.verdict,
+    note: doc.verdictNote,
+  }));
+  const resubmitDocs = documents.filter((doc) => doc.verdict === "RESUBMIT").length;
+  const judgedDocs = documents.filter((doc) => doc.verdict !== "PENDING").length;
+
+  // --- Подписи -------------------------------------------------------------
+  const otherApproversCount = await prisma.user.count({
+    where: { role: "ADMIN", id: { not: c.reviewedById ?? meId ?? "" } },
+  });
+  const gate = {
+    requiredPending: progress.requiredPending,
+    resubmitDocs,
+    reviewedById: c.reviewedById,
+    meId: meId ?? "",
+    otherApproversCount,
+  };
+  const approveBlocks = approvalBlockers(gate);
+  const reviewBlocks = [
+    ...(progress.requiredPending > 0 ? ["checks_pending"] : []),
+    ...(resubmitDocs > 0 ? ["documents_resubmit"] : []),
+  ];
 
   // Заготовки — на языке кабинета заявителя: читать их будет он.
   const applicantLocale = pickLocale(c.applicant?.preferredLocale);
@@ -102,6 +167,32 @@ export default async function AdminCasePage({
       not_found: t("case.thread.errors.failed"),
     },
   };
+
+  const reviewerName = c.reviewer?.name ?? c.reviewer?.username ?? null;
+  const approverName = c.approver?.name ?? c.approver?.username ?? null;
+
+  // Журнал получает уже переведённые ключ пункта и состояние: сырой enum в
+  // рассказе о работе по делу читать невозможно.
+  const journalEntries = c.events.map((e) => {
+    const payload = (e.payload ?? {}) as Record<string, unknown>;
+    const patched: Record<string, unknown> = { ...payload };
+    if (e.kind === "CHECK_SET") {
+      if (typeof payload.key === "string") patched.key = t(`case.checks.${payload.key}`);
+      if (typeof payload.state === "string") {
+        patched.state = t(`case.checklist.state.${payload.state}`);
+      }
+    }
+    if (e.kind === "DOCUMENT_VERDICT" && typeof payload.verdict === "string") {
+      patched.verdict = t(`case.docs.verdict.${payload.verdict}`);
+    }
+    return {
+      id: e.id,
+      kind: e.kind,
+      payload: patched,
+      createdAt: e.createdAt,
+      actorName: e.actor?.name ?? e.actor?.username ?? null,
+    };
+  });
 
   return (
     <div className={ADMIN_COLUMN}>
@@ -159,7 +250,6 @@ export default async function AdminCasePage({
           n="1"
           title={t("case.sections.form")}
           summary={t("case.sections.formSummary", { count: subject?.fields.length ?? 0 })}
-          open
         >
           {subject ? (
             <dl className="flex flex-col">
@@ -191,6 +281,80 @@ export default async function AdminCasePage({
 
         <CaseSection
           n="3"
+          title={t("case.checklist.title")}
+          summary={
+            progress.requiredPending > 0
+              ? `${t("case.checklist.summary", { answered: progress.answered, total: progress.total })} · ${t("case.checklist.requiredLeft", { count: progress.requiredPending })}`
+              : `${t("case.checklist.summary", { answered: progress.answered, total: progress.total })} · ${t("case.checklist.allAnswered")}`
+          }
+          open={isOpen(c.status)}
+        >
+          <CaseChecklist
+            caseId={c.id}
+            items={checklist}
+            labels={{
+              required: t("case.checklist.required"),
+              hint: t("case.checklist.hint"),
+              state: {
+                TODO: t("case.checklist.state.TODO"),
+                OK: t("case.checklist.state.OK"),
+                FAIL: t("case.checklist.state.FAIL"),
+                NA: t("case.checklist.state.NA"),
+              },
+              set: {
+                OK: t("case.checklist.set.OK"),
+                FAIL: t("case.checklist.set.FAIL"),
+                NA: t("case.checklist.set.NA"),
+              },
+              notePlaceholder: t("case.checklist.notePlaceholder"),
+              errors: {
+                note_required: t("case.checklist.errors.note_required"),
+                unknown_check: t("case.checklist.errors.unknown_check"),
+                case_closed: t("case.checklist.errors.case_closed"),
+                failed: t("case.checklist.errors.failed"),
+                unauth: t("case.checklist.errors.failed"),
+                not_admin: t("case.checklist.errors.failed"),
+                not_found: t("case.checklist.errors.failed"),
+              },
+            }}
+          />
+        </CaseSection>
+
+        <CaseSection
+          n="4"
+          title={t("case.docs.title")}
+          summary={t("case.docs.summary", { judged: judgedDocs, total: documents.length })}
+        >
+          <CaseDocuments
+            docs={docItems}
+            emptyLabel={t("case.docs.empty")}
+            labels={{
+              verdict: {
+                PENDING: t("case.docs.verdict.PENDING"),
+                ACCEPTED: t("case.docs.verdict.ACCEPTED"),
+                REJECTED: t("case.docs.verdict.REJECTED"),
+                RESUBMIT: t("case.docs.verdict.RESUBMIT"),
+              },
+              set: {
+                ACCEPTED: t("case.docs.set.ACCEPTED"),
+                REJECTED: t("case.docs.set.REJECTED"),
+                RESUBMIT: t("case.docs.set.RESUBMIT"),
+              },
+              notePlaceholder: t("case.docs.notePlaceholder"),
+              open: t("case.docs.open"),
+              errors: {
+                note_required: t("case.docs.errors.note_required"),
+                failed: t("case.docs.errors.failed"),
+                unauth: t("case.docs.errors.failed"),
+                not_admin: t("case.docs.errors.failed"),
+                not_found: t("case.docs.errors.failed"),
+              },
+            }}
+          />
+        </CaseSection>
+
+        <CaseSection
+          n="5"
           title={t("case.thread.title")}
           summary={
             unread > 0
@@ -224,20 +388,76 @@ export default async function AdminCasePage({
         </CaseSection>
 
         <CaseSection
-          n="4"
+          n="6"
+          title={t("case.decision.title")}
+          summary={
+            c.decision
+              ? t("case.decision.summaryDecided", { decision: t(`case.status.${c.decision}`) })
+              : !isOpen(c.status)
+                ? // Закрыто без решения: объект решили вне дела. Писать тут
+                  // «ждём вторую подпись» было бы неправдой.
+                  t("case.decision.summaryClosed")
+                : c.reviewedById
+                  ? t("case.decision.summaryReviewed")
+                  : t("case.decision.summary")
+          }
+          open={isOpen(c.status)}
+        >
+          {isOpen(c.status) ? (
+            <CaseDecision
+              caseId={c.id}
+              reviewedByName={reviewerName}
+              approveBlockers={approveBlocks}
+              reviewBlockers={reviewBlocks}
+              wouldBeSole={isSoleSignOff(gate)}
+              labels={{
+                review: t("case.decision.review"),
+                reviewedBy: t.raw("case.decision.reviewedBy") as string,
+                approve: t("case.decision.approve"),
+                reject: t("case.decision.reject"),
+                reasonPlaceholder: t("case.decision.reasonPlaceholder"),
+                soleHint: t("case.decision.soleHint"),
+                rejectHint: t("case.decision.rejectHint"),
+                closedWithoutDecision: t("case.decision.closedWithoutDecision"),
+                blockers: {
+                  checks_pending: t("case.decision.blockers.checks_pending"),
+                  documents_resubmit: t("case.decision.blockers.documents_resubmit"),
+                  not_reviewed: t("case.decision.blockers.not_reviewed"),
+                  same_person: t("case.decision.blockers.same_person"),
+                },
+                errors: {
+                  reason_too_short: t("case.decision.errors.reason_too_short"),
+                  case_closed: t("case.decision.errors.case_closed"),
+                  not_found: t("case.decision.errors.not_found"),
+                  not_pending: t("case.decision.errors.not_pending"),
+                  failed: t("case.decision.errors.failed"),
+                  unauth: t("case.decision.errors.failed"),
+                  not_admin: t("case.decision.errors.failed"),
+                },
+              }}
+            />
+          ) : (
+            <div className="flex flex-col gap-1.5 text-[12.5px]">
+              {reviewerName ? (
+                <div className="text-muted">{t("case.decision.reviewedBy", { name: reviewerName })}</div>
+              ) : null}
+              {approverName ? (
+                <div className="text-muted">{t("case.decision.approvedBy", { name: approverName })}</div>
+              ) : null}
+              {c.soleSignOff ? <div className="text-[#e2a33c]">{t("case.decision.sole")}</div> : null}
+              {c.decisionReason ? <p className="leading-snug">{c.decisionReason}</p> : null}
+            </div>
+          )}
+        </CaseSection>
+
+        <CaseSection
+          n="7"
           title={t("case.sections.journal")}
           summary={t("case.sections.journalSummary", { count: c.events.length })}
-          open
         >
           <CaseJournal
             locale={locale}
-            entries={c.events.map((e) => ({
-              id: e.id,
-              kind: e.kind,
-              payload: e.payload,
-              createdAt: e.createdAt,
-              actorName: e.actor?.name ?? e.actor?.username ?? null,
-            }))}
+            entries={journalEntries}
             tr={(key, paramsForKey) => t(key, paramsForKey)}
           />
         </CaseSection>

@@ -39,6 +39,9 @@ const KEYS: Record<CaseEventKind, string> = {
   NOTE: "note",
   MESSAGE_SENT: "messageSent",
   MESSAGE_RECEIVED: "messageReceived",
+  REVIEWED: "reviewed",
+  CHECK_SET: "checkSet",
+  DOCUMENT_VERDICT: "documentVerdict",
   DECIDED: "decided",
 };
 

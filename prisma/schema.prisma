@@ -68,6 +68,10 @@ model User {
   caseTimeEntries          CaseTimeEntry[]           @relation("CaseTimeUser")
   caseMessages             CaseMessage[]             @relation("CaseMessageAuthor")
   adminNotifications       AdminNotification[]       @relation("AdminNotificationUser")
+  casesReviewed            ComplianceCase[]          @relation("CaseReviewer")
+  casesApproved            ComplianceCase[]          @relation("CaseApprover")
+  caseChecks               CaseCheck[]               @relation("CaseCheckUser")
+  caseDocumentVerdicts     CaseDocument[]            @relation("CaseDocumentVerdictUser")
 }
 
 model PushSubscription {
@@ -1244,6 +1248,9 @@ enum CaseEventKind {
   NOTE
   MESSAGE_SENT
   MESSAGE_RECEIVED
+  REVIEWED
+  CHECK_SET
+  DOCUMENT_VERDICT
   DECIDED
 }
 
@@ -1257,6 +1264,25 @@ enum CaseTimeSource {
 enum CaseMessageSide {
   STAFF
   APPLICANT
+}
+
+enum CaseCheckState {
+  TODO
+  OK
+  FAIL
+  NA
+}
+
+enum CaseDocumentVerdict {
+  PENDING
+  ACCEPTED
+  REJECTED
+  RESUBMIT
+}
+
+enum CaseDecision {
+  APPROVED
+  REJECTED
 }
 
 enum AdminNotificationKind {
@@ -1290,6 +1316,22 @@ model ComplianceCase {
   clockStoppedAt DateTime?
   handledSeconds Int       @default(0)
   decidedAt      DateTime?
+
+  /// Первая подпись («проверил»). Вторая («утвердил») обязана принадлежать
+  /// другому человеку — пока в системе есть второй сотрудник.
+  reviewedById String?
+  reviewer     User?     @relation("CaseReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  reviewedAt   DateTime?
+  approvedById String?
+  approver     User?     @relation("CaseApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  approvedAt   DateTime?
+  /// Утверждено одним лицом — второго сотрудника в системе не было. Молчаливое
+  /// послабление было бы хуже отсутствия правила, поэтому это видно в журнале.
+  soleSignOff  Boolean   @default(false)
+
+  decision       CaseDecision?
+  decisionReason String?
+
   /// Когда сотрудник впервые написал заявителю. Считается один раз и только
   /// вперёд: это показатель отзывчивости, его нельзя пересчитать потом.
   firstResponseAt DateTime?
@@ -1298,6 +1340,8 @@ model ComplianceCase {
   updatedAt DateTime @updatedAt
 
   events        CaseEvent[]
+  checks        CaseCheck[]
+  documents     CaseDocument[]
   timeEntries   CaseTimeEntry[]
   messages      CaseMessage[]
   notifications AdminNotification[]
@@ -1343,13 +1387,13 @@ model CaseTimeEntry {
 
 /// Одна нитка на дело: слева заявитель, справа мы.
 model CaseMessage {
-  id       String          @id @default(cuid())
-  caseId   String
-  case     ComplianceCase  @relation(fields: [caseId], references: [id], onDelete: Cascade)
-  authorId String?
-  author   User?           @relation("CaseMessageAuthor", fields: [authorId], references: [id], onDelete: SetNull)
-  side     CaseMessageSide
-  body     String
+  id          String          @id @default(cuid())
+  caseId      String
+  case        ComplianceCase  @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  authorId    String?
+  author      User?           @relation("CaseMessageAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  side        CaseMessageSide
+  body        String
   /// [{ name, filename, size, mime }] — разбирается через parseAttachments.
   attachments Json?
 
@@ -1383,4 +1427,50 @@ model AdminNotification {
   @@index([userId, readAt])
   @@index([userId, createdAt])
   @@index([kind, caseId])
+}
+
+/// Пункт листа проверок. Сам список пунктов живёт в коде
+/// (`src/lib/cases/checklists.ts`), строка появляется только когда сотрудник
+/// по пункту высказался: иначе список замер бы на том виде, в каком был в день
+/// подачи заявки.
+model CaseCheck {
+  id          String         @id @default(cuid())
+  caseId      String
+  case        ComplianceCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  key         String
+  state       CaseCheckState @default(TODO)
+  checkedById String?
+  checkedBy   User?          @relation("CaseCheckUser", fields: [checkedById], references: [id], onDelete: SetNull)
+  checkedAt   DateTime?
+  /// Обязательно для FAIL и NA: «не применимо» без причины через год не значит ничего.
+  note        String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([caseId, key])
+  @@index([caseId])
+}
+
+/// Документ, по которому сотрудник высказался. Не загружается заново: строки
+/// собираются из `Company.kybDocuments` и вложений сообщений заявителя.
+model CaseDocument {
+  id          String              @id @default(cuid())
+  caseId      String
+  case        ComplianceCase      @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  /// Источник и вид: KYB_* из анкеты либо MESSAGE_ATTACHMENT из переписки.
+  kind        String
+  url         String
+  label       String?
+  verdict     CaseDocumentVerdict @default(PENDING)
+  verdictById String?
+  verdictBy   User?               @relation("CaseDocumentVerdictUser", fields: [verdictById], references: [id], onDelete: SetNull)
+  verdictAt   DateTime?
+  verdictNote String?
+
+  createdAt DateTime @default(now())
+
+  @@unique([caseId, url])
+  @@index([caseId])
+  @@index([verdictById, verdictAt])
 }

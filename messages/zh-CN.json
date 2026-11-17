@@ -193,7 +193,8 @@
       "fintech": "金融科技",
       "analytics": "分析",
       "coinCards": "币种卡片",
-      "queues": "队列"
+      "queues": "队列",
+      "staff": "员工"
     },
     "status": {
       "PENDING": "待审核",
@@ -517,7 +518,10 @@
         "applicant": "申请人",
         "journal": "案件日志",
         "journalSummary": "{count} 条记录，不可更改",
-        "subjectGone": "此案件所对应的对象已不存在"
+        "subjectGone": "此案件所对应的对象已不存在",
+        "checks": "检查",
+        "documents": "文件",
+        "decision": "决定"
       },
       "journal": {
         "opened": "打开了案件",
@@ -530,7 +534,10 @@
         "note": "留下了备注",
         "decided": "作出了决定",
         "messageSent": "已向申请人发送消息",
-        "messageReceived": "申请人已回复"
+        "messageReceived": "申请人已回复",
+        "reviewed": "已签署«checked»",
+        "checkSet": "检查 «{key}»: {state}",
+        "documentVerdict": "文件 «{label}»: {verdict}"
       },
       "thread": {
         "title": "往来通信",
@@ -566,6 +573,123 @@
         "clarifyData": "您好！您申请中的某些细节需要澄清。请核对数据，并在此回复正确的数值。",
         "needTranslation": "您好！您发送的文件所用语言我们无法核验。请附上英文译文。",
         "deadline7": "请在7天内回复。若未收到答复，我们将不得不在未作出决定的情况下关闭申请。"
+      },
+      "checks": {
+        "legalNameMatchesRegistry": "法定名称与公共登记一致",
+        "addressPlausible": "地址存在且看起来真实",
+        "websiteLive": "网站可访问且归申请方所有",
+        "sanctionsScreened": "已与制裁名单比对筛查",
+        "contactReachable": "联系人可联络并有回应",
+        "registrationCert": "提供了公司注册证明",
+        "documentsLegible": "文件清晰可读",
+        "signatoryIdentified": "已确认签署人身份",
+        "taxCert": "提供了税务登记",
+        "uboDisclosed": "已披露受益所有人",
+        "coordsOnSite": "图钉定位在该场所本身，而非附近",
+        "addressMatchesCoords": "地址与坐标一致",
+        "acceptsCryptoEvidence": "有证据表明该场所接受加密货币",
+        "photoRelevant": "照片展示的是此场所",
+        "contractsVerified": "合约地址已在链上验证",
+        "linksLive": "链接可打开且非借用",
+        "noMisleadingClaims": "无误导性或承诺性陈述",
+        "supplyPlausible": "声称的供应量与链上数据一致",
+        "teamDisclosed": "团队已披露",
+        "coinExists": "该币已存在且可交易",
+        "coingeckoIdMatches": "CoinGecko id 指向此币",
+        "notDuplicate": "未重复收录",
+        "legalEntityStated": "已注明运营法律实体",
+        "servicesMatchSite": "申报的服务与网站一致",
+        "availabilityPlausible": "申报的国家看起来合理",
+        "reportsIndependent": "报告来自独立人士",
+        "ownerAsked": "已就此询问该企业",
+        "pointStillListed": "该点仍在地图上"
+      },
+      "checklist": {
+        "title": "检查",
+        "summary": "已回答 {answered}/{total}",
+        "requiredLeft": "仍有 {count} 项必答未回答",
+        "allAnswered": "所有必答检查已回答",
+        "required": "必答",
+        "state": {
+          "TODO": "未回答",
+          "OK": "正常",
+          "FAIL": "有问题",
+          "NA": "不适用"
+        },
+        "set": {
+          "OK": "OK",
+          "FAIL": "有问题",
+          "NA": "不适用"
+        },
+        "notePlaceholder": "原因？“有问题”或“不适用”时必填",
+        "checkedBy": "{name}",
+        "hint": "“有问题”不会阻止审批——它只是拒绝的理由。真正会阻止的是未回答的必答检查",
+        "errors": {
+          "note_required": "请填写原因——至少 3 个字符",
+          "unknown_check": "该检查项不属于此类申请",
+          "case_closed": "此案件已作出决定",
+          "failed": "无法保存——请重试"
+        }
+      },
+      "docs": {
+        "title": "文档",
+        "summary": "已判定 {judged}/{total}",
+        "empty": "尚无文档。它们会从 KYB 表单和申请人的附件出现在这里——案件本身不上传任何内容",
+        "verdict": {
+          "PENDING": "未判定",
+          "ACCEPTED": "已接受",
+          "REJECTED": "已拒绝",
+          "RESUBMIT": "要求重传"
+        },
+        "set": {
+          "ACCEPTED": "接受",
+          "REJECTED": "拒绝",
+          "RESUBMIT": "请求重传"
+        },
+        "notePlaceholder": "文档有什么问题？",
+        "open": "打开文件",
+        "kinds": {
+          "KYB_REGISTRATION_CERT": "公司注册证明",
+          "KYB_TAX_CERT": "税务登记",
+          "KYB_ID": "身份证件",
+          "KYB_OTHER": "文件",
+          "MESSAGE_ATTACHMENT": "附在往来消息中"
+        },
+        "errors": {
+          "note_required": "请写明问题—至少 3 个字符",
+          "failed": "无法保存—请重试"
+        }
+      },
+      "decision": {
+        "title": "决定",
+        "summary": "尚未决定",
+        "summaryReviewed": "已检查，等待第二人审核",
+        "summaryDecided": "{decision}",
+        "summaryClosed": "未作出决定即关闭",
+        "review": "我已检查此案件",
+        "reviewedBy": "由 {name} 检查",
+        "approve": "批准",
+        "reject": "拒绝",
+        "reasonPlaceholder": "理由—申请人会看到",
+        "soleHint": "你是此处唯一的工作人员，因此你的批准将被记录为单人签署：「由一人批准，没有第二人」。",
+        "sole": "由一人批准—没有第二名工作人员",
+        "approvedBy": "由 {name} 批准",
+        "decidedAt": "{when}",
+        "rejectHint": "拒绝不需要第二个签名—它不会发布任何内容，且申请人可以再次申请。需要填写理由。",
+        "blockers": {
+          "checks_pending": "无法批准：有一项必需的检查尚无结果",
+          "documents_resubmit": "无法批准：有一份文件正在等待重新提交",
+          "not_reviewed": "无法批准：尚无人签署«已检查»",
+          "same_person": "无法批准：你已检查此案件，因此需要由他人来批准"
+        },
+        "closedWithoutDecision": "该对象已在此案件外被决定，因此此案件在未作出决定的情况下关闭.",
+        "errors": {
+          "reason_too_short": "请填写理由—至少 3 个字符",
+          "case_closed": "此案件已作出决定",
+          "not_found": "此案件已不存在",
+          "failed": "无法保存—请重试",
+          "not_pending": "该对象不再等待决定"
+        }
       }
     },
     "bell": {
@@ -578,6 +702,35 @@
         "DUE_SOON": "24小时内到期",
         "CASE_OVERDUE": "已逾期",
         "APPLICANT_SILENT": "申请人已沉默14天"
+      }
+    },
+    "movedToQueues": {
+      "title": "此队列现已并入案件",
+      "body": "待处理的申请在案件中作出决定：有检查清单、与申请人的往来线程以及两次签署。在此处作出的决定将绕过这三项，因此这里只剩下一道门.",
+      "cta": "打开队列"
+    },
+    "staff": {
+      "title": "员工",
+      "subtitle": "处理已决定的案件，{window}",
+      "windows": {
+        "30d": "过去 30 天",
+        "90d": "过去 90 天",
+        "all": "全部时间"
+      },
+      "empty": "此时间范围内尚无已决定的案件.",
+      "unattributed": "{count} 个已决定的案件无人可归属—它们是在案件层出现之前就已决定的.",
+      "hint": "在手时间是一个近似指标：它统计的是案件在屏幕上打开的时间，而非思考所花的时间.",
+      "cols": {
+        "decided": "已决定",
+        "approved": "已批准",
+        "rejected": "已拒绝",
+        "rejectShare": "拒绝占比",
+        "avgHandled": "平均处理时长",
+        "avgFirstResponse": "首次回复平均时长",
+        "overdue": "逾期",
+        "secondSignatures": "二次签名",
+        "soleSignOffs": "单人签署",
+        "resubmits": "重新提交"
       }
     }
   },

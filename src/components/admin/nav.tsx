@@ -4,6 +4,7 @@ import { AdminBell } from "./admin-bell";
 
 const TABS = [
   { key: "queues", path: "queues" },
+  { key: "staff", path: "staff" },
   { key: "requests", path: "requests" },
   { key: "coinCards", path: "coin-cards" },
   { key: "business", path: "business" },

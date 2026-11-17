@@ -193,7 +193,8 @@
       "fintech": "핀테크",
       "analytics": "애널리틱스",
       "coinCards": "코인 카드",
-      "queues": "대기열"
+      "queues": "대기열",
+      "staff": "직원"
     },
     "status": {
       "PENDING": "검토 중",
@@ -517,7 +518,10 @@
         "applicant": "신청인",
         "journal": "케이스 기록",
         "journalSummary": "{count}개 항목, 변경 불가",
-        "subjectGone": "이 케이스의 대상이 더 이상 존재하지 않습니다"
+        "subjectGone": "이 케이스의 대상이 더 이상 존재하지 않습니다",
+        "checks": "점검",
+        "documents": "문서",
+        "decision": "결정"
       },
       "journal": {
         "opened": "케이스를 열음",
@@ -530,7 +534,10 @@
         "note": "메모를 남김",
         "decided": "결정함",
         "messageSent": "신청자에게 보냄",
-        "messageReceived": "신청자가 회신함"
+        "messageReceived": "신청자가 회신함",
+        "reviewed": "«checked»에 서명함",
+        "checkSet": "점검 «{key}»: {state}",
+        "documentVerdict": "문서 «{label}»: {verdict}"
       },
       "thread": {
         "title": "대화",
@@ -566,6 +573,123 @@
         "clarifyData": "안녕하세요! 신청서의 일부 세부정보에 확인이 필요합니다. 데이터를 확인하시고 올바른 값으로 여기에서 회신해 주세요.",
         "needTranslation": "안녕하세요! 보내주신 문서는 저희가 검증할 수 없는 언어로 되어 있습니다. 영어 번역본을 첨부해 주세요.",
         "deadline7": "7일 이내에 회신해 주세요. 답변이 없으면 결론 없이 신청을 종료해야 합니다."
+      },
+      "checks": {
+        "legalNameMatchesRegistry": "법적 명칭이 공적 등록부와 일치함",
+        "addressPlausible": "주소가 존재하고 실제로 보임",
+        "websiteLive": "웹사이트가 열리고 신청자 소유임",
+        "sanctionsScreened": "제재 목록 대조 완료",
+        "contactReachable": "담당자가 응답함",
+        "registrationCert": "법인 설립 증명서 제출됨",
+        "documentsLegible": "문서가 판독 가능함",
+        "signatoryIdentified": "서명자 확인됨",
+        "taxCert": "세무 등록증 제출됨",
+        "uboDisclosed": "실소유자 공개됨",
+        "coordsOnSite": "핀 위치가 인접지가 아닌 해당 장소에 있음",
+        "addressMatchesCoords": "주소가 좌표와 일치함",
+        "acceptsCryptoEvidence": "암호화폐 수납 증거 확보",
+        "photoRelevant": "사진이 해당 장소를 보여줌",
+        "contractsVerified": "컨트랙트 주소가 온체인에서 검증됨",
+        "linksLive": "링크가 열리고 도용된 것이 아님",
+        "noMisleadingClaims": "오해의 소지나 확약성 주장 없음",
+        "supplyPlausible": "명시된 공급량이 체인과 일치함",
+        "teamDisclosed": "팀이 공개됨",
+        "coinExists": "코인이 존재하며 거래됨",
+        "coingeckoIdMatches": "CoinGecko ID가 이 코인을 가리킴",
+        "notDuplicate": "이미 카탈로그에 없음",
+        "legalEntityStated": "운영 법인이 명시됨",
+        "servicesMatchSite": "명시한 서비스가 사이트와 일치함",
+        "availabilityPlausible": "명시한 국가가 타당해 보임",
+        "reportsIndependent": "보고가 독립적인 사람들에게서 옴",
+        "ownerAsked": "해당 업체에 문의함",
+        "pointStillListed": "해당 지점이 지도에 여전히 있음"
+      },
+      "checklist": {
+        "title": "검토",
+        "summary": "{total}개 중 {answered}개 응답됨",
+        "requiredLeft": "필수 {count}개 아직 미응답",
+        "allAnswered": "모든 필수 항목 응답됨",
+        "required": "필수",
+        "state": {
+          "TODO": "응답 없음",
+          "OK": "정상",
+          "FAIL": "문제",
+          "NA": "해당 없음"
+        },
+        "set": {
+          "OK": "OK",
+          "FAIL": "문제",
+          "NA": "N/A"
+        },
+        "notePlaceholder": "이유는? 문제 또는 «해당 없음»인 경우 필수",
+        "checkedBy": "{name}",
+        "hint": "«문제»는 승인 자체를 막지 않음 — 반려 사유일 뿐임. 승인을 막는 것은 미응답인 필수 항목임",
+        "errors": {
+          "note_required": "이유를 작성하세요 — 최소 3자",
+          "unknown_check": "이 검토 항목은 이 신청 유형에 해당하지 않음",
+          "case_closed": "이 건은 이미 결정됨",
+          "failed": "저장할 수 없음 — 다시 시도하세요"
+        }
+      },
+      "docs": {
+        "title": "문서",
+        "summary": "{total}개 중 {judged}개 판정됨",
+        "empty": "아직 문서 없음. KYB 양식과 신청자의 첨부에서 여기 표시되며 — 케이스 자체에는 업로드하지 않음.",
+        "verdict": {
+          "PENDING": "미판정",
+          "ACCEPTED": "승인됨",
+          "REJECTED": "거절됨",
+          "RESUBMIT": "재전송 요청됨"
+        },
+        "set": {
+          "ACCEPTED": "승인",
+          "REJECTED": "거절",
+          "RESUBMIT": "재전송 요청"
+        },
+        "notePlaceholder": "문서에 무엇이 문제인가요?",
+        "open": "파일 열기",
+        "kinds": {
+          "KYB_REGISTRATION_CERT": "법인 설립 증명서",
+          "KYB_TAX_CERT": "세무 등록",
+          "KYB_ID": "신분증",
+          "KYB_OTHER": "문서",
+          "MESSAGE_ATTACHMENT": "대화에 첨부됨"
+        },
+        "errors": {
+          "note_required": "무엇이 잘못됐는지 작성하세요 — 최소 3자",
+          "failed": "저장할 수 없습니다 — 다시 시도하세요"
+        }
+      },
+      "decision": {
+        "title": "결정",
+        "summary": "아직 결정되지 않음",
+        "summaryReviewed": "검토됨, 두 번째 확인 대기 중",
+        "summaryDecided": "{decision}",
+        "summaryClosed": "결정 없이 종료",
+        "review": "이 케이스를 검토했습니다",
+        "reviewedBy": "{name}이(가) 검토함",
+        "approve": "승인",
+        "reject": "거절",
+        "reasonPlaceholder": "사유 — 신청자가 읽습니다",
+        "soleHint": "여기에는 직원이 한 명뿐이므로, 귀하의 승인은 단독 서명으로 기록됩니다: «한 사람이 승인했으며, 두 번째 사람은 없었습니다».",
+        "sole": "한 사람이 승인함 — 두 번째 직원이 없었음",
+        "approvedBy": "{name}이(가) 승인함",
+        "decidedAt": "{when}",
+        "rejectHint": "거절에는 두 번째 서명이 필요하지 않습니다 — 아무것도 게시되지 않으며 신청자는 다시 신청할 수 있습니다. 사유가 필요합니다.",
+        "blockers": {
+          "checks_pending": "승인이 차단됨: 필수 확인에 아직 답변이 없음",
+          "documents_resubmit": "승인이 차단됨: 문서를 다시 제출하기를 기다리는 중",
+          "not_reviewed": "승인이 차단됨: 아직 아무도 «검토됨»에 서명하지 않음",
+          "same_person": "승인이 차단됨: 당신이 이 케이스를 검토했으므로 다른 사람이 승인해야 함"
+        },
+        "closedWithoutDecision": "이 케이스 외부에서 이미 결정되었으므로, 이 케이스는 결정 없이 종료됩니다.",
+        "errors": {
+          "reason_too_short": "사유를 작성하세요 — 최소 3자",
+          "case_closed": "이 케이스는 이미 결정됨",
+          "not_found": "케이스가 사라졌습니다",
+          "failed": "저장할 수 없습니다 — 다시 시도하세요",
+          "not_pending": "대상은 더 이상 결정을 기다리지 않음"
+        }
       }
     },
     "bell": {
@@ -578,6 +702,35 @@
         "DUE_SOON": "24시간 내 마감",
         "CASE_OVERDUE": "기한 초과",
         "APPLICANT_SILENT": "신청자가 14일째 무응답"
+      }
+    },
+    "movedToQueues": {
+      "title": "이 대기열은 이제 케이스에 있습니다",
+      "body": "보류 중인 신청은 케이스에서 결정됩니다: 체크리스트, 신청자와의 대화 스레드, 그리고 두 개의 서명이 있습니다. 여기서의 결정은 이 세 가지를 모두 건너뛰게 되므로 이제 문은 하나만 남습니다.",
+      "cta": "대기열 열기"
+    },
+    "staff": {
+      "title": "직원",
+      "subtitle": "결정된 케이스 작업, {window}",
+      "windows": {
+        "30d": "지난 30일",
+        "90d": "지난 90일",
+        "all": "전체 기간"
+      },
+      "empty": "이 기간에는 아직 결정된 케이스가 없음.",
+      "unattributed": "{count}개의 결정된 케이스는 집계할 담당자가 없습니다 — 케이스 레이어가 존재하기 전에 결정되었습니다.",
+      "hint": "보유 시간은 대략적인 지표입니다: 화면에서 사건이 열려 있던 시간을 계산하며, 생각하는 데 들인 시간은 포함하지 않습니다.",
+      "cols": {
+        "decided": "결정됨",
+        "approved": "승인됨",
+        "rejected": "거절됨",
+        "rejectShare": "거절 비율",
+        "avgHandled": "평균 보유 시간",
+        "avgFirstResponse": "첫 응답까지 평균 시간",
+        "overdue": "기한 초과",
+        "secondSignatures": "2차 서명",
+        "soleSignOffs": "단독 승인",
+        "resubmits": "재전송 요청"
       }
     }
   },
@@ -1793,10 +1946,10 @@
         "github": "GitHub",
         "x": "X",
         "telegram": "Telegram",
-        "discord": "Discord",
-        "reddit": "Reddit",
+        "discord": "디스코드",
+        "reddit": "레딧",
         "blog": "블로그",
-        "youtube": "YouTube",
+        "youtube": "유튜브",
         "explorer": "익스플로러"
       },
       "next": "계속",

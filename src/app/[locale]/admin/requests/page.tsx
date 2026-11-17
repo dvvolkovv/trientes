@@ -2,6 +2,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { AdminNav } from "@/components/admin/nav";
 import { RequestRow, type RequestRowData } from "@/components/admin/request-row";
+import { QueueMoved } from "@/components/admin/queue-moved";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +21,8 @@ export default async function AdminRequestsPage({
   const statusFilter =
     tab === "approved" ? "APPROVED" : tab === "rejected" ? "REJECTED" : "PENDING";
 
-  const requests = await prisma.coinRequest.findMany({
+  // Ожидающие заявки решаются в деле, а не здесь: см. QueueMoved.
+  const requests = statusFilter === "PENDING" ? [] : await prisma.coinRequest.findMany({
     where: { status: statusFilter },
     orderBy: { createdAt: "desc" },
     take: 50,
@@ -73,7 +75,8 @@ export default async function AdminRequestsPage({
           );
         })}
       </div>
-      {rows.length === 0 ? (
+      {statusFilter === "PENDING" ? <QueueMoved locale={locale} queue="coinRequests" /> : null}
+      {statusFilter === "PENDING" ? null : rows.length === 0 ? (
         <div className="bg-card border border-hairline rounded-[20px] p-8 text-center text-muted">
           {t("requests.empty")}
         </div>

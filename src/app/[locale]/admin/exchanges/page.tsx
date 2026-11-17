@@ -2,6 +2,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { AdminNav } from "@/components/admin/nav";
 import { ExchangeRow, type ExchangeRowData } from "@/components/admin/exchange-row";
+import { QueueMoved } from "@/components/admin/queue-moved";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +21,7 @@ export default async function AdminExchangesPage({
   const status =
     tab === "approved" ? "APPROVED" : tab === "rejected" ? "REJECTED" : "PENDING";
 
-  const exchanges = await prisma.registeredExchange.findMany({
+  const exchanges = status === "PENDING" ? [] : await prisma.registeredExchange.findMany({
     where: { status },
     orderBy: { createdAt: "desc" },
     take: 200,
@@ -74,7 +75,8 @@ export default async function AdminExchangesPage({
           );
         })}
       </div>
-      {rows.length === 0 ? (
+      {status === "PENDING" ? <QueueMoved locale={locale} queue="exchanges" /> : null}
+      {status === "PENDING" ? null : rows.length === 0 ? (
         <div className="bg-card border border-hairline rounded-[20px] p-8 text-center text-muted">
           {t("exchanges.empty")}
         </div>

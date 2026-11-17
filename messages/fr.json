@@ -193,7 +193,8 @@
       "fintech": "Fintech",
       "analytics": "Analyse",
       "coinCards": "Fiches de monnaies",
-      "queues": "Files d'attente"
+      "queues": "Files d'attente",
+      "staff": "Équipe"
     },
     "status": {
       "PENDING": "En attente",
@@ -517,7 +518,10 @@
         "applicant": "Demandeur",
         "journal": "Journal du dossier",
         "journalSummary": "{count} entrées, immuables",
-        "subjectGone": "L'objet associé à ce dossier n'existe plus"
+        "subjectGone": "L'objet associé à ce dossier n'existe plus",
+        "checks": "Vérifications",
+        "documents": "Documents",
+        "decision": "Décision"
       },
       "journal": {
         "opened": "a ouvert le dossier",
@@ -530,7 +534,10 @@
         "note": "a laissé une note",
         "decided": "a pris une décision",
         "messageSent": "a écrit au demandeur",
-        "messageReceived": "le demandeur a répondu"
+        "messageReceived": "le demandeur a répondu",
+        "reviewed": "signé «checked»",
+        "checkSet": "vérification «{key}»: {state}",
+        "documentVerdict": "document «{label}»: {verdict}"
       },
       "thread": {
         "title": "Correspondance",
@@ -566,6 +573,123 @@
         "clarifyData": "Bonjour ! Certains éléments de votre demande nécessitent des précisions. Veuillez vérifier les données et répondre ici avec les valeurs correctes.",
         "needTranslation": "Bonjour ! Le document que vous avez envoyé est dans une langue que nous ne pouvons pas vérifier. Veuillez joindre une traduction en anglais.",
         "deadline7": "Veuillez répondre sous 7 jours. Sans réponse nous devrons clôturer la demande sans décision."
+      },
+      "checks": {
+        "legalNameMatchesRegistry": "La raison sociale correspond au registre public",
+        "addressPlausible": "L'adresse existe et semble réelle",
+        "websiteLive": "Le site s'ouvre et appartient au demandeur",
+        "sanctionsScreened": "Contrôlé par rapport aux listes de sanctions",
+        "contactReachable": "La personne de contact répond",
+        "registrationCert": "Certificat d'immatriculation fourni",
+        "documentsLegible": "Les documents sont lisibles",
+        "signatoryIdentified": "Signataire identifié",
+        "taxCert": "Immatriculation fiscale fournie",
+        "uboDisclosed": "Bénéficiaires effectifs divulgués",
+        "coordsOnSite": "L'épingle est sur le lieu, pas à proximité",
+        "addressMatchesCoords": "L'adresse correspond aux coordonnées",
+        "acceptsCryptoEvidence": "Preuve que le lieu accepte la crypto",
+        "photoRelevant": "La photo montre ce lieu",
+        "contractsVerified": "Adresses de contrats vérifiées sur la chaîne",
+        "linksLive": "Les liens s'ouvrent et ne sont pas empruntés",
+        "noMisleadingClaims": "Aucune affirmation trompeuse ou promissoire",
+        "supplyPlausible": "L'offre indiquée correspond à la chaîne",
+        "teamDisclosed": "Équipe divulguée",
+        "coinExists": "La monnaie existe et s'échange",
+        "coingeckoIdMatches": "L'id CoinGecko pointe vers cette monnaie",
+        "notDuplicate": "Pas déjà dans le catalogue",
+        "legalEntityStated": "Entité juridique exploitante indiquée",
+        "servicesMatchSite": "Les services déclarés correspondent au site",
+        "availabilityPlausible": "Les pays déclarés semblent plausibles",
+        "reportsIndependent": "Les rapports proviennent de personnes indépendantes",
+        "ownerAsked": "L'entreprise a été interrogée à ce sujet",
+        "pointStillListed": "Le point est toujours sur la carte"
+      },
+      "checklist": {
+        "title": "Vérifications",
+        "summary": "{answered} sur {total} répondues",
+        "requiredLeft": "{count} obligatoires encore sans réponse",
+        "allAnswered": "toutes les vérifications obligatoires répondues",
+        "required": "obligatoire",
+        "state": {
+          "TODO": "aucune réponse",
+          "OK": "ok",
+          "FAIL": "problème",
+          "NA": "non applicable"
+        },
+        "set": {
+          "OK": "OK",
+          "FAIL": "Problème",
+          "NA": "N/A"
+        },
+        "notePlaceholder": "Pourquoi ? Requis pour un problème ou « non applicable »",
+        "checkedBy": "{name}",
+        "hint": "Un « problème » ne bloque pas l'approbation — c'est une raison de rejeter. Ce qui bloque, c'est une vérification obligatoire sans réponse",
+        "errors": {
+          "note_required": "Écrivez une raison — au moins 3 caractères",
+          "unknown_check": "Cette vérification n'appartient pas à ce type de demande",
+          "case_closed": "Le dossier est déjà tranché",
+          "failed": "Enregistrement impossible — réessayez"
+        }
+      },
+      "docs": {
+        "title": "Documents",
+        "summary": "{judged} sur {total} jugés",
+        "empty": "Aucun document pour l’instant. Ils apparaissent ici depuis le formulaire KYB et depuis les pièces jointes du demandeur — rien n’est téléversé dans le dossier lui‑même.",
+        "verdict": {
+          "PENDING": "non jugé",
+          "ACCEPTED": "accepté",
+          "REJECTED": "refusé",
+          "RESUBMIT": "réenvoi demandé"
+        },
+        "set": {
+          "ACCEPTED": "Accepter",
+          "REJECTED": "Rejeter",
+          "RESUBMIT": "Demander un réenvoi"
+        },
+        "notePlaceholder": "Quel est le problème avec le document ?",
+        "open": "Ouvrir le fichier",
+        "kinds": {
+          "KYB_REGISTRATION_CERT": "Certificat d’immatriculation",
+          "KYB_TAX_CERT": "Enregistrement fiscal",
+          "KYB_ID": "Pièce d’identité",
+          "KYB_OTHER": "Document",
+          "MESSAGE_ATTACHMENT": "Pièce jointe dans la correspondance"
+        },
+        "errors": {
+          "note_required": "Indiquez ce qui ne va pas — au moins 3 caractères",
+          "failed": "Enregistrement impossible — réessayez"
+        }
+      },
+      "decision": {
+        "title": "Décision",
+        "summary": "pas encore décidé",
+        "summaryReviewed": "vérifié, en attente d’un second regard",
+        "summaryDecided": "{decision}",
+        "summaryClosed": "fermé sans décision",
+        "review": "J’ai vérifié ce dossier",
+        "reviewedBy": "Vérifié par {name}",
+        "approve": "Approuver",
+        "reject": "Rejeter",
+        "reasonPlaceholder": "Raison — le demandeur la lira",
+        "soleHint": "Vous êtes le seul membre du personnel ici, donc votre approbation est enregistrée comme une validation unique : « approuvé par une seule personne, il n’y en avait pas de seconde ».",
+        "sole": "Approuvé par une seule personne — il n’y avait pas de second membre du personnel",
+        "approvedBy": "Approuvé par {name}",
+        "decidedAt": "{when}",
+        "rejectHint": "Un refus ne nécessite pas de seconde signature — rien n’est publié et le demandeur peut postuler de nouveau. Une raison est requise.",
+        "blockers": {
+          "checks_pending": "Approbation bloquée : une vérification requise n’a pas encore de réponse",
+          "documents_resubmit": "Approbation bloquée : un document attend d’être renvoyé",
+          "not_reviewed": "Approbation bloquée : personne n’a encore signé « vérifié »",
+          "same_person": "Approbation bloquée : vous avez vérifié ce dossier, donc quelqu’un d’autre doit l’approuver"
+        },
+        "closedWithoutDecision": "L’objet avait déjà été décidé en dehors de ce dossier, donc le dossier est clôturé sans décision.",
+        "errors": {
+          "reason_too_short": "Indiquez une raison — au moins 3 caractères",
+          "case_closed": "Le dossier est déjà décidé",
+          "not_found": "Le dossier n'existe plus",
+          "failed": "Impossible d'enregistrer — réessayez",
+          "not_pending": "L'objet n'attend plus de décision"
+        }
       }
     },
     "bell": {
@@ -578,6 +702,35 @@
         "DUE_SOON": "Échéance dans 24 heures",
         "CASE_OVERDUE": "En retard",
         "APPLICANT_SILENT": "Le demandeur est silencieux depuis 14 jours"
+      }
+    },
+    "movedToQueues": {
+      "title": "Cette file se trouve désormais dans les dossiers",
+      "body": "Les demandes en attente sont tranchées dans un dossier : on y trouve une liste de contrôle, un fil de correspondance avec le demandeur et deux signatures. Une décision prise ici contournerait ces trois étapes ; il ne reste donc qu’une seule porte",
+      "cta": "Ouvrir les files"
+    },
+    "staff": {
+      "title": "Équipe",
+      "subtitle": "Travail sur les dossiers décidés, {window}",
+      "windows": {
+        "30d": "30 derniers jours",
+        "90d": "90 derniers jours",
+        "all": "depuis le début"
+      },
+      "empty": "Aucun dossier décidé dans cette période pour l’instant.",
+      "unattributed": "{count} dossiers décidés ne sont attribués à personne — ils ont été décidés avant l’existence de la couche des dossiers.",
+      "hint": "Le temps en main est une mesure approximative : il comptabilise le temps pendant lequel un dossier est resté ouvert à l’écran, pas le temps passé à y réfléchir.",
+      "cols": {
+        "decided": "Décidés",
+        "approved": "Approuvés",
+        "rejected": "Rejetés",
+        "rejectShare": "Taux de rejet",
+        "avgHandled": "Temps moyen en main",
+        "avgFirstResponse": "Temps moyen jusqu’à la première réponse",
+        "overdue": "En retard",
+        "secondSignatures": "Secondes signatures",
+        "soleSignOffs": "Approbations uniques",
+        "resubmits": "Demandes de renvoi"
       }
     }
   },
@@ -1897,7 +2050,7 @@
       "sourceLocale": "Langue de la source",
       "jurisdictionCountry": "Code pays (ISO-2)",
       "jurisdictionStatus": "Statut",
-      "jurisdictionNote": "Note",
+      "jurisdictionNote": "Remarque",
       "jurisdictionSource": "Lien vers la source",
       "jurisdictionAsOf": "Date de la source",
       "excluded": "Adresse hors circulation",

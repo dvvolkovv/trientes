@@ -193,7 +193,8 @@
       "fintech": "フィンテック",
       "analytics": "アナリティクス",
       "coinCards": "コインカード",
-      "queues": "キュー"
+      "queues": "キュー",
+      "staff": "スタッフ"
     },
     "status": {
       "PENDING": "審査中",
@@ -517,7 +518,10 @@
         "applicant": "申請者",
         "journal": "ケース記録",
         "journalSummary": "{count} 件、改ざん不可",
-        "subjectGone": "このケースの対象は既に存在しません"
+        "subjectGone": "このケースの対象は既に存在しません",
+        "checks": "チェック",
+        "documents": "書類",
+        "decision": "決定"
       },
       "journal": {
         "opened": "ケースを開いた",
@@ -530,7 +534,10 @@
         "note": "メモを残した",
         "decided": "決定を下した",
         "messageSent": "申請者に送信",
-        "messageReceived": "申請者が返信"
+        "messageReceived": "申請者が返信",
+        "reviewed": "«checked» に署名済み",
+        "checkSet": "チェック «{key}»: {state}",
+        "documentVerdict": "書類 «{label}»: {verdict}"
       },
       "thread": {
         "title": "やり取り",
@@ -566,6 +573,123 @@
         "clarifyData": "こんにちは。申請内容の一部について確認が必要です。データを確認のうえ、正しい値をこちらにご返信ください。",
         "needTranslation": "こんにちは。お送りいただいた書類は、当方で確認できない言語です。英語訳を添付してください。",
         "deadline7": "7日以内にご返信ください。ご回答がない場合、申請は不決のままクローズする必要があります。"
+      },
+      "checks": {
+        "legalNameMatchesRegistry": "法人名が公開登記簿と一致",
+        "addressPlausible": "住所が存在し実在に見える",
+        "websiteLive": "ウェブサイトが開き、申請者に帰属する",
+        "sanctionsScreened": "制裁リストと照合済み",
+        "contactReachable": "連絡担当者が応答する",
+        "registrationCert": "設立証明書が提出済み",
+        "documentsLegible": "書類が判読可能",
+        "signatoryIdentified": "署名権者を特定済み",
+        "taxCert": "税務登録が提出済み",
+        "uboDisclosed": "実質的支配者が開示済み",
+        "coordsOnSite": "ピンが近隣ではなく施設上に位置",
+        "addressMatchesCoords": "住所が座標と一致",
+        "acceptsCryptoEvidence": "施設が暗号資産を受け入れる証拠",
+        "photoRelevant": "写真が当該施設を示す",
+        "contractsVerified": "コントラクトアドレスをオンチェーンで検証済み",
+        "linksLive": "リンクが開き、流用でない",
+        "noMisleadingClaims": "誤解を招く表示や約束的主張がない",
+        "supplyPlausible": "公称供給量がチェーンと一致",
+        "teamDisclosed": "チームが開示済み",
+        "coinExists": "コインが存在し取引されている",
+        "coingeckoIdMatches": "CoinGecko id がこのコインを指す",
+        "notDuplicate": "既にカタログに登録されていない",
+        "legalEntityStated": "運営する法人が明記されている",
+        "servicesMatchSite": "申告されたサービスがサイトと一致している",
+        "availabilityPlausible": "申告された国が妥当そうに見える",
+        "reportsIndependent": "報告は独立した人からのもの",
+        "ownerAsked": "その件について事業者に確認済み",
+        "pointStillListed": "その地点は地図上にまだ掲載されている"
+      },
+      "checklist": {
+        "title": "チェック",
+        "summary": "{total}件中{answered}件に回答済み",
+        "requiredLeft": "必須{count}件が未回答のまま",
+        "allAnswered": "必須のチェックはすべて回答済み",
+        "required": "必須",
+        "state": {
+          "TODO": "未回答",
+          "OK": "OK",
+          "FAIL": "問題あり",
+          "NA": "該当なし"
+        },
+        "set": {
+          "OK": "OK",
+          "FAIL": "問題",
+          "NA": "N/A"
+        },
+        "notePlaceholder": "なぜですか？「問題」または「該当なし」の場合は必須",
+        "checkedBy": "{name}",
+        "hint": "「問題」は承認を阻むものではなく、却下の理由です。承認を阻むのは、必須チェックの未回答です",
+        "errors": {
+          "note_required": "理由を記入してください — 3文字以上",
+          "unknown_check": "このチェックはこの種類の申請には該当しません",
+          "case_closed": "この案件はすでに決定済みです",
+          "failed": "保存できませんでした — もう一度お試しください"
+        }
+      },
+      "docs": {
+        "title": "書類",
+        "summary": "{total}件中{judged}件を判定済み",
+        "empty": "まだ書類はありません。KYBフォームと申請者の添付からここに表示されます — 案件自体にはアップロードしません",
+        "verdict": {
+          "PENDING": "未判定",
+          "ACCEPTED": "受理",
+          "REJECTED": "却下",
+          "RESUBMIT": "再提出依頼"
+        },
+        "set": {
+          "ACCEPTED": "受理",
+          "REJECTED": "却下",
+          "RESUBMIT": "再提出を依頼"
+        },
+        "notePlaceholder": "この書類の問題点は何ですか",
+        "open": "ファイルを開く",
+        "kinds": {
+          "KYB_REGISTRATION_CERT": "設立証明書",
+          "KYB_TAX_CERT": "税務登録証",
+          "KYB_ID": "身分証明書",
+          "KYB_OTHER": "書類",
+          "MESSAGE_ATTACHMENT": "やり取りに添付"
+        },
+        "errors": {
+          "note_required": "問題点を記入 — 最低3文字",
+          "failed": "保存できませんでした — もう一度お試しください"
+        }
+      },
+      "decision": {
+        "title": "決定",
+        "summary": "未決定",
+        "summaryReviewed": "確認済み、二人目の確認待ち",
+        "summaryDecided": "{decision}",
+        "summaryClosed": "決定なしでクローズ",
+        "review": "この案件を確認しました",
+        "reviewedBy": "{name}が確認",
+        "approve": "承認",
+        "reject": "却下",
+        "reasonPlaceholder": "理由 — 申請者が読みます",
+        "soleHint": "ここにいるスタッフはあなただけなので、あなたの承認は単独署名として記録されます：«一人により承認、二人目はいなかった」。",
+        "sole": "一人により承認 — 二人目のスタッフはいなかった",
+        "approvedBy": "{name}が承認",
+        "decidedAt": "{when}",
+        "rejectHint": "却下には二人目の署名は不要です — 何も公開されず、申請者は再申請できます。理由は必須です。",
+        "blockers": {
+          "checks_pending": "承認はブロックされています：必須の確認にまだ回答がありません",
+          "documents_resubmit": "承認はブロックされています：再送待ちの書類があります",
+          "not_reviewed": "承認はブロックされています：まだ誰も«確認済み»に署名していません",
+          "same_person": "承認はブロックされています：あなたがこの案件を確認したため、別の人が承認する必要があります"
+        },
+        "closedWithoutDecision": "対象はこの案件の外で既に決定されているため、この案件は決定なしで終了しています。",
+        "errors": {
+          "reason_too_short": "理由を記入 — 最低3文字",
+          "case_closed": "この案件はすでに決定済みです",
+          "not_found": "案件はなくなりました",
+          "failed": "保存できませんでした — もう一度お試しください",
+          "not_pending": "対象はもはや決定待ちではありません"
+        }
       }
     },
     "bell": {
@@ -578,6 +702,35 @@
         "DUE_SOON": "24時間以内に期限",
         "CASE_OVERDUE": "期限切れ",
         "APPLICANT_SILENT": "申請者が14日間無返信"
+      }
+    },
+    "movedToQueues": {
+      "title": "このキューはケースで運用されます",
+      "body": "保留中の申請はケース内で決定されます：チェックリスト、申請者とのやり取りスレッド、そして二重署名があります。ここで決定するとこの3つを素通りしてしまうため、残された扉はひとつだけです。",
+      "cta": "キューを開く"
+    },
+    "staff": {
+      "title": "スタッフ",
+      "subtitle": "決定済みの案件の作業、{window}",
+      "windows": {
+        "30d": "直近30日",
+        "90d": "直近90日",
+        "all": "全期間"
+      },
+      "empty": "この期間にはまだ決定済みの案件がありません。",
+      "unattributed": "決定済みの案件が{count}件、担当者不明です — ケース層が存在する前に決定されました。",
+      "hint": "手持ち時間は概算指標です：思考時間ではなく、案件が画面上で開かれていた時間を計測します。",
+      "cols": {
+        "decided": "決定済み",
+        "approved": "承認済み",
+        "rejected": "却下",
+        "rejectShare": "却下率",
+        "avgHandled": "平均処理時間",
+        "avgFirstResponse": "初回返信までの平均時間",
+        "overdue": "期限超過",
+        "secondSignatures": "第二署名",
+        "soleSignOffs": "単独承認",
+        "resubmits": "再送リクエスト"
       }
     }
   },

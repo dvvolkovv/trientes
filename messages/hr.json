@@ -193,7 +193,8 @@
       "fintech": "Fintech",
       "analytics": "Analitika",
       "coinCards": "Kartice kovanica",
-      "queues": "Redovi"
+      "queues": "Redovi",
+      "staff": "Osoblje"
     },
     "status": {
       "PENDING": "Na čekanju",
@@ -517,7 +518,10 @@
         "applicant": "Podnositelj zahtjeva",
         "journal": "Dnevnik slučaja",
         "journalSummary": "{count} unosa, nepromjenjivo",
-        "subjectGone": "Objekt povezan s ovim slučajem više ne postoji"
+        "subjectGone": "Objekt povezan s ovim slučajem više ne postoji",
+        "checks": "Provjere",
+        "documents": "Dokumenti",
+        "decision": "Odluka"
       },
       "journal": {
         "opened": "otvorio/la slučaj",
@@ -530,7 +534,10 @@
         "note": "ostavio/la bilješku",
         "decided": "donio/la odluku",
         "messageSent": "poslali poruku podnositelju",
-        "messageReceived": "podnositelj je odgovorio"
+        "messageReceived": "podnositelj je odgovorio",
+        "reviewed": "potpisano «checked»",
+        "checkSet": "provjera «{key}»: {state}",
+        "documentVerdict": "dokument «{label}»: {verdict}"
       },
       "thread": {
         "title": "Korespondencija",
@@ -566,6 +573,123 @@
         "clarifyData": "Dobar dan! Neke pojedinosti u vašoj prijavi treba pojasniti. Provjerite podatke i ovdje odgovorite točnim podacima.",
         "needTranslation": "Dobar dan! Dokument koji ste poslali je na jeziku koji ne možemo provjeriti. Priložite prijevod na engleski.",
         "deadline7": "Odgovorite u roku od 7 dana. Bez odgovora morat ćemo zatvoriti prijavu bez odluke."
+      },
+      "checks": {
+        "legalNameMatchesRegistry": "Pravni naziv odgovara javnom registru",
+        "addressPlausible": "Adresa postoji i izgleda stvarno",
+        "websiteLive": "Web-stranica se otvara i pripada podnositelju",
+        "sanctionsScreened": "Provjereno prema popisima sankcija",
+        "contactReachable": "Kontakt osoba odgovara",
+        "registrationCert": "Dostavljena je potvrda o osnivanju",
+        "documentsLegible": "Dokumenti su čitljivi",
+        "signatoryIdentified": "Potpisnik je identificiran",
+        "taxCert": "Dostavljena je potvrda o poreznoj registraciji",
+        "uboDisclosed": "Stvarni vlasnici su otkriveni",
+        "coordsOnSite": "Pribadača je na lokaciji objekta, a ne u blizini",
+        "addressMatchesCoords": "Adresa odgovara koordinatama",
+        "acceptsCryptoEvidence": "Dokaz da lokacija prihvaća kripto",
+        "photoRelevant": "Fotografija prikazuje ovu lokaciju",
+        "contractsVerified": "Adrese ugovora potvrđene na lancu",
+        "linksLive": "Linkovi se otvaraju i nisu posuđeni",
+        "noMisleadingClaims": "Nema obmanjujućih ni obećavajućih tvrdnji",
+        "supplyPlausible": "Navedena ponuda odgovara stanju na lancu",
+        "teamDisclosed": "Tim je javno naveden",
+        "coinExists": "Kovanica postoji i trguje se njome",
+        "coingeckoIdMatches": "CoinGecko id upućuje na ovu kovanicu",
+        "notDuplicate": "Nije već u katalogu",
+        "legalEntityStated": "Naveden je operativni pravni subjekt",
+        "servicesMatchSite": "Navedene usluge odgovaraju web-mjestu",
+        "availabilityPlausible": "Navedene zemlje izgledaju realno",
+        "reportsIndependent": "Izvješća dolaze od neovisnih osoba",
+        "ownerAsked": "Tvrtka je upitana o tome",
+        "pointStillListed": "Lokacija je još uvijek na karti"
+      },
+      "checklist": {
+        "title": "Provjere",
+        "summary": "{answered} od {total} odgovoreno",
+        "requiredLeft": "{count} obveznih još bez odgovora",
+        "allAnswered": "svaka obvezna provjera odgovorena",
+        "required": "obvezno",
+        "state": {
+          "TODO": "nema odgovora",
+          "OK": "ok",
+          "FAIL": "problem",
+          "NA": "neprimjenjivo"
+        },
+        "set": {
+          "OK": "OK",
+          "FAIL": "Problem",
+          "NA": "N/A"
+        },
+        "notePlaceholder": "Zašto? Obvezno za problem ili «neprimjenjivo»",
+        "checkedBy": "{name}",
+        "hint": "«Problem» ne blokira odobrenje — to je razlog za odbijanje. Ono što blokira jest neodgovorena obvezna provjera",
+        "errors": {
+          "note_required": "Napišite razlog — najmanje 3 znaka",
+          "unknown_check": "Ova provjera ne pripada ovoj vrsti zahtjeva",
+          "case_closed": "Predmet je već odlučen",
+          "failed": "Spremanje nije uspjelo — pokušajte ponovno"
+        }
+      },
+      "docs": {
+        "title": "Dokumenti",
+        "summary": "{judged} od {total} ocijenjeno",
+        "empty": "Još nema dokumenata. Ovdje se pojavljuju iz KYB obrasca i iz privitaka podnositelja — ništa se ne učitava u samom predmetu",
+        "verdict": {
+          "PENDING": "nije ocijenjeno",
+          "ACCEPTED": "prihvaćeno",
+          "REJECTED": "odbijeno",
+          "RESUBMIT": "zatraženo ponovno slanje"
+        },
+        "set": {
+          "ACCEPTED": "Prihvati",
+          "REJECTED": "Odbij",
+          "RESUBMIT": "Zatraži ponovno slanje"
+        },
+        "notePlaceholder": "Što nije u redu s dokumentom?",
+        "open": "Otvori datoteku",
+        "kinds": {
+          "KYB_REGISTRATION_CERT": "Potvrda o osnivanju",
+          "KYB_TAX_CERT": "Potvrda o poreznoj registraciji",
+          "KYB_ID": "Identifikacijski dokument",
+          "KYB_OTHER": "Dokument",
+          "MESSAGE_ATTACHMENT": "Priloženo u dopisivanju"
+        },
+        "errors": {
+          "note_required": "Napišite što nije u redu — najmanje 3 znaka",
+          "failed": "Spremanje nije uspjelo — pokušajte ponovno"
+        }
+      },
+      "decision": {
+        "title": "Odluka",
+        "summary": "još nije odlučeno",
+        "summaryReviewed": "provjereno, čeka se drugi par očiju",
+        "summaryDecided": "{decision}",
+        "summaryClosed": "zatvoreno bez odluke",
+        "review": "Provjerio/la sam ovaj slučaj",
+        "reviewedBy": "Provjerio/la {name}",
+        "approve": "Odobri",
+        "reject": "Odbij",
+        "reasonPlaceholder": "Razlog — podnositelj zahtjeva će ga pročitati",
+        "soleHint": "Vi ste ovdje jedini član osoblja, stoga se vaše odobrenje bilježi kao jedini potpis: «odobreno od jedne osobe, druge nije bilo».",
+        "sole": "Odobreno od jedne osobe — nije bilo drugog člana osoblja",
+        "approvedBy": "Odobrio/la {name}",
+        "decidedAt": "{when}",
+        "rejectHint": "Odbijanje ne treba drugi potpis — ništa se ne objavljuje i podnositelj može ponovno podnijeti zahtjev. Potreban je razlog.",
+        "blockers": {
+          "checks_pending": "Odobrenje je blokirano: potrebna provjera još nema odgovor",
+          "documents_resubmit": "Odobrenje je blokirano: dokument čeka ponovno slanje",
+          "not_reviewed": "Odobrenje je blokirano: još nitko nije potpisao «provjereno»",
+          "same_person": "Odobrenje je blokirano: vi ste provjerili ovaj slučaj, stoga ga mora odobriti netko drugi"
+        },
+        "closedWithoutDecision": "Objekt je već bio odlučen izvan ovog slučaja, stoga je slučaj zatvoren bez odluke.",
+        "errors": {
+          "reason_too_short": "Napišite razlog — najmanje 3 znaka",
+          "case_closed": "Slučaj je već odlučen",
+          "not_found": "Slučaj je nestao",
+          "failed": "Spremanje nije uspjelo — pokušajte ponovno",
+          "not_pending": "Objekt više ne čeka na odluku"
+        }
       }
     },
     "bell": {
@@ -578,6 +702,35 @@
         "DUE_SOON": "Rok istječe za 24 sata",
         "CASE_OVERDUE": "Istekao rok",
         "APPLICANT_SILENT": "Podnositelj se nije javio 14 dana"
+      }
+    },
+    "movedToQueues": {
+      "title": "Ovaj red sada je u slučajevima",
+      "body": "O neriješenim prijavama odlučuje se u slučaju: postoji kontrolni popis, nit dopisivanja s podnositeljem i dva potpisa. Odluka donesena ovdje zaobišla bi sva tri, stoga je preostala samo jedna vrata.",
+      "cta": "Otvoriti redove"
+    },
+    "staff": {
+      "title": "Osoblje",
+      "subtitle": "Rad na odlučenim slučajevima, {window}",
+      "windows": {
+        "30d": "posljednjih 30 dana",
+        "90d": "posljednjih 90 dana",
+        "all": "sve vrijeme"
+      },
+      "empty": "Još nema odlučenih slučajeva u ovom razdoblju.",
+      "unattributed": "{count} odlučenih slučajeva ne može se pripisati nikome — odlučeni su prije nego što je postojao sloj slučajeva.",
+      "hint": "Vrijeme obrade je približna mjera: računa vrijeme tijekom kojeg je slučaj bio otvoren na zaslonu, a ne vrijeme provedeno razmišljajući o njemu.",
+      "cols": {
+        "decided": "Odlučeno",
+        "approved": "Odobreno",
+        "rejected": "Odbijeno",
+        "rejectShare": "Udio odbijenih",
+        "avgHandled": "Prosječno vrijeme obrade",
+        "avgFirstResponse": "Prosječno vrijeme do prvog odgovora",
+        "overdue": "Prekoračen rok",
+        "secondSignatures": "Drugi potpisi",
+        "soleSignOffs": "Samostalna odobrenja",
+        "resubmits": "Zahtjevi za ponovno slanje"
       }
     }
   },
@@ -831,7 +984,7 @@
     "zoomOut": "Umanjiti",
     "zoomIn2": "Povećati",
     "resetNorth": "Usmjeriti kartu na sjever",
-    "north": "N",
+    "north": "S",
     "headingUpOn": "Okretati kartu prema vašem smjeru kretanja",
     "headingUpOff": "Prestati okretati kartu prema vašem smjeru kretanja",
     "headingUpShort": "Smjer",
@@ -1736,7 +1889,7 @@
       "website": "Web-stranica",
       "description": "Opis",
       "descriptionHint": "Najmanje 120 znakova da bi se računalo u popunjenost",
-      "logo": "Logo",
+      "logo": "Logotip",
       "logoHint": "PNG, JPG ili WebP, do 6 MB. Kvadratni oblik je najbolji.",
       "nativeCoin": "Izvorna kovanica vlastitog blockchaina (bez token ugovora)",
       "contract": "Ugovor",
