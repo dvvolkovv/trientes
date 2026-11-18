@@ -231,6 +231,29 @@ describe("syncMarkets", () => {
     expect(JSON.parse(redisStore.get(KEYS.markets)!)).toHaveLength(1);
   });
 
+  it("спрашивает с самой ветхой карточки: порядок обхода — из прошлого снимка", async () => {
+    const { redisStore, fakeRedis } = makeFakes();
+    redisStore.set(
+      KEYS.markets,
+      JSON.stringify([
+        { symbol: "^DJI", date: "2026-11-18", time: "11:00:00" },
+        { symbol: "PA=F", date: "2026-11-18", time: "09:00:00" },
+      ]),
+    );
+    let asked: string[] = [];
+    await syncMarkets({
+      fetchMarkets: async (order) => {
+        asked = (order ?? []).map((i) => i.symbol);
+        return [{ symbol: "PA=F", name: "palladium", group: "metal", unit: "usd", last: 1 }] as never;
+      },
+      redis: fakeRedis as never,
+    });
+    // Ни разу не снятые впереди всех, за ними — палладий (09:00) и только
+    // потом индекс (11:00): под ограничителем частоты проходит начало обхода.
+    expect(asked.slice(-2)).toEqual(["PA=F", "^DJI"]);
+    expect(asked).toHaveLength(10);
+  });
+
   it("keeps the previous snapshot when the source returns nothing", async () => {
     const { redisStore, fakeRedis } = makeFakes();
     redisStore.set(KEYS.markets, JSON.stringify([{ symbol: ".DJI" }]));

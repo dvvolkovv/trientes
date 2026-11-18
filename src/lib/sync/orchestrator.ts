@@ -1,7 +1,7 @@
 import type { MarketRow, GlobalSnap, ExchangeRates, CoinDetail, Exchange } from "@/lib/coingecko";
 import type { NewsItem } from "@/lib/news";
 import type { FearGreed } from "@/lib/fear-greed";
-import type { MarketQuote } from "@/lib/markets";
+import { marketFetchOrder, type MarketInstrument, type MarketQuote } from "@/lib/markets";
 import { KEYS, TTL } from "./keys";
 import { mergeCuratedExchanges } from "@/lib/curated-exchanges";
 import { cpTypeToExchangeType, resolveCpId, type CoinPaprikaExchange, type CoinPaprikaExchangeDetail, type CoinPaprikaMarket } from "@/lib/coinpaprika";
@@ -138,18 +138,11 @@ export async function syncFearGreed(deps: {
 }
 
 export async function syncMarkets(deps: {
-  fetchMarkets: () => Promise<MarketQuote[]>;
+  fetchMarkets: (order?: MarketInstrument[]) => Promise<MarketQuote[]>;
   redis: RedisLike & { get(key: string): Promise<string | null> };
 }): Promise<{ count: number }> {
-  const quotes = await deps.fetchMarkets();
-  // An empty result means the upstream refused us, not that the markets are gone —
-  // keep the last good snapshot so the board degrades to stale instead of blank.
-  if (quotes.length === 0) return { count: 0 };
-
-  // Источник иногда теряет один символ из в остальном годного ответа (у Yahoo
-  // это отдельный запрос на инструмент, и сорваться может именно он). Слияние с
-  // прошлым снимком оставляет такую карточку на табло — ветхой, со своим
-  // штампом, — вместо того чтобы гасить её до следующего прогона.
+  // Прошлый снимок читается ДО запроса, а не после: по нему же выбирается, с
+  // какой карточки начинать обход — служба отдаёт за прогон одну-две из десяти.
   let previous: MarketQuote[] = [];
   try {
     const cached = await deps.redis.get(KEYS.markets);
@@ -158,6 +151,16 @@ export async function syncMarkets(deps: {
   } catch {
     previous = [];
   }
+
+  const quotes = await deps.fetchMarkets(marketFetchOrder(previous));
+  // An empty result means the upstream refused us, not that the markets are gone —
+  // keep the last good snapshot so the board degrades to stale instead of blank.
+  if (quotes.length === 0) return { count: 0 };
+
+  // Источник иногда теряет один символ из в остальном годного ответа (у Yahoo
+  // это отдельный запрос на инструмент, и сорваться может именно он). Слияние с
+  // прошлым снимком оставляет такую карточку на табло — ветхой, со своим
+  // штампом, — вместо того чтобы гасить её до следующего прогона.
   const fresh = new Map(quotes.map((q) => [q.symbol, q]));
   // Previous order is the canonical instrument order, so rebuild from it and append
   // anything newly added to the instrument list.

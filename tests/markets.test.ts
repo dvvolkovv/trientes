@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseYahooChart, MARKET_INSTRUMENTS } from "@/lib/markets";
+import { fetchMarkets, marketFetchOrder, parseYahooChart, MARKET_INSTRUMENTS } from "@/lib/markets";
 
 /**
  * Форма тела скопирована с живого ответа Yahoo (`/v8/finance/chart/<symbol>`),
@@ -78,5 +78,100 @@ describe("parseYahooChart", () => {
       expect(i.symbol).toMatch(/^(\^[A-Z]+|[A-Z]+=F)$/);
     }
     expect(MARKET_INSTRUMENTS).toHaveLength(10);
+  });
+});
+
+/**
+ * Порядок обхода. Служба режет частоту, за прогон проходит одна-две котировки
+ * из десяти, поэтому важно не «с какого начинать по кругу», а «кто дольше всех
+ * не обновлялся»: сдвиг по кругу жил в переменной модуля и после каждого
+ * перезапуска воркера начинался заново с первого инструмента — хвост списка
+ * (платина, палладий) не обновлялся никогда.
+ */
+describe("marketFetchOrder", () => {
+  const stamped = (symbol: string, date: string, time: string) =>
+    ({ symbol, date, time }) as never;
+
+  it("ещё не снятые идут первыми, в порядке списка", () => {
+    const order = marketFetchOrder([
+      stamped("^DJI", "2026-11-18", "10:00:00"),
+      stamped("GC=F", "2026-11-18", "10:00:00"),
+    ]);
+    expect(order.map((i) => i.symbol).slice(0, 3)).toEqual(["^IXIC", "^GSPC", "ES=F"]);
+    expect(order).toHaveLength(MARKET_INSTRUMENTS.length);
+  });
+
+  it("снятые раньше идут раньше снятых позже", () => {
+    const previous = MARKET_INSTRUMENTS.map((i, k) =>
+      stamped(i.symbol, "2026-11-18", `10:${String(k).padStart(2, "0")}:00`),
+    );
+    const order = marketFetchOrder(previous);
+    expect(order[0].symbol).toBe("^DJI");
+    expect(order[order.length - 1].symbol).toBe("PA=F");
+    expect(marketFetchOrder([...previous].reverse())[0].symbol).toBe("^DJI");
+  });
+
+  it("карточка без штампа считается самой ветхой", () => {
+    const previous = MARKET_INSTRUMENTS.map((i) => stamped(i.symbol, "2026-11-18", "10:00:00"));
+    previous[7] = { symbol: "SI=F", date: null, time: null } as never;
+    expect(marketFetchOrder(previous)[0].symbol).toBe("SI=F");
+  });
+
+  it("пустой снимок — порядок списка", () => {
+    expect(marketFetchOrder([]).map((i) => i.symbol)).toEqual(MARKET_INSTRUMENTS.map((i) => i.symbol));
+  });
+
+  it("чужой символ в снимке обход не ломает", () => {
+    const order = marketFetchOrder([stamped(".DJI", "2026-11-18", "10:00:00")]);
+    expect(order).toHaveLength(MARKET_INSTRUMENTS.length);
+  });
+});
+
+/**
+ * Бюджет службы замерен 18 ноября: около одной котировки в полминуты, и от
+ * паузы между запросами он не зависит. Значит прогон должен прекращаться, а не
+ * доколачивать десять запросов в заведомые 429.
+ */
+describe("fetchMarkets", () => {
+  const ok = (symbol: string) =>
+    new Response(
+      JSON.stringify({
+        chart: { result: [{ meta: { symbol, regularMarketTime: 1795000825, regularMarketPrice: 1 } }], error: null },
+      }),
+      { status: 200 },
+    );
+  const throttled = () => new Response("Too Many Requests", { status: 429 });
+
+  it("прекращает обход после трёх отказов по частоте подряд", async () => {
+    const asked: string[] = [];
+    const quotes = await fetchMarkets(MARKET_INSTRUMENTS, { gapMs: 0, fetchImpl: async (url) => {
+      const symbol = decodeURIComponent(String(url).split("/chart/")[1].split("?")[0]);
+      asked.push(symbol);
+      return asked.length === 1 ? ok(symbol) : throttled();
+    } });
+    expect(quotes.map((q) => q.symbol)).toEqual(["^DJI"]);
+    expect(asked).toHaveLength(4); // одна прошедшая и три отказа
+  });
+
+  it("прошедшая котировка счёт отказов обнуляет", async () => {
+    const asked: string[] = [];
+    const quotes = await fetchMarkets(MARKET_INSTRUMENTS.slice(0, 6), { gapMs: 0, fetchImpl: async (url) => {
+      const symbol = decodeURIComponent(String(url).split("/chart/")[1].split("?")[0]);
+      asked.push(symbol);
+      return asked.length % 3 === 0 ? ok(symbol) : throttled();
+    } });
+    expect(asked).toHaveLength(6);
+    expect(quotes).toHaveLength(2);
+  });
+
+  it("отказ не по частоте обход не прекращает — он про инструмент, а не про бюджет", async () => {
+    const asked: string[] = [];
+    const quotes = await fetchMarkets(MARKET_INSTRUMENTS.slice(0, 5), { gapMs: 0, fetchImpl: async (url) => {
+      const symbol = decodeURIComponent(String(url).split("/chart/")[1].split("?")[0]);
+      asked.push(symbol);
+      return symbol === "CL=F" ? ok(symbol) : new Response("Not Found", { status: 404 });
+    } });
+    expect(asked).toHaveLength(5);
+    expect(quotes.map((q) => q.symbol)).toEqual(["CL=F"]);
   });
 });

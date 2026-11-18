@@ -144,6 +144,8 @@ const UA =
   "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
 /** Пауза между запросами: порог частоты служба не публикует, 1,2 с — осторожно. */
 const REQUEST_GAP_MS = 1200;
+/** Столько отказов по частоте подряд означает «бюджет окна исчерпан». */
+const THROTTLE_GIVE_UP = 3;
 
 async function withTimeout<T>(ms: number, run: (signal: AbortSignal) => Promise<T>): Promise<T> {
   const ctrl = new AbortController();
@@ -155,29 +157,61 @@ async function withTimeout<T>(ms: number, run: (signal: AbortSignal) => Promise<
   }
 }
 
-async function fetchOne(inst: MarketInstrument, timeoutMs: number): Promise<MarketQuote | null> {
+export type MarketFetchLike = (url: string, init?: RequestInit) => Promise<Response>;
+
+/**
+ * Ответ на один запрос. «Срезано частотой» отделено от прочих неудач нарочно:
+ * бюджет службы — свойство окна времени, а не инструмента, и после двух-трёх
+ * таких ответов остальные запросы прогона — заведомые 429.
+ */
+type OneAnswer =
+  | { quote: MarketQuote }
+  | { throttled: true }
+  | { failed: true };
+
+async function fetchOne(
+  inst: MarketInstrument,
+  timeoutMs: number,
+  fetchImpl: MarketFetchLike,
+): Promise<OneAnswer> {
   const url = `${CHART_URL}/${encodeURIComponent(inst.symbol)}?range=1d&interval=1d`;
   try {
     return await withTimeout(timeoutMs, async (signal) => {
-      const res = await fetch(url, {
+      const res = await fetchImpl(url, {
         headers: { accept: "application/json", "user-agent": UA },
         cache: "no-store",
         signal,
       });
-      if (!res.ok) return null;
-      return parseYahooChart(inst.symbol, await res.text());
+      if (res.status === 429) return { throttled: true };
+      if (!res.ok) return { failed: true };
+      const q = parseYahooChart(inst.symbol, await res.text());
+      return q ? { quote: q } : { failed: true };
     });
   } catch {
-    return null;
+    return { failed: true };
   }
 }
 
 /**
- * С какого инструмента начинать обход. Живет в модуле, а не в Redis: порядок
- * обхода — не данные, и после перезапуска воркера табло просто обновится в
- * другом порядке.
+ * Порядок обхода: дольше всех не обновлявшийся инструмент идёт первым, ещё не
+ * снятый — впереди всех. Чистая функция от прошлого снимка, а не сдвиг по кругу
+ * в переменной модуля: сдвиг начинался заново с каждым перезапуском воркера, и
+ * хвост списка — платина с палладием — не обновлялся никогда.
  */
-let rotation = 0;
+export function marketFetchOrder(previous: MarketQuote[]): MarketInstrument[] {
+  const seenAt = new Map<string, string>();
+  for (const q of previous) {
+    if (q.date && q.time) seenAt.set(q.symbol, `${q.date}T${q.time}`);
+  }
+  return [...MARKET_INSTRUMENTS].sort((a, b) => {
+    const x = seenAt.get(a.symbol);
+    const y = seenAt.get(b.symbol);
+    if (x === y) return 0;
+    if (x === undefined) return -1;
+    if (y === undefined) return 1;
+    return x < y ? -1 : 1;
+  });
+}
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -191,23 +225,34 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
  * инструментах из десяти, остальные получили 429. Служба режет частоту, и
  * догадываться о точном пороге бессмысленно — она его не публикует.
  *
- * Обход начинается **со сдвигом**: под ограничителем успевает пройти только
- * первая горстка запросов, и обход от начала списка означал бы, что металлы в
- * конце не обновляются никогда, а индексы в начале — каждый раз. Со сдвигом
- * ветшают разные карточки, и прошлый снимок за них подставляет `syncMarkets`,
- * у которого карточка несёт свой штамп времени.
+ * Обход идёт **от самой ветхой карточки**: под ограничителем успевает пройти
+ * только первая горстка запросов, и обход от начала списка означал бы, что
+ * металлы в конце не обновляются никогда, а индексы в начале — каждый раз.
+ * Порядок задаёт `marketFetchOrder` по прошлому снимку, который и подставляет
+ * `syncMarkets` за не прошедшие карточки — со своим штампом времени у каждой.
+ *
+ * Обход **прекращается после трёх подряд отказов по частоте**. Замер 18 ноября:
+ * бюджет службы — около одной котировки в полминуты, и от паузы между
+ * запросами он не зависит (с паузой 5 с прошла одна из шести, с паузой 1,2 с —
+ * одна-две из десяти). Значит после трёх 429 остальные запросы прогона —
+ * заведомые 429, и слать их означает только давить на чужую службу.
  */
-export async function fetchMarkets(timeoutMs = 10000): Promise<MarketQuote[]> {
-  const n = MARKET_INSTRUMENTS.length;
-  const start = rotation % n;
-  rotation = (rotation + 1) % n;
-
+export async function fetchMarkets(
+  order: MarketInstrument[] = MARKET_INSTRUMENTS,
+  opts: { timeoutMs?: number; gapMs?: number; fetchImpl?: MarketFetchLike } = {},
+): Promise<MarketQuote[]> {
+  const { timeoutMs = 10000, gapMs = REQUEST_GAP_MS, fetchImpl = fetch } = opts;
   const out: MarketQuote[] = [];
-  for (let i = 0; i < n; i++) {
-    if (i > 0) await sleep(REQUEST_GAP_MS);
-    const inst = MARKET_INSTRUMENTS[(start + i) % n];
-    const q = await fetchOne(inst, timeoutMs);
-    if (q) out.push(q);
+  let throttled = 0;
+  for (const [i, inst] of order.entries()) {
+    if (i > 0 && gapMs > 0) await sleep(gapMs);
+    const a = await fetchOne(inst, timeoutMs, fetchImpl);
+    if ("quote" in a) {
+      out.push(a.quote);
+      throttled = 0;
+      continue;
+    }
+    if ("throttled" in a && ++throttled >= THROTTLE_GIVE_UP) break;
   }
   return out;
 }
