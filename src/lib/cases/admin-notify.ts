@@ -13,6 +13,7 @@ const TELEGRAM_LINE: Record<AdminNotificationKind, string> = {
   POINT_REPORTED: "🚩 New report on a map point",
   REVIEW_DUE: "🗓 Periodic review due",
   ACCESS_REVIEW_DUE: "🔑 Staff access review due",
+  PRODUCT_REPORTED: "📦 New report on a product passport",
 };
 
 export type RaiseInput = {

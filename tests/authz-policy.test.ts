@@ -1,3 +1,4 @@
+import { QUEUES } from "@/lib/cases/queues";
 import { describe, expect, it } from "vitest";
 import {
   can,
@@ -54,10 +55,12 @@ describe("уровни доступа", () => {
     expect(levelFor(a, "kyb", NOW)).toBe("HANDLE");
   });
 
-  it("владелец может всё и видит все восемь очередей", () => {
+  it("владелец может всё и видит все очереди", () => {
     const a = access({ role: "OWNER" });
     expect(can(a, "fintech", "APPROVE", NOW)).toBe(true);
-    expect(visibleQueues(a, NOW)).toHaveLength(8);
+    // Число берётся из реестра очередей, а не вписано: новая очередь не должна
+    // ронять тест о правах владельца — она должна в него попадать.
+    expect(visibleQueues(a, NOW)).toHaveLength(QUEUES.length);
     expect(canOwnerOnly(a)).toBe(true);
   });
 

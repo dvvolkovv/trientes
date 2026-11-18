@@ -13,6 +13,9 @@ export const SLA_BUSINESS_DAYS: Record<CaseSubjectType, number> = {
   KYB: 10,
   COIN_REQUEST: 5,
   POINT_REPORT: 3,
+  // Заявка производителя — как прочие заявки; жалоба на паспорт — как жалоба на точку.
+  PRODUCT_CLAIM: 5,
+  PRODUCT_REPORT: 3,
 };
 
 /** Доля срока, после которой точка желтеет. */

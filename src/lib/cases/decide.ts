@@ -7,6 +7,12 @@ import { approveFintech, rejectFintech } from "@/app/actions/admin-fintech";
 import { approveRequest, rejectRequest } from "@/app/actions/admin-requests";
 import { approveKyb, rejectKyb } from "@/app/actions/kyb";
 import { clearPointReview, suspendPoint } from "@/app/actions/point-supervision";
+import {
+  approveProductClaim,
+  rejectProductClaim,
+  suspendProduct,
+  unsuspendProduct,
+} from "@/app/actions/product-supervision";
 
 /**
  * Применение решения дела к самому объекту заявки.
@@ -82,6 +88,22 @@ export async function applyDecision(input: {
         approve
           ? await suspendPoint({ pointId: subjectId, reason })
           : await clearPointReview({ pointId: subjectId }),
+      );
+    case "PRODUCT_CLAIM":
+      // Объект дела — сама заявка: у паспорта может быть несколько заявок во времени,
+      // и дело принадлежит заявке, а не паспорту (иначе второй заявке некуда лечь).
+      return normalize(
+        approve
+          ? await approveProductClaim({ claimId: subjectId })
+          : await rejectProductClaim({ claimId: subjectId, reason, silent }),
+      );
+    case "PRODUCT_REPORT":
+      // «Одобрено» значит «жалоба подтверждена»: паспорт уходит из каталога.
+      // «Отклонено» — жалоба не подтвердилась, паспорт возвращается.
+      return normalize(
+        approve
+          ? await suspendProduct({ productId: subjectId, reason })
+          : await unsuspendProduct({ productId: subjectId }),
       );
   }
 }

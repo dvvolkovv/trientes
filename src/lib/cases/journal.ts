@@ -53,6 +53,11 @@ const KEYS: Record<CaseEventKind, string> = {
   REVIEW_PASSED: "reviewPassed",
   REOPENED: "reopened",
   CLOSED_AS_SPAM: "closedAsSpam",
+  PRODUCT_REPORTED: "productReported",
+  PRODUCT_CLAIMED: "productClaimed",
+  PRODUCT_SUSPENDED: "productSuspended",
+  PRODUCT_RESTORED: "productRestored",
+  PRODUCT_MERGED: "productMerged",
 };
 
 /** Событие → ключ перевода `admin.case.journal.<key>` и его параметры. */

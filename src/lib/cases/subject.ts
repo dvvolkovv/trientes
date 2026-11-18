@@ -130,6 +130,64 @@ export async function loadSubject(
         ],
       };
     }
+    case "PRODUCT_CLAIM": {
+      const claim = await prisma.productClaim.findUnique({
+        where: { id: subjectId },
+        include: {
+          company: { select: { displayName: true, ownerUserId: true, kybStatus: true } },
+          product: { select: { name: true, slug: true, gtin: true, brand: true, ownerCompanyId: true } },
+        },
+      });
+      if (!claim) return null;
+      return {
+        title: claim.product.name,
+        applicantUserId: claim.userId,
+        href: `/en/product/${claim.product.slug}`,
+        fields: [
+          { label: "company", value: text(claim.company?.displayName) },
+          { label: "kyb", value: text(claim.company?.kybStatus) },
+          { label: "brand", value: text(claim.product.brand) },
+          { label: "gtin", value: text(claim.product.gtin) },
+          // Паспорт, у которого хозяин уже есть, второй заявке не достаётся: решающий
+          // должен видеть это до того, как нажмёт «одобрить».
+          { label: "alreadyOwned", value: claim.product.ownerCompanyId ? "yes" : "no" },
+          { label: "evidence", value: claim.evidence.slice(0, 500) },
+        ],
+      };
+    }
+    case "PRODUCT_REPORT": {
+      const p = await prisma.product.findUnique({
+        where: { id: subjectId },
+        include: { ownerCompany: { select: { displayName: true, ownerUserId: true } } },
+      });
+      if (!p) return null;
+      const reports = await prisma.productReport.findMany({
+        where: { productId: p.id },
+        select: { reason: true, reporterUserId: true, reporterIpHash: true, createdAt: true, comment: true },
+        orderBy: { createdAt: "desc" },
+      });
+      const byReason = new Map<string, number>();
+      for (const r of reports) byReason.set(r.reason, (byReason.get(r.reason) ?? 0) + 1);
+      return {
+        // Разговор по делу ведётся с хозяином паспорта, если он есть: с жалобщиком
+        // переписки нет (то же решение, что у жалоб на точки).
+        title: p.name,
+        applicantUserId: p.ownerCompany?.ownerUserId ?? null,
+        href: `/en/product/${p.slug}`,
+        fields: [
+          { label: "owner", value: text(p.ownerCompany?.displayName) },
+          { label: "reports", value: String(reports.length) },
+          { label: "independent", value: String(independentReporters(reports, new Date())) },
+          {
+            label: "reasons",
+            value: [...byReason.entries()].map(([k, n]) => `${k}×${n}`).join(", ") || "—",
+          },
+          { label: "gtin", value: text(p.gtin) },
+          { label: "lastComment", value: text(reports.find((r) => r.comment)?.comment) },
+          { label: "suspended", value: p.suspendedAt ? day(p.suspendedAt) : "—" },
+        ],
+      };
+    }
     case "POINT_REPORT": {
       const p = await prisma.companyPoint.findUnique({
         where: { id: subjectId },

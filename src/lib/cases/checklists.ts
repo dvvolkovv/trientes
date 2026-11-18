@@ -19,6 +19,21 @@ export type CheckDef = {
  * и того же.
  */
 export const CHECKLISTS: Record<CaseSubjectType, CheckDef[]> = {
+  // Паспорт товара мира: заявка производителя — про право на бренд, жалоба — про то,
+  // сходится ли написанное с источником. Ключи общие с другими листами там, где вопрос
+  // тот же (documentsLegible, sanctionsScreened).
+  PRODUCT_CLAIM: [
+    { key: "brandRightProven", required: true },
+    { key: "legalNameMatchesRegistry", required: true },
+    { key: "documentsLegible", required: true },
+    { key: "sanctionsScreened", required: true },
+    { key: "websiteLive", required: false },
+  ],
+  PRODUCT_REPORT: [
+    { key: "reportReproduced", required: true },
+    { key: "passportMatchesSource", required: true },
+    { key: "noMisleadingClaims", required: false },
+  ],
   COMPANY: [
     { key: "legalNameMatchesRegistry", required: true },
     { key: "addressPlausible", required: true },

@@ -588,7 +588,8 @@
         "fintech": "Fintech",
         "kyb": "KYB documents",
         "coinRequests": "Coin requests",
-        "pointReports": "Point reports"
+        "pointReports": "Point reports",
+        "products": "Product passports"
       },
       "unread": "{count} unread",
       "spam": {
@@ -667,7 +668,12 @@
         "companyRestored": "business put back on the listing",
         "reviewPassed": "periodic review passed; next one on {next}",
         "reopened": "reopened — the applicant submitted again",
-        "closedAsSpam": "closed as spam: {reason}"
+        "closedAsSpam": "closed as spam: {reason}",
+        "productReported": "a report came in on the passport: {reason}",
+        "productClaimed": "a manufacturer claimed the passport",
+        "productSuspended": "took the passport off the catalogue",
+        "productRestored": "returned the passport to the catalogue",
+        "productMerged": "marked the passport a duplicate"
       },
       "thread": {
         "title": "Correspondence",
@@ -732,7 +738,10 @@
         "availabilityPlausible": "Declared countries look plausible",
         "reportsIndependent": "Reports come from independent people",
         "ownerAsked": "The business was asked about it",
-        "pointStillListed": "The point is still on the map"
+        "pointStillListed": "The point is still on the map",
+        "brandRightProven": "Right to the brand is proven (registry, licence or contract)",
+        "reportReproduced": "The report checks out against the sources",
+        "passportMatchesSource": "Passport matches the manufacturer's own data"
       },
       "checklist": {
         "title": "Checks",
@@ -829,7 +838,15 @@
           "approve": "Confirm reports — take the place off the map",
           "reject": "Dismiss reports — keep the place on the map"
         },
-        "noDecideRight": "You may prepare and review this case, but approving it needs someone with decision rights in this queue."
+        "noDecideRight": "You may prepare and review this case, but approving it needs someone with decision rights in this queue.",
+        "productReport": {
+          "approve": "Confirm the report and take the passport off",
+          "reject": "Dismiss the report and return the passport"
+        },
+        "productClaim": {
+          "approve": "Confirm the manufacturer",
+          "reject": "Refuse the claim"
+        }
       },
       "reports": {
         "title": "Reports",
