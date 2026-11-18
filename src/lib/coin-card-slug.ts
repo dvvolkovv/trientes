@@ -1,25 +1,8 @@
-const MAX_SLUG = 60;
-
-const CYR: Record<string, string> = {
-  а: "a", б: "b", в: "v", г: "g", д: "d", е: "e", ё: "e", ж: "zh", з: "z",
-  и: "i", й: "y", к: "k", л: "l", м: "m", н: "n", о: "o", п: "p", р: "r",
-  с: "s", т: "t", у: "u", ф: "f", х: "h", ц: "ts", ч: "ch", ш: "sh",
-  щ: "sch", ъ: "", ы: "y", ь: "", э: "e", ю: "yu", я: "ya",
-};
+import { slugify, slugCandidates } from "@/lib/slugify";
 
 /** URL-safe slug from a free-form coin name. Never empty. */
 export function slugifyCoinName(input: string): string {
-  const lowered = (input ?? "").toLowerCase();
-  let out = "";
-  for (const ch of lowered) {
-    if (ch in CYR) out += CYR[ch];
-    else if (/[a-z0-9]/.test(ch)) out += ch;
-    else out += "-";
-  }
-  out = out.replace(/-+/g, "-").replace(/^-|-$/g, "");
-  if (!out) return "coin";
-  if (out.length > MAX_SLUG) out = out.slice(0, MAX_SLUG).replace(/-+$/g, "");
-  return out || "coin";
+  return slugify(input, "coin");
 }
 
 /**
@@ -34,6 +17,9 @@ export function buildSlugCandidates(name: string, symbol: string): string[] {
   if (sym && withSym !== base && !base.endsWith(`-${sym}`) && base !== sym) {
     out.push(withSym);
   }
-  for (let n = 2; out.length < 5; n += 1) out.push(`${base}-${n}`);
+  for (const candidate of slugCandidates(base, 5 + out.length)) {
+    if (out.length >= 5) break;
+    if (!out.includes(candidate)) out.push(candidate);
+  }
   return out;
 }
