@@ -250,7 +250,25 @@
       "invalid_symbol": "Symbole invalide.",
       "invalid_name": "Nom invalide.",
       "last_admin": "Impossible de rétrograder le dernier administrateur.",
-      "unknown_error": "Une erreur est survenue."
+      "unknown_error": "Une erreur est survenue.",
+      "no_access": "Vous n'avez pas accès à cette file. Demandez au propriétaire de vous l'accorder.",
+      "conflict_of_interest": "Vous êtes lié à ce sujet, vous ne pouvez donc pas travailler sur son dossier.",
+      "self_grant": "Vous ne pouvez pas vous attribuer un accès.",
+      "owner_target": "Le propriétaire n'est pas membre de l'équipe ; l'accès ne peut pas être modifié ici.",
+      "last_owner": "Le dernier propriétaire ne peut pas être rétrogradé.",
+      "empty": "Cochez un accès sur au moins une file.",
+      "unknown_queue": "File inconnue.",
+      "unknown_level": "Niveau d'accès inconnu.",
+      "bad_date": "Cette date est illisible.",
+      "duplicate_queue": "La même file est indiquée deux fois.",
+      "not_staff": "Ce compte n'est pas membre de l'équipe.",
+      "not_revoked": "Cet accès n'est pas révoqué.",
+      "too_many": "Trop d'invitations actives. Révoquez-en une d'abord.",
+      "invalid": "Cette invitation n'est plus valide.",
+      "expired": "Cette invitation a expiré.",
+      "accepted": "Cette invitation a déjà été utilisée.",
+      "revoked": "Cette invitation a été révoquée.",
+      "failed": "Un problème est survenu."
     },
     "audit": {
       "title": "Journal d'audit",
@@ -538,7 +556,7 @@
         "messageReceived": "le demandeur a répondu",
         "reviewed": "signé «checked»",
         "checkSet": "vérification «{key}»: {state}",
-        "documentVerdict": "document «{label}»: {verdict}",
+        "documentVerdict": "document «{label}» : {verdict}",
         "pointReported": "un visiteur a signalé le point: {reason}",
         "pointAsked": "a interrogé l'entreprise au sujet des signalements",
         "pointWarned": "a averti l'entreprise — aucune réponse depuis 14 jours",
@@ -702,7 +720,8 @@
         "pointReport": {
           "approve": "Confirmer les signalements — retirer le lieu de la carte",
           "reject": "Rejeter les signalements — garder le lieu sur la carte"
-        }
+        },
+        "noDecideRight": "Vous pouvez préparer et examiner ce dossier, mais son approbation doit être faite par une personne disposant des droits de décision dans cette file."
       },
       "reports": {
         "title": "Signalements",
@@ -715,6 +734,10 @@
           "WRONG_ADDRESS": "Adresse ou emplacement incorrect",
           "OTHER": "Autre chose"
         }
+      },
+      "access": {
+        "readOnly": "Accès en lecture seule à cette file : vous pouvez lire le dossier, mais pas le modifier.",
+        "conflict": "Vous êtes lié à ce sujet — quelqu'un d'autre doit traiter ce dossier."
       }
     },
     "bell": {
@@ -758,6 +781,66 @@
         "secondSignatures": "Secondes signatures",
         "soleSignOffs": "Approbations uniques",
         "resubmits": "Demandes de renvoi"
+      },
+      "access": {
+        "title": "Équipe et accès",
+        "subtitle": "L'accès est refusé par défaut : une file pour laquelle une personne n'a pas de ligne lui est invisible.",
+        "empty": "Personne n'a encore d'accès à la conformité.",
+        "noTitle": "aucun poste indiqué",
+        "queues": "Files",
+        "none": "aucun accès",
+        "reviewAt": "Révision des accès pour le {date}",
+        "reviewOverdue": "Révision des accès en retard depuis le {date}",
+        "revoked": "Accès révoqué le {date}",
+        "revokedReason": "Raison : {reason}",
+        "levels": {
+          "none": "aucun",
+          "VIEW": "voit",
+          "HANDLE": "traite",
+          "APPROVE": "approuve"
+        },
+        "presets": {
+          "label": "Postes prédéfinis",
+          "readOnly": "Lecture seule",
+          "reviewer": "Examinateur",
+          "senior": "Examinateur principal",
+          "kybOfficer": "Responsable KYB",
+          "hint": "Un poste ne fait que préremplir la matrice — cochez ensuite les cases manuellement."
+        },
+        "save": "Enregistrer les accès",
+        "saved": "Accès enregistré.",
+        "revoke": "Révoquer l'accès",
+        "revokePlaceholder": "Raison de la révocation de l'accès (au moins 3 caractères)",
+        "restore": "Restaurer l'accès",
+        "passReview": "Vérification réussie",
+        "edit": "Modifier l'accès",
+        "cancel": "Annuler"
+      },
+      "invite": {
+        "title": "Inviter un membre du personnel",
+        "subtitle": "Cochez d'abord les accès — ils s'appliquent dès que l'invitation est acceptée.",
+        "titleField": "Poste",
+        "titlePlaceholder": "Réviseur senior",
+        "dutiesField": "Missions, avec vos propres mots",
+        "dutiesPlaceholder": "Fiches des cryptos et rapports de points; KYB uniquement en seconde signature.",
+        "expiresField": "Expiration de l'accès (optionnel)",
+        "expiresHint": "Laissez vide pour un accès sans date de fin.",
+        "byLink": "Par lien",
+        "byIdentifier": "Par nom d'utilisateur ou e-mail",
+        "identifierField": "Nom d'utilisateur ou e-mail",
+        "identifierHint": "Fonctionne uniquement si le compte existe déjà.",
+        "create": "Créer un lien d'invitation",
+        "grant": "Accorder l'accès maintenant",
+        "granted": "Accès accordé.",
+        "linkOnce": "Copiez le lien maintenant — la base de données n'en conserve que le hachage, il ne pourra donc plus être affiché.",
+        "copy": "Copier le lien",
+        "copied": "Copié.",
+        "expiresIn": "Le lien fonctionne pendant 14 jours et une seule fois.",
+        "activeTitle": "Invitations actives",
+        "activeEmpty": "Aucune invitation active.",
+        "revokeInvite": "Révoquer",
+        "forWhom": "pour {identifier}",
+        "openLink": "ouvrir le lien"
       }
     },
     "company": {
@@ -2901,6 +2984,26 @@
       "captcha_invalid": "La vérification a échoué. Prenez un autre défi et réessayez.",
       "captcha_expired": "Le défi a expiré. Prenez-en un nouveau.",
       "captcha_too_fast": "C'était trop rapide. Veuillez réessayer."
+    }
+  },
+  "staffInvite": {
+    "title": "Invitation d'accès à la conformité",
+    "invitedBy": "Invité par {who}",
+    "position": "Poste",
+    "duties": "Fonctions",
+    "grants": "Accès qui vous est accordé",
+    "accept": "Accepter et commencer",
+    "accepted": "Accès accordé. Ouverture des files d'attente.",
+    "guest": "Connectez-vous ou créez un compte, puis revenez sur cette page pour accepter.",
+    "signIn": "Se connecter",
+    "register": "Créer un compte",
+    "goToQueues": "Ouvrir les files d'attente",
+    "errors": {
+      "invalid": "Ce lien n'est pas valide.",
+      "expired": "Ce lien a expiré. Demandez au propriétaire un nouveau lien.",
+      "accepted": "Ce lien a déjà été utilisé.",
+      "revoked": "Ce lien a été révoqué.",
+      "failed": "Un problème est survenu."
     }
   }
 }

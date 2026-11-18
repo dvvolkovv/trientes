@@ -250,7 +250,25 @@
       "invalid_symbol": "Neispravan simbol.",
       "invalid_name": "Neispravno ime.",
       "last_admin": "Nije moguće degradirati posljednjeg administratora.",
-      "unknown_error": "Nešto je pošlo po zlu."
+      "unknown_error": "Nešto je pošlo po zlu.",
+      "no_access": "Nemate pristup ovom redu. Zamolite vlasnika da vam ga odobri",
+      "conflict_of_interest": "Povezani ste s ovim subjektom, stoga ne možete raditi na njegovom predmetu",
+      "self_grant": "Ne možete sami sebi dodijeliti pristup",
+      "owner_target": "Vlasnik nije član osoblja; pristup se ovdje ne može mijenjati",
+      "last_owner": "Posljednjeg vlasnika nije moguće degradirati",
+      "empty": "Označite pristup za barem jedan red",
+      "unknown_queue": "Nepoznat red",
+      "unknown_level": "Nepoznata razina pristupa",
+      "bad_date": "Taj se datum ne može pročitati",
+      "duplicate_queue": "Isti je red naveden dvaput",
+      "not_staff": "Taj račun nije član osoblja",
+      "not_revoked": "Taj pristup nije opozvan",
+      "too_many": "Previše aktivnih pozivnica. Najprije opozovite jednu",
+      "invalid": "Ta pozivnica više nije valjana",
+      "expired": "Ta je pozivnica istekla",
+      "accepted": "Ta je pozivnica već iskorištena",
+      "revoked": "Ta je pozivnica opozvana",
+      "failed": "Nešto je pošlo po zlu"
     },
     "audit": {
       "title": "Revizijski dnevnik",
@@ -702,7 +720,8 @@
         "pointReport": {
           "approve": "Potvrditi prijave — ukloniti lokaciju s karte",
           "reject": "Odbaciti prijave — zadržati lokaciju na karti"
-        }
+        },
+        "noDecideRight": "Možete pripremiti i pregledati ovaj predmet, ali za odobravanje je potrebna osoba s pravom odlučivanja u ovom redu"
       },
       "reports": {
         "title": "Prijave",
@@ -715,6 +734,10 @@
           "WRONG_ADDRESS": "Pogrešna adresa ili lokacija",
           "OTHER": "Nešto drugo"
         }
+      },
+      "access": {
+        "readOnly": "Pristup samo za čitanje ovom redu: možete čitati predmet, ali ga ne možete mijenjati",
+        "conflict": "U vezi ste s ovim subjektom — netko drugi mora rješavati ovaj predmet"
       }
     },
     "bell": {
@@ -758,6 +781,66 @@
         "secondSignatures": "Drugi potpisi",
         "soleSignOffs": "Samostalna odobrenja",
         "resubmits": "Zahtjevi za ponovno slanje"
+      },
+      "access": {
+        "title": "Osoblje i pristup",
+        "subtitle": "Pristup je po zadanom odbijen: red za koji osoba nema redak je za nju nevidljiv",
+        "empty": "Nitko još nema pristup usklađenosti",
+        "noTitle": "bez pozicije",
+        "queues": "Redovi",
+        "none": "nema pristupa",
+        "reviewAt": "Pregled pristupa dospijeva {date}",
+        "reviewOverdue": "Pregled pristupa kasni od {date}",
+        "revoked": "Pristup opozvan {date}",
+        "revokedReason": "Razlog: {reason}",
+        "levels": {
+          "none": "nema",
+          "VIEW": "pregledava",
+          "HANDLE": "obrađuje",
+          "APPROVE": "odobrava"
+        },
+        "presets": {
+          "label": "Gotove pozicije",
+          "readOnly": "Samo čitanje",
+          "reviewer": "Pregledavatelj",
+          "senior": "Senior pregledavatelj",
+          "kybOfficer": "KYB službenik",
+          "hint": "Pozicija samo popunjava matricu — kućice zatim označite ručno"
+        },
+        "save": "Spremiti pristup",
+        "saved": "Pristup spremljen.",
+        "revoke": "Opozvati pristup",
+        "revokePlaceholder": "Zašto se pristup opoziva (najmanje 3 znaka)",
+        "restore": "Vratiti pristup",
+        "passReview": "Pregled prošao",
+        "edit": "Promijeniti pristup",
+        "cancel": "Odustati"
+      },
+      "invite": {
+        "title": "Pozvati člana osoblja",
+        "subtitle": "Najprije označite pristup — primjenjuje se čim poziv bude prihvaćen",
+        "titleField": "Radno mjesto",
+        "titlePlaceholder": "Viši recenzent",
+        "dutiesField": "Dužnosti, vlastitim riječima",
+        "dutiesPlaceholder": "Kartice kovanica i izvješća o lokacijama; KYB samo kao drugi potpis.",
+        "expiresField": "Pristup istječe (neobavezno)",
+        "expiresHint": "Ostaviti prazno za pristup bez datuma završetka.",
+        "byLink": "Putem poveznice",
+        "byIdentifier": "Putem korisničkog imena ili e-pošte",
+        "identifierField": "Korisničko ime ili e-pošta",
+        "identifierHint": "Radi samo ako račun već postoji.",
+        "create": "Stvoriti pozivnu poveznicu",
+        "grant": "Odobriti pristup sada",
+        "granted": "Pristup odobren.",
+        "linkOnce": "Kopirati poveznicu sada — baza podataka sprema samo njezin hash, pa je više nije moguće prikazati.",
+        "copy": "Kopirati poveznicu",
+        "copied": "Kopirano.",
+        "expiresIn": "Poveznica vrijedi 14 dana i samo jednom.",
+        "activeTitle": "Aktivne pozivnice",
+        "activeEmpty": "Nema aktivnih pozivnica.",
+        "revokeInvite": "Opozvati",
+        "forWhom": "za {identifier}",
+        "openLink": "otvoriti poveznicu"
       }
     },
     "company": {
@@ -2901,6 +2984,26 @@
       "captcha_invalid": "Provjera nije uspjela. Uzmite novi izazov i pokušajte ponovno.",
       "captcha_expired": "Izazov je istekao. Uzmite novi izazov.",
       "captcha_too_fast": "To je bilo prebrzo. Pokušajte ponovno."
+    }
+  },
+  "staffInvite": {
+    "title": "Poziv za pristup usklađenosti",
+    "invitedBy": "Poziv poslao {who}",
+    "position": "Radno mjesto",
+    "duties": "Dužnosti",
+    "grants": "Pristup koji vam se dodjeljuje",
+    "accept": "Prihvatiti i započeti",
+    "accepted": "Pristup odobren. Otvaraju se redovi.",
+    "guest": "Prijavite se ili registrirajte se, zatim se vratite na ovu stranicu kako biste prihvatili.",
+    "signIn": "Prijava",
+    "register": "Registracija",
+    "goToQueues": "Otvoriti redove",
+    "errors": {
+      "invalid": "Ova poveznica nije valjana.",
+      "expired": "Ova je poveznica istekla. Zatražite novu od vlasnika.",
+      "accepted": "Ova je poveznica već iskorištena.",
+      "revoked": "Ova je poveznica opozvana.",
+      "failed": "Nešto je pošlo po zlu."
     }
   }
 }

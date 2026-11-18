@@ -250,7 +250,25 @@
       "invalid_symbol": "Geçersiz sembol.",
       "invalid_name": "Geçersiz ad.",
       "last_admin": "Son yönetici yetkisi düşürülemez.",
-      "unknown_error": "Bir şeyler ters gitti."
+      "unknown_error": "Bir şeyler ters gitti.",
+      "no_access": "Bu kuyruğa erişiminiz yok. Sahibinden erişim vermesini isteyin.",
+      "conflict_of_interest": "Bu konu ile bağlantılısınız, bu nedenle bu vaka üzerinde çalışamazsınız.",
+      "self_grant": "Kendinize erişim veremezsiniz.",
+      "owner_target": "Sahip bir personel üyesi değil; erişim burada değiştirilemez.",
+      "last_owner": "Son sahibin rütbesi düşürülemez.",
+      "empty": "En az bir kuyruk için erişimi işaretleyin.",
+      "unknown_queue": "Bilinmeyen kuyruk.",
+      "unknown_level": "Bilinmeyen erişim düzeyi.",
+      "bad_date": "Bu tarih okunamıyor.",
+      "duplicate_queue": "Aynı kuyruk iki kez listelenmiş.",
+      "not_staff": "Bu hesap personel üyesi değil.",
+      "not_revoked": "Bu erişim iptal edilmemiş.",
+      "too_many": "Çok fazla etkin davet var. Önce birini iptal edin.",
+      "invalid": "Bu davet artık geçerli değil.",
+      "expired": "Bu davetin süresi dolmuş.",
+      "accepted": "Bu davet zaten kullanılmış.",
+      "revoked": "Bu davet iptal edildi.",
+      "failed": "Bir şeyler ters gitti."
     },
     "audit": {
       "title": "Denetim günlüğü",
@@ -702,7 +720,8 @@
         "pointReport": {
           "approve": "Raporları onayla — yeri haritadan kaldır",
           "reject": "Raporları reddet — yeri haritada tut"
-        }
+        },
+        "noDecideRight": "Bu vakayı hazırlayabilir ve gözden geçirebilirsiniz, ancak onaylamak için bu kuyrukta karar yetkisi olan biri gerekir."
       },
       "reports": {
         "title": "Raporlar",
@@ -715,6 +734,10 @@
           "WRONG_ADDRESS": "Yanlış adres veya konum",
           "OTHER": "Başka bir şey"
         }
+      },
+      "access": {
+        "readOnly": "Bu kuyruğa salt okunur erişim: vakayı okuyabilirsiniz, ancak değiştiremezsiniz.",
+        "conflict": "Bu konu ile bağlantılısınız — bu vakayı başka biri ele almalı."
       }
     },
     "bell": {
@@ -758,6 +781,66 @@
         "secondSignatures": "İkinci imzalar",
         "soleSignOffs": "Tek imzalı onaylar",
         "resubmits": "Yeniden gönderim istekleri"
+      },
+      "access": {
+        "title": "Personel ve erişim",
+        "subtitle": "Varsayılan olarak erişim reddedilir: kişinin satırının olmadığı bir kuyruk ona görünmez.",
+        "empty": "Henüz kimsenin uyum erişimi yok.",
+        "noTitle": "pozisyon verilmemiş",
+        "queues": "Kuyruklar",
+        "none": "erişim yok",
+        "reviewAt": "Erişim incelemesi {date} tarihinde yapılmalı",
+        "reviewOverdue": "Erişim incelemesi {date} tarihinden beri gecikmiş",
+        "revoked": "Erişim {date} tarihinde geri alındı",
+        "revokedReason": "Gerekçe: {reason}",
+        "levels": {
+          "none": "yok",
+          "VIEW": "görüntüler",
+          "HANDLE": "işler",
+          "APPROVE": "onaylar"
+        },
+        "presets": {
+          "label": "Hazır pozisyonlar",
+          "readOnly": "Salt okunur",
+          "reviewer": "İnceleyici",
+          "senior": "Kıdemli inceleyici",
+          "kybOfficer": "KYB görevlisi",
+          "hint": "Bir pozisyon yalnızca matrisi doldurur — sonrasında kutucukları elle işaretleyin."
+        },
+        "save": "Erişimi kaydet",
+        "saved": "Erişim kaydedildi.",
+        "revoke": "Erişimi geri al",
+        "revokePlaceholder": "Erişimin neden geri alındığı (en az 3 karakter)",
+        "restore": "Erişimi geri ver",
+        "passReview": "İnceleme geçildi",
+        "edit": "Erişimi değiştir",
+        "cancel": "İptal"
+      },
+      "invite": {
+        "title": "Bir personel üyesi davet et",
+        "subtitle": "Önce erişimi işaretleyin — davet kabul edildiği anda uygulanır.",
+        "titleField": "Pozisyon",
+        "titlePlaceholder": "Kıdemli inceleyici",
+        "dutiesField": "Görevler, kendi ifadelerinizle",
+        "dutiesPlaceholder": "Coin kartları ve puan raporları; KYB yalnızca ikinci imza olarak.",
+        "expiresField": "Erişim sona erer (isteğe bağlı)",
+        "expiresHint": "Bitiş tarihi olmayan erişim için boş bırakın.",
+        "byLink": "Bağlantıyla",
+        "byIdentifier": "Kullanıcı adıyla veya e-postayla",
+        "identifierField": "Kullanıcı adı veya e-posta",
+        "identifierHint": "Yalnızca hesap zaten mevcutsa çalışır.",
+        "create": "Davet bağlantısı oluştur",
+        "grant": "Hemen erişim ver",
+        "granted": "Erişim verildi.",
+        "linkOnce": "Bağlantıyı şimdi kopyalayın — veritabanı yalnızca özetini saklar, bu yüzden tekrar gösterilemez.",
+        "copy": "Bağlantıyı kopyala",
+        "copied": "Kopyalandı.",
+        "expiresIn": "Bağlantı 14 gün boyunca ve yalnızca bir kez çalışır.",
+        "activeTitle": "Aktif davetler",
+        "activeEmpty": "Aktif davet yok.",
+        "revokeInvite": "İptal et",
+        "forWhom": "{identifier} için",
+        "openLink": "bağlantıyı aç"
       }
     },
     "company": {
@@ -923,7 +1006,7 @@
     "intro": "Yakınınızda kripto kabul eden işletmeleri, ATM'leri ve finansal hizmetleri bulun — uydu ya da 3B arazi görünümüne geçin ve konumunuzdan veya herhangi bir adresten yol tarifi alın.",
     "streets": "Sokaklar",
     "satellite": "Uydu",
-    "threeD": "3D",
+    "threeD": "3B",
     "myLocation": "Konumum",
     "searchPlaceholder": "Adres ya da yer ara…",
     "search": "Ara",
@@ -2901,6 +2984,26 @@
       "captcha_invalid": "Doğrulama geçmedi. Başka bir görev alın ve tekrar deneyin.",
       "captcha_expired": "Görev süresi doldu. Yenisini alın.",
       "captcha_too_fast": "Bu çok hızlıydı. Lütfen yeniden deneyin."
+    }
+  },
+  "staffInvite": {
+    "title": "Uyumluluk erişimi daveti",
+    "invitedBy": "Davet eden {who}",
+    "position": "Pozisyon",
+    "duties": "Görevler",
+    "grants": "Size verilecek erişimler",
+    "accept": "Kabul et ve başla",
+    "accepted": "Erişim verildi. Kuyruklar açılıyor.",
+    "guest": "Oturum açın veya bir hesap oluşturun, ardından kabul etmek için bu sayfaya geri dönün.",
+    "signIn": "Oturum aç",
+    "register": "Hesap oluştur",
+    "goToQueues": "Kuyrukları aç",
+    "errors": {
+      "invalid": "Bu bağlantı geçerli değil.",
+      "expired": "Bu bağlantının süresi dolmuş. Sahibinden yenisini isteyin.",
+      "accepted": "Bu bağlantı zaten kullanılmış.",
+      "revoked": "Bu bağlantı iptal edildi.",
+      "failed": "Bir şeyler ters gitti."
     }
   }
 }

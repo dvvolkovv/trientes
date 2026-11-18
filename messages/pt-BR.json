@@ -250,7 +250,25 @@
       "invalid_symbol": "Símbolo inválido.",
       "invalid_name": "Nome inválido.",
       "last_admin": "Não é possível rebaixar o último administrador.",
-      "unknown_error": "Algo deu errado."
+      "unknown_error": "Algo deu errado.",
+      "no_access": "Você não tem acesso a esta fila. Peça ao proprietário para conceder acesso.",
+      "conflict_of_interest": "Você tem ligação com este assunto, então não pode trabalhar no caso.",
+      "self_grant": "Você não pode conceder acesso a si mesmo.",
+      "owner_target": "O proprietário não é um membro da equipe; o acesso não pode ser alterado aqui.",
+      "last_owner": "O último proprietário não pode ser rebaixado.",
+      "empty": "Marque acesso em pelo menos uma fila.",
+      "unknown_queue": "Fila desconhecida.",
+      "unknown_level": "Nível de acesso desconhecido.",
+      "bad_date": "Essa data não pode ser lida.",
+      "duplicate_queue": "A mesma fila está listada duas vezes.",
+      "not_staff": "Essa conta não é membro da equipe.",
+      "not_revoked": "Esse acesso não está revogado.",
+      "too_many": "Muitos convites ativos. Revogue um primeiro.",
+      "invalid": "Esse convite não é mais válido.",
+      "expired": "Esse convite expirou.",
+      "accepted": "Esse convite já foi usado.",
+      "revoked": "Esse convite foi revogado.",
+      "failed": "Algo deu errado."
     },
     "audit": {
       "title": "Log de auditoria",
@@ -702,7 +720,8 @@
         "pointReport": {
           "approve": "Confirmar relatos — remover o local do mapa",
           "reject": "Rejeitar relatos — manter o local no mapa"
-        }
+        },
+        "noDecideRight": "Você pode preparar e revisar este caso, mas a aprovação precisa de alguém com direitos de decisão nesta fila."
       },
       "reports": {
         "title": "Relatos",
@@ -715,6 +734,10 @@
           "WRONG_ADDRESS": "Endereço ou localização incorretos",
           "OTHER": "Outra coisa"
         }
+      },
+      "access": {
+        "readOnly": "Acesso somente leitura a esta fila: você pode ler o caso, mas não alterá-lo.",
+        "conflict": "Você está relacionado a este sujeito — outra pessoa precisa lidar com este caso."
       }
     },
     "bell": {
@@ -758,6 +781,66 @@
         "secondSignatures": "Segundas assinaturas",
         "soleSignOffs": "Aprovações individuais",
         "resubmits": "Solicitações de reenvio"
+      },
+      "access": {
+        "title": "Equipe e acesso",
+        "subtitle": "O acesso é negado por padrão: uma fila para a qual a pessoa não tem linha é invisível para ela.",
+        "empty": "Ninguém tem acesso de compliance ainda.",
+        "noTitle": "nenhum cargo informado",
+        "queues": "Filas",
+        "none": "sem acesso",
+        "reviewAt": "Revisão de acesso prevista para {date}",
+        "reviewOverdue": "Revisão de acesso em atraso desde {date}",
+        "revoked": "Acesso revogado em {date}",
+        "revokedReason": "Motivo: {reason}",
+        "levels": {
+          "none": "nenhum",
+          "VIEW": "visualiza",
+          "HANDLE": "trata",
+          "APPROVE": "aprova"
+        },
+        "presets": {
+          "label": "Cargos prontos",
+          "readOnly": "Somente leitura",
+          "reviewer": "Revisor",
+          "senior": "Revisor sênior",
+          "kybOfficer": "Oficial de KYB",
+          "hint": "Um cargo apenas preenche a matriz — marque as caixas manualmente depois."
+        },
+        "save": "Salvar acesso",
+        "saved": "Acesso salvo.",
+        "revoke": "Revogar acesso",
+        "revokePlaceholder": "Por que o acesso está sendo revogado (ao menos 3 caracteres)",
+        "restore": "Restaurar acesso",
+        "passReview": "Revisão aprovada",
+        "edit": "Alterar acesso",
+        "cancel": "Cancelar"
+      },
+      "invite": {
+        "title": "Convidar um membro da equipe",
+        "subtitle": "Marque primeiro os acessos — eles se aplicam no momento em que o convite for aceito.",
+        "titleField": "Cargo",
+        "titlePlaceholder": "Revisor sênior",
+        "dutiesField": "Funções, em suas próprias palavras",
+        "dutiesPlaceholder": "Cartões de moedas e relatórios de pontos; KYB apenas como segunda assinatura.",
+        "expiresField": "Acesso expira (opcional)",
+        "expiresHint": "Deixe em branco para acesso sem data de término.",
+        "byLink": "Por link",
+        "byIdentifier": "Por nome de usuário ou e-mail",
+        "identifierField": "Nome de usuário ou e-mail",
+        "identifierHint": "Funciona apenas se a conta já existir.",
+        "create": "Criar link de convite",
+        "grant": "Conceder acesso agora",
+        "granted": "Acesso concedido.",
+        "linkOnce": "Copie o link agora — o banco de dados armazena apenas o hash, então ele não pode ser exibido novamente.",
+        "copy": "Copiar link",
+        "copied": "Copiado.",
+        "expiresIn": "O link funciona por 14 dias e apenas uma vez.",
+        "activeTitle": "Convites ativos",
+        "activeEmpty": "Nenhum convite ativo.",
+        "revokeInvite": "Revogar",
+        "forWhom": "para {identifier}",
+        "openLink": "abrir link"
       }
     },
     "company": {
@@ -2901,6 +2984,26 @@
       "captcha_invalid": "A verificação não passou. Faça outro desafio e tente novamente.",
       "captcha_expired": "O desafio expirou. Faça um novo.",
       "captcha_too_fast": "Foi rápido demais. Por favor, tente novamente."
+    }
+  },
+  "staffInvite": {
+    "title": "Convite de acesso de Compliance",
+    "invitedBy": "Convidado por {who}",
+    "position": "Cargo",
+    "duties": "Responsabilidades",
+    "grants": "Acesso que você está recebendo",
+    "accept": "Aceitar e começar",
+    "accepted": "Acesso concedido. Abrindo as filas.",
+    "guest": "Entre ou crie uma conta, depois volte a esta página para aceitar.",
+    "signIn": "Entrar",
+    "register": "Criar uma conta",
+    "goToQueues": "Abrir as filas",
+    "errors": {
+      "invalid": "Este link não é válido.",
+      "expired": "Este link expirou. Peça um novo ao proprietário.",
+      "accepted": "Este link já foi usado.",
+      "revoked": "Este link foi revogado.",
+      "failed": "Algo deu errado."
     }
   }
 }

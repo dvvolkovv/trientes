@@ -250,7 +250,25 @@
       "invalid_symbol": "代号无效。",
       "invalid_name": "名称无效。",
       "last_admin": "不能降级最后一位管理员。",
-      "unknown_error": "出了点问题。"
+      "unknown_error": "出了点问题。",
+      "no_access": "你无权访问此队列。请联系所有者授予权限。",
+      "conflict_of_interest": "你与该主体存在关联，因此不能处理其案件。",
+      "self_grant": "你不能将访问权限授予自己。",
+      "owner_target": "所有者不是员工；无法在此更改访问权限。",
+      "last_owner": "最后一位所有者不能被降级。",
+      "empty": "请至少勾选一个队列的访问权限。",
+      "unknown_queue": "未知队列。",
+      "unknown_level": "未知访问级别。",
+      "bad_date": "无法读取该日期。",
+      "duplicate_queue": "同一队列被列出了两次。",
+      "not_staff": "该账户不是员工。",
+      "not_revoked": "该访问权限未被撤销。",
+      "too_many": "有效邀请过多。请先撤销一个。",
+      "invalid": "该邀请已不再有效。",
+      "expired": "该邀请已过期。",
+      "accepted": "该邀请已被使用。",
+      "revoked": "该邀请已被撤销。",
+      "failed": "发生了错误。"
     },
     "audit": {
       "title": "审计日志",
@@ -702,7 +720,8 @@
         "pointReport": {
           "approve": "确认举报——将该地点从地图移除",
           "reject": "驳回举报——保留该地点在地图上"
-        }
+        },
+        "noDecideRight": "你可以准备并审核此案件，但批准需要在此队列中拥有决策权限的人。"
       },
       "reports": {
         "title": "举报",
@@ -715,6 +734,10 @@
           "WRONG_ADDRESS": "地址或位置错误",
           "OTHER": "其他"
         }
+      },
+      "access": {
+        "readOnly": "对此队列的只读访问：你可以查看案件，但不能更改。",
+        "conflict": "你与该主体存在关联——此案件需由他人处理。"
       }
     },
     "bell": {
@@ -758,6 +781,66 @@
         "secondSignatures": "二次签名",
         "soleSignOffs": "单人签署",
         "resubmits": "重新提交"
+      },
+      "access": {
+        "title": "员工与访问权限",
+        "subtitle": "默认拒绝访问：对某人没有记录的队列对其不可见。",
+        "empty": "尚无任何人拥有合规访问权限。",
+        "noTitle": "未提供职位",
+        "queues": "队列",
+        "none": "无访问权限",
+        "reviewAt": "访问复核到期于 {date}",
+        "reviewOverdue": "访问复核自 {date} 起已逾期",
+        "revoked": "已于 {date} 撤销访问",
+        "revokedReason": "原因：{reason}",
+        "levels": {
+          "none": "无",
+          "VIEW": "查看",
+          "HANDLE": "处理",
+          "APPROVE": "批准"
+        },
+        "presets": {
+          "label": "预设职位",
+          "readOnly": "只读",
+          "reviewer": "审核员",
+          "senior": "高级审核员",
+          "kybOfficer": "KYB 专员",
+          "hint": "职位只用于预填矩阵——之后请手动勾选。"
+        },
+        "save": "保存访问权限",
+        "saved": "已保存访问权限.",
+        "revoke": "撤销访问权限",
+        "revokePlaceholder": "撤销访问权限的原因（至少 3 个字符）",
+        "restore": "恢复访问权限",
+        "passReview": "复核通过",
+        "edit": "更改访问权限",
+        "cancel": "取消"
+      },
+      "invite": {
+        "title": "邀请员工",
+        "subtitle": "先勾选访问权限——对方接受邀请后即刻生效。",
+        "titleField": "职位",
+        "titlePlaceholder": "高级审核员",
+        "dutiesField": "职责（自由填写）",
+        "dutiesPlaceholder": "币种卡片与要点报告；KYB 仅作第二签名。",
+        "expiresField": "访问权限到期（可选）",
+        "expiresHint": "留空表示访问权限无截止日期。",
+        "byLink": "通过链接",
+        "byIdentifier": "通过用户名或邮箱",
+        "identifierField": "用户名或邮箱",
+        "identifierHint": "仅当账户已存在时可用。",
+        "create": "生成邀请链接",
+        "grant": "立即授予访问权限",
+        "granted": "已授予访问权限.",
+        "linkOnce": "请立即复制该链接——数据库只保存其哈希，无法再次显示。",
+        "copy": "复制链接",
+        "copied": "已复制。",
+        "expiresIn": "该链接有效期为14天且仅可使用一次。",
+        "activeTitle": "有效邀请",
+        "activeEmpty": "无有效邀请。",
+        "revokeInvite": "撤销",
+        "forWhom": "针对{identifier}",
+        "openLink": "打开链接"
       }
     },
     "company": {
@@ -2901,6 +2984,26 @@
       "captcha_invalid": "校验未通过。换一个挑战再试。",
       "captcha_expired": "挑战已过期。请重新获取。",
       "captcha_too_fast": "操作过快。请重试。"
+    }
+  },
+  "staffInvite": {
+    "title": "合规访问邀请",
+    "invitedBy": "由{who}邀请",
+    "position": "职位",
+    "duties": "职责",
+    "grants": "授予你的访问权限",
+    "accept": "接受并开始",
+    "accepted": "已授予访问权限。正在打开队列。",
+    "guest": "先登录或创建账户，然后返回此页面接受。",
+    "signIn": "登录",
+    "register": "创建账户",
+    "goToQueues": "打开队列",
+    "errors": {
+      "invalid": "此链接无效。",
+      "expired": "此链接已过期。请向所有者索取新的链接。",
+      "accepted": "此链接已被使用。",
+      "revoked": "此链接已被撤销。",
+      "failed": "出现问题。"
     }
   }
 }

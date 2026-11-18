@@ -250,7 +250,25 @@
       "invalid_symbol": "Símbolo no válido.",
       "invalid_name": "Nombre no válido.",
       "last_admin": "No se puede quitar el rol al último administrador.",
-      "unknown_error": "Algo salió mal."
+      "unknown_error": "Algo salió mal.",
+      "no_access": "No tienes acceso a esta cola. Pide al propietario que te lo otorgue.",
+      "conflict_of_interest": "Estás vinculado a este asunto, así que no puedes trabajar en su caso.",
+      "self_grant": "No puedes concederte acceso a ti mismo.",
+      "owner_target": "El propietario no es miembro del personal; el acceso no puede cambiarse aquí.",
+      "last_owner": "El último propietario no puede ser degradado.",
+      "empty": "Marca el acceso en al menos una cola.",
+      "unknown_queue": "Cola desconocida.",
+      "unknown_level": "Nivel de acceso desconocido.",
+      "bad_date": "Esa fecha no se puede leer.",
+      "duplicate_queue": "La misma cola aparece dos veces.",
+      "not_staff": "Esa cuenta no es miembro del personal.",
+      "not_revoked": "Ese acceso no está revocado.",
+      "too_many": "Demasiadas invitaciones activas. Revoca una primero.",
+      "invalid": "Esa invitación ya no es válida.",
+      "expired": "Esa invitación ha caducado.",
+      "accepted": "Esa invitación ya se ha utilizado.",
+      "revoked": "Esa invitación fue revocada.",
+      "failed": "Algo salió mal."
     },
     "audit": {
       "title": "Registro de auditoría",
@@ -702,7 +720,8 @@
         "pointReport": {
           "approve": "Confirmar reportes — retirar el lugar del mapa",
           "reject": "Descartar reportes — mantener el lugar en el mapa"
-        }
+        },
+        "noDecideRight": "Puedes preparar y revisar este caso, pero para aprobarlo se necesita alguien con derechos de decisión en esta cola."
       },
       "reports": {
         "title": "Reportes",
@@ -715,6 +734,10 @@
           "WRONG_ADDRESS": "Dirección o ubicación incorrecta",
           "OTHER": "Algo más"
         }
+      },
+      "access": {
+        "readOnly": "Acceso de solo lectura a esta cola: puedes leer el caso, pero no cambiarlo.",
+        "conflict": "Estás vinculado a este sujeto — otra persona debe gestionar este caso."
       }
     },
     "bell": {
@@ -758,6 +781,66 @@
         "secondSignatures": "Segundas firmas",
         "soleSignOffs": "Aprobaciones en solitario",
         "resubmits": "Solicitudes de reenvío"
+      },
+      "access": {
+        "title": "Personal y acceso",
+        "subtitle": "El acceso se deniega por defecto: una cola para la que una persona no tiene fila es invisible para esa persona.",
+        "empty": "Nadie tiene acceso de cumplimiento todavía.",
+        "noTitle": "sin puesto",
+        "queues": "Colas",
+        "none": "sin acceso",
+        "reviewAt": "La revisión de acceso vence el {date}",
+        "reviewOverdue": "Revisión de acceso atrasada desde {date}",
+        "revoked": "Acceso revocado el {date}",
+        "revokedReason": "Motivo: {reason}",
+        "levels": {
+          "none": "ninguno",
+          "VIEW": "visualiza",
+          "HANDLE": "gestiona",
+          "APPROVE": "aprueba"
+        },
+        "presets": {
+          "label": "Puestos predefinidos",
+          "readOnly": "Solo lectura",
+          "reviewer": "Revisor",
+          "senior": "Revisor sénior",
+          "kybOfficer": "Oficial de KYB",
+          "hint": "Un puesto solo rellena la matriz — marca las casillas a mano después."
+        },
+        "save": "Guardar acceso",
+        "saved": "Acceso guardado.",
+        "revoke": "Revocar acceso",
+        "revokePlaceholder": "Por qué se revoca el acceso (al menos 3 caracteres)",
+        "restore": "Restaurar acceso",
+        "passReview": "Revisión aprobada",
+        "edit": "Cambiar acceso",
+        "cancel": "Cancelar"
+      },
+      "invite": {
+        "title": "Invitar a un miembro del personal",
+        "subtitle": "Marca primero los accesos — se aplican en el momento en que se acepte la invitación.",
+        "titleField": "Puesto",
+        "titlePlaceholder": "Revisor sénior",
+        "dutiesField": "Funciones, con tus propias palabras",
+        "dutiesPlaceholder": "Tarjetas de monedas e informes de puntos; KYB solo como segunda firma.",
+        "expiresField": "El acceso vence (opcional)",
+        "expiresHint": "Déjalo vacío para acceso sin fecha de finalización.",
+        "byLink": "Por enlace",
+        "byIdentifier": "Por nombre de usuario o correo electrónico",
+        "identifierField": "Nombre de usuario o correo electrónico",
+        "identifierHint": "Funciona solo si la cuenta ya existe.",
+        "create": "Crear enlace de invitación",
+        "grant": "Conceder acceso ahora",
+        "granted": "Acceso concedido.",
+        "linkOnce": "Copia el enlace ahora — la base de datos solo almacena su hash, por lo que no se puede mostrar de nuevo.",
+        "copy": "Copiar enlace",
+        "copied": "Copiado.",
+        "expiresIn": "El enlace funciona durante 14 días y solo una vez.",
+        "activeTitle": "Invitaciones activas",
+        "activeEmpty": "No hay invitaciones activas.",
+        "revokeInvite": "Revocar",
+        "forWhom": "para {identifier}",
+        "openLink": "abrir enlace"
       }
     },
     "company": {
@@ -2901,6 +2984,26 @@
       "captcha_invalid": "La verificación no se superó. Toma otro desafío e inténtalo de nuevo.",
       "captcha_expired": "El desafío venció. Toma uno nuevo.",
       "captcha_too_fast": "Eso fue demasiado rápido. Por favor, inténtalo de nuevo."
+    }
+  },
+  "staffInvite": {
+    "title": "Invitación de acceso de cumplimiento normativo",
+    "invitedBy": "Invitado por {who}",
+    "position": "Cargo",
+    "duties": "Funciones",
+    "grants": "Acceso que se te otorga",
+    "accept": "Aceptar y comenzar",
+    "accepted": "Acceso concedido. Abriendo las colas.",
+    "guest": "Inicia sesión o crea una cuenta y luego vuelve a esta página para aceptar.",
+    "signIn": "Iniciar sesión",
+    "register": "Crear una cuenta",
+    "goToQueues": "Abrir las colas",
+    "errors": {
+      "invalid": "Este enlace no es válido.",
+      "expired": "Este enlace ha caducado. Pide uno nuevo al propietario.",
+      "accepted": "Este enlace ya se ha utilizado.",
+      "revoked": "Este enlace fue revocado.",
+      "failed": "Algo salió mal."
     }
   }
 }

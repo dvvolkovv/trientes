@@ -250,7 +250,25 @@
       "invalid_symbol": "Ungültiges Symbol.",
       "invalid_name": "Ungültiger Name.",
       "last_admin": "Der letzte Administrator kann nicht herabgestuft werden.",
-      "unknown_error": "Etwas ist schiefgelaufen."
+      "unknown_error": "Etwas ist schiefgelaufen.",
+      "no_access": "Sie haben keinen Zugriff auf diese Warteschlange. Bitten Sie den Besitzer, Ihnen Zugriff zu gewähren.",
+      "conflict_of_interest": "Sie sind mit diesem Thema verbunden, daher können Sie nicht an diesem Fall arbeiten.",
+      "self_grant": "Sie können sich selbst keinen Zugriff gewähren.",
+      "owner_target": "Der Besitzer ist kein Mitarbeiter; der Zugriff kann hier nicht geändert werden.",
+      "last_owner": "Der letzte Inhaber kann nicht herabgestuft werden.",
+      "empty": "Zugriff für mindestens eine Warteschlange ankreuzen.",
+      "unknown_queue": "Unbekannte Warteschlange.",
+      "unknown_level": "Unbekannte Zugriffsstufe.",
+      "bad_date": "Dieses Datum kann nicht gelesen werden.",
+      "duplicate_queue": "Dieselbe Warteschlange ist zweimal aufgeführt.",
+      "not_staff": "Dieses Konto gehört nicht zum Personal.",
+      "not_revoked": "Dieser Zugriff ist nicht widerrufen.",
+      "too_many": "Zu viele aktive Einladungen. Widerrufen Sie zuerst eine.",
+      "invalid": "Diese Einladung ist nicht mehr gültig.",
+      "expired": "Diese Einladung ist abgelaufen.",
+      "accepted": "Diese Einladung wurde bereits verwendet.",
+      "revoked": "Diese Einladung wurde widerrufen.",
+      "failed": "Etwas ist schiefgelaufen."
     },
     "audit": {
       "title": "Audit-Log",
@@ -702,7 +720,8 @@
         "pointReport": {
           "approve": "Meldungen bestätigen — Ort von der Karte entfernen",
           "reject": "Meldungen verwerfen — Ort auf der Karte behalten"
-        }
+        },
+        "noDecideRight": "Sie können diesen Fall vorbereiten und prüfen, aber für die Genehmigung ist jemand mit Entscheidungsrechten in dieser Warteschlange erforderlich."
       },
       "reports": {
         "title": "Meldungen",
@@ -715,6 +734,10 @@
           "WRONG_ADDRESS": "Falsche Adresse oder Standort",
           "OTHER": "Etwas anderes"
         }
+      },
+      "access": {
+        "readOnly": "Nur-Lesezugriff auf diese Warteschlange: Sie können den Fall lesen, aber nicht ändern.",
+        "conflict": "Sie sind mit dieser Person verbunden — jemand anderes muss diesen Fall bearbeiten."
       }
     },
     "bell": {
@@ -758,6 +781,66 @@
         "secondSignatures": "Zweitunterschriften",
         "soleSignOffs": "Alleinige Abzeichnungen",
         "resubmits": "Aufforderungen zum erneuten Senden"
+      },
+      "access": {
+        "title": "Personal und Zugriffe",
+        "subtitle": "Zugriff ist standardmäßig verweigert: Eine Warteschlange, für die eine Person keinen Eintrag hat, ist für sie unsichtbar.",
+        "empty": "Niemand hat bisher Compliance-Zugriff.",
+        "noTitle": "keine Position angegeben",
+        "queues": "Warteschlangen",
+        "none": "kein Zugriff",
+        "reviewAt": "Zugriffsprüfung fällig am {date}",
+        "reviewOverdue": "Zugriffsprüfung überfällig seit {date}",
+        "revoked": "Zugriff widerrufen am {date}",
+        "revokedReason": "Grund: {reason}",
+        "levels": {
+          "none": "keine",
+          "VIEW": "liest",
+          "HANDLE": "bearbeitet",
+          "APPROVE": "genehmigt"
+        },
+        "presets": {
+          "label": "Vordefinierte Positionen",
+          "readOnly": "Nur lesen",
+          "reviewer": "Prüfer",
+          "senior": "Leitender Prüfer",
+          "kybOfficer": "KYB-Beauftragter",
+          "hint": "Eine Position füllt nur die Matrix aus — die Kästchen danach manuell ankreuzen."
+        },
+        "save": "Zugriff speichern",
+        "saved": "Zugriff gespeichert.",
+        "revoke": "Zugriff entziehen",
+        "revokePlaceholder": "Warum der Zugriff entzogen wird (mindestens 3 Zeichen)",
+        "restore": "Zugriff wiederherstellen",
+        "passReview": "Prüfung bestanden",
+        "edit": "Zugriff ändern",
+        "cancel": "Abbrechen"
+      },
+      "invite": {
+        "title": "Mitarbeiter einladen",
+        "subtitle": "Zuerst die Zugriffe ankreuzen — sie gelten, sobald die Einladung angenommen wird.",
+        "titleField": "Position",
+        "titlePlaceholder": "Leitender Prüfer",
+        "dutiesField": "Aufgaben, in eigenen Worten",
+        "dutiesPlaceholder": "Coin-Karten und Punktberichte; KYB nur als zweite Unterschrift.",
+        "expiresField": "Zugriff läuft ab (optional)",
+        "expiresHint": "Leer lassen für Zugriff ohne Enddatum.",
+        "byLink": "Per Link",
+        "byIdentifier": "Per Benutzername oder E-Mail",
+        "identifierField": "Benutzername oder E-Mail",
+        "identifierHint": "Funktioniert nur, wenn das Konto bereits existiert.",
+        "create": "Einladungslink erstellen",
+        "grant": "Zugriff jetzt gewähren",
+        "granted": "Zugriff gewährt.",
+        "linkOnce": "Den Link jetzt kopieren — die Datenbank speichert nur seinen Hash, daher kann er nicht erneut angezeigt werden.",
+        "copy": "Link kopieren",
+        "copied": "Kopiert.",
+        "expiresIn": "Der Link funktioniert 14 Tage lang und nur einmal.",
+        "activeTitle": "Aktive Einladungen",
+        "activeEmpty": "Keine aktiven Einladungen.",
+        "revokeInvite": "Widerrufen",
+        "forWhom": "für {identifier}",
+        "openLink": "Link öffnen"
       }
     },
     "company": {
@@ -2901,6 +2984,26 @@
       "captcha_invalid": "Die Prüfung wurde nicht bestanden. Nimm eine neue Aufgabe und versuche es erneut.",
       "captcha_expired": "Die Aufgabe ist abgelaufen. Nimm eine neue.",
       "captcha_too_fast": "Das ging zu schnell. Bitte versuche es erneut."
+    }
+  },
+  "staffInvite": {
+    "title": "Einladung zum Compliance-Zugriff",
+    "invitedBy": "Eingeladen von {who}",
+    "position": "Position",
+    "duties": "Aufgaben",
+    "grants": "Zugriff, der Ihnen gewährt wird",
+    "accept": "Annehmen und starten",
+    "accepted": "Zugriff gewährt. Warteschlangen werden geöffnet.",
+    "guest": "Melden Sie sich an oder erstellen Sie ein Konto und kehren Sie dann zu dieser Seite zurück, um zu akzeptieren.",
+    "signIn": "Anmelden",
+    "register": "Konto erstellen",
+    "goToQueues": "Warteschlangen öffnen",
+    "errors": {
+      "invalid": "Dieser Link ist nicht gültig.",
+      "expired": "Dieser Link ist abgelaufen. Fordern Sie vom Inhaber einen neuen an.",
+      "accepted": "Dieser Link wurde bereits verwendet.",
+      "revoked": "Dieser Link wurde widerrufen.",
+      "failed": "Etwas ist schiefgelaufen."
     }
   }
 }
