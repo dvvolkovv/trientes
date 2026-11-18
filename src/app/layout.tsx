@@ -25,8 +25,10 @@ export const metadata: Metadata = {
     default: "Trientes — the ledger of digital coinage",
     template: "%s · Trientes",
   },
+  // Это значение по умолчанию для страниц вне отрезка локали (robots, sitemap,
+  // корневое превью). Язык страницы перебивает его в `[locale]/layout.tsx`.
   description:
-    "Live prices, exchanges, fintech directory and an on-the-ground crypto navigator across 11 languages.",
+    "Live prices, exchanges, fintech directory and an on-the-ground crypto navigator.",
   applicationName: "Trientes",
   openGraph: {
     type: "website",
@@ -42,7 +44,10 @@ export const metadata: Metadata = {
     description:
       "Live prices, exchanges, fintech directory and crypto navigator.",
   },
-  alternates: { canonical: SITE },
+  // Корневого `canonical` здесь нет намеренно: метаданные корня наследует
+  // каждая страница, и `canonical: SITE` объявлял дубликатом главной всё, у
+  // чего нет своих метаданных — `/sk/markets`, `/sk/exchanges`, `/en/compare`
+  // и прочие. Свой адрес каждая страница объявляет сама.
   robots: {
     index: true,
     follow: true,

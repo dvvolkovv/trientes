@@ -34,7 +34,26 @@
       "company": "企業"
     },
     "machineTranslated": "機械翻訳",
-    "showOriginal": "原文"
+    "showOriginal": "原文",
+    "kicker": {
+      "section": "セクション",
+      "newsflow": "ニュースフロー",
+      "signIn": "サインイン",
+      "newRequest": "新規リクエスト",
+      "history": "履歴",
+      "admin": "管理"
+    },
+    "a11y": {
+      "openMenu": "メニューを開く",
+      "closeMenu": "メニューを閉じる",
+      "close": "閉じる",
+      "currency": "通貨"
+    },
+    "meta": {
+      "title": "Trientes — デジタル通貨の台帳",
+      "description": "リアルタイム価格、取引所、フィンテックのディレクトリ、現地密着の暗号資産ナビゲーターを{count}言語で。",
+      "pageDescription": "Trientes — 暗号資産のリアルタイム価格、取引所、フィンテックのディレクトリ、現地ナビゲーター。"
+    }
   },
   "home": {
     "title": "ようこそ",
@@ -61,7 +80,8 @@
     "mood": {
       "bull": "強気相場",
       "bear": "弱気相場"
-    }
+    },
+    "topCoinsHeading": "トップレイヤー1."
   },
   "listing": {
     "rank": "#",
@@ -138,7 +158,9 @@
     "live": "ライブ",
     "jumpNavigator": "ナビゲーター",
     "jumpExchanges": "主要取引所",
-    "jumpNews": "ニュース"
+    "jumpNews": "ニュース",
+    "rankBadge": "ランク {rank}",
+    "assetKicker": "レイヤー1 · ネイティブ資産"
   },
   "watchlist": {
     "title": "お気に入り",
@@ -209,7 +231,8 @@
     "requests": {
       "title": "銘柄リクエスト",
       "subtitle": "ユーザーから届いた銘柄リクエストを審査して処理します。",
-      "empty": "この表示にリクエストはありません。"
+      "empty": "この表示にリクエストはありません。",
+      "coingeckoIdPlaceholder": "coingecko-id"
     },
     "coins": {
       "title": "銘柄",
@@ -226,7 +249,8 @@
       "name": "名称",
       "add": "追加",
       "adding": "追加中…",
-      "added": "銘柄を追加しました。"
+      "added": "銘柄を追加しました。",
+      "coingeckoIdPlaceholder": "例: solana"
     },
     "users": {
       "title": "ユーザー",
@@ -299,7 +323,8 @@
       },
       "kyb": {
         "title": "KYBキュー",
-        "subtitle": "事業者認証の申請を承認・却下します。"
+        "subtitle": "事業者認証の申請を承認・却下します。",
+        "approve": "KYBを承認"
       },
       "deletedSubtitle": "論理削除された会社と拠点を復元します。",
       "deletedEmpty": "削除されたレコードはありません。",
@@ -927,6 +952,12 @@
         "not_found": "このビジネスは存在しません。",
         "failed": "実行できませんでした。もう一度お試しください。"
       }
+    },
+    "points": {
+      "previewOnMap": "地図でプレビュー ↗",
+      "onlineNoCoords": "オンライン — 座標なし",
+      "coinsLabel": "コイン",
+      "rejectedLabel": "却下"
     }
   },
   "exchanges": {
@@ -3036,5 +3067,8 @@
       "revoked": "このリンクは取り消されました.",
       "failed": "問題が発生しました."
     }
+  },
+  "login": {
+    "subtitle": "お好みのプロバイダーで続行するか、パスワードでサインインしてください."
   }
 }

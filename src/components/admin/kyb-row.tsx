@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import type { KybStatus, Prisma } from "@prisma/client";
 import { approveKyb, rejectKyb } from "@/app/actions/kyb";
@@ -26,6 +27,7 @@ export function KybRow({
   submittedAt: string | null;
   rejectionReason: string | null;
 }) {
+  const t = useTranslations("admin");
   const router = useRouter();
   const [pending, start] = useTransition();
   const [reason, setReason] = useState("");
@@ -86,12 +88,12 @@ export function KybRow({
               disabled={pending}
               className="text-[12px] px-3 py-1.5 rounded-md bg-up/15 text-up font-medium disabled:opacity-50"
             >
-              Approve KYB
+              {t("business.kyb.approve")}
             </button>
             <input
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              placeholder="reject reason"
+              placeholder={t("rejectReasonPlaceholder")}
               className="text-[12px] bg-bg-tint border border-hairline rounded-md px-2 py-1"
             />
             <button
@@ -100,7 +102,7 @@ export function KybRow({
               disabled={pending}
               className="text-[12px] px-3 py-1.5 rounded-md bg-down/15 text-down font-medium disabled:opacity-50"
             >
-              Reject
+              {t("reject")}
             </button>
             {error ? <p className="text-[11px] text-red-400">{error}</p> : null}
           </div>

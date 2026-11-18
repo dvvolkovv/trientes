@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { useTranslations } from "next-intl";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,6 +12,7 @@ import { CURRENCIES, type Currency } from "@/lib/currency";
 import { setCurrency } from "@/app/actions/currency";
 
 export function CurrencySwitcher({ current }: { current: Currency }) {
+  const t = useTranslations("common.a11y");
   const [pending, start] = useTransition();
   return (
     <DropdownMenu>
@@ -18,7 +20,7 @@ export function CurrencySwitcher({ current }: { current: Currency }) {
         <button
           type="button"
           disabled={pending}
-          aria-label="Currency"
+          aria-label={t("currency")}
           className="text-xs px-3 py-1.5 rounded-md font-medium uppercase tracking-wider bg-card hover:bg-card-alt text-muted hover:text-foreground border border-hairline transition-colors inline-flex items-center gap-1.5 disabled:opacity-50"
         >
           {current}

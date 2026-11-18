@@ -146,9 +146,10 @@ export async function syncMarkets(deps: {
   // keep the last good snapshot so the board degrades to stale instead of blank.
   if (quotes.length === 0) return { count: 0 };
 
-  // CNBC occasionally drops a single symbol from an otherwise fine response. Merging
-  // over the previous snapshot keeps that card on the board (stale, with its own
-  // timestamp) instead of making it blink out until the next sync.
+  // Источник иногда теряет один символ из в остальном годного ответа (у Yahoo
+  // это отдельный запрос на инструмент, и сорваться может именно он). Слияние с
+  // прошлым снимком оставляет такую карточку на табло — ветхой, со своим
+  // штампом, — вместо того чтобы гасить её до следующего прогона.
   let previous: MarketQuote[] = [];
   try {
     const cached = await deps.redis.get(KEYS.markets);
@@ -323,6 +324,95 @@ export async function syncAdminAddedPrices(deps: {
         rank: r.rank,
         logoUrl: r.logoUrl,
         source: "ADMIN_ADDED",
+      },
+    });
+    await deps.prisma.coinSnapshot.create({
+      data: {
+        coinId: r.id,
+        priceUsd: r.priceUsd,
+        marketCapUsd: r.marketCapUsd,
+        volume24hUsd: r.volume24hUsd,
+        pctChange1h: r.pctChange1h,
+        pctChange24h: r.pctChange24h,
+        pctChange7d: r.pctChange7d,
+        circulatingSupply: r.circulatingSupply,
+        totalSupply: r.totalSupply,
+        maxSupply: r.maxSupply,
+        sparkline7d: r.sparkline7d,
+      },
+    });
+  }
+  return { count: rows.length };
+}
+
+/** Строка выборки: монета с опубликованной карточкой и время её последнего снимка. */
+export type CardedCoinRow = { coinId: string; lastSnapshotAt: Date | null };
+
+/**
+ * Час: главный прогон цен ходит раз в десять минут, поэтому монета, которую
+ * приносит список top-100, под это правило не попадает никогда, а выпавшая из
+ * списка попадает всегда.
+ */
+const CARDED_PRICE_STALE_MS = 60 * 60 * 1000;
+
+/** Кому из монет с карточкой цену никто не принёс. Чистое правило — отдельно от запроса. */
+export function staleCardedIds(rows: readonly CardedCoinRow[], now: Date): string[] {
+  const out: string[] = [];
+  const seen = new Set<string>();
+  for (const r of rows) {
+    if (seen.has(r.coinId)) continue;
+    const stale =
+      r.lastSnapshotAt === null ||
+      now.getTime() - r.lastSnapshotAt.getTime() > CARDED_PRICE_STALE_MS;
+    if (!stale) continue;
+    seen.add(r.coinId);
+    out.push(r.coinId);
+  }
+  return out;
+}
+
+/**
+ * Цены монет, у которых есть опубликованная карточка, но которых не приносит
+ * ни один из двух прежних прогонов.
+ *
+ * `syncPrices` пишет снимок только тому, что пришло в ответе CoinGecko по
+ * категории layer-1, а `syncAdminAddedPrices` — только заведённому руками.
+ * Монета, которая когда-то была в категории, а потом выпала из сотни, остаётся
+ * в каталоге как `AUTO_L1` и цены не получает никогда. Живой случай 18 ноября:
+ * Moonbeam, Moonriver, Secret, AtomOne и Saga стояли с опубликованной карточкой
+ * и нулём снимков за всю жизнь, из-за чего посев рынков отказывал по
+ * `no_reference` (опорная цена сверяет тикер-двойник), а в карточке молчали
+ * капитализация, график и комиссия перевода в долларах.
+ *
+ * В общий список монет (`adminAddedList`) эти монеты сознательно не кладутся:
+ * таблица на главной называется «Top Layer-1», и дописать в неё монету из-за
+ * сотни — значит сменить обещание таблицы, а не починить цену. Карточке и
+ * посеву рынков хватает снимка в базе и ключа монеты в Redis.
+ */
+export async function syncCardedCoinPrices(deps: {
+  listStaleCardedIds: () => Promise<string[]>;
+  fetchByIds: (ids: string[]) => Promise<MarketRow[]>;
+  redis: RedisLike;
+  prisma: PrismaLike;
+}): Promise<{ count: number }> {
+  const ids = await deps.listStaleCardedIds();
+  if (ids.length === 0) return { count: 0 };
+
+  const rows = await deps.fetchByIds(ids);
+  for (const r of rows) {
+    await deps.redis.set(KEYS.coin(r.id), JSON.stringify(r), "EX", TTL.snapshot);
+    await deps.prisma.coin.upsert({
+      where: { id: r.id },
+      update: { symbol: r.symbol, name: r.name, logoUrl: r.logoUrl, rank: r.rank },
+      // Монета уже есть — карточка без строки `Coin` не создаётся; ветка оборонительная.
+      create: {
+        id: r.id,
+        symbol: r.symbol,
+        name: r.name,
+        slug: r.id,
+        rank: r.rank,
+        logoUrl: r.logoUrl,
+        source: "AUTO_L1",
       },
     });
     await deps.prisma.coinSnapshot.create({

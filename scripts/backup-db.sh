@@ -23,7 +23,7 @@ LOG_FILE="${LOG_FILE:-/var/log/trientes/backup.log}"
 log() {
   local line="[$(date -u +%FT%TZ)] $*"
   echo "$line"
-  if [[ -w "$(dirname "$LOG_FILE")" ]] || [[ -w "$LOG_FILE" 2>/dev/null ]]; then
+  if [[ -w "$(dirname "$LOG_FILE")" ]] || [[ -w "$LOG_FILE" ]]; then
     echo "$line" >> "$LOG_FILE" 2>/dev/null || true
   fi
 }

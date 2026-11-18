@@ -18,11 +18,12 @@ export default async function RequestPage({
   if (!isAuthed) redirect(`/${locale}/login`);
 
   const t = await getTranslations("request");
+  const tk = await getTranslations("common.kicker");
   return (
     <main className="max-w-2xl mx-auto px-6 py-10 md:py-16 space-y-12">
       <header>
         <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
-          Section · Request
+          {tk("section")} · {tk("newRequest")}
         </div>
         <h1 className="text-[28px] sm:text-[36px] md:text-[48px] font-bold tracking-[-0.035em]">
           {t("title")}
@@ -32,7 +33,7 @@ export default async function RequestPage({
 
       <section>
         <div className="num text-[11px] uppercase tracking-[0.18em] text-muted mb-2">
-          New request
+          {tk("newRequest")}
         </div>
         <h2 className="text-[20px] md:text-[24px] font-bold tracking-[-0.02em] mb-4">
           {t("newRequest")}
@@ -44,7 +45,7 @@ export default async function RequestPage({
 
       <section>
         <div className="num text-[11px] uppercase tracking-[0.18em] text-muted mb-2">
-          History
+          {tk("history")}
         </div>
         <h2 className="text-[20px] md:text-[24px] font-bold tracking-[-0.02em] mb-4">
           {t("yourRequests")}

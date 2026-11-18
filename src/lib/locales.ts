@@ -10,6 +10,7 @@ export const SUPPORTED_LOCALES = [
   "pt-BR",
   "tr",
   "hr",
+  "sk",
 ] as const;
 
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
@@ -28,6 +29,7 @@ export const LOCALE_LABELS: Record<Locale, string> = {
   "pt-BR": "Português (BR)",
   tr: "Türkçe",
   hr: "Hrvatski",
+  sk: "Slovenčina",
 };
 
 /**
@@ -51,6 +53,7 @@ export const SPEECH_LANG: Record<Locale, string> = {
   "pt-BR": "pt-BR",
   tr: "tr-TR",
   hr: "hr-HR",
+  sk: "sk-SK",
 };
 
 export function speechLang(locale: string): string {

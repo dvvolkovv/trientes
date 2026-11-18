@@ -21,6 +21,7 @@ export default async function AdminFintechPage({
   // История решений по своей очереди: нет доступа — нет страницы.
   if (!(await requireQueue("fintech", "VIEW")).ok) notFound();
   const t = await getTranslations();
+  const tk = await getTranslations("common");
 
   const status =
     tab === "approved" ? "APPROVED" : tab === "rejected" ? "REJECTED" : "PENDING";
@@ -49,7 +50,7 @@ export default async function AdminFintechPage({
     <>
       <AdminNav locale={locale} active="fintech" />
       <header className="mb-8">
-        <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-3">Admin</div>
+        <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-3">{tk("kicker.admin")}</div>
         <h1 className="text-[40px] md:text-[48px] font-bold tracking-[-0.03em] mb-2">{t("fintech.admin.title")}</h1>
         <p className="text-muted">{t("fintech.admin.subtitle")}</p>
       </header>

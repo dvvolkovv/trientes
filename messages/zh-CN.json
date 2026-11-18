@@ -34,7 +34,26 @@
       "company": "公司"
     },
     "machineTranslated": "机器翻译",
-    "showOriginal": "原文"
+    "showOriginal": "原文",
+    "kicker": {
+      "section": "栏目",
+      "newsflow": "新闻流",
+      "signIn": "登录",
+      "newRequest": "新请求",
+      "history": "历史",
+      "admin": "管理"
+    },
+    "a11y": {
+      "openMenu": "打开菜单",
+      "closeMenu": "关闭菜单",
+      "close": "关闭",
+      "currency": "货币"
+    },
+    "meta": {
+      "title": "Trientes — 数字货币的账本",
+      "description": "实时价格、交易所、金融科技名录，以及提供{count}种语言的实地加密导航。",
+      "pageDescription": "Trientes — 实时加密货币价格、交易所、金融科技目录以及实地导航器。"
+    }
   },
   "home": {
     "title": "欢迎",
@@ -61,7 +80,8 @@
     "mood": {
       "bull": "牛市",
       "bear": "熊市"
-    }
+    },
+    "topCoinsHeading": "顶级 Layer-1."
   },
   "listing": {
     "rank": "#",
@@ -138,7 +158,9 @@
     "live": "实时",
     "jumpNavigator": "导航",
     "jumpExchanges": "主要交易所",
-    "jumpNews": "新闻"
+    "jumpNews": "新闻",
+    "rankBadge": "排名 {rank}",
+    "assetKicker": "Layer-1 · 原生资产"
   },
   "watchlist": {
     "title": "收藏",
@@ -209,7 +231,8 @@
     "requests": {
       "title": "币种申请",
       "subtitle": "审核并处理用户提交的币种申请。",
-      "empty": "此视图下没有申请。"
+      "empty": "此视图下没有申请。",
+      "coingeckoIdPlaceholder": "coingecko-id"
     },
     "coins": {
       "title": "币种",
@@ -226,7 +249,8 @@
       "name": "名称",
       "add": "添加",
       "adding": "添加中…",
-      "added": "币种已添加。"
+      "added": "币种已添加。",
+      "coingeckoIdPlaceholder": "例如 solana"
     },
     "users": {
       "title": "用户",
@@ -299,7 +323,8 @@
       },
       "kyb": {
         "title": "KYB 队列",
-        "subtitle": "审核企业认证申请。"
+        "subtitle": "审核企业认证申请。",
+        "approve": "批准 KYB"
       },
       "deletedSubtitle": "恢复被软删除的公司与网点。",
       "deletedEmpty": "没有已删除的记录。",
@@ -927,6 +952,12 @@
         "not_found": "该商家已不存在。",
         "failed": "无法完成此操作。请重试。"
       }
+    },
+    "points": {
+      "previewOnMap": "在地图上预览 ↗",
+      "onlineNoCoords": "在线 — 无坐标",
+      "coinsLabel": "代币",
+      "rejectedLabel": "已拒绝"
     }
   },
   "exchanges": {
@@ -3036,5 +3067,8 @@
       "revoked": "此链接已被撤销。",
       "failed": "出现问题。"
     }
+  },
+  "login": {
+    "subtitle": "通过您首选的提供商继续，或使用密码登录。"
   }
 }

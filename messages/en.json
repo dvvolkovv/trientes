@@ -34,7 +34,26 @@
       "company": "Company"
     },
     "machineTranslated": "machine translation",
-    "showOriginal": "original"
+    "showOriginal": "original",
+    "kicker": {
+      "section": "Section",
+      "newsflow": "Newsflow",
+      "signIn": "Sign in",
+      "newRequest": "New request",
+      "history": "History",
+      "admin": "Admin"
+    },
+    "a11y": {
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu",
+      "close": "Close",
+      "currency": "Currency"
+    },
+    "meta": {
+      "title": "Trientes — the ledger of digital coinage",
+      "description": "Live prices, exchanges, fintech directory and an on-the-ground crypto navigator in {count} languages.",
+      "pageDescription": "Trientes — live crypto prices, exchanges, a fintech directory and an on-the-ground navigator."
+    }
   },
   "home": {
     "title": "Welcome",
@@ -61,7 +80,8 @@
     "mood": {
       "bull": "Bull market",
       "bear": "Bear market"
-    }
+    },
+    "topCoinsHeading": "Top Layer-1."
   },
   "listing": {
     "rank": "#",
@@ -138,7 +158,9 @@
     "live": "Live",
     "jumpNavigator": "Navigator",
     "jumpExchanges": "Top exchanges",
-    "jumpNews": "News"
+    "jumpNews": "News",
+    "rankBadge": "Rank {rank}",
+    "assetKicker": "Layer-1 · Native asset"
   },
   "watchlist": {
     "title": "Watchlist",
@@ -209,7 +231,8 @@
     "requests": {
       "title": "Coin requests",
       "subtitle": "Review and act on user-submitted coin requests.",
-      "empty": "No requests in this view."
+      "empty": "No requests in this view.",
+      "coingeckoIdPlaceholder": "coingecko-id"
     },
     "coins": {
       "title": "Coins",
@@ -226,7 +249,8 @@
       "name": "Name",
       "add": "Add",
       "adding": "Adding…",
-      "added": "Coin added."
+      "added": "Coin added.",
+      "coingeckoIdPlaceholder": "e.g. solana"
     },
     "users": {
       "title": "Users",
@@ -299,7 +323,8 @@
       },
       "kyb": {
         "title": "KYB queue",
-        "subtitle": "Approve or reject company verification submissions."
+        "subtitle": "Approve or reject company verification submissions.",
+        "approve": "Approve KYB"
       },
       "deletedSubtitle": "Restore soft-deleted companies and locations.",
       "deletedEmpty": "No deleted records.",
@@ -927,6 +952,12 @@
         "not_found": "This business no longer exists.",
         "failed": "Could not do that. Please try again."
       }
+    },
+    "points": {
+      "previewOnMap": "preview on map ↗",
+      "onlineNoCoords": "online — no coordinates",
+      "coinsLabel": "coins",
+      "rejectedLabel": "Rejected"
     }
   },
   "exchanges": {
@@ -3036,5 +3067,8 @@
       "revoked": "This link was revoked.",
       "failed": "Something went wrong."
     }
+  },
+  "login": {
+    "subtitle": "Continue with your preferred provider or sign in with a password."
   }
 }

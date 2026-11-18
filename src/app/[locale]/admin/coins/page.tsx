@@ -18,6 +18,7 @@ export default async function AdminCoinsPage({
   // Управление системой, а не работа по заявке: только владелец.
   if (!(await requireOwner()).ok) redirect(`/${locale}/admin/queues`);
   const t = await getTranslations("admin");
+  const tk = await getTranslations("common");
 
   const coins = await prisma.coin.findMany({
     orderBy: [{ source: "asc" }, { rank: "asc" }],
@@ -39,7 +40,7 @@ export default async function AdminCoinsPage({
       <AdminNav locale={locale} active="coins" />
       <header className="mb-8">
         <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-3">
-          Admin
+          {tk("kicker.admin")}
         </div>
         <h1 className="text-[40px] md:text-[48px] font-bold tracking-[-0.03em] mb-2">
           {t("coins.title")}

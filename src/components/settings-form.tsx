@@ -3,10 +3,22 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { updatePreferences } from "@/app/actions/settings";
+import { useTranslations } from "next-intl";
 import { SUPPORTED_LOCALES, LOCALE_LABELS } from "@/lib/locales";
 
 const CURRENCIES = ["USD", "EUR", "RUB", "GBP", "JPY", "CNY", "BTC", "ETH", "DASH"];
-const THEMES = ["light", "dark", "system"];
+const THEMES = ["light", "dark", "system"] as const;
+
+/**
+ * Значение темы в базе и его подпись на экране — разные вещи: значение
+ * («dark») уходит в настройки, подпись читает человек и обязана быть на его
+ * языке. Карта держит их рядом, чтобы новая тема не выехала английским словом.
+ */
+const THEME_LABEL_KEYS: Record<(typeof THEMES)[number], string> = {
+  light: "themeLight",
+  dark: "themeDark",
+  system: "themeSystem",
+};
 
 const fieldCls =
   "w-full bg-card border border-hairline rounded-md px-3 py-2 text-sm placeholder:text-muted focus:ring-1 focus:ring-accent outline-none";
@@ -22,6 +34,7 @@ export function SettingsForm(props: {
   const [theme, setTheme] = useState(props.initialTheme);
   const [pending, start] = useTransition();
   const router = useRouter();
+  const t = useTranslations("common");
 
   return (
     <form
@@ -35,7 +48,7 @@ export function SettingsForm(props: {
       }}
     >
       <div>
-        <label className={labelCls}>Language</label>
+        <label className={labelCls}>{t("languageLabel")}</label>
         <select
           className={fieldCls}
           value={locale}
@@ -49,7 +62,7 @@ export function SettingsForm(props: {
         </select>
       </div>
       <div>
-        <label className={labelCls}>Currency</label>
+        <label className={labelCls}>{t("currencyLabel")}</label>
         <select
           className={fieldCls}
           value={currency}
@@ -63,15 +76,15 @@ export function SettingsForm(props: {
         </select>
       </div>
       <div>
-        <label className={labelCls}>Theme</label>
+        <label className={labelCls}>{t("themeLabel")}</label>
         <select
           className={fieldCls}
           value={theme}
           onChange={(e) => setTheme(e.target.value)}
         >
-          {THEMES.map((t) => (
-            <option key={t} value={t}>
-              {t}
+          {THEMES.map((value) => (
+            <option key={value} value={value}>
+              {t(THEME_LABEL_KEYS[value])}
             </option>
           ))}
         </select>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { approvePoint, rejectPoint } from "@/app/actions/admin-points";
 import { requestOrDeletePoint } from "@/app/actions/company-deletion";
@@ -22,6 +23,7 @@ export type PointRowData = {
 };
 
 export function PointRow({ row }: { row: PointRowData }) {
+  const t = useTranslations("admin");
   const [pending, start] = useTransition();
   const [reason, setReason] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -57,15 +59,15 @@ export function PointRow({ row }: { row: PointRowData }) {
                 rel="noopener noreferrer"
                 href={`https://www.openstreetmap.org/?mlat=${row.lat}&mlon=${row.lon}#map=17/${row.lat}/${row.lon}`}
               >
-                preview on map ↗
+                {t("points.previewOnMap")}
               </a>
             </>
           ) : (
-            <div className="text-[11px] text-muted">online — no coordinates</div>
+            <div className="text-[11px] text-muted">{t("points.onlineNoCoords")}</div>
           )}
           {row.acceptedCoinIds.length > 0 && (
             <div className="text-[11px] text-muted mt-1">
-              coins: {row.acceptedCoinIds.join(", ")}
+              {t("points.coinsLabel")}: {row.acceptedCoinIds.join(", ")}
             </div>
           )}
         </div>
@@ -77,12 +79,12 @@ export function PointRow({ row }: { row: PointRowData }) {
               onClick={() => act(() => approvePoint({ pointId: row.id }))}
               className="text-[12px] px-3 py-1.5 rounded-md bg-up/15 text-up font-medium"
             >
-              Approve
+              {t("approve")}
             </button>
             <input
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              placeholder="reject reason"
+              placeholder={t("rejectReasonPlaceholder")}
               className="text-[12px] bg-bg-tint border border-hairline rounded-md px-2 py-1"
             />
             <button
@@ -93,7 +95,7 @@ export function PointRow({ row }: { row: PointRowData }) {
               }
               className="text-[12px] px-3 py-1.5 rounded-md bg-down/15 text-down font-medium"
             >
-              Reject
+              {t("reject")}
             </button>
             <button
               type="button"
@@ -103,14 +105,14 @@ export function PointRow({ row }: { row: PointRowData }) {
               }
               className="text-[12px] px-3 py-1.5 rounded-md border border-down text-down font-medium"
             >
-              Delete
+              {t("companies.delete")}
             </button>
           </div>
         )}
       </div>
       {row.status === "REJECTED" && row.rejectReason && (
         <div className="text-[12px] text-down mt-2">
-          Rejected: {row.rejectReason}
+          {t("points.rejectedLabel")}: {row.rejectReason}
         </div>
       )}
       {error && <div className="text-[12px] text-down mt-2">Error: {error}</div>}

@@ -4,7 +4,8 @@
  * пользовательский ввод, иначе «проверено в сети» означало бы «проверено на
  * сервере, который выбрал сам проект».
  *
- * Все двадцать адресов и chain-id проверены живым GET-запросом 9 ноября 2026.
+ * Все адреса и chain-id проверены живым GET-запросом (9 ноября 2026, Initia
+ * переехала 18 ноября — см. комментарий у сети).
  * Деном и порядок — из ответа `bank/supply/by_denom` и публичной документации
  * сети; расхождение ожидаемого chain-id с ответом узла попадает в mismatches.
  */
@@ -94,16 +95,13 @@ export const COSMOS_CHAINS: readonly CosmosChain[] = [
     symbol: "NTRN",
     bech32Prefix: "neutron",
   },
-  {
-    key: "stride",
-    label: "Stride",
-    defaultRestUrl: "https://stride-api.polkachu.com",
-    chainId: "stride-1",
-    denom: "ustrd",
-    exponent: 6,
-    symbol: "STRD",
-    bech32Prefix: "stride",
-  },
+  // Stride снят 18 ноября 2026: публичного REST, отвечающего своей сетью, не
+  // осталось. `stride-api.polkachu.com` и `public.stakewolle.com/cosmos/stride/rest`
+  // отдают `agoric-3` (moniker `hello-agoric-relayer`, bond_denom `ubld`), а все
+  // прочие адреса из chain-registry не отвечают вовсе. Охранник идентичности
+  // поймал подмену (`genesis_mismatch`) и чужих чисел в карточку не пустил —
+  // но карточка, которую нечем проверить, в посеве не держится (тот же разбор,
+  // что у sei/evmos/kujira в слайсе W).
   {
     key: "dymension",
     label: "Dymension",
@@ -207,7 +205,9 @@ export const COSMOS_CHAINS: readonly CosmosChain[] = [
   {
     key: "initia",
     label: "Initia",
-    defaultRestUrl: "https://rest.initia.xyz",
+    // `rest.initia.xyz` отдавал 502 на каждый запрос 18 ноября 2026 — узел
+    // собственного адреса сети лежал, поэтому адрес переехал на polkachu.
+    defaultRestUrl: "https://initia-api.polkachu.com",
     chainId: "interwoven-1",
     denom: "uinit",
     exponent: 6,

@@ -7,7 +7,10 @@ export const KEYS = {
   exchangeRates: "exchange:rates",
   news: "news:latest",
   fearGreed: "fng:latest",
-  markets: "snapshot:markets",
+  // v2: символы инструментов переехали с записи CNBC («.SPX», «@GC.1») на
+  // запись Yahoo («^GSPC», «GC=F»), и слияние с прежним снимком дало бы на
+  // табло двадцать карточек вместо десяти.
+  markets: "snapshot:markets:v2",
   tickers: (id: string) => `tickers:${id}`,
 } as const;
 

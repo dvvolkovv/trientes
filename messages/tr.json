@@ -34,7 +34,26 @@
       "company": "Şirket"
     },
     "machineTranslated": "makine çevirisi",
-    "showOriginal": "özgün metin"
+    "showOriginal": "özgün metin",
+    "kicker": {
+      "section": "Bölüm",
+      "newsflow": "Haber akışı",
+      "signIn": "Giriş yap",
+      "newRequest": "Yeni talep",
+      "history": "Geçmiş",
+      "admin": "Yönetici"
+    },
+    "a11y": {
+      "openMenu": "Menüyü aç",
+      "closeMenu": "Menüyü kapat",
+      "close": "Kapat",
+      "currency": "Para birimi"
+    },
+    "meta": {
+      "title": "Trientes — dijital paranın defteri",
+      "description": "Canlı fiyatlar, borsalar, fintech dizini ve sahada kripto rehberi; {count} dilde.",
+      "pageDescription": "Trientes — canlı kripto fiyatları, borsalar, bir fintech dizini ve yerinde navigasyon."
+    }
   },
   "home": {
     "title": "Hoş geldiniz",
@@ -61,7 +80,8 @@
     "mood": {
       "bull": "Boğa piyasası",
       "bear": "Ayı piyasası"
-    }
+    },
+    "topCoinsHeading": "En iyi Layer-1."
   },
   "listing": {
     "rank": "#",
@@ -138,7 +158,9 @@
     "live": "Canlı",
     "jumpNavigator": "Navigatör",
     "jumpExchanges": "Öne çıkan borsalar",
-    "jumpNews": "Haberler"
+    "jumpNews": "Haberler",
+    "rankBadge": "Sıra {rank}",
+    "assetKicker": "Layer-1 · Yerel varlık"
   },
   "watchlist": {
     "title": "İzleme listesi",
@@ -209,7 +231,8 @@
     "requests": {
       "title": "Coin talepleri",
       "subtitle": "Kullanıcıların gönderdiği coin taleplerini inceleyip karara bağlayın.",
-      "empty": "Bu görünümde talep yok."
+      "empty": "Bu görünümde talep yok.",
+      "coingeckoIdPlaceholder": "coingecko-id"
     },
     "coins": {
       "title": "Coinler",
@@ -226,7 +249,8 @@
       "name": "Ad",
       "add": "Ekle",
       "adding": "Ekleniyor…",
-      "added": "Coin eklendi."
+      "added": "Coin eklendi.",
+      "coingeckoIdPlaceholder": "örn. solana"
     },
     "users": {
       "title": "Kullanıcılar",
@@ -299,7 +323,8 @@
       },
       "kyb": {
         "title": "KYB kuyruğu",
-        "subtitle": "İşletme doğrulama başvurularını onayla veya reddet."
+        "subtitle": "İşletme doğrulama başvurularını onayla veya reddet.",
+        "approve": "KYB'yi onayla"
       },
       "deletedSubtitle": "Yumuşak silinen şirketleri ve noktaları geri getirin.",
       "deletedEmpty": "Silinmiş kayıt yok.",
@@ -927,6 +952,12 @@
         "not_found": "Bu işletme artık yok.",
         "failed": "Bu yapılamadı. Lütfen tekrar deneyin."
       }
+    },
+    "points": {
+      "previewOnMap": "haritada önizle ↗",
+      "onlineNoCoords": "çevrimiçi — koordinat yok",
+      "coinsLabel": "coinler",
+      "rejectedLabel": "Reddedildi"
     }
   },
   "exchanges": {
@@ -3036,5 +3067,8 @@
       "revoked": "Bu bağlantı iptal edildi.",
       "failed": "Bir şeyler ters gitti."
     }
+  },
+  "login": {
+    "subtitle": "Tercih ettiğiniz sağlayıcıyla devam edin veya parola ile oturum açın."
   }
 }

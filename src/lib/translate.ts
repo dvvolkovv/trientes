@@ -1,7 +1,16 @@
+import type { Locale } from "@/lib/locales";
+
 // Machine-translate the visible text of a small HTML fragment via OpenAI, preserving
 // tags and links. Best-effort: returns null on any failure (no key, timeout, bad response).
 
-const LANG_NAMES: Record<string, string> = {
+/**
+ * Английский здесь отсутствует намеренно: для фида CoinGecko он и есть
+ * источник, и `targetLanguageName` возвращает на него `null`.
+ *
+ * Тип требует перечислить все остальные локали: своя копия списка в коде уже
+ * однажды отставала на язык, и тогда новый язык молча получал английскую прозу.
+ */
+const LANG_NAMES: Record<Exclude<Locale, "en">, string> = {
   ru: "Russian",
   de: "German",
   es: "Spanish",
@@ -12,12 +21,13 @@ const LANG_NAMES: Record<string, string> = {
   tr: "Turkish",
   "zh-CN": "Simplified Chinese",
   hr: "Croatian",
+  sk: "Slovak",
 };
 
 // English (and any locale we don't translate to) returns null → caller serves the source.
 // Это контракт фида CoinGecko: там английский и есть источник.
 export function targetLanguageName(locale: string): string | null {
-  return LANG_NAMES[locale] ?? null;
+  return LANG_NAMES[locale as Exclude<Locale, "en">] ?? null;
 }
 
 // Для пользовательской прозы источником может быть любой язык, поэтому
@@ -33,7 +43,7 @@ export async function translateHtml(
   locale: string,
   timeoutMs = 12000,
 ): Promise<string | null> {
-  const lang = LANG_NAMES[locale];
+  const lang = LANG_NAMES[locale as Exclude<Locale, "en">];
   const apiKey = process.env.OPENAI_API_KEY;
   if (!lang || !apiKey || !html) return null;
 

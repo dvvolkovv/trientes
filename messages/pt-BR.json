@@ -34,7 +34,26 @@
       "company": "Empresa"
     },
     "machineTranslated": "tradução automática",
-    "showOriginal": "original"
+    "showOriginal": "original",
+    "kicker": {
+      "section": "Seção",
+      "newsflow": "Fluxo de notícias",
+      "signIn": "Entrar",
+      "newRequest": "Nova solicitação",
+      "history": "Histórico",
+      "admin": "Admin"
+    },
+    "a11y": {
+      "openMenu": "Abrir menu",
+      "closeMenu": "Fechar menu",
+      "close": "Fechar",
+      "currency": "Moeda"
+    },
+    "meta": {
+      "title": "Trientes — o livro-razão das moedas digitais",
+      "description": "Preços em tempo real, exchanges, diretório de fintechs e um navegador cripto em campo em {count} idiomas.",
+      "pageDescription": "Trientes — preços de cripto ao vivo, exchanges, um diretório de fintechs e um guia em campo."
+    }
   },
   "home": {
     "title": "Bem-vindo",
@@ -61,7 +80,8 @@
     "mood": {
       "bull": "Mercado em alta",
       "bear": "Mercado em baixa"
-    }
+    },
+    "topCoinsHeading": "Principais Layer-1."
   },
   "listing": {
     "rank": "#",
@@ -138,7 +158,9 @@
     "live": "Ao vivo",
     "jumpNavigator": "Navegador",
     "jumpExchanges": "Principais exchanges",
-    "jumpNews": "Notícias"
+    "jumpNews": "Notícias",
+    "rankBadge": "Ranking {rank}",
+    "assetKicker": "Layer-1 · Ativo nativo"
   },
   "watchlist": {
     "title": "Favoritos",
@@ -209,7 +231,8 @@
     "requests": {
       "title": "Solicitações de moedas",
       "subtitle": "Analise e resolva as solicitações de moedas enviadas pelos usuários.",
-      "empty": "Nenhuma solicitação nesta visão."
+      "empty": "Nenhuma solicitação nesta visão.",
+      "coingeckoIdPlaceholder": "coingecko-id"
     },
     "coins": {
       "title": "Moedas",
@@ -226,7 +249,8 @@
       "name": "Nome",
       "add": "Adicionar",
       "adding": "Adicionando…",
-      "added": "Moeda adicionada."
+      "added": "Moeda adicionada.",
+      "coingeckoIdPlaceholder": "ex.: solana"
     },
     "users": {
       "title": "Usuários",
@@ -299,7 +323,8 @@
       },
       "kyb": {
         "title": "Fila KYB",
-        "subtitle": "Aprove ou rejeite verificações de empresas."
+        "subtitle": "Aprove ou rejeite verificações de empresas.",
+        "approve": "Aprovar KYB"
       },
       "deletedSubtitle": "Restaure empresas e pontos excluídos de forma suave.",
       "deletedEmpty": "Nenhum registro excluído.",
@@ -927,6 +952,12 @@
         "not_found": "Esta empresa não existe mais.",
         "failed": "Não foi possível fazer isso. Tente novamente."
       }
+    },
+    "points": {
+      "previewOnMap": "pré-visualizar no mapa ↗",
+      "onlineNoCoords": "online — sem coordenadas",
+      "coinsLabel": "moedas",
+      "rejectedLabel": "Rejeitado"
     }
   },
   "exchanges": {
@@ -3036,5 +3067,8 @@
       "revoked": "Este link foi revogado.",
       "failed": "Algo deu errado."
     }
+  },
+  "login": {
+    "subtitle": "Continue com seu provedor preferido ou entre com uma senha."
   }
 }

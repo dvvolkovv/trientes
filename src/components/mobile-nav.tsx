@@ -1,8 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { useTranslations } from "next-intl";
 
 export function MobileNav({ children }: { children: React.ReactNode }) {
+  const t = useTranslations("common.a11y");
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -51,7 +53,7 @@ export function MobileNav({ children }: { children: React.ReactNode }) {
         <button
           type="button"
           onClick={() => setOpen(false)}
-          aria-label="Close menu"
+          aria-label={t("closeMenu")}
           className="absolute top-4 right-4 inline-flex items-center justify-center w-9 h-9 rounded-md text-muted hover:text-foreground hover:bg-card-alt transition-colors"
         >
           <svg
@@ -93,7 +95,7 @@ export function MobileNav({ children }: { children: React.ReactNode }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label="Open menu"
+        aria-label={t("openMenu")}
         className="min-[1800px]:hidden inline-flex shrink-0 items-center justify-center w-9 h-9 rounded-md text-muted hover:text-foreground hover:bg-card-alt transition-colors"
       >
         <svg

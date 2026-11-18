@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import { SUPPORTED_LOCALES } from "@/lib/locales";
 import Link from "next/link";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
@@ -75,6 +77,29 @@ function fmtPct(n: number | null): { text: string; cls: string } {
   return {
     text: `${sign}${n.toFixed(2)}%`,
     cls: n >= 0 ? "text-up" : "text-down",
+  };
+}
+
+
+/**
+ * Свой заголовок и свой адрес. Без этого страница наследовала заголовок
+ * главной и — из корневой раскладки — её `canonical`, то есть объявляла себя
+ * дубликатом главной во всех языках.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "compare" });
+  const tm = await getTranslations({ locale, namespace: "common.meta" });
+  const languages: Record<string, string> = {};
+  for (const l of SUPPORTED_LOCALES) languages[l] = `/${l}/compare`;
+  return {
+    title: t("title"),
+    description: t("subtitle"),
+    alternates: { canonical: `/${locale}/compare`, languages },
   };
 }
 

@@ -34,7 +34,26 @@
       "company": "기업"
     },
     "machineTranslated": "기계 번역",
-    "showOriginal": "원문"
+    "showOriginal": "원문",
+    "kicker": {
+      "section": "섹션",
+      "newsflow": "뉴스플로우",
+      "signIn": "로그인",
+      "newRequest": "새 요청",
+      "history": "기록",
+      "admin": "관리자"
+    },
+    "a11y": {
+      "openMenu": "메뉴 열기",
+      "closeMenu": "메뉴 닫기",
+      "close": "닫기",
+      "currency": "통화"
+    },
+    "meta": {
+      "title": "Trientes — 디지털 화폐의 원장",
+      "description": "실시간 가격, 거래소, 핀테크 디렉터리, 그리고 {count}개 언어로 제공되는 현장형 크립토 내비게이터.",
+      "pageDescription": "Trientes — 실시간 암호화폐 시세, 거래소, 핀테크 디렉터리, 그리고 현장 내비게이터."
+    }
   },
   "home": {
     "title": "환영합니다",
@@ -61,7 +80,8 @@
     "mood": {
       "bull": "강세장",
       "bear": "약세장"
-    }
+    },
+    "topCoinsHeading": "상위 레이어-1."
   },
   "listing": {
     "rank": "#",
@@ -138,7 +158,9 @@
     "live": "실시간",
     "jumpNavigator": "내비게이터",
     "jumpExchanges": "주요 거래소",
-    "jumpNews": "뉴스"
+    "jumpNews": "뉴스",
+    "rankBadge": "순위 {rank}",
+    "assetKicker": "레이어-1 · 네이티브 자산"
   },
   "watchlist": {
     "title": "관심목록",
@@ -209,7 +231,8 @@
     "requests": {
       "title": "코인 요청",
       "subtitle": "사용자가 보낸 코인 요청을 심사하고 처리합니다.",
-      "empty": "이 보기에는 요청이 없습니다."
+      "empty": "이 보기에는 요청이 없습니다.",
+      "coingeckoIdPlaceholder": "coingecko-id"
     },
     "coins": {
       "title": "코인",
@@ -226,7 +249,8 @@
       "name": "이름",
       "add": "추가",
       "adding": "추가 중…",
-      "added": "코인을 추가했습니다."
+      "added": "코인을 추가했습니다.",
+      "coingeckoIdPlaceholder": "예: solana"
     },
     "users": {
       "title": "사용자",
@@ -299,7 +323,8 @@
       },
       "kyb": {
         "title": "KYB 대기열",
-        "subtitle": "기업 인증 신청을 승인 또는 거부합니다."
+        "subtitle": "기업 인증 신청을 승인 또는 거부합니다.",
+        "approve": "KYB 승인"
       },
       "deletedSubtitle": "소프트 삭제된 회사와 지점을 복원합니다.",
       "deletedEmpty": "삭제된 레코드가 없습니다.",
@@ -927,6 +952,12 @@
         "not_found": "이 비즈니스는 더 이상 존재하지 않습니다.",
         "failed": "실행할 수 없습니다. 다시 시도해 주세요."
       }
+    },
+    "points": {
+      "previewOnMap": "지도에서 미리보기 ↗",
+      "onlineNoCoords": "온라인 — 좌표 없음",
+      "coinsLabel": "코인",
+      "rejectedLabel": "거부됨"
     }
   },
   "exchanges": {
@@ -3036,5 +3067,8 @@
       "revoked": "이 링크는 철회되었습니다.",
       "failed": "문제가 발생했습니다."
     }
+  },
+  "login": {
+    "subtitle": "선호하는 제공업체로 계속하거나 비밀번호로 로그인하세요."
   }
 }

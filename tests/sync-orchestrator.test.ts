@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { syncPrices, syncGlobal, syncExchangeRates, syncExchanges, syncAdminAddedPrices, syncFearGreed, syncMarkets, syncCoinPaprikaExchanges } from "@/lib/sync/orchestrator";
+import { syncPrices, syncGlobal, syncExchangeRates, syncExchanges, syncAdminAddedPrices, syncCardedCoinPrices, staleCardedIds, syncFearGreed, syncMarkets, syncCoinPaprikaExchanges } from "@/lib/sync/orchestrator";
 import { KEYS } from "@/lib/sync/keys";
 import type { MarketRow, GlobalSnap, Exchange } from "@/lib/coingecko";
 import type { FearGreed } from "@/lib/fear-greed";
@@ -467,5 +467,62 @@ describe("syncCoinPaprikaExchanges", () => {
     expect(updates).toHaveLength(1);
     expect(updates[0].id).toBe("gdax");
     expect(fakePrisma.exchange.create).not.toHaveBeenCalled();
+  });
+});
+
+describe("syncCardedCoinPrices", () => {
+  it("пишет снимок и ключ монеты, но не трогает общий список", async () => {
+    const { redisStore, fakeRedis, fakePrisma, createdSnapshots } = makeFakes();
+    const glmr: MarketRow = { ...row, id: "moonbeam", symbol: "GLMR", name: "Moonbeam", rank: 312 };
+    const res = await syncCardedCoinPrices({
+      listStaleCardedIds: async () => ["moonbeam"],
+      fetchByIds: async (ids) => (ids.includes("moonbeam") ? [glmr] : []),
+      redis: fakeRedis as never,
+      prisma: fakePrisma as never,
+    });
+    expect(res.count).toBe(1);
+    expect(createdSnapshots).toEqual([{ coinId: "moonbeam", priceUsd: glmr.priceUsd }]);
+    expect(redisStore.get(KEYS.coin("moonbeam"))).toBeDefined();
+    // Таблица на главной обещает «Top Layer-1» — монета из-за сотни в неё не дописывается.
+    expect(redisStore.has(KEYS.adminAddedList)).toBe(false);
+    expect(redisStore.has(KEYS.topList)).toBe(false);
+  });
+
+  it("ничего не запрашивает, когда нечего освежать", async () => {
+    const { fakeRedis, fakePrisma } = makeFakes();
+    const fetchByIds = vi.fn(async () => [] as MarketRow[]);
+    const res = await syncCardedCoinPrices({
+      listStaleCardedIds: async () => [],
+      fetchByIds,
+      redis: fakeRedis as never,
+      prisma: fakePrisma as never,
+    });
+    expect(res.count).toBe(0);
+    expect(fetchByIds).not.toHaveBeenCalled();
+  });
+});
+
+describe("staleCardedIds", () => {
+  const now = new Date("2026-11-18T10:00:00Z");
+
+  it("берёт монету без снимка вовсе", () => {
+    expect(staleCardedIds([{ coinId: "secret", lastSnapshotAt: null }], now)).toEqual(["secret"]);
+  });
+
+  it("берёт монету, снимок которой старше часа", () => {
+    const rows = [
+      { coinId: "moonbeam", lastSnapshotAt: new Date("2026-11-18T08:30:00Z") },
+      { coinId: "bitcoin", lastSnapshotAt: new Date("2026-11-18T09:55:00Z") },
+    ];
+    // Главный прогон ходит раз в десять минут, поэтому монета из сотни сюда не попадает.
+    expect(staleCardedIds(rows, now)).toEqual(["moonbeam"]);
+  });
+
+  it("не возвращает одну монету дважды", () => {
+    const rows = [
+      { coinId: "saga-2", lastSnapshotAt: null },
+      { coinId: "saga-2", lastSnapshotAt: null },
+    ];
+    expect(staleCardedIds(rows, now)).toEqual(["saga-2"]);
   });
 });

@@ -150,7 +150,10 @@ export const SUBSTRATE_CHAINS: readonly SubstrateChain[] = [
     ss58Format: 2135,
     symbol: "ENJ",
     balancesPallet: 6,
-    transactionVersion: 18,
+    // 18 ноября 2026 сеть обновила рантайм: spec 1080, transactionVersion 19.
+    // Комиссия стала `runtime_changed` — охранник сработал верно. Индекс палеты
+    // балансов проверен живым `payment_queryInfo` на новой версии и не изменился.
+    transactionVersion: 19,
   },
   {
     key: "polymesh",

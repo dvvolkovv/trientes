@@ -1,4 +1,5 @@
 import { redis } from "@/lib/redis";
+import type { Locale } from "@/lib/locales";
 
 export type WikipediaSummary = {
   title: string;
@@ -7,7 +8,8 @@ export type WikipediaSummary = {
   locale: string;
 };
 
-const WIKI_LOCALE: Record<string, string> = {
+/** Тип обязывает перечислить все локали: без строки язык молча читал бы английскую статью. */
+const WIKI_LOCALE: Record<Locale, string> = {
   "en": "en",
   "ru": "ru",
   "de": "de",
@@ -19,13 +21,14 @@ const WIKI_LOCALE: Record<string, string> = {
   "tr": "tr",
   "zh-CN": "zh",
   "hr": "hr",
+  "sk": "sk",
 };
 
 const TTL_SECONDS = 60 * 60 * 24; // 24h
 const NEG_TTL_SECONDS = 60 * 60 * 6; // 6h for "not found"
 
 function wikiLocale(appLocale: string): string {
-  return WIKI_LOCALE[appLocale] ?? "en";
+  return WIKI_LOCALE[appLocale as Locale] ?? "en";
 }
 
 async function fetchOnce(lang: string, title: string): Promise<WikipediaSummary | null> {

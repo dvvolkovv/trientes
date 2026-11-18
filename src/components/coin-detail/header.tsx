@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { MarketRow, ExchangeRates } from "@/lib/coingecko";
 import { formatPriceInCurrency, type Currency } from "@/lib/currency";
 import { formatPercent } from "@/lib/format";
+import { useTranslations } from "next-intl";
 import { WatchlistButton } from "@/components/watchlist-button";
 
 export function CoinHeader({
@@ -19,6 +20,7 @@ export function CoinHeader({
   isAuthed: boolean;
   locale: string;
 }) {
+  const t = useTranslations("detail");
   const pct = row.pctChange24h;
   const pctCls =
     pct === null ? "text-muted" : pct >= 0 ? "text-up" : "text-down";
@@ -57,11 +59,11 @@ export function CoinHeader({
                 {row.symbol}
               </span>
               <span className="num text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-sm bg-card-alt text-muted-strong border border-hairline">
-                <span className="text-accent">★</span> Rank {row.rank}
+                <span className="text-accent">★</span> {t("rankBadge", { rank: row.rank })}
               </span>
             </div>
             <div className="mt-2 num text-[11px] uppercase tracking-[0.2em] text-muted">
-              Layer-1 · Native asset
+              {t("assetKicker")}
             </div>
           </div>
         </div>

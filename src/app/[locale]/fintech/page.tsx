@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import { SUPPORTED_LOCALES } from "@/lib/locales";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import type { Prisma, FintechService, FintechKyc } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
@@ -18,6 +20,29 @@ type SearchParams = {
   page?: string;
 };
 
+
+/**
+ * Свой заголовок и свой адрес. Без этого страница наследовала заголовок
+ * главной и — из корневой раскладки — её `canonical`, то есть объявляла себя
+ * дубликатом главной во всех языках.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "fintech" });
+  const tm = await getTranslations({ locale, namespace: "common.meta" });
+  const languages: Record<string, string> = {};
+  for (const l of SUPPORTED_LOCALES) languages[l] = `/${l}/fintech`;
+  return {
+    title: t("title"),
+    description: t("subtitle"),
+    alternates: { canonical: `/${locale}/fintech`, languages },
+  };
+}
+
 export default async function FintechIndex({
   params,
   searchParams,
@@ -29,6 +54,7 @@ export default async function FintechIndex({
   const sp = await searchParams;
   setRequestLocale(locale);
   const t = await getTranslations("fintech");
+  const tk = await getTranslations("common");
 
   const where: Prisma.FintechCompanyWhereInput = { status: "APPROVED" };
   if (sp.service) where.services = { has: sp.service as FintechService };
@@ -66,7 +92,7 @@ export default async function FintechIndex({
       <div className="max-w-[1600px] mx-auto px-4 md:px-12 xl:px-20 py-12">
         <header className="mb-10">
           <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
-            Section · VII
+            {tk("kicker.section")} · VII
           </div>
           <h1 className="text-[40px] md:text-[56px] font-bold tracking-[-0.035em]">
             {t("title")}

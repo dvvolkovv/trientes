@@ -22,6 +22,8 @@ export default async function AdminExchangesPage({
   if (!(await requireQueue("exchanges", "VIEW")).ok) notFound();
 
   const t = await getTranslations("admin");
+
+  const tk = await getTranslations("common");
   const status =
     tab === "approved" ? "APPROVED" : tab === "rejected" ? "REJECTED" : "PENDING";
 
@@ -51,7 +53,7 @@ export default async function AdminExchangesPage({
       <AdminNav locale={locale} active="exchanges" />
       <header className="mb-8">
         <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-3">
-          Admin
+          {tk("kicker.admin")}
         </div>
         <h1 className="text-[40px] md:text-[48px] font-bold tracking-[-0.03em] mb-2">
           {t("exchanges.title")}

@@ -21,8 +21,8 @@ describe("resolveCosmosChain", () => {
 });
 
 describe("реестр как целое", () => {
-  it("двадцать сетей, и все поля заполнены", () => {
-    expect(COSMOS_CHAINS).toHaveLength(20);
+  it("девятнадцать сетей, и все поля заполнены", () => {
+    expect(COSMOS_CHAINS).toHaveLength(19);
     for (const c of COSMOS_CHAINS) {
       expect(c.defaultRestUrl).toMatch(/^https:\/\//);
       expect(c.defaultRestUrl).not.toMatch(/\/$/);

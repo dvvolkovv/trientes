@@ -61,7 +61,6 @@ export const SEED_CARDS: readonly SeedRow[] = [
   { coinId: "juno-network", chain: "juno" },
   { coinId: "axelar", chain: "axelar" },
   { coinId: "neutron-3", chain: "neutron" },
-  { coinId: "stride", chain: "stride" },
   { coinId: "dymension", chain: "dymension" },
   { coinId: "persistence", chain: "persistence" },
   { coinId: "agoric", chain: "agoric" },

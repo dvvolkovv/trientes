@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import { SUPPORTED_LOCALES } from "@/lib/locales";
 import { redirect } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
@@ -8,6 +10,29 @@ import { CoinListClient } from "@/components/coin-list-client";
 import { ExchangesTable } from "@/components/exchanges-table";
 
 export const dynamic = "force-dynamic";
+
+
+/**
+ * Свой заголовок и свой адрес. Без этого страница наследовала заголовок
+ * главной и — из корневой раскладки — её `canonical`, то есть объявляла себя
+ * дубликатом главной во всех языках.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "watchlist" });
+  const tm = await getTranslations({ locale, namespace: "common.meta" });
+  const languages: Record<string, string> = {};
+  for (const l of SUPPORTED_LOCALES) languages[l] = `/${l}/watchlist`;
+  return {
+    title: t("title"),
+    description: tm("pageDescription"),
+    alternates: { canonical: `/${locale}/watchlist`, languages },
+  };
+}
 
 export default async function WatchlistPage({
   params,
@@ -21,6 +46,7 @@ export default async function WatchlistPage({
   if (!isAuthed) redirect(`/${locale}/login`);
 
   const t = await getTranslations("watchlist");
+  const tk = await getTranslations("common");
 
   const [allRows, allExchanges, rates, currency, watchedSet, watchedExSet] = await Promise.all([
     readTop100(),
@@ -37,7 +63,7 @@ export default async function WatchlistPage({
     <main className="max-w-[1600px] mx-auto px-4 md:px-12 xl:px-20 py-10 md:py-16">
       <header className="mb-10">
         <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
-          Section · Watchlist
+          {tk("kicker.section")} · {tk("watchlist")}
         </div>
         <h1 className="text-[28px] sm:text-[36px] md:text-[48px] font-bold tracking-[-0.035em]">
           {t("title")}

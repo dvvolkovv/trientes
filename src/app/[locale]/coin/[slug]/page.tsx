@@ -106,6 +106,7 @@ export default async function CoinDetailPage({
   const wantsOriginal = orig === "1";
   setRequestLocale(locale);
   const t = await getTranslations("detail");
+  const tk = await getTranslations("common");
 
   const coin = await prisma.coin.findUnique({
     where: { slug },
@@ -259,7 +260,7 @@ export default async function CoinDetailPage({
         <section id="news" className="scroll-mt-24">
           <div className="num text-[11px] uppercase tracking-[0.3em] text-accent inline-flex items-center gap-2 mb-2">
             <span className="w-2 h-2 rounded-full bg-accent" aria-hidden />
-            Newsflow
+            {tk("kicker.newsflow")}
           </div>
           <h2 className="text-[24px] md:text-[28px] font-bold tracking-[-0.025em] mb-4">{t("jumpNews")}</h2>
           <NewsRail items={news} locale={locale} />

@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import { SUPPORTED_LOCALES } from "@/lib/locales";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { readExchanges, readExchangeRates } from "@/lib/snapshot";
 import { getCurrency } from "@/lib/get-currency";
@@ -5,6 +7,29 @@ import { readUserWatchedExchangeIds, isAuthenticated } from "@/lib/watchlist";
 import { ExchangesTable } from "@/components/exchanges-table";
 
 export const dynamic = "force-dynamic";
+
+
+/**
+ * Свой заголовок и свой адрес. Без этого страница наследовала заголовок
+ * главной и — из корневой раскладки — её `canonical`, то есть объявляла себя
+ * дубликатом главной во всех языках.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "exchanges" });
+  const tm = await getTranslations({ locale, namespace: "common.meta" });
+  const languages: Record<string, string> = {};
+  for (const l of SUPPORTED_LOCALES) languages[l] = `/${l}/exchanges`;
+  return {
+    title: t("title"),
+    description: t("subtitle"),
+    alternates: { canonical: `/${locale}/exchanges`, languages },
+  };
+}
 
 export default async function ExchangesPage({
   params,
@@ -14,6 +39,7 @@ export default async function ExchangesPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("exchanges");
+  const tk = await getTranslations("common");
 
   const [rows, rates, currency, watchedSet, isAuthed] = await Promise.all([
     readExchanges(),
@@ -28,7 +54,7 @@ export default async function ExchangesPage({
       <div className="max-w-[1600px] mx-auto px-4 md:px-12 xl:px-20 py-12">
         <header className="mb-10">
           <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
-            Section · II
+            {tk("kicker.section")} · II
           </div>
           <h1 className="text-[40px] md:text-[56px] font-bold tracking-[-0.035em]">
             {t("title")}

@@ -19,11 +19,13 @@ describe("таблица посева", () => {
     expect(new Set(chains).size).toBe(chains.length);
   });
 
-  it("пятьдесят пять монет: 16 Substrate, 20 Cosmos, 5 Bitcoin, 14 EVM", () => {
-    expect(SEED_CARDS).toHaveLength(55);
+  // Stride снят 18 ноября 2026: единственный живой REST отдавал чужую сеть
+  // (agoric-3), и карточку стало нечем проверять — разбор в реестре Cosmos.
+  it("пятьдесят четыре монеты: 16 Substrate, 19 Cosmos, 5 Bitcoin, 14 EVM", () => {
+    expect(SEED_CARDS).toHaveLength(54);
     const byFamily = SEED_CARDS.map((r) => chainFamily(r.chain));
     expect(byFamily.filter((f) => f === "SUBSTRATE")).toHaveLength(16);
-    expect(byFamily.filter((f) => f === "COSMOS")).toHaveLength(20);
+    expect(byFamily.filter((f) => f === "COSMOS")).toHaveLength(19);
     expect(byFamily.filter((f) => f === "BITCOIN")).toHaveLength(5);
     expect(byFamily.filter((f) => f === "EVM")).toHaveLength(14);
   });

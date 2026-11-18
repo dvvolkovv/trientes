@@ -39,6 +39,7 @@ const LANGUAGE_NAMES: Record<string, string> = {
   "pt-BR": "Brazilian Portuguese",
   tr: "Turkish",
   "zh-CN": "Simplified Chinese",
+  sk: "Slovak (slovenčina)",
 };
 
 /**
@@ -62,6 +63,22 @@ const GLOSSARY: Record<string, string> = {
     "merchant → trgovac; navigator (map of places) → navigator",
     "sign in → prijava; sign up / register → registracija; settings → postavke",
     "Use the formal-neutral register common on Croatian product UIs (infinitive or 2nd person plural, not 'ti').",
+  ].join("\n"),
+  sk: [
+    "Trientes — brand name, never translate.",
+    "coin → minca; token → token; blockchain → blockchain; wallet → peňaženka",
+    "exchange (trading venue) → burza; swap → výmena; DEX → DEX",
+    "watchlist → zoznam sledovaných; market cap → trhová kapitalizácia",
+    "circulating supply → ponuka v obehu; total supply → celková ponuka",
+    "fee → poplatok; gas → gas; block → blok; finality → finalita",
+    "staking → staking; validator → validátor; mining → mining",
+    "listing → zaradenie; request → žiadosť; alert → upozornenie",
+    "cabinet (user area) → profil; business cabinet → firemný profil",
+    "point (physical place accepting crypto) → miesto",
+    "merchant → obchodník; navigator (map of places) → navigátor",
+    "sign in → prihlásenie; sign up / register → registrácia; settings → nastavenia",
+    "compliance case → prípad; queue → front; checklist → kontrolný zoznam",
+    "Address the user as 'vy' (2nd person plural), the register common on Slovak product UIs.",
   ].join("\n"),
 };
 

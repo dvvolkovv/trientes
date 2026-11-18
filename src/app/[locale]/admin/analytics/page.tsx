@@ -31,6 +31,7 @@ export default async function AdminAnalyticsPage({
   // Управление системой, а не работа по заявке: только владелец.
   if (!(await requireOwner()).ok) redirect(`/${locale}/admin/queues`);
   const t = await getTranslations("admin.analytics");
+  const tk = await getTranslations("common");
 
   const win = asWindow(w);
   const since = new Date(Date.now() - WINDOW_HOURS[win] * 60 * 60 * 1000);
@@ -91,7 +92,7 @@ export default async function AdminAnalyticsPage({
     <>
       <AdminNav locale={locale} active="analytics" />
       <header className="mb-8">
-        <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-3">Admin</div>
+        <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-3">{tk("kicker.admin")}</div>
         <h1 className="text-[40px] md:text-[48px] font-bold tracking-[-0.03em] mb-2">{t("title")}</h1>
         <p className="text-muted">{t("subtitle")}</p>
       </header>

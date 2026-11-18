@@ -34,7 +34,26 @@
       "company": "Unternehmen"
     },
     "machineTranslated": "maschinelle Übersetzung",
-    "showOriginal": "Original"
+    "showOriginal": "Original",
+    "kicker": {
+      "section": "Bereich",
+      "newsflow": "Newsflow",
+      "signIn": "Anmelden",
+      "newRequest": "Neue Anfrage",
+      "history": "Verlauf",
+      "admin": "Admin"
+    },
+    "a11y": {
+      "openMenu": "Menü öffnen",
+      "closeMenu": "Menü schließen",
+      "close": "Schließen",
+      "currency": "Währung"
+    },
+    "meta": {
+      "title": "Trientes — das Ledger digitaler Münzen",
+      "description": "Live-Preise, Börsen, Fintech-Verzeichnis und ein praxisnaher Krypto-Navigator in {count} Sprachen.",
+      "pageDescription": "Trientes — Live-Kryptopreise, Börsen, ein Fintech-Verzeichnis und ein Navigator vor Ort"
+    }
   },
   "home": {
     "title": "Willkommen",
@@ -61,7 +80,8 @@
     "mood": {
       "bull": "Bullenmarkt",
       "bear": "Bärenmarkt"
-    }
+    },
+    "topCoinsHeading": "Top-Layer-1."
   },
   "listing": {
     "rank": "#",
@@ -138,7 +158,9 @@
     "live": "Live",
     "jumpNavigator": "Navigator",
     "jumpExchanges": "Top-Börsen",
-    "jumpNews": "Nachrichten"
+    "jumpNews": "Nachrichten",
+    "rankBadge": "Rang {rank}",
+    "assetKicker": "Layer-1 · Natives Asset"
   },
   "watchlist": {
     "title": "Beobachtungsliste",
@@ -209,7 +231,8 @@
     "requests": {
       "title": "Coin-Anfragen",
       "subtitle": "Von Nutzern eingereichte Coin-Anfragen prüfen und bearbeiten.",
-      "empty": "Keine Anfragen in dieser Ansicht."
+      "empty": "Keine Anfragen in dieser Ansicht.",
+      "coingeckoIdPlaceholder": "coingecko-id"
     },
     "coins": {
       "title": "Coins",
@@ -226,7 +249,8 @@
       "name": "Name",
       "add": "Hinzufügen",
       "adding": "Wird hinzugefügt…",
-      "added": "Coin hinzugefügt."
+      "added": "Coin hinzugefügt.",
+      "coingeckoIdPlaceholder": "z. B. solana"
     },
     "users": {
       "title": "Nutzer",
@@ -299,7 +323,8 @@
       },
       "kyb": {
         "title": "KYB-Warteschlange",
-        "subtitle": "Verifizierungsanträge prüfen und entscheiden."
+        "subtitle": "Verifizierungsanträge prüfen und entscheiden.",
+        "approve": "KYB genehmigen"
       },
       "deletedSubtitle": "Weich gelöschte Unternehmen und Standorte wiederherstellen.",
       "deletedEmpty": "Keine gelöschten Einträge.",
@@ -927,6 +952,12 @@
         "not_found": "Dieses Unternehmen existiert nicht mehr.",
         "failed": "Das konnte nicht ausgeführt werden. Bitte versuchen Sie es erneut."
       }
+    },
+    "points": {
+      "previewOnMap": "Vorschau auf Karte ↗",
+      "onlineNoCoords": "online — keine Koordinaten",
+      "coinsLabel": "Coins",
+      "rejectedLabel": "Abgelehnt"
     }
   },
   "exchanges": {
@@ -3036,5 +3067,8 @@
       "revoked": "Dieser Link wurde widerrufen.",
       "failed": "Etwas ist schiefgelaufen."
     }
+  },
+  "login": {
+    "subtitle": "Fahre mit deinem bevorzugten Anbieter fort oder melde dich mit einem Passwort an."
   }
 }

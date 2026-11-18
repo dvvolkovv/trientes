@@ -48,7 +48,7 @@ export function AddCoinForm() {
           value={coingeckoId}
           onChange={(e) => setCoingeckoId(e.target.value)}
           required
-          placeholder="e.g. solana"
+          placeholder={t("addCoin.coingeckoIdPlaceholder")}
           className={inputClass}
         />
       </div>

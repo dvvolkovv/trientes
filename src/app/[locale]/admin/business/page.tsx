@@ -28,6 +28,8 @@ export default async function AdminBusinessPage({
   if (!(await requireAnyQueue(["companies", "points", "kyb"], "VIEW")).ok) notFound();
 
   const t = await getTranslations("admin");
+
+  const tk = await getTranslations("common");
   const scope: Scope =
     scopeParam === "points" ? "points"
     : scopeParam === "kyb" ? "kyb"
@@ -136,7 +138,7 @@ export default async function AdminBusinessPage({
       <>
         <AdminNav locale={locale} active="business" />
         <header className="mb-8">
-          <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-3">Admin</div>
+          <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-3">{tk("kicker.admin")}</div>
           <h1 className="text-[40px] md:text-[48px] font-bold tracking-[-0.03em] mb-2">{t("business.kyb.title")}</h1>
           <p className="text-muted">{t("business.kyb.subtitle")}</p>
         </header>
@@ -183,7 +185,7 @@ export default async function AdminBusinessPage({
       <>
         <AdminNav locale={locale} active="business" />
         <header className="mb-8">
-          <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-3">Admin</div>
+          <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-3">{tk("kicker.admin")}</div>
           <h1 className="text-[40px] md:text-[48px] font-bold tracking-[-0.03em] mb-2">{t("business.title")}</h1>
           <p className="text-muted">{t("business.subtitle")}</p>
         </header>
@@ -216,7 +218,7 @@ export default async function AdminBusinessPage({
     <>
       <AdminNav locale={locale} active="business" />
       <header className="mb-8">
-        <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-3">Admin</div>
+        <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-3">{tk("kicker.admin")}</div>
         <h1 className="text-[40px] md:text-[48px] font-bold tracking-[-0.03em] mb-2">{t("companies.title")}</h1>
         <p className="text-muted">{t("companies.subtitle")}</p>
       </header>

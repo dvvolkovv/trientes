@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
+import { SUPPORTED_LOCALES } from "@/lib/locales";
 import { readTop100, readGlobalStats, readExchangeRates, readNews, readFearGreed } from "@/lib/snapshot";
 import { GlobalStatsHero } from "@/components/global-stats-hero";
 import { CoinListClient } from "@/components/coin-list-client";
@@ -16,6 +18,22 @@ import { computeMarketMood } from "@/lib/market-mood";
 
 export const revalidate = 60;
 
+/**
+ * Ссылки на переводы главной. Стоят у страницы, а не у раскладки: метаданные
+ * раскладки наследует всё под ней, и тогда `canonical` главной объявил бы
+ * дубликатом себя каждую страницу без собственных метаданных.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages: Record<string, string> = {};
+  for (const l of SUPPORTED_LOCALES) languages[l] = `/${l}`;
+  return { alternates: { canonical: `/${locale}`, languages } };
+}
+
 export default async function Home({
   params,
 }: {
@@ -25,6 +43,7 @@ export default async function Home({
   setRequestLocale(locale);
   const tl = await getTranslations("listing");
   const th = await getTranslations("home");
+  const tk = await getTranslations("common");
 
   const [rows, stats, rates, currency, watchedSet, isAuthed, news, fearGreed, selfListedCount] =
     await Promise.all([
@@ -158,7 +177,7 @@ export default async function Home({
             <div className="flex items-baseline justify-between mb-5">
               <div className="num text-[11px] uppercase tracking-[0.3em] text-accent inline-flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-accent" aria-hidden />
-                Newsflow
+                {tk("kicker.newsflow")}
               </div>
               <span className="hidden sm:inline text-muted text-[12px] font-light">
                 {th("newsflowHint")}
@@ -171,10 +190,10 @@ export default async function Home({
         {/* COIN TABLE */}
         <section className="py-12">
           <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
-            Section · I
+            {tk("kicker.section")} · I
           </div>
           <h2 className="text-[32px] md:text-[40px] font-bold tracking-[-0.03em] mb-8">
-            Top Layer-1.
+            {th("topCoinsHeading")}
           </h2>
           <LivePrices currency={currency} rates={rates} />
           <ListingTabs

@@ -8,7 +8,7 @@ import { fetchTop100L1, fetchGlobalSnap, fetchExchangeRates, fetchCoinDetail, fe
 import { fetchNews } from "../src/lib/news";
 import { fetchFearGreed } from "../src/lib/fear-greed";
 import { fetchMarkets } from "../src/lib/markets";
-import { syncPrices, syncGlobal, syncExchangeRates, syncCoinMetadata, syncExchanges, syncAdminAddedPrices, syncNews, syncFearGreed, syncMarkets, syncCoinPaprikaExchanges } from "../src/lib/sync/orchestrator";
+import { syncPrices, syncGlobal, syncExchangeRates, syncCoinMetadata, syncExchanges, syncAdminAddedPrices, syncCardedCoinPrices, staleCardedIds, syncNews, syncFearGreed, syncMarkets, syncCoinPaprikaExchanges } from "../src/lib/sync/orchestrator";
 import { fetchCoinPaprikaExchanges, fetchCoinPaprikaExchangeDetail } from "../src/lib/coinpaprika";
 import { runAlertsEval } from "../src/lib/alerts-eval";
 import { syncOsmCryptoPois } from "../src/lib/osm-poi-store";
@@ -199,6 +199,44 @@ async function runAdminAddedSync() {
     console.log(`[worker] admin-added-sync ok: ${count} in ${Date.now() - t0}ms`);
   } catch (err) {
     console.error("[worker] admin-added-sync failed:", err);
+  }
+}
+
+/**
+ * Цена монетам с опубликованной карточкой, которых не приносит ни список
+ * top-100 L1, ни выборка заведённых руками (разбор — в `syncCardedCoinPrices`).
+ * Раз в час: опора посева рынков считается годной двое суток, чаще незачем.
+ */
+async function runCardedCoinPriceSync() {
+  const t0 = Date.now();
+  try {
+    const { count } = await syncCardedCoinPrices({
+      listStaleCardedIds: async () => {
+        const cards = await prisma.coinCard.findMany({
+          where: { status: "APPROVED" },
+          select: {
+            coin: {
+              select: {
+                id: true,
+                isActive: true,
+                snapshots: { select: { fetchedAt: true }, orderBy: { fetchedAt: "desc" }, take: 1 },
+              },
+            },
+          },
+        });
+        const rows = cards
+          .map((c) => c.coin)
+          .filter((c): c is NonNullable<typeof c> => Boolean(c) && c!.isActive)
+          .map((c) => ({ coinId: c.id, lastSnapshotAt: c.snapshots[0]?.fetchedAt ?? null }));
+        return staleCardedIds(rows, new Date());
+      },
+      fetchByIds: fetchMarketsByIds,
+      redis: redis as never,
+      prisma: prisma as never,
+    });
+    console.log(`[worker] carded-coin-price-sync ok: ${count} in ${Date.now() - t0}ms`);
+  } catch (err) {
+    console.error("[worker] carded-coin-price-sync failed:", err);
   }
 }
 
@@ -610,6 +648,9 @@ async function main() {
   cron.schedule("25 4 * * *", () => void runListingSweepJob());
   // Посев рынков — после конвейера листинга: карточка, открытая им сегодня,
   // получает рынки тем же утром.
+  // Цена монетам с карточкой — до посева рынков: посев сверяет найденную цену
+  // с опорной из последнего снимка, и без свежей опоры он отказывается сеять.
+  cron.schedule("12 * * * *", () => void runCardedCoinPriceSync());
   cron.schedule("40 4 * * *", () => void runCardMarketSeedJob());
   cron.schedule("50 * * * *", () => void runOwnDexMarketJob());
   cron.schedule("0 4 * * *", () => void runCleanup());

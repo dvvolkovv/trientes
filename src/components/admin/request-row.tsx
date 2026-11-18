@@ -60,7 +60,7 @@ export function RequestRow({ row }: { row: RequestRowData }) {
               type="text"
               value={overrideId}
               onChange={(e) => setOverrideId(e.target.value)}
-              placeholder="coingecko-id"
+              placeholder={t("requests.coingeckoIdPlaceholder")}
               className="flex-1 bg-bg-tint border border-hairline rounded-md px-3 py-2 text-sm placeholder:text-muted focus:ring-1 focus:ring-accent outline-none"
             />
             <button

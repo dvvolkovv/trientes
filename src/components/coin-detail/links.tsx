@@ -13,6 +13,7 @@ export async function CoinLinks({ coin }: {
   };
 }) {
   const t = await getTranslations("detail");
+  const tk = await getTranslations("common");
   const items: LinkRow[] = [
     { label: t("website"), href: coin.websiteUrl },
     { label: t("explorer"), href: coin.explorerUrl },
@@ -27,7 +28,7 @@ export async function CoinLinks({ coin }: {
   return (
     <section>
       <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">
-        Section
+        {tk("kicker.section")}
       </div>
       <h2 className="text-[24px] md:text-[28px] font-bold tracking-[-0.025em] mb-4">
         {t("links")}

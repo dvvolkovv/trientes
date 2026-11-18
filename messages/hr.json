@@ -34,7 +34,26 @@
       "company": "Tvrtka"
     },
     "machineTranslated": "strojni prijevod",
-    "showOriginal": "izvornik"
+    "showOriginal": "izvornik",
+    "kicker": {
+      "section": "Odjeljak",
+      "newsflow": "Tok vijesti",
+      "signIn": "Prijava",
+      "newRequest": "Novi zahtjev",
+      "history": "Povijest",
+      "admin": "Admin"
+    },
+    "a11y": {
+      "openMenu": "Otvorite izbornik",
+      "closeMenu": "Zatvorite izbornik",
+      "close": "Zatvorite",
+      "currency": "Valuta"
+    },
+    "meta": {
+      "title": "Trientes — glavna knjiga digitalnih kovanica",
+      "description": "Cijene uživo, burze, fintech direktorij i kripto navigator na terenu na {count} jezicima.",
+      "pageDescription": "Trientes — cijene kripta uživo, burze, fintech imenik i navigator na terenu."
+    }
   },
   "home": {
     "title": "Dobrodošli",
@@ -61,7 +80,8 @@
     "mood": {
       "bull": "Bikovsko tržište",
       "bear": "Medvjeđe tržište"
-    }
+    },
+    "topCoinsHeading": "Najbolji Layer-1."
   },
   "listing": {
     "rank": "#",
@@ -138,7 +158,9 @@
     "live": "Uživo",
     "jumpNavigator": "Navigator",
     "jumpExchanges": "Top burze",
-    "jumpNews": "Vijesti"
+    "jumpNews": "Vijesti",
+    "rankBadge": "Rang {rank}",
+    "assetKicker": "Layer-1 · Izvorna imovina"
   },
   "watchlist": {
     "title": "Popis praćenja",
@@ -209,7 +231,8 @@
     "requests": {
       "title": "Zahtjevi za kovanice",
       "subtitle": "Pregledajte i obradite korisničke zahtjeve za kovanice.",
-      "empty": "Nema zahtjeva u ovom prikazu."
+      "empty": "Nema zahtjeva u ovom prikazu.",
+      "coingeckoIdPlaceholder": "coingecko-id"
     },
     "coins": {
       "title": "Kovanice",
@@ -226,7 +249,8 @@
       "name": "Naziv",
       "add": "Dodajte",
       "adding": "Dodavanje…",
-      "added": "Kovanica dodana."
+      "added": "Kovanica dodana.",
+      "coingeckoIdPlaceholder": "npr. solana"
     },
     "users": {
       "title": "Korisnici",
@@ -299,7 +323,8 @@
       },
       "kyb": {
         "title": "KYB red",
-        "subtitle": "Odobrite ili odbijte podneske za verifikaciju tvrtki."
+        "subtitle": "Odobrite ili odbijte podneske za verifikaciju tvrtki.",
+        "approve": "Odobrite KYB"
       },
       "deletedSubtitle": "Vratite privremeno izbrisane tvrtke i lokacije.",
       "deletedEmpty": "Nema izbrisanih zapisa.",
@@ -927,6 +952,12 @@
         "not_found": "Ovaj poslovni subjekt više ne postoji.",
         "failed": "Nije uspjelo. Pokušajte ponovno."
       }
+    },
+    "points": {
+      "previewOnMap": "prikaz na karti ↗",
+      "onlineNoCoords": "online — bez koordinata",
+      "coinsLabel": "kovanice",
+      "rejectedLabel": "Odbijeno"
     }
   },
   "exchanges": {
@@ -3036,5 +3067,8 @@
       "revoked": "Ova je poveznica opozvana.",
       "failed": "Nešto je pošlo po zlu."
     }
+  },
+  "login": {
+    "subtitle": "Nastavite s odabranim pružateljem ili se prijavite lozinkom"
   }
 }
