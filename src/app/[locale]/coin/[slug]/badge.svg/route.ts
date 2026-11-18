@@ -27,7 +27,10 @@ export async function GET(
   return new Response(svg, {
     headers: {
       "content-type": "image/svg+xml; charset=utf-8",
-      "cache-control": "public, max-age=86400",
+      // Час, а не сутки: бейдж стоит на чужих страницах, и починённая разметка
+      // должна доезжать до них в тот же день, а не на следующий. Запрос раз в
+      // час к статичному SVG дешевле суток заведомо неверной картинки.
+      "cache-control": "public, max-age=3600",
     },
   });
 }

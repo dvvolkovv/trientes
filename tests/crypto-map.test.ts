@@ -15,6 +15,8 @@ import {
   isBlockedIp,
   assertUrlShape,
   safeHttpUrl as safeHttpUrlFromCryptoMap,
+  parsePointId,
+  cryptoMapHref,
 } from "@/lib/crypto-map";
 
 describe("parseBbox", () => {
@@ -34,6 +36,41 @@ describe("parseBbox", () => {
     expect(parseBbox("200,0,201,1")).toBeNull(); // lon out of range
     expect(parseBbox("0,0,-1,1")).toBeNull(); // maxLon < minLon
     expect(parseBbox("0,95,1,96")).toBeNull(); // lat out of range
+  });
+});
+
+describe("parsePointId", () => {
+  it("пропускает cuid точки", () => {
+    expect(parsePointId("cmwm2rjpr000jd7fcrb072gio")).toBe("cmwm2rjpr000jd7fcrb072gio");
+  });
+
+  it("мусор не превращается в точку", () => {
+    // Негодный id — это «точку не называли»: карта откроется монетой, а не
+    // улетит к чужому месту.
+    expect(parsePointId(null)).toBeNull();
+    expect(parsePointId("")).toBeNull();
+    expect(parsePointId("../../etc/passwd")).toBeNull();
+    expect(parsePointId("short")).toBeNull();
+  });
+});
+
+describe("cryptoMapHref", () => {
+  it("без точки — прежний адрес монеты", () => {
+    expect(cryptoMapHref({ locale: "ru", coin: "card:abc123" })).toBe(
+      "/ru/crypto-map?coin=card%3Aabc123",
+    );
+  });
+
+  it("с точкой — адрес несёт место, а не только монету", () => {
+    expect(cryptoMapHref({ locale: "ru", coin: "card:abc123", pointId: "cmwm2rjpr000j" })).toBe(
+      "/ru/crypto-map?coin=card%3Aabc123&point=cmwm2rjpr000j",
+    );
+  });
+
+  it("пустая точка в адрес не попадает", () => {
+    expect(cryptoMapHref({ locale: "en", coin: "bitcoin", pointId: null })).toBe(
+      "/en/crypto-map?coin=bitcoin",
+    );
   });
 });
 

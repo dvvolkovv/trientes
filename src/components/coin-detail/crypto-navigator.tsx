@@ -42,10 +42,10 @@ import { createHeadingBeamElement } from "@/lib/heading-beam";
 import { primeVoice, speakNav, cancelSpeech, speechAvailable } from "@/lib/speech";
 import { speechLang } from "@/lib/locales";
 import {
-  MAP_FALLBACK_CENTER,
-  MAP_FALLBACK_ZOOM,
   geolocationPermission,
   shouldAutoLocate,
+  startView,
+  type MapFocus,
 } from "@/lib/map-start";
 
 import {
@@ -155,10 +155,13 @@ export default function CryptoNavigator({
   coinId,
   symbol,
   coinName,
+  focus = null,
 }: {
   coinId: string;
   symbol: string;
   coinName: string;
+  /** Точка из адреса: карта открывается на ней, а её карточка — сама. */
+  focus?: MapFocus | null;
 }) {
   const t = useTranslations("cryptoMap");
   const locale = useLocale();
@@ -186,6 +189,10 @@ export default function CryptoNavigator({
   // человек настолько, что маршрут стоит считать заново.
   const lastRoutedOriginRef = useRef<[number, number] | null>(null);
   const routeCoordsRef = useRef<[number, number][]>([]);
+  // Карточку названной точки раскрываем ровно один раз: фид приходит на каждое
+  // движение карты, и без этого признака карточка вскакивала бы обратно каждый
+  // раз, когда человек её закрыл и подвинул карту.
+  const focusOpenedRef = useRef(false);
 
   const [base, setBase] = useState<Base>("map");
   const baseRef = useRef<Base>("map");
@@ -352,10 +359,12 @@ export default function CryptoNavigator({
   // Один и тот же лист открывают круги слоёв, метки-логотипы и куратские
   // точки: карточка точки живёт в React (см. poi-sheet.tsx), а не в попапе.
   const openPoi = useCallback(
-    (poi: Poi) => {
+    (poi: Poi, page: PoiPage = DEFAULT_POI_PAGE) => {
       // Свежая точка всегда открывается на фактах: нажатие на неё — это
-      // вопрос «что это за место», а не «как доехать».
-      changePoiPage(DEFAULT_POI_PAGE);
+      // вопрос «что это за место», а не «как доехать». Исключение — точка,
+      // названная в адресе: её открывали ссылкой «где именно», и ответ на
+      // этот вопрос лежит на странице карты.
+      changePoiPage(page);
       setMapExpanded(false);
       setSelected(poi);
     },
@@ -469,6 +478,16 @@ export default function CryptoNavigator({
           })),
         });
         syncLogoMarkers(map, pois);
+        // Точка из адреса: карта уже стоит на ней, осталось раскрыть карточку.
+        // Ждём именно фида, а не строим карточку из своих данных — у точки в
+        // фиде есть всё: фото, часы, принимаемые монеты, связь.
+        if (focus && !focusOpenedRef.current) {
+          const target = pois.find((p) => p.id === focus.id);
+          if (target) {
+            focusOpenedRef.current = true;
+            openPoi(target, "map");
+          }
+        }
         setCounts({
           merchant: pois.filter((p) => p.layer === "merchant").length,
           atm: pois.filter((p) => p.layer === "atm").length,
@@ -482,7 +501,7 @@ export default function CryptoNavigator({
         poiAbortRef.current = null;
         setLoading(false);
       });
-  }, [coinId, symbol, syncLogoMarkers]);
+  }, [coinId, symbol, syncLogoMarkers, focus, openPoi]);
 
   // Та часть карты, которую видно: на телефоне это прямоугольник окна
   // карточки, каким бы оно сейчас ни было — плиткой в пропорции банковской
@@ -615,7 +634,18 @@ export default function CryptoNavigator({
     // Кнопка «Маршрут сюда» стоит на самой странице карты, так что человек уже
     // смотрит в окно: перелистывать за него нечего.
     if (originRef.current) buildRoute();
-    else setStatus(t("noOrigin"));
+    else {
+      // Откуда — не вопрос к человеку, пока его не спросили у браузера.
+      // Пришедший по ссылке «где именно» своего положения ещё не называл: ради
+      // названной точки карта его не запрашивала. Отсчёт придёт — и обработчик
+      // геолокации достроит маршрут сам, цель уже назначена.
+      setStatus(t("noOrigin"));
+      try {
+        geolocateRef.current?.trigger();
+      } catch {
+        // контроль не готов или в разрешении отказано — надпись остаётся
+      }
+    }
   }
 
   function switchMode(next: RouteMode, poi?: Poi | null) {
@@ -673,11 +703,12 @@ export default function CryptoNavigator({
   // ---- Map setup (once) ----
   useEffect(() => {
     if (!containerRef.current) return;
+    const view = startView(focus);
     const map = tryCreateMap({
       container: containerRef.current,
       style: basemapStyle(),
-      center: MAP_FALLBACK_CENTER,
-      zoom: MAP_FALLBACK_ZOOM,
+      center: view.center,
+      zoom: view.zoom,
       pitch: 0,
       ...MAPLIBRE_ATTRIBUTION_OPTIONS,
     });
@@ -824,7 +855,7 @@ export default function CryptoNavigator({
       // искать кнопку незачем. Отказавшего не переспрашиваем — он останется в
       // городе по умолчанию, и кнопка «моё положение» никуда не делась.
       void geolocationPermission().then((state) => {
-        if (!shouldAutoLocate(state)) return;
+        if (!shouldAutoLocate(state, !!focus)) return;
         if (mapRef.current !== map) return;
         try {
           geo.trigger();

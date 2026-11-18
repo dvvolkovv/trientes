@@ -113,6 +113,30 @@ export function parseCoinSelector(raw: string | null | undefined): CoinSelector 
   return { kind: "coin", coinId: s.toLowerCase() };
 }
 
+/**
+ * Точка, ради которой карту открыли.
+ *
+ * Ссылка «где именно» с карточки монеты прежде вела на `?coin=…` и только:
+ * карта открывалась там, где стоит человек, то есть за сотни километров от
+ * названного в строке магазина. Название точки обещает место — адрес обязан
+ * его нести.
+ */
+export function parsePointId(raw: string | null | undefined): string | null {
+  const s = (raw ?? "").trim();
+  return CUID_RE.test(s) ? s : null;
+}
+
+/** Адрес навигатора: монета обязательна, точка — когда зовут в конкретное место. */
+export function cryptoMapHref(i: {
+  locale: string;
+  coin: string;
+  pointId?: string | null;
+}): string {
+  const q = new URLSearchParams({ coin: i.coin });
+  if (i.pointId) q.set("point", i.pointId);
+  return `/${i.locale}/crypto-map?${q.toString()}`;
+}
+
 export type PoiLayer = "merchant" | "atm" | "financial" | "fintech";
 
 export type Social = { network: string; url: string };

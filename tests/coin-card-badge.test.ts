@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { BADGE_HEIGHT, buildAcceptBadgeSvg, escapeXml } from "@/lib/coin-card-badge";
+import {
+  BADGE_GAP,
+  BADGE_HEIGHT,
+  BADGE_PAD,
+  buildAcceptBadgeSvg,
+  charWidth,
+  escapeXml,
+  textWidth,
+} from "@/lib/coin-card-badge";
 
 describe("escapeXml", () => {
   it("escapes every character that could close a tag or an attribute", () => {
@@ -39,5 +47,67 @@ describe("buildAcceptBadgeSvg", () => {
   it("uppercases the symbol and collapses whitespace in the label", () => {
     const svg = buildAcceptBadgeSvg({ label: "  Принимаем \n тут ", symbol: " tal " });
     expect(svg).toContain("Принимаем тут TAL");
+  });
+});
+
+/** Геометрия, разобранная обратно из разметки: x и отведённая ширина каждой надписи. */
+function geometry(svg: string) {
+  const width = Number(/<svg[^>]*\swidth="(\d+)"/.exec(svg)?.[1]);
+  const texts = [...svg.matchAll(/<text x="([\d.]+)"[^>]*textLength="(\d+)" lengthAdjust="([a-zA-Z]+)"/g)].map(
+    (m) => ({ x: Number(m[1]), length: Number(m[2]), adjust: m[3] }),
+  );
+  return { width, texts };
+}
+
+describe("ширина бейджа", () => {
+  // Ровно те надписи, что уходят на чужие сайты: по одной с каждого языка
+  // интерфейса. Живой дефект нашёлся на русской — «Принимаем TALentes.org».
+  const LABELS = [
+    "We accept",
+    "Принимаем",
+    "Wir akzeptieren",
+    "Nous acceptons",
+    "Aceptamos",
+    "Aceitamos",
+    "Kabul ediyoruz",
+    "Prihvaćamo",
+    "Prijímame",
+    "取扱中",
+    "취급 중",
+    "我们接受",
+  ];
+
+  it.each(LABELS)("надпись «%s» не наезжает на адрес сайта", (label) => {
+    const { width, texts } = geometry(buildAcceptBadgeSvg({ label, symbol: "TAL" }));
+    expect(texts).toHaveLength(2);
+    const [main, site] = texts;
+    // Между коробкой надписи и адресом остаётся зазор, а адрес не вылезает за рамку.
+    expect(main.x + main.length + BADGE_GAP).toBeLessThanOrEqual(site.x);
+    expect(site.x + site.length + BADGE_PAD).toBeLessThanOrEqual(width);
+  });
+
+  it("обещание ширины держит сам SVG, а не наша оценка шрифта", () => {
+    const { texts } = geometry(buildAcceptBadgeSvg({ label: "Принимаем", symbol: "TAL" }));
+    // Без `lengthAdjust` браузер с более широким шрифтом снова вылез бы за коробку.
+    for (const t of texts) expect(t.adjust).toBe("spacingAndGlyphs");
+  });
+
+  it("кириллица шире латиницы той же длины — средней цифры на символ не осталось", () => {
+    const ru = textWidth("Принимаем TAL", 13);
+    const en = textWidth("We accept TAL", 13);
+    expect("Принимаем TAL".length).toBe("We accept TAL".length);
+    expect(ru).toBeGreaterThan(en);
+  });
+
+  it("иероглиф занимает полный кегль, а не ширину латинской буквы", () => {
+    expect(charWidth("我")).toBe(1);
+    expect(charWidth("취")).toBe(1);
+    expect(charWidth("中")).toBeGreaterThan(charWidth("a"));
+  });
+
+  it("незнакомая буква считается средней, а не нулевой", () => {
+    // Ноль означал бы «места не нужно», и надпись легла бы поверх соседней.
+    expect(charWidth("ع")).toBeGreaterThan(0.5);
+    expect(textWidth("مقبول", 13)).toBeGreaterThan(13);
   });
 });

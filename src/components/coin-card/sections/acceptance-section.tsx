@@ -10,6 +10,7 @@ import {
 } from "@/lib/coin-card-merchant-cta";
 import { getMerchantCta } from "@/lib/coin-card-merchant-viewer";
 import { countryName } from "@/lib/countries";
+import { cryptoMapHref } from "@/lib/crypto-map";
 import { ProvenanceBadge } from "../provenance-badge";
 import { PaymentsBlock, type ChainFactsPayments } from "./payments-block";
 import { FiatRoutesBlock } from "./fiat-routes-block";
@@ -60,7 +61,8 @@ export async function AcceptanceSection({
     : cta.kind === "register_company" ? (summary.total === 0 ? t("becomeFirst") : t("registerCompany"))
     : null;
 
-  const mapHref = `/${locale}/crypto-map?coin=${encodeURIComponent(`card:${cardId}`)}`;
+  const coinSelector = `card:${cardId}`;
+  const mapHref = cryptoMapHref({ locale, coin: coinSelector });
   const badgeAlt = t("badgeAlt", { symbol: symbol.toUpperCase() });
   const snippet =
     `<a href="${SITE}/${locale}/coin/${slug}"><img src="${SITE}/${locale}/coin/${slug}/badge.svg" alt="${badgeAlt}"></a>`;
@@ -128,7 +130,18 @@ export async function AcceptanceSection({
             <ul className="border-y border-hairline">
               {summary.recent.map((p) => (
                 <li key={p.id} className="border-b border-hairline last:border-0">
-                  <a href={mapHref} className="flex items-baseline justify-between gap-4 py-2.5 hover:text-accent">
+                  {/* Строка называет место, значит и ведёт в него: карта
+                      открывается на этой точке с раскрытой карточкой. Без
+                      координат (точка «онлайн») обещать место нечем — остаётся
+                      общий срез монеты. */}
+                  <a
+                    href={cryptoMapHref({
+                      locale,
+                      coin: coinSelector,
+                      pointId: p.lat !== null && p.lon !== null ? p.id : null,
+                    })}
+                    className="flex items-baseline justify-between gap-4 py-2.5 hover:text-accent"
+                  >
                     <span className="text-[14px]">{p.name}</span>
                     <span className="text-[12px] text-muted shrink-0">
                       {[p.city, countryName(p.countryCode) ?? p.countryCode].filter(Boolean).join(", ")}
