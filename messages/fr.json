@@ -41,7 +41,8 @@
       "signIn": "Se connecter",
       "newRequest": "Nouvelle demande",
       "history": "Historique",
-      "admin": "Admin"
+      "admin": "Admin",
+      "support": "Assistance"
     },
     "a11y": {
       "openMenu": "Ouvrir le menu",
@@ -81,7 +82,14 @@
       "bull": "Marché haussier",
       "bear": "Marché baissier"
     },
-    "topCoinsHeading": "Meilleures Layer-1."
+    "topCoinsHeading": "Meilleures Layer-1.",
+    "donate": {
+      "heading": "Soutenir Trientes",
+      "lede": "Les dons maintiennent ce registre en ligne et librement consultable. Choisissez un montant et payez avec n'importe quelle cryptomonnaie proposée par notre plateforme d'échange — la page de paiement fait le reste.",
+      "limits": "Aujourd'hui de ${min} à ${max}.",
+      "presetsLabel": "Choisissez un montant",
+      "other": "Autre montant"
+    }
   },
   "listing": {
     "rank": "#",

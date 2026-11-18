@@ -41,7 +41,8 @@
       "signIn": "Sign in",
       "newRequest": "New request",
       "history": "History",
-      "admin": "Admin"
+      "admin": "Admin",
+      "support": "Support"
     },
     "a11y": {
       "openMenu": "Open menu",
@@ -81,7 +82,14 @@
       "bull": "Bull market",
       "bear": "Bear market"
     },
-    "topCoinsHeading": "Top Layer-1."
+    "topCoinsHeading": "Top Layer-1.",
+    "donate": {
+      "heading": "Support Trientes",
+      "lede": "Donations keep this registry live and free to read. Choose a sum and pay with any coin our exchange offers — the payment page does the rest.",
+      "limits": "Today from ${min} to ${max}.",
+      "presetsLabel": "Choose a sum",
+      "other": "Another sum"
+    }
   },
   "listing": {
     "rank": "#",

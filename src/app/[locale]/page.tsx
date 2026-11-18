@@ -8,6 +8,7 @@ import { SelfListedRail } from "@/components/self-listed-rail";
 import { ListingTabs } from "@/components/listing-tabs";
 import { countSelfListedCards } from "@/lib/coin-card-directory";
 import { NewsRail } from "@/components/news-rail";
+import { DonateRail } from "@/components/donate-rail";
 import { LivePrices } from "@/components/live-prices";
 import { HomeTicker, type TickerItem } from "@/components/home-ticker";
 import { MarketMoodAnimal } from "@/components/market-mood-animal";
@@ -186,6 +187,9 @@ export default async function Home({
             <NewsRail items={news} locale={locale} />
           </section>
         )}
+
+        {/* DONATIONS — суммы называет служба оплаты; закрыты или молчит — раздела нет */}
+        <DonateRail locale={locale} />
 
         {/* COIN TABLE */}
         <section className="py-12">

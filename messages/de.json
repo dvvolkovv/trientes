@@ -41,7 +41,8 @@
       "signIn": "Anmelden",
       "newRequest": "Neue Anfrage",
       "history": "Verlauf",
-      "admin": "Admin"
+      "admin": "Admin",
+      "support": "Support"
     },
     "a11y": {
       "openMenu": "Menü öffnen",
@@ -81,7 +82,14 @@
       "bull": "Bullenmarkt",
       "bear": "Bärenmarkt"
     },
-    "topCoinsHeading": "Top-Layer-1."
+    "topCoinsHeading": "Top-Layer-1.",
+    "donate": {
+      "heading": "Trientes unterstützen",
+      "lede": "Spenden halten dieses Verzeichnis am Laufen und frei zugänglich. Wähle einen Betrag und bezahle mit jeder Coin, die unsere Börse anbietet — die Zahlungsseite erledigt den Rest.",
+      "limits": "Heute von ${min} bis ${max}.",
+      "presetsLabel": "Betrag wählen",
+      "other": "Anderer Betrag"
+    }
   },
   "listing": {
     "rank": "#",

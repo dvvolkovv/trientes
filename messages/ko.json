@@ -41,7 +41,8 @@
       "signIn": "로그인",
       "newRequest": "새 요청",
       "history": "기록",
-      "admin": "관리자"
+      "admin": "관리자",
+      "support": "지원"
     },
     "a11y": {
       "openMenu": "메뉴 열기",
@@ -81,7 +82,14 @@
       "bull": "강세장",
       "bear": "약세장"
     },
-    "topCoinsHeading": "상위 레이어-1."
+    "topCoinsHeading": "상위 레이어-1.",
+    "donate": {
+      "heading": "Trientes 지원",
+      "lede": "기부는 이 레지스트리를 계속 운영하고 무료로 열람할 수 있게 합니다. 금액을 선택하고 우리 거래소에서 제공하는 아무 코인으로 결제하세요 — 결제 페이지가 나머지를 처리합니다.",
+      "limits": "오늘은 ${min}부터 ${max}까지.",
+      "presetsLabel": "금액 선택",
+      "other": "다른 금액"
+    }
   },
   "listing": {
     "rank": "#",

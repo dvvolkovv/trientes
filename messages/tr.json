@@ -41,7 +41,8 @@
       "signIn": "Giriş yap",
       "newRequest": "Yeni talep",
       "history": "Geçmiş",
-      "admin": "Yönetici"
+      "admin": "Yönetici",
+      "support": "Destek"
     },
     "a11y": {
       "openMenu": "Menüyü aç",
@@ -81,7 +82,14 @@
       "bull": "Boğa piyasası",
       "bear": "Ayı piyasası"
     },
-    "topCoinsHeading": "En iyi Layer-1."
+    "topCoinsHeading": "En iyi Layer-1.",
+    "donate": {
+      "heading": "Trientes'i Destekle",
+      "lede": "Bağışlar bu sicilin canlı kalmasını ve ücretsiz okunmasını sağlar. Bir tutar seçin ve borsamızın sunduğu herhangi bir coin ile ödeyin — geri kalanını ödeme sayfası halleder.",
+      "limits": "Bugün ${min} ile ${max} arası.",
+      "presetsLabel": "Bir tutar seç",
+      "other": "Başka bir tutar"
+    }
   },
   "listing": {
     "rank": "#",

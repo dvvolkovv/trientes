@@ -41,7 +41,8 @@
       "signIn": "Prihlásenie",
       "newRequest": "Nová žiadosť",
       "history": "História",
-      "admin": "Admin"
+      "admin": "Admin",
+      "support": "Podpora"
     },
     "a11y": {
       "openMenu": "Otvoriť menu",
@@ -81,7 +82,14 @@
       "bull": "Býčí trh",
       "bear": "Medvedí trh"
     },
-    "topCoinsHeading": "Najlepšie Layer-1."
+    "topCoinsHeading": "Najlepšie Layer-1.",
+    "donate": {
+      "heading": "Podporte Trientes",
+      "lede": "Dary udržiavajú tento register v prevádzke a bezplatný na čítanie. Zvoľte sumu a zaplaťte akoukoľvek mincou, ktorú naša burza ponúka — platobná stránka zariadi zvyšok.",
+      "limits": "Dnes od ${min} do ${max}.",
+      "presetsLabel": "Vyberte sumu",
+      "other": "Iná suma"
+    }
   },
   "listing": {
     "rank": "#",
@@ -2083,7 +2091,7 @@
       "status": "Stav",
       "claimed": "tvrdí projekt",
       "confirmed": "potvrdené",
-      "change24h": "24h",
+      "change24h": "24 h",
       "volume24h": "24h objem",
       "outlier": "mimo indexu",
       "outlierHint": "Cena je príliš ďaleko od objemom váženého mediánu — trh je zobrazený, ale vynechaný z výpočtu",

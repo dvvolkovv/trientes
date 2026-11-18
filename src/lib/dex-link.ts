@@ -22,6 +22,25 @@ export function dexHref(locale: string): string {
 }
 
 /**
+ * Сумма в $, как её принимает служба пожертвований (`AMOUNT_USD` в
+ * `donateApi.ts` обмена): от 1 до 999 999, не больше двух знаков после точки.
+ * Правило живёт у ссылки: в адрес не должна попадать сумма, которую экран
+ * пожертвований всё равно отвергнет — тогда он просто откроется с пустым полем.
+ */
+const AMOUNT_USD = /^[1-9][0-9]{0,5}(\.[0-9]{1,2})?$/;
+
+/**
+ * Ссылка на экран пожертвований обмена (`#/donate`). `amountUsd` — сумма,
+ * которую экран подставит в поле; негодная сумма отбрасывается, а не уходит в
+ * адрес.
+ */
+export function donateHref(locale: string, amountUsd?: string): string {
+  const amount = amountUsd !== undefined && AMOUNT_USD.test(amountUsd) ? amountUsd : null;
+  const hash = amount === null ? "#/donate" : `#/donate?amount=${encodeURIComponent(amount)}`;
+  return isSiteLocale(locale) ? `/exchange/?lang=${locale}${hash}` : `/exchange/${hash}`;
+}
+
+/**
  * Язык сайта в уже готовом адресе обмена.
  *
  * Адрес рынка нашего обмена лежит в базе (`CoinCardMarket.tradeUrl`, его пишет

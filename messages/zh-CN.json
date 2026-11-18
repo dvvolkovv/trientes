@@ -41,7 +41,8 @@
       "signIn": "登录",
       "newRequest": "新请求",
       "history": "历史",
-      "admin": "管理"
+      "admin": "管理",
+      "support": "支持"
     },
     "a11y": {
       "openMenu": "打开菜单",
@@ -81,7 +82,14 @@
       "bull": "牛市",
       "bear": "熊市"
     },
-    "topCoinsHeading": "顶级 Layer-1."
+    "topCoinsHeading": "顶级 Layer-1.",
+    "donate": {
+      "heading": "支持 Trientes",
+      "lede": "捐赠让本注册表持续运行并免费开放阅读。选择一个金额，并使用我们交易所提供的任意币种支付——其余由支付页面完成。",
+      "limits": "今天从 ${min} 到 ${max}。",
+      "presetsLabel": "选择金额",
+      "other": "其他金额"
+    }
   },
   "listing": {
     "rank": "#",

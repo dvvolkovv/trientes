@@ -41,7 +41,8 @@
       "signIn": "Iniciar sesión",
       "newRequest": "Nueva solicitud",
       "history": "Historial",
-      "admin": "Admin"
+      "admin": "Admin",
+      "support": "Soporte"
     },
     "a11y": {
       "openMenu": "Abrir menú",
@@ -81,7 +82,14 @@
       "bull": "Mercado alcista",
       "bear": "Mercado bajista"
     },
-    "topCoinsHeading": "Mejores Layer-1."
+    "topCoinsHeading": "Mejores Layer-1.",
+    "donate": {
+      "heading": "Apoya a Trientes",
+      "lede": "Las donaciones mantienen este registro en línea y gratuito para leer. Elige una suma y paga con cualquier moneda que ofrezca nuestro exchange — la página de pago hace el resto.",
+      "limits": "Hoy de ${min} a ${max}.",
+      "presetsLabel": "Elige una suma",
+      "other": "Otra suma"
+    }
   },
   "listing": {
     "rank": "#",

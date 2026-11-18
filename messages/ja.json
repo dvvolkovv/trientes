@@ -41,7 +41,8 @@
       "signIn": "サインイン",
       "newRequest": "新規リクエスト",
       "history": "履歴",
-      "admin": "管理"
+      "admin": "管理",
+      "support": "サポート"
     },
     "a11y": {
       "openMenu": "メニューを開く",
@@ -81,7 +82,14 @@
       "bull": "強気相場",
       "bear": "弱気相場"
     },
-    "topCoinsHeading": "トップレイヤー1."
+    "topCoinsHeading": "トップレイヤー1.",
+    "donate": {
+      "heading": "Trientesを支援する",
+      "lede": "寄付はこのレジストリを稼働させ、無料で閲覧できるように保ちます。金額を選び、当取引所で提供している任意のコインで支払ってください—あとは決済ページが処理します。",
+      "limits": "本日は${min}から${max}まで。",
+      "presetsLabel": "金額を選択",
+      "other": "別の金額"
+    }
   },
   "listing": {
     "rank": "#",

@@ -41,7 +41,8 @@
       "signIn": "Prijava",
       "newRequest": "Novi zahtjev",
       "history": "Povijest",
-      "admin": "Admin"
+      "admin": "Admin",
+      "support": "Podrška"
     },
     "a11y": {
       "openMenu": "Otvorite izbornik",
@@ -81,7 +82,14 @@
       "bull": "Bikovsko tržište",
       "bear": "Medvjeđe tržište"
     },
-    "topCoinsHeading": "Najbolji Layer-1."
+    "topCoinsHeading": "Najbolji Layer-1.",
+    "donate": {
+      "heading": "Podržite Trientes",
+      "lede": "Donacije održavaju ovaj registar dostupnim i besplatnim za čitanje. Odaberite iznos i platite bilo kojom kovanicom koju naša burza nudi — stranica za plaćanje odradit će ostalo.",
+      "limits": "Danas od ${min} do ${max}.",
+      "presetsLabel": "Odaberite iznos",
+      "other": "Drugi iznos"
+    }
   },
   "listing": {
     "rank": "#",
