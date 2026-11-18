@@ -43,7 +43,7 @@ describe("snapshotUrl", () => {
 describe("парсеры снимков", () => {
   it("binance и mexc", () => {
     const body = [
-      { symbol: "TALUSDT", lastPrice: "0.0412", quoteVolume: "120000", priceChangePercent: "3.5" },
+      { symbol: "TALUSDT", lastPrice: "0.0412", quoteVolume: "120000", priceChangePercent: "3.5", closeTime: 1795002028549 },
       { symbol: "BADUSDT", lastPrice: "oops", quoteVolume: "1", priceChangePercent: "0" },
     ];
     for (const id of ["binance", "mexc"]) {
@@ -51,8 +51,20 @@ describe("парсеры снимков", () => {
       expect(m.size).toBe(1); // мусор в цене выбрасывает рынок, а не роняет прогон
       expect(m.get("TALUSDT")).toEqual({
         nativeSymbol: "TALUSDT", price: 0.0412, quoteVolume: 120000, changePct: 3.5,
+        closedAt: 1795002028549,
       });
     }
+  });
+
+  it("конец окна берётся только в миллисекундах эпохи", () => {
+    const m = conn("binance").parse([
+      { symbol: "AUSDT", lastPrice: "1", closeTime: 1795002028549 },
+      { symbol: "BUSDT", lastPrice: "1", closeTime: 1795002028 }, // секунды — не наше
+      { symbol: "CUSDT", lastPrice: "1" },
+    ]);
+    expect(m.get("AUSDT")?.closedAt).toBe(1795002028549);
+    expect(m.get("BUSDT")?.closedAt).toBeNull();
+    expect(m.get("CUSDT")?.closedAt).toBeNull();
   });
 
   it("okx считает изменение от open24h", () => {

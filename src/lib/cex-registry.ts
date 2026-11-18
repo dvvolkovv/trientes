@@ -17,6 +17,12 @@ export type Ticker = {
   quoteVolume: number | null;
   /** Изменение за 24 ч в процентах; null — не отдаёт. */
   changePct: number | null;
+  /**
+   * Конец окна «за 24 часа» в миллисекундах эпохи; null — биржа его не отдаёт.
+   * Нужен затем, что снятая с торгов пара из снимка не исчезает: биржа отдаёт
+   * её последнее состояние, и окно у него закрылось в день снятия.
+   */
+  closedAt: number | null;
 };
 
 export type TickerMap = Map<string, Ticker>;
@@ -64,11 +70,27 @@ function rows(body: unknown, pick: (b: Record<string, unknown>) => unknown): unk
   return Array.isArray(inner) ? inner : [];
 }
 
-function put(map: TickerMap, nativeSymbol: unknown, t: Omit<Ticker, "nativeSymbol">): void {
+function put(
+  map: TickerMap,
+  nativeSymbol: unknown,
+  // Конец окна отдают не все биржи, поэтому у коннектора он необязателен: его
+  // отсутствие означает «не знаем», и такая пара замершей не считается.
+  t: Omit<Ticker, "nativeSymbol" | "closedAt"> & { closedAt?: number | null },
+): void {
   if (typeof nativeSymbol !== "string" || !nativeSymbol) return;
   if (t.price == null) return;
-  map.set(nativeSymbol.toUpperCase(), { nativeSymbol, ...t });
+  map.set(nativeSymbol.toUpperCase(), { nativeSymbol, closedAt: null, ...t });
 }
+
+/**
+ * Конец окна тикера: принимаем только правдоподобные миллисекунды эпохи. Часть
+ * бирж отдаёт секунды, и принять их за миллисекунды значило бы объявить каждую
+ * пару замершей с 1970 года.
+ */
+const closedAt = (v: unknown): number | null => {
+  const n = num(v);
+  return n != null && n >= 1e12 && n < 1e14 ? n : null;
+};
 
 const pctFromOpen = (last: number, open: unknown): number | null => {
   const o = price(open);
@@ -86,6 +108,7 @@ function parseBinanceLike(body: unknown): TickerMap {
       price: p,
       quoteVolume: vol(r.quoteVolume),
       changePct: num(r.priceChangePercent),
+      closedAt: closedAt(r.closeTime),
     });
   }
   return map;
@@ -133,6 +156,7 @@ export const CEX: readonly CexConnector[] = [
           // volCcy24h у спота — объём в котировке.
           quoteVolume: vol(r.volCcy24h),
           changePct: pctFromOpen(p, r.open24h),
+          closedAt: closedAt(r.ts),
         });
       }
       return map;

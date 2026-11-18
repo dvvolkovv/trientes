@@ -29,6 +29,36 @@ type RedisLike = {
 
 const CACHE_TTL_S = 300;
 const TIMEOUT_MS = 8_000;
+/**
+ * Насколько давно могло закрыться окно «за 24 часа», чтобы пара ещё считалась
+ * торгуемой. У живой пары оно закрывается прямо сейчас, у снятой с торгов —
+ * в день снятия и больше никогда.
+ */
+export const STALE_TICKER_MS = 6 * 60 * 60 * 1000;
+
+/**
+ * Снятые с торгов пары. Биржа их из снимка не убирает: Binance отдаёт
+ * последнее состояние пары, и оно выглядит как обычная котировка — цена,
+ * объём, число сделок. Живой случай 18 ноября: ACA/USDT показывал 0,0018 $
+ * при настоящей цене 0,000158 (окно закрылось пятью днями раньше, объём 371
+ * тыс. и 4001 сделка относились к тому дню), NTRN/USDT — то же самое.
+ *
+ * Опорная цена такую пару отвергала только потому, что расхождение было
+ * одиннадцатикратным; замри она ближе к настоящей цене — и снимок выдал бы её
+ * за сегодняшнюю. Поэтому отсекаем по штампу, а не по расхождению.
+ *
+ * Пара без штампа остаётся: половина бирж его не отдаёт, и «не знаю, когда»
+ * это не «знаю, что давно». Штамп из будущего тоже оставляем — часы биржи
+ * могут спешить, а негодным это пару не делает.
+ */
+export function dropFrozen(tickers: TickerMap, now: number): TickerMap {
+  const out: TickerMap = new Map();
+  for (const [key, t] of tickers) {
+    if (t.closedAt !== null && now - t.closedAt > STALE_TICKER_MS) continue;
+    out.set(key, t);
+  }
+  return out;
+}
 
 const cacheKey = (id: string) => `cex:snapshot:${id}`;
 
@@ -59,7 +89,7 @@ async function fetchOnce(
   } catch {
     throw new SnapshotError("exchange_error", "bad json");
   }
-  const tickers = connector.parse(body);
+  const tickers = dropFrozen(connector.parse(body), Date.now());
   if (tickers.size === 0) throw new SnapshotError("exchange_error", "empty snapshot");
   return tickers;
 }
