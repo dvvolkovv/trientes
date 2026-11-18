@@ -12,9 +12,19 @@ export type { PoiLayer };
 
 export const POI_LAYERS = ["merchant", "atm", "financial", "fintech"] as const satisfies readonly PoiLayer[];
 
+/**
+ * Цвет пульсирующей точки в середине булавки — вид заведения. Решение
+ * владельца 18 ноября: банкоматы, банки и обменники пульсируют оранжевым
+ * (деньги), магазины зелёным, заправки синим (цвет заправки задаётся
+ * категорией, а не слоем — см. `poiPulseColor`).
+ *
+ * Каёмка булавки при этом означает совсем другое — кто за точкой стоит
+ * (`BRAND_COLOR` в `poi-brand.ts`). Два знака в одной булавке: цвет каёмки
+ * отвечает «можно ли верить», цвет пульса — «что это за место».
+ */
 export const LAYER_COLOR: Record<PoiLayer, string> = {
   merchant: "#30B658",
   atm: "#FE5C04",
-  financial: "#5B8DEF",
-  fintech: "#A855F7",
+  financial: "#FE5C04",
+  fintech: "#FE5C04",
 };

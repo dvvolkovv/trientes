@@ -65,8 +65,14 @@ import { NavigationController, type NavigationCallbacks, type NavUpdate } from "
 import { haversineMeters } from "@/lib/route-geometry";
 import { MapControls } from "@/components/coin-detail/map-controls";
 import { AvailableNearPanel } from "@/components/coin-detail/available-near-panel";
-import { POI_LAYERS } from "@/lib/poi-layers";
-import { BRAND_COLOR, BRAND_RING, poiBrand } from "@/lib/poi-brand";
+import { POI_LAYERS, LAYER_COLOR } from "@/lib/poi-layers";
+import {
+  BRAND_COLOR,
+  poiBrand,
+  poiPulseColor,
+  pulseFrame,
+  PULSE_PERIOD_MS,
+} from "@/lib/poi-brand";
 import {
   addStaticMapAttribution,
   MAPLIBRE_ATTRIBUTION_OPTIONS,
@@ -143,6 +149,60 @@ const TERRAIN_SOURCE: SourceSpecification = {
 
 type Base = "map" | "satellite";
 
+/**
+ * Дыхание середины булавки. Кадры считает чистая `pulseFrame`, а здесь только
+ * ход времени и две записи свойств на слой.
+ *
+ * Два решения, которые стоит помнить. Первое: кадров **пятнадцать в секунду**,
+ * а не шестьдесят — каждая запись свойства заставляет MapLibre перерисовать
+ * карту целиком, и на телефоне шестьдесят перерисовок в секунду греют батарею
+ * ради огонька, который и так дышит медленно. Второе: при включённом
+ * «уменьшить движение» пульса нет вовсе — точка просто стоит в середине своего
+ * размера; человеку, которому анимация мешает, мы её не навязываем.
+ */
+let pulseRaf: number | null = null;
+
+function stopPulse() {
+  if (pulseRaf !== null) cancelAnimationFrame(pulseRaf);
+  pulseRaf = null;
+}
+
+function applyPulseFrame(map: MlMap, phase: number) {
+  const frame = pulseFrame(phase);
+  POI_LAYERS.forEach((layer) => {
+    const id = `poi-${layer}-core`;
+    if (!map.getLayer(id)) return;
+    map.setPaintProperty(id, "circle-radius", frame.radius);
+    map.setPaintProperty(id, "circle-opacity", frame.opacity);
+  });
+}
+
+function startPulse(map: MlMap) {
+  stopPulse();
+  const reduced =
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  if (reduced) {
+    applyPulseFrame(map, 0.5);
+    return;
+  }
+  const started = performance.now();
+  let lastDraw = 0;
+  const step = (now: number) => {
+    // Карту убрали из-под нас (переход на другую страницу) — молча выходим.
+    if (!map.getLayer(`poi-${POI_LAYERS[0]}-core`)) {
+      pulseRaf = null;
+      return;
+    }
+    if (now - lastDraw >= 1000 / 15) {
+      lastDraw = now;
+      applyPulseFrame(map, ((now - started) % PULSE_PERIOD_MS) / PULSE_PERIOD_MS);
+    }
+    pulseRaf = requestAnimationFrame(step);
+  };
+  pulseRaf = requestAnimationFrame(step);
+}
+
 function applyCoinOnlyFilter(map: MlMap, coinOnly: boolean) {
   POI_LAYERS.forEach((layer) => {
     const base: FilterSpecification = ["==", ["get", "layer"], layer];
@@ -150,6 +210,9 @@ function applyCoinOnlyFilter(map: MlMap, coinOnly: boolean) {
       ? (["all", base, ["==", ["get", "coinSpecific"], true]] as FilterSpecification)
       : base;
     map.setFilter(`poi-${layer}`, filter);
+    // Середина булавки — отдельный слой, и фильтры к нему применяются теми же
+    // правилами: иначе выключенный слой оставлял бы на карте свои огоньки.
+    map.setFilter(`poi-${layer}-core`, filter);
   });
 }
 
@@ -171,6 +234,8 @@ export default function CryptoNavigator({
   const t = useTranslations("cryptoMap");
   const locale = useLocale();
   const containerRef = useRef<HTMLDivElement>(null);
+  /** Наблюдатель за тем, видно ли карту: пульс дышит только на экране. */
+  const pulseWatchRef = useRef<IntersectionObserver | null>(null);
   const mapRef = useRef<MlMap | null>(null);
   const mapReadyRef = useRef(false);
   const geolocateRef = useRef<GeolocateControl | null>(null);
@@ -433,7 +498,9 @@ export default function CryptoNavigator({
   function applyDesiredMapState(map: MlMap) {
     map.setLayoutProperty("satellite", "visibility", baseRef.current === "satellite" ? "visible" : "none");
     POI_LAYERS.forEach((layer) => {
-      map.setLayoutProperty(`poi-${layer}`, "visibility", visibleRef.current[layer] ? "visible" : "none");
+      const vis = visibleRef.current[layer] ? "visible" : "none";
+      map.setLayoutProperty(`poi-${layer}`, "visibility", vis);
+      map.setLayoutProperty(`poi-${layer}-core`, "visibility", vis);
     });
     applyCoinOnlyFilter(map, coinOnlyRef.current);
     applyLogoMarkerVisibility();
@@ -479,6 +546,8 @@ export default function CryptoNavigator({
               // Цвет булавки говорит, кто за точкой стоит: наше предприятие,
               // учреждение каталога или зеркало BTC Map (см. poi-brand).
               brand: poiBrand(p),
+              // Цвет середины — что это за место (магазин, банкомат, заправка).
+              pulse: poiPulseColor(p),
               socials: JSON.stringify(p.socials),
               acceptedCoins: JSON.stringify(p.acceptedCoins),
               photos: JSON.stringify(p.photos),
@@ -806,38 +875,49 @@ export default function CryptoNavigator({
       });
 
       [...POI_LAYERS].reverse().forEach((layer) => {
+        // Булавка собрана из двух слоёв: каёмка (кто за точкой стоит) и
+        // пульсирующая середина (что это за место). Разделение нужно потому,
+        // что середина дышит, а каёмка стоит неподвижно.
         map.addLayer({
           id: `poi-${layer}`,
           type: "circle",
           source: "pois",
           filter: ["==", ["get", "layer"], layer],
           paint: {
-            "circle-radius": ["interpolate", ["linear"], ["zoom"], 11, 4, 16, 8],
-            // Фирменная палитра: оранжевый — наши, металлик — каталог финтеха,
-            // белый — зеркало BTC Map. Цвет один для всех слоёв: что это за
-            // заведение, говорит фильтр слоёв, а не оттенок булавки.
-            "circle-color": [
+            "circle-radius": ["interpolate", ["linear"], ["zoom"], 11, 6, 16, 10],
+            // Тёмная подложка, а не прозрачность: на светлой карте белая
+            // каёмка иначе теряется, а нажатие должно попадать в круг целиком.
+            "circle-color": "#10131A",
+            // Подложка нарочно бледная: на светлой карте плотный тёмный диск
+            // читается как клякса, а нам нужно кольцо с огоньком внутри.
+            "circle-opacity": 0.26,
+            // Каёмка — источник точки: оранжевая у наших, серая у каталога,
+            // белая у зеркала BTC Map.
+            "circle-stroke-color": [
               "match",
               ["get", "brand"],
               "own", BRAND_COLOR.own,
               "institution", BRAND_COLOR.institution,
               BRAND_COLOR.osm,
             ],
-            "circle-opacity": 0.95,
-            // Кольцо значит «тут принимают выбранную монету».
-            "circle-stroke-width": ["case", ["get", "coinSpecific"], 2.5, 1],
-            "circle-stroke-color": [
-              "case",
-              ["get", "coinSpecific"],
-              [
-                "match",
-                ["get", "brand"],
-                "own", BRAND_RING.own,
-                "institution", BRAND_RING.institution,
-                BRAND_RING.osm,
-              ],
-              "#161616",
-            ],
+            // Толще — значит здесь принимают выбранную монету.
+            "circle-stroke-width": ["case", ["get", "coinSpecific"], 3.2, 1.8],
+            "circle-stroke-opacity": ["case", ["get", "coinSpecific"], 1, 0.8],
+          },
+        });
+
+        map.addLayer({
+          id: `poi-${layer}-core`,
+          type: "circle",
+          source: "pois",
+          filter: ["==", ["get", "layer"], layer],
+          paint: {
+            // Радиус и прозрачность задаёт кадр пульса (pulseFrame);
+            // здесь — начальные значения, дальше их меняет анимация.
+            "circle-radius": pulseFrame(0).radius,
+            "circle-color": ["coalesce", ["get", "pulse"], "#30B658"],
+            "circle-opacity": pulseFrame(0).opacity,
+            "circle-stroke-width": 0,
           },
         });
 
@@ -854,6 +934,21 @@ export default function CryptoNavigator({
 
       mapReadyRef.current = true;
       applyDesiredMapState(map);
+      startPulse(map);
+      // Карту, уехавшую за край экрана, перерисовывать незачем: на странице
+      // монеты навигатор лежит ниже сгиба, и пульс там жёг бы батарею впустую.
+      if (typeof IntersectionObserver !== "undefined" && containerRef.current) {
+        pulseWatchRef.current?.disconnect();
+        const io = new IntersectionObserver(
+          (entries) => {
+            if (entries.some((e) => e.isIntersecting)) startPulse(map);
+            else stopPulse();
+          },
+          { threshold: 0 },
+        );
+        io.observe(containerRef.current);
+        pulseWatchRef.current = io;
+      }
 
       // Click on empty map → drop/move the draggable "my position" pin.
       map.on("click", (e) => {
@@ -919,6 +1014,9 @@ export default function CryptoNavigator({
       logoMarkersRef.current = [];
       compassStopRef.current?.();
       compassStopRef.current = null;
+      pulseWatchRef.current?.disconnect();
+      pulseWatchRef.current = null;
+      stopPulse();
       beamRef.current?.remove();
       beamRef.current = null;
       map.remove();
@@ -1014,6 +1112,7 @@ export default function CryptoNavigator({
     applyLogoMarkerVisibility();
     if (!map || !mapReadyRef.current) return;
     map.setLayoutProperty(`poi-${layer}`, "visibility", next ? "visible" : "none");
+    map.setLayoutProperty(`poi-${layer}-core`, "visibility", next ? "visible" : "none");
   }
 
   function toggleCoinOnly() {
@@ -1784,25 +1883,32 @@ export default function CryptoNavigator({
               (visible[layer] ? "border-hairline text-foreground" : "border-hairline text-muted/40")
             }
           >
-            {/* Цветной кружок у фильтра слоя был бы ложью: цвет булавки
-                означает источник, а не слой. */}
+            {/* Кружок у фильтра — цвет пульса этого слоя: ровно то, что
+                дышит в середине булавки на карте. */}
+            <span
+              className="inline-block w-2.5 h-2.5 rounded-full"
+              style={{ background: LAYER_COLOR[layer] }}
+            />
             {t(`layer_${layer}`)}
             <span className="num text-muted">{counts[layer]}</span>
           </button>
         ))}
         <span className="text-[11px] text-muted flex items-center gap-1.5">
+          {/* Толстая каёмка — здесь принимают выбранную монету. Образец
+              намеренно серый: речь о толщине кольца, а не о его цвете, иначе
+              он читался бы как ещё один источник. */}
           <span
-            className="inline-block w-2.5 h-2.5 rounded-full bg-transparent"
-            style={{ border: `2px solid ${BRAND_COLOR.own}` }}
+            className="inline-block w-3.5 h-3.5 rounded-full bg-transparent"
+            style={{ border: "4px solid #8A8F98" }}
           />
           {t("coinHighlight", { symbol: symbol.toUpperCase() })}
         </span>
-        {/* Что значит цвет булавки — три слова и три кружка. */}
+        {/* Что значит цвет каёмки — три слова и три кольца. */}
         {(["own", "institution", "osm"] as const).map((brand) => (
           <span key={brand} className="text-[11px] text-muted flex items-center gap-1.5">
             <span
-              className="inline-block w-2.5 h-2.5 rounded-full"
-              style={{ background: BRAND_COLOR[brand], border: "1px solid #161616" }}
+              className="inline-block w-3 h-3 rounded-full bg-transparent"
+              style={{ border: `2px solid ${BRAND_COLOR[brand]}` }}
             />
             {t(`brand_${brand}`)}
           </span>

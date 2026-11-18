@@ -17,7 +17,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { POI_LAYERS, type PoiLayer } from "@/lib/poi-layers";
+import { POI_LAYERS, LAYER_COLOR, type PoiLayer } from "@/lib/poi-layers";
 
 type ExchangeRow = { id: string; name: string; logoUrl: string | null };
 type FintechRow = { id: string; slug: string; displayName: string; logoUrl: string | null };
@@ -93,9 +93,14 @@ export function AvailableNearPanel({
                 <span className="text-muted">{t("available.noPoints")}</span>
               ) : (
                 visiblePoints.map((layer) => (
-                  // Цветного кружка тут больше нет: цвет булавки на карте
-                  // означает источник точки, а не слой (см. poi-brand).
+                  // Кружок — цвет пульса слоя: то же, что дышит в середине
+                  // булавки на карте (каёмка означает источник, см. poi-brand).
                   <span key={layer} className="flex items-center gap-1.5 text-foreground">
+                    <span
+                      aria-hidden
+                      className="inline-block h-2.5 w-2.5 rounded-full"
+                      style={{ background: LAYER_COLOR[layer] }}
+                    />
                     {t(`layer_${layer}`)}
                     <span className="num text-muted">{counts[layer]}</span>
                   </span>
