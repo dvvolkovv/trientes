@@ -159,6 +159,9 @@ async function withTimeout<T>(ms: number, run: (signal: AbortSignal) => Promise<
 
 export type MarketFetchLike = (url: string, init?: RequestInit) => Promise<Response>;
 
+/** Что дал прогон: прошедшие котировки и то, о чём вообще спросили. */
+export type MarketSweep = { quotes: MarketQuote[]; asked: string[] };
+
 /**
  * Ответ на один запрос. «Срезано частотой» отделено от прочих неудач нарочно:
  * бюджет службы — свойство окна времени, а не инструмента, и после двух-трёх
@@ -193,19 +196,28 @@ async function fetchOne(
 }
 
 /**
- * Порядок обхода: дольше всех не обновлявшийся инструмент идёт первым, ещё не
- * снятый — впереди всех. Чистая функция от прошлого снимка, а не сдвиг по кругу
- * в переменной модуля: сдвиг начинался заново с каждым перезапуском воркера, и
- * хвост списка — платина с палладием — не обновлялся никогда.
+ * Карта спросов: символ → время нашего запроса о нём (ISO, по UTC). Это **наш**
+ * факт, а не рынка, и очередь строится только по нему.
  */
-export function marketFetchOrder(previous: MarketQuote[]): MarketInstrument[] {
-  const seenAt = new Map<string, string>();
-  for (const q of previous) {
-    if (q.date && q.time) seenAt.set(q.symbol, `${q.date}T${q.time}`);
-  }
+export type MarketAskedAt = Record<string, string | undefined>;
+
+/**
+ * Порядок обхода: о чём дольше всех не спрашивали, о том спрашиваем первым;
+ * о чём не спрашивали ни разу — впереди всех.
+ *
+ * Почему по спросу, а не по штампу котировки (так было до 18 ноября): штамп
+ * `regularMarketTime` принадлежит рынку, и у рынка, который стоит закрытым или
+ * торгуется в другие часы, он не двигается. Такой инструмент навсегда оставался
+ * самым ветхим, навсегда стоял первым — а ограничитель Yahoo режет именно
+ * **начало** обхода, и первый запрос почти всегда получает 429. Голодание
+ * закрепляло себя: платина и палладий не снялись ни разу за сутки, хотя живой
+ * запрос их отдаёт. Спрос учитывается и когда он кончился отказом, поэтому
+ * очередь двигается в любом случае и жертвенный слот достаётся всем по разу.
+ */
+export function marketFetchOrder(asked: MarketAskedAt): MarketInstrument[] {
   return [...MARKET_INSTRUMENTS].sort((a, b) => {
-    const x = seenAt.get(a.symbol);
-    const y = seenAt.get(b.symbol);
+    const x = asked[a.symbol];
+    const y = asked[b.symbol];
     if (x === y) return 0;
     if (x === undefined) return -1;
     if (y === undefined) return 1;
@@ -236,23 +248,28 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
  * запросами он не зависит (с паузой 5 с прошла одна из шести, с паузой 1,2 с —
  * одна-две из десяти). Значит после трёх 429 остальные запросы прогона —
  * заведомые 429, и слать их означает только давить на чужую службу.
+ *
+ * Прогон возвращает **и то, о чём спросил** — вместе с теми, кому отказали по
+ * частоте: по этому списку двигается очередь следующего прогона.
  */
 export async function fetchMarkets(
   order: MarketInstrument[] = MARKET_INSTRUMENTS,
   opts: { timeoutMs?: number; gapMs?: number; fetchImpl?: MarketFetchLike } = {},
-): Promise<MarketQuote[]> {
+): Promise<MarketSweep> {
   const { timeoutMs = 10000, gapMs = REQUEST_GAP_MS, fetchImpl = fetch } = opts;
-  const out: MarketQuote[] = [];
+  const quotes: MarketQuote[] = [];
+  const asked: string[] = [];
   let throttled = 0;
   for (const [i, inst] of order.entries()) {
     if (i > 0 && gapMs > 0) await sleep(gapMs);
     const a = await fetchOne(inst, timeoutMs, fetchImpl);
+    asked.push(inst.symbol);
     if ("quote" in a) {
-      out.push(a.quote);
+      quotes.push(a.quote);
       throttled = 0;
       continue;
     }
     if ("throttled" in a && ++throttled >= THROTTLE_GIVE_UP) break;
   }
-  return out;
+  return { quotes, asked };
 }

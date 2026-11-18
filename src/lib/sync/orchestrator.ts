@@ -1,7 +1,7 @@
 import type { MarketRow, GlobalSnap, ExchangeRates, CoinDetail, Exchange } from "@/lib/coingecko";
 import type { NewsItem } from "@/lib/news";
 import type { FearGreed } from "@/lib/fear-greed";
-import { marketFetchOrder, type MarketInstrument, type MarketQuote } from "@/lib/markets";
+import { marketFetchOrder, type MarketAskedAt, type MarketInstrument, type MarketQuote, type MarketSweep } from "@/lib/markets";
 import { KEYS, TTL } from "./keys";
 import { mergeCuratedExchanges } from "@/lib/curated-exchanges";
 import { cpTypeToExchangeType, resolveCpId, type CoinPaprikaExchange, type CoinPaprikaExchangeDetail, type CoinPaprikaMarket } from "@/lib/coinpaprika";
@@ -138,11 +138,28 @@ export async function syncFearGreed(deps: {
 }
 
 export async function syncMarkets(deps: {
-  fetchMarkets: (order?: MarketInstrument[]) => Promise<MarketQuote[]>;
+  fetchMarkets: (order?: MarketInstrument[]) => Promise<MarketSweep>;
   redis: RedisLike & { get(key: string): Promise<string | null> };
+  now?: () => Date;
 }): Promise<{ count: number }> {
-  // Прошлый снимок читается ДО запроса, а не после: по нему же выбирается, с
-  // какой карточки начинать обход — служба отдаёт за прогон одну-две из десяти.
+  const now = deps.now ?? (() => new Date());
+
+  // Очередь обхода — по нашей карте спросов, а не по штампу котировки: штамп
+  // принадлежит рынку, у закрытого рынка он не двигается, и такой инструмент
+  // навсегда стоял первым и навсегда получал 429 (см. `marketFetchOrder`).
+  let asked: MarketAskedAt = {};
+  try {
+    const cached = await deps.redis.get(KEYS.marketsAsked);
+    const parsed = cached ? JSON.parse(cached) : null;
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+      asked = parsed as MarketAskedAt;
+    }
+  } catch {
+    asked = {};
+  }
+
+  // Прошлый снимок читается ДО запроса: за не прошедшие карточки он подставит
+  // прежние значения — служба отдаёт за прогон одну-две из десяти.
   let previous: MarketQuote[] = [];
   try {
     const cached = await deps.redis.get(KEYS.markets);
@@ -152,7 +169,20 @@ export async function syncMarkets(deps: {
     previous = [];
   }
 
-  const quotes = await deps.fetchMarkets(marketFetchOrder(previous));
+  const sweep = await deps.fetchMarkets(marketFetchOrder(asked));
+
+  // Спрос записывается до любых разборов ответа и независимо от того, прошла
+  // ли хоть одна котировка: иначе очередь не двигается, получивший отказ по
+  // частоте снова встаёт первым и снова его получает — живое голодание
+  // платины с палладием, которые за сутки не снялись ни разу.
+  if (sweep.asked.length > 0) {
+    const stamp = now().toISOString();
+    const next: MarketAskedAt = { ...asked };
+    for (const symbol of sweep.asked) next[symbol] = stamp;
+    await deps.redis.set(KEYS.marketsAsked, JSON.stringify(next), "EX", TTL.marketsAsked);
+  }
+
+  const quotes = sweep.quotes;
   // An empty result means the upstream refused us, not that the markets are gone —
   // keep the last good snapshot so the board degrades to stale instead of blank.
   if (quotes.length === 0) return { count: 0 };

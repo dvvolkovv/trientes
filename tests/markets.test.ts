@@ -82,47 +82,47 @@ describe("parseYahooChart", () => {
 });
 
 /**
- * Порядок обхода. Служба режет частоту, за прогон проходит одна-две котировки
- * из десяти, поэтому важно не «с какого начинать по кругу», а «кто дольше всех
- * не обновлялся»: сдвиг по кругу жил в переменной модуля и после каждого
- * перезапуска воркера начинался заново с первого инструмента — хвост списка
- * (платина, палладий) не обновлялся никогда.
+ * Порядок обхода. Служба режет частоту: за прогон проходит одна-две котировки
+ * из десяти, и отказ достаётся **началу** обхода. Поэтому очередь строится по
+ * нашему собственному факту — когда мы об инструменте спрашивали, — а не по
+ * штампу котировки: штамп принадлежит рынку (`regularMarketTime`), у закрытого
+ * рынка он не двигается, и такой инструмент навсегда оставался самым ветхим,
+ * навсегда стоял первым и навсегда получал 429. Живой случай 18 ноября:
+ * платина и палладий не снялись ни разу за сутки, хотя служба их отдаёт.
  */
 describe("marketFetchOrder", () => {
-  const stamped = (symbol: string, date: string, time: string) =>
-    ({ symbol, date, time }) as never;
+  const at = (k: number) => `2026-11-18T10:${String(k).padStart(2, "0")}:00.000Z`;
 
-  it("ещё не снятые идут первыми, в порядке списка", () => {
-    const order = marketFetchOrder([
-      stamped("^DJI", "2026-11-18", "10:00:00"),
-      stamped("GC=F", "2026-11-18", "10:00:00"),
-    ]);
+  it("ещё не спрошенные идут первыми, в порядке списка", () => {
+    const order = marketFetchOrder({ "^DJI": at(0), "GC=F": at(0) });
     expect(order.map((i) => i.symbol).slice(0, 3)).toEqual(["^IXIC", "^GSPC", "ES=F"]);
     expect(order).toHaveLength(MARKET_INSTRUMENTS.length);
   });
 
-  it("снятые раньше идут раньше снятых позже", () => {
-    const previous = MARKET_INSTRUMENTS.map((i, k) =>
-      stamped(i.symbol, "2026-11-18", `10:${String(k).padStart(2, "0")}:00`),
-    );
-    const order = marketFetchOrder(previous);
+  it("спрошенные раньше идут раньше спрошенных позже", () => {
+    const asked = Object.fromEntries(MARKET_INSTRUMENTS.map((i, k) => [i.symbol, at(k)]));
+    const order = marketFetchOrder(asked);
     expect(order[0].symbol).toBe("^DJI");
     expect(order[order.length - 1].symbol).toBe("PA=F");
-    expect(marketFetchOrder([...previous].reverse())[0].symbol).toBe("^DJI");
   });
 
-  it("карточка без штампа считается самой ветхой", () => {
-    const previous = MARKET_INSTRUMENTS.map((i) => stamped(i.symbol, "2026-11-18", "10:00:00"));
-    previous[7] = { symbol: "SI=F", date: null, time: null } as never;
-    expect(marketFetchOrder(previous)[0].symbol).toBe("SI=F");
+  it("отказ по частоте очередь двигает: спрошенный уходит в хвост", () => {
+    const asked: Record<string, string> = {};
+    const head = marketFetchOrder(asked).slice(0, 2).map((i) => i.symbol);
+    expect(head).toEqual(["^DJI", "^IXIC"]);
+    // Спросили и получили 429 — котировки нет, но спрос был, и он учтён.
+    for (const symbol of head) asked[symbol] = at(0);
+    const next = marketFetchOrder(asked);
+    expect(next.slice(0, 2).map((i) => i.symbol)).toEqual(["^GSPC", "ES=F"]);
+    expect(next.slice(-2).map((i) => i.symbol)).toEqual(head);
   });
 
-  it("пустой снимок — порядок списка", () => {
-    expect(marketFetchOrder([]).map((i) => i.symbol)).toEqual(MARKET_INSTRUMENTS.map((i) => i.symbol));
+  it("пустая карта спросов — порядок списка", () => {
+    expect(marketFetchOrder({}).map((i) => i.symbol)).toEqual(MARKET_INSTRUMENTS.map((i) => i.symbol));
   });
 
-  it("чужой символ в снимке обход не ломает", () => {
-    const order = marketFetchOrder([stamped(".DJI", "2026-11-18", "10:00:00")]);
+  it("чужой символ в карте спросов обход не ломает", () => {
+    const order = marketFetchOrder({ ".DJI": at(0) });
     expect(order).toHaveLength(MARKET_INSTRUMENTS.length);
   });
 });
@@ -144,7 +144,7 @@ describe("fetchMarkets", () => {
 
   it("прекращает обход после трёх отказов по частоте подряд", async () => {
     const asked: string[] = [];
-    const quotes = await fetchMarkets(MARKET_INSTRUMENTS, { gapMs: 0, fetchImpl: async (url) => {
+    const { quotes } = await fetchMarkets(MARKET_INSTRUMENTS, { gapMs: 0, fetchImpl: async (url) => {
       const symbol = decodeURIComponent(String(url).split("/chart/")[1].split("?")[0]);
       asked.push(symbol);
       return asked.length === 1 ? ok(symbol) : throttled();
@@ -155,7 +155,7 @@ describe("fetchMarkets", () => {
 
   it("прошедшая котировка счёт отказов обнуляет", async () => {
     const asked: string[] = [];
-    const quotes = await fetchMarkets(MARKET_INSTRUMENTS.slice(0, 6), { gapMs: 0, fetchImpl: async (url) => {
+    const { quotes } = await fetchMarkets(MARKET_INSTRUMENTS.slice(0, 6), { gapMs: 0, fetchImpl: async (url) => {
       const symbol = decodeURIComponent(String(url).split("/chart/")[1].split("?")[0]);
       asked.push(symbol);
       return asked.length % 3 === 0 ? ok(symbol) : throttled();
@@ -164,9 +164,17 @@ describe("fetchMarkets", () => {
     expect(quotes).toHaveLength(2);
   });
 
+  it("сообщает, о чём спросил: отказ по частоте — тоже спрос", async () => {
+    // Иначе очередь не двигается: получивший 429 остаётся самым ветхим,
+    // в следующем прогоне снова стоит первым и снова получает 429.
+    const { quotes, asked } = await fetchMarkets(MARKET_INSTRUMENTS, { gapMs: 0, fetchImpl: async () => throttled() });
+    expect(quotes).toEqual([]);
+    expect(asked).toEqual(["^DJI", "^IXIC", "^GSPC"]);
+  });
+
   it("отказ не по частоте обход не прекращает — он про инструмент, а не про бюджет", async () => {
     const asked: string[] = [];
-    const quotes = await fetchMarkets(MARKET_INSTRUMENTS.slice(0, 5), { gapMs: 0, fetchImpl: async (url) => {
+    const { quotes } = await fetchMarkets(MARKET_INSTRUMENTS.slice(0, 5), { gapMs: 0, fetchImpl: async (url) => {
       const symbol = decodeURIComponent(String(url).split("/chart/")[1].split("?")[0]);
       asked.push(symbol);
       return symbol === "CL=F" ? ok(symbol) : new Response("Not Found", { status: 404 });

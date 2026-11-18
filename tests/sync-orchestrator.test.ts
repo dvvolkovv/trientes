@@ -189,6 +189,9 @@ describe("syncFearGreed", () => {
 });
 
 describe("syncMarkets", () => {
+  const sweep = (quotes: unknown[], asked?: string[]) =>
+    ({ quotes, asked: asked ?? (quotes as Array<{ symbol: string }>).map((q) => q.symbol) }) as never;
+
   it("writes the quotes to Redis and returns the count", async () => {
     const { redisStore, fakeRedis } = makeFakes();
     const quotes = [
@@ -196,7 +199,7 @@ describe("syncMarkets", () => {
       { symbol: "xauusd", name: "gold", group: "metal", unit: "usd", date: "2026-05-22", time: "22:00:00", open: 4544, high: 4546, low: 4492, last: 4508, changePct: -0.79 },
     ];
     const result = await syncMarkets({
-      fetchMarkets: async () => quotes as never,
+      fetchMarkets: async () => sweep(quotes),
       redis: fakeRedis as never,
     });
     expect(result).toEqual({ count: 2 });
@@ -211,8 +214,8 @@ describe("syncMarkets", () => {
     ];
     redisStore.set(KEYS.markets, JSON.stringify(prev));
     const result = await syncMarkets({
-      // CNBC dropped @PA.1 from this response
-      fetchMarkets: async () => [{ symbol: ".DJI", name: "Dow Jones", group: "index", unit: "pts", last: 2 }] as never,
+      // the upstream dropped @PA.1 from this response
+      fetchMarkets: async () => sweep([{ symbol: ".DJI", name: "Dow Jones", group: "index", unit: "pts", last: 2 }]),
       redis: fakeRedis as never,
     });
     expect(result).toEqual({ count: 1 });
@@ -226,43 +229,73 @@ describe("syncMarkets", () => {
     const { redisStore, fakeRedis } = makeFakes();
     redisStore.set(KEYS.markets, "not json");
     const fresh = [{ symbol: ".DJI", name: "Dow Jones", group: "index", unit: "pts", last: 2 }];
-    const result = await syncMarkets({ fetchMarkets: async () => fresh as never, redis: fakeRedis as never });
+    const result = await syncMarkets({ fetchMarkets: async () => sweep(fresh), redis: fakeRedis as never });
     expect(result).toEqual({ count: 1 });
     expect(JSON.parse(redisStore.get(KEYS.markets)!)).toHaveLength(1);
   });
 
-  it("спрашивает с самой ветхой карточки: порядок обхода — из прошлого снимка", async () => {
+  it("спрашивает о том, о чём дольше всех не спрашивали: очередь — из карты спросов", async () => {
     const { redisStore, fakeRedis } = makeFakes();
     redisStore.set(
-      KEYS.markets,
-      JSON.stringify([
-        { symbol: "^DJI", date: "2026-11-18", time: "11:00:00" },
-        { symbol: "PA=F", date: "2026-11-18", time: "09:00:00" },
-      ]),
+      KEYS.marketsAsked,
+      JSON.stringify({ "^DJI": "2026-11-18T11:00:00.000Z", "PA=F": "2026-11-18T09:00:00.000Z" }),
     );
     let asked: string[] = [];
     await syncMarkets({
       fetchMarkets: async (order) => {
         asked = (order ?? []).map((i) => i.symbol);
-        return [{ symbol: "PA=F", name: "palladium", group: "metal", unit: "usd", last: 1 }] as never;
+        return sweep([{ symbol: "PA=F", name: "palladium", group: "metal", unit: "usd", last: 1 }], asked);
       },
       redis: fakeRedis as never,
     });
-    // Ни разу не снятые впереди всех, за ними — палладий (09:00) и только
+    // Ни разу не спрошенные впереди всех, за ними — палладий (09:00) и только
     // потом индекс (11:00): под ограничителем частоты проходит начало обхода.
     expect(asked.slice(-2)).toEqual(["PA=F", "^DJI"]);
     expect(asked).toHaveLength(10);
+  });
+
+  it("спрос записывается, даже когда ни одна котировка не прошла", async () => {
+    // Иначе очередь не двигается: получивший 429 остаётся самым ветхим и в
+    // следующем прогоне снова стоит первым — живое голодание платины.
+    const { redisStore, fakeRedis } = makeFakes();
+    redisStore.set(KEYS.markets, JSON.stringify([{ symbol: "^DJI", last: 1 }]));
+    const result = await syncMarkets({
+      fetchMarkets: async () => sweep([], ["PL=F", "PA=F", "^DJI"]),
+      redis: fakeRedis as never,
+      now: () => new Date("2026-11-18T18:00:00.000Z"),
+    });
+    expect(result).toEqual({ count: 0 });
+    // Прошлый снимок табло не тронут: пустой ответ — отказ службы, а не «рынков нет».
+    expect(JSON.parse(redisStore.get(KEYS.markets)!)).toEqual([{ symbol: "^DJI", last: 1 }]);
+    expect(JSON.parse(redisStore.get(KEYS.marketsAsked)!)).toEqual({
+      "PL=F": "2026-11-18T18:00:00.000Z",
+      "PA=F": "2026-11-18T18:00:00.000Z",
+      "^DJI": "2026-11-18T18:00:00.000Z",
+    });
+  });
+
+  it("карта спросов помнит то, о чём в этом прогоне не спрашивали", async () => {
+    const { redisStore, fakeRedis } = makeFakes();
+    redisStore.set(KEYS.marketsAsked, JSON.stringify({ "GC=F": "2026-11-18T09:00:00.000Z" }));
+    await syncMarkets({
+      fetchMarkets: async () => sweep([], ["PL=F"]),
+      redis: fakeRedis as never,
+      now: () => new Date("2026-11-18T18:00:00.000Z"),
+    });
+    expect(JSON.parse(redisStore.get(KEYS.marketsAsked)!)).toEqual({
+      "GC=F": "2026-11-18T09:00:00.000Z",
+      "PL=F": "2026-11-18T18:00:00.000Z",
+    });
   });
 
   it("keeps the previous snapshot when the source returns nothing", async () => {
     const { redisStore, fakeRedis } = makeFakes();
     redisStore.set(KEYS.markets, JSON.stringify([{ symbol: ".DJI" }]));
     const result = await syncMarkets({
-      fetchMarkets: async () => [],
+      fetchMarkets: async () => sweep([]),
       redis: fakeRedis as never,
     });
     expect(result).toEqual({ count: 0 });
-    expect(fakeRedis.set).not.toHaveBeenCalled();
     expect(JSON.parse(redisStore.get(KEYS.markets)!)).toHaveLength(1);
   });
 });

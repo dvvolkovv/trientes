@@ -13,6 +13,10 @@ export const KEYS = {
   // запись Yahoo («^GSPC», «GC=F»), и слияние с прежним снимком дало бы на
   // табло двадцать карточек вместо десяти.
   markets: "snapshot:markets:v2",
+  // Наш собственный факт: о чём и когда мы спрашивали. По нему строится очередь
+  // обхода — см. `marketFetchOrder`. Отдельный ключ, а не поле котировки:
+  // спрос бывает и о том, что нам так и не отдали.
+  marketsAsked: "snapshot:markets:asked",
   tickers: (id: string) => `tickers:${id}`,
 } as const;
 
@@ -26,7 +30,8 @@ export const TTL = {
   pinnedList: 300,         // 5 min — главная пересобирается раз в минуту, числа меняются раз в час
   news: 7200,              // 2h — outlives the 30 min news-sync + worker restarts
   fearGreed: 21600,        // 6h — index updates ~daily; long TTL survives worker restarts
-  markets: 86400,          // 24h — quotes are delayed anyway; survives an upstream outage, board shows its own asOf stamp
+  markets: 86400,
+  marketsAsked: 86400 * 7,  // 7d — очередь должна помнить спросы дольше, чем живёт само табло          // 24h — quotes are delayed anyway; survives an upstream outage, board shows its own asOf stamp
   tickers: 900,            // 15 min — bounds CoinGecko /tickers calls on the free tier
 } as const;
 
