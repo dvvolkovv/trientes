@@ -55,6 +55,7 @@ export function CoinListClient({
   rates,
   locale,
   watchedSet,
+  watchedCardSet,
   isAuthed,
 }: {
   rows: ListRow[];
@@ -62,6 +63,12 @@ export function CoinListClient({
   rates: ExchangeRates | null;
   locale: string;
   watchedSet: Set<string>;
+  /**
+   * Закладки на монеты, живущие одной карточкой. Свой набор: ключи у них из
+   * другого пространства (`CoinCard.slug`), и в общем наборе закладка одной
+   * монеты могла бы зажечь звёздочку другой.
+   */
+  watchedCardSet?: Set<string>;
   isAuthed: boolean;
 }) {
   const t = useTranslations("listing");
@@ -157,7 +164,11 @@ export function CoinListClient({
                 currency={currency}
                 rates={rates}
                 locale={locale}
-                isWatched={watchedSet.has(row.id)}
+                isWatched={
+                  row.unranked
+                    ? (watchedCardSet?.has(row.id) ?? false)
+                    : watchedSet.has(row.id)
+                }
                 isAuthed={isAuthed}
                 circulatingLabel={t("circulating")}
               />
@@ -175,7 +186,11 @@ export function CoinListClient({
             currency={currency}
             rates={rates}
             locale={locale}
-            isWatched={watchedSet.has(row.id)}
+            isWatched={
+              row.unranked
+                ? (watchedCardSet?.has(row.id) ?? false)
+                : watchedSet.has(row.id)
+            }
             isAuthed={isAuthed}
           />
         ))}

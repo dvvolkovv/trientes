@@ -7,8 +7,22 @@ import { DexCandlesChart } from "./dex-candles-chart";
 import { isOwnDexMarket } from "@/lib/coin-card-dex-market";
 import { dexPairKey } from "@/lib/dex-candles";
 import { circulatingCoins } from "@/lib/coin-card-circulating";
+import { WatchlistButton } from "@/components/watchlist-button";
 
-export async function CoinCardHeader({ card }: { card: PublicCoinCard }) {
+/**
+ * Закладка на монету, живущую одной карточкой. Передаётся страницей: сама
+ * шапка о посетителе ничего не знает. Нет `watch` — звёздочки нет (шапка
+ * рисуется и там, где закладке лечь некуда).
+ */
+type WatchState = { isWatched: boolean; isAuthed: boolean; locale: string };
+
+export async function CoinCardHeader({
+  card,
+  watch,
+}: {
+  card: PublicCoinCard;
+  watch?: WatchState;
+}) {
   const t = await getTranslations("coinCard");
   // Ряд свечей ведёт служба заявок нашего обмена, и он есть только у пары,
   // которой на обмене торгуют. Признак тот же, что у цены: рынок наш.
@@ -33,6 +47,19 @@ export async function CoinCardHeader({ card }: { card: PublicCoinCard }) {
             {card.name}{" "}
             <span className="text-muted">{card.symbol}</span>
             <ProvenanceBadge entry={getProvenance(card.provenance, "symbol")} />
+            {watch && (
+              <>
+                {" "}
+                <WatchlistButton
+                  coinId={card.slug}
+                  initialWatched={watch.isWatched}
+                  isAuthed={watch.isAuthed}
+                  locale={watch.locale}
+                  size="md"
+                  kind="card"
+                />
+              </>
+            )}
           </h1>
           {card.tagline && <p className="text-muted mt-1">{card.tagline}</p>}
         </div>

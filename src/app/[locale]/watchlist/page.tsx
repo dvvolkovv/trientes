@@ -5,7 +5,13 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { readTop100, readExchanges, readExchangeRates } from "@/lib/snapshot";
 import { getCurrency } from "@/lib/get-currency";
-import { readUserWatchedIds, readUserWatchedExchangeIds, isAuthenticated } from "@/lib/watchlist";
+import {
+  readUserWatchedIds,
+  readUserWatchedCardSlugs,
+  readUserWatchedExchangeIds,
+  isAuthenticated,
+} from "@/lib/watchlist";
+import { readCardRowsBySlugs } from "@/lib/pinned-coins";
 import { CoinListClient } from "@/components/coin-list-client";
 import { ExchangesTable } from "@/components/exchanges-table";
 
@@ -48,15 +54,20 @@ export default async function WatchlistPage({
   const t = await getTranslations("watchlist");
   const tk = await getTranslations("common");
 
-  const [allRows, allExchanges, rates, currency, watchedSet, watchedExSet] = await Promise.all([
-    readTop100(),
-    readExchanges(),
-    readExchangeRates(),
-    getCurrency(),
-    readUserWatchedIds(),
-    readUserWatchedExchangeIds(),
-  ]);
-  const rows = allRows.filter((r) => watchedSet.has(r.id));
+  const [allRows, allExchanges, rates, currency, watchedSet, watchedCardSet, watchedExSet] =
+    await Promise.all([
+      readTop100(),
+      readExchanges(),
+      readExchangeRates(),
+      getCurrency(),
+      readUserWatchedIds(),
+      readUserWatchedCardSlugs(),
+      readUserWatchedExchangeIds(),
+    ]);
+  // Монета, живущая одной карточкой, в рыночном фиде не лежит вовсе, и
+  // отфильтровать её из `allRows` нечем — её строка читается из карточки.
+  const cardRows = await readCardRowsBySlugs([...watchedCardSet]);
+  const rows = [...allRows.filter((r) => watchedSet.has(r.id)), ...cardRows];
   const exchanges = allExchanges.filter((e) => watchedExSet.has(e.id));
 
   return (
@@ -79,6 +90,7 @@ export default async function WatchlistPage({
           rates={rates}
           locale={locale}
           watchedSet={watchedSet}
+          watchedCardSet={watchedCardSet}
           isAuthed={true}
         />
       ) : (

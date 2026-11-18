@@ -12,6 +12,23 @@ export async function readUserWatchedIds(): Promise<Set<string>> {
   return new Set(rows.map((r) => r.coinId));
 }
 
+/**
+ * Закладки на монеты, живущие одной карточкой. Свой набор, а не примесь к
+ * `readUserWatchedIds`: ключи у них из разных пространств (`Coin.id` против
+ * `CoinCard.slug`), и сложи их в один набор — закладка одной монеты могла бы
+ * зажечь звёздочку другой.
+ */
+export async function readUserWatchedCardSlugs(): Promise<Set<string>> {
+  const session = await auth();
+  const userId = (session?.user as { id?: string } | undefined)?.id;
+  if (!userId) return new Set();
+  const rows = await prisma.cardWatchlist.findMany({
+    where: { userId },
+    select: { cardSlug: true },
+  });
+  return new Set(rows.map((r) => r.cardSlug));
+}
+
 export async function readUserWatchedExchangeIds(): Promise<Set<string>> {
   const session = await auth();
   const userId = (session?.user as { id?: string } | undefined)?.id;

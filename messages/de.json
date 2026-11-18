@@ -182,6 +182,16 @@
     "exchangesEmpty": "Noch keine favorisierten Börsen",
     "browseExchanges": "Börsen ansehen"
   },
+  "rating": {
+    "heading": "Bewertung",
+    "none": "Noch keine Bewertungen",
+    "countLabel": "Bewertungen: {count}",
+    "rateLabel": "Bewerte mit {stars} von 5",
+    "clearLabel": "Meine Bewertung entfernen",
+    "yours": "Deine Bewertung: {stars} von 5",
+    "hint": "Zum Bewerten einen Stern antippen",
+    "signIn": "Zum Bewerten anmelden"
+  },
   "request": {
     "title": "Coin vorschlagen",
     "subtitle": "Schlage einen Coin vor. Admins prüfen die Einreichung.",

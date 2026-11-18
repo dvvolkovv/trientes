@@ -182,6 +182,16 @@
     "exchangesEmpty": "아직 즐겨찾는 거래소가 없습니다",
     "browseExchanges": "거래소 보기"
   },
+  "rating": {
+    "heading": "평점",
+    "none": "아직 평점 없음",
+    "countLabel": "평가 수: {count}",
+    "rateLabel": "5점 만점에 {stars}점 평가",
+    "clearLabel": "내 평가 제거",
+    "yours": "내 평점: {stars}/5",
+    "hint": "별을 눌러 평가",
+    "signIn": "평가하려면 로그인"
+  },
   "request": {
     "title": "코인 요청",
     "subtitle": "추가할 코인을 제안하세요. 관리자가 검토합니다.",

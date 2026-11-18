@@ -62,3 +62,41 @@ export async function toggleExchangeWatchlist(
   revalidatePath("/", "layout");
   return { ok: true, watched: true };
 }
+
+/**
+ * Закладка на монету, которая живёт одной карточкой. Отдельное действие, а не
+ * ветка в `toggleWatchlist`: там `coinId` — внешний ключ на `Coin`, а у такой
+ * монеты строки `Coin` нет, и закладка ложится в свою таблицу (`CardWatchlist`).
+ */
+export async function toggleCardWatchlist(
+  cardSlug: string,
+): Promise<{ ok: boolean; watched?: boolean; reason?: string }> {
+  if (!/^[a-z0-9][a-z0-9-]*$/i.test(cardSlug)) {
+    return { ok: false, reason: "invalid_id" };
+  }
+  const session = await auth();
+  const userId = (session?.user as { id?: string } | undefined)?.id;
+  if (!userId) return { ok: false, reason: "unauth" };
+
+  // Закладка только на опубликованную карточку: ожидающая решения публике не
+  // показана вовсе.
+  const card = await prisma.coinCard.findFirst({
+    where: { slug: cardSlug, status: "APPROVED" },
+    select: { slug: true },
+  });
+  if (!card) return { ok: false, reason: "not_found" };
+
+  const existing = await prisma.cardWatchlist.findUnique({
+    where: { userId_cardSlug: { userId, cardSlug } },
+  });
+  if (existing) {
+    await prisma.cardWatchlist.delete({
+      where: { userId_cardSlug: { userId, cardSlug } },
+    });
+    revalidatePath("/", "layout");
+    return { ok: true, watched: false };
+  }
+  await prisma.cardWatchlist.create({ data: { userId, cardSlug } });
+  revalidatePath("/", "layout");
+  return { ok: true, watched: true };
+}

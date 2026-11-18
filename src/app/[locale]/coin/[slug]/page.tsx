@@ -6,7 +6,7 @@ import { readExchangeRates, readTop100, readTickers, readNews } from "@/lib/snap
 import { topExchangesByVolume, listedAdapterExchanges, cardTopExchanges } from "@/lib/listings";
 import { EXCHANGES } from "@/lib/exchanges";
 import { getCurrency } from "@/lib/get-currency";
-import { readUserWatchedIds, isAuthenticated } from "@/lib/watchlist";
+import { readUserWatchedIds, readUserWatchedCardSlugs, isAuthenticated } from "@/lib/watchlist";
 import { localizedDescription } from "@/lib/coin-description";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { CoinHeader } from "@/components/coin-detail/header";
@@ -23,6 +23,7 @@ import { SUPPORTED_LOCALES } from "@/lib/locales";
 import { localizeCoinCard } from "@/lib/coin-card-prose";
 import { TranslatedBadge } from "@/components/coin-card/translated-badge";
 import { CoinCardHeader } from "@/components/coin-card/card-header";
+import { CoinRating } from "@/components/coin-rating";
 import { CoinCardSections } from "@/components/coin-card/card-sections";
 import { TrustPlaque } from "@/components/coin-card/trust-plaque";
 import { CardDescription } from "@/components/coin-card/card-description";
@@ -235,6 +236,9 @@ export default async function CoinDetailPage({
         isAuthed={isAuthed}
         locale={locale}
       />
+      {/* Оценка монеты посетителями. Ключ оценки — адрес страницы: страница у
+          монеты одна, с какой стороны она ни была бы заведена. */}
+      <CoinRating coinKey={coin.id} locale={locale} />
       <SectionNav hasNews={news.length > 0} />
       <ChartPanel coinId={coin.id} symbol={coin.symbol} availableExchanges={availableExchanges} />
       <SupplyMetrics row={row} currency={currency} rates={rates} />
@@ -294,15 +298,21 @@ async function renderCardOnly(
 
   // «Топ бирж» строится из рынков карточки: тикеров рыночного фида у такой
   // монеты нет, а биржа есть — у Taler это наш собственный обмен.
-  const [rates, currency, area] = await Promise.all([
+  const [rates, currency, area, watchedCardSet, isAuthed] = await Promise.all([
     readExchangeRates(),
     getCurrency(),
     getAcceptanceArea(only.id),
+    readUserWatchedCardSlugs(),
+    isAuthenticated(),
   ]);
   const exchanges = cardTopExchanges(loc.card.markets);
   return (
     <main className="max-w-[1600px] mx-auto px-4 md:px-12 xl:px-20 py-8 md:py-12 space-y-10 md:space-y-14">
-      <CoinCardHeader card={loc.card} />
+      <CoinCardHeader
+        card={loc.card}
+        watch={{ isWatched: watchedCardSet.has(only.slug), isAuthed, locale }}
+      />
+      <CoinRating coinKey={only.slug} locale={locale} />
       <TrustPlaque
         trust={loc.card.trust}
         seeded={isSeededCard(loc.card)}

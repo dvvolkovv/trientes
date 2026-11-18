@@ -13,7 +13,7 @@ import { LivePrices } from "@/components/live-prices";
 import { HomeTicker, type TickerItem } from "@/components/home-ticker";
 import { MarketMoodAnimal } from "@/components/market-mood-animal";
 import { getCurrency } from "@/lib/get-currency";
-import { readUserWatchedIds, isAuthenticated } from "@/lib/watchlist";
+import { readUserWatchedIds, readUserWatchedCardSlugs, isAuthenticated } from "@/lib/watchlist";
 import { formatCompactInCurrency, formatPriceInCurrency } from "@/lib/currency";
 import { computeMarketMood } from "@/lib/market-mood";
 import { readPinnedCardRows, insertPinned } from "@/lib/pinned-coins";
@@ -47,13 +47,14 @@ export default async function Home({
   const th = await getTranslations("home");
   const tk = await getTranslations("common");
 
-  const [feedRows, stats, rates, currency, watchedSet, isAuthed, news, fearGreed, selfListedCount, pinned] =
+  const [feedRows, stats, rates, currency, watchedSet, watchedCardSet, isAuthed, news, fearGreed, selfListedCount, pinned] =
     await Promise.all([
     readTop100(),
     readGlobalStats(),
     readExchangeRates(),
     getCurrency(),
     readUserWatchedIds(),
+    readUserWatchedCardSlugs(),
     isAuthenticated(),
     readNews(),
     readFearGreed(),
@@ -218,6 +219,7 @@ export default async function Home({
                   rates={rates}
                   locale={locale}
                   watchedSet={watchedSet}
+                  watchedCardSet={watchedCardSet}
                   isAuthed={isAuthed}
                 />
               ) : (

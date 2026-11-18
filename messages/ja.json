@@ -182,6 +182,16 @@
     "exchangesEmpty": "お気に入りの取引所はまだありません",
     "browseExchanges": "取引所を見る"
   },
+  "rating": {
+    "heading": "評価",
+    "none": "まだ評価がありません",
+    "countLabel": "評価数: {count}",
+    "rateLabel": "5段階中{stars}で評価",
+    "clearLabel": "自分の評価を削除",
+    "yours": "あなたの評価: 5段階中{stars}",
+    "hint": "星をタップして評価",
+    "signIn": "評価するにはサインイン"
+  },
   "request": {
     "title": "コインをリクエスト",
     "subtitle": "追加すべきコインを提案してください。管理者が審査します。",

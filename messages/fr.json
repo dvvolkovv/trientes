@@ -182,6 +182,16 @@
     "exchangesEmpty": "Aucune plateforme favorite pour l'instant",
     "browseExchanges": "Voir les plateformes"
   },
+  "rating": {
+    "heading": "Évaluation",
+    "none": "Aucune évaluation pour le moment",
+    "countLabel": "Évaluations: {count}",
+    "rateLabel": "Noter {stars} sur 5",
+    "clearLabel": "Supprimer ma note",
+    "yours": "Votre note: {stars} sur 5",
+    "hint": "Touchez une étoile pour noter",
+    "signIn": "Connectez-vous pour noter"
+  },
   "request": {
     "title": "Proposer une monnaie",
     "subtitle": "Proposez une monnaie à ajouter. Les administrateurs examinent les soumissions.",

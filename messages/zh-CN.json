@@ -182,6 +182,16 @@
     "exchangesEmpty": "还没有收藏的交易所",
     "browseExchanges": "浏览交易所"
   },
+  "rating": {
+    "heading": "评分",
+    "none": "暂无评分",
+    "countLabel": "评分：{count}",
+    "rateLabel": "评分：{stars}/5",
+    "clearLabel": "移除我的评分",
+    "yours": "你的评分：{stars}/5",
+    "hint": "点按星星评分",
+    "signIn": "登录以评分"
+  },
   "request": {
     "title": "申请添加币种",
     "subtitle": "推荐我们应该添加的币种。管理员将审核您的提交。",

@@ -182,6 +182,16 @@
     "exchangesEmpty": "Zatiaľ žiadne obľúbené burzy",
     "browseExchanges": "Prehliadať burzy"
   },
+  "rating": {
+    "heading": "Hodnotenie",
+    "none": "Zatiaľ žiadne hodnotenia",
+    "countLabel": "Hodnotenia: {count}",
+    "rateLabel": "Ohodnotiť {stars} z 5",
+    "clearLabel": "Odstrániť moje hodnotenie",
+    "yours": "Vaše hodnotenie: {stars} z 5",
+    "hint": "Ťuknite na hviezdu a ohodnoťte",
+    "signIn": "Prihláste sa na hodnotenie"
+  },
   "request": {
     "title": "Požiadať o mincu",
     "subtitle": "Navrhnite mincu, ktorú by sme mali pridať. Administrátori posudzujú odoslania.",

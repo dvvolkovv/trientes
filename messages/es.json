@@ -182,6 +182,16 @@
     "exchangesEmpty": "Aún no hay exchanges favoritos",
     "browseExchanges": "Ver exchanges"
   },
+  "rating": {
+    "heading": "Valoración",
+    "none": "Aún no hay valoraciones",
+    "countLabel": "Valoraciones: {count}",
+    "rateLabel": "Valora {stars} de 5",
+    "clearLabel": "Eliminar mi valoración",
+    "yours": "Tu valoración: {stars} de 5",
+    "hint": "Toca una estrella para valorar",
+    "signIn": "Inicia sesión para valorar"
+  },
   "request": {
     "title": "Solicitar moneda",
     "subtitle": "Sugiere una moneda para añadir. Los administradores revisan las solicitudes.",

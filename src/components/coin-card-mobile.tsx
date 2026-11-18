@@ -67,14 +67,15 @@ export function CoinCardMobile({
           </span>
         </Link>
         <div className="flex-shrink-0 ml-2">
-          {/* Карточной монеты нет в таблице `Coin` — закладке не на что лечь. */}
-          {row.unranked ? null : <WatchlistButton
+          {/* Закладка карточной монеты ложится в свою таблицу — см. CoinRow. */}
+          <WatchlistButton
             coinId={row.id}
             initialWatched={isWatched}
             isAuthed={isAuthed}
             locale={locale}
             size="sm"
-          />}
+            kind={row.unranked ? "card" : "coin"}
+          />
         </div>
       </div>
       <div className="flex justify-between items-end gap-3">

@@ -182,6 +182,16 @@
     "exchangesEmpty": "Henüz favori borsa yok",
     "browseExchanges": "Borsalara göz at"
   },
+  "rating": {
+    "heading": "Puanlama",
+    "none": "Henüz puanlama yok",
+    "countLabel": "Puanlamalar: {count}",
+    "rateLabel": "5 üzerinden {stars} puan ver",
+    "clearLabel": "Puanlamamı kaldır",
+    "yours": "Puanınız: 5 üzerinden {stars}",
+    "hint": "Puanlamak için bir yıldıza dokunun",
+    "signIn": "Puanlamak için oturum açın"
+  },
   "request": {
     "title": "Coin öner",
     "subtitle": "Eklenmesini istediğiniz bir coin önerin. Yöneticiler inceler.",

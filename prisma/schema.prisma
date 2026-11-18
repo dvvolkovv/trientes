@@ -47,6 +47,8 @@ model User {
   sessions                 Session[]
   watchlist                Watchlist[]
   exchangeWatchlist        ExchangeWatchlist[]
+  cardWatchlist            CardWatchlist[]
+  coinRatings              CoinRating[]
   coinRequests             CoinRequest[]
   adminAddedCoins          Coin[]                    @relation("AdminCoinAdditions")
   reviewedRequests         CoinRequest[]             @relation("RequestReviewer")
@@ -549,6 +551,42 @@ model ExchangeWatchlist {
   @@index([userId])
 }
 
+// Закладка на монету, которая живёт одной карточкой. Отдельная таблица, а не
+// колонка в `Watchlist`: там `coinId` — внешний ключ на `Coin`, а у такой
+// монеты строки `Coin` нет по замыслу (рыночного фида у неё не существует), и
+// кнопка закладки в списке просто не рисовалась. Тот же приём уже применён к
+// биржам — `ExchangeWatchlist`.
+model CardWatchlist {
+  userId   String
+  cardSlug String
+  addedAt  DateTime @default(now())
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  card     CoinCard @relation(fields: [cardSlug], references: [slug], onDelete: Cascade)
+
+  @@id([userId, cardSlug])
+  @@index([userId])
+}
+
+// Оценка монеты посетителем: одна оценка на человека, её можно изменить или
+// снять. Внешнего ключа нет намеренно: оценка относится к монете, которую
+// посетитель видит по адресу `/coin/<coinKey>`, а эта монета бывает строкой
+// `Coin`, карточкой `CoinCard` или обеими сразу — ключ один, страница одна, и
+// оценка не должна зависеть от того, с какой стороны монета заведена.
+// В базе все `Coin.slug` равны `Coin.id`, а у карточки свой `slug @unique`,
+// поэтому адрес страницы — единственная общая опора.
+model CoinRating {
+  id        String   @id @default(cuid())
+  coinKey   String
+  userId    String
+  stars     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, coinKey])
+  @@index([coinKey])
+}
+
 enum PointType {
   SHOP
   ATM
@@ -921,6 +959,7 @@ model CoinCard {
   claims      CoinCardClaim[]
   supply      CoinCardSupply?
   chainFacts  CoinCardChainFacts?
+  watchedBy   CardWatchlist[]
 
   @@index([status, createdAt])
   @@index([trust])
@@ -1598,7 +1637,7 @@ model StaffMember {
   invitedById String?
   invitedBy   User?   @relation("StaffMemberInviter", fields: [invitedById], references: [id], onDelete: SetNull)
 
-  startedAt DateTime @default(now())
+  startedAt      DateTime @default(now())
   /// Когда владельцу напомнить пересмотреть права: полгода — обычная частота
   /// ревизии доступа в SOC 2 и ISO 27001.
   accessReviewAt DateTime
@@ -1636,9 +1675,9 @@ model StaffGrant {
 /// Приглашение сотрудника: пакет доступа в одной строке. Права отмечаются в
 /// момент приглашения и применяются в момент принятия.
 model StaffInvite {
-  id String @id @default(cuid())
+  id         String  @id @default(cuid())
   /// Только sha256 ссылки: дамп таблицы не должен давать доступ к админке.
-  tokenHash String @unique
+  tokenHash  String  @unique
   /// Кому предназначено, если звали по адресу или логину; у открытой ссылки null.
   identifier String?
   title      String?

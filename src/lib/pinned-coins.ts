@@ -194,26 +194,14 @@ export function buildPinnedRow(
   };
 }
 
-/**
- * Закреплённые строки для основного списка. Кэш в Redis на пять минут: главная
- * пересобирается раз в минуту, а числа меняются раз в час.
- */
-export async function readPinnedCardRows(now = new Date()): Promise<PinnedListRow[]> {
-  if (PINNED_CARD_COINS.length === 0) return [];
-
-  const cached = await redisGetSafe(KEYS.pinnedList);
-  if (cached) {
-    try {
-      const raw = JSON.parse(cached) as (Omit<PinnedListRow, "position"> & { position: number })[];
-      return raw;
-    } catch {
-      // Испорченная запись — читаем базу.
-    }
-  }
-
-  const slugs = PINNED_CARD_COINS.map((p) => p.slug);
-  const cards = await prisma.coinCard.findMany({
-    where: { slug: { in: slugs }, status: "APPROVED" },
+/** Чтение карточек для строк списка. Один набор полей на оба вида чтения. */
+async function readCardsForList(
+  slugs: readonly string[],
+  now: Date,
+): Promise<CardForList[]> {
+  if (slugs.length === 0) return [];
+  return prisma.coinCard.findMany({
+    where: { slug: { in: [...slugs] }, status: "APPROVED" },
     select: {
       slug: true,
       symbol: true,
@@ -232,6 +220,51 @@ export async function readPinnedCardRows(now = new Date()): Promise<PinnedListRo
       },
     },
   });
+}
+
+/**
+ * Строки списка для монет, живущих одной карточкой, по их `slug`. Нужны
+ * странице закладок: монету, отмеченную звёздочкой в основном списке, закладки
+ * обязаны показывать, а рыночного фида у неё нет.
+ *
+ * Номера списка (`listNo`) у этих строк нет намеренно — номер принадлежит
+ * главной, и на странице закладок в столбце стоит «—».
+ */
+export async function readCardRowsBySlugs(
+  slugs: readonly string[],
+  now = new Date(),
+): Promise<ListRow[]> {
+  const cards = await readCardsForList(slugs, now);
+  const rows: ListRow[] = [];
+  for (const card of cards) {
+    const row = buildPinnedRow(card, 0, now);
+    if (!row) continue;
+    const plain: ListRow = { ...row };
+    delete (plain as { position?: number }).position;
+    rows.push(plain);
+  }
+  return rows;
+}
+
+/**
+ * Закреплённые строки для основного списка. Кэш в Redis на пять минут: главная
+ * пересобирается раз в минуту, а числа меняются раз в час.
+ */
+export async function readPinnedCardRows(now = new Date()): Promise<PinnedListRow[]> {
+  if (PINNED_CARD_COINS.length === 0) return [];
+
+  const cached = await redisGetSafe(KEYS.pinnedList);
+  if (cached) {
+    try {
+      const raw = JSON.parse(cached) as (Omit<PinnedListRow, "position"> & { position: number })[];
+      return raw;
+    } catch {
+      // Испорченная запись — читаем базу.
+    }
+  }
+
+  const slugs = PINNED_CARD_COINS.map((p) => p.slug);
+  const cards = await readCardsForList(slugs, now);
 
   const rows: PinnedListRow[] = [];
   for (const { slug, position } of PINNED_CARD_COINS) {

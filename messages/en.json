@@ -182,6 +182,16 @@
     "exchangesEmpty": "No favorite exchanges yet",
     "browseExchanges": "Browse exchanges"
   },
+  "rating": {
+    "heading": "Rating",
+    "none": "No ratings yet",
+    "countLabel": "Ratings: {count}",
+    "rateLabel": "Rate {stars} out of 5",
+    "clearLabel": "Remove my rating",
+    "yours": "Your rating: {stars} of 5",
+    "hint": "Tap a star to rate",
+    "signIn": "Sign in to rate"
+  },
   "request": {
     "title": "Request a coin",
     "subtitle": "Suggest a coin we should add. Admins review submissions.",

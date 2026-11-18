@@ -115,14 +115,16 @@ export function CoinRow({
         <Sparkline points={row.sparkline7d} />
       </td>
       <td className="px-5 py-5 text-center">
-        {/* Закладка — строка со ссылкой на `Coin`; у монеты, которая живёт
-            одной карточкой, такой строки нет, и кнопка обещала бы невозможное. */}
-        {row.unranked ? null : <WatchlistButton
+        {/* Звёздочка есть у каждой строки: у монеты, живущей одной карточкой,
+            закладка ложится в свою таблицу (`CardWatchlist`) — строки `Coin`
+            у неё нет по замыслу. */}
+        <WatchlistButton
           coinId={row.id}
           initialWatched={isWatched}
           isAuthed={isAuthed}
           locale={locale}
-        />}
+          kind={row.unranked ? "card" : "coin"}
+        />
       </td>
     </tr>
   );

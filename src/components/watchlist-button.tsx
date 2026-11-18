@@ -3,9 +3,16 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { toggleWatchlist } from "@/app/actions/watchlist";
+import { toggleWatchlist, toggleCardWatchlist } from "@/app/actions/watchlist";
 
 type Size = "sm" | "md";
+
+/**
+ * «coin» — строка `Coin` рыночного фида, «card» — монета, живущая одной
+ * карточкой (у неё строки `Coin` нет, закладка ложится в `CardWatchlist`).
+ * Кнопка одна на оба случая: для посетителя это одна и та же звёздочка.
+ */
+type Kind = "coin" | "card";
 
 export function WatchlistButton({
   coinId,
@@ -13,12 +20,14 @@ export function WatchlistButton({
   isAuthed,
   locale,
   size = "sm",
+  kind = "coin",
 }: {
   coinId: string;
   initialWatched: boolean;
   isAuthed: boolean;
   locale: string;
   size?: Size;
+  kind?: Kind;
 }) {
   const [watched, setWatched] = useState(initialWatched);
   const [pending, start] = useTransition();
@@ -44,7 +53,10 @@ export function WatchlistButton({
         const next = !watched;
         setWatched(next);
         start(async () => {
-          const res = await toggleWatchlist(coinId);
+          const res =
+            kind === "card"
+              ? await toggleCardWatchlist(coinId)
+              : await toggleWatchlist(coinId);
           if (!res.ok) {
             // revert on error
             setWatched(!next);

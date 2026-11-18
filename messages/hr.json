@@ -182,6 +182,16 @@
     "exchangesEmpty": "Još nema omiljenih burzi",
     "browseExchanges": "Pregledajte burze"
   },
+  "rating": {
+    "heading": "Ocjena",
+    "none": "Još nema ocjena",
+    "countLabel": "Ocjene: {count}",
+    "rateLabel": "Ocijenite s {stars} od 5",
+    "clearLabel": "Uklonite moju ocjenu",
+    "yours": "Vaša ocjena: {stars} od 5",
+    "hint": "Dodirnite zvjezdicu za ocjenu",
+    "signIn": "Prijavite se za ocjenjivanje"
+  },
   "request": {
     "title": "Zatražite uvrštenje kovanice",
     "subtitle": "Predložite kovanicu koju bismo trebali dodati. Administratori pregledavaju prijave.",
