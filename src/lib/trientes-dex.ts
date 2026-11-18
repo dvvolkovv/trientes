@@ -131,41 +131,103 @@ export function decodePairs(hex: string): DexPair[] {
   return out;
 }
 
+/** Хвост записи монеты: тикер, знаки, открыт и два числа границ заявки. */
+const COIN_TAIL = 3 + 16 + 16;
+/** Наибольшие осмысленные знаки монеты: у живых сетей 0…18. */
+const COIN_DECIMALS_MAX = 36;
+
+/**
+ * Начало записи монеты: номер, число сети, признак моста и его имя латиницей
+ * («BtcBridgeMainnet», «EthBridgeBnb», «TronBridge»). Это единственная часть
+ * записи с собственной формой — дальше идёт то, что у каждого моста своё.
+ */
+function coinNameLen(b: number[], at: number): number | null {
+  if (b[at + 5] !== 1) return null;
+  if (b[at + 6] === undefined || (b[at + 6] & 0b11) !== 0) return null;
+  const len = b[at + 6] >> 2;
+  if (len < 3 || len > 32) return null;
+  for (let i = 0; i < len; i++) {
+    const ch = b[at + 7 + i];
+    if (ch === undefined) return null;
+    const letter = (ch >= 65 && ch <= 90) || (ch >= 97 && ch <= 122);
+    if (!letter) return null;
+  }
+  return len;
+}
+
+/** Хвост записи, когда он сходится с реестром тикеров; иначе null. */
+function coinTail(b: number[], at: number, byId: Map<number, DexTicker>): DexCoin | null {
+  const t = byId.get(b[at]);
+  if (!t) return null;
+  const decimals = b[at + 1];
+  if (decimals === undefined || decimals > COIN_DECIMALS_MAX) return null;
+  if (b[at + 2] === undefined || b[at + 2] > 1) return null;
+  // Границы заявки сеть держит у каждой монеты: нижняя больше нуля, верхняя
+  // больше нижней. Это и отличает настоящий хвост от нулей внутри адреса.
+  const min = u128le(b, at + 3);
+  const max = u128le(b, at + 19);
+  if (min <= BigInt(0) || max <= min) return null;
+  return { id: -1, ticker: t.id, symbol: t.symbol, decimals, open: b[at + 2] === 1 };
+}
+
 /**
  * `SwapApi_coins`: монета на сети. Запись переменной длины — мост, его сеть и
  * адрес токена пишутся по-разному у каждой семьи, — а декодера метаданных у нас
- * нет. Поэтому ищем не начало записи, а её хвост: тройку «тикер, знаки, открыт»
- * и два числа границ заявки за ней. Тройка принимается, только когда тикер есть
- * в реестре, а знаки совпадают с его знаками, и следом начинается запись со
- * следующим номером. Не сошлось — `registry_unreadable`, и ни одного числа.
+ * нет. Поэтому запись опознаётся по своему началу: номер, число сети, признак
+ * моста и имя моста латиницей. Записи идут подряд, значит хвост каждой — это
+ * тридцать пять байт перед началом следующей (у последней — перед концом
+ * ответа), и его остаётся сверить с реестром тикеров, а не искать.
+ *
+ * Прежний разбор искал хвост перебором и опирался на две догадки, которые живая
+ * сеть опровергла 2026-11-13: что знаки монеты равны знакам её тикера (у USDT и
+ * USDC на сети BNB их восемнадцать против шести) и что следом идёт монета с
+ * номером на единицу больше (новые монеты получили номера 34 и 35 после 16).
+ * Обе догадки стоили пяти дней без цены у карточки Taler.
+ *
+ * Ложное начало внутри чужого адреса возможно, поэтому разбивка выбирается с
+ * возвратом: годной считается только та, в которой записей ровно столько,
+ * сколько объявил ответ, каждый хвост сошёлся с реестром и последняя запись
+ * заканчивается концом ответа. Ни одной — `registry_unreadable`, и ни одного
+ * числа: выдуманная цена хуже отсутствующей.
  */
 export function decodeCoins(hex: string, tickers: DexTicker[]): DexCoin[] {
   const b = hexToBytes(hex);
   const byId = new Map(tickers.map((t) => [t.id, t]));
   const count = compactSmall(b, 0);
-  const out: DexCoin[] = [];
-  let p = 1;
-  for (let k = 0; k < count; k++) {
-    const id = b[p];
-    let tail = -1;
-    for (let q = p + 5; q + 35 <= b.length; q++) {
-      const t = byId.get(b[q]);
-      if (!t || b[q + 1] !== t.decimals || b[q + 2] > 1) continue;
-      const end = q + 3 + 32;
-      const last = k + 1 === count;
-      if (last ? end === b.length : b[end] === k + 1) {
-        tail = q;
-        break;
-      }
-    }
-    if (tail < 0) throw new Error(`coin ${k}: tail not found`);
-    const t = byId.get(b[tail]);
-    if (!t) throw new Error(`coin ${k}: unknown ticker`);
-    out.push({ id, ticker: t.id, symbol: t.symbol, decimals: b[tail + 1], open: b[tail + 2] === 1 });
-    p = tail + 35;
+  if (count === 0) {
+    if (b.length !== 1) throw new Error("coins: trailing bytes");
+    return [];
   }
-  if (p !== b.length) throw new Error("coins: trailing bytes");
-  return out;
+
+  /** Начала записей по возрастанию: кандидаты, из которых выбирается разбивка. */
+  const starts: number[] = [];
+  for (let q = 1; q + 7 + COIN_TAIL <= b.length; q++) {
+    const len = coinNameLen(b, q);
+    if (len !== null && q + 7 + len + COIN_TAIL <= b.length) starts.push(q);
+  }
+  const nextAt = new Map(starts.map((q, i) => [q, i]));
+
+  const chosen: DexCoin[] = [];
+  const walk = (k: number, at: number): boolean => {
+    const len = coinNameLen(b, at);
+    if (len === null) return false;
+    const least = at + 7 + len + COIN_TAIL;
+    const last = k + 1 === count;
+    const from = nextAt.get(at);
+    if (from === undefined) return false;
+    for (const end of last ? [b.length] : starts.slice(from + 1)) {
+      if (end < least) continue;
+      const tail = coinTail(b, end - COIN_TAIL, byId);
+      if (!tail) continue;
+      chosen.push({ ...tail, id: b[at] });
+      if (last || walk(k + 1, end)) return true;
+      chosen.pop();
+    }
+    return false;
+  };
+
+  if (starts[0] !== 1 || !walk(0, 1)) throw new Error("coins: no segmentation");
+  return chosen;
 }
 
 /** `SwapApi_quote`: Ok — пять чисел, Err — вариант отказа рантайма. */

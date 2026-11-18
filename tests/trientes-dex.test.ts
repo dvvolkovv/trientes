@@ -10,10 +10,12 @@ import {
 
 import {
   COINS,
+  COINS_V2,
   PAIRS,
   QUOTE_OK,
   QUOTE_REFUSED,
   TICKERS,
+  TICKERS_V2,
 } from "./fixtures/trientes-dex";
 
 describe("decodeTickers", () => {
@@ -48,9 +50,31 @@ describe("decodeCoins", () => {
     expect(coins[9]).toEqual({ id: 9, ticker: 9, symbol: "TAL", decimals: 12, open: true });
   });
 
-  it("отказывается разбирать, когда тикеры не те — подставленный знак ломает хвост", () => {
-    const wrong = decodeTickers(TICKERS).map((t) => ({ ...t, decimals: t.decimals + 1 }));
+  it("читает реестр 2026-11-18: девятнадцать монет, номера не по порядку", () => {
+    const coins = decodeCoins(COINS_V2, decodeTickers(TICKERS_V2));
+    expect(coins).toHaveLength(19);
+    // Последние две монеты завелись позже и получили номера вне ряда: опираться
+    // на «следом идёт номер k+1» нельзя.
+    expect(coins.map((c) => c.id).slice(-3)).toEqual([16, 34, 35]);
+    expect(coins[17]).toEqual({ id: 34, ticker: 15, symbol: "AVAX", decimals: 18, open: true });
+    expect(coins[18]).toEqual({ id: 35, ticker: 16, symbol: "HYPE", decimals: 18, open: true });
+  });
+
+  it("знаки берёт у монеты, а не у тикера: USDT на BNB — восемнадцать", () => {
+    const coins = decodeCoins(COINS_V2, decodeTickers(TICKERS_V2));
+    const usdt = coins.filter((c) => c.symbol === "USDT");
+    // Один и тот же тикер на трёх сетях: Ethereum (6), BNB (18), Tron (6).
+    expect(usdt.map((c) => c.decimals)).toEqual([6, 18, 6]);
+    expect(decodeTickers(TICKERS_V2).find((t) => t.symbol === "USDT")!.decimals).toBe(6);
+  });
+
+  it("отказывается разбирать, когда тикеры не те — неизвестный тикер ломает хвост", () => {
+    const wrong = decodeTickers(TICKERS).map((t) => ({ ...t, id: t.id + 100 }));
     expect(() => decodeCoins(COINS, wrong)).toThrow();
+  });
+
+  it("не принимает обрезанный ответ", () => {
+    expect(() => decodeCoins(COINS_V2.slice(0, 600), decodeTickers(TICKERS_V2))).toThrow();
   });
 });
 
