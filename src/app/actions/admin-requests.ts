@@ -45,7 +45,9 @@ export async function approveRequest(input: { requestId: string; coingeckoIdOver
   return res;
 }
 
-export async function rejectRequest(input: { requestId: string; rejectReason: string }) {
+/** `silent` — закрытие спама пачкой: письмо боту на случайный gmail-алиас портит
+ * репутацию домена, с которого мы пишем настоящим заявителям. */
+export async function rejectRequest(input: { requestId: string; rejectReason: string; silent?: boolean }) {
   const admin = await requireQueue("coinRequests", "APPROVE");
   if (!admin.ok) return { ok: false, reason: admin.reason };
   const reason = input.rejectReason.trim();
@@ -74,7 +76,7 @@ export async function rejectRequest(input: { requestId: string; rejectReason: st
   // Notify requestor (best-effort, never blocks the action). Goes to
   // whichever channel(s) the user opted into (Telegram and/or email).
   try {
-    void notifyUser({
+    if (!input.silent) void notifyUser({
       userId: req.userId,
       text: `❌ Your coin request "${req.name} (${req.symbol})" was not approved.\nReason: ${reason}\nYou can submit a new request with updated info if needed.`,
       subject: `Coin request not approved: ${req.symbol}`,

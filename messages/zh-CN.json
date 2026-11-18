@@ -509,7 +509,27 @@
         "coinRequests": "币种请求",
         "pointReports": "点位报告"
       },
-      "unread": "{count} 条未读"
+      "unread": "{count} 条未读",
+      "spam": {
+        "mark": "标记为垃圾信息",
+        "cancel": "取消",
+        "selectAll": "全选",
+        "clear": "清除",
+        "selected": "已选择 {count} 个",
+        "reason": "为什么这是垃圾信息？",
+        "close": "关闭为垃圾信息（{count}）",
+        "limit": "一次最多 {max} 个案例；不会通知申请人。",
+        "done": "已将 {count} 个关闭为垃圾信息",
+        "error": {
+          "empty": "至少选择一个案例。",
+          "too_many": "一次过多 — 最多 {max} 个。",
+          "reason_too_short": "请用几句话说明为何这是垃圾信息。",
+          "not_spam_closable": "此队列中的案例不能作为垃圾信息关闭。",
+          "not_found": "部分所选案例已不存在 — 请重新加载页面。",
+          "no_access": "您无权关闭此队列中的案例。",
+          "failed": "无法关闭：{reason}"
+        }
+      }
     },
     "case": {
       "status": {
@@ -564,7 +584,9 @@
         "companyWarned": "已向该企业发出警告",
         "companySuspended": "该企业已从列表下架：{reason}",
         "companyRestored": "该企业已重新上架",
-        "reviewPassed": "定期审核通过；下次在{next}"
+        "reviewPassed": "定期审核通过；下次在{next}",
+        "reopened": "已重新打开 — 申请人再次提交",
+        "closedAsSpam": "已作为垃圾信息关闭：{reason}"
       },
       "thread": {
         "title": "往来通信",

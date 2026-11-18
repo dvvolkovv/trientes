@@ -8,6 +8,9 @@ import { requireQueue } from "@/lib/authz/guard";
 import { logAdminAction } from "@/lib/admin/audit";
 import { notifyUser } from "@/lib/notify";
 import { NOT_DELETED } from "@/lib/soft-delete";
+import { ensureCase } from "@/lib/cases/ensure";
+import { appendCaseEvent } from "@/lib/cases/journal";
+import { isOpen } from "@/lib/cases/types";
 
 const KYB_KINDS = ["REGISTRATION_CERT", "TAX_CERT", "ID", "OTHER"] as const;
 
@@ -46,7 +49,7 @@ export async function submitKyb(input: unknown) {
 
   const company = await prisma.company.findFirst({
     where: { id: parsed.data.companyId, ...NOT_DELETED },
-    select: { kybStatus: true },
+    select: { kybStatus: true, displayName: true, ownerUserId: true },
   });
   if (!company) return { ok: false as const, reason: "not_found" as const };
   if (company.kybStatus === "APPROVED") return { ok: false as const, reason: "already_verified" as const };
@@ -60,6 +63,17 @@ export async function submitKyb(input: unknown) {
       kybRejectionReason: null,
       kybReviewedAt: null,
     },
+  });
+  // Без этого вызова присланные устав и паспорт подписанта не видел никто:
+  // очередь `kyb` готова (право, лист, срок 10 рабочих дней), но пуста по
+  // построению, а старый экран ожидающих в слайсе AP заменён на «очередь
+  // переехала». Дело KYB отдельно от дела листинга компании: это два разных
+  // решения с разными сроками, а @@unique у дела — на пару тип+объект.
+  await ensureCase({
+    subjectType: "KYB",
+    subjectId: parsed.data.companyId,
+    title: company.displayName,
+    applicantUserId: company.ownerUserId,
   });
   revalidatePath("/", "layout");
   return { ok: true as const };
@@ -83,6 +97,26 @@ export async function withdrawKyb(input: { companyId: string }) {
       kybRejectionReason: null,
     },
   });
+  // Документы стёрты — открытое дело звало бы проверяющего смотреть пустоту.
+  // Закрываем без решения: решения не было, и в аналитике труда отзыв заявки
+  // не должен выглядеть работой сотрудника.
+  const existing = await prisma.complianceCase.findUnique({
+    where: { subjectType_subjectId: { subjectType: "KYB", subjectId: input.companyId } },
+    select: { id: true, status: true },
+  });
+  if (existing && isOpen(existing.status)) {
+    await prisma.complianceCase.update({
+      where: { id: existing.id },
+      data: { status: "CLOSED", decidedAt: new Date(), clockStoppedAt: null, assigneeId: null },
+    });
+    await appendCaseEvent({
+      caseId: existing.id,
+      actorId: userId,
+      actorSide: "APPLICANT",
+      kind: "STATUS_CHANGED",
+      payload: { from: existing.status, to: "CLOSED", why: "withdrawn" },
+    });
+  }
   revalidatePath("/", "layout");
   return { ok: true as const };
 }

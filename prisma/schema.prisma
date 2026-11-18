@@ -463,6 +463,7 @@ enum AdminAction {
   STAFF_ACCESS_REVOKED
   STAFF_ACCESS_RESTORED
   ACCESS_REVIEW_PASSED
+  CLOSE_CASES_AS_SPAM
 }
 
 model AdminAuditLog {
@@ -1340,6 +1341,8 @@ enum CaseEventKind {
   COMPANY_SUSPENDED
   COMPANY_RESTORED
   REVIEW_PASSED
+  REOPENED
+  CLOSED_AS_SPAM
 }
 
 enum CaseTimeSource {
@@ -1400,6 +1403,10 @@ model ComplianceCase {
   assignee        User?   @relation("CaseAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
 
   openedAt       DateTime  @default(now())
+  /// Момент повторной подачи. Ответы листа проверок, данные до него, ответами
+  /// по новой версии объекта не считаются — поэтому дата нужна в самой записи,
+  /// а не только в журнале.
+  reopenedAt     DateTime?
   dueAt          DateTime
   /// Исходный размер срока в секундах — нужен, чтобы считать порог «жёлтой» точки.
   slaSeconds     Int

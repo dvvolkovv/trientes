@@ -42,7 +42,9 @@ export async function approveCompany(input: { companyId: string }) {
   return { ok: true };
 }
 
-export async function rejectCompany(input: { companyId: string; rejectionReason: string }) {
+/** `silent` — закрытие спама пачкой: письмо боту на случайный gmail-алиас портит
+ * репутацию домена, с которого мы пишем настоящим заявителям. */
+export async function rejectCompany(input: { companyId: string; rejectionReason: string; silent?: boolean }) {
   const admin = await requireQueue("companies", "APPROVE");
   if (!admin.ok) return { ok: false, reason: admin.reason };
   const reason = input.rejectionReason.trim();
@@ -66,12 +68,14 @@ export async function rejectCompany(input: { companyId: string; rejectionReason:
     targetId: company.id,
     details: { reason },
   });
-  void notifyUser({
-    userId: company.ownerUserId,
-    text: `❌ Your company "${company.displayName}" was not approved.\nReason: ${reason}`,
-    subject: `Company not approved: ${company.displayName}`,
-    url: `https://trientes.org/en/business`,
-  }).catch(() => {});
+  if (!input.silent) {
+    void notifyUser({
+      userId: company.ownerUserId,
+      text: `❌ Your company "${company.displayName}" was not approved.\nReason: ${reason}`,
+      subject: `Company not approved: ${company.displayName}`,
+      url: `https://trientes.org/en/business`,
+    }).catch(() => {});
+  }
   revalidatePath("/", "layout");
   return { ok: true };
 }

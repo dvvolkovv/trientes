@@ -509,7 +509,27 @@
         "coinRequests": "Solicitações de moedas",
         "pointReports": "Relatórios de pontos"
       },
-      "unread": "{count} não lidas"
+      "unread": "{count} não lidas",
+      "spam": {
+        "mark": "Marcar como spam",
+        "cancel": "Cancelar",
+        "selectAll": "Selecionar todos",
+        "clear": "Limpar",
+        "selected": "{count} selecionados",
+        "reason": "Por que isso é spam?",
+        "close": "Fechar como spam ({count})",
+        "limit": "Até {max} casos por vez; o solicitante não é notificado.",
+        "done": "{count} fechados como spam",
+        "error": {
+          "empty": "Escolha ao menos um caso.",
+          "too_many": "Muitos de uma vez — até {max}.",
+          "reason_too_short": "Explique em poucas palavras por que isso é spam.",
+          "not_spam_closable": "Casos nesta fila não podem ser fechados como spam.",
+          "not_found": "Alguns dos casos selecionados sumiram — recarregue a página.",
+          "no_access": "Você não tem permissão para fechar casos nesta fila.",
+          "failed": "Não foi possível fechar: {reason}"
+        }
+      }
     },
     "case": {
       "status": {
@@ -564,7 +584,9 @@
         "companyWarned": "advertência emitida para a empresa",
         "companySuspended": "empresa removida da listagem: {reason}",
         "companyRestored": "empresa recolocada na listagem",
-        "reviewPassed": "revisão periódica aprovada; próxima em {next}"
+        "reviewPassed": "revisão periódica aprovada; próxima em {next}",
+        "reopened": "reaberto — o solicitante enviou novamente",
+        "closedAsSpam": "fechado como spam: {reason}"
       },
       "thread": {
         "title": "Correspondência",
@@ -2126,7 +2148,7 @@
       "burnMechanism": "Mecanismo de queima",
       "marketsLabel": "Onde é negociada",
       "marketsHint": "Liste as exchanges e pools onde você está listado. Verificamos isso com nosso próprio agregador.",
-      "exchangeName": "Exchange",
+      "exchangeName": "Corretora",
       "pair": "Par",
       "tradeUrl": "Link de negociação",
       "poolAddress": "Endereço do pool",

@@ -48,6 +48,9 @@ export const ACCESS_MAP: Requirement[] = [
   { key: "setDocumentVerdict", need: "HANDLE", queues: ALL_QUEUES },
   { key: "markReviewed", need: "HANDLE", queues: ALL_QUEUES },
   { key: "decideCase", need: "APPROVE", queues: ALL_QUEUES },
+  // Закрытие спама пачкой — то же право, что решение: оно отвергает заявки.
+  // Очереди все, а какие типы дел так закрывать можно — в `cases/spam.ts`.
+  { key: "closeCasesAsSpam", need: "APPROVE", queues: ALL_QUEUES },
 
   { key: "coinCardDecision", need: "APPROVE", queues: ["coinCards"] },
   { key: "coinCardRevisions", need: "APPROVE", queues: ["coinCards"] },

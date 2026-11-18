@@ -90,7 +90,9 @@ export async function approveFintech(input: { id: string }) {
   return { ok: true as const };
 }
 
-export async function rejectFintech(input: { id: string; rejectionReason: string }) {
+/** `silent` — закрытие спама пачкой: письмо боту на случайный gmail-алиас портит
+ * репутацию домена, с которого мы пишем настоящим заявителям. */
+export async function rejectFintech(input: { id: string; rejectionReason: string; silent?: boolean }) {
   const admin = await requireQueue("fintech", "APPROVE");
   if (!admin.ok) return { ok: false as const, reason: admin.reason };
   const reason = input.rejectionReason.trim();
@@ -109,7 +111,7 @@ export async function rejectFintech(input: { id: string; rejectionReason: string
     details: { reason },
   });
   await bustAvailabilityCache(row.availableIn);
-  if (row.ownerUserId) {
+  if (row.ownerUserId && !input.silent) {
     void notifyUser({
       userId: row.ownerUserId,
       text: `❌ Your fintech "${row.displayName}" was not approved.\nReason: ${reason}`,

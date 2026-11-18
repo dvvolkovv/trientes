@@ -44,7 +44,9 @@ export async function approvePoint(input: { pointId: string }) {
   return { ok: true };
 }
 
-export async function rejectPoint(input: { pointId: string; rejectReason: string }) {
+/** `silent` — закрытие спама пачкой: письмо боту на случайный gmail-алиас портит
+ * репутацию домена, с которого мы пишем настоящим заявителям. */
+export async function rejectPoint(input: { pointId: string; rejectReason: string; silent?: boolean }) {
   const admin = await requireQueue("points", "APPROVE");
   if (!admin.ok) return { ok: false, reason: admin.reason };
   const reason = input.rejectReason.trim();
@@ -61,6 +63,7 @@ export async function rejectPoint(input: { pointId: string; rejectReason: string
     details: { reason },
   });
   void (async () => {
+    if (input.silent) return;
     const ownerId = await ownerIdOfPoint(point.companyId);
     if (!ownerId) return;
     await notifyUser({

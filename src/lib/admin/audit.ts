@@ -11,7 +11,7 @@ export type AuditAction = AdminAction;
 export async function logAdminAction(input: {
   actorId: string;
   action: AuditAction;
-  targetType: "CoinRequest" | "Coin" | "User" | "CompanyPoint" | "RegisteredExchange" | "Company" | "FintechCompany";
+  targetType: "CoinRequest" | "Coin" | "User" | "CompanyPoint" | "RegisteredExchange" | "Company" | "FintechCompany" | "ComplianceCase";
   targetId: string;
   details?: Record<string, unknown>;
 }): Promise<void> {

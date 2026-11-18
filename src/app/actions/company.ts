@@ -231,6 +231,21 @@ export async function updateCompanyPoint(
         : {}),
     },
   });
+  if (needsModeration) {
+    // Прежнее решение стёрто — значит объект снова ждёт человека. Без этого
+    // вызова точка лежала бы в PENDING, а дела в очереди не было: решённое
+    // дело заведение само не открывает, это делает `ensureCase`.
+    const owner = await prisma.companyMember.findFirst({
+      where: { companyId: point.companyId, role: "OWNER" },
+      select: { userId: true },
+    });
+    await ensureCase({
+      subjectType: "POINT",
+      subjectId: point.id,
+      title: v.data.name,
+      applicantUserId: owner?.userId ?? null,
+    });
+  }
   revalidatePath("/", "layout");
   return { ok: true as const, moderated: needsModeration };
 }

@@ -509,7 +509,27 @@
         "coinRequests": "Demandes de coins",
         "pointReports": "Rapports de points"
       },
-      "unread": "{count} non lus"
+      "unread": "{count} non lus",
+      "spam": {
+        "mark": "Marquer comme spam",
+        "cancel": "Annuler",
+        "selectAll": "Tout sélectionner",
+        "clear": "Effacer",
+        "selected": "{count} sélectionnés",
+        "reason": "Pourquoi est-ce un spam ?",
+        "close": "Clore comme spam ({count})",
+        "limit": "Jusqu'à {max} cas à la fois; le demandeur n'est pas notifié.",
+        "done": "{count} fermés comme spam",
+        "error": {
+          "empty": "Choisissez au moins un cas.",
+          "too_many": "Trop à la fois — jusqu'à {max}.",
+          "reason_too_short": "Expliquez en quelques mots pourquoi il s'agit d'un spam.",
+          "not_spam_closable": "Les cas de cette file ne peuvent pas être fermés comme spam.",
+          "not_found": "Certains des cas sélectionnés ont disparu — rechargez la page.",
+          "no_access": "Vous n'êtes pas autorisé à clôturer des dossiers dans cette file.",
+          "failed": "Impossible de clôturer : {reason}"
+        }
+      }
     },
     "case": {
       "status": {
@@ -564,7 +584,9 @@
         "companyWarned": "avertissement émis à l'entreprise",
         "companySuspended": "entreprise retirée de la liste : {reason}",
         "companyRestored": "entreprise réintégrée à la liste",
-        "reviewPassed": "révision périodique réussie ; prochaine le {next}"
+        "reviewPassed": "révision périodique réussie ; prochaine le {next}",
+        "reopened": "rouvert — le demandeur a soumis de nouveau",
+        "closedAsSpam": "fermé comme spam : {reason}"
       },
       "thread": {
         "title": "Correspondance",

@@ -509,7 +509,27 @@
         "coinRequests": "Solicitudes de monedas",
         "pointReports": "Informes de puntos"
       },
-      "unread": "{count} sin leer"
+      "unread": "{count} sin leer",
+      "spam": {
+        "mark": "Marcar como spam",
+        "cancel": "Cancelar",
+        "selectAll": "Seleccionar todo",
+        "clear": "Limpiar",
+        "selected": "{count} seleccionados",
+        "reason": "¿Por qué es spam?",
+        "close": "Cerrar como spam ({count})",
+        "limit": "Hasta {max} casos a la vez; no se notifica al solicitante.",
+        "done": "{count} cerrados como spam",
+        "error": {
+          "empty": "Elige al menos un caso.",
+          "too_many": "Demasiados de una vez — hasta {max}.",
+          "reason_too_short": "Explica en pocas palabras por qué es spam.",
+          "not_spam_closable": "Los casos de esta cola no se pueden cerrar como spam.",
+          "not_found": "Algunos de los casos seleccionados ya no están — recarga la página.",
+          "no_access": "No tienes permiso para cerrar casos en esta cola.",
+          "failed": "No se pudo cerrar: {reason}"
+        }
+      }
     },
     "case": {
       "status": {
@@ -564,7 +584,9 @@
         "companyWarned": "advertencia emitida a la empresa",
         "companySuspended": "empresa retirada del listado: {reason}",
         "companyRestored": "empresa reincorporada al listado",
-        "reviewPassed": "revisión periódica aprobada; la próxima el {next}"
+        "reviewPassed": "revisión periódica aprobada; la próxima el {next}",
+        "reopened": "reabierto — el solicitante volvió a enviar",
+        "closedAsSpam": "cerrado como spam: {reason}"
       },
       "thread": {
         "title": "Correspondencia",
@@ -646,7 +668,7 @@
         "set": {
           "OK": "OK",
           "FAIL": "Problema",
-          "NA": "N/A"
+          "NA": "N/D"
         },
         "notePlaceholder": "¿Por qué? Obligatorio para un problema o «no aplicable»",
         "checkedBy": "{name}",

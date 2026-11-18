@@ -29,9 +29,12 @@ export async function applyDecision(input: {
   subjectId: string;
   decision: "APPROVED" | "REJECTED";
   reason: string;
+  /** Отказ без письма заявителю — закрытие спама пачкой (`src/lib/cases/spam.ts`). */
+  silent?: boolean;
 }): Promise<ApplyResult> {
   const { subjectId, decision, reason } = input;
   const approve = decision === "APPROVED";
+  const silent = input.silent === true;
 
   switch (input.subjectType) {
     case "COIN_CARD":
@@ -40,7 +43,7 @@ export async function applyDecision(input: {
       return normalize(
         approve
           ? await approveCompany({ companyId: subjectId })
-          : await rejectCompany({ companyId: subjectId, rejectionReason: reason }),
+          : await rejectCompany({ companyId: subjectId, rejectionReason: reason, silent }),
       );
     case "KYB":
       return normalize(
@@ -50,25 +53,25 @@ export async function applyDecision(input: {
       return normalize(
         approve
           ? await approvePoint({ pointId: subjectId })
-          : await rejectPoint({ pointId: subjectId, rejectReason: reason }),
+          : await rejectPoint({ pointId: subjectId, rejectReason: reason, silent }),
       );
     case "EXCHANGE":
       return normalize(
         approve
           ? await approveExchange({ exchangeId: subjectId })
-          : await rejectExchange({ exchangeId: subjectId, rejectionReason: reason }),
+          : await rejectExchange({ exchangeId: subjectId, rejectionReason: reason, silent }),
       );
     case "FINTECH":
       return normalize(
         approve
           ? await approveFintech({ id: subjectId })
-          : await rejectFintech({ id: subjectId, rejectionReason: reason }),
+          : await rejectFintech({ id: subjectId, rejectionReason: reason, silent }),
       );
     case "COIN_REQUEST":
       return normalize(
         approve
           ? await approveRequest({ requestId: subjectId })
-          : await rejectRequest({ requestId: subjectId, rejectReason: reason }),
+          : await rejectRequest({ requestId: subjectId, rejectReason: reason, silent }),
       );
     case "POINT_REPORT":
       // «Одобрено» по делу жалобы значит «жалоба подтверждена»: точка уходит с

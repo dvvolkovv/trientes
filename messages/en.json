@@ -509,7 +509,27 @@
         "coinRequests": "Coin requests",
         "pointReports": "Point reports"
       },
-      "unread": "{count} unread"
+      "unread": "{count} unread",
+      "spam": {
+        "mark": "Mark spam",
+        "cancel": "Cancel",
+        "selectAll": "Select all",
+        "clear": "Clear",
+        "selected": "{count} selected",
+        "reason": "Why is this spam?",
+        "close": "Close as spam ({count})",
+        "limit": "Up to {max} cases at a time; the applicant is not notified.",
+        "done": "{count} closed as spam",
+        "error": {
+          "empty": "Pick at least one case.",
+          "too_many": "Too many at once — up to {max}.",
+          "reason_too_short": "Say in a few words why this is spam.",
+          "not_spam_closable": "Cases in this queue cannot be closed as spam.",
+          "not_found": "Some of the selected cases are gone — reload the page.",
+          "no_access": "You are not allowed to close cases in this queue.",
+          "failed": "Could not close: {reason}"
+        }
+      }
     },
     "case": {
       "status": {
@@ -564,7 +584,9 @@
         "companyWarned": "warning issued to the business",
         "companySuspended": "business taken off the listing: {reason}",
         "companyRestored": "business put back on the listing",
-        "reviewPassed": "periodic review passed; next one on {next}"
+        "reviewPassed": "periodic review passed; next one on {next}",
+        "reopened": "reopened — the applicant submitted again",
+        "closedAsSpam": "closed as spam: {reason}"
       },
       "thread": {
         "title": "Correspondence",

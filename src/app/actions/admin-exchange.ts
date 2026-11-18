@@ -39,7 +39,9 @@ export async function approveExchange(input: { exchangeId: string }) {
   return { ok: true };
 }
 
-export async function rejectExchange(input: { exchangeId: string; rejectionReason: string }) {
+/** `silent` — закрытие спама пачкой: письмо боту на случайный gmail-алиас портит
+ * репутацию домена, с которого мы пишем настоящим заявителям. */
+export async function rejectExchange(input: { exchangeId: string; rejectionReason: string; silent?: boolean }) {
   const admin = await requireQueue("exchanges", "APPROVE");
   if (!admin.ok) return { ok: false, reason: admin.reason };
   const reason = input.rejectionReason.trim();
@@ -58,12 +60,14 @@ export async function rejectExchange(input: { exchangeId: string; rejectionReaso
     targetId: exchange.id,
     details: { reason },
   });
-  void notifyUser({
-    userId: exchange.ownerUserId,
-    text: `❌ Your exchange "${exchange.displayName}" was not approved.\nReason: ${reason}`,
-    subject: `Exchange not approved: ${exchange.displayName}`,
-    url: `https://trientes.org/en/cabinet/exchanges`,
-  }).catch(() => {});
+  if (!input.silent) {
+    void notifyUser({
+      userId: exchange.ownerUserId,
+      text: `❌ Your exchange "${exchange.displayName}" was not approved.\nReason: ${reason}`,
+      subject: `Exchange not approved: ${exchange.displayName}`,
+      url: `https://trientes.org/en/cabinet/exchanges`,
+    }).catch(() => {});
+  }
   revalidatePath("/", "layout");
   return { ok: true };
 }

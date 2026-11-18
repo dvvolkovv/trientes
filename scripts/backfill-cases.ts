@@ -47,6 +47,18 @@ async function collect(): Promise<Planned[]> {
   for (const f of await prisma.fintechCompany.findMany({ where: { status: "PENDING" } })) {
     planned.push({ type: "FINTECH", id: f.id, title: f.displayName, openedAt: f.createdAt });
   }
+  // Проверка KYB — отдельное дело того же предприятия (другой срок, другой
+  // лист). До слайса AT подача его не заводила вовсе, поэтому ходим и здесь.
+  for (const c of await prisma.company.findMany({
+    where: { kybStatus: "PENDING", deletedAt: null },
+  })) {
+    planned.push({
+      type: "KYB",
+      id: c.id,
+      title: c.displayName,
+      openedAt: c.kybSubmittedAt ?? c.createdAt,
+    });
+  }
 
   return planned;
 }

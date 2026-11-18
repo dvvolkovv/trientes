@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
-import { requireQueue } from "@/lib/authz/guard";
+import { myLevel, requireQueue } from "@/lib/authz/guard";
 import { AdminNav } from "@/components/admin/nav";
 import { CaseRowCard } from "@/components/admin/case-row";
 import { queueByKey } from "@/lib/cases/queues";
@@ -9,6 +9,8 @@ import { slaState } from "@/lib/cases/sla";
 import { formatHandled } from "@/lib/cases/time";
 import { OPEN_STATUSES } from "@/lib/cases/types";
 import { ADMIN_COLUMN } from "@/lib/admin-ui";
+import { QueueSpamList } from "@/components/admin/queue-spam";
+import { isSpamClosable } from "@/lib/cases/spam";
 
 export const dynamic = "force-dynamic";
 
@@ -42,6 +44,11 @@ export default async function AdminQueuePage({
   });
   const unreadByCase = new Map(unreadRows.map((r) => [r.caseId, r._count._all]));
 
+  // Пачкой закрывается только то, что приходит от незнакомца с улицы, и только
+  // тем, кто вправе решать в этой очереди.
+  const spamAllowed =
+    def.subjectTypes.every(isSpamClosable) && (await myLevel(def.key)) === "APPROVE";
+
   return (
     <div className={ADMIN_COLUMN}>
       <AdminNav locale={locale} active="queues" />
@@ -55,7 +62,7 @@ export default async function AdminQueuePage({
           {t("queues.empty")}
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
+        <Wrap allowed={spamAllowed} queue={def.key} ids={cases.map((c) => c.id)}>
           {cases.map((c) => {
             const s = slaState({
               now,
@@ -89,8 +96,31 @@ export default async function AdminQueuePage({
               />
             );
           })}
-        </div>
+        </Wrap>
       )}
     </div>
+  );
+}
+
+/**
+ * Список либо как был, либо с галочками. Обёртка нужна, чтобы строки дел
+ * по-прежнему рисовал сервер: клиентская копия карточки разошлась бы с этой.
+ */
+function Wrap({
+  allowed,
+  queue,
+  ids,
+  children,
+}: {
+  allowed: boolean;
+  queue: string;
+  ids: string[];
+  children: React.ReactNode;
+}) {
+  if (!allowed) return <div className="flex flex-col gap-3">{children}</div>;
+  return (
+    <QueueSpamList queue={queue} ids={ids}>
+      {children}
+    </QueueSpamList>
   );
 }

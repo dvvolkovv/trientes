@@ -509,7 +509,27 @@
         "coinRequests": "Zahtjevi za kovanice",
         "pointReports": "Izvješća o lokacijama"
       },
-      "unread": "{count} nepročitanih"
+      "unread": "{count} nepročitanih",
+      "spam": {
+        "mark": "Označiti kao spam",
+        "cancel": "Odustati",
+        "selectAll": "Odabrati sve",
+        "clear": "Očistiti",
+        "selected": "{count} odabrano",
+        "reason": "Zašto je ovo spam?",
+        "close": "Zatvoriti kao spam ({count})",
+        "limit": "Do {max} slučajeva odjednom; podnositelj nije obaviješten.",
+        "done": "{count} zatvoreno kao spam",
+        "error": {
+          "empty": "Odabrati barem jedan slučaj.",
+          "too_many": "Previše odjednom — do {max}.",
+          "reason_too_short": "Navesti ukratko zašto je ovo spam.",
+          "not_spam_closable": "Slučajevi u ovom redu ne mogu se zatvoriti kao spam.",
+          "not_found": "Neki od odabranih slučajeva su nestali — ponovno učitati stranicu.",
+          "no_access": "Nije dopušteno zatvarati slučajeve u ovom redu.",
+          "failed": "Nije moguće zatvoriti: {reason}"
+        }
+      }
     },
     "case": {
       "status": {
@@ -564,7 +584,9 @@
         "companyWarned": "poslovnom subjektu izdano upozorenje",
         "companySuspended": "poslovni subjekt uklonjen s uvrštenja: {reason}",
         "companyRestored": "poslovni subjekt ponovno uvršten",
-        "reviewPassed": "periodični pregled uspješno obavljen; sljedeći {next}"
+        "reviewPassed": "periodični pregled uspješno obavljen; sljedeći {next}",
+        "reopened": "ponovno otvoreno — podnositelj je ponovno podnio",
+        "closedAsSpam": "zatvoreno kao spam: {reason}"
       },
       "thread": {
         "title": "Korespondencija",

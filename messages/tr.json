@@ -509,7 +509,27 @@
         "coinRequests": "Coin talepleri",
         "pointReports": "Nokta raporları"
       },
-      "unread": "{count} okunmamış"
+      "unread": "{count} okunmamış",
+      "spam": {
+        "mark": "Spam olarak işaretle",
+        "cancel": "İptal",
+        "selectAll": "Tümünü seç",
+        "clear": "Temizle",
+        "selected": "{count} seçildi",
+        "reason": "Bu neden spam?",
+        "close": "Spam olarak kapat ({count})",
+        "limit": "Bir seferde en fazla {max} vaka; başvuru sahibine bildirilmez.",
+        "done": "{count} spam olarak kapatıldı",
+        "error": {
+          "empty": "En az bir vaka seçin.",
+          "too_many": "Bir seferde çok fazla — en fazla {max}.",
+          "reason_too_short": "Bunun neden spam olduğunu kısaca belirtin.",
+          "not_spam_closable": "Bu kuyruktaki vakalar spam olarak kapatılamaz.",
+          "not_found": "Seçili vakaların bir kısmı kayboldu — sayfayı yeniden yükleyin.",
+          "no_access": "Bu kuyruktaki vakaları kapatma izniniz yok.",
+          "failed": "Kapatılamadı: {reason}"
+        }
+      }
     },
     "case": {
       "status": {
@@ -564,7 +584,9 @@
         "companyWarned": "işletmeye uyarı verildi",
         "companySuspended": "işletme listeden çıkarıldı: {reason}",
         "companyRestored": "işletme listeye geri alındı",
-        "reviewPassed": "periyodik inceleme geçildi; sonraki {next} tarihinde"
+        "reviewPassed": "periyodik inceleme geçildi; sonraki {next} tarihinde",
+        "reopened": "yeniden açıldı — başvuru sahibi tekrar gönderdi",
+        "closedAsSpam": "spam olarak kapatıldı: {reason}"
       },
       "thread": {
         "title": "Yazışma",

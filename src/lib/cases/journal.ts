@@ -51,6 +51,8 @@ const KEYS: Record<CaseEventKind, string> = {
   COMPANY_SUSPENDED: "companySuspended",
   COMPANY_RESTORED: "companyRestored",
   REVIEW_PASSED: "reviewPassed",
+  REOPENED: "reopened",
+  CLOSED_AS_SPAM: "closedAsSpam",
 };
 
 /** Событие → ключ перевода `admin.case.journal.<key>` и его параметры. */

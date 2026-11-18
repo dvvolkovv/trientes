@@ -509,7 +509,27 @@
         "coinRequests": "Coin-Anfragen",
         "pointReports": "Punktmeldungen"
       },
-      "unread": "{count} ungelesen"
+      "unread": "{count} ungelesen",
+      "spam": {
+        "mark": "Als Spam markieren",
+        "cancel": "Abbrechen",
+        "selectAll": "Alle auswählen",
+        "clear": "Auswahl aufheben",
+        "selected": "{count} ausgewählt",
+        "reason": "Warum ist das Spam?",
+        "close": "Als Spam schließen ({count})",
+        "limit": "Bis zu {max} Fälle auf einmal; der Antragsteller wird nicht benachrichtigt.",
+        "done": "{count} als Spam geschlossen",
+        "error": {
+          "empty": "Wählen Sie mindestens einen Fall aus.",
+          "too_many": "Zu viele auf einmal — bis zu {max}.",
+          "reason_too_short": "Erklären Sie in wenigen Worten, warum dies Spam ist.",
+          "not_spam_closable": "Fälle in dieser Warteschlange können nicht als Spam geschlossen werden.",
+          "not_found": "Einige der ausgewählten Fälle sind verschwunden — laden Sie die Seite neu.",
+          "no_access": "Sie dürfen Fälle in dieser Warteschlange nicht schließen.",
+          "failed": "Konnte nicht geschlossen werden: {reason}"
+        }
+      }
     },
     "case": {
       "status": {
@@ -564,7 +584,9 @@
         "companyWarned": "Warnung an das Unternehmen ausgesprochen",
         "companySuspended": "Unternehmen von der Liste entfernt: {reason}",
         "companyRestored": "Unternehmen wieder in die Liste aufgenommen",
-        "reviewPassed": "regelmäßige Überprüfung bestanden; nächste am {next}"
+        "reviewPassed": "regelmäßige Überprüfung bestanden; nächste am {next}",
+        "reopened": "wiedereröffnet — der Antragsteller hat erneut eingereicht",
+        "closedAsSpam": "als Spam geschlossen: {reason}"
       },
       "thread": {
         "title": "Korrespondenz",

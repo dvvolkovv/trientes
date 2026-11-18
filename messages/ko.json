@@ -509,7 +509,27 @@
         "coinRequests": "코인 요청",
         "pointReports": "포인트 신고"
       },
-      "unread": "{count}개 미읽음"
+      "unread": "{count}개 미읽음",
+      "spam": {
+        "mark": "스팸으로 표시",
+        "cancel": "취소",
+        "selectAll": "모두 선택",
+        "clear": "지우기",
+        "selected": "{count}개 선택됨",
+        "reason": "왜 스팸인가요?",
+        "close": "스팸으로 닫기 ({count})",
+        "limit": "한 번에 최대 {max}건; 신청자에게는 통지되지 않습니다.",
+        "done": "스팸으로 {count}건 닫힘",
+        "error": {
+          "empty": "최소 한 건을 선택하세요.",
+          "too_many": "한꺼번에 너무 많습니다 — 최대 {max}건.",
+          "reason_too_short": "왜 스팸인지 한두 마디로 적어주세요.",
+          "not_spam_closable": "이 대기열의 사례는 스팸으로 닫을 수 없습니다.",
+          "not_found": "선택한 사례 중 일부가 없어졌습니다 — 페이지를 새로고침하세요.",
+          "no_access": "이 대기열의 사례를 닫을 권한이 없습니다.",
+          "failed": "닫을 수 없습니다: {reason}"
+        }
+      }
     },
     "case": {
       "status": {
@@ -564,7 +584,9 @@
         "companyWarned": "해당 업체에 경고가 발부됨",
         "companySuspended": "업체가 목록에서 제외됨: {reason}",
         "companyRestored": "업체가 목록에 복구됨",
-        "reviewPassed": "정기 심사를 통과함; 다음 일정은 {next}"
+        "reviewPassed": "정기 심사를 통과함; 다음 일정은 {next}",
+        "reopened": "다시 열림 — 신청자가 다시 제출함",
+        "closedAsSpam": "스팸으로 닫힘: {reason}"
       },
       "thread": {
         "title": "대화",

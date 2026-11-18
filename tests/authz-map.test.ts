@@ -56,3 +56,9 @@ describe("карта прав", () => {
     expect(requirementFor("нет такого")).toBe(null);
   });
 });
+
+describe("закрытие спама", () => {
+  it("требует права утверждать", () => {
+    expect(requirementFor("closeCasesAsSpam")?.need).toBe("APPROVE");
+  });
+});

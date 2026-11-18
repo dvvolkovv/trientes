@@ -509,7 +509,27 @@
         "coinRequests": "コイン申請",
         "pointReports": "地点報告"
       },
-      "unread": "{count} 件の未読"
+      "unread": "{count} 件の未読",
+      "spam": {
+        "mark": "スパムとしてマーク",
+        "cancel": "キャンセル",
+        "selectAll": "すべて選択",
+        "clear": "クリア",
+        "selected": "{count} 件選択",
+        "reason": "なぜこれはスパムですか?",
+        "close": "スパムとしてクローズ ({count})",
+        "limit": "一度に最大{max}件、申請者には通知されません。",
+        "done": "{count} 件をスパムとしてクローズ",
+        "error": {
+          "empty": "少なくとも1件は選んでください。",
+          "too_many": "一度に多すぎます — 最大{max}件まで。",
+          "reason_too_short": "なぜスパムなのかを簡潔に記入してください。",
+          "not_spam_closable": "このキューの案件はスパムとしてクローズできません。",
+          "not_found": "選択した案件の一部が見つかりません — ページを再読み込みしてください。",
+          "no_access": "このキューの案件をクローズする権限がありません。",
+          "failed": "クローズできませんでした: {reason}"
+        }
+      }
     },
     "case": {
       "status": {
@@ -564,7 +584,9 @@
         "companyWarned": "事業者に警告を発出",
         "companySuspended": "掲載停止: {reason}",
         "companyRestored": "掲載再開",
-        "reviewPassed": "定期審査に合格、次回は{next}"
+        "reviewPassed": "定期審査に合格、次回は{next}",
+        "reopened": "再開 — 申請者が再提出しました",
+        "closedAsSpam": "スパムとしてクローズ: {reason}"
       },
       "thread": {
         "title": "やり取り",
