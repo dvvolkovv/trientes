@@ -99,6 +99,12 @@ model User {
   casesApproved            ComplianceCase[]          @relation("CaseApprover")
   caseChecks               CaseCheck[]               @relation("CaseCheckUser")
   caseDocumentVerdicts     CaseDocument[]            @relation("CaseDocumentVerdictUser")
+  productEdits             ProductEdit[]             @relation("ProductEditAuthor")
+  productClaims            ProductClaim[]            @relation("ProductClaimant")
+  productClaimsDecided     ProductClaim[]            @relation("ProductClaimDecider")
+  productRevisions         ProductRevision[]         @relation("ProductRevisionAuthor")
+  productRevisionsDecided  ProductRevision[]         @relation("ProductRevisionDecider")
+  productReports           ProductReport[]           @relation("ProductReporter")
 }
 
 model PushSubscription {
@@ -657,6 +663,12 @@ model Company {
   deletedById String?
 
   deletionRequests CompanyDeletionRequest[]
+
+  productsCreated  Product[]         @relation("ProductCreator")
+  productsOwned    Product[]         @relation("ProductOwner")
+  productEdits     ProductEdit[]     @relation("ProductEditCompany")
+  productClaims    ProductClaim[]    @relation("ProductClaimCompany")
+  productRevisions ProductRevision[] @relation("ProductRevisionCompany")
 
   @@index([ownerUserId])
   @@index([status, createdAt])
@@ -1348,6 +1360,8 @@ enum CaseSubjectType {
   KYB
   COIN_REQUEST
   POINT_REPORT
+  PRODUCT_CLAIM
+  PRODUCT_REPORT
 }
 
 enum CaseStatus {
@@ -1754,4 +1768,187 @@ model StaffMfaRecoveryCode {
 
   @@index([userId])
   @@unique([userId, codeHash])
+}
+
+/// Паспорт товара мира (спека 2026-11-18-product-passport-catalog-design): что это за
+/// вещь. Цены и остатка здесь нет — это свойства продавца, а не вещи, и живут они в
+/// предложении и на складе (следующий слайс). Паспорт один на товар; у кого есть
+/// штрихкод, тот склеивается по нему сам.
+model Product {
+  id   String  @id @default(cuid())
+  slug String  @unique
+  /// EAN-13 или EAN-8 с проверенной контрольной цифрой (`parseGtin`). Null — товар без
+  /// упаковки: услуга, развес, ручная работа.
+  gtin String? @unique
+
+  name             String
+  brand            String?
+  /// Имя производителя словами, пока он сам не пришёл и не забрал паспорт.
+  manufacturerName String?
+  category         String
+  /// Язык описания (ISO): его читает голосовой синтез браузера, а не язык страницы.
+  language         String  @default("en")
+
+  description String  @db.Text
+  usage       String? @db.Text
+  ingredients String? @db.Text
+  /// [{ key, value, unit? }] — свободные пары: у кабеля и у сыра общих колонок не бывает.
+  attributes  Json?
+  /// [{ url, label? }], до 8.
+  photos      Json?
+  videoUrl    String?
+  /// [{ kind, url, label }], до 10: сертификаты, паспорта, ТУ.
+  documents   Json?
+
+  /// Кто завёл. Связь рвётся, а не каскадит: паспорт мира переживает предприятие,
+  /// которое его набрало.
+  createdByCompanyId String?
+  createdByCompany   Company? @relation("ProductCreator", fields: [createdByCompanyId], references: [id], onDelete: SetNull)
+  /// Производитель, забравший паспорт одобренной заявкой. Null — хозяина нет, и правит
+  /// любое залистованное предприятие.
+  ownerCompanyId     String?
+  ownerCompany       Company? @relation("ProductOwner", fields: [ownerCompanyId], references: [id], onDelete: SetNull)
+
+  /// Надзор: паспорт снят с каталога до выяснения. Запись остаётся — её видели и по ней
+  /// высказались.
+  suspendedAt   DateTime?
+  suspendReason String?
+  suspendedById String?
+
+  /// Признан дублем: страница ведёт на главный паспорт. Снимается одним действием.
+  mergedIntoId String?
+  mergedInto   Product?  @relation("ProductMerge", fields: [mergedIntoId], references: [id], onDelete: SetNull)
+  merged       Product[] @relation("ProductMerge")
+
+  /// Токен, выпущенный сетью. Сайт его не выпускает — только показывает.
+  tokenChain String?
+  tokenAsset String?
+
+  deletedAt   DateTime?
+  deletedById String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  edits     ProductEdit[]
+  claims    ProductClaim[]
+  revisions ProductRevision[]
+  reports   ProductReport[]
+
+  @@index([category, createdAt])
+  @@index([ownerCompanyId])
+  @@index([createdByCompanyId])
+  @@index([suspendedAt])
+  @@index([deletedAt])
+}
+
+/// История правок паспорта: только вставка, как CaseEvent. Откат — новая запись
+/// (`revertOfId`), а не удаление старой: кто что написал, должно читаться и потом.
+model ProductEdit {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  companyId String?
+  company   Company? @relation("ProductEditCompany", fields: [companyId], references: [id], onDelete: SetNull)
+  userId    String?
+  user      User?    @relation("ProductEditAuthor", fields: [userId], references: [id], onDelete: SetNull)
+
+  field      String
+  before     Json?
+  after      Json?
+  revertOfId String?
+
+  createdAt DateTime @default(now())
+
+  @@index([productId, createdAt])
+  @@index([companyId, createdAt])
+}
+
+/// Заявка производителя на владение паспортом. Решает сотрудник в очереди `products`:
+/// доказательством бывает устав, домен, письмо на домене, упаковка.
+model ProductClaim {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  companyId String
+  company   Company @relation("ProductClaimCompany", fields: [companyId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User    @relation("ProductClaimant", fields: [userId], references: [id], onDelete: Cascade)
+
+  evidence  String @db.Text
+  documents Json?
+
+  status       RequestStatus @default(PENDING)
+  decidedById  String?
+  decidedBy    User?         @relation("ProductClaimDecider", fields: [decidedById], references: [id], onDelete: SetNull)
+  decidedAt    DateTime?
+  rejectReason String?
+
+  createdAt DateTime @default(now())
+
+  @@index([productId, status])
+  @@index([companyId, createdAt])
+}
+
+enum ProductRevisionStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+}
+
+/// Предложение правки паспорту, у которого есть хозяин. Решает сам хозяин, а не
+/// администратор платформы: это спор двух предприятий о свойствах их товара. Хозяин,
+/// отклоняющий верные правки, ловится жалобой.
+model ProductRevision {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  companyId String
+  company   Company @relation("ProductRevisionCompany", fields: [companyId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User    @relation("ProductRevisionAuthor", fields: [userId], references: [id], onDelete: Cascade)
+
+  /// [{ field, after }] — то же устройство, что `diff` у ревизии карточки монеты.
+  patch Json
+
+  status      ProductRevisionStatus @default(PENDING)
+  decidedById String?
+  decidedBy   User?                 @relation("ProductRevisionDecider", fields: [decidedById], references: [id], onDelete: SetNull)
+  decidedAt   DateTime?
+  reason      String?
+
+  createdAt DateTime @default(now())
+
+  @@index([productId, status])
+  @@index([companyId, createdAt])
+}
+
+enum ProductReportReason {
+  WRONG_DATA
+  FAKE
+  NOT_MINE
+  ILLEGAL
+  OTHER
+}
+
+/// Жалоба на паспорт. Фото от анонима не принимаем — то же решение, что у жалоб на точки.
+model ProductReport {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  reporterUserId String?
+  reporter       User?   @relation("ProductReporter", fields: [reporterUserId], references: [id], onDelete: SetNull)
+  /// sha256 адреса с солью, как в жалобах на точки.
+  reporterIpHash String
+
+  reason  ProductReportReason
+  comment String?             @db.Text
+
+  createdAt DateTime @default(now())
+
+  @@index([productId, createdAt])
+  @@index([reporterIpHash, productId, createdAt])
 }
