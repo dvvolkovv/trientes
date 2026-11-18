@@ -3,7 +3,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { LIVE_CARD_COMPANY, PUBLIC_COMPANY } from "@/lib/company-visibility";
 import { parseCoinSelector, parsePointId } from "@/lib/crypto-map";
-import type { MapFocus } from "@/lib/map-start";
+import { getAcceptanceArea } from "@/lib/coin-card-acceptance";
+import type { MapArea, MapFocus } from "@/lib/map-start";
 import { CryptoMapSection } from "@/components/coin-detail/crypto-map-section";
 
 // Фид точек считается на запрос: одобренная точка должна появляться сразу.
@@ -42,6 +43,33 @@ async function resolveFocus(raw: string | undefined): Promise<MapFocus | null> {
   });
   if (!point || point.lat === null || point.lon === null) return null;
   return { id: `company/${point.id}`, lat: point.lat, lon: point.lon };
+}
+
+/**
+ * Где эту монету принимают — и, значит, с чего карта открывается, когда места
+ * в адресе не названо.
+ *
+ * Фид точек приходит по кадру карты, а карта без подсказки встаёт под ногами у
+ * человека (иначе — Мадрид). У карточки монеты точек единицы, и почти
+ * наверняка не в этом городе: кнопка «Открыть на карте» показывала пустую
+ * Испанию и чужие крипто-точки, а единственный магазин, названный на карточке
+ * строкой выше, в ответ фида не попадал вовсе.
+ *
+ * Считается на запрос, а не кладётся в адрес ссылкой: пересланная ссылка
+ * `?coin=card:<id>` обязана вести к точкам и завтра, когда точки переедут,
+ * прибавятся или исчезнут.
+ *
+ * Только для карточки: у монеты каталога точки берутся из зеркала BTC Map и
+ * рассыпаны по всему миру — там «где я» и есть правильный первый кадр.
+ */
+async function resolveArea(selector: ReturnType<typeof parseCoinSelector>): Promise<MapArea | null> {
+  if (selector.kind !== "card" || !selector.cardId) return null;
+  try {
+    return await getAcceptanceArea(selector.cardId);
+  } catch {
+    // Сбой чтения — карта просто открывается как прежде, а не падает.
+    return null;
+  }
 }
 
 /**
@@ -91,13 +119,16 @@ export default async function CryptoMapPage({
     }
   }
 
+  // Названное место важнее области: в него и зовёт ссылка «где именно».
+  const focus = await resolveFocus(point);
   return (
     <main className="max-w-[1600px] mx-auto px-4 md:px-12 xl:px-20 py-8 space-y-6">
       <CryptoMapSection
         coinId={coinId}
         symbol={symbol}
         coinName={coinName}
-        focus={await resolveFocus(point)}
+        focus={focus}
+        area={focus ? null : await resolveArea(selector)}
       />
     </main>
   );

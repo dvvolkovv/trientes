@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  MAP_AREA_PADDING,
   MAP_FALLBACK_CENTER,
   MAP_FALLBACK_ZOOM,
   MAP_FOCUS_ZOOM,
@@ -45,8 +46,7 @@ describe("startView", () => {
 
   it("названная точка открывается улицей, а не страной", () => {
     const view = startView({ id: "company/x", lat: 47.3900641, lon: 9.2773337 });
-    expect(view.center).toEqual([9.2773337, 47.3900641]);
-    expect(view.zoom).toBe(MAP_FOCUS_ZOOM);
+    expect(view).toEqual({ center: [9.2773337, 47.3900641], zoom: MAP_FOCUS_ZOOM });
     expect(MAP_FOCUS_ZOOM).toBeGreaterThan(MAP_FALLBACK_ZOOM);
   });
 });
@@ -60,5 +60,43 @@ describe("shouldAutoLocate с названной точкой", () => {
 
   it("без точки всё как было", () => {
     expect(shouldAutoLocate("granted", false)).toBe(true);
+  });
+});
+
+describe("startView с прямоугольником точек", () => {
+  const area = { minLat: 47.39, maxLat: 47.39, minLon: 9.2773, maxLon: 9.2773 };
+
+  it("карта открывается на точках монеты, а не в городе по умолчанию", () => {
+    // Фид точек приходит по кадру карты: открылась в Мадриде — единственная
+    // точка в Швейцарии не попадёт в ответ вовсе, и человек увидит пустую Испанию.
+    const view = startView(null, area);
+    expect(view).toEqual({
+      bounds: [[9.2773, 47.39], [9.2773, 47.39]],
+      fitBoundsOptions: { padding: MAP_AREA_PADDING, maxZoom: MAP_FOCUS_ZOOM },
+    });
+  });
+
+  it("прямоугольник по нескольким точкам отдаётся углами юго-запад → северо-восток", () => {
+    const view = startView(null, { minLat: 40, maxLat: 52, minLon: -3, maxLon: 21 });
+    expect(view).toEqual({
+      bounds: [[-3, 40], [21, 52]],
+      fitBoundsOptions: { padding: MAP_AREA_PADDING, maxZoom: MAP_FOCUS_ZOOM },
+    });
+  });
+
+  it("названная точка важнее прямоугольника: ссылка зовёт в место, а не в область", () => {
+    const view = startView({ id: "company/x", lat: 50, lon: 14 }, area);
+    expect(view).toEqual({ center: [14, 50], zoom: MAP_FOCUS_ZOOM });
+  });
+
+  it("ни точки, ни прямоугольника — всё как было", () => {
+    expect(startView(null, null)).toEqual({ center: MAP_FALLBACK_CENTER, zoom: MAP_FALLBACK_ZOOM });
+  });
+});
+
+describe("shouldAutoLocate с прямоугольником точек", () => {
+  it("камера на точках монеты геолокацией не отнимается", () => {
+    // Иначе «Открыть на карте» показывало бы не точки приёма, а того, кто нажал.
+    expect(shouldAutoLocate("granted", true)).toBe(false);
   });
 });

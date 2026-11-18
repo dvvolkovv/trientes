@@ -45,6 +45,7 @@ import {
   geolocationPermission,
   shouldAutoLocate,
   startView,
+  type MapArea,
   type MapFocus,
 } from "@/lib/map-start";
 
@@ -156,12 +157,15 @@ export default function CryptoNavigator({
   symbol,
   coinName,
   focus = null,
+  area = null,
 }: {
   coinId: string;
   symbol: string;
   coinName: string;
   /** Точка из адреса: карта открывается на ней, а её карточка — сама. */
   focus?: MapFocus | null;
+  /** Где эту монету принимают: карта садится на все точки сразу. */
+  area?: MapArea | null;
 }) {
   const t = useTranslations("cryptoMap");
   const locale = useLocale();
@@ -703,13 +707,14 @@ export default function CryptoNavigator({
   // ---- Map setup (once) ----
   useEffect(() => {
     if (!containerRef.current) return;
-    const view = startView(focus);
+    // `bounds` в конструкторе MapLibre важнее center/zoom, поэтому вид
+    // раскладывается целиком: одно поле на оба случая, промежуточного кадра в
+    // Мадриде человек не увидит.
     const map = tryCreateMap({
       container: containerRef.current,
       style: basemapStyle(),
-      center: view.center,
-      zoom: view.zoom,
       pitch: 0,
+      ...startView(focus, area),
       ...MAPLIBRE_ATTRIBUTION_OPTIONS,
     });
     if (!map) {
@@ -855,7 +860,7 @@ export default function CryptoNavigator({
       // искать кнопку незачем. Отказавшего не переспрашиваем — он останется в
       // городе по умолчанию, и кнопка «моё положение» никуда не делась.
       void geolocationPermission().then((state) => {
-        if (!shouldAutoLocate(state, !!focus)) return;
+        if (!shouldAutoLocate(state, !!focus || !!area)) return;
         if (mapRef.current !== map) return;
         try {
           geo.trigger();

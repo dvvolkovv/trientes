@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
-import type { MapFocus } from "@/lib/map-start";
+import type { MapArea, MapFocus } from "@/lib/map-start";
 
 // MapLibre touches `window`, so the navigator loads client-only.
 const CryptoNavigator = dynamic(() => import("@/components/coin-detail/crypto-navigator"), {
@@ -19,12 +19,15 @@ export function CryptoMapSection({
   symbol,
   coinName,
   focus = null,
+  area = null,
 }: {
   coinId: string;
   symbol: string;
   coinName: string;
   /** Точка из адреса: карта открывается на ней. */
   focus?: MapFocus | null;
+  /** Прямоугольник точек приёма: карта открывается на них всех. */
+  area?: MapArea | null;
 }) {
   const t = useTranslations("cryptoMap");
   return (
@@ -32,15 +35,23 @@ export function CryptoMapSection({
       <div className="num text-[11px] uppercase tracking-[0.3em] text-muted mb-2">{t("eyebrow")}</div>
       <h2 className="text-[24px] md:text-[28px] font-bold tracking-[-0.025em] mb-1">{t("title")}</h2>
       <p className="text-muted text-[14px] mb-4 max-w-[680px]">{t("intro")}</p>
-      {/* Ключ держит и точку: переход по ссылке на соседнее место той же
-          монеты обязан пересобрать карту, иначе она осталась бы на прежнем. */}
+      {/* Ключ держит и точку, и прямоугольник: переход по ссылке на соседнее
+          место той же монеты обязан пересобрать карту, иначе она осталась бы
+          на прежнем виде — камера выбирается один раз, при создании. */}
       <CryptoNavigator
-        key={`${coinId}|${focus?.id ?? ""}`}
+        key={`${coinId}|${focus?.id ?? ""}|${areaKey(area)}`}
         coinId={coinId}
         symbol={symbol}
         coinName={coinName}
         focus={focus}
+        area={area}
       />
     </section>
   );
+}
+
+/** Прямоугольник в ключе: появление новой точки приёма обязано пересобрать карту. */
+function areaKey(area: MapArea | null): string {
+  if (!area) return "";
+  return [area.minLon, area.minLat, area.maxLon, area.maxLat].join(",");
 }

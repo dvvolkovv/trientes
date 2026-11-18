@@ -3,6 +3,7 @@ import {
   ACCEPTANCE_PREVIEW,
   ACCEPTANCE_TOP_COUNTRIES,
   aggregateAcceptance,
+  areaOf,
   type AcceptanceRow,
 } from "@/lib/coin-card-acceptance";
 
@@ -56,5 +57,53 @@ describe("aggregateAcceptance", () => {
   it("breaks country ties by code so the order is stable", () => {
     const s = aggregateAcceptance([row(1, "PL", "SHOP"), row(2, "CZ", "SHOP")], 2);
     expect(s.byCountry).toEqual([{ code: "CZ", count: 1 }, { code: "PL", count: 1 }]);
+  });
+});
+
+describe("areaOf", () => {
+  function at(i: number, lat: number | null, lon: number | null): AcceptanceRow {
+    return { id: `p${i}`, name: `Point ${i}`, city: null, countryCode: "CH", type: "SHOP", lat, lon };
+  }
+
+  it("без координат обещать место нечем", () => {
+    // Точка «онлайн» живёт без координат: карта её не покажет никогда.
+    expect(areaOf([at(1, null, null)])).toBeNull();
+    expect(areaOf([])).toBeNull();
+  });
+
+  it("одна точка — прямоугольник в ноль: камера встанет ровно на ней", () => {
+    expect(areaOf([at(1, 47.39, 9.2773)])).toEqual({
+      minLat: 47.39, maxLat: 47.39, minLon: 9.2773, maxLon: 9.2773,
+    });
+  });
+
+  it("несколько точек — прямоугольник по крайним, а не по первой", () => {
+    expect(areaOf([at(1, 50, 14), at(2, 47.39, 9.2773), at(3, 52, 21)])).toEqual({
+      minLat: 47.39, maxLat: 52, minLon: 9.2773, maxLon: 21,
+    });
+  });
+
+  it("точка без координат не тянет прямоугольник в ноль широты", () => {
+    // Иначе одна «онлайн»-точка увела бы карту в Гвинейский залив.
+    expect(areaOf([at(1, 47.39, 9.2773), at(2, null, null)])).toEqual({
+      minLat: 47.39, maxLat: 47.39, minLon: 9.2773, maxLon: 9.2773,
+    });
+  });
+});
+
+describe("aggregateAcceptance: прямоугольник точек", () => {
+  it("считается по всей выборке, а не по шести строкам превью", () => {
+    // Превью — шесть строк, а на карте человек должен увидеть все точки.
+    const rows: AcceptanceRow[] = Array.from({ length: 8 }, (_, i) => ({
+      id: `p${i}`, name: `P${i}`, city: null, countryCode: "CH", type: "SHOP",
+      lat: 40 + i, lon: 10 + i,
+    }));
+    const s = aggregateAcceptance(rows, 8);
+    expect(s.recent).toHaveLength(ACCEPTANCE_PREVIEW);
+    expect(s.area).toEqual({ minLat: 40, maxLat: 47, minLon: 10, maxLon: 17 });
+  });
+
+  it("нет точек — нет прямоугольника", () => {
+    expect(aggregateAcceptance([], 0).area).toBeNull();
   });
 });

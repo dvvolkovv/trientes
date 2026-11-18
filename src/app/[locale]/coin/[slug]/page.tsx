@@ -18,6 +18,7 @@ import { MarketsTable } from "@/components/coin-detail/markets";
 import { CryptoMapSection } from "@/components/coin-detail/crypto-map-section";
 import { SectionNav } from "@/components/coin-detail/section-nav";
 import { getPublicCoinCard } from "@/lib/coin-card-public";
+import { getAcceptanceArea } from "@/lib/coin-card-acceptance";
 import { SUPPORTED_LOCALES } from "@/lib/locales";
 import { localizeCoinCard } from "@/lib/coin-card-prose";
 import { TranslatedBadge } from "@/components/coin-card/translated-badge";
@@ -293,7 +294,11 @@ async function renderCardOnly(
 
   // «Топ бирж» строится из рынков карточки: тикеров рыночного фида у такой
   // монеты нет, а биржа есть — у Taler это наш собственный обмен.
-  const [rates, currency] = await Promise.all([readExchangeRates(), getCurrency()]);
+  const [rates, currency, area] = await Promise.all([
+    readExchangeRates(),
+    getCurrency(),
+    getAcceptanceArea(only.id),
+  ]);
   const exchanges = cardTopExchanges(loc.card.markets);
   return (
     <main className="max-w-[1600px] mx-auto px-4 md:px-12 xl:px-20 py-8 md:py-12 space-y-10 md:space-y-14">
@@ -316,6 +321,19 @@ async function renderCardOnly(
       {exchanges.length > 0 && (
         <section id="exchanges" className="scroll-mt-24">
           <MarketsTable exchanges={exchanges} currency={currency} rates={rates} />
+        </section>
+      )}
+      {/* Карта — только когда на ней есть что показать нашего: прямоугольник
+          точек приёма. Без него навигатор нарисовал бы чужие крипто-точки из
+          зеркала BTC Map, то есть места, где эту монету как раз не принимают. */}
+      {area && (
+        <section id="navigator" className="scroll-mt-24">
+          <CryptoMapSection
+            coinId={`card:${only.id}`}
+            symbol={only.symbol}
+            coinName={only.name}
+            area={area}
+          />
         </section>
       )}
     </main>

@@ -20,13 +20,52 @@ export type MapFocus = { id: string; lat: number; lon: number };
 /** Приближение улицы: названное место должно быть видно домом, а не городом. */
 export const MAP_FOCUS_ZOOM = 16;
 
-/** С какого вида начинается карта: с названного места, иначе с города по умолчанию. */
-export function startView(focus: MapFocus | null | undefined): {
-  center: [number, number];
-  zoom: number;
-} {
-  if (!focus) return { center: MAP_FALLBACK_CENTER, zoom: MAP_FALLBACK_ZOOM };
-  return { center: [focus.lon, focus.lat], zoom: MAP_FOCUS_ZOOM };
+/**
+ * Прямоугольник, в который должны попасть все точки, ради которых карту
+ * открыли. Нужен там, где фильтр карты — наша карточка монеты: точек у неё
+ * единицы, и человек под ногами почти наверняка стоит не рядом с ними.
+ */
+export type MapArea = {
+  minLon: number;
+  minLat: number;
+  maxLon: number;
+  maxLat: number;
+};
+
+/** Отступ от края полотна при посадке на прямоугольник, пиксели. */
+export const MAP_AREA_PADDING = 48;
+
+/**
+ * С чего карта начинает: названное место, иначе прямоугольник точек, иначе
+ * город по умолчанию. Углы отдаются в том порядке, в каком их ждёт MapLibre:
+ * юго-запад, северо-восток. Форма возврата — готовые поля MapOptions, чтобы
+ * вызов просто разложил её в конструктор карты.
+ *
+ * Прямоугольник в ноль (одна точка) — не особый случай: посадка упирается в
+ * `maxZoom` и камера встаёт ровно на точке.
+ */
+export function startView(
+  focus: MapFocus | null | undefined,
+  area?: MapArea | null,
+):
+  | { center: [number, number]; zoom: number }
+  | {
+      bounds: [[number, number], [number, number]];
+      fitBoundsOptions: { padding: number; maxZoom: number };
+    } {
+  // Названное место важнее области: ссылка «где именно» зовёт в магазин, а не
+  // в страну, где он стоит.
+  if (focus) return { center: [focus.lon, focus.lat], zoom: MAP_FOCUS_ZOOM };
+  if (area) {
+    return {
+      bounds: [
+        [area.minLon, area.minLat],
+        [area.maxLon, area.maxLat],
+      ],
+      fitBoundsOptions: { padding: MAP_AREA_PADDING, maxZoom: MAP_FOCUS_ZOOM },
+    };
+  }
+  return { center: MAP_FALLBACK_CENTER, zoom: MAP_FALLBACK_ZOOM };
 }
 
 /**
@@ -37,9 +76,10 @@ export function startView(focus: MapFocus | null | undefined): {
  * остальное — да: «разрешено» отвечает без единого окна, а «ещё не спросили»
  * это и есть тот вопрос, ради которого человек открыл навигатор.
  *
- * Исключение одно: человека позвали в конкретное место. Геолокация уводит
- * камеру к нему домой, и названный магазин, ради которого он нажал ссылку,
- * уезжает за край экрана — то есть ссылка не выполняет своего обещания.
+ * Исключение одно: человека позвали в конкретное место — или в область, где
+ * эту монету принимают (см. `startView`). Геолокация уводит камеру к нему
+ * домой, и названный магазин, ради которого он нажал ссылку, уезжает за край
+ * экрана — то есть ссылка не выполняет своего обещания.
  * Кнопка «моё положение» никуда не делась, и «Маршрут сюда» спросит сам.
  */
 export function shouldAutoLocate(
