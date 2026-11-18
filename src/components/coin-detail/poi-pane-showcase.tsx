@@ -4,6 +4,7 @@ import type { Poi } from "@/lib/crypto-map";
 import type { StepTranslator } from "@/components/coin-detail/route-steps-panel";
 import { CHIP, PRIMARY, ROW_BTN } from "@/components/coin-detail/poi-sheet-ui";
 import { safeHttpUrl } from "@/lib/safe-url";
+import { poiIdToOsmKey } from "@/lib/osm-key";
 
 const SOCIAL_LABELS: Record<string, string> = {
   instagram: "Instagram",
@@ -37,6 +38,9 @@ export function PoiPaneShowcase({
   // Точка нашей компании отличается от точки зеркала BTC Map префиксом id —
   // его ставит `companyPointToPoi`, другого признака в фиде нет.
   const own = poi.id.startsWith("company/");
+  // Забрать себе можно только точку зеркала BTC Map: у неё нет хозяина. У
+  // финтех-точки он есть (её завёл каталог), у нашей — тем более.
+  const osmKey = poiIdToOsmKey(poi.id);
 
   return (
     <div className="space-y-5 px-4 py-4">
@@ -115,10 +119,10 @@ export function PoiPaneShowcase({
         </div>
       )}
 
-      {!own && (
+      {!own && osmKey && (
         <section className="space-y-2 rounded-xl border border-hairline bg-bg-tint/50 p-3">
           <p className="text-[13px] leading-snug text-muted">{t("claimTitle")}</p>
-          <a href={`/${locale}/business`} className={`${PRIMARY} w-full`}>
+          <a href={`/${locale}/claim/${encodeURIComponent(osmKey)}`} className={`${PRIMARY} w-full`}>
             {t("claimCta")}
           </a>
         </section>

@@ -182,6 +182,41 @@
     "exchangesEmpty": "Ainda não há exchanges favoritas",
     "browseExchanges": "Ver exchanges"
   },
+  "claimPoint": {
+    "kicker": "Reivindicar um local",
+    "title": "Este é o seu negócio?",
+    "subtitle": "Reivindique este local e você decide o que os visitantes veem: seu logo, fotos, horário de funcionamento e as moedas que você aceita.",
+    "unnamed": "Local sem nome",
+    "sourceNote": "O local é exibido como está mapeado no BTC Map, um derivado do OpenStreetMap. Quando sua reivindicação for aprovada, seu próprio cartão o substituirá no mapa.",
+    "showOnMap": "Mostrar no mapa",
+    "signInFirst": "Faça login para reivindicar este local.",
+    "signIn": "Entrar",
+    "register": "Criar conta",
+    "noCompany": "Cadastre sua empresa primeiro — uma empresa pode ter vários locais.",
+    "createCompany": "Cadastrar uma empresa",
+    "companyLabel": "Empresa",
+    "submit": "Esta é a minha empresa",
+    "sending": "Enviando…",
+    "afterNote": "Um revisor verifica cada reivindicação manualmente. Até lá, o local permanece no mapa como está no BTC Map.",
+    "state": {
+      "pending": "Alguém já reivindicou este local e estamos analisando.",
+      "taken": "Este local já pertence a uma empresa no Trientes."
+    },
+    "error": {
+      "unauth": "Faça login primeiro.",
+      "not_found": "Você não pode agir em nome desta empresa.",
+      "invalid_point": "Este local não pode ser reivindicado.",
+      "point_gone": "O lugar não está mais nos nossos dados do mapa.",
+      "already_claimed": "Este lugar já pertence a uma empresa no Trientes.",
+      "claim_pending": "Alguém já reivindicou este lugar e estamos analisando.",
+      "too_many_pending": "Você tem lugares demais aguardando análise.",
+      "type_invalid": "Tipo de lugar não suportado.",
+      "name_required": "O lugar não tem nome — adicione um no seu painel.",
+      "coords_invalid": "O lugar não tem coordenadas utilizáveis.",
+      "website_invalid": "O endereço do site não é válido.",
+      "logo_invalid": "O endereço do logotipo não é válido."
+    }
+  },
   "rating": {
     "heading": "Avaliação",
     "none": "Ainda não há avaliações",
@@ -1099,6 +1134,9 @@
     "layer_financial": "Serviços financeiros",
     "layer_fintech": "Fintech",
     "coinHighlight": "{symbol} aceito",
+    "brand_own": "No Trientes",
+    "brand_institution": "No nosso diretório",
+    "brand_osm": "Do BTC Map",
     "distance": "Distância",
     "duration": "Tempo",
     "clearRoute": "Limpar a rota",

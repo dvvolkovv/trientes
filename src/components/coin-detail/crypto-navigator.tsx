@@ -65,7 +65,8 @@ import { NavigationController, type NavigationCallbacks, type NavUpdate } from "
 import { haversineMeters } from "@/lib/route-geometry";
 import { MapControls } from "@/components/coin-detail/map-controls";
 import { AvailableNearPanel } from "@/components/coin-detail/available-near-panel";
-import { POI_LAYERS, LAYER_COLOR } from "@/lib/poi-layers";
+import { POI_LAYERS } from "@/lib/poi-layers";
+import { BRAND_COLOR, BRAND_RING, poiBrand } from "@/lib/poi-brand";
 import {
   addStaticMapAttribution,
   MAPLIBRE_ATTRIBUTION_OPTIONS,
@@ -404,9 +405,9 @@ export default function CryptoNavigator({
         if (!src) return [];
         const el = document.createElement("div");
         el.className = "cmap-poi-logo";
-        // Кольцо остаётся цветом слоя: знак говорит, чьё это место, а цвет —
-        // какое оно; терять второе ради первого незачем.
-        el.style.borderColor = LAYER_COLOR[poi.layer] ?? LAYER_COLOR.merchant;
+        // Кольцо — фирменного цвета источника, как у булавки: знак говорит,
+        // чьё это место, а цвет — насколько мы за него отвечаем.
+        el.style.borderColor = BRAND_COLOR[poiBrand(poi)];
         el.title = poi.name;
         const img = document.createElement("img");
         img.src = src;
@@ -475,6 +476,9 @@ export default function CryptoNavigator({
             geometry: { type: "Point", coordinates: [p.lon, p.lat] },
             properties: {
               ...p,
+              // Цвет булавки говорит, кто за точкой стоит: наше предприятие,
+              // учреждение каталога или зеркало BTC Map (см. poi-brand).
+              brand: poiBrand(p),
               socials: JSON.stringify(p.socials),
               acceptedCoins: JSON.stringify(p.acceptedCoins),
               photos: JSON.stringify(p.photos),
@@ -809,11 +813,31 @@ export default function CryptoNavigator({
           filter: ["==", ["get", "layer"], layer],
           paint: {
             "circle-radius": ["interpolate", ["linear"], ["zoom"], 11, 4, 16, 8],
-            "circle-color": LAYER_COLOR[layer],
-            "circle-opacity": 0.9,
-            // Coin-specific points get a bright white ring; the rest a subtle dark one.
+            // Фирменная палитра: оранжевый — наши, металлик — каталог финтеха,
+            // белый — зеркало BTC Map. Цвет один для всех слоёв: что это за
+            // заведение, говорит фильтр слоёв, а не оттенок булавки.
+            "circle-color": [
+              "match",
+              ["get", "brand"],
+              "own", BRAND_COLOR.own,
+              "institution", BRAND_COLOR.institution,
+              BRAND_COLOR.osm,
+            ],
+            "circle-opacity": 0.95,
+            // Кольцо значит «тут принимают выбранную монету».
             "circle-stroke-width": ["case", ["get", "coinSpecific"], 2.5, 1],
-            "circle-stroke-color": ["case", ["get", "coinSpecific"], "#ffffff", "#161616"],
+            "circle-stroke-color": [
+              "case",
+              ["get", "coinSpecific"],
+              [
+                "match",
+                ["get", "brand"],
+                "own", BRAND_RING.own,
+                "institution", BRAND_RING.institution,
+                BRAND_RING.osm,
+              ],
+              "#161616",
+            ],
           },
         });
 
@@ -1760,15 +1784,29 @@ export default function CryptoNavigator({
               (visible[layer] ? "border-hairline text-foreground" : "border-hairline text-muted/40")
             }
           >
-            <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ background: LAYER_COLOR[layer] }} />
+            {/* Цветной кружок у фильтра слоя был бы ложью: цвет булавки
+                означает источник, а не слой. */}
             {t(`layer_${layer}`)}
             <span className="num text-muted">{counts[layer]}</span>
           </button>
         ))}
         <span className="text-[11px] text-muted flex items-center gap-1.5">
-          <span className="inline-block w-2.5 h-2.5 rounded-full border-2 border-white bg-transparent" />
+          <span
+            className="inline-block w-2.5 h-2.5 rounded-full bg-transparent"
+            style={{ border: `2px solid ${BRAND_COLOR.own}` }}
+          />
           {t("coinHighlight", { symbol: symbol.toUpperCase() })}
         </span>
+        {/* Что значит цвет булавки — три слова и три кружка. */}
+        {(["own", "institution", "osm"] as const).map((brand) => (
+          <span key={brand} className="text-[11px] text-muted flex items-center gap-1.5">
+            <span
+              className="inline-block w-2.5 h-2.5 rounded-full"
+              style={{ background: BRAND_COLOR[brand], border: "1px solid #161616" }}
+            />
+            {t(`brand_${brand}`)}
+          </span>
+        ))}
       </div>
 
       {/* Маршрут, когда карточка закрыта: куда и сколько, вернуться, очистить */}

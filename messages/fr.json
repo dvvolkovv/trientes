@@ -182,6 +182,41 @@
     "exchangesEmpty": "Aucune plateforme favorite pour l'instant",
     "browseExchanges": "Voir les plateformes"
   },
+  "claimPoint": {
+    "kicker": "Revendiquer un lieu",
+    "title": "Est-ce votre entreprise ?",
+    "subtitle": "Revendiquez ce lieu et vous décidez de ce que les visiteurs voient : votre logo, vos photos, vos horaires et les cryptomonnaies que vous acceptez.",
+    "unnamed": "Lieu sans nom",
+    "sourceNote": "Ce lieu est affiché tel qu'il est cartographié dans BTC Map, un dérivé d'OpenStreetMap. Une fois votre revendication approuvée, votre propre fiche le remplacera sur la carte.",
+    "showOnMap": "Afficher sur la carte",
+    "signInFirst": "Connectez-vous pour revendiquer ce lieu.",
+    "signIn": "Se connecter",
+    "register": "Créer un compte",
+    "noCompany": "Enregistrez d'abord votre entreprise — une entreprise peut détenir plusieurs lieux.",
+    "createCompany": "Enregistrer une entreprise",
+    "companyLabel": "Entreprise",
+    "submit": "C'est mon entreprise",
+    "sending": "Envoi…",
+    "afterNote": "Un modérateur vérifie chaque revendication manuellement. D'ici là, le lieu reste sur la carte tel qu'il est dans BTC Map.",
+    "state": {
+      "pending": "Quelqu'un a déjà revendiqué ce lieu et nous sommes en train de l'examiner.",
+      "taken": "Ce lieu appartient déjà à une entreprise sur Trientes."
+    },
+    "error": {
+      "unauth": "Connectez-vous d'abord.",
+      "not_found": "Vous ne pouvez pas agir pour cette entreprise.",
+      "invalid_point": "Ce lieu ne peut pas être revendiqué.",
+      "point_gone": "Ce lieu ne figure plus dans nos données cartographiques.",
+      "already_claimed": "Cet endroit appartient déjà à une entreprise sur Trientes.",
+      "claim_pending": "Quelqu'un a déjà revendiqué cet endroit et nous l'examinons.",
+      "too_many_pending": "Vous avez trop de lieux en attente d'examen.",
+      "type_invalid": "Type de lieu non pris en charge.",
+      "name_required": "Le lieu n’a pas de nom — ajoutez-en un dans votre cabinet.",
+      "coords_invalid": "Le lieu n’a pas de coordonnées utilisables.",
+      "website_invalid": "L’adresse du site web n’est pas valide.",
+      "logo_invalid": "L’adresse du logo n’est pas valide."
+    }
+  },
   "rating": {
     "heading": "Évaluation",
     "none": "Aucune évaluation pour le moment",
@@ -1099,6 +1134,9 @@
     "layer_financial": "Services financiers",
     "layer_fintech": "Fintech",
     "coinHighlight": "{symbol} accepté",
+    "brand_own": "Sur Trientes",
+    "brand_institution": "Dans notre annuaire",
+    "brand_osm": "Depuis BTC Map",
     "distance": "Distance",
     "duration": "Durée",
     "clearRoute": "Effacer l'itinéraire",

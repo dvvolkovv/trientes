@@ -182,6 +182,41 @@
     "exchangesEmpty": "No favorite exchanges yet",
     "browseExchanges": "Browse exchanges"
   },
+  "claimPoint": {
+    "kicker": "Claim a place",
+    "title": "Is this your business?",
+    "subtitle": "Claim this place and you decide what visitors see: your logo, photos, hours and the coins you take.",
+    "unnamed": "Unnamed place",
+    "sourceNote": "The place is shown as it is mapped in BTC Map, an OpenStreetMap derivative. Once your claim is approved, your own card replaces it on the map.",
+    "showOnMap": "Show on the map",
+    "signInFirst": "Sign in to claim this place.",
+    "signIn": "Sign in",
+    "register": "Create account",
+    "noCompany": "Register your business first — one business can hold several places.",
+    "createCompany": "Register a business",
+    "companyLabel": "Business",
+    "submit": "This is my business",
+    "sending": "Sending…",
+    "afterNote": "A reviewer checks every claim by hand. Until then the place stays on the map as BTC Map has it.",
+    "state": {
+      "pending": "Someone has already claimed this place and we are reviewing it.",
+      "taken": "This place already belongs to a business on Trientes."
+    },
+    "error": {
+      "unauth": "Sign in first.",
+      "not_found": "You cannot act for this business.",
+      "invalid_point": "This place cannot be claimed.",
+      "point_gone": "The place is no longer in our map data.",
+      "already_claimed": "This place already belongs to a business on Trientes.",
+      "claim_pending": "Someone has already claimed this place and we are reviewing it.",
+      "too_many_pending": "You have too many places awaiting review.",
+      "type_invalid": "Unsupported place type.",
+      "name_required": "The place has no name — add one in your cabinet.",
+      "coords_invalid": "The place has no usable coordinates.",
+      "website_invalid": "The website address is not valid.",
+      "logo_invalid": "The logo address is not valid."
+    }
+  },
   "rating": {
     "heading": "Rating",
     "none": "No ratings yet",
@@ -1099,6 +1134,9 @@
     "layer_financial": "Financial",
     "layer_fintech": "Fintech",
     "coinHighlight": "{symbol} accepted",
+    "brand_own": "On Trientes",
+    "brand_institution": "In our directory",
+    "brand_osm": "From BTC Map",
     "distance": "Distance",
     "duration": "Time",
     "clearRoute": "Clear route",

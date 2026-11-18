@@ -199,6 +199,33 @@ export async function searchApprovedPointsByName(q: string, limit = 5): Promise<
 //
 // В режиме карточки фид дополнительно фильтруется по acceptedCardIds: для своего
 // листинга «все точки с флажком» бесполезны — его принимают единицы.
+/**
+ * Ключи точек зеркала BTC Map, которые уже забрали себе предприятия и чья
+ * заявка одобрена. Фид прячет такие зеркальные точки: иначе одно заведение
+ * стояло бы на карте двумя булавками — своей, с логотипом и рассказом, и
+ * чужой, собранной из тегов OSM.
+ *
+ * Фильтр по выбранной монете здесь намеренно **не применяется**: точку
+ * представляет её хозяин, и если он не заявил выбранную монету, то честный
+ * ответ — «тут её не принимают», а не вторая булавка из чужих данных.
+ */
+export async function fetchClaimedOsmKeysInBbox(bbox: Bbox): Promise<Set<string>> {
+  const rows = await prisma.companyPoint.findMany({
+    where: {
+      osmId: { not: null },
+      status: "APPROVED",
+      company: PUBLIC_COMPANY,
+      deletedAt: null,
+      suspendedAt: null,
+      lat: { gte: bbox.minLat, lte: bbox.maxLat },
+      lon: { gte: bbox.minLon, lte: bbox.maxLon },
+    },
+    take: 500,
+    select: { osmId: true },
+  });
+  return new Set(rows.map((r) => r.osmId).filter((v): v is string => Boolean(v)));
+}
+
 export async function fetchApprovedPointsInBbox(
   bbox: Bbox,
   selector: CoinSelector,

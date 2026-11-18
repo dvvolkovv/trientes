@@ -95,9 +95,9 @@
     "rank": "#",
     "name": "Názov",
     "price": "Cena",
-    "change1h": "1h %",
-    "change24h": "24h %",
-    "change7d": "7d %",
+    "change1h": "1 h %",
+    "change24h": "24 h %",
+    "change7d": "7 d %",
     "marketCap": "Trhová kapitalizácia",
     "circulating": "Ponuka v obehu",
     "volume24h": "Objem (24h)",
@@ -181,6 +181,41 @@
     "exchangesTitle": "Obľúbené burzy",
     "exchangesEmpty": "Zatiaľ žiadne obľúbené burzy",
     "browseExchanges": "Prehliadať burzy"
+  },
+  "claimPoint": {
+    "kicker": "Nárokovať miesto",
+    "title": "Je toto vaša firma?",
+    "subtitle": "Nárokujte si toto miesto a vy rozhodnete, čo návštevníci uvidia: vaše logo, fotky, hodiny a mince, ktoré prijímate.",
+    "unnamed": "Nepomenované miesto",
+    "sourceNote": "Miesto je zobrazené tak, ako je zmapované v BTC Map, odvodenom od OpenStreetMap. Keď bude váš nárok schválený, na mape ho nahradí vaša vlastná karta.",
+    "showOnMap": "Zobraziť na mape",
+    "signInFirst": "Prihláste sa, aby ste si nárokovali toto miesto.",
+    "signIn": "Prihlásiť sa",
+    "register": "Vytvoriť účet",
+    "noCompany": "Najprv zaregistrujte svoju firmu — jedna firma môže mať viac miest.",
+    "createCompany": "Zaregistrovať firmu",
+    "companyLabel": "Firma",
+    "submit": "Toto je moja firma",
+    "sending": "Odosielanie…",
+    "afterNote": "Každý nárok ručne kontroluje overovateľ. Dovtedy zostane miesto na mape tak, ako ho má BTC Map.",
+    "state": {
+      "pending": "Niekto si už toto miesto nárokoval a práve ho preverujeme.",
+      "taken": "Toto miesto už patrí firme na Trientes."
+    },
+    "error": {
+      "unauth": "Najprv sa prihláste.",
+      "not_found": "Nemôžete konať v mene tejto firmy.",
+      "invalid_point": "Toto miesto nemožno prevziať.",
+      "point_gone": "Miesto už nie je v našich mapových údajoch.",
+      "already_claimed": "Toto miesto už patrí podniku na Trientes.",
+      "claim_pending": "Niekto si už toto miesto nárokoval a preverujeme to.",
+      "too_many_pending": "Máte príliš veľa miest čakajúcich na preskúmanie.",
+      "type_invalid": "Nepodporovaný typ miesta.",
+      "name_required": "Miesto nemá názov — pridajte ho vo svojom profile.",
+      "coords_invalid": "Miesto nemá použiteľné súradnice.",
+      "website_invalid": "Adresa webu nie je platná.",
+      "logo_invalid": "Adresa loga nie je platná."
+    }
   },
   "rating": {
     "heading": "Hodnotenie",
@@ -1099,6 +1134,9 @@
     "layer_financial": "Finančné",
     "layer_fintech": "Fintech",
     "coinHighlight": "{symbol} prijímané",
+    "brand_own": "Na Trientes",
+    "brand_institution": "V našom adresári",
+    "brand_osm": "Z BTC Map",
     "distance": "Vzdialenosť",
     "duration": "Čas",
     "clearRoute": "Vymazať trasu",
@@ -1385,7 +1423,7 @@
       "you": "(vy)",
       "role": {
         "OWNER": "Vlastník",
-        "EDITOR": "Editor",
+        "EDITOR": "Redaktor",
         "VIEWER": "Pozorovateľ"
       },
       "errors": {
@@ -2470,7 +2508,7 @@
       "role": {
         "OWNER": "Vlastník",
         "ADMIN": "Správca",
-        "EDITOR": "Editor",
+        "EDITOR": "Redaktor",
         "VIEWER": "Pozorovateľ"
       },
       "section": {

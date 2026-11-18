@@ -182,6 +182,41 @@
     "exchangesEmpty": "Noch keine favorisierten Börsen",
     "browseExchanges": "Börsen ansehen"
   },
+  "claimPoint": {
+    "kicker": "Ort beanspruchen",
+    "title": "Ist dies Ihr Unternehmen?",
+    "subtitle": "Beanspruchen Sie diesen Ort und bestimmen Sie, was Besucher sehen: Ihr Logo, Fotos, Öffnungszeiten und die Coins, die Sie akzeptieren.",
+    "unnamed": "Unbenannter Ort",
+    "sourceNote": "Der Ort wird so angezeigt, wie er in BTC Map, einem OpenStreetMap-Ableger, erfasst ist. Sobald Ihr Anspruch genehmigt ist, ersetzt Ihre eigene Karte den Eintrag auf der Karte.",
+    "showOnMap": "Auf der Karte anzeigen",
+    "signInFirst": "Melden Sie sich an, um diesen Ort zu beanspruchen.",
+    "signIn": "Anmelden",
+    "register": "Konto erstellen",
+    "noCompany": "Registrieren Sie zuerst Ihr Unternehmen — ein Unternehmen kann mehrere Orte verwalten.",
+    "createCompany": "Unternehmen registrieren",
+    "companyLabel": "Unternehmen",
+    "submit": "Das ist mein Unternehmen",
+    "sending": "Senden…",
+    "afterNote": "Ein Prüfer kontrolliert jede Beanspruchung von Hand. Bis dahin bleibt der Ort auf der Karte so, wie er bei BTC Map ist.",
+    "state": {
+      "pending": "Jemand hat diesen Ort bereits beansprucht und wir prüfen dies gerade.",
+      "taken": "Dieser Ort gehört bereits zu einem Unternehmen auf Trientes."
+    },
+    "error": {
+      "unauth": "Bitte zuerst anmelden.",
+      "not_found": "Du kannst nicht für dieses Unternehmen handeln.",
+      "invalid_point": "Dieser Ort kann nicht beansprucht werden.",
+      "point_gone": "Dieser Ort ist nicht mehr in unseren Kartendaten.",
+      "already_claimed": "Dieser Ort gehört bereits zu einem Unternehmen auf Trientes.",
+      "claim_pending": "Jemand hat diesen Ort bereits beansprucht und wir prüfen dies gerade.",
+      "too_many_pending": "Du hast zu viele Orte, die auf eine Prüfung warten.",
+      "type_invalid": "Nicht unterstützter Ortstyp.",
+      "name_required": "Der Ort hat keinen Namen — füge in deinem Bereich einen hinzu.",
+      "coords_invalid": "Der Ort hat keine verwendbaren Koordinaten.",
+      "website_invalid": "Die Website-Adresse ist nicht gültig.",
+      "logo_invalid": "Die Logo-Adresse ist nicht gültig."
+    }
+  },
   "rating": {
     "heading": "Bewertung",
     "none": "Noch keine Bewertungen",
@@ -1099,6 +1134,9 @@
     "layer_financial": "Finanzdienste",
     "layer_fintech": "Fintech",
     "coinHighlight": "{symbol} akzeptiert",
+    "brand_own": "Auf Trientes",
+    "brand_institution": "In unserem Verzeichnis",
+    "brand_osm": "Von BTC Map",
     "distance": "Entfernung",
     "duration": "Dauer",
     "clearRoute": "Route löschen",

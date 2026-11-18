@@ -182,6 +182,41 @@
     "exchangesEmpty": "Henüz favori borsa yok",
     "browseExchanges": "Borsalara göz at"
   },
+  "claimPoint": {
+    "kicker": "Bir yeri talep et",
+    "title": "Bu işletme sizin mi?",
+    "subtitle": "Bu yeri talep edin ve ziyaretçilerin ne göreceğine siz karar verin: logonuz, fotoğraflarınız, çalışma saatleriniz ve kabul ettiğiniz coinler.",
+    "unnamed": "İsimsiz yer",
+    "sourceNote": "Bu yer, OpenStreetMap türevi olan BTC Map'te haritalandığı hâliyle gösterilir. Talebiniz onaylandığında, haritadaki kaydı kendi kartınızla değiştirilecektir.",
+    "showOnMap": "Haritada göster",
+    "signInFirst": "Bu yeri talep etmek için oturum açın.",
+    "signIn": "Oturum aç",
+    "register": "Hesap oluştur",
+    "noCompany": "Önce işletmenizi kaydedin — bir işletme birden çok yeri barındırabilir.",
+    "createCompany": "Bir işletme kaydet",
+    "companyLabel": "İşletme",
+    "submit": "Bu benim işletmem",
+    "sending": "Gönderiliyor…",
+    "afterNote": "Her talep bir görevli tarafından elle incelenir. O zamana kadar yer, BTC Map'teki hâliyle haritada kalır.",
+    "state": {
+      "pending": "Birisi bu yeri zaten talep etti ve biz de inceliyoruz.",
+      "taken": "Bu yer zaten Trientes'te bir işletmeye ait."
+    },
+    "error": {
+      "unauth": "Önce oturum açın.",
+      "not_found": "Bu işletme adına işlem yapamazsınız.",
+      "invalid_point": "Bu yer talep edilemez.",
+      "point_gone": "Bu yer artık harita verilerimizde yok.",
+      "already_claimed": "Bu yer zaten Trientes'te bir işletmeye ait.",
+      "claim_pending": "Birisi bu yeri zaten talep etti ve biz de inceliyoruz.",
+      "too_many_pending": "İncelenmeyi bekleyen çok fazla yeriniz var.",
+      "type_invalid": "Desteklenmeyen yer türü.",
+      "name_required": "Bu yerin adı yok — panelinizde bir ad ekleyin.",
+      "coords_invalid": "Bu yerin kullanılabilir koordinatları yok",
+      "website_invalid": "Web sitesi adresi geçerli değil",
+      "logo_invalid": "Logo adresi geçerli değil"
+    }
+  },
   "rating": {
     "heading": "Puanlama",
     "none": "Henüz puanlama yok",
@@ -1099,6 +1134,9 @@
     "layer_financial": "Finans",
     "layer_fintech": "Fintek",
     "coinHighlight": "{symbol} kabul ediliyor",
+    "brand_own": "Trientes'te",
+    "brand_institution": "Rehberimizde",
+    "brand_osm": "BTC Map'tan",
     "distance": "Mesafe",
     "duration": "Süre",
     "clearRoute": "Yolu temizle",

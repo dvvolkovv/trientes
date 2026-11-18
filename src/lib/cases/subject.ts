@@ -66,6 +66,18 @@ export async function loadSubject(
             label: "coords",
             value: p.lat !== null && p.lon !== null ? `${p.lat}, ${p.lon}` : "—",
           },
+          // Заявка на чужую точку зеркала BTC Map — это другой разговор, чем
+          // новая точка: проверяющий должен видеть, что место на карте уже
+          // есть и предприятие забирает именно его.
+          ...(p.osmId
+            ? [
+                { label: "claims BTC Map point", value: p.osmId },
+                {
+                  label: "openstreetmap",
+                  value: `https://www.openstreetmap.org/${p.osmId.replace(":", "/")}`,
+                },
+              ]
+            : []),
         ],
       };
     }

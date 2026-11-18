@@ -182,6 +182,41 @@
     "exchangesEmpty": "Još nema omiljenih burzi",
     "browseExchanges": "Pregledajte burze"
   },
+  "claimPoint": {
+    "kicker": "Preuzeti lokaciju",
+    "title": "Je li ovo vaša tvrtka?",
+    "subtitle": "Preuzmite ovu lokaciju i vi odlučujete što posjetitelji vide: vaš logotip, fotografije, radno vrijeme i kovanice koje prihvaćate.",
+    "unnamed": "Neimenovana lokacija",
+    "sourceNote": "Lokacija je prikazana onako kako je ucrtana u BTC Map, izvedenicu OpenStreetMapa. Kada se vaš zahtjev odobri, vaša kartica zamijenit će je na karti.",
+    "showOnMap": "Prikažite na karti",
+    "signInFirst": "Prijavite se da biste preuzeli ovu lokaciju.",
+    "signIn": "Prijava",
+    "register": "Stvoriti račun",
+    "noCompany": "Najprije registrirajte svoju tvrtku — jedna tvrtka može imati više lokacija.",
+    "createCompany": "Registrirati tvrtku",
+    "companyLabel": "Tvrtka",
+    "submit": "Ovo je moja tvrtka",
+    "sending": "Slanje…",
+    "afterNote": "Pregledavatelj ručno provjerava svaki zahtjev. Do tada lokacija ostaje na karti onako kako je prikazana u BTC Map.",
+    "state": {
+      "pending": "Netko je već preuzeo ovu lokaciju i trenutačno je pregledavamo.",
+      "taken": "Ova lokacija već pripada tvrtki na Trientesu."
+    },
+    "error": {
+      "unauth": "Najprije se prijavite.",
+      "not_found": "Ne možete djelovati u ime ove tvrtke.",
+      "invalid_point": "Ovu lokaciju nije moguće preuzeti.",
+      "point_gone": "Lokacija više nije u našim podacima karte.",
+      "already_claimed": "Ova lokacija već pripada tvrtki na Trientesu.",
+      "claim_pending": "Netko je već preuzeo ovu lokaciju i trenutačno je pregledavamo.",
+      "too_many_pending": "Imate previše lokacija na čekanju za pregled.",
+      "type_invalid": "Nepodržana vrsta lokacije.",
+      "name_required": "Lokacija nema naziv — dodajte ga u svom profilu.",
+      "coords_invalid": "Lokacija nema upotrebljive koordinate.",
+      "website_invalid": "Adresa web-stranice nije valjana.",
+      "logo_invalid": "Adresa logotipa nije valjana."
+    }
+  },
   "rating": {
     "heading": "Ocjena",
     "none": "Još nema ocjena",
@@ -1099,6 +1134,9 @@
     "layer_financial": "Financijske",
     "layer_fintech": "Fintech",
     "coinHighlight": "{symbol} prihvaćen",
+    "brand_own": "Na Trientes",
+    "brand_institution": "U našem imeniku",
+    "brand_osm": "S BTC Map",
     "distance": "Udaljenost",
     "duration": "Vrijeme",
     "clearRoute": "Očistite rutu",

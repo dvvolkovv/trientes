@@ -676,6 +676,11 @@ model CompanyPoint {
   // строки "card:<id>" внутри acceptedCoinIds: те тихо сломали бы любой
   // существующий acceptedCoinIds.includes(coin.id).
   acceptedCardIds String[]
+  // Точка зеркала BTC Map, которую предприятие забрало себе («это моё
+  // предприятие»). Строка вида "node:123" — тот же ключ, что у `OsmCryptoPoi.id`.
+  // Пока заявка не одобрена, на карте стоит чужая точка; после одобрения фид
+  // прячет зеркальную, иначе одно заведение показывалось бы двумя булавками.
+  osmId           String?
   logoUrl         String?
   photos          Json? // [{ url, label? }], max 5
   openingHours    String?
@@ -701,6 +706,7 @@ model CompanyPoint {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([osmId])
   @@index([status])
   @@index([companyId])
   @@index([lat, lon])

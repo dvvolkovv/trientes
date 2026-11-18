@@ -182,6 +182,41 @@
     "exchangesEmpty": "Aún no hay exchanges favoritos",
     "browseExchanges": "Ver exchanges"
   },
+  "claimPoint": {
+    "kicker": "Reclama un lugar",
+    "title": "¿Es este tu negocio?",
+    "subtitle": "Reclama este lugar y tú decides lo que ven los visitantes: tu logotipo, fotos, horarios y las monedas que aceptas.",
+    "unnamed": "Lugar sin nombre",
+    "sourceNote": "El lugar se muestra tal como está mapeado en BTC Map, un derivado de OpenStreetMap. Una vez se apruebe tu solicitud, tu propia ficha lo sustituirá en el mapa.",
+    "showOnMap": "Mostrar en el mapa",
+    "signInFirst": "Inicia sesión para reclamar este lugar.",
+    "signIn": "Iniciar sesión",
+    "register": "Crear cuenta",
+    "noCompany": "Registra primero tu negocio — un negocio puede administrar varios lugares.",
+    "createCompany": "Registrar un negocio",
+    "companyLabel": "Negocio",
+    "submit": "Este es mi negocio",
+    "sending": "Enviando…",
+    "afterNote": "Una persona revisa cada solicitud manualmente. Hasta entonces, el lugar permanecerá en el mapa tal como aparece en BTC Map.",
+    "state": {
+      "pending": "Alguien ya reclamó este lugar y lo estamos revisando.",
+      "taken": "Este lugar ya pertenece a un negocio en Trientes."
+    },
+    "error": {
+      "unauth": "Inicia sesión primero.",
+      "not_found": "No puedes actuar en nombre de este negocio.",
+      "invalid_point": "Este lugar no se puede reclamar.",
+      "point_gone": "Este lugar ya no está en nuestros datos del mapa.",
+      "already_claimed": "Este lugar ya pertenece a un negocio en Trientes.",
+      "claim_pending": "Alguien ya ha reclamado este lugar y lo estamos revisando.",
+      "too_many_pending": "Tienes demasiados lugares en espera de revisión.",
+      "type_invalid": "Tipo de lugar no admitido.",
+      "name_required": "El lugar no tiene nombre — añade uno en tu panel.",
+      "coords_invalid": "El lugar no tiene coordenadas utilizables.",
+      "website_invalid": "La dirección del sitio web no es válida.",
+      "logo_invalid": "La dirección del logotipo no es válida."
+    }
+  },
   "rating": {
     "heading": "Valoración",
     "none": "Aún no hay valoraciones",
@@ -1099,6 +1134,9 @@
     "layer_financial": "Servicios financieros",
     "layer_fintech": "Fintech",
     "coinHighlight": "{symbol} aceptado",
+    "brand_own": "En Trientes",
+    "brand_institution": "En nuestro directorio",
+    "brand_osm": "De BTC Map",
     "distance": "Distancia",
     "duration": "Tiempo",
     "clearRoute": "Borrar la ruta",

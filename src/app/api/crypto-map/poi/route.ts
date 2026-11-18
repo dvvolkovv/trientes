@@ -7,7 +7,8 @@ import {
   type Poi,
 } from "@/lib/crypto-map";
 import { fetchOsmPoisInBbox } from "@/lib/osm-poi-store";
-import { fetchApprovedPointsInBbox } from "@/lib/company-points";
+import { fetchApprovedPointsInBbox, fetchClaimedOsmKeysInBbox } from "@/lib/company-points";
+import { poiIdToOsmKey } from "@/lib/osm-key";
 import { fetchApprovedFintechHqInBbox } from "@/lib/fintech-pois";
 
 export const dynamic = "force-dynamic";
@@ -38,6 +39,21 @@ export async function GET(req: Request) {
     osm = await fetchOsmPoisInBbox(bbox, coinTags);
   } catch {
     // DB hiccup — still merge the company and fintech layers below.
+  }
+
+  // Точку, которую заведение забрало себе («это моё предприятие»), зеркало
+  // показывать перестаёт: одно заведение — одна булавка. Сбой этого чтения
+  // карту не роняет, но тогда на ней на время появится дубль.
+  try {
+    const claimed = await fetchClaimedOsmKeysInBbox(bbox);
+    if (claimed.size > 0) {
+      osm = osm.filter((p) => {
+        const key = poiIdToOsmKey(p.id);
+        return !key || !claimed.has(key);
+      });
+    }
+  } catch {
+    // Читаем дальше: дубль на карте лучше пустой карты.
   }
 
   let company: Poi[] = [];

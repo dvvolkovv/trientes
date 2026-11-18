@@ -182,6 +182,41 @@
     "exchangesEmpty": "아직 즐겨찾는 거래소가 없습니다",
     "browseExchanges": "거래소 보기"
   },
+  "claimPoint": {
+    "kicker": "장소 소유하기",
+    "title": "이곳이 당신의 사업장인가요?",
+    "subtitle": "이 장소를 소유하면 방문자가 보게 될 내용을 직접 결정할 수 있습니다: 로고, 사진, 영업시간과 받는 코인",
+    "unnamed": "이름 없는 장소",
+    "sourceNote": "이 장소는 OpenStreetMap 파생 프로젝트인 BTC Map에 등록된 그대로 표시됩니다. 소유권이 승인되면 지도의 해당 항목은 당신의 카드로 대체됩니다.",
+    "showOnMap": "지도에서 보기",
+    "signInFirst": "이 장소를 소유하려면 로그인하세요.",
+    "signIn": "로그인",
+    "register": "계정 만들기",
+    "noCompany": "먼저 사업체를 등록하세요 — 하나의 사업체에 여러 장소를 연결할 수 있습니다.",
+    "createCompany": "사업체 등록",
+    "companyLabel": "사업체",
+    "submit": "내 사업체입니다",
+    "sending": "전송 중…",
+    "afterNote": "검토자가 모든 소유 요청을 수작업으로 확인합니다. 그때까지는 BTC Map에 있는 그대로 지도에 표시됩니다.",
+    "state": {
+      "pending": "누군가 이미 이 장소를 소유 신청했으며 현재 검토 중입니다.",
+      "taken": "이 장소는 이미 Trientes의 한 사업체에 속해 있습니다."
+    },
+    "error": {
+      "unauth": "먼저 로그인하세요.",
+      "not_found": "이 사업체에 대해 작업할 권한이 없습니다.",
+      "invalid_point": "이 장소는 소유 신청을 할 수 없습니다.",
+      "point_gone": "이 장소는 더 이상 우리의 지도 데이터에 없습니다.",
+      "already_claimed": "이 장소는 이미 Trientes의 한 사업체에 속해 있습니다.",
+      "claim_pending": "누군가 이미 이 장소를 소유 신청했으며 현재 검토 중입니다.",
+      "too_many_pending": "검토 대기 중인 장소가 너무 많습니다.",
+      "type_invalid": "지원되지 않는 장소 유형입니다.",
+      "name_required": "이 장소에는 이름이 없습니다 — 내 페이지에서 추가하세요.",
+      "coords_invalid": "이 장소에는 사용 가능한 좌표가 없습니다.",
+      "website_invalid": "웹사이트 주소가 유효하지 않습니다.",
+      "logo_invalid": "로고 주소가 유효하지 않습니다."
+    }
+  },
   "rating": {
     "heading": "평점",
     "none": "아직 평점 없음",
@@ -1099,6 +1134,9 @@
     "layer_financial": "금융",
     "layer_fintech": "핀테크",
     "coinHighlight": "{symbol} 결제 가능",
+    "brand_own": "Trientes에 있음",
+    "brand_institution": "우리 디렉터리에 있음",
+    "brand_osm": "BTC Map에서",
     "distance": "거리",
     "duration": "소요 시간",
     "clearRoute": "경로 지우기",
