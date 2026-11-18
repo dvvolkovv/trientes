@@ -83,6 +83,23 @@ describe("insertPinned", () => {
     expect(out.map((r) => r.id)).toEqual(list.map((r) => r.id));
   });
 
+  it("нумерует список подряд: разрежённый рейтинг на экране не виден", () => {
+    const out = insertPinned(list, [pinned("taler", 8)]);
+    expect(out.map((r) => r.listNo)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    // Восьмая строка — Taler, и номер у неё есть, хотя места в рейтинге нет.
+    expect(out[7].id).toBe("taler");
+    expect(out[7].listNo).toBe(8);
+    expect(out[7].unranked).toBe(true);
+    // Настоящий рейтинг строки рыночного фида номером списка не затирается.
+    expect(out.find((r) => r.id === "zec")!.rank).toBe(11);
+    expect(out.find((r) => r.id === "zec")!.listNo).toBe(9);
+  });
+
+  it("нумерует и без закреплённых строк", () => {
+    const out = insertPinned(list, []);
+    expect(out.map((r) => r.listNo)).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
+  });
+
   it("пустой список отдаёт одну строку", () => {
     const out = insertPinned([], [pinned("taler", 8)]);
     expect(out.map((r) => r.id)).toEqual(["taler"]);

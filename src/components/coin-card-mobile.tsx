@@ -79,14 +79,15 @@ export function CoinCardMobile({
       </div>
       <div className="flex justify-between items-end gap-3">
         <div className="flex flex-col gap-1 min-w-0">
-          {/* У монеты без капитализации места в рейтинге нет; вместо номера
-              стоит оборот в монетах — то же, что в таблице на компьютере. */}
+          {/* Номер строки списка (`listNo`) — такой же, как в таблице на
+              компьютере, и он есть у всех строк. У монеты без капитализации
+              рядом стоит оборот в монетах; тикер не пишем — решение
+              владельца. */}
           <span className="num text-[11px] text-muted truncate">
-            {row.unranked
-              ? row.circulatingSupply !== null
-                ? `${formatCountCompact(row.circulatingSupply)} ${row.symbol}`
-                : "—"
-              : `#${row.rank}`}
+            {`#${row.listNo ?? row.rank}`}
+            {row.unranked && row.circulatingSupply !== null
+              ? ` · ${formatCountCompact(row.circulatingSupply)}`
+              : ""}
           </span>
           <span className={`num text-[12px] ${pctClass(row.pctChange24h)}`}>
             {formatPercent(row.pctChange24h)}

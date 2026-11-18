@@ -37,10 +37,11 @@ export function CoinRow({
 
   return (
     <tr className="border-b border-hairline hover:bg-bg-tint transition-colors">
-      {/* Места в рейтинге у монеты без капитализации нет: рейтинг и есть
-          порядок по капитализации. */}
+      {/* Номер строки в списке (`listNo`), а не место в мировом рейтинге:
+          числа идут подряд, и у закреплённой монеты номер тоже есть. Там, где
+          номера списка нет (закладки), по-прежнему виден `rank`. */}
       <td className="num px-5 py-5 text-[13px] text-muted">
-        {row.unranked ? "—" : row.rank}
+        {row.listNo ?? (row.unranked ? "—" : row.rank)}
       </td>
       <td className="px-5 py-5">
         <Link
@@ -99,7 +100,9 @@ export function CoinRow({
             : `$${(row.marketCapUsd / 1e9).toFixed(2)}B`
           : row.circulatingSupply !== null
             ? <span title={circulatingLabel}>
-                {formatCountCompact(row.circulatingSupply)} {row.symbol}
+                {/* Тикер в столбце не пишем — решение владельца: столбец
+                    числовой, а что это за число, говорит подсказка. */}
+                {formatCountCompact(row.circulatingSupply)}
               </span>
             : "—"}
       </td>
