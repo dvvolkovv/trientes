@@ -715,7 +715,12 @@
           "case_closed": "Dosyaya zaten karar verildi",
           "not_found": "Dosya yok",
           "failed": "Kaydedilemedi — tekrar deneyin",
-          "not_pending": "Nesne artık bir karar beklemiyor"
+          "not_pending": "Nesne artık bir karar beklemiyor",
+          "too_incomplete": "Başvurunun kendisi yayımlamak için yeterince tamamlanmış değil — başvuranın doldurması gereken alanlar hâlâ var.",
+          "logo_required": "Başvurunun henüz logosu yok ve logosuz bir kart yayımlanmaz.",
+          "slug_taken": "Başka bir kart zaten bu adresi kullanıyor.",
+          "already_verified": "Bu zaten doğrulandı.",
+          "invalid": "Başvuru mevcut hâliyle yayımlanamaz."
         },
         "pointReport": {
           "approve": "Raporları onayla — yeri haritadan kaldır",
@@ -738,6 +743,10 @@
       "access": {
         "readOnly": "Bu kuyruğa salt okunur erişim: vakayı okuyabilirsiniz, ancak değiştiremezsiniz.",
         "conflict": "Bu konu ile bağlantılısınız — bu vakayı başka biri ele almalı."
+      },
+      "handledUnits": {
+        "h": "sa",
+        "m": "dk"
       }
     },
     "bell": {

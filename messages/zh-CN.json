@@ -715,7 +715,12 @@
           "case_closed": "此案件已作出决定",
           "not_found": "此案件已不存在",
           "failed": "无法保存—请重试",
-          "not_pending": "该对象不再等待决定"
+          "not_pending": "该对象不再等待决定",
+          "too_incomplete": "该申请本身不够完整，无法发布 — 申请人仍有字段需要填写。",
+          "logo_required": "该申请尚无徽标，没有徽标无法发布卡片。",
+          "slug_taken": "该地址已被另一张卡片占用。",
+          "already_verified": "该项已通过验证。",
+          "invalid": "该申请按现状无法发布。"
         },
         "pointReport": {
           "approve": "确认举报——将该地点从地图移除",
@@ -738,6 +743,10 @@
       "access": {
         "readOnly": "对此队列的只读访问：你可以查看案件，但不能更改。",
         "conflict": "你与该主体存在关联——此案件需由他人处理。"
+      },
+      "handledUnits": {
+        "h": "小时",
+        "m": "分钟"
       }
     },
     "bell": {

@@ -715,7 +715,12 @@
           "case_closed": "Der Fall ist bereits entschieden",
           "not_found": "Der Fall ist nicht mehr vorhanden",
           "failed": "Konnte nicht speichern — versuchen Sie es erneut",
-          "not_pending": "Das Objekt wartet nicht mehr auf eine Entscheidung"
+          "not_pending": "Das Objekt wartet nicht mehr auf eine Entscheidung",
+          "too_incomplete": "Der Antrag ist selbst nicht vollständig genug zur Veröffentlichung — der Antragsteller muss noch Felder ausfüllen.",
+          "logo_required": "Der Antrag hat noch kein Logo, und ohne Logo wird keine Karte veröffentlicht.",
+          "slug_taken": "Eine andere Karte verwendet diese Adresse bereits.",
+          "already_verified": "Das wurde bereits verifiziert.",
+          "invalid": "Der Antrag kann in diesem Zustand nicht veröffentlicht werden."
         },
         "pointReport": {
           "approve": "Meldungen bestätigen — Ort von der Karte entfernen",
@@ -738,6 +743,10 @@
       "access": {
         "readOnly": "Nur-Lesezugriff auf diese Warteschlange: Sie können den Fall lesen, aber nicht ändern.",
         "conflict": "Sie sind mit dieser Person verbunden — jemand anderes muss diesen Fall bearbeiten."
+      },
+      "handledUnits": {
+        "h": "h",
+        "m": "Min"
       }
     },
     "bell": {

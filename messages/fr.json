@@ -715,7 +715,12 @@
           "case_closed": "Le dossier est déjà décidé",
           "not_found": "Le dossier n'existe plus",
           "failed": "Impossible d'enregistrer — réessayez",
-          "not_pending": "L'objet n'attend plus de décision"
+          "not_pending": "L'objet n'attend plus de décision",
+          "too_incomplete": "La candidature n’est pas suffisamment complète pour être publiée — le demandeur doit encore remplir des champs.",
+          "logo_required": "La candidature n’a pas encore de logo, et une fiche n’est pas publiée sans logo.",
+          "slug_taken": "Une autre fiche utilise déjà cette adresse.",
+          "already_verified": "Cela a déjà été vérifié.",
+          "invalid": "La demande ne peut pas être publiée en l'état."
         },
         "pointReport": {
           "approve": "Confirmer les signalements — retirer le lieu de la carte",
@@ -738,6 +743,10 @@
       "access": {
         "readOnly": "Accès en lecture seule à cette file : vous pouvez lire le dossier, mais pas le modifier.",
         "conflict": "Vous êtes lié à ce sujet — quelqu'un d'autre doit traiter ce dossier."
+      },
+      "handledUnits": {
+        "h": "h",
+        "m": "min"
       }
     },
     "bell": {

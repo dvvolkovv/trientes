@@ -80,7 +80,7 @@ export default async function AdminQueuePage({
                       : t("queues.left", { d, h })
                 }
                 assigneeLabel={c.assignee ? (c.assignee.name ?? c.assignee.username) : null}
-                handledLabel={formatHandled(c.handledSeconds)}
+                handledLabel={formatHandled(c.handledSeconds, { h: t("case.handledUnits.h"), m: t("case.handledUnits.m") })}
                 unreadLabel={
                   unreadByCase.get(c.id)
                     ? t("queues.unread", { count: unreadByCase.get(c.id)! })

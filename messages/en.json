@@ -715,7 +715,12 @@
           "case_closed": "The case is already decided",
           "not_found": "The case is gone",
           "failed": "Could not save — try again",
-          "not_pending": "The object is no longer waiting for a decision"
+          "not_pending": "The object is no longer waiting for a decision",
+          "too_incomplete": "The application itself is not complete enough to publish — the applicant still has fields to fill in.",
+          "logo_required": "The application has no logo yet, and a card is not published without one.",
+          "slug_taken": "Another card already holds that address.",
+          "already_verified": "That has already been verified.",
+          "invalid": "The application cannot be published as it stands."
         },
         "pointReport": {
           "approve": "Confirm reports — take the place off the map",
@@ -738,6 +743,10 @@
       "access": {
         "readOnly": "Read-only access to this queue: you can read the case, but not change it.",
         "conflict": "You are connected to this subject — someone else has to handle this case."
+      },
+      "handledUnits": {
+        "h": "h",
+        "m": "min"
       }
     },
     "bell": {

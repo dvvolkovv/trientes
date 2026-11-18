@@ -715,7 +715,12 @@
           "case_closed": "Slučaj je već odlučen",
           "not_found": "Slučaj je nestao",
           "failed": "Spremanje nije uspjelo — pokušajte ponovno",
-          "not_pending": "Objekt više ne čeka na odluku"
+          "not_pending": "Objekt više ne čeka na odluku",
+          "too_incomplete": "Sama prijava nije dovoljno potpuna za objavu — podnositelj još ima polja koja treba ispuniti.",
+          "logo_required": "Prijava još nema logotip, a kartica se ne objavljuje bez njega.",
+          "slug_taken": "Druga kartica već ima tu adresu.",
+          "already_verified": "To je već verificirano.",
+          "invalid": "Prijavu nije moguće objaviti u ovom obliku."
         },
         "pointReport": {
           "approve": "Potvrditi prijave — ukloniti lokaciju s karte",
@@ -738,6 +743,10 @@
       "access": {
         "readOnly": "Pristup samo za čitanje ovom redu: možete čitati predmet, ali ga ne možete mijenjati",
         "conflict": "U vezi ste s ovim subjektom — netko drugi mora rješavati ovaj predmet"
+      },
+      "handledUnits": {
+        "h": "h",
+        "m": "min"
       }
     },
     "bell": {

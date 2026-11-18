@@ -223,15 +223,17 @@ export default async function AdminStaffPage({
     levels: presetGrants(p.key) as MatrixValue,
   }));
 
+  const handledUnits = { h: t("case.handledUnits.h"), m: t("case.handledUnits.m") };
+
   const cols = (s: (typeof stats)[number]) => [
     { label: t("staff.cols.decided"), value: String(s.decided) },
     { label: t("staff.cols.approved"), value: String(s.approved) },
     { label: t("staff.cols.rejected"), value: String(s.rejected) },
     { label: t("staff.cols.rejectShare"), value: s.decided > 0 ? pct(s.rejectShare) : "—" },
-    { label: t("staff.cols.avgHandled"), value: s.decided > 0 ? formatHandled(s.avgHandledSeconds) : "—" },
+    { label: t("staff.cols.avgHandled"), value: s.decided > 0 ? formatHandled(s.avgHandledSeconds, handledUnits) : "—" },
     {
       label: t("staff.cols.avgFirstResponse"),
-      value: s.avgFirstResponseSeconds === null ? "—" : formatHandled(s.avgFirstResponseSeconds),
+      value: s.avgFirstResponseSeconds === null ? "—" : formatHandled(s.avgFirstResponseSeconds, handledUnits),
     },
     { label: t("staff.cols.overdue"), value: String(s.overdue) },
     { label: t("staff.cols.secondSignatures"), value: String(s.secondSignatures) },

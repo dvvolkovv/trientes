@@ -715,7 +715,12 @@
           "case_closed": "El caso ya está decidido",
           "not_found": "El caso ya no existe",
           "failed": "No se pudo guardar — inténtalo de nuevo",
-          "not_pending": "El objeto ya no está esperando una decisión"
+          "not_pending": "El objeto ya no está esperando una decisión",
+          "too_incomplete": "La solicitud en sí no está lo suficientemente completa para publicarse — el solicitante aún tiene campos por completar.",
+          "logo_required": "La solicitud aún no tiene logotipo, y no se publica una tarjeta sin uno.",
+          "slug_taken": "Otra tarjeta ya tiene esa dirección.",
+          "already_verified": "Eso ya ha sido verificado.",
+          "invalid": "La solicitud no puede publicarse tal como está."
         },
         "pointReport": {
           "approve": "Confirmar reportes — retirar el lugar del mapa",
@@ -738,6 +743,10 @@
       "access": {
         "readOnly": "Acceso de solo lectura a esta cola: puedes leer el caso, pero no cambiarlo.",
         "conflict": "Estás vinculado a este sujeto — otra persona debe gestionar este caso."
+      },
+      "handledUnits": {
+        "h": "h",
+        "m": "min"
       }
     },
     "bell": {

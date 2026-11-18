@@ -34,11 +34,17 @@ export function totalSeconds(entries: { seconds: number }[]): number {
   return entries.reduce((sum, e) => sum + e.seconds, 0);
 }
 
-/** «2 ч 14 мин», «9 мин», «—». Для показа в деле и в списке. */
-export function formatHandled(seconds: number): string {
+/**
+ * Единицы приходят строками перевода, а не вшиты: живой прогон 18.11 застал на
+ * английском экране «1 мин» — число меряется одинаково, а подписывается на
+ * языке читателя.
+ */
+export type HandledUnits = { h: string; m: string };
+
+export function formatHandled(seconds: number, units: HandledUnits): string {
   if (seconds <= 0) return "—";
   const h = Math.floor(seconds / 3600);
   const m = Math.round((seconds % 3600) / 60);
-  if (h === 0) return `${m} мин`;
-  return `${h} ч ${m} мин`;
+  if (h === 0) return `${m} ${units.m}`;
+  return `${h} ${units.h} ${m} ${units.m}`;
 }

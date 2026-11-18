@@ -715,7 +715,12 @@
           "case_closed": "O caso já está decidido",
           "not_found": "O caso não existe mais",
           "failed": "Não foi possível salvar — tente novamente",
-          "not_pending": "O objeto não está mais aguardando uma decisão"
+          "not_pending": "O objeto não está mais aguardando uma decisão",
+          "too_incomplete": "A própria inscrição não está completa o suficiente para ser publicada — o solicitante ainda tem campos a preencher.",
+          "logo_required": "A inscrição ainda não tem logotipo, e um cartão não é publicado sem um.",
+          "slug_taken": "Outro cartão já possui esse endereço.",
+          "already_verified": "Isso já foi verificado.",
+          "invalid": "A inscrição não pode ser publicada como está."
         },
         "pointReport": {
           "approve": "Confirmar relatos — remover o local do mapa",
@@ -738,6 +743,10 @@
       "access": {
         "readOnly": "Acesso somente leitura a esta fila: você pode ler o caso, mas não alterá-lo.",
         "conflict": "Você está relacionado a este sujeito — outra pessoa precisa lidar com este caso."
+      },
+      "handledUnits": {
+        "h": "h",
+        "m": "min"
       }
     },
     "bell": {

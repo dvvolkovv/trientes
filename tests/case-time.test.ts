@@ -46,14 +46,14 @@ describe("порог простоя", () => {
 
 describe("подпись времени", () => {
   it("минуты без часов", () => {
-    expect(formatHandled(540)).toBe("9 мин");
+    expect(formatHandled(540, { h: "ч", m: "мин" })).toBe("9 мин");
   });
 
   it("часы и минуты", () => {
-    expect(formatHandled(8040)).toBe("2 ч 14 мин");
+    expect(formatHandled(8040, { h: "ч", m: "мин" })).toBe("2 ч 14 мин");
   });
 
   it("ноль — прочерк", () => {
-    expect(formatHandled(0)).toBe("—");
+    expect(formatHandled(0, { h: "h", m: "min" })).toBe("—");
   });
 });

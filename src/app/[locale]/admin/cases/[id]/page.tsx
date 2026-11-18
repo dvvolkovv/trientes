@@ -277,7 +277,7 @@ export default async function AdminCasePage({
           <div className="mb-1 text-[9.5px] uppercase tracking-[0.18em] text-muted">
             {t("case.handled")}
           </div>
-          <div className="text-[13px] font-semibold">{formatHandled(c.handledSeconds)}</div>
+          <div className="text-[13px] font-semibold">{formatHandled(c.handledSeconds, { h: t("case.handledUnits.h"), m: t("case.handledUnits.m") })}</div>
         </div>
       </div>
 
@@ -523,9 +523,18 @@ export default async function AdminCasePage({
                   case_closed: t("case.decision.errors.case_closed"),
                   not_found: t("case.decision.errors.not_found"),
                   not_pending: t("case.decision.errors.not_pending"),
+                  // Отказ самого объекта: заявка не готова к публикации. Живой
+                  // прогон 18.11 показал его как «не удалось сохранить» —
+                  // проверяющий нажимал кнопку снова, а дело было в заявке.
+                  too_incomplete: t("case.decision.errors.too_incomplete"),
+                  logo_required: t("case.decision.errors.logo_required"),
+                  slug_taken: t("case.decision.errors.slug_taken"),
+                  already_verified: t("case.decision.errors.already_verified"),
+                  invalid: t("case.decision.errors.invalid"),
                   failed: t("case.decision.errors.failed"),
                   unauth: t("case.decision.errors.failed"),
                   no_access: t("case.decision.errors.failed"),
+                  forbidden: t("case.decision.errors.failed"),
                 },
               }}
             />
