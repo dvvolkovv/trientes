@@ -67,7 +67,7 @@ PM2 (`trientes-web`, `trientes-worker`).
 - Modify: `prisma/schema.prisma`
 - Create: четыре файла миграций (пути выше)
 
-- [ ] **Step 1: значения `Role`**
+- [x] **Step 1: значения `Role`**
 
 `prisma/migrations/20261118120000_staff_roles/migration.sql`:
 
@@ -76,7 +76,7 @@ ALTER TYPE "Role" ADD VALUE IF NOT EXISTS 'STAFF';
 ALTER TYPE "Role" ADD VALUE IF NOT EXISTS 'OWNER';
 ```
 
-- [ ] **Step 2: перевести владельцев**
+- [x] **Step 2: перевести владельцев**
 
 `prisma/migrations/20261118121000_staff_roles_backfill/migration.sql`:
 
@@ -86,7 +86,7 @@ ALTER TYPE "Role" ADD VALUE IF NOT EXISTS 'OWNER';
 UPDATE "User" SET "role" = 'OWNER' WHERE "role" = 'ADMIN';
 ```
 
-- [ ] **Step 3: таблицы доступа**
+- [x] **Step 3: таблицы доступа**
 
 `prisma/migrations/20261118130000_staff_access/migration.sql`:
 
@@ -145,7 +145,7 @@ CREATE UNIQUE INDEX "StaffInvite_tokenHash_key" ON "StaffInvite"("tokenHash");
 CREATE INDEX "StaffInvite_invitedById_idx" ON "StaffInvite"("invitedById");
 ```
 
-- [ ] **Step 4: звонок и коды аудита**
+- [x] **Step 4: звонок и коды аудита**
 
 `prisma/migrations/20261118140000_staff_access_enums/migration.sql`:
 
@@ -159,18 +159,18 @@ ALTER TYPE "AdminAction" ADD VALUE IF NOT EXISTS 'STAFF_ACCESS_RESTORED';
 ALTER TYPE "AdminAction" ADD VALUE IF NOT EXISTS 'ACCESS_REVIEW_PASSED';
 ```
 
-- [ ] **Step 5: `prisma/schema.prisma`** — добавить `STAFF`, `OWNER` в `Role` (значение `ADMIN`
+- [x] **Step 5: `prisma/schema.prisma`** — добавить `STAFF`, `OWNER` в `Role` (значение `ADMIN`
       оставить: оно читается политикой как владелец), `enum StaffLevel`, три модели из спеки,
       обратные связи в `User` (`staffMember StaffMember?`, `staffGrants StaffGrant[]`),
       новые значения в `AdminNotificationKind` и `AdminAction`, `"StaffInvite"` в типах цели
       аудита (`src/lib/admin/audit.ts:14`).
 
-- [ ] **Step 6: применить и сгенерировать**
+- [x] **Step 6: применить и сгенерировать**
 
 Run: `npx prisma migrate deploy && npx prisma generate`
 Expected: `4 migrations applied`, затем `Generated Prisma Client`.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add prisma/schema.prisma prisma/migrations src/lib/admin/audit.ts
@@ -185,7 +185,7 @@ git commit -m "feat(db): права сотрудника по очередям, 
 - Create: `src/lib/authz/policy.ts`
 - Test: `tests/authz-policy.test.ts`
 
-- [ ] **Step 1: тест**
+- [x] **Step 1: тест**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -253,12 +253,12 @@ describe("уровни", () => {
 });
 ```
 
-- [ ] **Step 2: запустить — должен упасть**
+- [x] **Step 2: запустить — должен упасть**
 
 Run: `npx vitest run tests/authz-policy.test.ts`
 Expected: FAIL, `Cannot find module '@/lib/authz/policy'`.
 
-- [ ] **Step 3: реализация**
+- [x] **Step 3: реализация**
 
 ```ts
 /**
@@ -329,12 +329,12 @@ export function canOwnerOnly(access: ViewerAccess): boolean {
 }
 ```
 
-- [ ] **Step 4: запустить — должен пройти**
+- [x] **Step 4: запустить — должен пройти**
 
 Run: `npx vitest run tests/authz-policy.test.ts`
 Expected: PASS (8 тестов).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/lib/authz/policy.ts tests/authz-policy.test.ts
@@ -353,7 +353,7 @@ git commit -m "feat(authz): политика прав по очередям"
 действие админки с его требованием, и тест ловит и забытый экран, и требование без экрана
 (тот же приём, что у листов проверок в AP).
 
-- [ ] **Step 1: тест**
+- [x] **Step 1: тест**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -394,12 +394,12 @@ describe("карта прав", () => {
 });
 ```
 
-- [ ] **Step 2: запустить — упадёт**
+- [x] **Step 2: запустить — упадёт**
 
 Run: `npx vitest run tests/authz-map.test.ts`
 Expected: FAIL, `Cannot find module '@/lib/authz/map'`.
 
-- [ ] **Step 3: реализация**
+- [x] **Step 3: реализация**
 
 ```ts
 /**
@@ -496,12 +496,12 @@ export function requirementFor(key: string): Requirement | null {
 }
 ```
 
-- [ ] **Step 4: запустить — пройдёт**
+- [x] **Step 4: запустить — пройдёт**
 
 Run: `npx vitest run tests/authz-map.test.ts`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/lib/authz/map.ts tests/authz-map.test.ts
@@ -516,7 +516,7 @@ git commit -m "feat(authz): карта требований по экранам 
 - Create: `src/lib/authz/guard.ts`
 - Modify: `src/lib/is-admin.ts`
 
-- [ ] **Step 1: реализация охранника**
+- [x] **Step 1: реализация охранника**
 
 ```ts
 /**
@@ -609,7 +609,7 @@ export async function myLevel(queue: string): Promise<StaffLevel | null> {
 }
 ```
 
-- [ ] **Step 2: `src/lib/is-admin.ts` — одна дверь**
+- [x] **Step 2: `src/lib/is-admin.ts` — одна дверь**
 
 `checkAdmin()` оставить именем (58 вызовов), но свести к `requireStaff()`, а причину
 `not_admin` переименовать в `no_access`. Сигнатура результата сохраняется
@@ -636,13 +636,13 @@ export async function requireAdmin(redirectLocale: string): Promise<string> {
 }
 ```
 
-- [ ] **Step 3: сборка типов**
+- [x] **Step 3: сборка типов**
 
 Run: `npx tsc --noEmit`
 Expected: ошибки только там, где код сравнивал `reason === "not_admin"` — поправить на
 `"no_access"` (`grep -rn "not_admin" src/`).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/lib/authz/guard.ts src/lib/is-admin.ts src
@@ -662,7 +662,7 @@ git commit -m "feat(authz): охранник доступа над базой"
 спрашиваем право; дело, которого нет, отвечает `not_found`, а не `no_access` — иначе по
 коду отказа можно было бы перебирать существующие дела.
 
-- [ ] **Step 1:** `cases.ts` — `claimCase`, `releaseCase`, `adjustCaseTime` → `HANDLE`;
+- [x] **Step 1:** `cases.ts` — `claimCase`, `releaseCase`, `adjustCaseTime` → `HANDLE`;
       `caseHeartbeat` → `HANDLE` (сеанс времени не должен открываться у того, кто только смотрит).
 
 ```ts
@@ -675,20 +675,20 @@ const guard = await requireSubject(c.subjectType, "HANDLE");
 if (!guard.ok) return { ok: false as const, reason: guard.reason };
 ```
 
-- [ ] **Step 2:** `case-review.ts` — `setCaseCheck`, `setDocumentVerdict`, `markReviewed` →
+- [x] **Step 2:** `case-review.ts` — `setCaseCheck`, `setDocumentVerdict`, `markReviewed` →
       `HANDLE`; `decideCase` → `APPROVE`. У `setDocumentVerdict` тип дела читается через
       `caseDocument.case.subjectType`.
 
-- [ ] **Step 3:** `case-messages.ts` — отправка сообщения сотрудником → `HANDLE`;
+- [x] **Step 3:** `case-messages.ts` — отправка сообщения сотрудником → `HANDLE`;
       отметка прочтения — `requireStaff()` (чтение не меняет дела). Действия заявителя
       (`src/app/actions/case-messages.ts`, половина кабинета) не трогать.
 
-- [ ] **Step 4: проверка**
+- [x] **Step 4: проверка**
 
 Run: `npx vitest run && npx tsc --noEmit`
 Expected: PASS, без ошибок типов.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/app/actions/cases.ts src/app/actions/case-review.ts src/app/actions/case-messages.ts
@@ -704,7 +704,7 @@ git commit -m "feat(authz): уровень доступа в действиях 
   `admin-points.ts`, `admin-exchange.ts`, `admin-fintech.ts`, `admin-requests.ts`, `kyb.ts`,
   `point-supervision.ts`, `company-supervision.ts`, `admin-users.ts`, `admin-coins.ts`
 
-- [ ] **Step 1:** в каждом файле заменить `checkAdmin()` на охранник из карты:
+- [x] **Step 1:** в каждом файле заменить `checkAdmin()` на охранник из карты:
 
 | Файл | Требование |
 |---|---|
@@ -722,19 +722,19 @@ git commit -m "feat(authz): уровень доступа в действиях 
 Действия заявителя в `kyb.ts` (подача документов владельцем компании) охранником админки не
 накрываются — у них свой гейт `canEditCompany`.
 
-- [ ] **Step 2:** `src/lib/admin/set-user-role.ts` — значения роли `"USER" | "STAFF" | "OWNER"`,
+- [x] **Step 2:** `src/lib/admin/set-user-role.ts` — значения роли `"USER" | "STAFF" | "OWNER"`,
       код отказа `last_owner`, счёт владельцев `role: { in: ["OWNER", "ADMIN"] }`.
 
-- [ ] **Step 3:** `src/auth.ts` — в обоих местах повышения по `ADMIN_WHITELIST` писать
+- [x] **Step 3:** `src/auth.ts` — в обоих местах повышения по `ADMIN_WHITELIST` писать
       `role: "OWNER"`.
 
-- [ ] **Step 4: проверка**
+- [x] **Step 4: проверка**
 
 Run: `npx vitest run && npx tsc --noEmit`
 Expected: PASS. Затем `grep -rn "checkAdmin(" src/app/actions/` — остаться должны только
 `cases.ts` (биение) и чтение звонков.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/app/actions src/lib/admin/set-user-role.ts src/auth.ts tests
@@ -752,33 +752,33 @@ git commit -m "feat(authz): уровень доступа в действиях 
   `business/page.tsx`, `companies/[id]/page.tsx`, `exchanges/page.tsx`, `fintech/page.tsx`,
   `src/components/admin/nav.tsx`
 
-- [ ] **Step 1:** `layout.tsx` — остаётся `checkAdmin()`: калитка в админку общая.
+- [x] **Step 1:** `layout.tsx` — остаётся `checkAdmin()`: калитка в админку общая.
 
-- [ ] **Step 2:** `/admin/queues` — плитки фильтруются `visibleQueues(access, now)`; дела
+- [x] **Step 2:** `/admin/queues` — плитки фильтруются `visibleQueues(access, now)`; дела
       считаются только по видимым очередям (иначе число непрочитанного выдавало бы чужую
       очередь). Пустой список — строка «доступ не выдан» (`admin.errors.no_access`).
 
-- [ ] **Step 3:** `/admin/queues/[queue]` и `/admin/cases/[id]` — `requireQueue(queue, "VIEW")`
+- [x] **Step 3:** `/admin/queues/[queue]` и `/admin/cases/[id]` — `requireQueue(queue, "VIEW")`
       и `requireSubject(c.subjectType, "VIEW")`; отказ → `notFound()`. Кнопки раскрытия дела
       рисуются по `myLevel`: «взять», «написать», «проверил» — от `HANDLE`, «Одобрить» и
       «Отклонить» — от `APPROVE`. Серверная проверка остаётся: скрытая кнопка не защита.
 
-- [ ] **Step 4:** страницы владельца (`staff`, `users`, `audit`, `analytics`, `coins`) —
+- [x] **Step 4:** страницы владельца (`staff`, `users`, `audit`, `analytics`, `coins`) —
       `requireOwner()`, отказ → `redirect(/{locale}/admin/queues)`.
 
-- [ ] **Step 5:** старые экраны истории (`requests`, `coin-cards`, `business`, `exchanges`,
+- [x] **Step 5:** старые экраны истории (`requests`, `coin-cards`, `business`, `exchanges`,
       `fintech`, `companies/[id]`) — `requireQueue(<своя очередь>, "VIEW")`, отказ → `notFound()`.
 
-- [ ] **Step 6:** `nav.tsx` — закладка рисуется, если доступна: `queues` и `notifications`
+- [x] **Step 6:** `nav.tsx` — закладка рисуется, если доступна: `queues` и `notifications`
       всем сотрудникам, `staff`/`users`/`audit`/`analytics`/`coins` — владельцу, остальные —
       по `VIEW` своей очереди.
 
-- [ ] **Step 7: проверка**
+- [x] **Step 7: проверка**
 
 Run: `npm run build`
 Expected: сборка без ошибок.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add src/app/[locale]/admin src/components/admin/nav.tsx
@@ -793,7 +793,7 @@ git commit -m "feat(admin): экраны и закладки по выданно
 - Modify: `src/lib/cases/approval.ts`, `src/app/actions/case-review.ts`
 - Test: `tests/case-approval.test.ts` (дополнить)
 
-- [ ] **Step 1: тест**
+- [x] **Step 1: тест**
 
 ```ts
 import { countApprovers, type ApproverRow } from "@/lib/cases/approval";
@@ -837,9 +837,9 @@ it("владелец считается второй подписью без г�
 });
 ```
 
-- [ ] **Step 2: запустить — упадёт** (`countApprovers` не существует).
+- [x] **Step 2: запустить — упадёт** (`countApprovers` не существует).
 
-- [ ] **Step 3: реализация в `approval.ts`**
+- [x] **Step 3: реализация в `approval.ts`**
 
 ```ts
 export type ApproverRow = {
@@ -872,16 +872,16 @@ export function countApprovers(rows: ApproverRow[], reviewedById: string, now: D
 }
 ```
 
-- [ ] **Step 4:** в `decideCase` заменить запрос `otherApproversCount` на сбор `ApproverRow[]`:
+- [x] **Step 4:** в `decideCase` заменить запрос `otherApproversCount` на сбор `ApproverRow[]`:
       владельцы (`role in [OWNER, ADMIN]`, `staffMember.revokedAt = null`) + держатели
       `StaffGrant` с `queue in SUBJECT_QUEUES[c.subjectType]`, и посчитать `countApprovers`.
 
-- [ ] **Step 5: запустить**
+- [x] **Step 5: запустить**
 
 Run: `npx vitest run tests/case-approval.test.ts`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/lib/cases/approval.ts src/app/actions/case-review.ts tests/case-approval.test.ts
@@ -897,7 +897,7 @@ git commit -m "feat(cases): вторая подпись считается по 
 - Test: `tests/authz-conflict.test.ts`
 - Modify: `src/app/actions/cases.ts`, `case-review.ts`, `case-messages.ts`
 
-- [ ] **Step 1: тест** (чистая часть — решение по найденным связям)
+- [x] **Step 1: тест** (чистая часть — решение по найденным связям)
 
 ```ts
 import { conflictReason, type ConflictFacts } from "@/lib/authz/conflict";
@@ -913,9 +913,9 @@ it("участник карточки", () =>
   expect(conflictReason({ ...none, isCardMember: true })).toBe("conflict_of_interest"));
 ```
 
-- [ ] **Step 2: запустить — упадёт.**
+- [x] **Step 2: запустить — упадёт.**
 
-- [ ] **Step 3: реализация**
+- [x] **Step 3: реализация**
 
 ```ts
 /**
@@ -985,16 +985,16 @@ export async function caseConflict(input: {
 }
 ```
 
-- [ ] **Step 4:** вставить проверку после охранника уровня в `claimCase`, `adjustCaseTime`,
+- [x] **Step 4:** вставить проверку после охранника уровня в `claimCase`, `adjustCaseTime`,
       `sendStaffMessage`, `setCaseCheck`, `setDocumentVerdict`, `markReviewed`, `decideCase`.
       `releaseCase` и биение не проверяются: отпустить дело и закрыть сеанс можно всегда.
 
-- [ ] **Step 5: запустить**
+- [x] **Step 5: запустить**
 
 Run: `npx vitest run tests/authz-conflict.test.ts && npx tsc --noEmit`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/lib/authz/conflict.ts tests/authz-conflict.test.ts src/app/actions
@@ -1009,7 +1009,7 @@ git commit -m "feat(authz): запрет вести дело объекта, с 
 - Create: `src/lib/staff/presets.ts`, `src/lib/staff/invites.ts`
 - Test: `tests/staff-presets.test.ts`, `tests/staff-invites.test.ts`
 
-- [ ] **Step 1: тесты**
+- [x] **Step 1: тесты**
 
 ```ts
 // tests/staff-presets.test.ts
@@ -1049,9 +1049,9 @@ it("пакет прав отвергает чужую очередь и чужо
 });
 ```
 
-- [ ] **Step 2: запустить — упадут.**
+- [x] **Step 2: запустить — упадут.**
 
-- [ ] **Step 3: реализация `presets.ts`**
+- [x] **Step 3: реализация `presets.ts`**
 
 ```ts
 /**
@@ -1092,7 +1092,7 @@ export function presetGrants(key: PresetKey): Record<QueueKey, StaffLevel> {
 }
 ```
 
-- [ ] **Step 4: реализация `invites.ts`**
+- [x] **Step 4: реализация `invites.ts`**
 
 ```ts
 /**
@@ -1156,12 +1156,12 @@ export function accessReviewAt(from: Date): Date {
 }
 ```
 
-- [ ] **Step 5: запустить**
+- [x] **Step 5: запустить**
 
 Run: `npx vitest run tests/staff-presets.test.ts tests/staff-invites.test.ts`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/lib/staff tests/staff-presets.test.ts tests/staff-invites.test.ts
@@ -1175,7 +1175,7 @@ git commit -m "feat(staff): готовые должности и пакет пр
 **Files:**
 - Create: `src/app/actions/staff-access.ts`, `src/app/actions/staff-invites.ts`
 
-- [ ] **Step 1: `staff-access.ts`** — все пять действий под `requireOwner()`:
+- [x] **Step 1: `staff-access.ts`** — все пять действий под `requireOwner()`:
 
 | Действие | Что делает |
 |---|---|
@@ -1188,7 +1188,7 @@ git commit -m "feat(staff): готовые должности и пакет пр
 Отказы: `self_grant` (цель — сам владелец), `owner_target` (цель — владелец),
 `not_found`, `reason_too_short`, `empty` (пакет прав пуст).
 
-- [ ] **Step 2: `staff-invites.ts`:**
+- [x] **Step 2: `staff-invites.ts`:**
 
 | Действие | Что делает |
 |---|---|
@@ -1196,12 +1196,12 @@ git commit -m "feat(staff): готовые должности и пакет пр
 | `revokeStaffInvite({ inviteId })` | `revokedAt`; аудит `STAFF_INVITE_REVOKED` |
 | `acceptStaffInvite({ token })` | вошедший пользователь: `updateMany` по `tokenHash` + `acceptedAt: null` (гонку двух переходов снимает условное обновление — приём из приглашений предприятия) → `StaffMember` + гранты → `Role: USER → STAFF` (владельца не понижаем) → `notifyUser` владельцу |
 
-- [ ] **Step 3: проверка**
+- [x] **Step 3: проверка**
 
 Run: `npx tsc --noEmit`
 Expected: без ошибок.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/app/actions/staff-access.ts src/app/actions/staff-invites.ts
@@ -1217,27 +1217,27 @@ git commit -m "feat(staff): выдача, отзыв и пересмотр до�
   `src/app/[locale]/staff-invite/[token]/page.tsx`
 - Modify: `src/app/[locale]/admin/staff/page.tsx`
 
-- [ ] **Step 1:** раздел «Сотрудники и доступ» на `/admin/staff` (только владелец): строка
+- [x] **Step 1:** раздел «Сотрудники и доступ» на `/admin/staff` (только владелец): строка
       на сотрудника — имя и логин, должность, восемь очередей с уровнями, срок пересмотра,
       кнопки «Пересмотр пройден», «Отозвать» / «Вернуть». Правила вида — из
       `src/lib/admin-ui.ts` (`ADMIN_COLUMN`, кнопка 48 px во всю ширину).
 
-- [ ] **Step 2:** форма приглашения: матрица 8 × 4 (радиокнопки `нет / смотрит / ведёт /
+- [x] **Step 2:** форма приглашения: матрица 8 × 4 (радиокнопки `нет / смотрит / ведёт /
       утверждает`), четыре кнопки готовых должностей, поля должности и обязанностей,
       необязательная дата окончания, выбор «ссылкой» или «по логину». Готовая ссылка
       показывается один раз с кнопкой копирования (повторно её не узнать — в базе хэш).
 
-- [ ] **Step 3:** `/{locale}/staff-invite/[token]` — приём: гостю ссылки на
+- [x] **Step 3:** `/{locale}/staff-invite/[token]` — приём: гостю ссылки на
       `/login?next=…` и `/register?next=…` (через `safeNext`), вошедшему — что именно ему
       выдают (должность, обязанности, таблица очередей) и кнопка «Принять». Недействительная
       ссылка объясняет причину: `expired` / `accepted` / `revoked`.
 
-- [ ] **Step 4: проверка**
+- [x] **Step 4: проверка**
 
 Run: `npm run build`
 Expected: сборка без ошибок.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/components/admin/staff-access.tsx src/components/admin/staff-invite-form.tsx \
@@ -1254,7 +1254,7 @@ git commit -m "feat(admin): экран доступа сотрудников и 
 - Test: `tests/staff-access-review.test.ts`
 - Modify: `worker/index.ts`
 
-- [ ] **Step 1: тест чистой части**
+- [x] **Step 1: тест чистой части**
 
 ```ts
 import { reviewDue } from "@/lib/staff-access-sweep";
@@ -1272,22 +1272,22 @@ it("отозванный доступ пересматривать нечего"
 });
 ```
 
-- [ ] **Step 2: запустить — упадёт.**
+- [x] **Step 2: запустить — упадёт.**
 
-- [ ] **Step 3: реализация** — `reviewDue()` плюс `runStaffAccessReviewSweep()`: находит
+- [x] **Step 3: реализация** — `reviewDue()` плюс `runStaffAccessReviewSweep()`: находит
       сотрудников с подошедшим сроком, звонит **владельцам** (`ACCESS_REVIEW_DUE`), один
       повод на сотрудника не плодится (непрочитанный звонок обновляется — приём из AO),
       пишет итог в лог (`{ due, notified }`).
 
-- [ ] **Step 4:** `worker/index.ts` — `cron.schedule("45 5 * * *", () => void runStaffAccessReviewJob())`,
+- [x] **Step 4:** `worker/index.ts` — `cron.schedule("45 5 * * *", () => void runStaffAccessReviewJob())`,
       сразу после пересмотра предприятий (`35 5 * * *`), с комментарием почему рядом.
 
-- [ ] **Step 5: запустить**
+- [x] **Step 5: запустить**
 
 Run: `npx vitest run tests/staff-access-review.test.ts`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/lib/staff-access-sweep.ts tests/staff-access-review.test.ts worker/index.ts
@@ -1301,23 +1301,23 @@ git commit -m "feat(worker): суточный прогон пересмотра 
 **Files:**
 - Modify: `messages/en.json`, затем все локали прогоном
 
-- [ ] **Step 1:** добавить в `messages/en.json`: `admin.tabs.staff` (есть), `admin.staff.access.*`,
+- [x] **Step 1:** добавить в `messages/en.json`: `admin.tabs.staff` (есть), `admin.staff.access.*`,
       `admin.staff.invite.*`, `admin.staff.presets.*`, `admin.staff.levels.*`,
       `staffInvite.*`, `notify.staffAccess.*`, и коды отказов в `admin.errors.*`:
       `no_access`, `conflict_of_interest`, `self_grant`, `owner_target`, `last_owner`,
       `empty`, `reason_too_short`.
 
-- [ ] **Step 2: перевести**
+- [x] **Step 2: перевести**
 
 Run: `npm run i18n`
 Expected: `11 locales`, изменённые файлы под `messages/`.
 
-- [ ] **Step 3: граница**
+- [x] **Step 3: граница**
 
 Run: `npx vitest run tests/messages-parity.test.ts`
 Expected: PASS.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add messages
@@ -1328,12 +1328,12 @@ git commit -m "feat(i18n): строки доступа сотрудников и
 
 ### Task 15: Выпуск и живой прогон
 
-- [ ] **Step 1: всё целиком**
+- [x] **Step 1: всё целиком**
 
 Run: `npx vitest run && npm run build`
 Expected: все тесты PASS, сборка без ошибок.
 
-- [ ] **Step 2: выпуск**
+- [x] **Step 2: выпуск**
 
 ```bash
 pm2 restart trientes-web trientes-worker && pm2 save
@@ -1342,14 +1342,14 @@ pm2 restart trientes-web trientes-worker && pm2 save
 (`trientes-worker` обязателен: прогон и `src/lib/authz/*` он импортирует, а `tsx` пришпиливает
 источник на старте.)
 
-- [ ] **Step 3: живой прогон** — восемь шагов из раздела «Живой прогон» спеки, временный
+- [x] **Step 3: живой прогон** — восемь шагов из раздела «Живой прогон» спеки, временный
       сотрудник и приглашение убираются за собой.
 
-- [ ] **Step 4: документы**
+- [x] **Step 4: документы**
 
 `CLAUDE.md` — раздел «Слайс AS» в линии Phase 11: решения, а не перечень файлов.
 
-- [ ] **Step 5: Commit и push**
+- [x] **Step 5: Commit и push**
 
 ```bash
 git add CLAUDE.md
