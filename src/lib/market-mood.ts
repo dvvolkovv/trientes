@@ -5,13 +5,13 @@
 // noise; a row falls back to its 24h change when the 7d field is missing. If no usable
 // price data is cached, the Fear & Greed index decides (>= 50 = bull). Last resort: bull.
 
-import type { MarketRow } from "@/lib/coingecko";
+import type { ListRow } from "@/lib/pinned-coins";
 import type { FearGreed } from "@/lib/fear-greed";
 
 export type MarketMood = "bull" | "bear";
 
 export function computeMarketMood(
-  rows: MarketRow[],
+  rows: readonly ListRow[],
   fearGreed: FearGreed | null,
 ): MarketMood {
   let weightedSum = 0;
@@ -20,8 +20,9 @@ export function computeMarketMood(
   for (const row of rows) {
     const pct = row.pctChange7d ?? row.pctChange24h;
     if (pct === null || !Number.isFinite(pct)) continue;
+    // Монета без капитализации в настроении рынка не участвует: вес взять нечем.
     const cap = row.marketCapUsd;
-    if (!Number.isFinite(cap) || cap <= 0) continue;
+    if (cap === null || !Number.isFinite(cap) || cap <= 0) continue;
     weightedSum += pct * cap;
     capSum += cap;
   }

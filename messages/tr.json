@@ -99,6 +99,7 @@
     "change24h": "24s %",
     "change7d": "7g %",
     "marketCap": "Piyasa Değ.",
+    "circulating": "Dolaşımdaki arz",
     "volume24h": "Hacim (24s)",
     "loadingFallback": "Veriler yükleniyor…",
     "globalMarketCap": "Toplam piyasa değeri",

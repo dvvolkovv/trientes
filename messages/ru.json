@@ -99,6 +99,7 @@
     "change24h": "24ч %",
     "change7d": "7д %",
     "marketCap": "Капитализация",
+    "circulating": "Циркулирующее предложение",
     "volume24h": "Объём (24ч)",
     "loadingFallback": "Загружаем данные…",
     "globalMarketCap": "Общая капитализация",

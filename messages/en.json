@@ -99,6 +99,7 @@
     "change24h": "24h %",
     "change7d": "7d %",
     "marketCap": "Market cap",
+    "circulating": "Circulating supply",
     "volume24h": "Volume (24h)",
     "loadingFallback": "Fetching latest data…",
     "globalMarketCap": "Total market cap",

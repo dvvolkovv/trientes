@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import type { MarketRow, ExchangeRates } from "@/lib/coingecko";
+import type { ExchangeRates } from "@/lib/coingecko";
+import type { ListRow } from "@/lib/pinned-coins";
 import { CoinRow } from "./coin-row";
 import { CoinCardMobile } from "./coin-card-mobile";
 import type { Currency } from "@/lib/currency";
@@ -10,11 +11,12 @@ import type { Currency } from "@/lib/currency";
 type SortKey = "rank" | "price" | "pctChange24h" | "marketCap" | "volume";
 type SortDir = "asc" | "desc";
 
-const SORT_FIELDS: Record<SortKey, (r: MarketRow) => number> = {
+const SORT_FIELDS: Record<SortKey, (r: ListRow) => number> = {
   rank: (r) => r.rank,
   price: (r) => r.priceUsd,
   pctChange24h: (r) => r.pctChange24h ?? 0,
-  marketCap: (r) => r.marketCapUsd,
+  // Монета без капитализации в сортировке по ней встаёт в хвост, а не врёт нулём рядом с живыми.
+  marketCap: (r) => r.marketCapUsd ?? 0,
   volume: (r) => r.volume24hUsd,
 };
 
@@ -55,7 +57,7 @@ export function CoinListClient({
   watchedSet,
   isAuthed,
 }: {
-  rows: MarketRow[];
+  rows: ListRow[];
   currency: Currency;
   rates: ExchangeRates | null;
   locale: string;
@@ -157,6 +159,7 @@ export function CoinListClient({
                 locale={locale}
                 isWatched={watchedSet.has(row.id)}
                 isAuthed={isAuthed}
+                circulatingLabel={t("circulating")}
               />
             ))}
           </tbody>

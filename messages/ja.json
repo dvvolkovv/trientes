@@ -99,6 +99,7 @@
     "change24h": "24時間 %",
     "change7d": "7日 %",
     "marketCap": "時価総額",
+    "circulating": "循環供給量",
     "volume24h": "出来高 (24h)",
     "loadingFallback": "データを取得中…",
     "globalMarketCap": "総時価総額",

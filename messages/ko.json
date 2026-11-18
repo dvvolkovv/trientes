@@ -99,6 +99,7 @@
     "change24h": "24시간 %",
     "change7d": "7일 %",
     "marketCap": "시가총액",
+    "circulating": "유통 공급량",
     "volume24h": "거래량 (24h)",
     "loadingFallback": "데이터 가져오는 중…",
     "globalMarketCap": "전체 시가총액",

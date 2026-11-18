@@ -99,6 +99,7 @@
     "change24h": "24 h %",
     "change7d": "7 d %",
     "marketCap": "Tržišna kapitalizacija",
+    "circulating": "Ponuda u optjecaju",
     "volume24h": "Volumen (24h)",
     "loadingFallback": "Dohvaćanje najnovijih podataka…",
     "globalMarketCap": "Ukupna tržišna kapitalizacija",

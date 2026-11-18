@@ -1,6 +1,8 @@
 export const KEYS = {
   topList: "snapshot:list:top100",
   adminAddedList: "snapshot:list:admin",
+  // Строки, закреплённые в основном списке решением владельца (слайс AW).
+  pinnedList: "snapshot:list:pinned",
   exchangesList: "snapshot:exchanges:top100",
   coin: (id: string) => `snapshot:coin:${id}`,
   globalStats: "global:stats",
@@ -21,6 +23,7 @@ export const TTL = {
   exchangeRates: 2400,  // 40 min — rates barely move
   exchanges: 3600,         // 1h — list barely moves in scale
   adminAddedList: 3600,    // 1h
+  pinnedList: 300,         // 5 min — главная пересобирается раз в минуту, числа меняются раз в час
   news: 7200,              // 2h — outlives the 30 min news-sync + worker restarts
   fearGreed: 21600,        // 6h — index updates ~daily; long TTL survives worker restarts
   markets: 86400,          // 24h — quotes are delayed anyway; survives an upstream outage, board shows its own asOf stamp

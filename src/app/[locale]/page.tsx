@@ -16,6 +16,7 @@ import { getCurrency } from "@/lib/get-currency";
 import { readUserWatchedIds, isAuthenticated } from "@/lib/watchlist";
 import { formatCompactInCurrency, formatPriceInCurrency } from "@/lib/currency";
 import { computeMarketMood } from "@/lib/market-mood";
+import { readPinnedCardRows, insertPinned } from "@/lib/pinned-coins";
 
 export const revalidate = 60;
 
@@ -46,7 +47,7 @@ export default async function Home({
   const th = await getTranslations("home");
   const tk = await getTranslations("common");
 
-  const [rows, stats, rates, currency, watchedSet, isAuthed, news, fearGreed, selfListedCount] =
+  const [feedRows, stats, rates, currency, watchedSet, isAuthed, news, fearGreed, selfListedCount, pinned] =
     await Promise.all([
     readTop100(),
     readGlobalStats(),
@@ -57,7 +58,12 @@ export default async function Home({
     readNews(),
     readFearGreed(),
     countSelfListedCards(),
+    readPinnedCardRows(),
   ]);
+
+  // Монеты, закреплённые в списке решением владельца (Taler — восьмая строка):
+  // рыночного фида у них нет, цену и оборот даёт наша же карточка.
+  const rows = insertPinned(feedRows, pinned);
 
   const tlist = await getTranslations("listing");
 

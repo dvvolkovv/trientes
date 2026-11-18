@@ -99,6 +99,7 @@
     "change24h": "24 h %",
     "change7d": "7 d %",
     "marketCap": "Capitalização",
+    "circulating": "Oferta em circulação",
     "volume24h": "Volume (24 h)",
     "loadingFallback": "Carregando dados…",
     "globalMarketCap": "Capitalização total",

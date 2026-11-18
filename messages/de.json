@@ -99,6 +99,7 @@
     "change24h": "24 Std. %",
     "change7d": "7 T. %",
     "marketCap": "Marktkap.",
+    "circulating": "Umlaufmenge",
     "volume24h": "Volumen (24h)",
     "loadingFallback": "Daten werden geladen…",
     "globalMarketCap": "Gesamtmarktkap.",

@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { MarketRow, ExchangeRates } from "@/lib/coingecko";
-import { formatPercent } from "@/lib/format";
+import type { ExchangeRates } from "@/lib/coingecko";
+import type { ListRow } from "@/lib/pinned-coins";
+import { formatPercent, formatCountCompact } from "@/lib/format";
 import { formatPriceInCurrency, type Currency } from "@/lib/currency";
 import { Sparkline } from "./sparkline";
 import { WatchlistButton } from "./watchlist-button";
@@ -19,7 +20,7 @@ export function CoinCardMobile({
   isWatched,
   isAuthed,
 }: {
-  row: MarketRow;
+  row: ListRow;
   currency: Currency;
   rates: ExchangeRates | null;
   locale: string;
@@ -66,18 +67,27 @@ export function CoinCardMobile({
           </span>
         </Link>
         <div className="flex-shrink-0 ml-2">
-          <WatchlistButton
+          {/* Карточной монеты нет в таблице `Coin` — закладке не на что лечь. */}
+          {row.unranked ? null : <WatchlistButton
             coinId={row.id}
             initialWatched={isWatched}
             isAuthed={isAuthed}
             locale={locale}
             size="sm"
-          />
+          />}
         </div>
       </div>
       <div className="flex justify-between items-end gap-3">
         <div className="flex flex-col gap-1 min-w-0">
-          <span className="num text-[11px] text-muted">#{row.rank}</span>
+          {/* У монеты без капитализации места в рейтинге нет; вместо номера
+              стоит оборот в монетах — то же, что в таблице на компьютере. */}
+          <span className="num text-[11px] text-muted truncate">
+            {row.unranked
+              ? row.circulatingSupply !== null
+                ? `${formatCountCompact(row.circulatingSupply)} ${row.symbol}`
+                : "—"
+              : `#${row.rank}`}
+          </span>
           <span className={`num text-[12px] ${pctClass(row.pctChange24h)}`}>
             {formatPercent(row.pctChange24h)}
           </span>

@@ -99,6 +99,7 @@
     "change24h": "24小时 %",
     "change7d": "7天 %",
     "marketCap": "市值",
+    "circulating": "流通量",
     "volume24h": "成交量 (24小时)",
     "loadingFallback": "获取最新数据…",
     "globalMarketCap": "总市值",

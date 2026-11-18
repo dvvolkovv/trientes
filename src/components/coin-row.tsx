@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { MarketRow, ExchangeRates } from "@/lib/coingecko";
-import { formatPercent } from "@/lib/format";
+import type { ExchangeRates } from "@/lib/coingecko";
+import type { ListRow } from "@/lib/pinned-coins";
+import { formatPercent, formatCountCompact } from "@/lib/format";
 import { formatPriceInCurrency, formatCompactInCurrency, type Currency } from "@/lib/currency";
 import { Sparkline } from "./sparkline";
 import { WatchlistButton } from "./watchlist-button";
@@ -18,13 +19,15 @@ export function CoinRow({
   locale,
   isWatched,
   isAuthed,
+  circulatingLabel,
 }: {
-  row: MarketRow;
+  row: ListRow;
   currency: Currency;
   rates: ExchangeRates | null;
   locale: string;
   isWatched: boolean;
   isAuthed: boolean;
+  circulatingLabel: string;
 }) {
   const ratesOrEmpty = rates ?? {};
   const isBtc = row.symbol.toUpperCase() === "BTC";
@@ -34,7 +37,11 @@ export function CoinRow({
 
   return (
     <tr className="border-b border-hairline hover:bg-bg-tint transition-colors">
-      <td className="num px-5 py-5 text-[13px] text-muted">{row.rank}</td>
+      {/* Места в рейтинге у монеты без капитализации нет: рейтинг и есть
+          порядок по капитализации. */}
+      <td className="num px-5 py-5 text-[13px] text-muted">
+        {row.unranked ? "—" : row.rank}
+      </td>
       <td className="px-5 py-5">
         <Link
           href={`/${locale}/coin/${row.id}`}
@@ -84,10 +91,17 @@ export function CoinRow({
       <td className={`num text-right text-[13px] px-5 py-5 ${pctClass(row.pctChange7d)}`}>
         {formatPercent(row.pctChange7d)}
       </td>
+      {/* Вместо капитализации — оборот в монетах, если капитализации нет. */}
       <td className="num text-right text-[13px] px-5 py-5 text-muted">
-        {rates
-          ? formatCompactInCurrency(row.marketCapUsd, currency, ratesOrEmpty)
-          : `$${(row.marketCapUsd / 1e9).toFixed(2)}B`}
+        {row.marketCapUsd !== null
+          ? rates
+            ? formatCompactInCurrency(row.marketCapUsd, currency, ratesOrEmpty)
+            : `$${(row.marketCapUsd / 1e9).toFixed(2)}B`
+          : row.circulatingSupply !== null
+            ? <span title={circulatingLabel}>
+                {formatCountCompact(row.circulatingSupply)} {row.symbol}
+              </span>
+            : "—"}
       </td>
       <td className="num text-right text-[13px] px-5 py-5 text-muted">
         {rates
@@ -98,12 +112,14 @@ export function CoinRow({
         <Sparkline points={row.sparkline7d} />
       </td>
       <td className="px-5 py-5 text-center">
-        <WatchlistButton
+        {/* Закладка — строка со ссылкой на `Coin`; у монеты, которая живёт
+            одной карточкой, такой строки нет, и кнопка обещала бы невозможное. */}
+        {row.unranked ? null : <WatchlistButton
           coinId={row.id}
           initialWatched={isWatched}
           isAuthed={isAuthed}
           locale={locale}
-        />
+        />}
       </td>
     </tr>
   );
