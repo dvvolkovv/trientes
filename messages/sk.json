@@ -3324,7 +3324,10 @@
         "evidence_required": "Prosím, opíšte svoj dôkaz (aspoň 10 znakov).",
         "failed": "Žiadosť sa nepodarilo odoslať."
       }
-    }
+    },
+    "scanLooking": "Hľadáme pas…",
+    "scanNotFound": "Žiadny pas zatiaľ nemá čiarový kód {code}.",
+    "scanCreate": "Vytvoriť"
   },
   "cabinetProducts": {
     "title": "Produkty",
@@ -3432,6 +3435,31 @@
     "info": {
       "gtin_free": "S týmto čiarovým kódom zatiaľ neexistuje žiadny pas — ste prví.",
       "proposed": "Vaša úprava bola odoslaná výrobcovi."
+    }
+  },
+  "scanner": {
+    "open": "Skenovať",
+    "title": "Namierte kameru na čiarový kód",
+    "hint": "Držte kód v ráme. Čítajú sa EAN-13, EAN-8 a UPC.",
+    "cancel": "Zrušiť",
+    "manual": "Vždy môžete číslice zadať ručne.",
+    "error": {
+      "camera_denied": "Kamera je pre tento web zablokovaná — povoľte ju v nastaveniach prehliadača.",
+      "camera_missing": "Na tomto zariadení nie je kamera.",
+      "failed": "Kamera sa nespustila."
+    }
+  },
+  "dictation": {
+    "start": "Diktovať",
+    "stop": "Zastaviť",
+    "listening": "Počúvame…",
+    "hint": "Diktované slová sa pridávajú na koniec poľa — následne ich upravte ručne.",
+    "error": {
+      "not-allowed": "Mikrofón je pre tento web zablokovaný — povoľte ho v nastaveniach prehliadača.",
+      "service-not-allowed": "Mikrofón je pre tento web zablokovaný — povoľte ho v nastaveniach prehliadača.",
+      "audio-capture": "Na tomto zariadení nie je mikrofón.",
+      "language-not-supported": "Tento prehliadač nedokáže rozpoznať reč v jazyku popisu.",
+      "failed": "Diktovanie sa zastavilo."
     }
   }
 }

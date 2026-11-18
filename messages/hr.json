@@ -3324,7 +3324,10 @@
         "evidence_required": "Opišite svoj dokaz (najmanje 10 znakova).",
         "failed": "Nije moguće poslati zahtjev."
       }
-    }
+    },
+    "scanLooking": "Traži se putovnica…",
+    "scanNotFound": "Još nijedna putovnica ne sadrži barkod {code}.",
+    "scanCreate": "Izradite jednu"
   },
   "cabinetProducts": {
     "title": "Proizvodi",
@@ -3432,6 +3435,31 @@
     "info": {
       "gtin_free": "Još nema putovnice s ovim barkodom — vi ste prvi.",
       "proposed": "Vaša je izmjena poslana proizvođaču."
+    }
+  },
+  "scanner": {
+    "open": "Skenirati",
+    "title": "Usmjerite kameru na barkod",
+    "hint": "Držite kod unutar okvira. Čitaju se EAN-13, EAN-8 i UPC.",
+    "cancel": "Odustati",
+    "manual": "Znamenke uvijek možete upisati ručno.",
+    "error": {
+      "camera_denied": "Kamera je blokirana za ovu stranicu — dopustite je u postavkama preglednika.",
+      "camera_missing": "Na ovom uređaju nema kamere.",
+      "failed": "Kamera se nije pokrenula."
+    }
+  },
+  "dictation": {
+    "start": "Diktirati",
+    "stop": "Zaustaviti",
+    "listening": "Slušanje…",
+    "hint": "Diktirane riječi dodaju se na kraj polja — poslije ih uredite ručno.",
+    "error": {
+      "not-allowed": "Mikrofon je blokiran za ovu stranicu — dopustite ga u postavkama preglednika.",
+      "service-not-allowed": "Mikrofon je blokiran za ovu stranicu — dopustite ga u postavkama preglednika.",
+      "audio-capture": "Na ovom uređaju nema mikrofona.",
+      "language-not-supported": "Ovaj preglednik ne može prepoznati govor na jeziku opisa.",
+      "failed": "Diktiranje je zaustavljeno."
     }
   }
 }

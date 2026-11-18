@@ -3324,7 +3324,10 @@
         "evidence_required": "Bitte beschreiben Sie Ihren Nachweis (mindestens 10 Zeichen).",
         "failed": "Konnte den Anspruch nicht senden."
       }
-    }
+    },
+    "scanLooking": "Suche nach dem Pass…",
+    "scanNotFound": "Noch enthält kein Pass den Barcode {code}.",
+    "scanCreate": "Erstellen"
   },
   "cabinetProducts": {
     "title": "Produkte",
@@ -3432,6 +3435,31 @@
     "info": {
       "gtin_free": "Noch kein Pass mit diesem Barcode — Sie sind die/der Erste.",
       "proposed": "Ihre Änderung wurde an den Hersteller gesendet."
+    }
+  },
+  "scanner": {
+    "open": "Scannen",
+    "title": "Richten Sie die Kamera auf den Barcode",
+    "hint": "Halten Sie den Code im Rahmen. EAN-13, EAN-8 und UPC werden gelesen.",
+    "cancel": "Abbrechen",
+    "manual": "Sie können die Ziffern jederzeit manuell eingeben.",
+    "error": {
+      "camera_denied": "Die Kamera ist für diese Website blockiert — erlauben Sie sie in den Browser-Einstellungen.",
+      "camera_missing": "Keine Kamera auf diesem Gerät.",
+      "failed": "Die Kamera wurde nicht gestartet."
+    }
+  },
+  "dictation": {
+    "start": "Diktieren",
+    "stop": "Stopp",
+    "listening": "Zuhören…",
+    "hint": "Diktierte Wörter werden am Ende des Feldes hinzugefügt — bearbeiten Sie sie anschließend manuell.",
+    "error": {
+      "not-allowed": "Das Mikrofon ist für diese Website blockiert — erlauben Sie es in den Browser-Einstellungen.",
+      "service-not-allowed": "Das Mikrofon ist für diese Website blockiert — erlauben Sie es in den Browser-Einstellungen.",
+      "audio-capture": "Kein Mikrofon auf diesem Gerät.",
+      "language-not-supported": "Dieser Browser kann Sprache in der Sprache der Beschreibung nicht erkennen.",
+      "failed": "Diktieren wurde beendet."
     }
   }
 }

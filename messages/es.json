@@ -41,7 +41,7 @@
       "signIn": "Iniciar sesión",
       "newRequest": "Nueva solicitud",
       "history": "Historial",
-      "admin": "Admin",
+      "admin": "Administrador",
       "support": "Soporte"
     },
     "a11y": {
@@ -151,7 +151,7 @@
     "github": "GitHub",
     "twitter": "Twitter",
     "reddit": "Reddit",
-    "simple": "Simple",
+    "simple": "Básico",
     "pro": "Pro",
     "candles": "Velas",
     "line": "Línea",
@@ -3324,7 +3324,10 @@
         "evidence_required": "Por favor, describe tu prueba (al menos 10 caracteres).",
         "failed": "No se pudo enviar la reclamación."
       }
-    }
+    },
+    "scanLooking": "Buscando el pasaporte…",
+    "scanNotFound": "Ningún pasaporte lleva aún el código de barras {code}.",
+    "scanCreate": "Crear uno"
   },
   "cabinetProducts": {
     "title": "Productos",
@@ -3353,8 +3356,8 @@
       "ingredients": "Composición",
       "attributes": "Propiedades",
       "photos": "Fotos",
-      "videoUrl": "Video",
-      "video": "Video",
+      "videoUrl": "Vídeo",
+      "video": "Vídeo",
       "documents": "Documentos"
     },
     "category": {
@@ -3432,6 +3435,31 @@
     "info": {
       "gtin_free": "Aún no hay un pasaporte con este código de barras — eres el primero.",
       "proposed": "Tu edición fue enviada al fabricante."
+    }
+  },
+  "scanner": {
+    "open": "Escanear",
+    "title": "Apunta la cámara al código de barras",
+    "hint": "Mantén el código dentro del marco. Se leen EAN-13, EAN-8 y UPC.",
+    "cancel": "Cancelar",
+    "manual": "Siempre puedes escribir los dígitos a mano.",
+    "error": {
+      "camera_denied": "La cámara está bloqueada para este sitio — permítela en la configuración del navegador.",
+      "camera_missing": "No hay cámara en este dispositivo.",
+      "failed": "La cámara no se inició."
+    }
+  },
+  "dictation": {
+    "start": "Dictar",
+    "stop": "Detener",
+    "listening": "Escuchando…",
+    "hint": "Las palabras dictadas se agregan al final del campo — edítalas a mano después.",
+    "error": {
+      "not-allowed": "El micrófono está bloqueado para este sitio — permítelo en la configuración del navegador.",
+      "service-not-allowed": "El micrófono está bloqueado para este sitio — permítelo en la configuración del navegador.",
+      "audio-capture": "No hay micrófono en este dispositivo.",
+      "language-not-supported": "Este navegador no puede reconocer voz en el idioma de la descripción.",
+      "failed": "El dictado se detuvo."
     }
   }
 }

@@ -4,6 +4,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { SUPPORTED_LOCALES } from "@/lib/locales";
 import { PRODUCT_CATEGORIES } from "@/lib/products/categories";
 import { readCatalog } from "@/lib/products/read";
+import { ProductBarcodeSearch } from "@/components/product/barcode-search";
 
 export const dynamic = "force-dynamic";
 
@@ -80,6 +81,12 @@ export default async function ProductCatalog({
           {t("search")}
         </button>
       </form>
+
+      {/* Камерой — отдельно от формы поиска: снятый код ведёт прямо в паспорт, а не в
+          список совпадений, и перезагружать страницу для этого незачем. */}
+      <div className="mb-8">
+        <ProductBarcodeSearch locale={locale} />
+      </div>
 
       <p className="text-xs text-muted mb-4">{t("found", { count: total })}</p>
 

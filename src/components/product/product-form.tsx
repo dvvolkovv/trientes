@@ -7,6 +7,8 @@ import { createProduct, findProductByGtin, updateProduct } from "@/app/actions/p
 import { PRODUCT_CATEGORIES } from "@/lib/products/categories";
 import { DOCUMENT_KINDS } from "@/lib/products/validate";
 import { MAX_ATTRS, MAX_DOCS, MAX_PHOTOS } from "@/lib/products/rules";
+import { BarcodeScanButton } from "@/components/barcode/scan-button";
+import { DictateButton } from "@/components/product/dictate-button";
 import type { ProductFormValues } from "@/lib/products/form-values";
 
 export type { ProductFormValues };
@@ -67,10 +69,10 @@ export function ProductForm({
   }
 
   /** Сначала штрихкод: нашёлся паспорт — ведём в него, а не заводим второй. */
-  async function checkGtin() {
+  async function checkGtin(raw: string = v.gtin) {
     setError(null);
     setDuplicateSlug(null);
-    const r = await findProductByGtin(v.gtin);
+    const r = await findProductByGtin(raw);
     if (!r.ok) {
       setError(r.reason);
       return;
@@ -112,9 +114,17 @@ export function ProductForm({
 
       <label className="block space-y-1">
         <span className={LABEL}>{t("field.gtin")}</span>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <input value={v.gtin} onChange={(e) => set("gtin", e.target.value)} className={INPUT} inputMode="numeric" />
-          <button type="button" onClick={checkGtin} className="h-12 px-4 rounded-md border border-hairline text-sm whitespace-nowrap">
+          {/* Снятый код сразу идёт в проверку: ради неё его и снимали — ответ «паспорт
+              уже есть» нужен до того, как человек начнёт набирать описание. */}
+          <BarcodeScanButton
+            onCode={(code) => {
+              set("gtin", code);
+              void checkGtin(code);
+            }}
+          />
+          <button type="button" onClick={() => void checkGtin()} className="h-12 px-4 rounded-md border border-hairline text-sm whitespace-nowrap">
             {t("checkGtin")}
           </button>
         </div>
@@ -166,20 +176,35 @@ export function ProductForm({
         </label>
       </div>
 
-      <label className="block space-y-1">
-        <span className={LABEL}>{t("field.description")}</span>
-        <textarea value={v.description} onChange={(e) => set("description", e.target.value)} rows={5} className={INPUT} />
-      </label>
+      <div className="space-y-2">
+        <label className="block space-y-1">
+          <span className={LABEL}>{t("field.description")}</span>
+          <textarea value={v.description} onChange={(e) => set("description", e.target.value)} rows={5} className={INPUT} />
+        </label>
+        {/* Кнопка диктовки — рядом с полем, а не внутри подписи: нажатие на подпись
+            отдаёт палец полю, и микрофон из неё было бы не нажать. */}
+        <DictateButton language={v.language} value={v.description} onChange={(next) => set("description", next)} />
+      </div>
 
-      <label className="block space-y-1">
-        <span className={LABEL}>{t("field.usage")}</span>
-        <textarea value={v.usage} onChange={(e) => set("usage", e.target.value)} rows={3} className={INPUT} />
-      </label>
+      <div className="space-y-2">
+        <label className="block space-y-1">
+          <span className={LABEL}>{t("field.usage")}</span>
+          <textarea value={v.usage} onChange={(e) => set("usage", e.target.value)} rows={3} className={INPUT} />
+        </label>
+        {/* Кнопка диктовки — рядом с полем, а не внутри подписи: нажатие на подпись
+            отдаёт палец полю, и микрофон из неё было бы не нажать. */}
+        <DictateButton language={v.language} value={v.usage} onChange={(next) => set("usage", next)} />
+      </div>
 
-      <label className="block space-y-1">
-        <span className={LABEL}>{t("field.ingredients")}</span>
-        <textarea value={v.ingredients} onChange={(e) => set("ingredients", e.target.value)} rows={3} className={INPUT} />
-      </label>
+      <div className="space-y-2">
+        <label className="block space-y-1">
+          <span className={LABEL}>{t("field.ingredients")}</span>
+          <textarea value={v.ingredients} onChange={(e) => set("ingredients", e.target.value)} rows={3} className={INPUT} />
+        </label>
+        {/* Кнопка диктовки — рядом с полем, а не внутри подписи: нажатие на подпись
+            отдаёт палец полю, и микрофон из неё было бы не нажать. */}
+        <DictateButton language={v.language} value={v.ingredients} onChange={(next) => set("ingredients", next)} />
+      </div>
 
       <section className="space-y-2">
         <span className={LABEL}>{t("field.attributes")}</span>

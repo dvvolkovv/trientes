@@ -3324,7 +3324,10 @@
         "evidence_required": "Descreva sua prova (ao menos 10 caracteres).",
         "failed": "Não foi possível enviar a reivindicação."
       }
-    }
+    },
+    "scanLooking": "Procurando o passaporte…",
+    "scanNotFound": "Nenhum passaporte possui o código de barras {code} ainda.",
+    "scanCreate": "Criar um"
   },
   "cabinetProducts": {
     "title": "Produtos",
@@ -3432,6 +3435,31 @@
     "info": {
       "gtin_free": "Ainda não há passaporte com esse código de barras — você é o primeiro.",
       "proposed": "Sua edição foi enviada ao fabricante."
+    }
+  },
+  "scanner": {
+    "open": "Escanear",
+    "title": "Aponte a câmera para o código de barras",
+    "hint": "Mantenha o código dentro da moldura. EAN-13, EAN-8 e UPC são lidos.",
+    "cancel": "Cancelar",
+    "manual": "Você sempre pode digitar os dígitos manualmente.",
+    "error": {
+      "camera_denied": "A câmera está bloqueada para este site — permita-a nas configurações do navegador.",
+      "camera_missing": "Não há câmera neste dispositivo.",
+      "failed": "A câmera não iniciou."
+    }
+  },
+  "dictation": {
+    "start": "Ditar",
+    "stop": "Parar",
+    "listening": "Ouvindo…",
+    "hint": "As palavras ditadas são adicionadas ao final do campo — edite-as manualmente depois.",
+    "error": {
+      "not-allowed": "O microfone está bloqueado para este site — permita-o nas configurações do navegador.",
+      "service-not-allowed": "O microfone está bloqueado para este site — permita-o nas configurações do navegador.",
+      "audio-capture": "Não há microfone neste dispositivo.",
+      "language-not-supported": "Este navegador não consegue reconhecer a fala no idioma da descrição.",
+      "failed": "Ditado interrompido."
     }
   }
 }

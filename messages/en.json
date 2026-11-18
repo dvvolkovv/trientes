@@ -3324,7 +3324,10 @@
         "evidence_required": "Please describe your proof (at least 10 characters).",
         "failed": "Could not send the claim."
       }
-    }
+    },
+    "scanLooking": "Looking for the passport…",
+    "scanNotFound": "No passport carries the barcode {code} yet.",
+    "scanCreate": "Create one"
   },
   "cabinetProducts": {
     "title": "Products",
@@ -3432,6 +3435,31 @@
     "info": {
       "gtin_free": "No passport with this barcode yet — you are the first.",
       "proposed": "Your edit was sent to the manufacturer."
+    }
+  },
+  "scanner": {
+    "open": "Scan",
+    "title": "Point the camera at the barcode",
+    "hint": "Hold the code inside the frame. EAN-13, EAN-8 and UPC are read.",
+    "cancel": "Cancel",
+    "manual": "You can always type the digits by hand.",
+    "error": {
+      "camera_denied": "The camera is blocked for this site — allow it in the browser settings.",
+      "camera_missing": "No camera on this device.",
+      "failed": "The camera did not start."
+    }
+  },
+  "dictation": {
+    "start": "Dictate",
+    "stop": "Stop",
+    "listening": "Listening…",
+    "hint": "Dictated words are added to the end of the field — edit them by hand afterwards.",
+    "error": {
+      "not-allowed": "The microphone is blocked for this site — allow it in the browser settings.",
+      "service-not-allowed": "The microphone is blocked for this site — allow it in the browser settings.",
+      "audio-capture": "No microphone on this device.",
+      "language-not-supported": "This browser cannot recognise speech in the language of the description.",
+      "failed": "Dictation stopped."
     }
   }
 }

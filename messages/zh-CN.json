@@ -3324,7 +3324,10 @@
         "evidence_required": "请描述你的证明（至少 10 个字符）。",
         "failed": "无法提交认领请求。"
       }
-    }
+    },
+    "scanLooking": "正在查找该护照…",
+    "scanNotFound": "尚无带有条码 {code} 的护照。",
+    "scanCreate": "创建一个"
   },
   "cabinetProducts": {
     "title": "产品",
@@ -3432,6 +3435,31 @@
     "info": {
       "gtin_free": "该条形码尚无护照——您是第一个。",
       "proposed": "您的编辑已发送给制造商。"
+    }
+  },
+  "scanner": {
+    "open": "扫描",
+    "title": "将相机对准条码",
+    "hint": "请将条码保持在取景框内。支持读取 EAN-13、EAN-8 和 UPC。",
+    "cancel": "取消",
+    "manual": "你也可以手动输入数字。",
+    "error": {
+      "camera_denied": "此站点的相机权限已被阻止 — 请在浏览器设置中允许。",
+      "camera_missing": "此设备没有相机。",
+      "failed": "相机未能启动。"
+    }
+  },
+  "dictation": {
+    "start": "口述",
+    "stop": "停止",
+    "listening": "正在聆听…",
+    "hint": "口述的内容将添加到字段末尾 — 之后可手动编辑。",
+    "error": {
+      "not-allowed": "此站点的麦克风权限已被阻止 — 请在浏览器设置中允许。",
+      "service-not-allowed": "此站点的麦克风权限已被阻止 — 请在浏览器设置中允许。",
+      "audio-capture": "此设备没有麦克风。",
+      "language-not-supported": "此浏览器无法识别该说明所用语言的语音。",
+      "failed": "口述已停止。"
     }
   }
 }

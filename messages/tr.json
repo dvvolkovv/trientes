@@ -3324,7 +3324,10 @@
         "evidence_required": "Lütfen kanıtınızı açıklayın (en az 10 karakter).",
         "failed": "Talep gönderilemedi."
       }
-    }
+    },
+    "scanLooking": "Pasaport aranıyor…",
+    "scanNotFound": "Henüz hiçbir pasaport {code} barkodunu taşımıyor.",
+    "scanCreate": "Bir tane oluştur"
   },
   "cabinetProducts": {
     "title": "Ürünler",
@@ -3432,6 +3435,31 @@
     "info": {
       "gtin_free": "Bu barkodla henüz pasaport yok — ilk sizsiniz.",
       "proposed": "Düzenlemeniz üreticiye gönderildi."
+    }
+  },
+  "scanner": {
+    "open": "Tara",
+    "title": "Kamerayı barkoda doğrultun",
+    "hint": "Kodu çerçevenin içinde tutun. EAN-13, EAN-8 ve UPC okunur.",
+    "cancel": "İptal",
+    "manual": "Rakamları her zaman elle yazabilirsiniz.",
+    "error": {
+      "camera_denied": "Kamera bu site için engellendi — tarayıcı ayarlarından izin verin.",
+      "camera_missing": "Bu cihazda kamera yok.",
+      "failed": "Kamera başlatılamadı."
+    }
+  },
+  "dictation": {
+    "start": "Dikte et",
+    "stop": "Durdur",
+    "listening": "Dinleniyor…",
+    "hint": "Dikte edilen kelimeler alanın sonuna eklenir — daha sonra bunları elle düzenleyin.",
+    "error": {
+      "not-allowed": "Bu site için mikrofon engellendi — tarayıcı ayarlarında izin verin.",
+      "service-not-allowed": "Bu site için mikrofon engellendi — tarayıcı ayarlarında izin verin.",
+      "audio-capture": "Bu cihazda mikrofon yok.",
+      "language-not-supported": "Bu tarayıcı, açıklamanın dilindeki konuşmayı tanıyamıyor.",
+      "failed": "Dikte durduruldu."
     }
   }
 }

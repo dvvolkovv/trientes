@@ -3324,7 +3324,10 @@
         "evidence_required": "증빙을 설명해 주세요(최소 10자).",
         "failed": "소유 신청을 전송할 수 없습니다."
       }
-    }
+    },
+    "scanLooking": "패스포트를 찾는 중…",
+    "scanNotFound": "바코드 {code}를 가진 패스포트가 아직 없습니다.",
+    "scanCreate": "하나 만들기"
   },
   "cabinetProducts": {
     "title": "제품",
@@ -3432,6 +3435,31 @@
     "info": {
       "gtin_free": "이 바코드의 패스포트는 아직 없습니다 — 귀하가 처음입니다.",
       "proposed": "귀하의 수정이 제조사에 전송되었습니다."
+    }
+  },
+  "scanner": {
+    "open": "스캔",
+    "title": "카메라를 바코드에 맞추세요",
+    "hint": "코드를 프레임 안에 유지하세요. EAN-13, EAN-8 및 UPC를 인식합니다.",
+    "cancel": "취소",
+    "manual": "언제든지 숫자를 직접 입력할 수 있습니다.",
+    "error": {
+      "camera_denied": "이 사이트에서 카메라가 차단되었습니다 — 브라우저 설정에서 허용하세요.",
+      "camera_missing": "이 기기에 카메라가 없습니다.",
+      "failed": "카메라가 시작되지 않았습니다."
+    }
+  },
+  "dictation": {
+    "start": "받아쓰기",
+    "stop": "중지",
+    "listening": "듣는 중…",
+    "hint": "받아쓴 단어는 필드 끝에 추가됩니다 — 이후에 직접 수정하세요.",
+    "error": {
+      "not-allowed": "이 사이트에서 마이크가 차단되었습니다 — 브라우저 설정에서 허용하세요.",
+      "service-not-allowed": "이 사이트에서 마이크가 차단되었습니다 — 브라우저 설정에서 허용하세요.",
+      "audio-capture": "이 기기에 마이크가 없습니다.",
+      "language-not-supported": "이 브라우저는 설명의 언어로 음성을 인식할 수 없습니다.",
+      "failed": "받아쓰기가 중지되었습니다."
     }
   }
 }

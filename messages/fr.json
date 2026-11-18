@@ -3324,7 +3324,10 @@
         "evidence_required": "Veuillez décrire votre preuve (au moins 10 caractères).",
         "failed": "Impossible d’envoyer la demande."
       }
-    }
+    },
+    "scanLooking": "Recherche du passeport…",
+    "scanNotFound": "Aucun passeport ne porte encore le code-barres {code}.",
+    "scanCreate": "En créer un"
   },
   "cabinetProducts": {
     "title": "Produits",
@@ -3432,6 +3435,31 @@
     "info": {
       "gtin_free": "Aucun passeport avec ce code-barres pour le moment — vous êtes le premier.",
       "proposed": "Votre modification a été envoyée au fabricant."
+    }
+  },
+  "scanner": {
+    "open": "Scanner",
+    "title": "Pointez la caméra sur le code-barres",
+    "hint": "Maintenez le code dans le cadre. EAN-13, EAN-8 et UPC sont lus.",
+    "cancel": "Annuler",
+    "manual": "Vous pouvez toujours saisir les chiffres à la main.",
+    "error": {
+      "camera_denied": "La caméra est bloquée pour ce site — autorisez-la dans les paramètres du navigateur.",
+      "camera_missing": "Aucune caméra sur cet appareil.",
+      "failed": "La caméra n'a pas démarré."
+    }
+  },
+  "dictation": {
+    "start": "Dicter",
+    "stop": "Arrêter",
+    "listening": "Écoute…",
+    "hint": "Les mots dictés sont ajoutés à la fin du champ — modifiez-les ensuite à la main.",
+    "error": {
+      "not-allowed": "Le microphone est bloqué pour ce site — autorisez-le dans les paramètres du navigateur.",
+      "service-not-allowed": "Le microphone est bloqué pour ce site — autorisez-le dans les paramètres du navigateur.",
+      "audio-capture": "Aucun microphone sur cet appareil.",
+      "language-not-supported": "Ce navigateur ne peut pas reconnaître la parole dans la langue de la description.",
+      "failed": "La dictée s'est arrêtée."
     }
   }
 }
