@@ -255,7 +255,20 @@
       "conflict_of_interest": "You are connected to this subject, so you cannot work on its case.",
       "self_grant": "You cannot grant access to yourself.",
       "owner_target": "The owner is not a staff member; access cannot be changed here.",
-      "last_owner": "The last owner cannot be demoted."
+      "last_owner": "The last owner cannot be demoted.",
+      "empty": "Tick access on at least one queue.",
+      "unknown_queue": "Unknown queue.",
+      "unknown_level": "Unknown access level.",
+      "bad_date": "That date cannot be read.",
+      "duplicate_queue": "The same queue is listed twice.",
+      "not_staff": "That account is not a member of staff.",
+      "not_revoked": "That access is not revoked.",
+      "too_many": "Too many active invites. Revoke one first.",
+      "invalid": "That invite is no longer valid.",
+      "expired": "That invite has expired.",
+      "accepted": "That invite has already been used.",
+      "revoked": "That invite was revoked.",
+      "failed": "Something went wrong."
     },
     "audit": {
       "title": "Audit log",
@@ -768,6 +781,66 @@
         "secondSignatures": "Second signatures",
         "soleSignOffs": "Sole sign-offs",
         "resubmits": "Resend requests"
+      },
+      "access": {
+        "title": "Staff and access",
+        "subtitle": "Access is denied by default: a queue a person has no row for is invisible to them.",
+        "empty": "Nobody has compliance access yet.",
+        "noTitle": "no position given",
+        "queues": "Queues",
+        "none": "no access",
+        "reviewAt": "Access review due {date}",
+        "reviewOverdue": "Access review overdue since {date}",
+        "revoked": "Access revoked {date}",
+        "revokedReason": "Reason: {reason}",
+        "levels": {
+          "none": "none",
+          "VIEW": "views",
+          "HANDLE": "handles",
+          "APPROVE": "approves"
+        },
+        "presets": {
+          "label": "Ready-made positions",
+          "readOnly": "Read only",
+          "reviewer": "Reviewer",
+          "senior": "Senior reviewer",
+          "kybOfficer": "KYB officer",
+          "hint": "A position only fills the matrix in — tick the boxes by hand afterwards."
+        },
+        "save": "Save access",
+        "saved": "Access saved.",
+        "revoke": "Revoke access",
+        "revokePlaceholder": "Why access is being revoked (at least 3 characters)",
+        "restore": "Restore access",
+        "passReview": "Review passed",
+        "edit": "Change access",
+        "cancel": "Cancel"
+      },
+      "invite": {
+        "title": "Invite a member of staff",
+        "subtitle": "Tick the access first — it applies the moment the invite is accepted.",
+        "titleField": "Position",
+        "titlePlaceholder": "Senior reviewer",
+        "dutiesField": "Duties, in your own words",
+        "dutiesPlaceholder": "Coin cards and point reports; KYB only as a second signature.",
+        "expiresField": "Access expires (optional)",
+        "expiresHint": "Leave empty for access with no end date.",
+        "byLink": "By link",
+        "byIdentifier": "By username or email",
+        "identifierField": "Username or email",
+        "identifierHint": "Works only if the account already exists.",
+        "create": "Create invite link",
+        "grant": "Grant access now",
+        "granted": "Access granted.",
+        "linkOnce": "Copy the link now — the database stores only its hash, so it cannot be shown again.",
+        "copy": "Copy link",
+        "copied": "Copied.",
+        "expiresIn": "The link works for 14 days and once only.",
+        "activeTitle": "Active invites",
+        "activeEmpty": "No active invites.",
+        "revokeInvite": "Revoke",
+        "forWhom": "for {identifier}",
+        "openLink": "open link"
       }
     },
     "company": {
@@ -2911,6 +2984,26 @@
       "captcha_invalid": "The check did not pass. Take another challenge and try again.",
       "captcha_expired": "The challenge expired. Take a new one.",
       "captcha_too_fast": "That was too fast. Please try again."
+    }
+  },
+  "staffInvite": {
+    "title": "Compliance access invite",
+    "invitedBy": "Invited by {who}",
+    "position": "Position",
+    "duties": "Duties",
+    "grants": "Access you are being given",
+    "accept": "Accept and start",
+    "accepted": "Access granted. Opening the queues.",
+    "guest": "Sign in or create an account, then come back to this page to accept.",
+    "signIn": "Sign in",
+    "register": "Create an account",
+    "goToQueues": "Open the queues",
+    "errors": {
+      "invalid": "This link is not valid.",
+      "expired": "This link has expired. Ask the owner for a new one.",
+      "accepted": "This link has already been used.",
+      "revoked": "This link was revoked.",
+      "failed": "Something went wrong."
     }
   }
 }
