@@ -15,6 +15,7 @@
 import type { PrismaClient } from "@prisma/client";
 import type Redis from "ioredis";
 import { KEYS, TTL } from "@/lib/sync/keys";
+import { OWN_DEX_NAME } from "@/lib/coin-card-dex-market";
 
 /** Окно, за которое считаются ответы nginx. */
 export const LOG_WINDOW_HOURS = 24;
@@ -276,6 +277,21 @@ export async function collectHealth(deps: HealthDeps): Promise<HealthFacts> {
     last(prisma.coinCardPriceIndex as never, "computedAt"),
     last(prisma.osmCryptoPoi as never, "syncedAt"),
   ]);
+  // Рынки читаются не одним прогоном: снимки бирж — сверкой слайса C, свой
+  // обмен — отдельным часовым прогоном. Поэтому свежести «ценового индекса»
+  // мало: он считается по тем рынкам, что ответили, и молчание одного
+  // источника в нём не видно. Так и вышло 13 ноября — чтение своего обмена
+  // сломалось, а отчёт пять дней говорил, что всё свежо.
+  const [ownDexAgg, stalestMarketAgg] = await Promise.all([
+    prisma.coinCardMarket.aggregate({
+      _max: { checkedAt: true },
+      where: { kind: "DEX", exchangeName: OWN_DEX_NAME },
+    }) as never as Promise<{ _max: { checkedAt: Date | null } }>,
+    prisma.coinCardMarket.aggregate({ _min: { checkedAt: true } }) as never as Promise<{
+      _min: { checkedAt: Date | null };
+    }>,
+  ]);
+
   const [listAt, globalAt, marketsAt, newsAt] = await Promise.all([
     redisWrittenAt(redis, KEYS.topList, TTL.snapshot, now),
     redisWrittenAt(redis, KEYS.globalStats, TTL.globalStats, now),
@@ -293,6 +309,10 @@ export async function collectHealth(deps: HealthDeps): Promise<HealthFacts> {
     probe("факты сетей", factsAt, 180, now),
     probe("выпуск монет", supplyAt, 180, now),
     probe("ценовой индекс карточек", indexAt, 40, now),
+    probe("рынок своего обмена", ownDexAgg._max.checkedAt, 180, now),
+    // Самая ветхая строка рынка: источник, перестающий их трогать, виден здесь
+    // даже тогда, когда остальные источники работают.
+    probe("рынки карточек, ветхая строка", stalestMarketAgg._min.checkedAt, 180, now),
     probe("точки BTC Map", poiAt, 36 * 60, now),
   ];
 
