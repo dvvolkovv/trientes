@@ -1513,6 +1513,11 @@ model AdminNotification {
   caseId String?
   case   ComplianceCase?       @relation(fields: [caseId], references: [id], onDelete: Cascade)
 
+  /// Кого касается звонок, когда это не дело: сотрудник в ACCESS_REVIEW_DUE.
+  /// Без этой привязки «один повод на сотрудника» не отличить от «один повод
+  /// вообще».
+  subjectId String?
+
   /// Снимок названия дела: список должен читаться, даже если дело удалили.
   title  String
   body   String?
@@ -1523,6 +1528,7 @@ model AdminNotification {
   @@index([userId, readAt])
   @@index([userId, createdAt])
   @@index([kind, caseId])
+  @@index([kind, subjectId])
 }
 
 /// Пункт листа проверок. Сам список пунктов живёт в коде
