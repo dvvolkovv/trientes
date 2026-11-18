@@ -7,39 +7,9 @@ import { createProduct, findProductByGtin, updateProduct } from "@/app/actions/p
 import { PRODUCT_CATEGORIES } from "@/lib/products/categories";
 import { DOCUMENT_KINDS } from "@/lib/products/validate";
 import { MAX_ATTRS, MAX_DOCS, MAX_PHOTOS } from "@/lib/products/rules";
+import type { ProductFormValues } from "@/lib/products/form-values";
 
-export type ProductFormValues = {
-  id?: string;
-  name: string;
-  brand: string;
-  manufacturerName: string;
-  category: string;
-  language: string;
-  gtin: string;
-  description: string;
-  usage: string;
-  ingredients: string;
-  attributes: { key: string; value: string; unit?: string }[];
-  photos: { url: string; label?: string }[];
-  videoUrl: string | null;
-  documents: { kind: string; url: string; label?: string }[];
-};
-
-export const EMPTY_PRODUCT = (language: string): ProductFormValues => ({
-  name: "",
-  brand: "",
-  manufacturerName: "",
-  category: "other",
-  language,
-  gtin: "",
-  description: "",
-  usage: "",
-  ingredients: "",
-  attributes: [],
-  photos: [],
-  videoUrl: null,
-  documents: [],
-});
+export type { ProductFormValues };
 
 const INPUT = "w-full bg-card border border-hairline rounded-md px-3 py-2 text-sm";
 const LABEL = "text-[12px] uppercase tracking-[0.14em] text-muted";

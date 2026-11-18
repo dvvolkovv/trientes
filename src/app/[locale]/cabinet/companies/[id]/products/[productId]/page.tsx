@@ -5,7 +5,8 @@ import { getViewerCompanyById } from "@/lib/business";
 import { prisma } from "@/lib/prisma";
 import { editKind } from "@/lib/products/rules";
 import { readProductHistory, readPendingRevisions } from "@/lib/products/read";
-import { ProductForm, EMPTY_PRODUCT, type ProductFormValues } from "@/components/product/product-form";
+import { ProductForm } from "@/components/product/product-form";
+import { emptyProduct, type ProductFormValues } from "@/lib/products/form-values";
 import { ProductHistory } from "@/components/product/history";
 import { RevisionsInbox } from "@/components/product/revisions-inbox";
 
@@ -59,7 +60,7 @@ export default async function CompanyProductEditor({
         videoUrl: product.videoUrl,
         documents: Array.isArray(product.documents) ? (product.documents as ProductFormValues["documents"]) : [],
       }
-    : EMPTY_PRODUCT(locale);
+    : emptyProduct(locale);
 
   const [history, revisions] = product
     ? await Promise.all([readProductHistory(product.id), readPendingRevisions(product.id)])

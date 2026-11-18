@@ -67,3 +67,23 @@ describe("diffProduct", () => {
     ]);
   });
 });
+
+describe("diffProduct and the order of keys", () => {
+  it("does not call a reordered JSONB object an edit", () => {
+    // Postgres отдаёт {key, unit, value}, форма шлёт {key, value, unit} — это одно и то же,
+    // и прежний diff писал ложную правку при каждом сохранении (поймано живым прогоном).
+    const fromDb = [{ key: "Объём", unit: "л", value: "0,5" }];
+    const fromForm = [{ key: "Объём", value: "0,5", unit: "л" }];
+    expect(diffProduct({ attributes: fromDb }, { attributes: fromForm })).toEqual([]);
+  });
+
+  it("treats a missing optional field and null as the same", () => {
+    expect(diffProduct({ photos: [{ url: "/u/a.jpg" }] }, { photos: [{ url: "/u/a.jpg", label: undefined }] })).toEqual([]);
+  });
+
+  it("still sees a real change inside the list", () => {
+    expect(
+      diffProduct({ attributes: [{ key: "Объём", value: "0,5" }] }, { attributes: [{ key: "Объём", value: "1,0" }] }).length,
+    ).toBe(1);
+  });
+});

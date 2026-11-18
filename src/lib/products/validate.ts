@@ -172,6 +172,31 @@ export const TRACKED_FIELDS = [
 
 export type TrackedField = (typeof TRACKED_FIELDS)[number];
 
+/**
+ * Сравнение значений с устойчивым порядком ключей. JSONB в Postgres хранит объект своим
+ * порядком ключей (`{key, unit, value}` вместо `{key, value, unit}`), и сравнение простым
+ * `JSON.stringify` записывало в историю правку «свойства изменились» при каждом
+ * сохранении — поймано живым прогоном.
+ */
+function canonical(v: unknown): string {
+  const walk = (x: unknown): unknown => {
+    if (Array.isArray(x)) return x.map(walk);
+    if (x && typeof x === "object") {
+      const o = x as Record<string, unknown>;
+      const out: Record<string, unknown> = {};
+      for (const k of Object.keys(o).sort()) {
+        // Отсутствующее поле и поле со значением null — одно и то же: `unit` формы,
+        // которого нет в базе, не изменение.
+        if (o[k] === undefined || o[k] === null) continue;
+        out[k] = walk(o[k]);
+      }
+      return out;
+    }
+    return x;
+  };
+  return JSON.stringify(walk(v));
+}
+
 /** Что именно изменилось: история пишется по полям, а не «паспорт правлен». */
 export function diffProduct(
   before: Record<string, unknown>,
@@ -181,7 +206,7 @@ export function diffProduct(
   for (const field of TRACKED_FIELDS) {
     const a = before[field] ?? null;
     const b = after[field] ?? null;
-    if (JSON.stringify(a) !== JSON.stringify(b)) out.push({ field, before: a, after: b });
+    if (canonical(a) !== canonical(b)) out.push({ field, before: a, after: b });
   }
   return out;
 }

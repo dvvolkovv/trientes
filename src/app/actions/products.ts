@@ -29,11 +29,14 @@ async function requireUser() {
  * нажал. Читается из базы на каждом вызове — снятое надзором предприятие перестаёт
  * править паспорта тем же сеансом, без перезахода.
  */
-async function editorCompany(companyId: string, userId: string): Promise<EditorCompany | null> {
+async function editorCompany(
+  companyId: string,
+  userId: string,
+): Promise<(EditorCompany & { displayName: string }) | null> {
   const [company, member] = await Promise.all([
     prisma.company.findUnique({
       where: { id: companyId },
-      select: { id: true, status: true, suspendedAt: true, deletedAt: true },
+      select: { id: true, status: true, suspendedAt: true, deletedAt: true, displayName: true },
     }),
     prisma.companyMember.findUnique({
       where: { companyId_userId: { companyId, userId } },
@@ -47,6 +50,7 @@ async function editorCompany(companyId: string, userId: string): Promise<EditorC
     suspendedAt: company.suspendedAt,
     deletedAt: company.deletedAt,
     role: member.role,
+    displayName: company.displayName,
   };
 }
 
@@ -265,7 +269,9 @@ export async function submitProductClaim(companyId: string, productId: string, e
   await ensureCase({
     subjectType: "PRODUCT_CLAIM",
     subjectId: claim.id,
-    title: `${product.name} — ${company.id}`,
+    // Название предприятия, а не его id: заголовок дела читает человек в очереди
+    // (поймано живым прогоном — в плитке стоял cuid).
+    title: `${product.name} — ${company.displayName}`,
     applicantUserId: userId,
   });
   return { ok: true as const, id: claim.id };
