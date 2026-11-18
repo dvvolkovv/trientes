@@ -346,7 +346,9 @@
       "expired": "Platnosť tejto pozvánky vypršala.",
       "accepted": "Táto pozvánka už bola použitá.",
       "revoked": "Táto pozvánka bola zrušená.",
-      "failed": "Niečo sa pokazilo."
+      "failed": "Niečo sa pokazilo.",
+      "self_target": "Nemôžete obnoviť svoj vlastný druhý faktor.",
+      "not_enrolled": "Táto osoba nemá druhý faktor, ktorý by bolo možné obnoviť."
     },
     "audit": {
       "title": "Auditný denník",
@@ -951,6 +953,26 @@
         "revokeInvite": "Zrušiť",
         "forWhom": "pre {identifier}",
         "openLink": "otvoriť odkaz"
+      },
+      "mfa": {
+        "heading": "Druhý faktor",
+        "on": "Zapnuté od {date}",
+        "off": "Nenastavené",
+        "disabledOn": "Resetované {date}",
+        "disable": "Resetovať druhý faktor",
+        "reasonLabel": "Prečo (zapíše sa do logu)",
+        "hint": "Resetovanie odhlási osobu všade a pri ďalšej návšteve ju požiada nastaviť faktor znova.",
+        "codesLeft": "{count} záložných kódov zostáva",
+        "self": "Nemôžete resetovať svoj vlastný druhý faktor.",
+        "done": "Druhý faktor bol resetovaný.",
+        "error": {
+          "reason_too_short": "Uveďte dôvod v niekoľkých slovách.",
+          "self_target": "Nemôžete resetovať svoj vlastný druhý faktor.",
+          "not_enrolled": "Táto osoba nemá žiadny druhý faktor na resetovanie.",
+          "no_access": "Iba vlastník to môže urobiť.",
+          "unauth": "Prihláste sa znova.",
+          "unknown_error": "Niečo sa pokazilo. Skúste znova."
+        }
       }
     },
     "company": {
@@ -1727,6 +1749,15 @@
         "REJECTED": "zamietnuté",
         "CLOSED": "uzavreté"
       }
+    },
+    "mfa": {
+      "title": "Prihlásenie a zabezpečenie",
+      "subtitle": "Zamestnanecké účty otvárajú administráciu kódom z autentifikačnej aplikácie.",
+      "on": "Druhý faktor zapnutý od {date}.",
+      "off": "Druhý faktor ešte nie je nastavený.",
+      "codesLeft": "{count} záložných kódov zostáva.",
+      "enable": "Nastaviť druhý faktor",
+      "rotate": "Presunúť ho do iného telefónu"
     }
   },
   "register": {
@@ -1956,8 +1987,8 @@
       "hqLat": "Zemepisná šírka sídla",
       "hqLon": "Zemepisná dĺžka sídla",
       "feesSummary": "Zhrnutie poplatkov",
-      "appStoreUrl": "App Store URL",
-      "playStoreUrl": "Play Store URL",
+      "appStoreUrl": "URL v App Store",
+      "playStoreUrl": "URL v Play Store",
       "submit": "Uložiť",
       "submitting": "Ukladá sa…",
       "submitted": "Uložené — čaká na kontrolu.",
@@ -2032,9 +2063,9 @@
     "empty": "Vyberte aspoň jednu mincu na porovnanie.",
     "rank": "Poradie",
     "price": "Cena",
-    "change1h": "1h %",
-    "change24h": "24h %",
-    "change7d": "7d %",
+    "change1h": "1 h %",
+    "change24h": "24 h %",
+    "change7d": "7 d %",
     "marketCap": "Trhová kapitalizácia",
     "volume24h": "Objem (24h)",
     "circulating": "Ponuka v obehu",
@@ -3127,5 +3158,37 @@
   },
   "login": {
     "subtitle": "Pokračujte s preferovaným poskytovateľom alebo sa prihláste heslom."
+  },
+  "mfa": {
+    "kicker": "Druhý faktor",
+    "setupTitle": "Nastavte si druhý faktor",
+    "setupSubtitle": "Zamestnanecké účty otvárajú administráciu kódom z autentifikačnej aplikácie, nie len heslom.",
+    "verifyTitle": "Zadajte kód",
+    "verifySubtitle": "Šesť číslic, ktoré vám práve zobrazuje autentifikačná aplikácia.",
+    "step1": "Otvorte ľubovoľnú autentifikačnú aplikáciu — Google Authenticator, 1Password, Aegis, Authy.",
+    "openApp": "Pridať do aplikácie",
+    "orByHand": "Alebo pridajte ručne pomocou tohto kľúča:",
+    "preparing": "Pripravujeme kľúč…",
+    "step3": "Potom zadajte šesť číslic, ktoré aplikácia zobrazí.",
+    "codeLabel": "Kód z aplikácie",
+    "recoveryLabel": "Obnovovací kód",
+    "confirm": "Zapnúť druhý faktor",
+    "enter": "Pokračovať",
+    "checking": "Kontrolujeme…",
+    "useRecovery": "Stratil som telefón — použiť obnovovací kód",
+    "useAppCode": "Späť na kód z aplikácie",
+    "codesIntro": "Desať obnovovacích kódov. Každý funguje raz a umožní vám prístup, keď nemáte telefón.",
+    "codesOnce": "Zobrazia sa len raz. Zapíšte si ich niekam mimo telefónu.",
+    "codesSaved": "Mám ich zapísané",
+    "error": {
+      "code_invalid": "Tento kód nie je správny. Skontrolujte hodiny v telefóne a skúste ďalší.",
+      "code_reused": "Tento kód už bol použitý. Počkajte, kým aplikácia zobrazí ďalší.",
+      "rate_limited": "Príliš veľa pokusov. Skúste znova o pätnásť minút.",
+      "not_enrolled": "Druhý faktor nie je pre tento účet nastavený.",
+      "unreadable": "Uložený kľúč sa nedá prečítať. Požiadajte vlastníka o resetovanie vášho druhého faktora.",
+      "no_access": "Táto stránka je pre zamestnanecké účty.",
+      "unknown_error": "Niečo sa pokazilo. Skúste znova.",
+      "verify_first": "Najprv zadajte kód z vašej aktuálnej aplikácie, potom môžete faktor presunúť do iného telefónu."
+    }
   }
 }

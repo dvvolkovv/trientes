@@ -346,7 +346,9 @@
       "expired": "Esse convite expirou.",
       "accepted": "Esse convite já foi usado.",
       "revoked": "Esse convite foi revogado.",
-      "failed": "Algo deu errado."
+      "failed": "Algo deu errado.",
+      "self_target": "Você não pode redefinir seu segundo fator",
+      "not_enrolled": "Essa pessoa não tem segundo fator para redefinir"
     },
     "audit": {
       "title": "Log de auditoria",
@@ -951,6 +953,26 @@
         "revokeInvite": "Revogar",
         "forWhom": "para {identifier}",
         "openLink": "abrir link"
+      },
+      "mfa": {
+        "heading": "Segundo fator",
+        "on": "Ativo desde {date}",
+        "off": "Não configurado",
+        "disabledOn": "Redefinido em {date}",
+        "disable": "Redefinir o segundo fator",
+        "reasonLabel": "Por quê (vai para o registro)",
+        "hint": "Redefinir desconecta a pessoa em todos os lugares e pede para configurar o fator novamente na próxima visita.",
+        "codesLeft": "{count} códigos de recuperação restantes",
+        "self": "Você não pode redefinir seu próprio segundo fator.",
+        "done": "O segundo fator foi redefinido.",
+        "error": {
+          "reason_too_short": "Diga o motivo em poucas palavras.",
+          "self_target": "Você não pode redefinir seu próprio segundo fator.",
+          "not_enrolled": "Essa pessoa não tem segundo fator para redefinir.",
+          "no_access": "Somente o proprietário pode fazer isso.",
+          "unauth": "Faça login novamente.",
+          "unknown_error": "Algo deu errado. Tente novamente."
+        }
       }
     },
     "company": {
@@ -1727,6 +1749,15 @@
         "REJECTED": "rejeitado",
         "CLOSED": "encerrado"
       }
+    },
+    "mfa": {
+      "title": "Login e segurança",
+      "subtitle": "Contas da equipe abrem a área de administração com um código de um app autenticador.",
+      "on": "Segundo fator ativado desde {date}.",
+      "off": "O segundo fator ainda não foi configurado.",
+      "codesLeft": "{count} códigos de recuperação restantes.",
+      "enable": "Configurar o segundo fator",
+      "rotate": "Mover para outro telefone"
     }
   },
   "register": {
@@ -3127,5 +3158,37 @@
   },
   "login": {
     "subtitle": "Continue com seu provedor preferido ou entre com uma senha."
+  },
+  "mfa": {
+    "kicker": "Segundo fator",
+    "setupTitle": "Configure seu segundo fator",
+    "setupSubtitle": "Contas da equipe abrem a área de administração com um código de um app autenticador, não apenas com a senha.",
+    "verifyTitle": "Digite o código",
+    "verifySubtitle": "Os seis dígitos que seu app autenticador mostra agora.",
+    "step1": "Abra qualquer app autenticador — Google Authenticator, 1Password, Aegis, Authy.",
+    "openApp": "Adicionar ao app",
+    "orByHand": "Ou adicione manualmente com esta chave:",
+    "preparing": "Preparando a chave…",
+    "step3": "Depois, digite os seis dígitos que o app mostrar.",
+    "codeLabel": "Código do app",
+    "recoveryLabel": "Código de recuperação",
+    "confirm": "Ativar o segundo fator",
+    "enter": "Continuar",
+    "checking": "Verificando…",
+    "useRecovery": "Perdi o telefone — usar um código de recuperação",
+    "useAppCode": "Voltar ao código do app",
+    "codesIntro": "Dez códigos de recuperação. Cada um funciona uma vez e permite entrar quando você estiver sem o telefone.",
+    "codesOnce": "Eles são exibidos apenas desta vez. Anote-os em algum lugar fora do telefone.",
+    "codesSaved": "Anotei",
+    "error": {
+      "code_invalid": "Esse código não está correto. Verifique o relógio do telefone e tente o próximo.",
+      "code_reused": "Esse código já foi usado. Aguarde o app mostrar o próximo.",
+      "rate_limited": "Muitas tentativas. Tente novamente em quinze minutos.",
+      "not_enrolled": "O segundo fator não está configurado para esta conta.",
+      "unreadable": "A chave armazenada não pode ser lida. Peça ao proprietário para redefinir seu segundo fator.",
+      "no_access": "Esta página é para contas da equipe.",
+      "unknown_error": "Algo deu errado. Tente novamente.",
+      "verify_first": "Insira primeiro o código do seu aplicativo atual, então você poderá mover o fator para outro telefone."
+    }
   }
 }

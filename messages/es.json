@@ -346,7 +346,9 @@
       "expired": "Esa invitación ha caducado.",
       "accepted": "Esa invitación ya se ha utilizado.",
       "revoked": "Esa invitación fue revocada.",
-      "failed": "Algo salió mal."
+      "failed": "Algo salió mal.",
+      "self_target": "No puedes restablecer tu propio segundo factor",
+      "not_enrolled": "Esta persona no tiene segundo factor que restablecer"
     },
     "audit": {
       "title": "Registro de auditoría",
@@ -951,6 +953,26 @@
         "revokeInvite": "Revocar",
         "forWhom": "para {identifier}",
         "openLink": "abrir enlace"
+      },
+      "mfa": {
+        "heading": "Segundo factor",
+        "on": "Activo desde {date}",
+        "off": "No configurado",
+        "disabledOn": "Restablecido el {date}",
+        "disable": "Restablecer el segundo factor",
+        "reasonLabel": "Por qué (se guarda en el registro)",
+        "hint": "Al restablecer se cerrará la sesión de la persona en todos los lugares y se le pedirá que configure el factor de nuevo en su próxima visita.",
+        "codesLeft": "Quedan {count} códigos de recuperación",
+        "self": "No puedes restablecer tu propio segundo factor.",
+        "done": "Se restableció el segundo factor.",
+        "error": {
+          "reason_too_short": "Explica el motivo en pocas palabras.",
+          "self_target": "No puedes restablecer tu propio segundo factor.",
+          "not_enrolled": "Esta persona no tiene segundo factor que restablecer.",
+          "no_access": "Solo el propietario puede hacer esto.",
+          "unauth": "Inicia sesión de nuevo.",
+          "unknown_error": "Algo salió mal. Inténtalo de nuevo."
+        }
       }
     },
     "company": {
@@ -1727,6 +1749,15 @@
         "REJECTED": "rechazado",
         "CLOSED": "cerrado"
       }
+    },
+    "mfa": {
+      "title": "Inicio de sesión y seguridad",
+      "subtitle": "Las cuentas del personal abren el área de administración con un código de una app de autenticación.",
+      "on": "Segundo factor activado desde {date}.",
+      "off": "El segundo factor aún no está configurado.",
+      "codesLeft": "Quedan {count} códigos de recuperación.",
+      "enable": "Configurar el segundo factor",
+      "rotate": "Moverlo a otro teléfono"
     }
   },
   "register": {
@@ -3127,5 +3158,37 @@
   },
   "login": {
     "subtitle": "Continúa con tu proveedor preferido o inicia sesión con una contraseña."
+  },
+  "mfa": {
+    "kicker": "Segundo factor",
+    "setupTitle": "Configura tu segundo factor",
+    "setupSubtitle": "Las cuentas del equipo abren el área de administración con un código de una app de autenticación, no solo con la contraseña.",
+    "verifyTitle": "Introduce el código",
+    "verifySubtitle": "Los seis dígitos que tu app de autenticación muestra ahora mismo.",
+    "step1": "Abre cualquier app de autenticación — Google Authenticator, 1Password, Aegis, Authy.",
+    "openApp": "Añadir a la app",
+    "orByHand": "O añádela manualmente con esta clave:",
+    "preparing": "Preparando la clave…",
+    "step3": "Luego escribe los seis dígitos que muestra la app.",
+    "codeLabel": "Código de la app",
+    "recoveryLabel": "Código de recuperación",
+    "confirm": "Activar el segundo factor",
+    "enter": "Continuar",
+    "checking": "Comprobando…",
+    "useRecovery": "Perdí el teléfono — usar un código de recuperación",
+    "useAppCode": "Volver al código de la app",
+    "codesIntro": "Diez códigos de recuperación. Cada uno funciona una vez y te permite entrar cuando no tengas el teléfono.",
+    "codesOnce": "Se muestran solo esta vez. Apúntalos en un lugar que no sea el teléfono.",
+    "codesSaved": "Ya los apunté",
+    "error": {
+      "code_invalid": "Ese código no es correcto. Revisa el reloj del teléfono y prueba con el siguiente.",
+      "code_reused": "Ese código ya se usó. Espera a que la app muestre el siguiente.",
+      "rate_limited": "Demasiados intentos. Inténtalo de nuevo en quince minutos.",
+      "not_enrolled": "El segundo factor no está configurado para esta cuenta.",
+      "unreadable": "No se puede leer la clave almacenada. Pide al propietario que restablezca tu segundo factor.",
+      "no_access": "Esta página es para cuentas del personal.",
+      "unknown_error": "Algo salió mal. Inténtalo de nuevo.",
+      "verify_first": "Primero introduce el código de tu aplicación actual, luego podrás mover el factor a otro teléfono."
+    }
   }
 }

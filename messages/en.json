@@ -346,7 +346,9 @@
       "expired": "That invite has expired.",
       "accepted": "That invite has already been used.",
       "revoked": "That invite was revoked.",
-      "failed": "Something went wrong."
+      "failed": "Something went wrong.",
+      "self_target": "You cannot reset your own second factor.",
+      "not_enrolled": "This person has no second factor to reset."
     },
     "audit": {
       "title": "Audit log",
@@ -951,6 +953,26 @@
         "revokeInvite": "Revoke",
         "forWhom": "for {identifier}",
         "openLink": "open link"
+      },
+      "mfa": {
+        "heading": "Second factor",
+        "on": "On since {date}",
+        "off": "Not set up",
+        "disabledOn": "Reset on {date}",
+        "disable": "Reset the second factor",
+        "reasonLabel": "Why (goes into the log)",
+        "hint": "Resetting signs the person out everywhere and asks them to set the factor up again on their next visit.",
+        "codesLeft": "{count} recovery codes left",
+        "self": "You cannot reset your own second factor.",
+        "done": "The second factor was reset.",
+        "error": {
+          "reason_too_short": "Say why in a few words.",
+          "self_target": "You cannot reset your own second factor.",
+          "not_enrolled": "This person has no second factor to reset.",
+          "no_access": "Only the owner can do this.",
+          "unauth": "Sign in again.",
+          "unknown_error": "Something went wrong. Try again."
+        }
       }
     },
     "company": {
@@ -1727,6 +1749,15 @@
         "REJECTED": "rejected",
         "CLOSED": "closed"
       }
+    },
+    "mfa": {
+      "title": "Sign-in and security",
+      "subtitle": "Staff accounts open the admin area with a code from an authenticator app.",
+      "on": "Second factor on since {date}.",
+      "off": "Second factor is not set up yet.",
+      "codesLeft": "{count} recovery codes left.",
+      "enable": "Set up the second factor",
+      "rotate": "Move it to another phone"
     }
   },
   "register": {
@@ -3127,5 +3158,37 @@
   },
   "login": {
     "subtitle": "Continue with your preferred provider or sign in with a password."
+  },
+  "mfa": {
+    "kicker": "Second factor",
+    "setupTitle": "Set up your second factor",
+    "setupSubtitle": "Staff accounts open the admin area with a code from an authenticator app, not with the password alone.",
+    "verifyTitle": "Enter the code",
+    "verifySubtitle": "The six digits your authenticator app shows right now.",
+    "step1": "Open any authenticator app — Google Authenticator, 1Password, Aegis, Authy.",
+    "openApp": "Add to the app",
+    "orByHand": "Or add it by hand with this key:",
+    "preparing": "Preparing the key…",
+    "step3": "Then type the six digits the app shows.",
+    "codeLabel": "Code from the app",
+    "recoveryLabel": "Recovery code",
+    "confirm": "Turn the second factor on",
+    "enter": "Continue",
+    "checking": "Checking…",
+    "useRecovery": "I lost the phone — use a recovery code",
+    "useAppCode": "Back to the code from the app",
+    "codesIntro": "Ten recovery codes. Each one works once and lets you in when the phone is gone.",
+    "codesOnce": "They are shown this one time. Write them down somewhere other than the phone.",
+    "codesSaved": "I wrote them down",
+    "error": {
+      "code_invalid": "That code is not right. Check the clock on the phone and try the next one.",
+      "code_reused": "That code has already been used. Wait for the app to show the next one.",
+      "rate_limited": "Too many attempts. Try again in fifteen minutes.",
+      "not_enrolled": "The second factor is not set up for this account.",
+      "unreadable": "The stored key cannot be read. Ask the owner to reset your second factor.",
+      "no_access": "This page is for staff accounts.",
+      "unknown_error": "Something went wrong. Try again.",
+      "verify_first": "Enter the code from your current app first, then you can move the factor to another phone."
+    }
   }
 }

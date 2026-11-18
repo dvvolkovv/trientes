@@ -94,3 +94,39 @@ export async function checkResetRateLimit(
   ]);
   return evalResetLimit({ requestsByIp, requestsByIpAndIdentifier });
 }
+
+// --- Второй фактор (слайс BA) ---
+// Шестизначный код при неограниченных попытках подбирается за сутки, поэтому
+// ограничитель здесь обязателен. Считается по человеку, а не по адресу: вор
+// знает пароль и может менять адрес, а защищаем мы одну конкретную запись.
+export const MFA_WINDOW_MS = 15 * 60 * 1000;
+export const MFA_MAX_FAILS = 10;
+
+export function mfaIdentifier(userId: string): string {
+  return `__mfa__:${userId}`;
+}
+
+export function evalMfaLimit(c: { failures: number }): { blocked: boolean } {
+  return { blocked: c.failures >= MFA_MAX_FAILS };
+}
+
+export async function checkMfaRateLimit(userId: string): Promise<{ blocked: boolean }> {
+  const since = new Date(Date.now() - MFA_WINDOW_MS);
+  const failures = await prisma.loginAttempt.count({
+    where: { identifier: mfaIdentifier(userId), success: false, createdAt: { gte: since } },
+  });
+  return evalMfaLimit({ failures });
+}
+
+export async function recordMfaAttempt(input: {
+  userId: string;
+  ip: string;
+  success: boolean;
+}): Promise<void> {
+  await recordLoginAttempt({
+    ip: input.ip,
+    identifier: mfaIdentifier(input.userId),
+    success: input.success,
+    userId: input.userId,
+  });
+}

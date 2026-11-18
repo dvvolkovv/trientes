@@ -346,7 +346,9 @@
       "expired": "Ta je pozivnica istekla",
       "accepted": "Ta je pozivnica već iskorištena",
       "revoked": "Ta je pozivnica opozvana",
-      "failed": "Nešto je pošlo po zlu"
+      "failed": "Nešto je pošlo po zlu",
+      "self_target": "Ne možete resetirati vlastiti drugi faktor",
+      "not_enrolled": "Ova osoba nema drugi faktor za resetiranje"
     },
     "audit": {
       "title": "Revizijski dnevnik",
@@ -951,6 +953,26 @@
         "revokeInvite": "Opozvati",
         "forWhom": "za {identifier}",
         "openLink": "otvoriti poveznicu"
+      },
+      "mfa": {
+        "heading": "Drugi faktor",
+        "on": "Uključeno od {date}",
+        "off": "Nije postavljeno",
+        "disabledOn": "Resetirano {date}",
+        "disable": "Resetirati drugi faktor",
+        "reasonLabel": "Zašto (ide u dnevnik)",
+        "hint": "Resetiranje odjavljuje osobu posvuda i traži da ponovno postavi faktor pri sljedećem posjetu.",
+        "codesLeft": "{count} preostalih kodova za oporavak",
+        "self": "Ne možete resetirati vlastiti drugi faktor.",
+        "done": "Drugi faktor je resetiran.",
+        "error": {
+          "reason_too_short": "Navedite razlog u nekoliko riječi.",
+          "self_target": "Ne možete resetirati vlastiti drugi faktor.",
+          "not_enrolled": "Ova osoba nema drugi faktor za resetiranje.",
+          "no_access": "Samo vlasnik to može učiniti.",
+          "unauth": "Prijavite se ponovno.",
+          "unknown_error": "Nešto je pošlo po zlu. Pokušajte ponovno."
+        }
       }
     },
     "company": {
@@ -1727,6 +1749,15 @@
         "REJECTED": "odbijeno",
         "CLOSED": "zatvoreno"
       }
+    },
+    "mfa": {
+      "title": "Prijava i sigurnost",
+      "subtitle": "Računi osoblja otvaraju administratorsko područje kodom iz aplikacije za autentifikaciju.",
+      "on": "Drugi faktor uključen od {date}.",
+      "off": "Drugi faktor još nije postavljen.",
+      "codesLeft": "{count} preostalih kodova za oporavak.",
+      "enable": "Postaviti drugi faktor",
+      "rotate": "Premjestiti ga na drugi telefon"
     }
   },
   "register": {
@@ -3127,5 +3158,37 @@
   },
   "login": {
     "subtitle": "Nastavite s odabranim pružateljem ili se prijavite lozinkom"
+  },
+  "mfa": {
+    "kicker": "Drugi faktor",
+    "setupTitle": "Postavite drugi faktor",
+    "setupSubtitle": "Računi osoblja otvaraju administratorsko područje kodom iz aplikacije za autentifikaciju, ne samo lozinkom.",
+    "verifyTitle": "Unesite kod",
+    "verifySubtitle": "Šest znamenki koje aplikacija za autentifikaciju trenutno prikazuje.",
+    "step1": "Otvorite bilo koju aplikaciju za autentifikaciju — Google Authenticator, 1Password, Aegis, Authy.",
+    "openApp": "Dodajte u aplikaciju",
+    "orByHand": "Ili dodajte ručno ovim ključem:",
+    "preparing": "Priprema ključa…",
+    "step3": "Zatim unesite šest znamenki koje aplikacija prikazuje.",
+    "codeLabel": "Kod iz aplikacije",
+    "recoveryLabel": "Kod za oporavak",
+    "confirm": "Uključite drugi faktor",
+    "enter": "Nastavite",
+    "checking": "Provjera…",
+    "useRecovery": "Izgubljen je telefon — upotrijebite kod za oporavak",
+    "useAppCode": "Natrag na kod iz aplikacije",
+    "codesIntro": "Deset kodova za oporavak. Svaki vrijedi jednom i omogućuje pristup kada telefona nema.",
+    "codesOnce": "Prikazuju se samo ovaj put. Zapišite ih negdje izvan telefona.",
+    "codesSaved": "Zapisao/la sam ih",
+    "error": {
+      "code_invalid": "Taj kod nije točan. Provjerite sat na telefonu i pokušajte s idućim.",
+      "code_reused": "Taj kod je već iskorišten. Pričekajte da aplikacija prikaže sljedeći.",
+      "rate_limited": "Previše pokušaja. Pokušajte ponovno za petnaest minuta.",
+      "not_enrolled": "Drugi faktor nije postavljen za ovaj račun.",
+      "unreadable": "Spremljeni ključ nije moguće pročitati. Zamolite vlasnika da resetira vaš drugi faktor.",
+      "no_access": "Ova je stranica za račune osoblja.",
+      "unknown_error": "Nešto je pošlo po zlu. Pokušajte ponovno.",
+      "verify_first": "Najprije unesite kod iz svoje trenutne aplikacije, zatim možete premjestiti faktor na drugi telefon."
+    }
   }
 }

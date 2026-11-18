@@ -346,7 +346,9 @@
       "expired": "Diese Einladung ist abgelaufen.",
       "accepted": "Diese Einladung wurde bereits verwendet.",
       "revoked": "Diese Einladung wurde widerrufen.",
-      "failed": "Etwas ist schiefgelaufen."
+      "failed": "Etwas ist schiefgelaufen.",
+      "self_target": "Sie können Ihren eigenen zweiten Faktor nicht zurücksetzen.",
+      "not_enrolled": "Diese Person hat keinen zweiten Faktor zum Zurücksetzen."
     },
     "audit": {
       "title": "Audit-Log",
@@ -951,6 +953,26 @@
         "revokeInvite": "Widerrufen",
         "forWhom": "für {identifier}",
         "openLink": "Link öffnen"
+      },
+      "mfa": {
+        "heading": "Zweiter Faktor",
+        "on": "Seit {date} aktiv",
+        "off": "Nicht eingerichtet",
+        "disabledOn": "Zurückgesetzt am {date}",
+        "disable": "Zweiten Faktor zurücksetzen",
+        "reasonLabel": "Warum (wird protokolliert)",
+        "hint": "Zurücksetzen meldet die Person überall ab und fordert sie bei ihrem nächsten Besuch auf, den Faktor erneut einzurichten.",
+        "codesLeft": "{count} Wiederherstellungscodes übrig",
+        "self": "Sie können Ihren eigenen zweiten Faktor nicht zurücksetzen.",
+        "done": "Der zweite Faktor wurde zurückgesetzt.",
+        "error": {
+          "reason_too_short": "Sagen Sie in wenigen Worten, warum.",
+          "self_target": "Sie können Ihren eigenen zweiten Faktor nicht zurücksetzen.",
+          "not_enrolled": "Diese Person hat keinen zweiten Faktor zum Zurücksetzen.",
+          "no_access": "Nur der Eigentümer kann dies tun.",
+          "unauth": "Melden Sie sich erneut an.",
+          "unknown_error": "Etwas ist schiefgelaufen. Versuchen Sie es erneut."
+        }
       }
     },
     "company": {
@@ -1727,6 +1749,15 @@
         "REJECTED": "abgelehnt",
         "CLOSED": "geschlossen"
       }
+    },
+    "mfa": {
+      "title": "Anmeldung und Sicherheit",
+      "subtitle": "Mitarbeiterkonten öffnen den Adminbereich mit einem Code aus einer Authentifikator-App.",
+      "on": "Zweiter Faktor seit {date} aktiv.",
+      "off": "Zweiter Faktor ist noch nicht eingerichtet.",
+      "codesLeft": "Noch {count} Wiederherstellungscodes übrig.",
+      "enable": "Zweiten Faktor einrichten",
+      "rotate": "Auf ein anderes Telefon übertragen"
     }
   },
   "register": {
@@ -3127,5 +3158,37 @@
   },
   "login": {
     "subtitle": "Fahre mit deinem bevorzugten Anbieter fort oder melde dich mit einem Passwort an."
+  },
+  "mfa": {
+    "kicker": "Zweiter Faktor",
+    "setupTitle": "Richte deinen zweiten Faktor ein",
+    "setupSubtitle": "Mitarbeiterkonten öffnen den Admin‑Bereich mit einem Code aus einer Authenticator‑App, nicht nur mit dem Passwort.",
+    "verifyTitle": "Code eingeben",
+    "verifySubtitle": "Die sechs Ziffern, die deine Authenticator‑App gerade anzeigt.",
+    "step1": "Öffne eine beliebige Authenticator‑App — Google Authenticator, 1Password, Aegis, Authy.",
+    "openApp": "Zur App hinzufügen",
+    "orByHand": "Oder manuell mit diesem Schlüssel hinzufügen:",
+    "preparing": "Schlüssel wird vorbereitet …",
+    "step3": "Gib dann die sechs Ziffern ein, die die App anzeigt.",
+    "codeLabel": "Code aus der App",
+    "recoveryLabel": "Wiederherstellungscode",
+    "confirm": "Zweiten Faktor aktivieren",
+    "enter": "Weiter",
+    "checking": "Wird geprüft …",
+    "useRecovery": "Ich habe das Telefon verloren — Wiederherstellungscode verwenden",
+    "useAppCode": "Zurück zum Code aus der App",
+    "codesIntro": "Zehn Wiederherstellungscodes. Jeder funktioniert einmal und lässt dich rein, wenn das Telefon weg ist.",
+    "codesOnce": "Sie werden nur dieses eine Mal angezeigt. Schreib sie irgendwo auf, nur nicht auf dem Telefon.",
+    "codesSaved": "Ich habe sie aufgeschrieben",
+    "error": {
+      "code_invalid": "Dieser Code ist nicht richtig. Prüfe die Uhrzeit auf dem Telefon und versuche den nächsten.",
+      "code_reused": "Dieser Code wurde bereits verwendet. Warte, bis die App den nächsten anzeigt.",
+      "rate_limited": "Zu viele Versuche. Versuch es in fünfzehn Minuten erneut.",
+      "not_enrolled": "Für dieses Konto ist der zweite Faktor nicht eingerichtet.",
+      "unreadable": "Der gespeicherte Schlüssel kann nicht gelesen werden. Bitte den Besitzer, deinen zweiten Faktor zurückzusetzen.",
+      "no_access": "Diese Seite ist für Mitarbeiterkonten.",
+      "unknown_error": "Etwas ist schiefgelaufen. Versuche es erneut.",
+      "verify_first": "Geben Sie zuerst den Code aus Ihrer aktuellen App ein, dann können Sie den Faktor auf ein anderes Telefon übertragen."
+    }
   }
 }

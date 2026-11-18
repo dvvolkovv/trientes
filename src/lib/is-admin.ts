@@ -3,7 +3,7 @@ import { requireStaff } from "@/lib/authz/guard";
 
 export type AdminCheckResult =
   | { ok: true; userId: string }
-  | { ok: false; reason: "unauth" | "no_access" };
+  | { ok: false; reason: "unauth" | "no_access" | "mfa_setup" | "mfa_verify" };
 
 /**
  * Общая калитка в админку. Раньше она отвечала на единственный вопрос «ты админ

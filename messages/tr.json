@@ -346,7 +346,9 @@
       "expired": "Bu davetin süresi dolmuş.",
       "accepted": "Bu davet zaten kullanılmış.",
       "revoked": "Bu davet iptal edildi.",
-      "failed": "Bir şeyler ters gitti."
+      "failed": "Bir şeyler ters gitti.",
+      "self_target": "Kendi ikinci faktörünüzü sıfırlayamazsınız.",
+      "not_enrolled": "Bu kişinin sıfırlanacak bir ikinci faktörü yok."
     },
     "audit": {
       "title": "Denetim günlüğü",
@@ -951,6 +953,26 @@
         "revokeInvite": "İptal et",
         "forWhom": "{identifier} için",
         "openLink": "bağlantıyı aç"
+      },
+      "mfa": {
+        "heading": "İkinci faktör",
+        "on": "{date} tarihinden beri açık",
+        "off": "Ayarlanmadı",
+        "disabledOn": "{date} tarihinde sıfırlandı",
+        "disable": "İkinci faktörü sıfırla",
+        "reasonLabel": "Neden (günlüğe yazılır)",
+        "hint": "Sıfırlamak kişiyi her yerden çıkarır ve bir sonraki ziyaretinde faktörü yeniden kurmasını ister.",
+        "codesLeft": "{count} kurtarma kodu kaldı",
+        "self": "Kendi ikinci faktörünüzü sıfırlayamazsınız.",
+        "done": "İkinci faktör sıfırlandı.",
+        "error": {
+          "reason_too_short": "Nedeni birkaç kelimeyle belirtin.",
+          "self_target": "Kendi ikinci faktörünüzü sıfırlayamazsınız.",
+          "not_enrolled": "Bu kişinin sıfırlanacak bir ikinci faktörü yok.",
+          "no_access": "Bunu yalnızca sahibi yapabilir.",
+          "unauth": "Yeniden oturum açın.",
+          "unknown_error": "Bir şeyler ters gitti. Yeniden deneyin."
+        }
       }
     },
     "company": {
@@ -1727,6 +1749,15 @@
         "REJECTED": "reddedildi",
         "CLOSED": "kapalı"
       }
+    },
+    "mfa": {
+      "title": "Giriş ve güvenlik",
+      "subtitle": "Personel hesapları yönetim alanını bir doğrulayıcı uygulamasından alınan bir kodla açar.",
+      "on": "İkinci faktör {date} tarihinden beri açık.",
+      "off": "İkinci faktör henüz kurulmadı.",
+      "codesLeft": "{count} kurtarma kodu kaldı.",
+      "enable": "İkinci faktörü kur",
+      "rotate": "Başka bir telefona taşı"
     }
   },
   "register": {
@@ -3127,5 +3158,37 @@
   },
   "login": {
     "subtitle": "Tercih ettiğiniz sağlayıcıyla devam edin veya parola ile oturum açın."
+  },
+  "mfa": {
+    "kicker": "İkinci faktör",
+    "setupTitle": "İkinci faktörünüzü ayarlayın",
+    "setupSubtitle": "Personel hesapları yönetici alanını yalnızca parola ile değil, bir kimlik doğrulama uygulamasındaki kodla açar.",
+    "verifyTitle": "Kodu girin",
+    "verifySubtitle": "Kimlik doğrulama uygulamanızın şu anda gösterdiği altı hane.",
+    "step1": "Herhangi bir kimlik doğrulama uygulamasını açın — Google Authenticator, 1Password, Aegis, Authy.",
+    "openApp": "Uygulamaya ekleyin",
+    "orByHand": "Ya da bu anahtarla elle ekleyin:",
+    "preparing": "Anahtar hazırlanıyor…",
+    "step3": "Sonra uygulamanın gösterdiği altı haneyi yazın.",
+    "codeLabel": "Uygulamadaki kod",
+    "recoveryLabel": "Kurtarma kodu",
+    "confirm": "İkinci faktörü açın",
+    "enter": "Devam edin",
+    "checking": "Kontrol ediliyor…",
+    "useRecovery": "Telefonu kaybettim — kurtarma kodunu kullan",
+    "useAppCode": "Uygulamadaki koda geri dönün",
+    "codesIntro": "On adet kurtarma kodu. Her biri bir kez çalışır ve telefon yokken giriş yapmanızı sağlar.",
+    "codesOnce": "Yalnızca bu sefer gösterilirler. Onları telefondan başka bir yere yazın.",
+    "codesSaved": "Yazdım",
+    "error": {
+      "code_invalid": "Bu kod doğru değil. Telefondaki saati kontrol edin ve bir sonrakini deneyin.",
+      "code_reused": "Bu kod zaten kullanıldı. Uygulamanın bir sonrakini göstermesini bekleyin.",
+      "rate_limited": "Çok fazla deneme. On beş dakika sonra tekrar deneyin.",
+      "not_enrolled": "Bu hesap için ikinci faktör ayarlanmadı.",
+      "unreadable": "Kayıtlı anahtar okunamıyor. Sahibinden ikinci faktörünüzü sıfırlamasını isteyin.",
+      "no_access": "Bu sayfa personel hesapları içindir.",
+      "unknown_error": "Bir şeyler yanlış gitti. Tekrar deneyin.",
+      "verify_first": "Önce mevcut uygulamanızdaki kodu girin, ardından faktörü başka bir telefona taşıyabilirsiniz."
+    }
   }
 }

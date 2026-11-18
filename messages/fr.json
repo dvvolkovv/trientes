@@ -346,7 +346,9 @@
       "expired": "Cette invitation a expiré.",
       "accepted": "Cette invitation a déjà été utilisée.",
       "revoked": "Cette invitation a été révoquée.",
-      "failed": "Un problème est survenu."
+      "failed": "Un problème est survenu.",
+      "self_target": "Vous ne pouvez pas réinitialiser votre propre deuxième facteur.",
+      "not_enrolled": "Cette personne n'a aucun deuxième facteur à réinitialiser."
     },
     "audit": {
       "title": "Journal d'audit",
@@ -951,6 +953,26 @@
         "revokeInvite": "Révoquer",
         "forWhom": "pour {identifier}",
         "openLink": "ouvrir le lien"
+      },
+      "mfa": {
+        "heading": "Second facteur",
+        "on": "Activé depuis {date}",
+        "off": "Non configuré",
+        "disabledOn": "Réinitialisé le {date}",
+        "disable": "Réinitialiser le second facteur",
+        "reasonLabel": "Pourquoi (ajouté au journal)",
+        "hint": "La réinitialisation déconnecte la personne partout et lui demandera de configurer à nouveau le facteur lors de sa prochaine visite.",
+        "codesLeft": "Il reste {count} codes de récupération",
+        "self": "Vous ne pouvez pas réinitialiser votre propre second facteur.",
+        "done": "Le second facteur a été réinitialisé.",
+        "error": {
+          "reason_too_short": "Expliquez pourquoi en quelques mots.",
+          "self_target": "Vous ne pouvez pas réinitialiser votre propre second facteur.",
+          "not_enrolled": "Cette personne n’a pas de second facteur à réinitialiser.",
+          "no_access": "Seul le propriétaire peut faire cela.",
+          "unauth": "Reconnectez-vous.",
+          "unknown_error": "Un problème est survenu. Réessayez."
+        }
       }
     },
     "company": {
@@ -1727,6 +1749,15 @@
         "REJECTED": "refusé",
         "CLOSED": "fermé"
       }
+    },
+    "mfa": {
+      "title": "Connexion et sécurité",
+      "subtitle": "Les comptes du personnel ouvrent la zone d'administration avec un code d'une application d'authentification.",
+      "on": "Second facteur activé depuis {date}.",
+      "off": "Le second facteur n'est pas encore configuré.",
+      "codesLeft": "{count} codes de récupération restants.",
+      "enable": "Configurer le second facteur",
+      "rotate": "Le transférer vers un autre téléphone"
     }
   },
   "register": {
@@ -3127,5 +3158,37 @@
   },
   "login": {
     "subtitle": "Continuez avec votre fournisseur préféré ou connectez-vous avec un mot de passe."
+  },
+  "mfa": {
+    "kicker": "Deuxième facteur",
+    "setupTitle": "Configurez votre deuxième facteur",
+    "setupSubtitle": "Les comptes du personnel ouvrent l’espace d’administration avec un code d’une application d’authentification, pas avec le mot de passe seul.",
+    "verifyTitle": "Saisissez le code",
+    "verifySubtitle": "Les six chiffres que votre application d’authentification affiche en ce moment.",
+    "step1": "Ouvrez n’importe quelle application d’authentification — Google Authenticator, 1Password, Aegis, Authy.",
+    "openApp": "Ajouter à l’application",
+    "orByHand": "Ou ajoutez-le manuellement avec cette clé:",
+    "preparing": "Préparation de la clé…",
+    "step3": "Puis saisissez les six chiffres affichés par l’application.",
+    "codeLabel": "Code de l’application",
+    "recoveryLabel": "Code de récupération",
+    "confirm": "Activer le deuxième facteur",
+    "enter": "Continuer",
+    "checking": "Vérification…",
+    "useRecovery": "J'ai perdu le téléphone — utiliser un code de récupération",
+    "useAppCode": "Revenir au code de l'application",
+    "codesIntro": "Dix codes de récupération. Chacun fonctionne une fois et vous permet d'entrer quand le téléphone est perdu.",
+    "codesOnce": "Ils ne s'affichent qu'une seule fois. Notez-les ailleurs que sur le téléphone.",
+    "codesSaved": "Je les ai notés",
+    "error": {
+      "code_invalid": "Ce code est incorrect. Vérifiez l'horloge du téléphone et essayez le suivant.",
+      "code_reused": "Ce code a déjà été utilisé. Attendez que l'application affiche le suivant.",
+      "rate_limited": "Trop de tentatives. Réessayez dans quinze minutes.",
+      "not_enrolled": "Le second facteur n'est pas configuré pour ce compte.",
+      "unreadable": "La clé enregistrée est illisible. Demandez au propriétaire de réinitialiser votre second facteur.",
+      "no_access": "Cette page est réservée aux comptes du personnel.",
+      "unknown_error": "Un problème est survenu. Réessayez.",
+      "verify_first": "Saisissez d'abord le code à partir de votre application actuelle, puis vous pourrez déplacer le facteur vers un autre téléphone."
+    }
   }
 }

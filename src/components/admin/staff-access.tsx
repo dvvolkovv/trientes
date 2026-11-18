@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { disableStaffMfa } from "@/app/actions/mfa";
 import {
   markAccessReviewPassed,
   restoreStaffAccess,
@@ -24,6 +25,7 @@ export type StaffAccessLabels = {
   cancel: string;
   matrix: MatrixLabels;
   errors: Record<string, string>;
+  mfa: { heading: string; reasonLabel: string; disable: string; hint: string };
 };
 
 export type StaffRow = {
@@ -36,6 +38,9 @@ export type StaffRow = {
   reviewOverdue: boolean;
   revokedLine: string | null;
   revokeReasonLine: string | null;
+  /** Второй фактор: готовая строка о состоянии и можно ли его снять этому владельцу. */
+  mfaLine: string;
+  mfaResettable: boolean;
 };
 
 /**
@@ -47,6 +52,7 @@ export function StaffAccessRow({ row, labels }: { row: StaffRow; labels: StaffAc
   const [levels, setLevels] = useState<MatrixValue>(row.levels);
   const [editing, setEditing] = useState(false);
   const [reason, setReason] = useState("");
+  const [mfaReason, setMfaReason] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
   const [pending, start] = useTransition();
@@ -65,6 +71,17 @@ export function StaffAccessRow({ row, labels }: { row: StaffRow; labels: StaffAc
       const res = await setStaffGrants({ userId: row.userId, grants });
       if (!res.ok) return fail(res.reason);
       setEditing(false);
+      setDone(true);
+    });
+  }
+
+  function resetMfa() {
+    setError(null);
+    setDone(false);
+    start(async () => {
+      const res = await disableStaffMfa({ userId: row.userId, reason: mfaReason.trim() });
+      if (!res.ok) return fail(res.reason);
+      setMfaReason("");
       setDone(true);
     });
   }
@@ -124,6 +141,33 @@ export function StaffAccessRow({ row, labels }: { row: StaffRow; labels: StaffAc
       <p className={`mb-3 text-[12px] ${row.reviewOverdue ? "text-down" : "text-muted"}`}>
         {row.reviewLine}
       </p>
+
+      <div className="mb-3 rounded-[14px] border border-hairline bg-bg-tint p-3">
+        <div className="mb-1 text-[9.5px] uppercase tracking-[0.15em] text-muted">
+          {labels.mfa.heading}
+        </div>
+        <div className="text-[13px]">{row.mfaLine}</div>
+        {row.mfaResettable ? (
+          <div className="mt-2 flex flex-col gap-2.5">
+            <input
+              value={mfaReason}
+              onChange={(e) => setMfaReason(e.target.value)}
+              placeholder={labels.mfa.reasonLabel}
+              maxLength={400}
+              className="h-12 w-full rounded-[14px] border border-hairline bg-card px-3 text-[13px] outline-none focus:border-accent"
+            />
+            <button
+              type="button"
+              disabled={pending || mfaReason.trim().length < 3}
+              className={ADMIN_BUTTON_DANGER}
+              onClick={resetMfa}
+            >
+              {labels.mfa.disable}
+            </button>
+            <p className="text-[12px] leading-snug text-muted">{labels.mfa.hint}</p>
+          </div>
+        ) : null}
+      </div>
 
       <div className="flex flex-col gap-2.5">
         {editing ? (

@@ -92,6 +92,8 @@ model User {
   staffInvitesGot          StaffInvite[]             @relation("StaffInviteAcceptor")
   staffMembersInvited      StaffMember[]             @relation("StaffMemberInviter")
   staffAccessRevoked       StaffMember[]             @relation("StaffMemberRevoker")
+  mfa                      StaffMfa?
+  mfaDisabled              StaffMfa[]                @relation("StaffMfaDisabler")
   pointReports             PointReport[]             @relation("PointReporter")
   casesReviewed            ComplianceCase[]          @relation("CaseReviewer")
   casesApproved            ComplianceCase[]          @relation("CaseApprover")
@@ -244,6 +246,11 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
+  /// Когда в этом сеансе был показан второй фактор. Фактор проверяется на
+  /// сеансе, а не внутри входа: провайдеров входа четыре (пароль, Google,
+  /// GitHub, Telegram), и встраивать проверку в каждый — четыре места, где
+  /// можно забыть. Один охранник там же, где читается право на очередь.
+  mfaAt        DateTime?
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -466,6 +473,8 @@ enum AdminAction {
   STAFF_ACCESS_RESTORED
   ACCESS_REVIEW_PASSED
   CLOSE_CASES_AS_SPAM
+  STAFF_MFA_ENABLED
+  STAFF_MFA_DISABLED
 }
 
 model AdminAuditLog {
@@ -1702,4 +1711,47 @@ model StaffInvite {
   revokedAt    DateTime?
 
   @@index([invitedById])
+}
+
+enum MfaKind {
+  TOTP
+}
+
+/// Второй фактор входа сотрудника. Одна строка на человека: больше одного
+/// телефона нам пока не просили, а второй ключ рядом с первым означал бы два
+/// места, где фактор можно снять незаметно.
+model StaffMfa {
+  userId         String    @id
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind           MfaKind   @default(TOTP)
+  /// AES-256-GCM, `iv:tag:ciphertext` в base64url. Хешировать ключ нельзя — по
+  /// нему считается код, — поэтому дамп таблицы без ключа приложения входа не даёт.
+  secretEnc      String
+  /// Пока null — заведение начато, но код ни разу не подтверждён: такой фактор
+  /// ничего не охраняет и заводится заново поверх.
+  confirmedAt    DateTime?
+  /// Номер последнего принятого шага: код того же или прежнего шага отвергается.
+  lastStep       BigInt?
+  createdAt      DateTime  @default(now())
+
+  /// Снял владелец. Строка остаётся — журнал того, что фактор был, важнее чистоты таблицы.
+  disabledAt     DateTime?
+  disabledById   String?
+  disabledBy     User?     @relation("StaffMfaDisabler", fields: [disabledById], references: [id], onDelete: SetNull)
+  disabledReason String?
+
+  recoveryCodes  StaffMfaRecoveryCode[]
+}
+
+/// Одноразовый код восстановления. В базе только sha256 — как у токена сброса пароля.
+model StaffMfaRecoveryCode {
+  id        String    @id @default(cuid())
+  userId    String
+  mfa       StaffMfa  @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  codeHash  String
+  createdAt DateTime  @default(now())
+  usedAt    DateTime?
+
+  @@index([userId])
+  @@unique([userId, codeHash])
 }

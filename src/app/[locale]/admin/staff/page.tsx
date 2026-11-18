@@ -38,7 +38,9 @@ export default async function AdminStaffPage({
   const { w } = await searchParams;
   setRequestLocale(locale);
   // Управление системой, а не работа по заявке: только владелец.
-  if (!(await requireOwner()).ok) redirect(`/${locale}/admin/queues`);
+  const owner = await requireOwner();
+  if (!owner.ok) redirect(`/${locale}/admin/queues`);
+  const viewerId = owner.userId;
   const t = await getTranslations("admin");
 
   const win = asWindow(w);
@@ -104,6 +106,13 @@ export default async function AdminStaffPage({
             username: true,
             email: true,
             staffGrants: { select: { queue: true, level: true } },
+            mfa: {
+              select: {
+                confirmedAt: true,
+                disabledAt: true,
+                recoveryCodes: { where: { usedAt: null }, select: { id: true } },
+              },
+            },
           },
         },
       },
@@ -117,6 +126,23 @@ export default async function AdminStaffPage({
   ]);
 
   const day = (d: Date) => d.toISOString().slice(0, 10);
+
+  /**
+   * Состояние второго фактора одной строкой: дату форматирует сервер, как и
+   * срок пересмотра — браузер сотрудника в чужом часовом поясе показал бы
+   * другой день.
+   */
+  const mfaLine = (
+    mfa: { confirmedAt: Date | null; disabledAt: Date | null; recoveryCodes: { id: string }[] } | null,
+  ): string => {
+    if (!mfa || mfa.disabledAt) {
+      return mfa?.disabledAt
+        ? `${t("staff.mfa.off")} · ${t("staff.mfa.disabledOn", { date: day(mfa.disabledAt) })}`
+        : t("staff.mfa.off");
+    }
+    if (!mfa.confirmedAt) return t("staff.mfa.off");
+    return `${t("staff.mfa.on", { date: day(mfa.confirmedAt) })} · ${t("staff.mfa.codesLeft", { count: mfa.recoveryCodes.length })}`;
+  };
   const emptyMatrix = Object.fromEntries(QUEUES.map((q) => [q.key, null])) as MatrixValue;
 
   const accessRows: StaffRow[] = members.map((m) => ({
@@ -136,6 +162,9 @@ export default async function AdminStaffPage({
     revokeReasonLine: m.revokeReason
       ? t("staff.access.revokedReason", { reason: m.revokeReason })
       : null,
+    mfaLine: mfaLine(m.user.mfa),
+    // Снять фактор может только владелец, и только у заведённого; себе — нельзя.
+    mfaResettable: m.userId !== viewerId && Boolean(m.user.mfa?.confirmedAt),
   }));
 
   const errors: Record<string, string> = Object.fromEntries(
@@ -155,6 +184,8 @@ export default async function AdminStaffPage({
       "duplicate_queue",
       "too_many",
       "invalid",
+      "self_target",
+      "not_enrolled",
       "failed",
     ].map((key) => [key, t(`errors.${key}`)]),
   );
@@ -191,6 +222,12 @@ export default async function AdminStaffPage({
     cancel: t("staff.access.cancel"),
     matrix: matrixLabels,
     errors,
+    mfa: {
+      heading: t("staff.mfa.heading"),
+      reasonLabel: t("staff.mfa.reasonLabel"),
+      disable: t("staff.mfa.disable"),
+      hint: t("staff.mfa.hint"),
+    },
   };
 
   const inviteLabels = {

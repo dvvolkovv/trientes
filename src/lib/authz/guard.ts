@@ -7,8 +7,11 @@
  * сразу, без перезахода (так же читается роль в `callbacks.session`).
  */
 import { cache } from "react";
+import { cookies } from "next/headers";
 import type { CaseSubjectType } from "@prisma/client";
 import { auth } from "@/auth";
+import { authSessionCookieName } from "@/lib/session";
+import { mfaGate, type MfaGate } from "@/lib/mfa/policy";
 import { prisma } from "@/lib/prisma";
 import {
   can,
@@ -22,7 +25,7 @@ import {
 } from "@/lib/authz/policy";
 import { SUBJECT_QUEUES } from "@/lib/authz/map";
 
-export type DenyReason = "unauth" | "no_access";
+export type DenyReason = "unauth" | "no_access" | "mfa_setup" | "mfa_verify";
 export type GuardResult =
   | { ok: true; userId: string; access: ViewerAccess }
   | { ok: false; reason: DenyReason };
@@ -54,11 +57,36 @@ export const loadViewerAccess = cache(async (): Promise<ViewerAccess | null> => 
   };
 });
 
-/** Общая калитка в админку: вошёл, сотрудник или владелец, доступ не отозван. */
+/**
+ * Второй фактор — на сеансе, а не внутри входа: провайдеров входа четыре, и
+ * встраивать проверку в каждый означало бы четыре места, где можно забыть.
+ * Читается здесь, в той же калитке, где читается право на очередь, поэтому
+ * фактор спрашивается у любого экрана и любого действия админки сразу.
+ */
+export const loadMfaGate = cache(async (): Promise<MfaGate> => {
+  const access = await loadViewerAccess();
+  if (!access) return "ok";
+  const [mfa, token] = await Promise.all([
+    prisma.staffMfa.findUnique({
+      where: { userId: access.userId },
+      select: { confirmedAt: true, disabledAt: true },
+    }),
+    cookies().then((jar) => jar.get(authSessionCookieName())?.value ?? null),
+  ]);
+  const session = token
+    ? await prisma.session.findUnique({ where: { sessionToken: token }, select: { mfaAt: true } })
+    : null;
+  return mfaGate({ role: access.role, mfa, sessionMfaAt: session?.mfaAt ?? null });
+});
+
+/** Общая калитка в админку: вошёл, сотрудник или владелец, доступ не отозван, фактор показан. */
 export async function requireStaff(): Promise<GuardResult> {
   const access = await loadViewerAccess();
   if (!access) return { ok: false, reason: "unauth" };
   if (access.revokedAt || !isStaffRole(access.role)) return { ok: false, reason: "no_access" };
+  const gate = await loadMfaGate();
+  if (gate === "setup") return { ok: false, reason: "mfa_setup" };
+  if (gate === "verify") return { ok: false, reason: "mfa_verify" };
   return { ok: true, userId: access.userId, access };
 }
 

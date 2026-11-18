@@ -82,3 +82,25 @@ export const ACCESS_MAP: Requirement[] = [
 export function requirementFor(key: string): Requirement | null {
   return ACCESS_MAP.find((r) => r.key === key) ?? null;
 }
+
+
+/**
+ * Куда отправить того, кого калитка не пустила. Правило в одном месте и накрыто
+ * тестом: новый повод отказа, забытый в раскладке админки, молча уводил бы
+ * человека в кабинет — а он, скажем, всего лишь не показал код.
+ */
+export function adminRedirectFor(
+  reason: "unauth" | "no_access" | "mfa_setup" | "mfa_verify",
+  locale: string,
+): string {
+  switch (reason) {
+    case "unauth":
+      return `/${locale}/login?next=/${locale}/admin`;
+    case "mfa_setup":
+      return `/${locale}/mfa/setup`;
+    case "mfa_verify":
+      return `/${locale}/mfa`;
+    case "no_access":
+      return `/${locale}/cabinet`;
+  }
+}

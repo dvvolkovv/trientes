@@ -346,7 +346,9 @@
       "expired": "该邀请已过期。",
       "accepted": "该邀请已被使用。",
       "revoked": "该邀请已被撤销。",
-      "failed": "发生了错误。"
+      "failed": "发生了错误。",
+      "self_target": "您不能重置您自己的第二要素。",
+      "not_enrolled": "此人没有可重置的第二要素。"
     },
     "audit": {
       "title": "审计日志",
@@ -951,6 +953,26 @@
         "revokeInvite": "撤销",
         "forWhom": "针对{identifier}",
         "openLink": "打开链接"
+      },
+      "mfa": {
+        "heading": "第二因素",
+        "on": "自{date}起已启用",
+        "off": "未设置",
+        "disabledOn": "已于{date}重置",
+        "disable": "重置第二因素",
+        "reasonLabel": "原因（将记录到日志）",
+        "hint": "重置会使该用户在所有地方退出，并在其下次访问时要求重新设置该因素。",
+        "codesLeft": "剩余{count}个恢复代码",
+        "self": "你不能重置你自己的第二因素。",
+        "done": "第二因素已重置。",
+        "error": {
+          "reason_too_short": "请用几句话说明原因。",
+          "self_target": "你不能重置你自己的第二因素。",
+          "not_enrolled": "此人没有可重置的第二因素。",
+          "no_access": "只有所有者可以执行此操作。",
+          "unauth": "请重新登录。",
+          "unknown_error": "出现问题。请重试。"
+        }
       }
     },
     "company": {
@@ -1727,6 +1749,15 @@
         "REJECTED": "已拒绝",
         "CLOSED": "已关闭"
       }
+    },
+    "mfa": {
+      "title": "登录与安全",
+      "subtitle": "员工账户使用验证器应用的验证码进入管理区。",
+      "on": "第二要素自{date}起已启用。",
+      "off": "尚未设置第二要素。",
+      "codesLeft": "剩余{count}个恢复代码。",
+      "enable": "设置第二要素",
+      "rotate": "迁移到另一部手机"
     }
   },
   "register": {
@@ -3127,5 +3158,37 @@
   },
   "login": {
     "subtitle": "通过您首选的提供商继续，或使用密码登录。"
+  },
+  "mfa": {
+    "kicker": "第二因素",
+    "setupTitle": "设置你的第二因素",
+    "setupSubtitle": "员工账户通过验证器应用提供的验证码进入管理区域，而不是仅用密码。",
+    "verifyTitle": "输入验证码",
+    "verifySubtitle": "你身份验证器应用此刻显示的六位数字。",
+    "step1": "打开任意身份验证器应用——Google Authenticator、1Password、Aegis、Authy。",
+    "openApp": "添加到应用",
+    "orByHand": "或使用此密钥手动添加：",
+    "preparing": "正在准备密钥…",
+    "step3": "然后输入应用显示的六位数字。",
+    "codeLabel": "应用中的验证码",
+    "recoveryLabel": "恢复代码",
+    "confirm": "启用第二因素",
+    "enter": "继续",
+    "checking": "正在检查…",
+    "useRecovery": "我丢了手机 — 使用恢复代码",
+    "useAppCode": "返回应用验证码",
+    "codesIntro": "十个恢复代码。每个仅可使用一次，手机丢失时可用来登录。",
+    "codesOnce": "这些代码只显示一次。把它们记在手机以外的地方。",
+    "codesSaved": "我已记下",
+    "error": {
+      "code_invalid": "该代码不正确。检查手机上的时间，然后尝试下一个。",
+      "code_reused": "该代码已被使用。请等待应用显示下一个。",
+      "rate_limited": "尝试次数过多。十五分钟后再试。",
+      "not_enrolled": "该账户未设置第二因素。",
+      "unreadable": "无法读取存储的密钥。请联系所有者重置你的第二因素。",
+      "no_access": "此页面仅供员工账户使用。",
+      "unknown_error": "出现问题。请重试。",
+      "verify_first": "请先输入当前应用中的验证码，然后再将该验证因素迁移到另一部手机。"
+    }
   }
 }
