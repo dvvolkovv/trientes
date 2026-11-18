@@ -54,7 +54,8 @@
       "title": "Trientes — 디지털 화폐의 원장",
       "description": "실시간 가격, 거래소, 핀테크 디렉터리, 그리고 {count}개 언어로 제공되는 현장형 크립토 내비게이터.",
       "pageDescription": "Trientes — 실시간 암호화폐 시세, 거래소, 핀테크 디렉터리, 그리고 현장 내비게이터."
-    }
+    },
+    "products": "제품"
   },
   "home": {
     "title": "환영합니다",
@@ -588,7 +589,8 @@
         "fintech": "핀테크",
         "kyb": "KYB 문서",
         "coinRequests": "코인 요청",
-        "pointReports": "포인트 신고"
+        "pointReports": "포인트 신고",
+        "products": "제품 패스포트"
       },
       "unread": "{count}개 미읽음",
       "spam": {
@@ -667,7 +669,12 @@
         "companyRestored": "업체가 목록에 복구됨",
         "reviewPassed": "정기 심사를 통과함; 다음 일정은 {next}",
         "reopened": "다시 열림 — 신청자가 다시 제출함",
-        "closedAsSpam": "스팸으로 닫힘: {reason}"
+        "closedAsSpam": "스팸으로 닫힘: {reason}",
+        "productReported": "패스포트에 대한 신고가 접수됨: {reason}",
+        "productClaimed": "제조사가 패스포트를 청구함",
+        "productSuspended": "패스포트를 카탈로그에서 내림",
+        "productRestored": "패스포트를 카탈로그에 복구함",
+        "productMerged": "패스포트를 중복으로 표시함"
       },
       "thread": {
         "title": "대화",
@@ -732,7 +739,10 @@
         "availabilityPlausible": "명시한 국가가 타당해 보임",
         "reportsIndependent": "보고가 독립적인 사람들에게서 옴",
         "ownerAsked": "해당 업체에 문의함",
-        "pointStillListed": "해당 지점이 지도에 여전히 있음"
+        "pointStillListed": "해당 지점이 지도에 여전히 있음",
+        "brandRightProven": "브랜드 권리가 입증됨(등록부, 라이선스 또는 계약)",
+        "reportReproduced": "신고가 출처와 대조되어 확인됨",
+        "passportMatchesSource": "패스포트가 제조사 자체 데이터와 일치함"
       },
       "checklist": {
         "title": "검토",
@@ -829,7 +839,15 @@
           "approve": "신고 확인 — 장소를 지도에서 제거",
           "reject": "신고 기각 — 장소를 지도에 유지"
         },
-        "noDecideRight": "이 케이스를 준비하고 검토할 수는 있지만, 승인하려면 이 대기열에서 결정 권한이 있는 사람이 필요합니다."
+        "noDecideRight": "이 케이스를 준비하고 검토할 수는 있지만, 승인하려면 이 대기열에서 결정 권한이 있는 사람이 필요합니다.",
+        "productReport": {
+          "approve": "신고를 확인하고 패스포트를 내림",
+          "reject": "신고를 기각하고 패스포트를 복구함"
+        },
+        "productClaim": {
+          "approve": "제조사를 확인함",
+          "reject": "청구를 거부함"
+        }
       },
       "reports": {
         "title": "신고",
@@ -840,7 +858,11 @@
           "CLOSED": "영구 폐점",
           "NO_CRYPTO": "암호화폐를 받지 않음",
           "WRONG_ADDRESS": "주소 또는 위치가 잘못됨",
-          "OTHER": "기타"
+          "OTHER": "기타",
+          "WRONG_DATA": "잘못된 데이터",
+          "FAKE": "가짜 제품",
+          "NOT_MINE": "브랜드 도용",
+          "ILLEGAL": "금지된 상품"
         }
       },
       "access": {
@@ -1034,6 +1056,9 @@
       "onlineNoCoords": "온라인 — 좌표 없음",
       "coinsLabel": "코인",
       "rejectedLabel": "거부됨"
+    },
+    "products": {
+      "openPassport": "패스포트 열기"
     }
   },
   "exchanges": {
@@ -1560,7 +1585,8 @@
       "title": "귀하의 비즈니스가 리스팅에서 내려갔습니다",
       "noReason": "사유가 기록되지 않았습니다.",
       "hint": "케이스 스레드에 답장해 주시면 다시 검토하겠습니다."
-    }
+    },
+    "productsLink": "제품"
   },
   "cabinet": {
     "kicker": "섹션 · 캐비닛",
@@ -3189,6 +3215,223 @@
       "no_access": "이 페이지는 직원 계정 전용입니다.",
       "unknown_error": "문제가 발생했습니다. 다시 시도하세요.",
       "verify_first": "먼저 현재 앱에서 코드를 입력한 다음, 인증 요소를 다른 휴대폰으로 옮길 수 있습니다."
+    }
+  },
+  "products": {
+    "kicker": "카탈로그",
+    "title": "제품 여권",
+    "subtitle": "제품마다 하나의 여권 — 어떤 제품인지 알려줍니다. 판매자가 입력하고 제조사가 확인합니다.",
+    "searchPlaceholder": "이름, 브랜드 또는 바코드",
+    "search": "검색",
+    "allCategories": "모든 카테고리",
+    "found": "{count}개의 패스포트",
+    "empty": "아직 아무것도 찾지 못했습니다.",
+    "prev": "이전",
+    "next": "다음",
+    "pageOf": "{pages}페이지 중 {page}페이지",
+    "hasVideo": "동영상 있음",
+    "close": "닫기",
+    "byManufacturer": "{name} 확인됨",
+    "manufacturerStated": "제조사 표기: {name}",
+    "noManufacturer": "아직 어떤 제조사도 이 패스포트를 확인하지 않았습니다",
+    "gtin": "바코드",
+    "listen": "설명 듣기",
+    "listenStop": "중지",
+    "claimButton": "이 제품은 당사 제품입니다",
+    "descriptionHeading": "설명",
+    "usageHeading": "사용 방법",
+    "ingredientsHeading": "성분",
+    "attributesHeading": "특성",
+    "documentsHeading": "문서",
+    "documentKind": {
+      "certificate": "인증서",
+      "datasheet": "데이터시트",
+      "manual": "매뉴얼",
+      "declaration": "적합성 선언서",
+      "other": "문서"
+    },
+    "category": {
+      "food": "식품",
+      "drinks": "음료",
+      "electronics": "전자제품",
+      "clothing": "의류",
+      "home": "가정 및 정원",
+      "beauty": "뷰티",
+      "health": "건강",
+      "auto": "자동차",
+      "industrial": "산업 장비",
+      "materials": "소재",
+      "agriculture": "농업",
+      "services": "서비스",
+      "other": "기타"
+    },
+    "tokenHeading": "토큰화",
+    "tokenReady": "이 패스포트는 토큰화할 준비가 되었습니다.",
+    "tokenNotReady": "아직 토큰화 준비가 되지 않았습니다. 누락:",
+    "tokenIssued": "{chain}에서 발행된 토큰: {asset}",
+    "tokenMissing": {
+      "name": "제품명",
+      "category": "카테고리",
+      "description": "상세 설명",
+      "photo": "사진 최소 1장",
+      "gtin": "바코드",
+      "manufacturer": "확인된 제조사",
+      "document": "문서 최소 1개"
+    },
+    "tokenNote": "토큰은 이 사이트가 아니라 네트워크에서 발행합니다: 소유권은 곧 화폐이며, 화폐에는 발행자가 하나뿐입니다.",
+    "report": {
+      "open": "문제 신고",
+      "title": "이 패스포트의 어떤 점이 잘못되었나요?",
+      "reason": {
+        "WRONG_DATA": "데이터가 잘못됨",
+        "FAKE": "이 제품은 존재하지 않음 / 위조품",
+        "NOT_MINE": "우리 브랜드를 다른 사람이 주장함",
+        "ILLEGAL": "금지된 상품",
+        "OTHER": "기타"
+      },
+      "comment": "구체적으로 알려주세요(일부 사유에서는 선택 사항)",
+      "send": "보내기",
+      "cancel": "취소",
+      "sent": "감사합니다 — 담당자가 검토하겠습니다.",
+      "failed": "보내지 못했습니다. 다시 시도하세요.",
+      "errors": {
+        "comment_required": "무엇이 잘못됐는지 구체적으로 알려주세요.",
+        "too_soon": "오늘 이미 이 패스포트를 신고했습니다.",
+        "not_found": "이 패스포트는 더 이상 카탈로그에 없습니다.",
+        "captcha": "검증에 실패했습니다. 새로 시도하세요."
+      }
+    },
+    "claim": {
+      "title": "이것은 우리 제품입니다",
+      "subtitle": "회사 명의로 «{name}»의 패스포트를 신청하세요.",
+      "companyLabel": "회사",
+      "evidenceLabel": "귀사의 것임을 어떻게 확인할 수 있나요?",
+      "evidencePlaceholder": "상표 번호, 포장에 적힌 도메인, 계약서 — 담당자가 확인할 수 있는 자료면 됩니다.",
+      "submit": "신청 보내기",
+      "sending": "전송 중…",
+      "back": "패스포트로 돌아가기",
+      "alreadyOwned": "이 패스포트에는 이미 확인된 제조사가 있습니다.",
+      "pending": "이 패스포트에 대한 신청이 이미 심사 중입니다.",
+      "needCompany": "목록에 있는 회사만 패스포트를 신청할 수 있습니다.",
+      "toCabinet": "회사 등록",
+      "error": {
+        "unauth": "로그인하세요.",
+        "forbidden": "귀사의 패스포트 신청이 불가합니다: 회사가 목록에 있어야 하며 귀하는 소유자나 편집자 권한이 필요합니다.",
+        "not_found": "패스포트를 찾을 수 없습니다.",
+        "already_owned": "이 패스포트에는 이미 확인된 제조사가 있습니다.",
+        "already_pending": "이미 이 패스포트에 소유 신청을 하셨습니다.",
+        "claim_pending": "다른 회사가 지금 이 패스포트에 소유 신청을 진행 중입니다.",
+        "evidence_required": "증빙을 설명해 주세요(최소 10자).",
+        "failed": "소유 신청을 전송할 수 없습니다."
+      }
+    }
+  },
+  "cabinetProducts": {
+    "title": "제품",
+    "subtitle": "귀사가 생성했거나 보유하거나 편집한 패스포트.",
+    "create": "패스포트 추가",
+    "edit": "편집",
+    "open": "열기",
+    "empty": "아직 패스포트가 없습니다.",
+    "notListed": "제품 패스포트를 편집하려면 귀사가 목록에 등재되어야 합니다.",
+    "yours": "귀사 소유",
+    "suspended": "카탈로그 제외",
+    "incomingRevisions": "{count}개의 제안된 편집이 대기 중입니다",
+    "historyHeading": "기록",
+    "revisionsHeading": "제안된 편집",
+    "productsLink": "제품",
+    "field": {
+      "created": "패스포트 생성됨",
+      "name": "이름",
+      "brand": "브랜드",
+      "manufacturerName": "제조사",
+      "category": "카테고리",
+      "language": "설명 언어",
+      "gtin": "바코드",
+      "description": "설명",
+      "usage": "사용 방법",
+      "ingredients": "구성",
+      "attributes": "속성",
+      "photos": "사진",
+      "videoUrl": "동영상",
+      "video": "동영상",
+      "documents": "문서"
+    },
+    "category": {
+      "food": "식품",
+      "drinks": "음료",
+      "electronics": "전자제품",
+      "clothing": "의류",
+      "home": "가정 및 정원",
+      "beauty": "뷰티",
+      "health": "건강",
+      "auto": "자동차",
+      "industrial": "산업 장비",
+      "materials": "자재",
+      "agriculture": "농업",
+      "services": "서비스",
+      "other": "기타"
+    },
+    "documentKind": {
+      "certificate": "인증서",
+      "datasheet": "데이터시트",
+      "manual": "매뉴얼",
+      "declaration": "적합성 선언서",
+      "other": "문서"
+    },
+    "checkGtin": "확인",
+    "gtinHint": "포장에 있는 13자리 숫자. 바코드가 있는 제품은 전 세계에서 하나의 여권을 가집니다.",
+    "gtinTaken": "이 바코드의 여권이 이미 존재합니다.",
+    "openPassport": "열기",
+    "attrKey": "속성",
+    "attrValue": "값",
+    "attrUnit": "단위",
+    "addAttribute": "속성 추가",
+    "remove": "삭제",
+    "removeVideo": "동영상 삭제",
+    "videoHint": "제품당 mp4 1개, 최대 30 MB. 다시 인코딩하지 않습니다: 브라우저에서 그대로 재생되는 파일을 업로드하세요.",
+    "languageHint": "설명이 작성된 언어 — 음성이 그 언어로 읽습니다.",
+    "openFile": "파일 열기",
+    "save": "저장",
+    "saving": "저장 중…",
+    "propose": "편집 제안",
+    "willPropose": "이 여권에는 인증된 제조사가 있으므로, 귀하의 변경 사항은 제안된 편집으로 제조사에게 전달됩니다.",
+    "revert": "되돌리기",
+    "reverted": "되돌림:",
+    "rejectReason": "거부 사유(거부하려면 필수)",
+    "acceptRevision": "승인",
+    "rejectRevision": "거부",
+    "error": {
+      "unauth": "로그인해 주세요.",
+      "forbidden": "이 여권을 편집할 수 없습니다.",
+      "not_found": "여권을 찾을 수 없습니다.",
+      "not_pending": "이 제안은 이미 결정되었습니다.",
+      "not_revertable": "이 항목은 되돌릴 수 없습니다.",
+      "empty_patch": "이 제안은 아무것도 변경하지 않습니다.",
+      "reason_required": "사유를 입력하세요(최소 3자).",
+      "name_required": "이름이 필요합니다.",
+      "name_too_long": "이름이 너무 깁니다.",
+      "category_invalid": "카테고리를 선택하세요.",
+      "language_invalid": "지원하는 언어를 선택하세요.",
+      "gtin_invalid": "유효한 바코드가 아닙니다 — 숫자를 확인하세요.",
+      "gtin_taken": "이 바코드의 패스포트가 이미 있습니다.",
+      "description_required": "설명이 필요합니다.",
+      "description_too_long": "설명이 너무 깁니다.",
+      "text_too_long": "필드 중 하나가 너무 깁니다.",
+      "too_many_photos": "사진이 너무 많습니다.",
+      "too_many_documents": "문서가 너무 많습니다.",
+      "bad_media_url": "해당 파일은 당사 파일이 아닙니다 — 여기에서 업로드하세요.",
+      "bad_document_kind": "문서 유형을 선택하세요.",
+      "daily_limit": "일일 한도에 도달했습니다. 내일 다시 시도하세요.",
+      "upload_too_large": "파일이 너무 큽니다.",
+      "upload_bad_type": "이 파일 형식은 받지 않습니다.",
+      "upload_forbidden": "귀사는 파일을 업로드할 수 없습니다.",
+      "upload_failed": "업로드에 실패했습니다.",
+      "failed": "저장할 수 없습니다."
+    },
+    "info": {
+      "gtin_free": "이 바코드의 패스포트는 아직 없습니다 — 귀하가 처음입니다.",
+      "proposed": "귀하의 수정이 제조사에 전송되었습니다."
     }
   }
 }

@@ -54,7 +54,8 @@
       "title": "Trientes — das Ledger digitaler Münzen",
       "description": "Live-Preise, Börsen, Fintech-Verzeichnis und ein praxisnaher Krypto-Navigator in {count} Sprachen.",
       "pageDescription": "Trientes — Live-Kryptopreise, Börsen, ein Fintech-Verzeichnis und ein Navigator vor Ort"
-    }
+    },
+    "products": "Produkte"
   },
   "home": {
     "title": "Willkommen",
@@ -588,7 +589,8 @@
         "fintech": "Fintech",
         "kyb": "KYB-Dokumente",
         "coinRequests": "Coin-Anfragen",
-        "pointReports": "Punktmeldungen"
+        "pointReports": "Punktmeldungen",
+        "products": "Produktpässe"
       },
       "unread": "{count} ungelesen",
       "spam": {
@@ -667,7 +669,12 @@
         "companyRestored": "Unternehmen wieder in die Liste aufgenommen",
         "reviewPassed": "regelmäßige Überprüfung bestanden; nächste am {next}",
         "reopened": "wiedereröffnet — der Antragsteller hat erneut eingereicht",
-        "closedAsSpam": "als Spam geschlossen: {reason}"
+        "closedAsSpam": "als Spam geschlossen: {reason}",
+        "productReported": "eine Meldung zum Pass ist eingegangen: {reason}",
+        "productClaimed": "ein Hersteller hat den Pass beansprucht",
+        "productSuspended": "den Pass aus dem Katalog entfernt",
+        "productRestored": "den Pass in den Katalog zurückgestellt",
+        "productMerged": "den Pass als Duplikat markiert"
       },
       "thread": {
         "title": "Korrespondenz",
@@ -732,7 +739,10 @@
         "availabilityPlausible": "Angegebene Länder wirken plausibel",
         "reportsIndependent": "Berichte stammen von unabhängigen Personen",
         "ownerAsked": "Das Unternehmen wurde dazu befragt",
-        "pointStillListed": "Der Punkt ist noch auf der Karte"
+        "pointStillListed": "Der Punkt ist noch auf der Karte",
+        "brandRightProven": "Recht an der Marke ist nachgewiesen (Register, Lizenz oder Vertrag)",
+        "reportReproduced": "Die Meldung ist anhand der Quellen verifiziert",
+        "passportMatchesSource": "Pass stimmt mit den Herstellerangaben überein"
       },
       "checklist": {
         "title": "Prüfungen",
@@ -829,7 +839,15 @@
           "approve": "Meldungen bestätigen — Ort von der Karte entfernen",
           "reject": "Meldungen verwerfen — Ort auf der Karte behalten"
         },
-        "noDecideRight": "Sie können diesen Fall vorbereiten und prüfen, aber für die Genehmigung ist jemand mit Entscheidungsrechten in dieser Warteschlange erforderlich."
+        "noDecideRight": "Sie können diesen Fall vorbereiten und prüfen, aber für die Genehmigung ist jemand mit Entscheidungsrechten in dieser Warteschlange erforderlich.",
+        "productReport": {
+          "approve": "Meldung bestätigen und den Pass entfernen",
+          "reject": "Meldung verwerfen und den Pass zurückstellen"
+        },
+        "productClaim": {
+          "approve": "Hersteller bestätigen",
+          "reject": "Anspruch ablehnen"
+        }
       },
       "reports": {
         "title": "Meldungen",
@@ -840,7 +858,11 @@
           "CLOSED": "Dauerhaft geschlossen",
           "NO_CRYPTO": "Akzeptiert keine Krypto",
           "WRONG_ADDRESS": "Falsche Adresse oder Standort",
-          "OTHER": "Etwas anderes"
+          "OTHER": "Etwas anderes",
+          "WRONG_DATA": "falsche Daten",
+          "FAKE": "gefälschtes Produkt",
+          "NOT_MINE": "Markenmissbrauch",
+          "ILLEGAL": "verbotene Waren"
         }
       },
       "access": {
@@ -1034,6 +1056,9 @@
       "onlineNoCoords": "online — keine Koordinaten",
       "coinsLabel": "Coins",
       "rejectedLabel": "Abgelehnt"
+    },
+    "products": {
+      "openPassport": "Pass öffnen"
     }
   },
   "exchanges": {
@@ -1560,7 +1585,8 @@
       "title": "Ihr Unternehmen ist nicht mehr gelistet",
       "noReason": "Es wurde kein Grund angegeben.",
       "hint": "Antworten Sie in Ihrem Fall-Thread und wir schauen es uns erneut an."
-    }
+    },
+    "productsLink": "Produkte"
   },
   "cabinet": {
     "kicker": "Bereich · Kabinett",
@@ -3189,6 +3215,223 @@
       "no_access": "Diese Seite ist für Mitarbeiterkonten.",
       "unknown_error": "Etwas ist schiefgelaufen. Versuche es erneut.",
       "verify_first": "Geben Sie zuerst den Code aus Ihrer aktuellen App ein, dann können Sie den Faktor auf ein anderes Telefon übertragen."
+    }
+  },
+  "products": {
+    "kicker": "Katalog",
+    "title": "Produktpässe",
+    "subtitle": "Ein Pass pro Produkt — was das Ding ist. Verkäufer füllen ihn aus, der Hersteller bestätigt ihn.",
+    "searchPlaceholder": "Name, Marke oder Barcode",
+    "search": "Suchen",
+    "allCategories": "Alle Kategorien",
+    "found": "{count} Produktpässe",
+    "empty": "Noch nichts gefunden.",
+    "prev": "Zurück",
+    "next": "Weiter",
+    "pageOf": "Seite {page} von {pages}",
+    "hasVideo": "Mit Video",
+    "close": "Schließen",
+    "byManufacturer": "Bestätigt von {name}",
+    "manufacturerStated": "Vom Hersteller angegeben: {name}",
+    "noManufacturer": "Kein Hersteller hat diesen Pass bisher bestätigt",
+    "gtin": "Barcode",
+    "listen": "Beschreibung anhören",
+    "listenStop": "Stopp",
+    "claimButton": "Das ist unser Produkt",
+    "descriptionHeading": "Beschreibung",
+    "usageHeading": "Verwendung",
+    "ingredientsHeading": "Zusammensetzung",
+    "attributesHeading": "Eigenschaften",
+    "documentsHeading": "Dokumente",
+    "documentKind": {
+      "certificate": "Zertifikat",
+      "datasheet": "Datenblatt",
+      "manual": "Handbuch",
+      "declaration": "Konformitätserklärung",
+      "other": "Dokument"
+    },
+    "category": {
+      "food": "Lebensmittel",
+      "drinks": "Getränke",
+      "electronics": "Elektronik",
+      "clothing": "Bekleidung",
+      "home": "Haus & Garten",
+      "beauty": "Schönheit",
+      "health": "Gesundheit",
+      "auto": "Automobil",
+      "industrial": "Industrieausrüstung",
+      "materials": "Materialien",
+      "agriculture": "Landwirtschaft",
+      "services": "Dienstleistungen",
+      "other": "Sonstiges"
+    },
+    "tokenHeading": "Tokenisierung",
+    "tokenReady": "Der Pass ist bereit für die Tokenisierung.",
+    "tokenNotReady": "Noch nicht bereit für die Tokenisierung. Es fehlt:",
+    "tokenIssued": "Token auf {chain} ausgegeben: {asset}",
+    "tokenMissing": {
+      "name": "Produktname",
+      "category": "Kategorie",
+      "description": "eine vollständige Beschreibung",
+      "photo": "mindestens ein Foto",
+      "gtin": "ein Barcode",
+      "manufacturer": "ein bestätigter Hersteller",
+      "document": "mindestens ein Dokument"
+    },
+    "tokenNote": "Ein Token wird vom Netzwerk ausgegeben, nicht von dieser Seite: Eigentum ist Geld, und Geld hat einen Herausgeber.",
+    "report": {
+      "open": "Problem melden",
+      "title": "Was stimmt mit diesem Pass nicht?",
+      "reason": {
+        "WRONG_DATA": "Die Daten sind falsch",
+        "FAKE": "Dieses Produkt existiert nicht / ist eine Fälschung",
+        "NOT_MINE": "Unsere Marke, von jemand anderem beansprucht",
+        "ILLEGAL": "Verbotene Waren",
+        "OTHER": "Etwas anderes"
+      },
+      "comment": "Sagen Sie uns, was genau (bei einigen Gründen optional)",
+      "send": "Senden",
+      "cancel": "Abbrechen",
+      "sent": "Danke — das Team wird es prüfen.",
+      "failed": "Konnte nicht gesendet werden. Versuchen Sie es erneut.",
+      "errors": {
+        "comment_required": "Bitte sagen Sie, was genau nicht stimmt.",
+        "too_soon": "Sie haben diesen Pass heute bereits gemeldet.",
+        "not_found": "Dieser Produktpass ist nicht mehr im Katalog.",
+        "captcha": "Die Prüfung ist fehlgeschlagen. Versuchen Sie es mit einer neuen."
+      }
+    },
+    "claim": {
+      "title": "Das ist unser Produkt",
+      "subtitle": "Beanspruchen Sie den Produktpass von «{name}» für Ihr Unternehmen.",
+      "companyLabel": "Unternehmen",
+      "evidenceLabel": "Wie können wir erkennen, dass er Ihnen gehört?",
+      "evidencePlaceholder": "Markennummer, die Domain auf der Verpackung, ein Vertrag — alles, was das Team prüfen kann.",
+      "submit": "Anspruch senden",
+      "sending": "Senden…",
+      "back": "Zurück zum Produktpass",
+      "alreadyOwned": "Dieser Produktpass hat bereits einen bestätigten Hersteller.",
+      "pending": "Ein Anspruch auf diesen Produktpass wird bereits geprüft.",
+      "needCompany": "Nur ein gelistetes Unternehmen kann einen Produktpass beanspruchen.",
+      "toCabinet": "Unternehmen registrieren",
+      "error": {
+        "unauth": "Bitte melden Sie sich an.",
+        "forbidden": "Ihr Unternehmen kann keine Produktpässe beanspruchen: Es muss gelistet sein und Sie benötigen die Rolle Eigentümer oder Bearbeiter.",
+        "not_found": "Produktpass nicht gefunden.",
+        "already_owned": "Dieser Produktpass hat bereits einen bestätigten Hersteller.",
+        "already_pending": "Sie haben diesen Produktpass bereits beansprucht.",
+        "claim_pending": "Ein anderes Unternehmen beansprucht diesen Produktpass gerade.",
+        "evidence_required": "Bitte beschreiben Sie Ihren Nachweis (mindestens 10 Zeichen).",
+        "failed": "Konnte den Anspruch nicht senden."
+      }
+    }
+  },
+  "cabinetProducts": {
+    "title": "Produkte",
+    "subtitle": "Produktpässe, die Ihr Unternehmen erstellt, besitzt oder bearbeitet hat.",
+    "create": "Produktpass hinzufügen",
+    "edit": "Bearbeiten",
+    "open": "Öffnen",
+    "empty": "Noch keine Produktpässe.",
+    "notListed": "Ihr Unternehmen muss gelistet sein, bevor es Produktpässe bearbeiten kann.",
+    "yours": "Ihres",
+    "suspended": "aus dem Katalog",
+    "incomingRevisions": "{count} vorgeschlagene Änderungen warten auf Sie",
+    "historyHeading": "Verlauf",
+    "revisionsHeading": "Vorgeschlagene Änderungen",
+    "productsLink": "Produkte",
+    "field": {
+      "created": "Produktpass erstellt",
+      "name": "Name",
+      "brand": "Marke",
+      "manufacturerName": "Hersteller",
+      "category": "Kategorie",
+      "language": "Beschreibungssprache",
+      "gtin": "Barcode",
+      "description": "Beschreibung",
+      "usage": "Wie es verwendet wird",
+      "ingredients": "Zusammensetzung",
+      "attributes": "Eigenschaften",
+      "photos": "Fotos",
+      "videoUrl": "Video",
+      "video": "Video",
+      "documents": "Dokumente"
+    },
+    "category": {
+      "food": "Lebensmittel",
+      "drinks": "Getränke",
+      "electronics": "Elektronik",
+      "clothing": "Bekleidung",
+      "home": "Haus & Garten",
+      "beauty": "Schönheit",
+      "health": "Gesundheit",
+      "auto": "Automobil",
+      "industrial": "Industrieausrüstung",
+      "materials": "Materialien",
+      "agriculture": "Landwirtschaft",
+      "services": "Dienstleistungen",
+      "other": "Sonstiges"
+    },
+    "documentKind": {
+      "certificate": "Zertifikat",
+      "datasheet": "Datenblatt",
+      "manual": "Handbuch",
+      "declaration": "Konformitätserklärung",
+      "other": "Dokument"
+    },
+    "checkGtin": "Prüfen",
+    "gtinHint": "13 Ziffern von der Verpackung. Ein Produkt mit einem Barcode erhält einen Pass für die ganze Welt.",
+    "gtinTaken": "Ein Pass mit diesem Barcode existiert bereits.",
+    "openPassport": "Öffnen",
+    "attrKey": "Eigenschaft",
+    "attrValue": "Wert",
+    "attrUnit": "Einheit",
+    "addAttribute": "Eigenschaft hinzufügen",
+    "remove": "Entfernen",
+    "removeVideo": "Video entfernen",
+    "videoHint": "Eine mp4 pro Produkt, bis zu 30 MB. Wir kodieren nicht neu: Lade das hoch, was ein Browser unverändert abspielt.",
+    "languageHint": "Die Sprache, in der die Beschreibung verfasst ist — die Stimme liest sie in dieser Sprache vor.",
+    "openFile": "Datei öffnen",
+    "save": "Speichern",
+    "saving": "Speichern…",
+    "propose": "Änderung vorschlagen",
+    "willPropose": "Dieser Pass hat einen bestätigten Hersteller, daher gehen Ihre Änderungen als Vorschlag an den Hersteller.",
+    "revert": "Rückgängig",
+    "reverted": "rückgängig gemacht:",
+    "rejectReason": "Ablehnungsgrund (zum Ablehnen erforderlich)",
+    "acceptRevision": "Annehmen",
+    "rejectRevision": "Ablehnen",
+    "error": {
+      "unauth": "Bitte melden Sie sich an.",
+      "forbidden": "Sie können diesen Pass nicht bearbeiten.",
+      "not_found": "Pass nicht gefunden.",
+      "not_pending": "Über diesen Vorschlag wurde bereits entschieden.",
+      "not_revertable": "Dieser Eintrag kann nicht rückgängig gemacht werden.",
+      "empty_patch": "Der Vorschlag ändert nichts.",
+      "reason_required": "Bitte geben Sie einen Grund an (mindestens 3 Zeichen).",
+      "name_required": "Ein Name ist erforderlich.",
+      "name_too_long": "Der Name ist zu lang.",
+      "category_invalid": "Wählen Sie eine Kategorie.",
+      "language_invalid": "Wählen Sie eine unterstützte Sprache.",
+      "gtin_invalid": "Dies ist kein gültiger Barcode — prüfen Sie die Ziffern.",
+      "gtin_taken": "Ein Pass mit diesem Barcode existiert bereits.",
+      "description_required": "Eine Beschreibung ist erforderlich.",
+      "description_too_long": "Die Beschreibung ist zu lang.",
+      "text_too_long": "Eines der Felder ist zu lang.",
+      "too_many_photos": "Zu viele Fotos.",
+      "too_many_documents": "Zu viele Dokumente.",
+      "bad_media_url": "Diese Datei stammt nicht von uns — laden Sie sie hier hoch.",
+      "bad_document_kind": "Wählen Sie einen Dokumenttyp.",
+      "daily_limit": "Tageslimit erreicht. Versuchen Sie es morgen erneut.",
+      "upload_too_large": "Die Datei ist zu groß.",
+      "upload_bad_type": "Dieser Dateityp wird nicht akzeptiert.",
+      "upload_forbidden": "Ihr Unternehmen kann keine Dateien hochladen.",
+      "upload_failed": "Upload fehlgeschlagen.",
+      "failed": "Speichern nicht möglich."
+    },
+    "info": {
+      "gtin_free": "Noch kein Pass mit diesem Barcode — Sie sind die/der Erste.",
+      "proposed": "Ihre Änderung wurde an den Hersteller gesendet."
     }
   }
 }

@@ -54,7 +54,8 @@
       "title": "Trientes — o livro-razão das moedas digitais",
       "description": "Preços em tempo real, exchanges, diretório de fintechs e um navegador cripto em campo em {count} idiomas.",
       "pageDescription": "Trientes — preços de cripto ao vivo, exchanges, um diretório de fintechs e um guia em campo."
-    }
+    },
+    "products": "Produtos"
   },
   "home": {
     "title": "Bem-vindo",
@@ -588,7 +589,8 @@
         "fintech": "Fintech",
         "kyb": "Documentos de KYB",
         "coinRequests": "Solicitações de moedas",
-        "pointReports": "Relatórios de pontos"
+        "pointReports": "Relatórios de pontos",
+        "products": "Passaportes de produtos"
       },
       "unread": "{count} não lidas",
       "spam": {
@@ -667,7 +669,12 @@
         "companyRestored": "empresa recolocada na listagem",
         "reviewPassed": "revisão periódica aprovada; próxima em {next}",
         "reopened": "reaberto — o solicitante enviou novamente",
-        "closedAsSpam": "fechado como spam: {reason}"
+        "closedAsSpam": "fechado como spam: {reason}",
+        "productReported": "chegou uma denúncia sobre o passaporte: {reason}",
+        "productClaimed": "um fabricante reivindicou o passaporte",
+        "productSuspended": "retirou o passaporte do catálogo",
+        "productRestored": "recolocou o passaporte no catálogo",
+        "productMerged": "marcou o passaporte como duplicado"
       },
       "thread": {
         "title": "Correspondência",
@@ -732,7 +739,10 @@
         "availabilityPlausible": "Países declarados parecem plausíveis",
         "reportsIndependent": "Relatos vêm de pessoas independentes",
         "ownerAsked": "A empresa foi consultada sobre isso",
-        "pointStillListed": "O ponto ainda está no mapa"
+        "pointStillListed": "O ponto ainda está no mapa",
+        "brandRightProven": "Direito à marca está comprovado (registro, licença ou contrato)",
+        "reportReproduced": "A denúncia confere com as fontes",
+        "passportMatchesSource": "O passaporte corresponde aos dados do próprio fabricante"
       },
       "checklist": {
         "title": "Verificações",
@@ -829,7 +839,15 @@
           "approve": "Confirmar relatos — remover o local do mapa",
           "reject": "Rejeitar relatos — manter o local no mapa"
         },
-        "noDecideRight": "Você pode preparar e revisar este caso, mas a aprovação precisa de alguém com direitos de decisão nesta fila."
+        "noDecideRight": "Você pode preparar e revisar este caso, mas a aprovação precisa de alguém com direitos de decisão nesta fila.",
+        "productReport": {
+          "approve": "Confirmar o relatório e retirar o passaporte",
+          "reject": "Rejeitar o relatório e restaurar o passaporte"
+        },
+        "productClaim": {
+          "approve": "Confirmar o fabricante",
+          "reject": "Recusar a reivindicação"
+        }
       },
       "reports": {
         "title": "Relatos",
@@ -840,7 +858,11 @@
           "CLOSED": "Fechado permanentemente",
           "NO_CRYPTO": "Não aceita cripto",
           "WRONG_ADDRESS": "Endereço ou localização incorretos",
-          "OTHER": "Outra coisa"
+          "OTHER": "Outra coisa",
+          "WRONG_DATA": "dados incorretos",
+          "FAKE": "produto falsificado",
+          "NOT_MINE": "marca usurpada",
+          "ILLEGAL": "produtos proibidos"
         }
       },
       "access": {
@@ -1034,6 +1056,9 @@
       "onlineNoCoords": "online — sem coordenadas",
       "coinsLabel": "moedas",
       "rejectedLabel": "Rejeitado"
+    },
+    "products": {
+      "openPassport": "Abrir o passaporte"
     }
   },
   "exchanges": {
@@ -1560,7 +1585,8 @@
       "title": "Sua empresa está fora da listagem",
       "noReason": "Nenhum motivo foi registrado.",
       "hint": "Responda no tópico do seu caso e vamos analisar novamente."
-    }
+    },
+    "productsLink": "Produtos"
   },
   "cabinet": {
     "kicker": "Seção · Painel",
@@ -3189,6 +3215,223 @@
       "no_access": "Esta página é para contas da equipe.",
       "unknown_error": "Algo deu errado. Tente novamente.",
       "verify_first": "Insira primeiro o código do seu aplicativo atual, então você poderá mover o fator para outro telefone."
+    }
+  },
+  "products": {
+    "kicker": "Catálogo",
+    "title": "Passaportes de produtos",
+    "subtitle": "Um passaporte por produto — o que a coisa é. Os vendedores preenchem, o fabricante confirma.",
+    "searchPlaceholder": "Nome, marca ou código de barras",
+    "search": "Pesquisar",
+    "allCategories": "Todas as categorias",
+    "found": "{count} passaportes",
+    "empty": "Nada encontrado ainda.",
+    "prev": "Anterior",
+    "next": "Próximo",
+    "pageOf": "página {page} de {pages}",
+    "hasVideo": "Tem vídeo",
+    "close": "Fechar",
+    "byManufacturer": "Confirmado por {name}",
+    "manufacturerStated": "Informado pelo fabricante: {name}",
+    "noManufacturer": "Nenhum fabricante confirmou este passaporte ainda",
+    "gtin": "Código de barras",
+    "listen": "Ouvir a descrição",
+    "listenStop": "Parar",
+    "claimButton": "Este é o nosso produto",
+    "descriptionHeading": "Descrição",
+    "usageHeading": "Como é usado",
+    "ingredientsHeading": "Composição",
+    "attributesHeading": "Propriedades",
+    "documentsHeading": "Documentos",
+    "documentKind": {
+      "certificate": "Certificado",
+      "datasheet": "Ficha técnica",
+      "manual": "Manual",
+      "declaration": "Declaração de conformidade",
+      "other": "Documento"
+    },
+    "category": {
+      "food": "Alimentos",
+      "drinks": "Bebidas",
+      "electronics": "Eletrônicos",
+      "clothing": "Roupas",
+      "home": "Casa e jardim",
+      "beauty": "Beleza",
+      "health": "Saúde",
+      "auto": "Automotivo",
+      "industrial": "Equipamentos industriais",
+      "materials": "Materiais",
+      "agriculture": "Agricultura",
+      "services": "Serviços",
+      "other": "Outros"
+    },
+    "tokenHeading": "Tokenização",
+    "tokenReady": "O passaporte está pronto para tokenização.",
+    "tokenNotReady": "Ainda não está pronto para tokenização. Faltando:",
+    "tokenIssued": "Token emitido na {chain}: {asset}",
+    "tokenMissing": {
+      "name": "nome do produto",
+      "category": "categoria",
+      "description": "uma descrição completa",
+      "photo": "pelo menos uma foto",
+      "gtin": "um código de barras",
+      "manufacturer": "um fabricante confirmado",
+      "document": "pelo menos um documento"
+    },
+    "tokenNote": "Um token é emitido pela rede, não por este site: a propriedade é dinheiro, e o dinheiro tem um único autor.",
+    "report": {
+      "open": "Reportar um problema",
+      "title": "O que há de errado com este passaporte?",
+      "reason": {
+        "WRONG_DATA": "Os dados estão errados",
+        "FAKE": "Este produto não existe / é falso",
+        "NOT_MINE": "Nossa marca, reivindicada por outra pessoa",
+        "ILLEGAL": "Produtos proibidos",
+        "OTHER": "Outra coisa"
+      },
+      "comment": "Diga exatamente o quê (opcional para alguns motivos)",
+      "send": "Enviar",
+      "cancel": "Cancelar",
+      "sent": "Obrigado — a equipe vai verificar.",
+      "failed": "Não foi possível enviar. Tente novamente.",
+      "errors": {
+        "comment_required": "Por favor, diga exatamente o que está errado.",
+        "too_soon": "Você já reportou este passaporte hoje.",
+        "not_found": "Este passaporte não está mais no catálogo.",
+        "captcha": "A verificação não passou. Tente a nova."
+      }
+    },
+    "claim": {
+      "title": "Este produto é nosso",
+      "subtitle": "Reivindique o passaporte de «{name}» para sua empresa.",
+      "companyLabel": "Empresa",
+      "evidenceLabel": "Como podemos saber que é seu?",
+      "evidencePlaceholder": "Número da marca, o domínio na embalagem, um contrato — qualquer coisa que a equipe possa verificar.",
+      "submit": "Enviar a reivindicação",
+      "sending": "Enviando…",
+      "back": "Voltar ao passaporte",
+      "alreadyOwned": "Este passaporte já tem um fabricante confirmado.",
+      "pending": "Uma reivindicação para este passaporte já está sendo analisada.",
+      "needCompany": "Apenas uma empresa listada pode reivindicar um passaporte.",
+      "toCabinet": "Registrar uma empresa",
+      "error": {
+        "unauth": "Faça login.",
+        "forbidden": "Sua empresa não pode reivindicar passaportes: ela deve estar listada e você precisa de função de proprietário ou editor.",
+        "not_found": "Passaporte não encontrado.",
+        "already_owned": "Este passaporte já tem um fabricante confirmado.",
+        "already_pending": "Você já reivindicou este passaporte.",
+        "claim_pending": "Outra empresa está reivindicando este passaporte agora.",
+        "evidence_required": "Descreva sua prova (ao menos 10 caracteres).",
+        "failed": "Não foi possível enviar a reivindicação."
+      }
+    }
+  },
+  "cabinetProducts": {
+    "title": "Produtos",
+    "subtitle": "Passaportes que sua empresa criou, possui ou editou.",
+    "create": "Adicionar um passaporte",
+    "edit": "Editar",
+    "open": "Abrir",
+    "empty": "Ainda não há passaportes.",
+    "notListed": "Sua empresa deve estar listada antes que possa editar passaportes de produtos.",
+    "yours": "seu",
+    "suspended": "fora do catálogo",
+    "incomingRevisions": "{count} edições propostas esperando por você",
+    "historyHeading": "Histórico",
+    "revisionsHeading": "Edições propostas",
+    "productsLink": "Produtos",
+    "field": {
+      "created": "passaporte criado",
+      "name": "Nome",
+      "brand": "Marca",
+      "manufacturerName": "Fabricante",
+      "category": "Categoria",
+      "language": "Idioma da descrição",
+      "gtin": "Código de barras",
+      "description": "Descrição",
+      "usage": "Como é usado",
+      "ingredients": "Composição",
+      "attributes": "Propriedades",
+      "photos": "Fotos",
+      "videoUrl": "Vídeo",
+      "video": "Vídeo",
+      "documents": "Documentos"
+    },
+    "category": {
+      "food": "Alimentos",
+      "drinks": "Bebidas",
+      "electronics": "Eletrônicos",
+      "clothing": "Roupas",
+      "home": "Casa e jardim",
+      "beauty": "Beleza",
+      "health": "Saúde",
+      "auto": "Automotivo",
+      "industrial": "Equipamentos industriais",
+      "materials": "Materiais",
+      "agriculture": "Agricultura",
+      "services": "Serviços",
+      "other": "Outros"
+    },
+    "documentKind": {
+      "certificate": "Certificado",
+      "datasheet": "Ficha técnica",
+      "manual": "Manual",
+      "declaration": "Declaração de conformidade",
+      "other": "Documento"
+    },
+    "checkGtin": "Verificar",
+    "gtinHint": "13 dígitos da embalagem. Um produto com código de barras tem um único passaporte para o mundo todo.",
+    "gtinTaken": "Já existe um passaporte com este código de barras.",
+    "openPassport": "Abrir",
+    "attrKey": "Propriedade",
+    "attrValue": "Valor",
+    "attrUnit": "Unidade",
+    "addAttribute": "Adicionar propriedade",
+    "remove": "Remover",
+    "removeVideo": "Remover o vídeo",
+    "videoHint": "Um mp4 por produto, até 30 MB. Não recodificamos: envie exatamente o que o navegador reproduz.",
+    "languageHint": "O idioma em que a descrição foi escrita — a voz a lê nesse idioma.",
+    "openFile": "Abrir arquivo",
+    "save": "Salvar",
+    "saving": "Salvando…",
+    "propose": "Propor a edição",
+    "willPropose": "Este passaporte tem um fabricante confirmado, então suas alterações serão enviadas a ele como uma edição proposta.",
+    "revert": "Desfazer",
+    "reverted": "desfeito:",
+    "rejectReason": "Motivo da recusa (obrigatório para recusar)",
+    "acceptRevision": "Aceitar",
+    "rejectRevision": "Recusar",
+    "error": {
+      "unauth": "Faça login.",
+      "forbidden": "Você não pode editar este passaporte.",
+      "not_found": "Passaporte não encontrado.",
+      "not_pending": "Esta proposta já foi decidida.",
+      "not_revertable": "Este registro não pode ser desfeito.",
+      "empty_patch": "A proposta não altera nada.",
+      "reason_required": "Informe um motivo (pelo menos 3 caracteres).",
+      "name_required": "Um nome é obrigatório.",
+      "name_too_long": "O nome é muito longo.",
+      "category_invalid": "Escolha uma categoria.",
+      "language_invalid": "Escolha um idioma que suportamos.",
+      "gtin_invalid": "Isso não é um código de barras válido — verifique os dígitos.",
+      "gtin_taken": "Já existe um passaporte com esse código de barras.",
+      "description_required": "Uma descrição é obrigatória.",
+      "description_too_long": "A descrição é muito longa.",
+      "text_too_long": "Um dos campos é muito longo.",
+      "too_many_photos": "Muitas fotos.",
+      "too_many_documents": "Muitos documentos.",
+      "bad_media_url": "Esse arquivo não é nosso — envie-o aqui.",
+      "bad_document_kind": "Escolha um tipo de documento.",
+      "daily_limit": "Limite diário atingido. Tente novamente amanhã.",
+      "upload_too_large": "O arquivo é grande demais.",
+      "upload_bad_type": "Não aceitamos este tipo de arquivo.",
+      "upload_forbidden": "Sua empresa não pode enviar arquivos.",
+      "upload_failed": "Falha no upload.",
+      "failed": "Não foi possível salvar."
+    },
+    "info": {
+      "gtin_free": "Ainda não há passaporte com esse código de barras — você é o primeiro.",
+      "proposed": "Sua edição foi enviada ao fabricante."
     }
   }
 }

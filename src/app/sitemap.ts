@@ -27,10 +27,10 @@ function withAlternates(path: string, lastModified?: Date): Entry {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
-  const staticPaths = ["", "/exchanges", "/fintech", "/companies", "/markets", "/compare"];
+  const staticPaths = ["", "/exchanges", "/fintech", "/companies", "/markets", "/compare", "/products"];
   const staticEntries = staticPaths.map((p) => withAlternates(p, now));
 
-  const [coins, cards, exchanges, fintechs, companies] = await Promise.all([
+  const [coins, cards, exchanges, fintechs, companies, products] = await Promise.all([
     prisma.coin.findMany({
       where: { isActive: true },
       orderBy: { rank: "asc" },
@@ -61,6 +61,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       take: 500,
       select: { id: true, updatedAt: true },
     }),
+    // Паспорта товара: снятые надзором, удалённые и признанные дублями в карту сайта не
+    // идут — их страницы отдают 404 и 308.
+    prisma.product.findMany({
+      where: { suspendedAt: null, deletedAt: null, mergedIntoId: null },
+      orderBy: { updatedAt: "desc" },
+      take: 500,
+      select: { slug: true, updatedAt: true },
+    }),
   ]);
 
   const dynamic: Entry[] = [
@@ -69,6 +77,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...exchanges.map((e) => withAlternates(`/exchanges/${e.id}`, e.updatedAt)),
     ...fintechs.map((f) => withAlternates(`/fintech/${f.slug}`, f.updatedAt)),
     ...companies.map((c) => withAlternates(`/companies/${c.id}`, c.updatedAt)),
+    ...products.map((p) => withAlternates(`/product/${p.slug}`, p.updatedAt)),
   ];
 
   return [...staticEntries, ...dynamic];

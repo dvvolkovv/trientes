@@ -54,7 +54,8 @@
       "title": "Trientes — dijital paranın defteri",
       "description": "Canlı fiyatlar, borsalar, fintech dizini ve sahada kripto rehberi; {count} dilde.",
       "pageDescription": "Trientes — canlı kripto fiyatları, borsalar, bir fintech dizini ve yerinde navigasyon."
-    }
+    },
+    "products": "Ürünler"
   },
   "home": {
     "title": "Hoş geldiniz",
@@ -588,7 +589,8 @@
         "fintech": "Fintek",
         "kyb": "KYB belgeleri",
         "coinRequests": "Coin talepleri",
-        "pointReports": "Nokta raporları"
+        "pointReports": "Nokta raporları",
+        "products": "Ürün pasaportları"
       },
       "unread": "{count} okunmamış",
       "spam": {
@@ -667,7 +669,12 @@
         "companyRestored": "işletme listeye geri alındı",
         "reviewPassed": "periyodik inceleme geçildi; sonraki {next} tarihinde",
         "reopened": "yeniden açıldı — başvuru sahibi tekrar gönderdi",
-        "closedAsSpam": "spam olarak kapatıldı: {reason}"
+        "closedAsSpam": "spam olarak kapatıldı: {reason}",
+        "productReported": "pasaport hakkında bir rapor geldi: {reason}",
+        "productClaimed": "bir üretici pasaportu talep etti",
+        "productSuspended": "pasaportu katalogdan kaldırdı",
+        "productRestored": "pasaportu kataloğa geri koydu",
+        "productMerged": "pasaportu mükerrer olarak işaretledi"
       },
       "thread": {
         "title": "Yazışma",
@@ -732,7 +739,10 @@
         "availabilityPlausible": "Beyan edilen ülkeler makul görünüyor",
         "reportsIndependent": "Raporlar bağımsız kişilerden geliyor",
         "ownerAsked": "İşletmeye bununla ilgili soruldu",
-        "pointStillListed": "Nokta hâlâ haritada"
+        "pointStillListed": "Nokta hâlâ haritada",
+        "brandRightProven": "Marka hakkı kanıtlandı (sicil, lisans veya sözleşme)",
+        "reportReproduced": "Rapor kaynaklara karşı doğrulandı",
+        "passportMatchesSource": "Pasaport üreticinin kendi verileriyle eşleşiyor"
       },
       "checklist": {
         "title": "Kontroller",
@@ -829,7 +839,15 @@
           "approve": "Raporları onayla — yeri haritadan kaldır",
           "reject": "Raporları reddet — yeri haritada tut"
         },
-        "noDecideRight": "Bu vakayı hazırlayabilir ve gözden geçirebilirsiniz, ancak onaylamak için bu kuyrukta karar yetkisi olan biri gerekir."
+        "noDecideRight": "Bu vakayı hazırlayabilir ve gözden geçirebilirsiniz, ancak onaylamak için bu kuyrukta karar yetkisi olan biri gerekir.",
+        "productReport": {
+          "approve": "Raporu onayla ve pasaportu kaldır",
+          "reject": "Raporu reddet ve pasaportu geri getir"
+        },
+        "productClaim": {
+          "approve": "Üreticiyi onayla",
+          "reject": "Talebi reddet"
+        }
       },
       "reports": {
         "title": "Raporlar",
@@ -840,7 +858,11 @@
           "CLOSED": "Kalıcı olarak kapalı",
           "NO_CRYPTO": "Kripto kabul etmiyor",
           "WRONG_ADDRESS": "Yanlış adres veya konum",
-          "OTHER": "Başka bir şey"
+          "OTHER": "Başka bir şey",
+          "WRONG_DATA": "hatalı veri",
+          "FAKE": "sahte ürün",
+          "NOT_MINE": "marka gaspı",
+          "ILLEGAL": "yasaklı ürünler"
         }
       },
       "access": {
@@ -1034,6 +1056,9 @@
       "onlineNoCoords": "çevrimiçi — koordinat yok",
       "coinsLabel": "coinler",
       "rejectedLabel": "Reddedildi"
+    },
+    "products": {
+      "openPassport": "Pasaportu aç"
     }
   },
   "exchanges": {
@@ -1560,7 +1585,8 @@
       "title": "İşletmeniz listeden kaldırıldı",
       "noReason": "Bir neden kaydedilmedi.",
       "hint": "Talebinizde yanıt verin, tekrar inceleyelim."
-    }
+    },
+    "productsLink": "Ürünler"
   },
   "cabinet": {
     "kicker": "Bölüm · Kabin",
@@ -3189,6 +3215,223 @@
       "no_access": "Bu sayfa personel hesapları içindir.",
       "unknown_error": "Bir şeyler yanlış gitti. Tekrar deneyin.",
       "verify_first": "Önce mevcut uygulamanızdaki kodu girin, ardından faktörü başka bir telefona taşıyabilirsiniz."
+    }
+  },
+  "products": {
+    "kicker": "Katalog",
+    "title": "Ürün pasaportları",
+    "subtitle": "Ürün başına bir pasaport — bu şeyin ne olduğudur. Satıcılar doldurur, üretici onaylar.",
+    "searchPlaceholder": "Ad, marka veya barkod",
+    "search": "Ara",
+    "allCategories": "Tüm kategoriler",
+    "found": "{count} pasaport",
+    "empty": "Henüz bir şey bulunamadı.",
+    "prev": "Önceki",
+    "next": "Sonraki",
+    "pageOf": "Sayfa {page} / {pages}",
+    "hasVideo": "Videolu",
+    "close": "Kapat",
+    "byManufacturer": "{name} tarafından onaylandı",
+    "manufacturerStated": "Üretici beyanı: {name}",
+    "noManufacturer": "Bu pasaportu henüz hiçbir üretici onaylamadı",
+    "gtin": "Barkod",
+    "listen": "Açıklamayı dinle",
+    "listenStop": "Durdur",
+    "claimButton": "Bu bizim ürünümüz",
+    "descriptionHeading": "Açıklama",
+    "usageHeading": "Nasıl kullanılır",
+    "ingredientsHeading": "Bileşim",
+    "attributesHeading": "Özellikler",
+    "documentsHeading": "Belgeler",
+    "documentKind": {
+      "certificate": "Sertifika",
+      "datasheet": "Teknik veri sayfası",
+      "manual": "Kılavuz",
+      "declaration": "Uygunluk beyanı",
+      "other": "Belge"
+    },
+    "category": {
+      "food": "Gıda",
+      "drinks": "İçecekler",
+      "electronics": "Elektronik",
+      "clothing": "Giyim",
+      "home": "Ev ve bahçe",
+      "beauty": "Güzellik",
+      "health": "Sağlık",
+      "auto": "Otomotiv",
+      "industrial": "Endüstriyel ekipman",
+      "materials": "Malzemeler",
+      "agriculture": "Tarım",
+      "services": "Hizmetler",
+      "other": "Diğer"
+    },
+    "tokenHeading": "Tokenizasyon",
+    "tokenReady": "Pasaport tokenizasyona hazır.",
+    "tokenNotReady": "Henüz tokenizasyona hazır değil. Eksik olanlar:",
+    "tokenIssued": "{chain} üzerinde token ihraç edildi: {asset}",
+    "tokenMissing": {
+      "name": "ürün adı",
+      "category": "kategori",
+      "description": "tam bir açıklama",
+      "photo": "en az bir fotoğraf",
+      "gtin": "bir barkod",
+      "manufacturer": "doğrulanmış bir üretici",
+      "document": "en az bir belge"
+    },
+    "tokenNote": "Token bu site tarafından değil, ağ tarafından ihraç edilir: mülkiyet paradır ve paranın tek bir yazarı vardır.",
+    "report": {
+      "open": "Sorun bildir",
+      "title": "Bu pasaportta ne sorun var?",
+      "reason": {
+        "WRONG_DATA": "Veriler yanlış",
+        "FAKE": "Bu ürün mevcut değil / sahte",
+        "NOT_MINE": "Markamız, başkası tarafından talep edildi",
+        "ILLEGAL": "Yasaklı ürünler",
+        "OTHER": "Başka bir şey"
+      },
+      "comment": "Tam olarak ne olduğunu söyleyin (bazı nedenler için isteğe bağlı)",
+      "send": "Gönder",
+      "cancel": "İptal",
+      "sent": "Teşekkürler — ekip inceleyecek.",
+      "failed": "Gönderilemedi. Tekrar deneyin.",
+      "errors": {
+        "comment_required": "Lütfen tam olarak neyin yanlış olduğunu söyleyin.",
+        "too_soon": "Bu pasaportu bugün zaten bildirdiniz.",
+        "not_found": "Bu pasaport artık katalogda değil.",
+        "captcha": "Doğrulama başarısız oldu. Yenisini deneyin."
+      }
+    },
+    "claim": {
+      "title": "Bu bizim ürünümüz",
+      "subtitle": "Şirketiniz için «{name}» pasaportunu talep edin.",
+      "companyLabel": "Şirket",
+      "evidenceLabel": "Bunun size ait olduğunu nasıl anlayabiliriz?",
+      "evidencePlaceholder": "Marka numarası, ambalaj üzerindeki alan adı, bir sözleşme — ekibin doğrulayabileceği herhangi bir şey",
+      "submit": "Talebi gönder",
+      "sending": "Gönderiliyor…",
+      "back": "Pasaporta geri dön",
+      "alreadyOwned": "Bu pasaportun zaten doğrulanmış bir üreticisi var.",
+      "pending": "Bu pasaport için bir talep zaten inceleniyor.",
+      "needCompany": "Yalnızca listelenmiş bir şirket bir pasaportu talep edebilir.",
+      "toCabinet": "Şirket kaydet",
+      "error": {
+        "unauth": "Lütfen giriş yapın.",
+        "forbidden": "Şirketiniz pasaport talep edemez: listelenmiş olmalı ve sizin sahip veya editör rolüne sahip olmalısınız.",
+        "not_found": "Pasaport bulunamadı.",
+        "already_owned": "Bu pasaportun zaten doğrulanmış bir üreticisi var.",
+        "already_pending": "Bu pasaportu zaten talep ettiniz.",
+        "claim_pending": "Şu anda başka bir şirket bu pasaportu talep ediyor.",
+        "evidence_required": "Lütfen kanıtınızı açıklayın (en az 10 karakter).",
+        "failed": "Talep gönderilemedi."
+      }
+    }
+  },
+  "cabinetProducts": {
+    "title": "Ürünler",
+    "subtitle": "Şirketinizin oluşturduğu, sahip olduğu veya düzenlediği pasaportlar.",
+    "create": "Pasaport ekle",
+    "edit": "Düzenle",
+    "open": "Aç",
+    "empty": "Henüz pasaport yok.",
+    "notListed": "Ürün pasaportlarını düzenleyebilmek için şirketinizin listelenmiş olması gerekir.",
+    "yours": "sizin",
+    "suspended": "katalog dışı",
+    "incomingRevisions": "{count} önerilen düzenleme sizi bekliyor",
+    "historyHeading": "Geçmiş",
+    "revisionsHeading": "Önerilen düzenlemeler",
+    "productsLink": "Ürünler",
+    "field": {
+      "created": "pasaport oluşturuldu",
+      "name": "Ad",
+      "brand": "Marka",
+      "manufacturerName": "Üretici",
+      "category": "Kategori",
+      "language": "Açıklama dili",
+      "gtin": "Barkod",
+      "description": "Açıklama",
+      "usage": "Nasıl kullanılır",
+      "ingredients": "Bileşim",
+      "attributes": "Özellikler",
+      "photos": "Fotoğraflar",
+      "videoUrl": "Video",
+      "video": "Video",
+      "documents": "Belgeler"
+    },
+    "category": {
+      "food": "Gıda",
+      "drinks": "İçecekler",
+      "electronics": "Elektronik",
+      "clothing": "Giyim",
+      "home": "Ev ve bahçe",
+      "beauty": "Güzellik",
+      "health": "Sağlık",
+      "auto": "Otomotiv",
+      "industrial": "Endüstriyel ekipman",
+      "materials": "Malzemeler",
+      "agriculture": "Tarım",
+      "services": "Hizmetler",
+      "other": "Diğer"
+    },
+    "documentKind": {
+      "certificate": "Sertifika",
+      "datasheet": "Veri sayfası",
+      "manual": "Kılavuz",
+      "declaration": "Uygunluk beyanı",
+      "other": "Belge"
+    },
+    "checkGtin": "Kontrol et",
+    "gtinHint": "Ambalaj üzerindeki 13 hane. Barkodlu bir ürün, tüm dünya için tek bir pasaport alır.",
+    "gtinTaken": "Bu barkoda sahip bir pasaport zaten var.",
+    "openPassport": "Aç",
+    "attrKey": "Özellik",
+    "attrValue": "Değer",
+    "attrUnit": "Birim",
+    "addAttribute": "Özellik ekle",
+    "remove": "Kaldır",
+    "removeVideo": "Videoyu kaldır",
+    "videoHint": "Ürün başına bir mp4, en fazla 30 MB. Yeniden kodlama yapmıyoruz: tarayıcının olduğu gibi oynattığı dosyayı yükleyin.",
+    "languageHint": "Açıklamanın yazıldığı dil — ses onu o dilde okur.",
+    "openFile": "Dosyayı aç",
+    "save": "Kaydet",
+    "saving": "Kaydediliyor…",
+    "propose": "Düzenlemeyi öner",
+    "willPropose": "Bu pasaportun onaylı bir üreticisi var, bu nedenle değişiklikleriniz onlara önerilen bir düzenleme olarak gider.",
+    "revert": "Geri al",
+    "reverted": "geri alındı:",
+    "rejectReason": "Reddetme nedeni (reddetmek için gerekli)",
+    "acceptRevision": "Kabul et",
+    "rejectRevision": "Reddet",
+    "error": {
+      "unauth": "Lütfen giriş yapın.",
+      "forbidden": "Bu pasaportu düzenleyemezsiniz.",
+      "not_found": "Pasaport bulunamadı.",
+      "not_pending": "Bu öneri zaten karara bağlandı.",
+      "not_revertable": "Bu kayıt geri alınamaz.",
+      "empty_patch": "Öneri hiçbir şeyi değiştirmiyor.",
+      "reason_required": "Lütfen bir gerekçe belirtin (en az 3 karakter).",
+      "name_required": "Ad gerekli.",
+      "name_too_long": "Ad çok uzun.",
+      "category_invalid": "Bir kategori seçin.",
+      "language_invalid": "Desteklediğimiz bir dil seçin.",
+      "gtin_invalid": "Bu geçerli bir barkod değil — rakamları kontrol edin.",
+      "gtin_taken": "Bu barkoda sahip bir pasaport zaten var.",
+      "description_required": "Açıklama gerekli.",
+      "description_too_long": "Açıklama çok uzun.",
+      "text_too_long": "Alanlardan biri çok uzun.",
+      "too_many_photos": "Çok fazla fotoğraf.",
+      "too_many_documents": "Çok fazla belge.",
+      "bad_media_url": "Bu dosya bize ait değil — buraya yükleyin.",
+      "bad_document_kind": "Bir belge türü seçin.",
+      "daily_limit": "Günlük sınıra ulaşıldı. Yarın tekrar deneyin.",
+      "upload_too_large": "Dosya çok büyük.",
+      "upload_bad_type": "Bu dosya türünü kabul etmiyoruz.",
+      "upload_forbidden": "Şirketiniz dosya yükleyemez.",
+      "upload_failed": "Yükleme başarısız.",
+      "failed": "Kaydedilemedi."
+    },
+    "info": {
+      "gtin_free": "Bu barkodla henüz pasaport yok — ilk sizsiniz.",
+      "proposed": "Düzenlemeniz üreticiye gönderildi."
     }
   }
 }

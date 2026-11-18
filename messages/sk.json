@@ -5,7 +5,7 @@
     "signIn": "Prihlásenie",
     "signOut": "Odhlásenie",
     "settings": "Nastavenia",
-    "admin": "Admin",
+    "admin": "Administrátor",
     "watchlist": "Zoznam sledovaných",
     "request": "Žiadosť o mincu",
     "exchanges": "Burzy",
@@ -41,7 +41,7 @@
       "signIn": "Prihlásenie",
       "newRequest": "Nová žiadosť",
       "history": "História",
-      "admin": "Admin",
+      "admin": "Administrátor",
       "support": "Podpora"
     },
     "a11y": {
@@ -54,7 +54,8 @@
       "title": "Trientes — hlavná kniha digitálnych mincí",
       "description": "Živé ceny, burzy, adresár fintechu a terénny krypto navigátor v {count} jazykoch.",
       "pageDescription": "Trientes — živé ceny kryptomien, burzy, fintech adresár a terénny navigátor"
-    }
+    },
+    "products": "Produkty"
   },
   "home": {
     "title": "Vitajte",
@@ -588,7 +589,8 @@
         "fintech": "Fintech",
         "kyb": "Dokumenty KYB",
         "coinRequests": "Žiadosti o mince",
-        "pointReports": "Nahlásenia miest"
+        "pointReports": "Nahlásenia miest",
+        "products": "Produktové pasy"
       },
       "unread": "{count} neprečítaných",
       "spam": {
@@ -667,7 +669,12 @@
         "companyRestored": "firma vrátená do zaradenia",
         "reviewPassed": "pravidelná kontrola úspešná; ďalšia {next}",
         "reopened": "znovu otvoril — žiadateľ odoslal znova",
-        "closedAsSpam": "zatvoril ako spam: {reason}"
+        "closedAsSpam": "zatvoril ako spam: {reason}",
+        "productReported": "prišlo nahlásenie k pasu: {reason}",
+        "productClaimed": "výrobca si nárokoval pas",
+        "productSuspended": "odstránil pas z katalógu",
+        "productRestored": "vrátil pas do katalógu",
+        "productMerged": "označil pas za duplikát"
       },
       "thread": {
         "title": "Korešpondencia",
@@ -732,7 +739,10 @@
         "availabilityPlausible": "Uvedené krajiny pôsobia vierohodne",
         "reportsIndependent": "Hlásenia pochádzajú od nezávislých ľudí",
         "ownerAsked": "Firma bola o to požiadaná o vyjadrenie",
-        "pointStillListed": "Miesto je stále na mape"
+        "pointStillListed": "Miesto je stále na mape",
+        "brandRightProven": "Právo na značku je preukázané (register, licencia alebo zmluva)",
+        "reportReproduced": "Nahlásenie sa potvrdilo podľa zdrojov",
+        "passportMatchesSource": "Pas zodpovedá údajom výrobcu"
       },
       "checklist": {
         "title": "Kontroly",
@@ -829,7 +839,15 @@
           "approve": "Potvrdiť nahlásenia — odstrániť miesto z mapy",
           "reject": "Zamietnuť nahlásenia — ponechať miesto na mape"
         },
-        "noDecideRight": "Môžete tento prípad pripraviť a skontrolovať, ale na schválenie je potrebný niekto s právami na rozhodovanie v tomto fronte."
+        "noDecideRight": "Môžete tento prípad pripraviť a skontrolovať, ale na schválenie je potrebný niekto s právami na rozhodovanie v tomto fronte.",
+        "productReport": {
+          "approve": "Potvrdiť nahlásenie a odobrať pas",
+          "reject": "Zamietnuť nahlásenie a vrátiť pas"
+        },
+        "productClaim": {
+          "approve": "Potvrdiť výrobcu",
+          "reject": "Odmietnuť nárok"
+        }
       },
       "reports": {
         "title": "Nahlásenia",
@@ -840,7 +858,11 @@
           "CLOSED": "Trvalo zatvorené",
           "NO_CRYPTO": "Neprijíma krypto",
           "WRONG_ADDRESS": "Nesprávna adresa alebo poloha",
-          "OTHER": "Niečo iné"
+          "OTHER": "Niečo iné",
+          "WRONG_DATA": "nesprávne údaje",
+          "FAKE": "falšovaný výrobok",
+          "NOT_MINE": "zneužitá značka",
+          "ILLEGAL": "zakázaný tovar"
         }
       },
       "access": {
@@ -1034,6 +1056,9 @@
       "onlineNoCoords": "online — bez súradníc",
       "coinsLabel": "mince",
       "rejectedLabel": "Zamietnuté"
+    },
+    "products": {
+      "openPassport": "Otvoriť pas"
     }
   },
   "exchanges": {
@@ -1560,7 +1585,8 @@
       "title": "Váš podnik je vyradený zo zoznamu",
       "noReason": "Dôvod nebol zaznamenaný.",
       "hint": "Odpovedzte vo vlákne vášho prípadu a pozrieme sa na to znova."
-    }
+    },
+    "productsLink": "Produkty"
   },
   "cabinet": {
     "kicker": "Sekcia · Profil",
@@ -3189,6 +3215,223 @@
       "no_access": "Táto stránka je pre zamestnanecké účty.",
       "unknown_error": "Niečo sa pokazilo. Skúste znova.",
       "verify_first": "Najprv zadajte kód z vašej aktuálnej aplikácie, potom môžete faktor presunúť do iného telefónu."
+    }
+  },
+  "products": {
+    "kicker": "Katalóg",
+    "title": "Produktové pasy",
+    "subtitle": "Jeden pas na produkt — čo tá vec je. Predajcovia ho vyplnia, výrobca ho potvrdí.",
+    "searchPlaceholder": "Názov, značka alebo čiarový kód",
+    "search": "Hľadať",
+    "allCategories": "Všetky kategórie",
+    "found": "{count} pasov",
+    "empty": "Zatiaľ sa nič nenašlo.",
+    "prev": "Predchádzajúca",
+    "next": "Ďalšia",
+    "pageOf": "strana {page} z {pages}",
+    "hasVideo": "Má video",
+    "close": "Zavrieť",
+    "byManufacturer": "Potvrdené {name}",
+    "manufacturerStated": "Uviedol výrobca: {name}",
+    "noManufacturer": "Tento pas zatiaľ nepotvrdil žiaden výrobca",
+    "gtin": "Čiarový kód",
+    "listen": "Prehrať popis",
+    "listenStop": "Zastaviť",
+    "claimButton": "Toto je náš produkt",
+    "descriptionHeading": "Popis",
+    "usageHeading": "Ako sa používa",
+    "ingredientsHeading": "Zloženie",
+    "attributesHeading": "Vlastnosti",
+    "documentsHeading": "Dokumenty",
+    "documentKind": {
+      "certificate": "Certifikát",
+      "datasheet": "Technický list",
+      "manual": "Návod",
+      "declaration": "Vyhlásenie o zhode",
+      "other": "Dokument"
+    },
+    "category": {
+      "food": "Potraviny",
+      "drinks": "Nápoje",
+      "electronics": "Elektronika",
+      "clothing": "Oblečenie",
+      "home": "Dom a záhrada",
+      "beauty": "Kozmetika",
+      "health": "Zdravie",
+      "auto": "Auto-moto",
+      "industrial": "Priemyselné zariadenia",
+      "materials": "Materiály",
+      "agriculture": "Poľnohospodárstvo",
+      "services": "Služby",
+      "other": "Iné"
+    },
+    "tokenHeading": "Tokenizácia",
+    "tokenReady": "Pas je pripravený na tokenizáciu.",
+    "tokenNotReady": "Zatiaľ nepripravené na tokenizáciu. Chýba:",
+    "tokenIssued": "Token vydaný na {chain}: {asset}",
+    "tokenMissing": {
+      "name": "názov produktu",
+      "category": "kategória",
+      "description": "úplný popis",
+      "photo": "aspoň jedna fotografia",
+      "gtin": "čiarový kód",
+      "manufacturer": "potvrdený výrobca",
+      "document": "aspoň jeden dokument"
+    },
+    "tokenNote": "Token vydáva sieť, nie tento web: vlastníctvo sú peniaze a peniaze majú jedného autora",
+    "report": {
+      "open": "Nahlásiť problém",
+      "title": "Čo je s týmto pasom zle?",
+      "reason": {
+        "WRONG_DATA": "Údaje sú nesprávne",
+        "FAKE": "Tento produkt neexistuje / je falošný",
+        "NOT_MINE": "Naša značka, nárokovaná niekým iným",
+        "ILLEGAL": "Zakázaný tovar",
+        "OTHER": "Niečo iné"
+      },
+      "comment": "Povedzte, čo presne (pri niektorých dôvodoch voliteľné)",
+      "send": "Odoslať",
+      "cancel": "Zrušiť",
+      "sent": "Ďakujeme — tím sa na to pozrie.",
+      "failed": "Nepodarilo sa odoslať. Skúste znova.",
+      "errors": {
+        "comment_required": "Prosím, uveďte, čo presne je zle.",
+        "too_soon": "Tento pas ste už dnes nahlásili.",
+        "not_found": "Tento pas už nie je v katalógu.",
+        "captcha": "Kontrola neprešla. Skúste novú."
+      }
+    },
+    "claim": {
+      "title": "Toto je náš produkt",
+      "subtitle": "Nárokujte si pas «{name}» pre svoju spoločnosť.",
+      "companyLabel": "Spoločnosť",
+      "evidenceLabel": "Ako môžeme zistiť, že je váš?",
+      "evidencePlaceholder": "Číslo ochrannej známky, doména na obale, zmluva — čokoľvek, čo môže tím overiť.",
+      "submit": "Odoslať nárok",
+      "sending": "Odosielanie…",
+      "back": "Späť na pas",
+      "alreadyOwned": "Tento pas už má potvrdeného výrobcu.",
+      "pending": "Nárok na tento pas sa už posudzuje.",
+      "needCompany": "Pas si môže nárokovať len zaregistrovaná spoločnosť.",
+      "toCabinet": "Zaregistrovať spoločnosť",
+      "error": {
+        "unauth": "Prosím, prihláste sa.",
+        "forbidden": "Vaša spoločnosť nemôže nárokovať pasy: musí byť zaradená a potrebujete rolu vlastníka alebo editora.",
+        "not_found": "Pas nebol nájdený.",
+        "already_owned": "Tento pas už má potvrdeného výrobcu.",
+        "already_pending": "Tento pas ste si už nárokovali.",
+        "claim_pending": "Iná spoločnosť si práve nárokuje tento pas.",
+        "evidence_required": "Prosím, opíšte svoj dôkaz (aspoň 10 znakov).",
+        "failed": "Žiadosť sa nepodarilo odoslať."
+      }
+    }
+  },
+  "cabinetProducts": {
+    "title": "Produkty",
+    "subtitle": "Pasy, ktoré vaša spoločnosť vytvorila, vlastní alebo upravila.",
+    "create": "Pridať pas",
+    "edit": "Upraviť",
+    "open": "Otvoriť",
+    "empty": "Zatiaľ žiadne pasy.",
+    "notListed": "Vaša spoločnosť musí byť zaradená, aby mohla upravovať produktové pasy.",
+    "yours": "vaše",
+    "suspended": "mimo katalógu",
+    "incomingRevisions": "{count} navrhovaných úprav na vás čaká",
+    "historyHeading": "História",
+    "revisionsHeading": "Navrhované úpravy",
+    "productsLink": "Produkty",
+    "field": {
+      "created": "pas vytvorený",
+      "name": "Názov",
+      "brand": "Značka",
+      "manufacturerName": "Výrobca",
+      "category": "Kategória",
+      "language": "Jazyk popisu",
+      "gtin": "Čiarový kód",
+      "description": "Popis",
+      "usage": "Ako sa používa",
+      "ingredients": "Zloženie",
+      "attributes": "Vlastnosti",
+      "photos": "Fotografie",
+      "videoUrl": "Video",
+      "video": "Video",
+      "documents": "Dokumenty"
+    },
+    "category": {
+      "food": "Potraviny",
+      "drinks": "Nápoje",
+      "electronics": "Elektronika",
+      "clothing": "Oblečenie",
+      "home": "Dom a záhrada",
+      "beauty": "Krása",
+      "health": "Zdravie",
+      "auto": "Auto-moto",
+      "industrial": "Priemyselné zariadenia",
+      "materials": "Materiály",
+      "agriculture": "Poľnohospodárstvo",
+      "services": "Služby",
+      "other": "Iné"
+    },
+    "documentKind": {
+      "certificate": "Certifikát",
+      "datasheet": "Technický list",
+      "manual": "Návod",
+      "declaration": "Vyhlásenie o zhode",
+      "other": "Dokument"
+    },
+    "checkGtin": "Skontrolovať",
+    "gtinHint": "13 číslic z obalu. Produkt s čiarovým kódom dostane jeden pas pre celý svet.",
+    "gtinTaken": "Pas s týmto čiarovým kódom už existuje.",
+    "openPassport": "Otvoriť",
+    "attrKey": "Vlastnosť",
+    "attrValue": "Hodnota",
+    "attrUnit": "Jednotka",
+    "addAttribute": "Pridať vlastnosť",
+    "remove": "Odstrániť",
+    "removeVideo": "Odstrániť video",
+    "videoHint": "Jedno mp4 na produkt, do 30 MB. Neprekódovávame: nahrajte to, čo prehliadač prehrá, tak ako je.",
+    "languageHint": "Jazyk, v ktorom je popis napísaný — hlas ho číta v tomto jazyku.",
+    "openFile": "Otvoriť súbor",
+    "save": "Uložiť",
+    "saving": "Ukladá sa…",
+    "propose": "Navrhnúť úpravu",
+    "willPropose": "Tento pas má potvrdeného výrobcu, preto sa vaše zmeny odošlú výrobcovi ako navrhovaná úprava.",
+    "revert": "Vrátiť späť",
+    "reverted": "vrátené späť:",
+    "rejectReason": "Dôvod odmietnutia (povinné pri odmietnutí)",
+    "acceptRevision": "Prijať",
+    "rejectRevision": "Odmietnuť",
+    "error": {
+      "unauth": "Prosím, prihláste sa.",
+      "forbidden": "Tento pas nemôžete upravovať.",
+      "not_found": "Pas sa nenašiel.",
+      "not_pending": "O tomto návrhu už bolo rozhodnuté.",
+      "not_revertable": "Tento záznam nemožno vrátiť späť.",
+      "empty_patch": "Návrh nič nemení.",
+      "reason_required": "Uveďte dôvod (aspoň 3 znaky).",
+      "name_required": "Je potrebný názov.",
+      "name_too_long": "Názov je príliš dlhý.",
+      "category_invalid": "Vyberte kategóriu.",
+      "language_invalid": "Vyberte jazyk, ktorý podporujeme.",
+      "gtin_invalid": "Toto nie je platný čiarový kód — skontrolujte číslice.",
+      "gtin_taken": "Pas s týmto čiarovým kódom už existuje.",
+      "description_required": "Je potrebný popis.",
+      "description_too_long": "Popis je príliš dlhý.",
+      "text_too_long": "Jedno z polí je príliš dlhé.",
+      "too_many_photos": "Príliš veľa fotografií.",
+      "too_many_documents": "Príliš veľa dokumentov.",
+      "bad_media_url": "Tento súbor nie je u nás — nahrajte ho sem.",
+      "bad_document_kind": "Vyberte typ dokumentu.",
+      "daily_limit": "Denný limit bol dosiahnutý. Skúste to znova zajtra.",
+      "upload_too_large": "Súbor je príliš veľký.",
+      "upload_bad_type": "Tento typ súboru neakceptujeme.",
+      "upload_forbidden": "Vaša spoločnosť nemôže nahrávať súbory.",
+      "upload_failed": "Nahrávanie zlyhalo.",
+      "failed": "Nepodarilo sa uložiť."
+    },
+    "info": {
+      "gtin_free": "S týmto čiarovým kódom zatiaľ neexistuje žiadny pas — ste prví.",
+      "proposed": "Vaša úprava bola odoslaná výrobcovi."
     }
   }
 }

@@ -103,7 +103,14 @@ export default async function AdminCasePage({
           take: 100,
           include: { reporter: { select: { name: true, username: true } } },
         })
-      : [];
+      : c.subjectType === "PRODUCT_REPORT"
+        ? await prisma.productReport.findMany({
+            where: { productId: c.subjectId },
+            orderBy: { createdAt: "desc" },
+            take: 100,
+            include: { reporter: { select: { name: true, username: true } } },
+          })
+        : [];
   const now = new Date();
   const s = slaState({
     now,
@@ -238,7 +245,17 @@ export default async function AdminCasePage({
           approve: t("case.decision.pointReport.approve"),
           reject: t("case.decision.pointReport.reject"),
         }
-      : { approve: t("case.decision.approve"), reject: t("case.decision.reject") };
+      : c.subjectType === "PRODUCT_REPORT"
+        ? {
+            approve: t("case.decision.productReport.approve"),
+            reject: t("case.decision.productReport.reject"),
+          }
+        : c.subjectType === "PRODUCT_CLAIM"
+          ? {
+              approve: t("case.decision.productClaim.approve"),
+              reject: t("case.decision.productClaim.reject"),
+            }
+          : { approve: t("case.decision.approve"), reject: t("case.decision.reject") };
 
   let sectionNo = 0;
   const nextNo = () => String(++sectionNo);
@@ -300,6 +317,14 @@ export default async function AdminCasePage({
         </p>
       )}
 
+      {subject?.href && (c.subjectType === "PRODUCT_CLAIM" || c.subjectType === "PRODUCT_REPORT") ? (
+        <div className="mb-4">
+          <a href={subject.href} className={ADMIN_BUTTON_SECONDARY} target="_blank" rel="noopener noreferrer">
+            {t("products.openPassport")}
+          </a>
+        </div>
+      ) : null}
+
       {c.subjectType === "COMPANY" || c.subjectType === "KYB" ? (
         <div className="mb-4">
           <a
@@ -345,7 +370,7 @@ export default async function AdminCasePage({
           </div>
         </CaseSection>
 
-        {c.subjectType === "POINT_REPORT" && (
+        {(c.subjectType === "POINT_REPORT" || c.subjectType === "PRODUCT_REPORT") && (
           <CaseSection
             n={nextNo()}
             title={t("case.reports.title")}

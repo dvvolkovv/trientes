@@ -54,7 +54,8 @@
       "title": "Trientes — 数字货币的账本",
       "description": "实时价格、交易所、金融科技名录，以及提供{count}种语言的实地加密导航。",
       "pageDescription": "Trientes — 实时加密货币价格、交易所、金融科技目录以及实地导航器。"
-    }
+    },
+    "products": "产品"
   },
   "home": {
     "title": "欢迎",
@@ -588,7 +589,8 @@
         "fintech": "金融科技",
         "kyb": "KYB 文档",
         "coinRequests": "币种请求",
-        "pointReports": "点位报告"
+        "pointReports": "点位报告",
+        "products": "产品护照"
       },
       "unread": "{count} 条未读",
       "spam": {
@@ -667,7 +669,12 @@
         "companyRestored": "该企业已重新上架",
         "reviewPassed": "定期审核通过；下次在{next}",
         "reopened": "已重新打开 — 申请人再次提交",
-        "closedAsSpam": "已作为垃圾信息关闭：{reason}"
+        "closedAsSpam": "已作为垃圾信息关闭：{reason}",
+        "productReported": "收到关于该护照的举报: {reason}",
+        "productClaimed": "有制造商认领了该护照",
+        "productSuspended": "已将该护照从目录中移除",
+        "productRestored": "已将该护照恢复到目录",
+        "productMerged": "已将该护照标记为重复"
       },
       "thread": {
         "title": "往来通信",
@@ -732,7 +739,10 @@
         "availabilityPlausible": "申报的国家看起来合理",
         "reportsIndependent": "报告来自独立人士",
         "ownerAsked": "已就此询问该企业",
-        "pointStillListed": "该点仍在地图上"
+        "pointStillListed": "该点仍在地图上",
+        "brandRightProven": "品牌权属已证明（注册、许可或合同）",
+        "reportReproduced": "经与来源核对，报告属实",
+        "passportMatchesSource": "护照与制造商自有数据一致"
       },
       "checklist": {
         "title": "检查",
@@ -829,7 +839,15 @@
           "approve": "确认举报——将该地点从地图移除",
           "reject": "驳回举报——保留该地点在地图上"
         },
-        "noDecideRight": "你可以准备并审核此案件，但批准需要在此队列中拥有决策权限的人。"
+        "noDecideRight": "你可以准备并审核此案件，但批准需要在此队列中拥有决策权限的人。",
+        "productReport": {
+          "approve": "确认报告并下架该护照",
+          "reject": "驳回报告并恢复该护照"
+        },
+        "productClaim": {
+          "approve": "确认该制造商",
+          "reject": "拒绝该认领"
+        }
       },
       "reports": {
         "title": "举报",
@@ -840,7 +858,11 @@
           "CLOSED": "永久停业",
           "NO_CRYPTO": "不接受加密货币",
           "WRONG_ADDRESS": "地址或位置错误",
-          "OTHER": "其他"
+          "OTHER": "其他",
+          "WRONG_DATA": "数据错误",
+          "FAKE": "假冒产品",
+          "NOT_MINE": "品牌被冒用",
+          "ILLEGAL": "禁售商品"
         }
       },
       "access": {
@@ -1034,6 +1056,9 @@
       "onlineNoCoords": "在线 — 无坐标",
       "coinsLabel": "代币",
       "rejectedLabel": "已拒绝"
+    },
+    "products": {
+      "openPassport": "打开护照"
     }
   },
   "exchanges": {
@@ -1560,7 +1585,8 @@
       "title": "您的商家已被下架",
       "noReason": "未记录原因。",
       "hint": "请在您的案件帖中回复，我们会重新审核。"
-    }
+    },
+    "productsLink": "产品"
   },
   "cabinet": {
     "kicker": "板块 · 个人中心",
@@ -3189,6 +3215,223 @@
       "no_access": "此页面仅供员工账户使用。",
       "unknown_error": "出现问题。请重试。",
       "verify_first": "请先输入当前应用中的验证码，然后再将该验证因素迁移到另一部手机。"
+    }
+  },
+  "products": {
+    "kicker": "目录",
+    "title": "产品护照",
+    "subtitle": "每个产品一个护照——说明这是什么。卖家填写，制造商确认。",
+    "searchPlaceholder": "名称、品牌或条码",
+    "search": "搜索",
+    "allCategories": "所有类别",
+    "found": "{count} 份护照",
+    "empty": "尚未找到任何内容.",
+    "prev": "上一页",
+    "next": "下一页",
+    "pageOf": "第{page}页，共{pages}页",
+    "hasVideo": "有视频",
+    "close": "关闭",
+    "byManufacturer": "由{name}确认",
+    "manufacturerStated": "制造商声明: {name}",
+    "noManufacturer": "尚无制造商确认此护照",
+    "gtin": "条形码",
+    "listen": "收听描述",
+    "listenStop": "停止",
+    "claimButton": "这是我们的产品",
+    "descriptionHeading": "描述",
+    "usageHeading": "如何使用",
+    "ingredientsHeading": "成分",
+    "attributesHeading": "属性",
+    "documentsHeading": "文件",
+    "documentKind": {
+      "certificate": "证书",
+      "datasheet": "数据表",
+      "manual": "手册",
+      "declaration": "符合性声明",
+      "other": "文件"
+    },
+    "category": {
+      "food": "食品",
+      "drinks": "饮品",
+      "electronics": "电子产品",
+      "clothing": "服装",
+      "home": "家居与园艺",
+      "beauty": "美妆",
+      "health": "健康",
+      "auto": "汽车",
+      "industrial": "工业设备",
+      "materials": "材料",
+      "agriculture": "农业",
+      "services": "服务",
+      "other": "其他"
+    },
+    "tokenHeading": "代币化",
+    "tokenReady": "该护照已准备好进行代币化.",
+    "tokenNotReady": "尚未准备好进行代币化. 缺少:",
+    "tokenIssued": "在{chain}上已发行代币: {asset}",
+    "tokenMissing": {
+      "name": "产品名称",
+      "category": "类别",
+      "description": "完整描述",
+      "photo": "至少一张照片",
+      "gtin": "条形码",
+      "manufacturer": "已确认的制造商",
+      "document": "至少一份文件"
+    },
+    "tokenNote": "代币由网络发行，而非本网站：所有权即货币，而货币只有一个作者。",
+    "report": {
+      "open": "报告问题",
+      "title": "这个护照有什么问题？",
+      "reason": {
+        "WRONG_DATA": "数据有误",
+        "FAKE": "此产品不存在/为假货",
+        "NOT_MINE": "我们的品牌，被他人认领",
+        "ILLEGAL": "违禁商品",
+        "OTHER": "其他问题"
+      },
+      "comment": "请说明具体问题（某些原因可选）",
+      "send": "发送",
+      "cancel": "取消",
+      "sent": "谢谢——工作人员会调查。",
+      "failed": "发送失败。请重试。",
+      "errors": {
+        "comment_required": "请说明具体问题。",
+        "too_soon": "你今天已经报告过此护照。",
+        "not_found": "该护照已不在目录中。",
+        "captcha": "验证未通过。请尝试新的。"
+      }
+    },
+    "claim": {
+      "title": "这是我们的产品",
+      "subtitle": "为你的公司认领«{name}»的护照。",
+      "companyLabel": "公司",
+      "evidenceLabel": "我们如何确认这是你的？",
+      "evidencePlaceholder": "商标号、包装上的域名、合同——任何工作人员可核查的证据。",
+      "submit": "提交认领",
+      "sending": "正在发送…",
+      "back": "返回护照",
+      "alreadyOwned": "此护照已有确认的制造商。",
+      "pending": "此护照的认领已在审核中。",
+      "needCompany": "只有已登记的公司可以认领护照。",
+      "toCabinet": "注册公司",
+      "error": {
+        "unauth": "请登录。",
+        "forbidden": "你的公司不能认领护照：公司需已登记，且你需具备所有者或编辑角色。",
+        "not_found": "未找到护照。",
+        "already_owned": "此护照已有确认的制造商.",
+        "already_pending": "你已认领过此护照。",
+        "claim_pending": "目前有另一家公司正在认领此护照。",
+        "evidence_required": "请描述你的证明（至少 10 个字符）。",
+        "failed": "无法提交认领请求。"
+      }
+    }
+  },
+  "cabinetProducts": {
+    "title": "产品",
+    "subtitle": "贵公司创建、拥有或编辑过的产品护照。",
+    "create": "添加护照",
+    "edit": "编辑",
+    "open": "打开",
+    "empty": "尚无护照。",
+    "notListed": "你的公司必须先被列入目录才能编辑产品护照。",
+    "yours": "你的",
+    "suspended": "已下架",
+    "incomingRevisions": "{count} 个提议的编辑正等待你",
+    "historyHeading": "历史",
+    "revisionsHeading": "提议的编辑",
+    "productsLink": "产品",
+    "field": {
+      "created": "已创建护照",
+      "name": "名称",
+      "brand": "品牌",
+      "manufacturerName": "制造商",
+      "category": "类别",
+      "language": "描述语言",
+      "gtin": "条形码",
+      "description": "描述",
+      "usage": "使用方式",
+      "ingredients": "成分",
+      "attributes": "属性",
+      "photos": "照片",
+      "videoUrl": "视频",
+      "video": "视频",
+      "documents": "文档"
+    },
+    "category": {
+      "food": "食品",
+      "drinks": "饮料",
+      "electronics": "电子产品",
+      "clothing": "服装",
+      "home": "家居与园艺",
+      "beauty": "美容",
+      "health": "健康",
+      "auto": "汽车",
+      "industrial": "工业设备",
+      "materials": "材料",
+      "agriculture": "农业",
+      "services": "服务",
+      "other": "其他"
+    },
+    "documentKind": {
+      "certificate": "证书",
+      "datasheet": "数据表",
+      "manual": "手册",
+      "declaration": "符合性声明",
+      "other": "文档"
+    },
+    "checkGtin": "检查",
+    "gtinHint": "来自包装的13位数字。带有条形码的产品在全球只有一个护照。",
+    "gtinTaken": "该条形码的护照已存在。",
+    "openPassport": "打开",
+    "attrKey": "属性",
+    "attrValue": "值",
+    "attrUnit": "单位",
+    "addAttribute": "添加属性",
+    "remove": "移除",
+    "removeVideo": "移除视频",
+    "videoHint": "每个产品一个 mp4，最大 30 MB。我们不重新编码：请直接上传浏览器可直接播放的文件。",
+    "languageHint": "描述所用的语言——语音将以该语言朗读。",
+    "openFile": "打开文件",
+    "save": "保存",
+    "saving": "正在保存…",
+    "propose": "提交修改建议",
+    "willPropose": "此护照已确认制造商，因此您的更改将作为建议修改提交给他们。",
+    "revert": "撤销",
+    "reverted": "已撤销：",
+    "rejectReason": "拒绝原因（拒绝时必填）",
+    "acceptRevision": "接受",
+    "rejectRevision": "拒绝",
+    "error": {
+      "unauth": "请登录。",
+      "forbidden": "您不能编辑此护照。",
+      "not_found": "未找到护照。",
+      "not_pending": "此提议已被处理。",
+      "not_revertable": "此条目无法撤销。",
+      "empty_patch": "该提议没有任何更改。",
+      "reason_required": "请给出理由（至少3个字符）。",
+      "name_required": "必须填写名称。",
+      "name_too_long": "名称过长。",
+      "category_invalid": "请选择一个类别。",
+      "language_invalid": "请选择我们支持的语言。",
+      "gtin_invalid": "这不是有效的条形码——请检查数字。",
+      "gtin_taken": "使用此条形码的护照已存在。",
+      "description_required": "需要描述。",
+      "description_too_long": "描述过长。",
+      "text_too_long": "某个字段过长。",
+      "too_many_photos": "照片过多。",
+      "too_many_documents": "文档过多。",
+      "bad_media_url": "该文件不属于本站——请在此上传。",
+      "bad_document_kind": "请选择文档类型。",
+      "daily_limit": "已达每日上限。请明天再试。",
+      "upload_too_large": "文件过大。",
+      "upload_bad_type": "我们不接受此文件类型。",
+      "upload_forbidden": "您的公司无法上传文件。",
+      "upload_failed": "上传失败。",
+      "failed": "无法保存。"
+    },
+    "info": {
+      "gtin_free": "该条形码尚无护照——您是第一个。",
+      "proposed": "您的编辑已发送给制造商。"
     }
   }
 }

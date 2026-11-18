@@ -54,7 +54,8 @@
       "title": "Trientes — デジタル通貨の台帳",
       "description": "リアルタイム価格、取引所、フィンテックのディレクトリ、現地密着の暗号資産ナビゲーターを{count}言語で。",
       "pageDescription": "Trientes — 暗号資産のリアルタイム価格、取引所、フィンテックのディレクトリ、現地ナビゲーター。"
-    }
+    },
+    "products": "製品"
   },
   "home": {
     "title": "ようこそ",
@@ -588,7 +589,8 @@
         "fintech": "フィンテック",
         "kyb": "KYB書類",
         "coinRequests": "コイン申請",
-        "pointReports": "地点報告"
+        "pointReports": "地点報告",
+        "products": "製品パスポート"
       },
       "unread": "{count} 件の未読",
       "spam": {
@@ -667,7 +669,12 @@
         "companyRestored": "掲載再開",
         "reviewPassed": "定期審査に合格、次回は{next}",
         "reopened": "再開 — 申請者が再提出しました",
-        "closedAsSpam": "スパムとしてクローズ: {reason}"
+        "closedAsSpam": "スパムとしてクローズ: {reason}",
+        "productReported": "パスポートに関する報告が届きました: {reason}",
+        "productClaimed": "メーカーがパスポートを申請しました",
+        "productSuspended": "パスポートをカタログから外しました",
+        "productRestored": "パスポートをカタログに戻しました",
+        "productMerged": "パスポートを重複としてマークしました"
       },
       "thread": {
         "title": "やり取り",
@@ -732,7 +739,10 @@
         "availabilityPlausible": "申告された国が妥当そうに見える",
         "reportsIndependent": "報告は独立した人からのもの",
         "ownerAsked": "その件について事業者に確認済み",
-        "pointStillListed": "その地点は地図上にまだ掲載されている"
+        "pointStillListed": "その地点は地図上にまだ掲載されている",
+        "brandRightProven": "ブランドの権利が証明された（登録、ライセンス、または契約）",
+        "reportReproduced": "報告内容は情報源と照合して確認済み",
+        "passportMatchesSource": "パスポートはメーカー自身のデータと一致"
       },
       "checklist": {
         "title": "チェック",
@@ -829,7 +839,15 @@
           "approve": "報告を承認 — 地図から場所を外す",
           "reject": "報告を却下 — 地図に場所を残す"
         },
-        "noDecideRight": "この案件の準備とレビューはできますが、承認にはこのキューの決裁権限を持つ人が必要です。"
+        "noDecideRight": "この案件の準備とレビューはできますが、承認にはこのキューの決裁権限を持つ人が必要です。",
+        "productReport": {
+          "approve": "報告を確認し、パスポートを外す",
+          "reject": "報告を却下し、パスポートを戻す"
+        },
+        "productClaim": {
+          "approve": "メーカーを確認する",
+          "reject": "申請を拒否する"
+        }
       },
       "reports": {
         "title": "報告",
@@ -840,7 +858,11 @@
           "CLOSED": "恒久的に閉鎖",
           "NO_CRYPTO": "暗号資産を受け付けない",
           "WRONG_ADDRESS": "住所または位置が間違っている",
-          "OTHER": "その他"
+          "OTHER": "その他",
+          "WRONG_DATA": "誤ったデータ",
+          "FAKE": "偽造品",
+          "NOT_MINE": "ブランドの乗っ取り",
+          "ILLEGAL": "禁止商品"
         }
       },
       "access": {
@@ -1034,6 +1056,9 @@
       "onlineNoCoords": "オンライン — 座標なし",
       "coinsLabel": "コイン",
       "rejectedLabel": "却下"
+    },
+    "products": {
+      "openPassport": "パスポートを開く"
     }
   },
   "exchanges": {
@@ -1560,7 +1585,8 @@
       "title": "あなたのビジネスは掲載停止になっています",
       "noReason": "理由は記録されていません。",
       "hint": "ケースのスレッドで返信してください。再確認します。"
-    }
+    },
+    "productsLink": "製品"
   },
   "cabinet": {
     "kicker": "セクション · キャビネット",
@@ -3189,6 +3215,223 @@
       "no_access": "このページはスタッフアカウント向けです。",
       "unknown_error": "問題が発生しました。もう一度お試しください.",
       "verify_first": "まず現在使用中のアプリのコードを入力してから、その認証要素を別の電話に移せます."
+    }
+  },
+  "products": {
+    "kicker": "カタログ",
+    "title": "製品パスポート",
+    "subtitle": "製品ごとに1つのパスポート — それが何であるか。販売者が記入し、メーカーが確認する。",
+    "searchPlaceholder": "名前、ブランドまたはバーコード",
+    "search": "検索",
+    "allCategories": "すべてのカテゴリ",
+    "found": "{count}件のパスポート",
+    "empty": "まだ見つかりません。",
+    "prev": "前へ",
+    "next": "次へ",
+    "pageOf": "ページ {page} / {pages}",
+    "hasVideo": "動画あり",
+    "close": "閉じる",
+    "byManufacturer": "{name} によって確認済み",
+    "manufacturerStated": "メーカー申告: {name}",
+    "noManufacturer": "このパスポートはまだメーカーに確認されていません",
+    "gtin": "バーコード",
+    "listen": "説明を聞く",
+    "listenStop": "停止",
+    "claimButton": "これは当社の製品です",
+    "descriptionHeading": "説明",
+    "usageHeading": "使用方法",
+    "ingredientsHeading": "成分",
+    "attributesHeading": "特性",
+    "documentsHeading": "ドキュメント",
+    "documentKind": {
+      "certificate": "証明書",
+      "datasheet": "データシート",
+      "manual": "マニュアル",
+      "declaration": "適合宣言",
+      "other": "ドキュメント"
+    },
+    "category": {
+      "food": "食品",
+      "drinks": "飲料",
+      "electronics": "電子機器",
+      "clothing": "衣類",
+      "home": "ホーム＆ガーデン",
+      "beauty": "美容",
+      "health": "健康",
+      "auto": "自動車",
+      "industrial": "産業用機器",
+      "materials": "材料",
+      "agriculture": "農業",
+      "services": "サービス",
+      "other": "その他"
+    },
+    "tokenHeading": "トークン化",
+    "tokenReady": "このパスポートはトークン化の準備ができています。",
+    "tokenNotReady": "まだトークン化の準備ができていません。不足項目:",
+    "tokenIssued": "{chain}上でトークン発行済み: {asset}",
+    "tokenMissing": {
+      "name": "製品名",
+      "category": "カテゴリ",
+      "description": "詳細な説明",
+      "photo": "少なくとも1枚の写真",
+      "gtin": "バーコード",
+      "manufacturer": "確認済みメーカー",
+      "document": "少なくとも1件の書類"
+    },
+    "tokenNote": "トークンはこのサイトではなくネットワークによって発行されます: 所有権はお金であり、お金には発行者が1人です。",
+    "report": {
+      "open": "問題を報告",
+      "title": "このパスポートのどこが問題ですか？",
+      "reason": {
+        "WRONG_DATA": "データが正しくない",
+        "FAKE": "この製品は存在しない／偽物である",
+        "NOT_MINE": "当社ブランドを他者が主張している",
+        "ILLEGAL": "禁止品",
+        "OTHER": "その他"
+      },
+      "comment": "具体的にご記入ください（一部の理由では任意）",
+      "send": "送信",
+      "cancel": "キャンセル",
+      "sent": "ありがとうございます—スタッフが確認します。",
+      "failed": "送信できませんでした。もう一度お試しください。",
+      "errors": {
+        "comment_required": "具体的に何が問題か教えてください。",
+        "too_soon": "本日はこのパスポートをすでに報告済みです。",
+        "not_found": "このパスポートはカタログにもうありません。",
+        "captcha": "確認に失敗しました。新しいものをお試しください。"
+      }
+    },
+    "claim": {
+      "title": "これは当社の製品です",
+      "subtitle": "御社として«{name}»のパスポートを申請してください。",
+      "companyLabel": "会社",
+      "evidenceLabel": "それが御社のものだとどう判断できますか？",
+      "evidencePlaceholder": "商標番号、パッケージ記載のドメイン、契約書など—スタッフが確認できるもの。",
+      "submit": "申請を送信",
+      "sending": "送信中…",
+      "back": "パスポートに戻る",
+      "alreadyOwned": "このパスポートにはすでに確認済みのメーカーがあります。",
+      "pending": "このパスポートの申請はすでに審査中です。",
+      "needCompany": "掲載されている会社のみがパスポートを申請できます。",
+      "toCabinet": "会社を登録",
+      "error": {
+        "unauth": "サインインしてください.",
+        "forbidden": "貴社はパスポートを申請できません: 掲載されており、所有者または編集者のロールが必要です.",
+        "not_found": "パスポートが見つかりません.",
+        "already_owned": "このパスポートには既に確認済みのメーカーがいます.",
+        "already_pending": "このパスポートは既に申請済みです.",
+        "claim_pending": "他社が現在このパスポートを申請中です.",
+        "evidence_required": "証拠の説明を記入してください (10文字以上).",
+        "failed": "申請を送信できませんでした."
+      }
+    }
+  },
+  "cabinetProducts": {
+    "title": "製品",
+    "subtitle": "貴社が作成、所有、または編集したパスポート.",
+    "create": "パスポートを追加",
+    "edit": "編集",
+    "open": "開く",
+    "empty": "まだパスポートがありません.",
+    "notListed": "製品パスポートを編集するには、まず貴社が掲載されている必要があります.",
+    "yours": "あなたの",
+    "suspended": "カタログ外",
+    "incomingRevisions": "{count}件の提案編集があなたの対応待ち",
+    "historyHeading": "履歴",
+    "revisionsHeading": "提案された編集",
+    "productsLink": "製品",
+    "field": {
+      "created": "パスポート作成",
+      "name": "名称",
+      "brand": "ブランド",
+      "manufacturerName": "メーカー",
+      "category": "カテゴリ",
+      "language": "説明の言語",
+      "gtin": "バーコード",
+      "description": "説明",
+      "usage": "使い方",
+      "ingredients": "成分",
+      "attributes": "特性",
+      "photos": "写真",
+      "videoUrl": "動画",
+      "video": "動画",
+      "documents": "ドキュメント"
+    },
+    "category": {
+      "food": "食品",
+      "drinks": "飲料",
+      "electronics": "電子機器",
+      "clothing": "衣料品",
+      "home": "住まい・ガーデン",
+      "beauty": "美容",
+      "health": "ヘルスケア",
+      "auto": "自動車",
+      "industrial": "産業機器",
+      "materials": "材料",
+      "agriculture": "農業",
+      "services": "サービス",
+      "other": "その他"
+    },
+    "documentKind": {
+      "certificate": "証明書",
+      "datasheet": "データシート",
+      "manual": "取扱説明書",
+      "declaration": "適合宣言",
+      "other": "文書"
+    },
+    "checkGtin": "確認",
+    "gtinHint": "パッケージ記載の13桁。バーコードのある製品は、世界共通で1つのパスポートを持ちます。",
+    "gtinTaken": "このバーコードのパスポートはすでに存在します。",
+    "openPassport": "開く",
+    "attrKey": "属性",
+    "attrValue": "値",
+    "attrUnit": "単位",
+    "addAttribute": "属性を追加",
+    "remove": "削除",
+    "removeVideo": "動画を削除",
+    "videoHint": "製品ごとにmp4は1本、最大30MB。再エンコードはしません。ブラウザでそのまま再生できるものをアップロードしてください。",
+    "languageHint": "説明が書かれている言語。音声はその言語で読み上げます。",
+    "openFile": "ファイルを開く",
+    "save": "保存",
+    "saving": "保存中…",
+    "propose": "変更を提案",
+    "willPropose": "このパスポートには認証済みの製造者がいるため、あなたの変更は提案として製造者に送られます。",
+    "revert": "元に戻す",
+    "reverted": "取り消し:",
+    "rejectReason": "拒否理由（拒否には必須）",
+    "acceptRevision": "承認",
+    "rejectRevision": "拒否",
+    "error": {
+      "unauth": "サインインしてください。",
+      "forbidden": "このパスポートは編集できません。",
+      "not_found": "パスポートが見つかりません。",
+      "not_pending": "この提案はすでに決定済みです。",
+      "not_revertable": "このエントリは元に戻せません。",
+      "empty_patch": "この提案は何も変更しません。",
+      "reason_required": "理由を入力してください（3文字以上）。",
+      "name_required": "名前は必須です。",
+      "name_too_long": "名前が長すぎます。",
+      "category_invalid": "カテゴリを選択してください。",
+      "language_invalid": "対応言語を選択してください。",
+      "gtin_invalid": "有効なバーコードではありません — 桁を確認してください。",
+      "gtin_taken": "このバーコードのパスポートは既に存在します。",
+      "description_required": "説明は必須です。",
+      "description_too_long": "説明が長すぎます。",
+      "text_too_long": "いずれかの項目が長すぎます。",
+      "too_many_photos": "写真が多すぎます。",
+      "too_many_documents": "ドキュメントが多すぎます。",
+      "bad_media_url": "そのファイルは当サイトのものではありません — ここにアップロードしてください。",
+      "bad_document_kind": "ドキュメントの種類を選択してください。",
+      "daily_limit": "1日の上限に達しました。明日お試しください。",
+      "upload_too_large": "ファイルが大きすぎます。",
+      "upload_bad_type": "このファイル形式は受け付けていません。",
+      "upload_forbidden": "貴社はファイルをアップロードできません。",
+      "upload_failed": "アップロードに失敗しました。",
+      "failed": "保存できませんでした。"
+    },
+    "info": {
+      "gtin_free": "このバーコードのパスポートはまだありません — あなたが最初です。",
+      "proposed": "あなたの編集はメーカーに送信されました."
     }
   }
 }

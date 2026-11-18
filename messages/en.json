@@ -54,7 +54,8 @@
       "title": "Trientes — the ledger of digital coinage",
       "description": "Live prices, exchanges, fintech directory and an on-the-ground crypto navigator in {count} languages.",
       "pageDescription": "Trientes — live crypto prices, exchanges, a fintech directory and an on-the-ground navigator."
-    }
+    },
+    "products": "Products"
   },
   "home": {
     "title": "Welcome",
@@ -857,7 +858,11 @@
           "CLOSED": "Permanently closed",
           "NO_CRYPTO": "Does not accept crypto",
           "WRONG_ADDRESS": "Wrong address or location",
-          "OTHER": "Something else"
+          "OTHER": "Something else",
+          "WRONG_DATA": "wrong data",
+          "FAKE": "fake product",
+          "NOT_MINE": "brand hijacked",
+          "ILLEGAL": "prohibited goods"
         }
       },
       "access": {
@@ -1051,6 +1056,9 @@
       "onlineNoCoords": "online — no coordinates",
       "coinsLabel": "coins",
       "rejectedLabel": "Rejected"
+    },
+    "products": {
+      "openPassport": "Open the passport"
     }
   },
   "exchanges": {
@@ -1577,7 +1585,8 @@
       "title": "Your business is off the listing",
       "noReason": "No reason was recorded.",
       "hint": "Reply in your case thread and we will look at it again."
-    }
+    },
+    "productsLink": "Products"
   },
   "cabinet": {
     "kicker": "Section · Cabinet",
@@ -3206,6 +3215,223 @@
       "no_access": "This page is for staff accounts.",
       "unknown_error": "Something went wrong. Try again.",
       "verify_first": "Enter the code from your current app first, then you can move the factor to another phone."
+    }
+  },
+  "products": {
+    "kicker": "Catalogue",
+    "title": "Product passports",
+    "subtitle": "One passport per product — what the thing is. Sellers fill it in, the manufacturer confirms it.",
+    "searchPlaceholder": "Name, brand or barcode",
+    "search": "Search",
+    "allCategories": "All categories",
+    "found": "{count} passports",
+    "empty": "Nothing found yet.",
+    "prev": "Previous",
+    "next": "Next",
+    "pageOf": "page {page} of {pages}",
+    "hasVideo": "Has video",
+    "close": "Close",
+    "byManufacturer": "Confirmed by {name}",
+    "manufacturerStated": "Manufacturer stated: {name}",
+    "noManufacturer": "No manufacturer has confirmed this passport yet",
+    "gtin": "Barcode",
+    "listen": "Listen to the description",
+    "listenStop": "Stop",
+    "claimButton": "This is our product",
+    "descriptionHeading": "Description",
+    "usageHeading": "How it is used",
+    "ingredientsHeading": "Composition",
+    "attributesHeading": "Properties",
+    "documentsHeading": "Documents",
+    "documentKind": {
+      "certificate": "Certificate",
+      "datasheet": "Datasheet",
+      "manual": "Manual",
+      "declaration": "Declaration of conformity",
+      "other": "Document"
+    },
+    "category": {
+      "food": "Food",
+      "drinks": "Drinks",
+      "electronics": "Electronics",
+      "clothing": "Clothing",
+      "home": "Home & garden",
+      "beauty": "Beauty",
+      "health": "Health",
+      "auto": "Automotive",
+      "industrial": "Industrial equipment",
+      "materials": "Materials",
+      "agriculture": "Agriculture",
+      "services": "Services",
+      "other": "Other"
+    },
+    "tokenHeading": "Tokenisation",
+    "tokenReady": "The passport is ready for tokenisation.",
+    "tokenNotReady": "Not ready for tokenisation yet. Missing:",
+    "tokenIssued": "Token issued on {chain}: {asset}",
+    "tokenMissing": {
+      "name": "product name",
+      "category": "category",
+      "description": "a full description",
+      "photo": "at least one photo",
+      "gtin": "a barcode",
+      "manufacturer": "a confirmed manufacturer",
+      "document": "at least one document"
+    },
+    "tokenNote": "A token is issued by the network, not by this site: ownership is money, and money has one author.",
+    "report": {
+      "open": "Report a problem",
+      "title": "What is wrong with this passport?",
+      "reason": {
+        "WRONG_DATA": "The data is wrong",
+        "FAKE": "This product does not exist / is a fake",
+        "NOT_MINE": "Our brand, claimed by someone else",
+        "ILLEGAL": "Prohibited goods",
+        "OTHER": "Something else"
+      },
+      "comment": "Tell us what exactly (optional for some reasons)",
+      "send": "Send",
+      "cancel": "Cancel",
+      "sent": "Thank you — staff will look into it.",
+      "failed": "Could not send. Try again.",
+      "errors": {
+        "comment_required": "Please say what exactly is wrong.",
+        "too_soon": "You already reported this passport today.",
+        "not_found": "This passport is no longer in the catalogue.",
+        "captcha": "The check did not pass. Try the new one."
+      }
+    },
+    "claim": {
+      "title": "This is our product",
+      "subtitle": "Claim the passport of «{name}» for your company.",
+      "companyLabel": "Company",
+      "evidenceLabel": "How can we tell it is yours?",
+      "evidencePlaceholder": "Trademark number, the domain on the packaging, a contract — anything staff can check.",
+      "submit": "Send the claim",
+      "sending": "Sending…",
+      "back": "Back to the passport",
+      "alreadyOwned": "This passport already has a confirmed manufacturer.",
+      "pending": "A claim for this passport is already being reviewed.",
+      "needCompany": "Only a listed company can claim a passport.",
+      "toCabinet": "Register a company",
+      "error": {
+        "unauth": "Please sign in.",
+        "forbidden": "Your company cannot claim passports: it must be listed and you need an owner or editor role.",
+        "not_found": "Passport not found.",
+        "already_owned": "This passport already has a confirmed manufacturer.",
+        "already_pending": "You have already claimed this passport.",
+        "claim_pending": "Another company is claiming this passport right now.",
+        "evidence_required": "Please describe your proof (at least 10 characters).",
+        "failed": "Could not send the claim."
+      }
+    }
+  },
+  "cabinetProducts": {
+    "title": "Products",
+    "subtitle": "Passports your company created, owns or has edited.",
+    "create": "Add a passport",
+    "edit": "Edit",
+    "open": "Open",
+    "empty": "No passports yet.",
+    "notListed": "Your company must be listed before it can edit product passports.",
+    "yours": "yours",
+    "suspended": "off the catalogue",
+    "incomingRevisions": "{count} proposed edits waiting for you",
+    "historyHeading": "History",
+    "revisionsHeading": "Proposed edits",
+    "productsLink": "Products",
+    "field": {
+      "created": "passport created",
+      "name": "Name",
+      "brand": "Brand",
+      "manufacturerName": "Manufacturer",
+      "category": "Category",
+      "language": "Description language",
+      "gtin": "Barcode",
+      "description": "Description",
+      "usage": "How it is used",
+      "ingredients": "Composition",
+      "attributes": "Properties",
+      "photos": "Photos",
+      "videoUrl": "Video",
+      "video": "Video",
+      "documents": "Documents"
+    },
+    "category": {
+      "food": "Food",
+      "drinks": "Drinks",
+      "electronics": "Electronics",
+      "clothing": "Clothing",
+      "home": "Home & garden",
+      "beauty": "Beauty",
+      "health": "Health",
+      "auto": "Automotive",
+      "industrial": "Industrial equipment",
+      "materials": "Materials",
+      "agriculture": "Agriculture",
+      "services": "Services",
+      "other": "Other"
+    },
+    "documentKind": {
+      "certificate": "Certificate",
+      "datasheet": "Datasheet",
+      "manual": "Manual",
+      "declaration": "Declaration of conformity",
+      "other": "Document"
+    },
+    "checkGtin": "Check",
+    "gtinHint": "13 digits from the packaging. A product with a barcode gets one passport for the whole world.",
+    "gtinTaken": "A passport with this barcode already exists.",
+    "openPassport": "Open it",
+    "attrKey": "Property",
+    "attrValue": "Value",
+    "attrUnit": "Unit",
+    "addAttribute": "Add a property",
+    "remove": "Remove",
+    "removeVideo": "Remove the video",
+    "videoHint": "One mp4 per product, up to 30 MB. We do not re-encode: upload what a browser plays as is.",
+    "languageHint": "The language the description is written in — the voice reads it in that language.",
+    "openFile": "Open file",
+    "save": "Save",
+    "saving": "Saving…",
+    "propose": "Propose the edit",
+    "willPropose": "This passport has a confirmed manufacturer, so your changes go to them as a proposed edit.",
+    "revert": "Undo",
+    "reverted": "undone:",
+    "rejectReason": "Reason for refusing (required to refuse)",
+    "acceptRevision": "Accept",
+    "rejectRevision": "Refuse",
+    "error": {
+      "unauth": "Please sign in.",
+      "forbidden": "You cannot edit this passport.",
+      "not_found": "Passport not found.",
+      "not_pending": "This proposal has already been decided.",
+      "not_revertable": "This entry cannot be undone.",
+      "empty_patch": "The proposal changes nothing.",
+      "reason_required": "Please give a reason (at least 3 characters).",
+      "name_required": "A name is required.",
+      "name_too_long": "The name is too long.",
+      "category_invalid": "Pick a category.",
+      "language_invalid": "Pick a language we support.",
+      "gtin_invalid": "This is not a valid barcode — check the digits.",
+      "gtin_taken": "A passport with this barcode already exists.",
+      "description_required": "A description is required.",
+      "description_too_long": "The description is too long.",
+      "text_too_long": "One of the fields is too long.",
+      "too_many_photos": "Too many photos.",
+      "too_many_documents": "Too many documents.",
+      "bad_media_url": "That file is not ours — upload it here.",
+      "bad_document_kind": "Pick a document type.",
+      "daily_limit": "Daily limit reached. Try again tomorrow.",
+      "upload_too_large": "The file is too large.",
+      "upload_bad_type": "We do not accept this file type.",
+      "upload_forbidden": "Your company cannot upload files.",
+      "upload_failed": "Upload failed.",
+      "failed": "Could not save."
+    },
+    "info": {
+      "gtin_free": "No passport with this barcode yet — you are the first.",
+      "proposed": "Your edit was sent to the manufacturer."
     }
   }
 }

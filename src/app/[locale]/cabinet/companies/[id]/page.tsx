@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
@@ -136,6 +137,15 @@ export default async function CompanyManagementPage({
           }}
         />
       </section>
+      <section className="scroll-mt-24 mb-8">
+        <Link
+          href={`/${locale}/cabinet/companies/${company.id}/products`}
+          className="inline-flex items-center justify-center h-12 px-4 rounded-md border border-hairline text-sm font-medium hover:border-accent"
+        >
+          {t("productsLink")}
+        </Link>
+      </section>
+
       <section id="your-points" className="scroll-mt-24">
         <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-4">{t("yourPoints")}</h2>
         <PointsList

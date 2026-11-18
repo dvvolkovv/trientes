@@ -54,7 +54,8 @@
       "title": "Trientes — glavna knjiga digitalnih kovanica",
       "description": "Cijene uživo, burze, fintech direktorij i kripto navigator na terenu na {count} jezicima.",
       "pageDescription": "Trientes — cijene kripta uživo, burze, fintech imenik i navigator na terenu."
-    }
+    },
+    "products": "Proizvodi"
   },
   "home": {
     "title": "Dobrodošli",
@@ -588,7 +589,8 @@
         "fintech": "Fintech",
         "kyb": "KYB dokumenti",
         "coinRequests": "Zahtjevi za kovanice",
-        "pointReports": "Izvješća o lokacijama"
+        "pointReports": "Izvješća o lokacijama",
+        "products": "Putovnice proizvoda"
       },
       "unread": "{count} nepročitanih",
       "spam": {
@@ -667,7 +669,12 @@
         "companyRestored": "poslovni subjekt ponovno uvršten",
         "reviewPassed": "periodični pregled uspješno obavljen; sljedeći {next}",
         "reopened": "ponovno otvoreno — podnositelj je ponovno podnio",
-        "closedAsSpam": "zatvoreno kao spam: {reason}"
+        "closedAsSpam": "zatvoreno kao spam: {reason}",
+        "productReported": "stiglo je izvješće o putovnici: {reason}",
+        "productClaimed": "proizvođač je preuzeo vlasništvo nad putovnicom",
+        "productSuspended": "uklonjena putovnica iz kataloga",
+        "productRestored": "vraćena putovnica u katalog",
+        "productMerged": "označena putovnica kao duplikat"
       },
       "thread": {
         "title": "Korespondencija",
@@ -732,7 +739,10 @@
         "availabilityPlausible": "Navedene zemlje izgledaju realno",
         "reportsIndependent": "Izvješća dolaze od neovisnih osoba",
         "ownerAsked": "Tvrtka je upitana o tome",
-        "pointStillListed": "Lokacija je još uvijek na karti"
+        "pointStillListed": "Lokacija je još uvijek na karti",
+        "brandRightProven": "Pravo na robnu marku je dokazano (registar, licenca ili ugovor)",
+        "reportReproduced": "Izvješće je potvrđeno u izvorima",
+        "passportMatchesSource": "Putovnica odgovara podacima proizvođača"
       },
       "checklist": {
         "title": "Provjere",
@@ -829,7 +839,15 @@
           "approve": "Potvrditi prijave — ukloniti lokaciju s karte",
           "reject": "Odbaciti prijave — zadržati lokaciju na karti"
         },
-        "noDecideRight": "Možete pripremiti i pregledati ovaj predmet, ali za odobravanje je potrebna osoba s pravom odlučivanja u ovom redu"
+        "noDecideRight": "Možete pripremiti i pregledati ovaj predmet, ali za odobravanje je potrebna osoba s pravom odlučivanja u ovom redu",
+        "productReport": {
+          "approve": "Potvrditi izvješće i ukloniti putovnicu",
+          "reject": "Odbaciti izvješće i vratiti putovnicu"
+        },
+        "productClaim": {
+          "approve": "Potvrditi proizvođača",
+          "reject": "Odbiti zahtjev"
+        }
       },
       "reports": {
         "title": "Prijave",
@@ -840,7 +858,11 @@
           "CLOSED": "Trajno zatvoreno",
           "NO_CRYPTO": "Ne prihvaća kripto",
           "WRONG_ADDRESS": "Pogrešna adresa ili lokacija",
-          "OTHER": "Nešto drugo"
+          "OTHER": "Nešto drugo",
+          "WRONG_DATA": "pogrešni podaci",
+          "FAKE": "lažni proizvod",
+          "NOT_MINE": "ukradena marka",
+          "ILLEGAL": "zabranjena roba"
         }
       },
       "access": {
@@ -1034,6 +1056,9 @@
       "onlineNoCoords": "online — bez koordinata",
       "coinsLabel": "kovanice",
       "rejectedLabel": "Odbijeno"
+    },
+    "products": {
+      "openPassport": "Otvoriti putovnicu"
     }
   },
   "exchanges": {
@@ -1560,7 +1585,8 @@
       "title": "Vaš poslovni subjekt je skinut s uvrštenja",
       "noReason": "Nije zabilježen razlog.",
       "hint": "Odgovorite u niti vašeg slučaja i ponovno ćemo to razmotriti."
-    }
+    },
+    "productsLink": "Proizvodi"
   },
   "cabinet": {
     "kicker": "Odjeljak · Profil",
@@ -3189,6 +3215,223 @@
       "no_access": "Ova je stranica za račune osoblja.",
       "unknown_error": "Nešto je pošlo po zlu. Pokušajte ponovno.",
       "verify_first": "Najprije unesite kod iz svoje trenutne aplikacije, zatim možete premjestiti faktor na drugi telefon."
+    }
+  },
+  "products": {
+    "kicker": "Katalog",
+    "title": "Putovnice proizvoda",
+    "subtitle": "Jedna putovnica po proizvodu — što je ta stvar. Prodavači je popunjavaju, proizvođač je potvrđuje.",
+    "searchPlaceholder": "Naziv, marka ili barkod",
+    "search": "Pretraži",
+    "allCategories": "Sve kategorije",
+    "found": "{count} putovnica",
+    "empty": "Još ništa nije pronađeno.",
+    "prev": "Prethodno",
+    "next": "Sljedeće",
+    "pageOf": "stranica {page} od {pages}",
+    "hasVideo": "Ima videozapis",
+    "close": "Zatvoriti",
+    "byManufacturer": "Potvrđeno od {name}",
+    "manufacturerStated": "Proizvođač je naveo: {name}",
+    "noManufacturer": "Nijedan proizvođač još nije potvrdio ovu putovnicu",
+    "gtin": "Barkod",
+    "listen": "Preslušati opis",
+    "listenStop": "Zaustaviti",
+    "claimButton": "Ovo je naš proizvod",
+    "descriptionHeading": "Opis",
+    "usageHeading": "Kako se koristi",
+    "ingredientsHeading": "Sastav",
+    "attributesHeading": "Svojstva",
+    "documentsHeading": "Dokumenti",
+    "documentKind": {
+      "certificate": "Certifikat",
+      "datasheet": "Tehnički list",
+      "manual": "Upute",
+      "declaration": "Izjava o sukladnosti",
+      "other": "Dokument"
+    },
+    "category": {
+      "food": "Hrana",
+      "drinks": "Pića",
+      "electronics": "Elektronika",
+      "clothing": "Odjeća",
+      "home": "Dom i vrt",
+      "beauty": "Ljepota",
+      "health": "Zdravlje",
+      "auto": "Automobilizam",
+      "industrial": "Industrijska oprema",
+      "materials": "Materijali",
+      "agriculture": "Poljoprivreda",
+      "services": "Usluge",
+      "other": "Ostalo"
+    },
+    "tokenHeading": "Tokenizacija",
+    "tokenReady": "Putovnica je spremna za tokenizaciju.",
+    "tokenNotReady": "Još nije spremno za tokenizaciju. Nedostaje:",
+    "tokenIssued": "Token izdan na {chain}: {asset}",
+    "tokenMissing": {
+      "name": "naziv proizvoda",
+      "category": "kategorija",
+      "description": "potpuni opis",
+      "photo": "barem jedna fotografija",
+      "gtin": "barkod",
+      "manufacturer": "potvrđeni proizvođač",
+      "document": "barem jedan dokument"
+    },
+    "tokenNote": "Token izdaje mreža, a ne ova stranica: vlasništvo je novac, a novac ima jednog autora.",
+    "report": {
+      "open": "Prijavite problem",
+      "title": "Što nije u redu s ovom putovnicom?",
+      "reason": {
+        "WRONG_DATA": "Podaci su netočni",
+        "FAKE": "Ovaj proizvod ne postoji / krivotvorina je",
+        "NOT_MINE": "Naš brend, netko drugi ga je zatražio",
+        "ILLEGAL": "Zabranjena roba",
+        "OTHER": "Nešto drugo"
+      },
+      "comment": "Recite nam što točno (neobavezno za neke razloge)",
+      "send": "Pošaljite",
+      "cancel": "Odustanite",
+      "sent": "Hvala — osoblje će to provjeriti.",
+      "failed": "Nije moguće poslati. Pokušajte ponovno.",
+      "errors": {
+        "comment_required": "Molimo navedite što je točno pogrešno.",
+        "too_soon": "Već ste danas prijavili ovu putovnicu.",
+        "not_found": "Ova putovnica više nije u katalogu.",
+        "captcha": "Provjera nije uspjela. Pokušajte novu."
+      }
+    },
+    "claim": {
+      "title": "Ovo je naš proizvod",
+      "subtitle": "Zatražite putovnicu «{name}» za svoju tvrtku.",
+      "companyLabel": "Tvrtka",
+      "evidenceLabel": "Kako možemo utvrditi da je doista vaš?",
+      "evidencePlaceholder": "Broj zaštitnog znaka, domena na ambalaži, ugovor — bilo što što osoblje može provjeriti.",
+      "submit": "Pošaljite zahtjev",
+      "sending": "Slanje…",
+      "back": "Natrag na putovnicu",
+      "alreadyOwned": "Ova putovnica već ima potvrđenog proizvođača.",
+      "pending": "Zahtjev za ovu putovnicu već se razmatra.",
+      "needCompany": "Samo uvrštena tvrtka može zatražiti putovnicu.",
+      "toCabinet": "Registrirajte tvrtku",
+      "error": {
+        "unauth": "Molimo prijavite se.",
+        "forbidden": "Vaša tvrtka ne može zatražiti putovnice: mora biti uvrštena i trebate ulogu vlasnika ili urednika.",
+        "not_found": "Putovnica nije pronađena.",
+        "already_owned": "Ova putovnica već ima potvrđenog proizvođača.",
+        "already_pending": "Već ste zatražili ovu putovnicu.",
+        "claim_pending": "Druga tvrtka trenutačno zatražuje ovu putovnicu.",
+        "evidence_required": "Opišite svoj dokaz (najmanje 10 znakova).",
+        "failed": "Nije moguće poslati zahtjev."
+      }
+    }
+  },
+  "cabinetProducts": {
+    "title": "Proizvodi",
+    "subtitle": "Putovnice koje je vaša tvrtka izradila, posjeduje ili je uređivala.",
+    "create": "Dodati putovnicu",
+    "edit": "Urediti",
+    "open": "Otvoriti",
+    "empty": "Još nema putovnica.",
+    "notListed": "Vaša tvrtka mora biti uvrštena prije nego što može uređivati putovnice proizvoda.",
+    "yours": "vaše",
+    "suspended": "izvan kataloga",
+    "incomingRevisions": "{count} predloženih izmjena čeka na vas",
+    "historyHeading": "Povijest",
+    "revisionsHeading": "Predložene izmjene",
+    "productsLink": "Proizvodi",
+    "field": {
+      "created": "putovnica izrađena",
+      "name": "Naziv",
+      "brand": "Brend",
+      "manufacturerName": "Proizvođač",
+      "category": "Kategorija",
+      "language": "Jezik opisa",
+      "gtin": "Barkod",
+      "description": "Opis",
+      "usage": "Kako se koristi",
+      "ingredients": "Sastav",
+      "attributes": "Svojstva",
+      "photos": "Fotografije",
+      "videoUrl": "Video",
+      "video": "Video",
+      "documents": "Dokumenti"
+    },
+    "category": {
+      "food": "Hrana",
+      "drinks": "Pića",
+      "electronics": "Elektronika",
+      "clothing": "Odjeća",
+      "home": "Dom i vrt",
+      "beauty": "Ljepota",
+      "health": "Zdravlje",
+      "auto": "Automobilska industrija",
+      "industrial": "Industrijska oprema",
+      "materials": "Materijali",
+      "agriculture": "Poljoprivreda",
+      "services": "Usluge",
+      "other": "Ostalo"
+    },
+    "documentKind": {
+      "certificate": "Certifikat",
+      "datasheet": "Tehnički list",
+      "manual": "Priručnik",
+      "declaration": "Izjava o sukladnosti",
+      "other": "Dokument"
+    },
+    "checkGtin": "Provjeriti",
+    "gtinHint": "13 znamenaka s pakiranja. Proizvod s barkodom dobiva jednu putovnicu za cijeli svijet.",
+    "gtinTaken": "Putovnica s ovim barkodom već postoji.",
+    "openPassport": "Otvoriti",
+    "attrKey": "Svojstvo",
+    "attrValue": "Vrijednost",
+    "attrUnit": "Jedinica",
+    "addAttribute": "Dodati svojstvo",
+    "remove": "Ukloniti",
+    "removeVideo": "Ukloniti video",
+    "videoHint": "Jedan mp4 po proizvodu, do 30 MB. Ne reenkodiramo: učitajte ono što preglednik reproducira, takvo kakvo jest.",
+    "languageHint": "Jezik na kojem je napisan opis — glas ga čita na tom jeziku.",
+    "openFile": "Otvoriti datoteku",
+    "save": "Spremiti",
+    "saving": "Spremanje…",
+    "propose": "Predložiti izmjenu",
+    "willPropose": "Ova putovnica ima potvrđenog proizvođača, stoga će im vaše promjene biti poslane kao prijedlog izmjene.",
+    "revert": "Poništiti",
+    "reverted": "poništeno:",
+    "rejectReason": "Razlog odbijanja (obvezno za odbijanje)",
+    "acceptRevision": "Prihvatiti",
+    "rejectRevision": "Odbiti",
+    "error": {
+      "unauth": "Prijavite se.",
+      "forbidden": "Ne možete uređivati ovu putovnicu.",
+      "not_found": "Putovnica nije pronađena.",
+      "not_pending": "O ovom prijedlogu već je odlučeno.",
+      "not_revertable": "Ovaj unos nije moguće poništiti.",
+      "empty_patch": "Prijedlog ništa ne mijenja.",
+      "reason_required": "Molimo navedite razlog (najmanje 3 znaka).",
+      "name_required": "Naziv je obavezan.",
+      "name_too_long": "Naziv je predugačak.",
+      "category_invalid": "Odaberite kategoriju.",
+      "language_invalid": "Odaberite jezik koji podržavamo.",
+      "gtin_invalid": "Ovo nije valjan barkod — provjerite znamenke.",
+      "gtin_taken": "Putovnica s ovim barkodom već postoji.",
+      "description_required": "Opis je obavezan.",
+      "description_too_long": "Opis je predugačak.",
+      "text_too_long": "Jedno od polja je predugačko.",
+      "too_many_photos": "Previše fotografija.",
+      "too_many_documents": "Previše dokumenata.",
+      "bad_media_url": "Ta datoteka nije naša — prenesite je ovdje.",
+      "bad_document_kind": "Odaberite vrstu dokumenta.",
+      "daily_limit": "Dnevni limit je dosegnut. Pokušajte ponovno sutra.",
+      "upload_too_large": "Datoteka je prevelika.",
+      "upload_bad_type": "Ne prihvaćamo ovu vrstu datoteke.",
+      "upload_forbidden": "Vaša tvrtka ne može prenositi datoteke.",
+      "upload_failed": "Prijenos nije uspio.",
+      "failed": "Nije moguće spremiti."
+    },
+    "info": {
+      "gtin_free": "Još nema putovnice s ovim barkodom — vi ste prvi.",
+      "proposed": "Vaša je izmjena poslana proizvođaču."
     }
   }
 }
