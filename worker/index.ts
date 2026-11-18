@@ -32,6 +32,7 @@ import { sendHealthReport } from "../src/lib/health-report";
 import { runCaseDueSweep } from "../src/lib/cases/due-sweep";
 import { runPointReportSweep } from "../src/lib/points/report-sweep";
 import { runCompanyReviewSweep } from "../src/lib/cases/company-review-sweep";
+import { runStaffAccessReviewSweep } from "../src/lib/staff-access-sweep";
 import { startBinance, stopBinance } from "./binance";
 
 async function runPriceSync() {
@@ -239,6 +240,20 @@ async function runRevisionExpiry() {
     }
   } catch (err) {
     console.error("[worker] coin revision expiry failed:", err);
+  }
+}
+
+async function runStaffAccessReviewJob() {
+  const t0 = Date.now();
+  try {
+    const stats = await runStaffAccessReviewSweep();
+    if (stats.due || stats.noOwner) {
+      console.log(
+        `[worker] staff access review ok: ${stats.due} due, ${stats.notified} notified, ${stats.noOwner} without an owner to ring, ${stats.checked} checked in ${Date.now() - t0}ms`,
+      );
+    }
+  } catch (err) {
+    console.error("[worker] staff access review sweep failed:", err);
   }
 }
 
@@ -580,6 +595,9 @@ async function main() {
   // Пересмотр залистованных предприятий — сразу после лестницы жалоб: шаги
   // тоже считаются днями.
   cron.schedule("35 5 * * *", () => void runCompanyReviewJob());
+  // Пересмотр доступа — рядом с пересмотром предприятий: обе ревизии суточные,
+  // обе адресованы владельцу, и читать их удобнее одним утром.
+  cron.schedule("45 5 * * *", () => void runStaffAccessReviewJob());
   // Прогрев переводов: дважды в сутки, чтобы правка карточки доехала до всех
   // локалей раньше, чем в неё зайдёт первый посетитель или робот.
   cron.schedule("25 3,15 * * *", () => void runProseWarmup());

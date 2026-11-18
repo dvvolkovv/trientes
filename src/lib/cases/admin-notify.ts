@@ -18,16 +18,24 @@ const TELEGRAM_LINE: Record<AdminNotificationKind, string> = {
 export type RaiseInput = {
   userId: string;
   kind: AdminNotificationKind;
-  caseId: string;
+  caseId?: string | null;
+  /**
+   * О кого звонок, когда это не дело (сотрудник в ACCESS_REVIEW_DUE). Один из
+   * двух обязателен: без привязки «один повод на предмет» схлопнулось бы в
+   * «один повод вообще».
+   */
+  subjectId?: string | null;
   /** Снимок названия дела: список должен читаться, даже если дело удалили. */
   title: string;
   body?: string | null;
   /** Дубль в Telegram/почту. Для прогона сроков — да, для каждой реплики — да. */
   alsoNotify?: boolean;
+  /** Куда ведёт дубль, если звонок не о деле. */
+  url?: string;
 };
 
 /**
- * Один звонок на (сотрудник, повод, дело), пока он не прочитан: пять ответов
+ * Один звонок на (сотрудник, повод, предмет), пока он не прочитан: пять ответов
  * заявителя подряд не должны давать пять колокольчиков. Прочитанный звонок
  * тем же поводом может прозвенеть заново — это новое событие.
  */
@@ -36,7 +44,13 @@ export async function raiseAdminNotification(
   input: RaiseInput,
 ): Promise<"created" | "collapsed"> {
   const existing = await db.adminNotification.findFirst({
-    where: { userId: input.userId, kind: input.kind, caseId: input.caseId, readAt: null },
+    where: {
+      userId: input.userId,
+      kind: input.kind,
+      caseId: input.caseId ?? null,
+      subjectId: input.subjectId ?? null,
+      readAt: null,
+    },
     orderBy: { createdAt: "desc" },
   });
 
@@ -52,7 +66,8 @@ export async function raiseAdminNotification(
     data: {
       userId: input.userId,
       kind: input.kind,
-      caseId: input.caseId,
+      caseId: input.caseId ?? null,
+      subjectId: input.subjectId ?? null,
       title: input.title.slice(0, 200),
       body: input.body?.slice(0, 400) ?? null,
     },
@@ -68,7 +83,9 @@ export async function raiseAndNotify(input: RaiseInput): Promise<void> {
   });
   // Схлопнутый звонок второй раз в Telegram не шлём: это то же событие.
   if (state !== "created" || input.alsoNotify === false) return;
-  const url = `${SITE_ORIGIN}/en/admin/cases/${input.caseId}`;
+  const url = input.caseId
+    ? `${SITE_ORIGIN}/en/admin/cases/${input.caseId}`
+    : `${SITE_ORIGIN}${input.url ?? "/en/admin/staff"}`;
   void notifyUser({
     userId: input.userId,
     subject: `${TELEGRAM_LINE[input.kind]}: ${input.title}`,
