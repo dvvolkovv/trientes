@@ -12,6 +12,8 @@ import { RevisionsInbox } from "@/components/product/revisions-inbox";
 import { OfferForm } from "@/components/offers/offer-form";
 import { readOfferForCabinet } from "@/lib/products/offers-read";
 import { readStockByProduct } from "@/lib/warehouse/read";
+import { readCompanyRates } from "@/lib/loyalty/read";
+import { effectiveCashback } from "@/lib/loyalty/rates";
 
 export const dynamic = "force-dynamic";
 
@@ -65,14 +67,27 @@ export default async function CompanyProductEditor({
       }
     : emptyProduct(locale);
 
-  const [history, revisions, offer, stock] = product
+  const [history, revisions, offer, stock, rates] = product
     ? await Promise.all([
         readProductHistory(product.id),
         readPendingRevisions(product.id),
         readOfferForCabinet(company.id, product.id),
         readStockByProduct(company.id, product.id),
+        readCompanyRates(company.id),
       ])
-    : [[], [], null, null];
+    : [[], [], null, null, null];
+
+  // Какая ставка действует на самом деле: продавец вписал пусто, а сверху могла стоять
+  // ставка категории или «на всё» — не сказать об этом значит дать ему удивиться на
+  // странице покупателя.
+  const effective =
+    product && rates
+      ? effectiveCashback({
+          offer: offer?.cashbackPercent ?? null,
+          category: rates.byCategory[product.category] ?? null,
+          company: rates.base,
+        })
+      : null;
 
   const owned = product?.ownerCompanyId === company.id;
 
@@ -116,6 +131,18 @@ export default async function CompanyProductEditor({
               exists: Boolean(offer),
             }}
           />
+
+          {effective && effective.source !== "offer" ? (
+            <p className="text-[11px] text-muted mt-2">
+              {t(`effectiveFrom.${effective.source}`, { percent: effective.percent })}{" "}
+              <Link
+                href={`/${locale}/cabinet/companies/${company.id}/loyalty`}
+                className="text-accent"
+              >
+                {t("loyaltyLink")}
+              </Link>
+            </p>
+          ) : null}
 
           <div className="mt-4 pt-4 border-t border-hairline">
             <h3 className="text-xs uppercase tracking-[0.2em] text-muted mb-2">{t("stockHeading")}</h3>

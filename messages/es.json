@@ -1587,7 +1587,8 @@
       "hint": "Responde en el hilo de tu caso y lo volveremos a revisar."
     },
     "productsLink": "Productos",
-    "warehousesLink": "Almacenes"
+    "warehousesLink": "Almacenes",
+    "loyaltyLink": "Reembolso"
   },
   "cabinet": {
     "kicker": "Sección · Panel",
@@ -3335,7 +3336,7 @@
       "empty": "Nadie vende esto todavía. Si tú sí, publica tu precio desde tu panel empresarial.",
       "inStock": "En stock",
       "outOfStock": "Sin existencias ahora mismo",
-      "cashback": "cashback {percent}%",
+      "cashback": "reembolso {percent}%",
       "toShop": "A la tienda",
       "whereExactly": "dónde exactamente",
       "openMap": "Abrir en el mapa",
@@ -3357,7 +3358,7 @@
       "heading": "Productos",
       "inStock": "En stock",
       "outOfStock": "Sin existencias",
-      "cashback": "cashback {percent}%"
+      "cashback": "reembolso {percent}%"
     }
   },
   "cabinetProducts": {
@@ -3471,7 +3472,12 @@
     "stockHeading": "Tu inventario",
     "stockEmpty": "Este producto no está en ninguno de tus almacenes.",
     "inTransit": "{qty} en camino",
-    "toWarehouses": "Almacenes"
+    "toWarehouses": "Almacenes",
+    "effectiveFrom": {
+      "category": "Tu tarifa de categoría se aplica aquí: {percent}%.",
+      "company": "Tu tarifa para todos los productos se aplica aquí: {percent}%."
+    },
+    "loyaltyLink": "Tarifas de cashback"
   },
   "scanner": {
     "open": "Escanear",
@@ -3502,7 +3508,7 @@
     "price": "Precio",
     "currency": "Moneda",
     "unit": "Por",
-    "cashback": "Cashback, %",
+    "cashback": "Reembolso, %",
     "cashbackNote": "La tasa de cashback es tu promesa al comprador. La acumulación comienza cuando el pago a través del monedero de la plataforma esté activo.",
     "onlineUrl": "Enlace a este artículo en tu tienda online",
     "saleRules": "Términos de venta",
@@ -3634,6 +3640,54 @@
       "date_invalid": "Esa fecha no se puede leer.",
       "not_in_transit": "Estas mercancías ya no están en camino.",
       "not_cancellable": "Lo que ya llegó no se puede cancelar: devuélvelo con una salida o una corrección.",
+      "failed": "No se pudo guardar."
+    }
+  },
+  "loyalty": {
+    "heading": "Reembolso",
+    "rateBase": "{base}% de cashback en todo lo que ofrece este vendedor.",
+    "rateMax": "Hasta {max}% de cashback, según la categoría.",
+    "rateBoth": "{base}% de cashback en todo, hasta {max}% en algunas categorías.",
+    "accrualNote": "El cashback es una oferta propia del vendedor. Los pagos comienzan una vez que pagues a través del monedero de la plataforma.",
+    "levels": {
+      "title": "Cashback y niveles",
+      "subtitle": "Una sola escalera en toda la red: el cashback ganado en una tienda se gasta en cualquier otra.",
+      "names": {
+        "base": "Básico",
+        "silver": "Plata",
+        "gold": "Oro",
+        "platinum": "Platino"
+      },
+      "yours": "Tu nivel: {level}",
+      "notMeasured": "el volumen de la red aún no se ha contabilizado",
+      "from": "desde {amount}",
+      "bonus": "+{points} pp de la plataforma",
+      "noBonus": "solo la tarifa del vendedor",
+      "note": "El bono de la plataforma se suma a la tarifa del vendedor y lo paga la plataforma. Los niveles comienzan a contarse una vez que pagues a través del monedero de la plataforma."
+    }
+  },
+  "cabinetLoyalty": {
+    "title": "Tarifas de cashback",
+    "subtitle": "Configura una tarifa para todo, para una categoría o para un solo producto. La tarifa más cercana al producto prevalece.",
+    "notListed": "Tu empresa aún no está listada, por lo que los compradores no ven estas tarifas.",
+    "baseHeading": "En todo",
+    "baseNote": "Déjalo vacío para no prometer nada. Cero por ciento no es una tasa — un campo vacío la elimina.",
+    "categoriesHeading": "Por categoría",
+    "categoriesNote": "Una tasa por categoría anula la tasa en todo. Una tasa establecida en un solo producto anula ambas.",
+    "offersInCategory": "En oferta: {count}",
+    "save": "Guardar",
+    "saved": "Guardado",
+    "readOnly": "Puedes ver las tasas pero no cambiarlas.",
+    "previewEmpty": "Los compradores aún no ven cashback de tu parte.",
+    "previewBase": "Los compradores ven: {base}% de cashback en todo.",
+    "previewMax": "Los compradores ven: hasta {max}% de cashback, según la categoría.",
+    "previewBoth": "Los compradores ven: {base}% en todo, hasta {max}% en algunas categorías.",
+    "accrualNote": "Una tasa es una promesa, no un pago: la acumulación comienza cuando los pagos pasan por el monedero de la plataforma.",
+    "errors": {
+      "cashback_invalid": "Una tasa está entre 0,1% y 50%. Deja el campo vacío para eliminarla.",
+      "category_invalid": "Categoría desconocida.",
+      "forbidden": "Tu empresa no puede cambiar las tasas ahora mismo.",
+      "unauth": "Por favor, vuelve a iniciar sesión.",
       "failed": "No se pudo guardar."
     }
   }

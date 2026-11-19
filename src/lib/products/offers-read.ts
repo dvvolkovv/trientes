@@ -10,6 +10,8 @@ import { areaOf } from "@/lib/coin-card-acceptance";
 import type { MapArea } from "@/lib/map-start";
 import { firstPhotoUrl, VISIBLE_PRODUCT } from "@/lib/products/read";
 import { availabilityOf, offerVisible } from "@/lib/products/offers-rules";
+import { readCategoryRates, readCompanyRates } from "@/lib/loyalty/read";
+import { effectiveCashback, type CashbackSource } from "@/lib/loyalty/rates";
 
 /** Полка, на которой товар лежит: место, куда покупатель может прийти. */
 export type SellerPlace = {
@@ -31,7 +33,9 @@ export type SellerOffer = {
   price: number;
   currency: string;
   unit: string;
+  /** Действующая ставка: товар → категория → «на всё» (`effectiveCashback`). */
   cashbackPercent: number | null;
+  cashbackSource: CashbackSource | null;
   saleRules: string | null;
   onlineUrl: string | null;
   /** Хоть где-то на полке есть. */
@@ -80,7 +84,7 @@ export async function readProductOffers(productId: string): Promise<WhereToBuy> 
       id: true,
       companyId: true,
       product: {
-        select: { suspendedAt: true, deletedAt: true, mergedIntoId: true },
+        select: { suspendedAt: true, deletedAt: true, mergedIntoId: true, category: true },
       },
       price: true,
       currency: true,
@@ -96,6 +100,7 @@ export async function readProductOffers(productId: string): Promise<WhereToBuy> 
           status: true,
           suspendedAt: true,
           deletedAt: true,
+          cashbackBasePercent: true,
           warehouses: {
             where: LIVE_SHELF,
             select: {
@@ -120,10 +125,15 @@ export async function readProductOffers(productId: string): Promise<WhereToBuy> 
     },
   });
 
-  const rows: SellerOffer[] = offers
-    // Правило видимости живёт в чистой функции, а условия запроса — её ускорение:
-    // разойдутся — виновата будет выборка, а не правило.
-    .filter((o) => offerVisible(o, o.company, o.product))
+  // Ставки категории — одним запросом на всех продавцов товара: у товара категория
+  // одна, а продавцов до пятидесяти.
+  const visible = offers.filter((o) => offerVisible(o, o.company, o.product));
+  const categoryRates = await readCategoryRates(
+    visible.map((o) => o.companyId),
+    visible[0]?.product.category ?? "",
+  );
+
+  const rows: SellerOffer[] = visible
     .map((o) => {
       const places: SellerPlace[] = o.company.warehouses.map((w) => {
         const qty = w.balances.reduce((sum, b) => sum + Number(b.qty), 0);
@@ -138,6 +148,11 @@ export async function readProductOffers(productId: string): Promise<WhereToBuy> 
           inStock: availabilityOf([{ qty }]),
         };
       });
+      const cashback = effectiveCashback({
+        offer: o.cashbackPercent === null ? null : Number(o.cashbackPercent),
+        category: categoryRates.get(o.companyId) ?? null,
+        company: o.company.cashbackBasePercent === null ? null : Number(o.company.cashbackBasePercent),
+      });
       return {
         offerId: o.id,
         companyId: o.companyId,
@@ -146,7 +161,8 @@ export async function readProductOffers(productId: string): Promise<WhereToBuy> 
         price: Number(o.price),
         currency: o.currency,
         unit: o.unit,
-        cashbackPercent: o.cashbackPercent === null ? null : Number(o.cashbackPercent),
+        cashbackPercent: cashback?.percent ?? null,
+        cashbackSource: cashback?.source ?? null,
         saleRules: o.saleRules,
         onlineUrl: o.onlineUrl,
         inStock: places.some((p) => p.inStock),
@@ -183,6 +199,7 @@ export type ShowcaseOffer = {
   price: number;
   currency: string;
   unit: string;
+  /** Действующая ставка — та же, что покупатель видит на паспорте товара. */
   cashbackPercent: number | null;
   inStock: boolean;
 };
@@ -200,11 +217,14 @@ export async function readCompanyOffers(companyId: string, take = 24): Promise<S
       unit: true,
       cashbackPercent: true,
       product: {
-        select: { slug: true, name: true, brand: true, photos: true },
+        select: { slug: true, name: true, brand: true, photos: true, category: true },
       },
     },
   });
   if (offers.length === 0) return [];
+
+  // Ставки предприятия читаются один раз на всю витрину: база и все категории.
+  const rates = await readCompanyRates(companyId);
 
   // Наличие — одним запросом по всем товарам витрины, а не запросом на строку.
   const balances = await prisma.stockBalance.groupBy({
@@ -226,7 +246,12 @@ export async function readCompanyOffers(companyId: string, take = 24): Promise<S
     price: Number(o.price),
     currency: o.currency,
     unit: o.unit,
-    cashbackPercent: o.cashbackPercent === null ? null : Number(o.cashbackPercent),
+    cashbackPercent:
+      effectiveCashback({
+        offer: o.cashbackPercent === null ? null : Number(o.cashbackPercent),
+        category: rates.byCategory[o.product.category] ?? null,
+        company: rates.base,
+      })?.percent ?? null,
     inStock: (stock.get(o.productId) ?? 0) > 0,
   }));
 }

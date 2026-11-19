@@ -1587,7 +1587,8 @@
       "hint": "请在您的案件帖中回复，我们会重新审核。"
     },
     "productsLink": "产品",
-    "warehousesLink": "仓库"
+    "warehousesLink": "仓库",
+    "loyaltyLink": "返现"
   },
   "cabinet": {
     "kicker": "板块 · 个人中心",
@@ -3471,7 +3472,12 @@
     "stockHeading": "你的库存",
     "stockEmpty": "此商品不在你的任何仓库中",
     "inTransit": "{qty} 在途",
-    "toWarehouses": "仓库"
+    "toWarehouses": "仓库",
+    "effectiveFrom": {
+      "category": "你的品类比例适用于此处：{percent}%。",
+      "company": "你的全商品比例适用于此处：{percent}%。"
+    },
+    "loyaltyLink": "返现比例"
   },
   "scanner": {
     "open": "扫描",
@@ -3634,6 +3640,54 @@
       "date_invalid": "无法读取该日期。",
       "not_in_transit": "这些货物已不在运输途中。",
       "not_cancellable": "已到货的不可取消：请通过问题或更正退回。",
+      "failed": "无法保存。"
+    }
+  },
+  "loyalty": {
+    "heading": "返现",
+    "rateBase": "该卖家所有商品均有 {base}% 返现。",
+    "rateMax": "最高 {max}% 返现，取决于品类。",
+    "rateBoth": "全部商品 {base}% 返现，部分品类最高 {max}%。",
+    "accrualNote": "返现由卖家自行提供。通过平台钱包完成支付后开始发放。",
+    "levels": {
+      "title": "返现与等级",
+      "subtitle": "全网共用一套等级：在一家店获得的返现可在任意另一家使用。",
+      "names": {
+        "base": "基础",
+        "silver": "白银",
+        "gold": "黄金",
+        "platinum": "白金"
+      },
+      "yours": "你的等级：{level}",
+      "notMeasured": "网络成交额暂未统计",
+      "from": "从 {amount} 起",
+      "bonus": "+{points} 个百分点来自平台",
+      "noBonus": "仅卖家比例",
+      "note": "平台加成叠加在卖家比例之上，由平台支付。通过平台钱包支付后开始计算等级。"
+    }
+  },
+  "cabinetLoyalty": {
+    "title": "返现比例",
+    "subtitle": "可为全部、某个品类或单个商品设置比例。离商品最近的比例生效。",
+    "notListed": "你的公司尚未上架，买家看不到这些比例。",
+    "baseHeading": "全店通用",
+    "baseNote": "留空则不承诺。0% 不是一个比例——留空会移除该项。",
+    "categoriesHeading": "按品类",
+    "categoriesNote": "分类费率会覆盖对所有商品的费率。为单个商品设置的费率会覆盖两者。",
+    "offersInCategory": "促销中: {count}",
+    "save": "保存",
+    "saved": "已保存",
+    "readOnly": "您可以查看费率，但不能更改。",
+    "previewEmpty": "买家尚未看到您提供的返现。",
+    "previewBase": "买家看到：全场返现 {base}%。",
+    "previewMax": "买家看到：最高返现 {max}%，取决于类别。",
+    "previewBoth": "买家看到：全场返现 {base}%，部分类别最高返现 {max}%。",
+    "accrualNote": "费率是承诺而非付款：只有当款项通过平台钱包后，才开始计入返现。",
+    "errors": {
+      "cashback_invalid": "费率范围为 0.1% 至 50%。将该字段留空可移除。",
+      "category_invalid": "未知类别。",
+      "forbidden": "您的公司目前无法更改费率。",
+      "unauth": "请重新登录。",
       "failed": "无法保存。"
     }
   }

@@ -1587,7 +1587,8 @@
       "hint": "Talebinizde yanıt verin, tekrar inceleyelim."
     },
     "productsLink": "Ürünler",
-    "warehousesLink": "Depolar"
+    "warehousesLink": "Depolar",
+    "loyaltyLink": "Nakit iade"
   },
   "cabinet": {
     "kicker": "Bölüm · Kabin",
@@ -3357,7 +3358,7 @@
       "heading": "Ürünler",
       "inStock": "Stokta",
       "outOfStock": "Stokta yok",
-      "cashback": "cashback {percent}%"
+      "cashback": "nakit iade {percent}%"
     }
   },
   "cabinetProducts": {
@@ -3471,7 +3472,12 @@
     "stockHeading": "Stoğunuz",
     "stockEmpty": "Bu ürün hiçbir deponuzda yok.",
     "inTransit": "{qty} yolda",
-    "toWarehouses": "Depolar"
+    "toWarehouses": "Depolar",
+    "effectiveFrom": {
+      "category": "Kategori oranınız burada geçerlidir: {percent}%.",
+      "company": "Tüm ürünler için oranınız burada geçerlidir: {percent}%."
+    },
+    "loyaltyLink": "Cashback oranları"
   },
   "scanner": {
     "open": "Tara",
@@ -3502,7 +3508,7 @@
     "price": "Fiyat",
     "currency": "Para birimi",
     "unit": "Başına",
-    "cashback": "Cashback, %",
+    "cashback": "Nakit iade, %",
     "cashbackNote": "Cashback oranı, alıcıya verdiğiniz taahhüttür. Tahakkuk, platform cüzdanı üzerinden ödeme etkin olduğunda başlar.",
     "onlineUrl": "Bu ürünün web mağazanızdaki bağlantısı",
     "saleRules": "Satış koşulları",
@@ -3571,7 +3577,7 @@
     "moveKinds": {
       "RECEIPT": "Giriş",
       "ISSUE": "Çıkış",
-      "TRANSFER": "Transfer",
+      "TRANSFER": "Aktarım",
       "ADJUST": "Düzeltme"
     },
     "moveStatus": {
@@ -3634,6 +3640,54 @@
       "date_invalid": "Bu tarih okunamıyor.",
       "not_in_transit": "Bu mallar artık yolda değil.",
       "not_cancellable": "Zaten gelen iptal edilemez: bir çıkış işlemi veya düzeltme ile geri gönderin.",
+      "failed": "Kaydedilemedi."
+    }
+  },
+  "loyalty": {
+    "heading": "Nakit İade",
+    "rateBase": "Bu satıcının sunduğu her şeyde {base}% cashback.",
+    "rateMax": "Kategoriye bağlı olarak en fazla {max}% cashback.",
+    "rateBoth": "Her şeyde {base}% cashback, bazı kategorilerde en fazla {max}%.",
+    "accrualNote": "Cashback satıcının kendi teklifidir. Ödemeler, platform cüzdanı üzerinden ödeme yaptığınızda başlar.",
+    "levels": {
+      "title": "Cashback ve seviyeler",
+      "subtitle": "Tüm ağda tek bir merdiven: bir mağazada kazanılan cashback başka herhangi birinde harcanır.",
+      "names": {
+        "base": "Temel",
+        "silver": "Gümüş",
+        "gold": "Altın",
+        "platinum": "Platin"
+      },
+      "yours": "Seviyeniz: {level}",
+      "notMeasured": "ağ cirosu henüz hesaplanmıyor",
+      "from": "{amount} ve üzeri",
+      "bonus": "+{points} yüzde puanı platformdan",
+      "noBonus": "yalnızca satıcının oranı",
+      "note": "Platform bonusu, satıcının oranının üzerine eklenir ve platform tarafından ödenir. Seviyeler, platform cüzdanı üzerinden ödeme yaptığınızda sayılmaya başlar."
+    }
+  },
+  "cabinetLoyalty": {
+    "title": "Cashback oranları",
+    "subtitle": "Her şeye, bir kategoriye veya tek bir ürüne oran belirleyin. Ürüne en yakın oran geçerli olur.",
+    "notListed": "Şirketiniz henüz listede değil, bu yüzden alıcılar bu oranları görmüyor.",
+    "baseHeading": "Her şeyde",
+    "baseNote": "Hiçbir söz vermemek için boş bırakın. Sıfır yüzde bir oran değildir — alanı boş bırakmak onu kaldırır.",
+    "categoriesHeading": "Kategoriye göre",
+    "categoriesNote": "Bir kategori oranı, her şey için olan oranı geçersiz kılar. Tek bir ürüne verilen oran her ikisini de geçersiz kılar.",
+    "offersInCategory": "İndirimde: {count}",
+    "save": "Kaydet",
+    "saved": "Kaydedildi",
+    "readOnly": "Oranlara bakabilirsiniz ama onları değiştiremezsiniz.",
+    "previewEmpty": "Alıcılar sizden henüz cashback görmüyor.",
+    "previewBase": "Alıcılar şunu görür: her şeyde {base}% cashback.",
+    "previewMax": "Alıcılar şunu görür: kategoriye bağlı olarak en fazla {max}% cashback.",
+    "previewBoth": "Alıcılar şunu görür: her şeyde {base}%, bazı kategorilerde en fazla {max}%.",
+    "accrualNote": "Oran bir ödemeden ziyade bir taahhüttür: tahakkuk, ödemeler platform cüzdanı üzerinden geçmeye başladığında başlar.",
+    "errors": {
+      "cashback_invalid": "Oran %0,1 ile %50 arasındadır. Kaldırmak için alanı boş bırakın.",
+      "category_invalid": "Bilinmeyen kategori.",
+      "forbidden": "Şirketiniz şu anda oranları değiştiremez.",
+      "unauth": "Lütfen tekrar oturum açın.",
       "failed": "Kaydedilemedi."
     }
   }

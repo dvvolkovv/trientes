@@ -1587,7 +1587,8 @@
       "hint": "Responda no tópico do seu caso e vamos analisar novamente."
     },
     "productsLink": "Produtos",
-    "warehousesLink": "Armazéns"
+    "warehousesLink": "Armazéns",
+    "loyaltyLink": "Cashback"
   },
   "cabinet": {
     "kicker": "Seção · Painel",
@@ -3471,7 +3472,12 @@
     "stockHeading": "Seu estoque",
     "stockEmpty": "Este produto não está em nenhum dos seus armazéns.",
     "inTransit": "{qty} a caminho",
-    "toWarehouses": "Armazéns"
+    "toWarehouses": "Armazéns",
+    "effectiveFrom": {
+      "category": "Sua taxa da categoria se aplica aqui: {percent}%.",
+      "company": "Sua taxa para todos os produtos se aplica aqui: {percent}%."
+    },
+    "loyaltyLink": "Taxas de cashback"
   },
   "scanner": {
     "open": "Escanear",
@@ -3634,6 +3640,54 @@
       "date_invalid": "Essa data não pode ser lida.",
       "not_in_transit": "Essas mercadorias não estão mais a caminho.",
       "not_cancellable": "O que já chegou não pode ser cancelado: devolva com uma ocorrência ou uma correção.",
+      "failed": "Não foi possível salvar."
+    }
+  },
+  "loyalty": {
+    "heading": "Cashback",
+    "rateBase": "{base}% de cashback em tudo que este vendedor oferece.",
+    "rateMax": "Até {max}% de cashback, dependendo da categoria.",
+    "rateBoth": "{base}% de cashback em tudo, até {max}% em algumas categorias.",
+    "accrualNote": "O cashback é uma oferta do próprio vendedor. Os pagamentos começam quando você paga pela carteira da plataforma.",
+    "levels": {
+      "title": "Cashback e níveis",
+      "subtitle": "Uma única escada em toda a rede: o cashback ganho em uma loja é gasto em qualquer outra.",
+      "names": {
+        "base": "Básico",
+        "silver": "Prata",
+        "gold": "Ouro",
+        "platinum": "Platina"
+      },
+      "yours": "Seu nível: {level}",
+      "notMeasured": "o volume da rede ainda não é contabilizado",
+      "from": "a partir de {amount}",
+      "bonus": "+{points} pp da plataforma",
+      "noBonus": "apenas a taxa do vendedor",
+      "note": "O bônus da plataforma é adicionado por cima da taxa do vendedor e é pago pela plataforma. Os níveis começam a contar quando você paga pela carteira da plataforma."
+    }
+  },
+  "cabinetLoyalty": {
+    "title": "Percentuais de cashback",
+    "subtitle": "Defina um percentual em tudo, em uma categoria ou em um único produto. O percentual mais próximo do produto prevalece.",
+    "notListed": "Sua empresa ainda não está listada, então os compradores não veem esses percentuais.",
+    "baseHeading": "Em tudo",
+    "baseNote": "Deixe em branco para não prometer nada. Zero por cento não é um percentual — um campo vazio o remove.",
+    "categoriesHeading": "Por categoria",
+    "categoriesNote": "Um percentual por categoria substitui o percentual em tudo. Um percentual definido em um único produto substitui ambos.",
+    "offersInCategory": "Em promoção: {count}",
+    "save": "Salvar",
+    "saved": "Salvo",
+    "readOnly": "Você pode ver os percentuais, mas não alterá-los.",
+    "previewEmpty": "Os compradores ainda não veem cashback da sua parte.",
+    "previewBase": "Os compradores veem: {base}% de cashback em tudo.",
+    "previewMax": "Os compradores veem: até {max}% de cashback, dependendo da categoria.",
+    "previewBoth": "Os compradores veem: {base}% em tudo, até {max}% em algumas categorias.",
+    "accrualNote": "Um percentual é uma promessa, não um pagamento: a acumulação começa quando os pagamentos passam pela carteira da plataforma.",
+    "errors": {
+      "cashback_invalid": "Um percentual fica entre 0,1% e 50%. Deixe o campo em branco para removê-lo.",
+      "category_invalid": "Categoria desconhecida.",
+      "forbidden": "Sua empresa não pode alterar percentuais agora.",
+      "unauth": "Por favor, faça login novamente.",
       "failed": "Não foi possível salvar."
     }
   }

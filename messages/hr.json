@@ -41,7 +41,7 @@
       "signIn": "Prijava",
       "newRequest": "Novi zahtjev",
       "history": "Povijest",
-      "admin": "Admin",
+      "admin": "Administrator",
       "support": "Podrška"
     },
     "a11y": {
@@ -1587,7 +1587,8 @@
       "hint": "Odgovorite u niti vašeg slučaja i ponovno ćemo to razmotriti."
     },
     "productsLink": "Proizvodi",
-    "warehousesLink": "Skladišta"
+    "warehousesLink": "Skladišta",
+    "loyaltyLink": "Povrat novca"
   },
   "cabinet": {
     "kicker": "Odjeljak · Profil",
@@ -3342,7 +3343,7 @@
       "units": {
         "pcs": "komad",
         "pack": "pakiranje",
-        "set": "set",
+        "set": "komplet",
         "kg": "kg",
         "g": "g",
         "l": "l",
@@ -3471,7 +3472,12 @@
     "stockHeading": "Vaše zalihe",
     "stockEmpty": "Ovaj proizvod nije ni u jednom vašem skladištu.",
     "inTransit": "{qty} u tranzitu",
-    "toWarehouses": "Skladišta"
+    "toWarehouses": "Skladišta",
+    "effectiveFrom": {
+      "category": "Ovdje vrijedi vaša stopa za kategoriju: {percent}%.",
+      "company": "Ovdje vrijedi vaša stopa za sve proizvode: {percent}%."
+    },
+    "loyaltyLink": "Stope cashbacka"
   },
   "scanner": {
     "open": "Skenirati",
@@ -3502,7 +3508,7 @@
     "price": "Cijena",
     "currency": "Valuta",
     "unit": "Po",
-    "cashback": "Cashback, %",
+    "cashback": "Povrat novca, %",
     "cashbackNote": "Stopa cashbacka vaša je obveza prema kupcu. Obračun počinje kada je omogućeno plaćanje putem novčanika platforme.",
     "onlineUrl": "Poveznica na ovaj artikl u vašoj web trgovini",
     "saleRules": "Uvjeti prodaje",
@@ -3516,7 +3522,7 @@
     "units": {
       "pcs": "komad",
       "pack": "pakiranje",
-      "set": "set",
+      "set": "komplet",
       "kg": "kg",
       "g": "g",
       "l": "l",
@@ -3634,6 +3640,54 @@
       "date_invalid": "Taj datum se ne može pročitati.",
       "not_in_transit": "Ova roba više nije na putu.",
       "not_cancellable": "Ono što je već stiglo ne može se otkazati: vratite to s prijavom problema ili korekcijom.",
+      "failed": "Spremanje nije uspjelo."
+    }
+  },
+  "loyalty": {
+    "heading": "Povrat novca",
+    "rateBase": "{base}% cashback na sve što ovaj trgovac nudi.",
+    "rateMax": "Do {max}% cashbacka, ovisno o kategoriji.",
+    "rateBoth": "{base}% cashback na sve, do {max}% u nekim kategorijama.",
+    "accrualNote": "Cashback je prodavateljeva vlastita ponuda. Isplate počinju kada platite preko novčanika platforme.",
+    "levels": {
+      "title": "Cashback i razine",
+      "subtitle": "Jedna ljestvica za cijelu mrežu: cashback ostvaren u jednoj trgovini troši se u bilo kojoj drugoj.",
+      "names": {
+        "base": "Osnovni",
+        "silver": "Srebrni",
+        "gold": "Zlatni",
+        "platinum": "Platinasti"
+      },
+      "yours": "Vaša razina: {level}",
+      "notMeasured": "promet mreže još nije uračunat",
+      "from": "od {amount}",
+      "bonus": "+{points} pp od platforme",
+      "noBonus": "samo stopa prodavatelja",
+      "note": "Bonus platforme dodaje se povrh stope prodavatelja i isplaćuje ga platforma. Razine se počinju računati kada platite preko novčanika platforme."
+    }
+  },
+  "cabinetLoyalty": {
+    "title": "Stope cashbacka",
+    "subtitle": "Postaviti stopu na sve, na kategoriju ili na pojedinačni proizvod. Najbliža stopa proizvodu vrijedi.",
+    "notListed": "Vaša tvrtka još nije uvrštena, pa kupci ne vide ove stope.",
+    "baseHeading": "Na sve",
+    "baseNote": "Ostavite prazno da ne obećate ništa. Nula posto nije stopa — prazno polje je uklanja.",
+    "categoriesHeading": "Po kategoriji",
+    "categoriesNote": "Stopa po kategoriji nadjačava stopu na sve. Stopa postavljena na pojedinačni proizvod nadjačava obje.",
+    "offersInCategory": "Na akciji: {count}",
+    "save": "Spremiti",
+    "saved": "Spremljeno",
+    "readOnly": "Možete pogledati stope, ali ih ne možete mijenjati.",
+    "previewEmpty": "Kupci još ne vide cashback od vas.",
+    "previewBase": "Kupci vide: {base}% cashbacka na sve.",
+    "previewMax": "Kupci vide: do {max}% cashbacka, ovisno o kategoriji.",
+    "previewBoth": "Kupci vide: {base}% na sve, do {max}% u nekim kategorijama.",
+    "accrualNote": "Stopa je obećanje, a ne isplata: obračun počinje kada uplate prolaze kroz novčanik platforme.",
+    "errors": {
+      "cashback_invalid": "Stopa je između 0,1% i 50%. Ostavite polje prazno da je uklonite.",
+      "category_invalid": "Nepoznata kategorija.",
+      "forbidden": "Vaša tvrtka trenutačno ne može mijenjati stope.",
+      "unauth": "Prijavite se ponovno.",
       "failed": "Spremanje nije uspjelo."
     }
   }

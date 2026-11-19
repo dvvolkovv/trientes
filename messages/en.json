@@ -1587,7 +1587,8 @@
       "hint": "Reply in your case thread and we will look at it again."
     },
     "productsLink": "Products",
-    "warehousesLink": "Warehouses"
+    "warehousesLink": "Warehouses",
+    "loyaltyLink": "Cashback"
   },
   "cabinet": {
     "kicker": "Section · Cabinet",
@@ -3471,7 +3472,12 @@
     "stockHeading": "Your stock",
     "stockEmpty": "This product is on none of your warehouses.",
     "inTransit": "{qty} on the road",
-    "toWarehouses": "Warehouses"
+    "toWarehouses": "Warehouses",
+    "effectiveFrom": {
+      "category": "Your category rate applies here: {percent}%.",
+      "company": "Your all-products rate applies here: {percent}%."
+    },
+    "loyaltyLink": "Cashback rates"
   },
   "scanner": {
     "open": "Scan",
@@ -3634,6 +3640,54 @@
       "date_invalid": "That date cannot be read.",
       "not_in_transit": "These goods are not on the road any more.",
       "not_cancellable": "What already arrived cannot be cancelled: return it with an issue or a correction.",
+      "failed": "Could not save."
+    }
+  },
+  "loyalty": {
+    "heading": "Cashback",
+    "rateBase": "{base}% cashback on everything this seller offers.",
+    "rateMax": "Up to {max}% cashback, depending on the category.",
+    "rateBoth": "{base}% cashback on everything, up to {max}% in some categories.",
+    "accrualNote": "Cashback is the seller's own offer. Payouts start once you pay through the platform wallet.",
+    "levels": {
+      "title": "Cashback and levels",
+      "subtitle": "One ladder across the whole network: cashback earned in one shop is spent in any other.",
+      "names": {
+        "base": "Base",
+        "silver": "Silver",
+        "gold": "Gold",
+        "platinum": "Platinum"
+      },
+      "yours": "Your level: {level}",
+      "notMeasured": "network turnover is not counted yet",
+      "from": "from {amount}",
+      "bonus": "+{points} pp from the platform",
+      "noBonus": "seller's rate only",
+      "note": "The platform bonus is added on top of the seller's rate and is paid by the platform. Levels start counting once you pay through the platform wallet."
+    }
+  },
+  "cabinetLoyalty": {
+    "title": "Cashback rates",
+    "subtitle": "Set a rate on everything, on a category, or on a single product. The nearest rate to the product wins.",
+    "notListed": "Your company is not listed yet, so buyers do not see these rates.",
+    "baseHeading": "On everything",
+    "baseNote": "Leave it empty to promise nothing. Zero percent is not a rate — an empty field removes it.",
+    "categoriesHeading": "By category",
+    "categoriesNote": "A category rate overrides the rate on everything. A rate set on a single product overrides both.",
+    "offersInCategory": "On sale: {count}",
+    "save": "Save",
+    "saved": "Saved",
+    "readOnly": "You can look at the rates but not change them.",
+    "previewEmpty": "Buyers see no cashback from you yet.",
+    "previewBase": "Buyers see: {base}% cashback on everything.",
+    "previewMax": "Buyers see: up to {max}% cashback, depending on the category.",
+    "previewBoth": "Buyers see: {base}% on everything, up to {max}% in some categories.",
+    "accrualNote": "A rate is a promise, not a payout: accrual starts once payments go through the platform wallet.",
+    "errors": {
+      "cashback_invalid": "A rate is between 0.1% and 50%. Leave the field empty to remove it.",
+      "category_invalid": "Unknown category.",
+      "forbidden": "Your company cannot change rates right now.",
+      "unauth": "Please sign in again.",
       "failed": "Could not save."
     }
   }

@@ -147,7 +147,7 @@
     "loading": "Načítava sa…",
     "website": "Web",
     "explorer": "Prieskumník",
-    "whitepaper": "Whitepaper",
+    "whitepaper": "Biela kniha",
     "github": "GitHub",
     "twitter": "Twitter",
     "reddit": "Reddit",
@@ -1587,7 +1587,8 @@
       "hint": "Odpovedzte vo vlákne vášho prípadu a pozrieme sa na to znova."
     },
     "productsLink": "Produkty",
-    "warehousesLink": "Sklady"
+    "warehousesLink": "Sklady",
+    "loyaltyLink": "Cashback"
   },
   "cabinet": {
     "kicker": "Sekcia · Profil",
@@ -1668,7 +1669,7 @@
       "channels": {
         "title": "Kanály doručenia",
         "telegram": "Telegram",
-        "email": "Email",
+        "email": "E-mail",
         "telegramNotLinked": "Na povolenie sa raz prihláste cez Telegram.",
         "emailNotSet": "Na povolenie pridajte e‑mail do svojho profilu.",
         "emailNotVerified": "Na povolenie najprv overte svoj e‑mail.",
@@ -1901,7 +1902,7 @@
     "description": "Popis",
     "website": "Web",
     "country": "Krajina",
-    "email": "Email",
+    "email": "E-mail",
     "phone": "Telefón",
     "address": "Adresa",
     "logoUrl": "URL loga",
@@ -2041,7 +2042,7 @@
   "companyPublic": {
     "verified": "Overené",
     "website": "Web",
-    "email": "Email",
+    "email": "E-mail",
     "phone": "Telefón",
     "address": "Adresa",
     "placesTitle": "Krypto-priateľské miesta",
@@ -3471,7 +3472,12 @@
     "stockHeading": "Vaše zásoby",
     "stockEmpty": "Tento produkt nie je na žiadnom z vašich skladov.",
     "inTransit": "{qty} na ceste",
-    "toWarehouses": "Sklady"
+    "toWarehouses": "Sklady",
+    "effectiveFrom": {
+      "category": "Vaša sadzba pre kategóriu sa tu uplatní: {percent}%.",
+      "company": "Vaša sadzba pre všetky produkty sa tu uplatní: {percent}%."
+    },
+    "loyaltyLink": "Sadzby cashbacku"
   },
   "scanner": {
     "open": "Skenovať",
@@ -3634,6 +3640,54 @@
       "date_invalid": "Tento dátum sa nedá prečítať.",
       "not_in_transit": "Tento tovar už nie je na ceste.",
       "not_cancellable": "Čo už dorazilo, sa nedá zrušiť: vráťte to s chybou alebo opravou.",
+      "failed": "Nepodarilo sa uložiť."
+    }
+  },
+  "loyalty": {
+    "heading": "Cashback",
+    "rateBase": "{base}% cashback na všetko, čo tento obchodník ponúka.",
+    "rateMax": "Až do {max}% cashbacku, v závislosti od kategórie.",
+    "rateBoth": "{base}% cashback na všetko, až do {max}% v niektorých kategóriách.",
+    "accrualNote": "Cashback je vlastná ponuka predajcu. Výplaty sa začnú, keď zaplatíte cez peňaženku platformy.",
+    "levels": {
+      "title": "Cashback a úrovne",
+      "subtitle": "Jeden rebrík v celej sieti: cashback získaný v jednom obchode miniete v ktoromkoľvek inom.",
+      "names": {
+        "base": "Základná",
+        "silver": "Strieborná",
+        "gold": "Zlatá",
+        "platinum": "Platinová"
+      },
+      "yours": "Vaša úroveň: {level}",
+      "notMeasured": "obrat siete sa zatiaľ nepočíta",
+      "from": "od {amount}",
+      "bonus": "+{points} p. b. od platformy",
+      "noBonus": "len sadzba predajcu",
+      "note": "Bonus platformy sa pripočíta nad sadzbu predajcu a platí ho platforma. Úrovne sa začnú počítať, keď zaplatíte cez peňaženku platformy."
+    }
+  },
+  "cabinetLoyalty": {
+    "title": "Sadzby cashbacku",
+    "subtitle": "Nastavte sadzbu na všetko, na kategóriu alebo na jeden produkt. Najbližšia sadzba k produktu vyhráva.",
+    "notListed": "Vaša spoločnosť ešte nie je zaradená, takže kupujúci tieto sadzby nevidia.",
+    "baseHeading": "Na všetko",
+    "baseNote": "Nechajte prázdne, ak nechcete nič sľubovať. Nula percent nie je sadzba — prázdne pole ju odstráni.",
+    "categoriesHeading": "Podľa kategórie",
+    "categoriesNote": "Sadzba kategórie prepíše sadzbu na všetko. Sadzba nastavená na jednom produkte prepíše obe.",
+    "offersInCategory": "V akcii: {count}",
+    "save": "Uložiť",
+    "saved": "Uložené",
+    "readOnly": "Sadzby si môžete pozrieť, ale nemôžete ich meniť.",
+    "previewEmpty": "Kupujúci od vás zatiaľ nevidia žiadny cashback.",
+    "previewBase": "Kupujúci vidia: {base}% cashback na všetko.",
+    "previewMax": "Kupujúci vidia: až {max}% cashback podľa kategórie.",
+    "previewBoth": "Kupujúci vidia: {base}% na všetko, až {max}% v niektorých kategóriách.",
+    "accrualNote": "Sadzba je prísľub, nie výplata: pripisovanie začne, keď platby pôjdu cez peňaženku platformy.",
+    "errors": {
+      "cashback_invalid": "Sadzba je medzi 0,1 % a 50 %. Pole nechajte prázdne, aby ste ju odstránili.",
+      "category_invalid": "Neznáma kategória.",
+      "forbidden": "Vaša spoločnosť teraz nemôže meniť sadzby.",
+      "unauth": "Prosím, prihláste sa znova.",
       "failed": "Nepodarilo sa uložiť."
     }
   }

@@ -37,7 +37,7 @@
     "showOriginal": "Original",
     "kicker": {
       "section": "Bereich",
-      "newsflow": "Newsflow",
+      "newsflow": "Newsfeed",
       "signIn": "Anmelden",
       "newRequest": "Neue Anfrage",
       "history": "Verlauf",
@@ -1587,7 +1587,8 @@
       "hint": "Antworten Sie in Ihrem Fall-Thread und wir schauen es uns erneut an."
     },
     "productsLink": "Produkte",
-    "warehousesLink": "Lager"
+    "warehousesLink": "Lager",
+    "loyaltyLink": "Cashback"
   },
   "cabinet": {
     "kicker": "Bereich · Kabinett",
@@ -3471,7 +3472,12 @@
     "stockHeading": "Ihr Bestand",
     "stockEmpty": "Dieses Produkt befindet sich in keinem Ihrer Lager.",
     "inTransit": "{qty} unterwegs",
-    "toWarehouses": "Lager"
+    "toWarehouses": "Lager",
+    "effectiveFrom": {
+      "category": "Ihr Kategoriesatz gilt hier: {percent}%.",
+      "company": "Ihr Satz für alles gilt hier: {percent}%."
+    },
+    "loyaltyLink": "Cashback-Sätze"
   },
   "scanner": {
     "open": "Scannen",
@@ -3634,6 +3640,54 @@
       "date_invalid": "Dieses Datum kann nicht gelesen werden.",
       "not_in_transit": "Diese Waren sind nicht mehr unterwegs.",
       "not_cancellable": "Was bereits angekommen ist, kann nicht storniert werden: Buchen Sie es mit einer Entnahme oder einer Korrektur zurück.",
+      "failed": "Konnte nicht gespeichert werden."
+    }
+  },
+  "loyalty": {
+    "heading": "Cashback",
+    "rateBase": "{base}% Cashback auf alles, was dieser Verkäufer anbietet.",
+    "rateMax": "Bis zu {max}% Cashback, je nach Kategorie.",
+    "rateBoth": "{base}% Cashback auf alles, bis zu {max}% in einigen Kategorien.",
+    "accrualNote": "Cashback ist ein eigenes Angebot des Verkäufers. Auszahlungen beginnen, sobald Sie über die Plattform-Wallet bezahlen.",
+    "levels": {
+      "title": "Cashback und Stufen",
+      "subtitle": "Eine Leiter im gesamten Netzwerk: in einem Shop verdientes Cashback wird in jedem anderen ausgegeben.",
+      "names": {
+        "base": "Basis",
+        "silver": "Silber",
+        "gold": "Gold",
+        "platinum": "Platin"
+      },
+      "yours": "Ihre Stufe: {level}",
+      "notMeasured": "Netzwerkumsatz wird noch nicht erfasst",
+      "from": "ab {amount}",
+      "bonus": "+{points} Prozentpunkte von der Plattform",
+      "noBonus": "nur Satz des Verkäufers",
+      "note": "Der Plattformbonus wird zusätzlich zum Satz des Verkäufers gewährt und von der Plattform bezahlt. Stufen werden gezählt, sobald Sie über die Plattform-Wallet bezahlen."
+    }
+  },
+  "cabinetLoyalty": {
+    "title": "Cashback-Sätze",
+    "subtitle": "Legen Sie einen Satz für alles, für eine Kategorie oder für ein einzelnes Produkt fest. Der dem Produkt nächstgelegene Satz gilt.",
+    "notListed": "Ihr Unternehmen ist noch nicht gelistet, daher sehen Käufer diese Sätze nicht.",
+    "baseHeading": "Für alles",
+    "baseNote": "Leer lassen, um nichts zu versprechen. Null Prozent ist kein Satz — ein leeres Feld entfernt ihn.",
+    "categoriesHeading": "Nach Kategorie",
+    "categoriesNote": "Ein Kategoriesatz überschreibt den Satz für alles. Ein Satz auf einem einzelnen Produkt überschreibt beide.",
+    "offersInCategory": "Im Angebot: {count}",
+    "save": "Speichern",
+    "saved": "Gespeichert",
+    "readOnly": "Sie können die Sätze ansehen, aber nicht ändern.",
+    "previewEmpty": "Käufer sehen noch keinen Cashback von Ihnen.",
+    "previewBase": "Käufer sehen: {base}% Cashback auf alles.",
+    "previewMax": "Käufer sehen: bis zu {max}% Cashback, je nach Kategorie.",
+    "previewBoth": "Käufer sehen: {base}% auf alles, bis zu {max}% in einigen Kategorien.",
+    "accrualNote": "Ein Satz ist ein Versprechen, keine Auszahlung: Die Gutschrift beginnt, sobald Zahlungen über die Plattform-Wallet laufen.",
+    "errors": {
+      "cashback_invalid": "Ein Satz liegt zwischen 0,1% und 50%. Lassen Sie das Feld leer, um ihn zu entfernen.",
+      "category_invalid": "Unbekannte Kategorie.",
+      "forbidden": "Ihr Unternehmen kann Sätze derzeit nicht ändern.",
+      "unauth": "Bitte melden Sie sich erneut an.",
       "failed": "Konnte nicht gespeichert werden."
     }
   }

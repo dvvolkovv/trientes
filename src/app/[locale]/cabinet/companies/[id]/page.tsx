@@ -150,6 +150,12 @@ export default async function CompanyManagementPage({
         >
           {t("warehousesLink")}
         </Link>
+        <Link
+          href={`/${locale}/cabinet/companies/${company.id}/loyalty`}
+          className="inline-flex items-center justify-center h-12 px-4 rounded-md border border-hairline text-sm font-medium hover:border-accent"
+        >
+          {t("loyaltyLink")}
+        </Link>
       </section>
 
       <section id="your-points" className="scroll-mt-24">

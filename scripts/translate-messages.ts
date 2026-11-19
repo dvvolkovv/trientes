@@ -49,6 +49,12 @@ const LANGUAGE_NAMES: Record<string, string> = {
  * весь файл.
  */
 const GLOSSARY: Record<string, string> = {
+  ru: [
+    "Trientes — brand name, never translate.",
+    "cashback → кэшбэк (never «кешбэк»); loyalty → лояльность; level (client tier) → уровень",
+    "merchant → продавец; product passport → паспорт товара; offer → предложение",
+    "rate (percentage) → ставка; shelf (sales warehouse) → полка",
+  ].join("\n"),
   hr: [
     "Trientes — brand name, never translate.",
     "coin → kovanica; token → token; blockchain → blockchain; wallet → novčanik",

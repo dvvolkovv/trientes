@@ -680,6 +680,11 @@ model Company {
   stockMovements   StockMovement[]
   productOffers    ProductOffer[]
 
+  /// Ставка кэшбэка «на всё» — слово продавца, а не наша выплата: начисление появится
+  /// вместе с эквайрингом. Пусто значит «ставки нет», а не «ноль процентов».
+  cashbackBasePercent Decimal?       @db.Decimal(5, 2)
+  cashbackRules       CashbackRule[]
+
   @@index([ownerUserId])
   @@index([status, createdAt])
   @@index([kybStatus])
@@ -2103,6 +2108,27 @@ enum OfferStatus {
 /// «предприятие × товар» — две цены одной вещи у одного продавца означали бы, что
 /// покупатель не знает, какая настоящая. Модерацию не проходит: публикует уже
 /// залистованное предприятие, снимают те надзоры, что в проекте уже есть.
+/// Ставка кэшбэка по категории товаров. Своих групп у продавца в проекте нет, а
+/// категория паспорта (BB) — уже готовая общая ось; вторую ось заводить раньше первой
+/// нельзя. Действующая ставка считается `effectiveCashback` по правилу «ближайшая к
+/// товару побеждает»: ставка товара → категория → «на всё». Не максимальная — иначе
+/// продавец не смог бы понизить ставку на отдельный товар.
+model CashbackRule {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  /// Ключ из `PRODUCT_CATEGORIES` (список в коде, проза в переводах).
+  category String
+  percent  Decimal @db.Decimal(5, 2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([companyId, category])
+  @@index([companyId])
+}
+
 model ProductOffer {
   id        String  @id @default(cuid())
   companyId String

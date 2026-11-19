@@ -14,6 +14,7 @@ import { ExchangesSection } from "@/components/cabinet/exchanges-section";
 import { CoinsSection } from "@/components/cabinet/coins-section";
 import { AdminSection } from "@/components/cabinet/admin-section";
 import { MfaSection } from "@/components/cabinet/mfa-section";
+import { LoyaltySection } from "@/components/cabinet/loyalty-section";
 
 export default async function CabinetPage({
   params,
@@ -91,6 +92,9 @@ export default async function CabinetPage({
       <CoinsSection locale={locale} />
 
       <ExchangesSection locale={locale} />
+
+      {/* Лестница уровней одна на сеть и не зависит от покупок — видна всем вошедшим. */}
+      <LoyaltySection />
 
       {isStaffRole(user.role as ViewerRole) ? <MfaSection locale={locale} userId={user.id} /> : null}
       {isStaffRole(user.role as ViewerRole) ? <AdminSection locale={locale} /> : null}

@@ -1587,7 +1587,8 @@
       "hint": "케이스 스레드에 답장해 주시면 다시 검토하겠습니다."
     },
     "productsLink": "제품",
-    "warehousesLink": "창고"
+    "warehousesLink": "창고",
+    "loyaltyLink": "캐시백"
   },
   "cabinet": {
     "kicker": "섹션 · 캐비닛",
@@ -3471,7 +3472,12 @@
     "stockHeading": "내 재고",
     "stockEmpty": "이 상품은 보유한 어떤 창고에도 없습니다",
     "inTransit": "{qty} 운송 중",
-    "toWarehouses": "창고"
+    "toWarehouses": "창고",
+    "effectiveFrom": {
+      "category": "여기에는 카테고리 요율이 적용됩니다: {percent}%.",
+      "company": "여기에는 전체 상품 요율이 적용됩니다: {percent}%."
+    },
+    "loyaltyLink": "캐시백 요율"
   },
   "scanner": {
     "open": "스캔",
@@ -3634,6 +3640,54 @@
       "date_invalid": "해당 날짜를 읽을 수 없습니다.",
       "not_in_transit": "해당 물품은 더 이상 운송 중이 아닙니다.",
       "not_cancellable": "이미 도착한 것은 취소할 수 없습니다: 이슈 또는 정정으로 반품하세요.",
+      "failed": "저장할 수 없습니다."
+    }
+  },
+  "loyalty": {
+    "heading": "캐시백",
+    "rateBase": "이 판매자가 제공하는 모든 상품에 {base}% 캐시백.",
+    "rateMax": "카테고리에 따라 최대 {max}% 캐시백.",
+    "rateBoth": "전 상품 {base}% 캐시백, 일부 카테고리는 최대 {max}%.",
+    "accrualNote": "캐시백은 판매자의 자체 제공입니다. 플랫폼 지갑으로 결제 시 지급이 시작됩니다.",
+    "levels": {
+      "title": "캐시백과 레벨",
+      "subtitle": "네트워크 전역에 하나의 레벨 사다리: 한 상점에서 적립한 캐시백은 다른 어떤 상점에서도 사용됩니다.",
+      "names": {
+        "base": "기본",
+        "silver": "실버",
+        "gold": "골드",
+        "platinum": "플래티넘"
+      },
+      "yours": "회원님의 등급: {level}",
+      "notMeasured": "네트워크 거래액이 아직 집계되지 않았습니다",
+      "from": "{amount}부터",
+      "bonus": "플랫폼 제공 +{points} pp",
+      "noBonus": "판매자 요율만",
+      "note": "플랫폼 보너스는 판매자 요율에 추가로 더해지며, 비용은 플랫폼이 부담합니다. 플랫폼 지갑을 통해 결제할 때부터 등급이 산정됩니다."
+    }
+  },
+  "cabinetLoyalty": {
+    "title": "캐시백 요율",
+    "subtitle": "전체, 카테고리, 또는 단일 상품에 요율을 설정하세요. 상품에 가장 가까운 요율이 적용됩니다.",
+    "notListed": "귀사가 아직 목록에 없어서 구매자들은 이 요율을 볼 수 없습니다.",
+    "baseHeading": "전체",
+    "baseNote": "아무것도 약속하지 않으려면 비워 두세요. 0%는 요율이 아닙니다 — 빈 칸이면 제거됩니다.",
+    "categoriesHeading": "카테고리별",
+    "categoriesNote": "카테고리 요율은 전체 요율을 덮어씁니다. 단일 상품에 설정한 요율은 둘 다를 덮어씁니다.",
+    "offersInCategory": "할인 중: {count}",
+    "save": "저장",
+    "saved": "저장됨",
+    "readOnly": "요율을 볼 수는 있지만 변경할 수 없습니다.",
+    "previewEmpty": "구매자들은 아직 귀사의 캐시백을 볼 수 없습니다.",
+    "previewBase": "구매자에게 보이는 내용: 전체에 {base}% 캐시백.",
+    "previewMax": "구매자에게 보이는 내용: 카테고리에 따라 최대 {max}% 캐시백.",
+    "previewBoth": "구매자에게 보이는 내용: 전체에 {base}% 캐시백, 일부 카테고리에서는 최대 {max}%.",
+    "accrualNote": "요율은 지급이 아니라 약속입니다: 적립은 결제가 플랫폼 지갑을 통해 이루어진 뒤부터 시작됩니다.",
+    "errors": {
+      "cashback_invalid": "요율은 0.1%에서 50% 사이여야 합니다. 제거하려면 필드를 비워 두세요.",
+      "category_invalid": "알 수 없는 카테고리.",
+      "forbidden": "귀사는 지금 요율을 변경할 수 없습니다.",
+      "unauth": "다시 로그인하세요.",
       "failed": "저장할 수 없습니다."
     }
   }

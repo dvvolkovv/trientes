@@ -1587,7 +1587,8 @@
       "hint": "Répondez dans le fil de votre dossier et nous le réexaminerons."
     },
     "productsLink": "Produits",
-    "warehousesLink": "Entrepôts"
+    "warehousesLink": "Entrepôts",
+    "loyaltyLink": "Cashback"
   },
   "cabinet": {
     "kicker": "Section · Espace personnel",
@@ -3471,7 +3472,12 @@
     "stockHeading": "Votre stock",
     "stockEmpty": "Ce produit n’est dans aucun de vos entrepôts.",
     "inTransit": "{qty} en route",
-    "toWarehouses": "Entrepôts"
+    "toWarehouses": "Entrepôts",
+    "effectiveFrom": {
+      "category": "Votre taux de catégorie s'applique ici : {percent}%.",
+      "company": "Votre taux pour tous les produits s'applique ici : {percent}%."
+    },
+    "loyaltyLink": "Taux de cashback"
   },
   "scanner": {
     "open": "Scanner",
@@ -3572,7 +3578,7 @@
       "RECEIPT": "Réception",
       "ISSUE": "Sortie",
       "TRANSFER": "Transfert",
-      "ADJUST": "Correction"
+      "ADJUST": "Ajustement"
     },
     "moveStatus": {
       "IN_TRANSIT": "en transit",
@@ -3592,7 +3598,7 @@
     "tracking": "Numéro de suivi",
     "expectedAt": "Prévu",
     "expectedShort": "prévu",
-    "note": "Note",
+    "note": "Remarque",
     "reason": "Raison",
     "record": "Enregistrer",
     "recorded": {
@@ -3634,6 +3640,54 @@
       "date_invalid": "Cette date est illisible.",
       "not_in_transit": "Ces marchandises ne sont plus en route.",
       "not_cancellable": "Ce qui est déjà arrivé ne peut pas être annulé : retournez-le avec un incident ou une correction.",
+      "failed": "Impossible d'enregistrer."
+    }
+  },
+  "loyalty": {
+    "heading": "Cashback",
+    "rateBase": "{base}% de cashback sur tout ce que propose ce vendeur.",
+    "rateMax": "Jusqu'à {max}% de cashback, selon la catégorie.",
+    "rateBoth": "{base}% de cashback sur tout, jusqu'à {max}% dans certaines catégories.",
+    "accrualNote": "Le cashback est l'offre propre du vendeur. Les versements commencent une fois que vous payez via le portefeuille de la plateforme.",
+    "levels": {
+      "title": "Cashback et niveaux",
+      "subtitle": "Une seule échelle pour tout le réseau : le cashback gagné dans une boutique est dépensé dans n'importe quelle autre.",
+      "names": {
+        "base": "De base",
+        "silver": "Argent",
+        "gold": "Or",
+        "platinum": "Platine"
+      },
+      "yours": "Votre niveau : {level}",
+      "notMeasured": "le chiffre d'affaires du réseau n'est pas encore comptabilisé",
+      "from": "à partir de {amount}",
+      "bonus": "+{points} pp de la plateforme",
+      "noBonus": "taux du vendeur uniquement",
+      "note": "Le bonus de la plateforme s'ajoute au taux du vendeur et est payé par la plateforme. Les niveaux commencent à être pris en compte une fois que vous payez via le portefeuille de la plateforme."
+    }
+  },
+  "cabinetLoyalty": {
+    "title": "Taux de cashback",
+    "subtitle": "Définissez un taux sur tout, sur une catégorie ou sur un produit unique. Le taux le plus proche du produit l'emporte.",
+    "notListed": "Votre entreprise n'est pas encore répertoriée, donc les acheteurs ne voient pas ces taux.",
+    "baseHeading": "Sur tout",
+    "baseNote": "Laissez vide pour ne rien promettre. Zéro pour cent n'est pas un taux — un champ vide le supprime.",
+    "categoriesHeading": "Par catégorie",
+    "categoriesNote": "Un taux par catégorie remplace le taux sur tout. Un taux défini sur un produit unique remplace les deux.",
+    "offersInCategory": "En promotion: {count}",
+    "save": "Enregistrer",
+    "saved": "Enregistré",
+    "readOnly": "Vous pouvez consulter les taux mais pas les modifier.",
+    "previewEmpty": "Les acheteurs ne voient pas encore de cashback de votre part.",
+    "previewBase": "Les acheteurs voient : {base}% de cashback sur tout.",
+    "previewMax": "Les acheteurs voient : jusqu'à {max}% de cashback, selon la catégorie.",
+    "previewBoth": "Les acheteurs voient : {base}% sur tout, jusqu'à {max}% dans certaines catégories.",
+    "accrualNote": "Un taux est une promesse, pas un paiement : l'accumulation commence une fois que les paiements passent par le portefeuille de la plateforme.",
+    "errors": {
+      "cashback_invalid": "Un taux est compris entre 0,1% et 50%. Laissez le champ vide pour le supprimer.",
+      "category_invalid": "Catégorie inconnue.",
+      "forbidden": "Votre entreprise ne peut pas modifier les taux pour le moment.",
+      "unauth": "Veuillez vous reconnecter.",
       "failed": "Impossible d'enregistrer."
     }
   }
