@@ -105,6 +105,7 @@ model User {
   productRevisions         ProductRevision[]         @relation("ProductRevisionAuthor")
   productRevisionsDecided  ProductRevision[]         @relation("ProductRevisionDecider")
   productReports           ProductReport[]           @relation("ProductReporter")
+  stockMovements           StockMovement[]           @relation("StockMovementAuthor")
 }
 
 model PushSubscription {
@@ -248,8 +249,8 @@ model Account {
 }
 
 model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
+  id           String    @id @default(cuid())
+  sessionToken String    @unique
   userId       String
   expires      DateTime
   /// Когда в этом сеансе был показан второй фактор. Фактор проверяется на
@@ -257,7 +258,7 @@ model Session {
   /// GitHub, Telegram), и встраивать проверку в каждый — четыре места, где
   /// можно забыть. Один охранник там же, где читается право на очередь.
   mfaAt        DateTime?
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
@@ -675,6 +676,9 @@ model Company {
   productEdits     ProductEdit[]     @relation("ProductEditCompany")
   productClaims    ProductClaim[]    @relation("ProductClaimCompany")
   productRevisions ProductRevision[] @relation("ProductRevisionCompany")
+  warehouses       Warehouse[]
+  stockMovements   StockMovement[]
+  productOffers    ProductOffer[]
 
   @@index([ownerUserId])
   @@index([status, createdAt])
@@ -726,6 +730,8 @@ model CompanyPoint {
   suspendedAt     DateTime?
   suspendReason   String?
   reports         PointReport[]
+  // Полки, стоящие на этой точке (слайс BC).
+  warehouses      Warehouse[]
   // Мягкое удаление, как у компании.
   deletedAt       DateTime?
   deletedById     String?
@@ -1747,18 +1753,18 @@ enum MfaKind {
 /// телефона нам пока не просили, а второй ключ рядом с первым означал бы два
 /// места, где фактор можно снять незаметно.
 model StaffMfa {
-  userId         String    @id
-  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  kind           MfaKind   @default(TOTP)
+  userId      String    @id
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind        MfaKind   @default(TOTP)
   /// AES-256-GCM, `iv:tag:ciphertext` в base64url. Хешировать ключ нельзя — по
   /// нему считается код, — поэтому дамп таблицы без ключа приложения входа не даёт.
-  secretEnc      String
+  secretEnc   String
   /// Пока null — заведение начато, но код ни разу не подтверждён: такой фактор
   /// ничего не охраняет и заводится заново поверх.
-  confirmedAt    DateTime?
+  confirmedAt DateTime?
   /// Номер последнего принятого шага: код того же или прежнего шага отвергается.
-  lastStep       BigInt?
-  createdAt      DateTime  @default(now())
+  lastStep    BigInt?
+  createdAt   DateTime  @default(now())
 
   /// Снял владелец. Строка остаётся — журнал того, что фактор был, важнее чистоты таблицы.
   disabledAt     DateTime?
@@ -1766,7 +1772,7 @@ model StaffMfa {
   disabledBy     User?     @relation("StaffMfaDisabler", fields: [disabledById], references: [id], onDelete: SetNull)
   disabledReason String?
 
-  recoveryCodes  StaffMfaRecoveryCode[]
+  recoveryCodes StaffMfaRecoveryCode[]
 }
 
 /// Одноразовый код восстановления. В базе только sha256 — как у токена сброса пароля.
@@ -1778,8 +1784,8 @@ model StaffMfaRecoveryCode {
   createdAt DateTime  @default(now())
   usedAt    DateTime?
 
-  @@index([userId])
   @@unique([userId, codeHash])
+  @@index([userId])
 }
 
 /// Паспорт товара мира (спека 2026-11-18-product-passport-catalog-design): что это за
@@ -1846,6 +1852,9 @@ model Product {
   claims    ProductClaim[]
   revisions ProductRevision[]
   reports   ProductReport[]
+  offers    ProductOffer[]
+  balances  StockBalance[]
+  movements StockMovement[]
 
   @@index([category, createdAt])
   @@index([ownerCompanyId])
@@ -1963,4 +1972,162 @@ model ProductReport {
 
   @@index([productId, createdAt])
   @@index([reporterIpHash, productId, createdAt])
+}
+
+// ───────────────────────── Склады, остатки и предложения (слайс BC) ─────────────────────────
+// Спека `docs/superpowers/specs/2026-11-19-product-offers-warehouses-design.md`.
+// Три разные вещи: паспорт (`Product`) — чей товар; предложение (`ProductOffer`) — цена
+// продавца; остаток (`StockBalance`) и движение (`StockMovement`) — что у него лежит.
+
+enum WarehouseKind {
+  /// Склад 1 из ТЗ — собственный оптовый.
+  WHOLESALE
+  /// Склад 2 — полка: стоит на точке продаж или в онлайне. По ней считается «где взять».
+  SHELF
+  /// Склад 3 — сторонний и логистический, в том числе в другой юрисдикции. В «где взять»
+  /// не показывается никогда: это чужое плечо, а не место, куда можно прийти.
+  THIRD_PARTY
+}
+
+model Warehouse {
+  id        String        @id @default(cuid())
+  companyId String
+  company   Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  kind      WarehouseKind
+  name      String
+
+  /// Полка стоит на своей одобренной точке — либо в онлайне (`online`). Связь рвётся, а
+  /// не каскадит: снос точки не должен стирать записанные движения склада.
+  pointId String?
+  point   CompanyPoint? @relation(fields: [pointId], references: [id], onDelete: SetNull)
+  online  Boolean       @default(false)
+
+  countryCode String?
+  address     String?
+  note        String? @db.Text
+
+  /// Склад не удаляется, а архивируется: движения по нему уже записаны. Архивировать с
+  /// ненулевым остатком нельзя — товар исчез бы молча.
+  archivedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  balances  StockBalance[]
+  movesFrom StockMovement[] @relation("MoveFrom")
+  movesTo   StockMovement[] @relation("MoveTo")
+
+  @@index([companyId, kind])
+  @@index([pointId])
+  @@index([archivedAt])
+}
+
+/// Остаток — свёртка движений, и он хранится: считать по миллиону движений на каждый
+/// показ страницы нельзя, а держать только баланс значило бы не уметь объяснить, откуда
+/// он взялся. Пишется в той же транзакции, что движение; расхождение ловит сверка.
+model StockBalance {
+  id          String    @id @default(cuid())
+  warehouseId String
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  qty Decimal @db.Decimal(18, 3)
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([warehouseId, productId])
+  @@index([productId])
+}
+
+enum StockMoveKind {
+  RECEIPT
+  ISSUE
+  TRANSFER
+  ADJUST
+}
+
+enum StockMoveStatus {
+  /// Товар у перевозчика: с источника списан, приёмнику не зачислен. Третье место, а не
+  /// остаток склада — иначе едущий товар существует дважды или исчезает.
+  IN_TRANSIT
+  DONE
+  CANCELLED
+}
+
+model StockMovement {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  kind   StockMoveKind
+  status StockMoveStatus @default(DONE)
+
+  fromWarehouseId String?
+  fromWarehouse   Warehouse? @relation("MoveFrom", fields: [fromWarehouseId], references: [id], onDelete: SetNull)
+  toWarehouseId   String?
+  toWarehouse     Warehouse? @relation("MoveTo", fields: [toWarehouseId], references: [id], onDelete: SetNull)
+
+  qty Decimal @db.Decimal(18, 3)
+
+  carrierName  String?
+  trackingCode String?
+  shippedAt    DateTime?
+  expectedAt   DateTime?
+  arrivedAt    DateTime?
+
+  note String? @db.Text
+
+  /// Встречное движение отмены ссылается на отменённое: журнал неизменяем, запись не
+  /// удаляется, а получает пару.
+  reverseOfId String?
+
+  createdById String?
+  createdBy   User?   @relation("StockMovementAuthor", fields: [createdById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([companyId, createdAt])
+  @@index([productId, createdAt])
+  @@index([status, companyId])
+}
+
+enum OfferStatus {
+  ACTIVE
+  PAUSED
+}
+
+/// Предложение продавца: цена, единица, ставка кэшбэка и правила продажи. Одно на пару
+/// «предприятие × товар» — две цены одной вещи у одного продавца означали бы, что
+/// покупатель не знает, какая настоящая. Модерацию не проходит: публикует уже
+/// залистованное предприятие, снимают те надзоры, что в проекте уже есть.
+model ProductOffer {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  price    Decimal @db.Decimal(18, 2)
+  /// Фиатная часть того же списка валют, что показывает сайт. В валюту сайта цена не
+  /// пересчитывается: пересчёт обещал бы платёж, которого не будет (прецедент — слайс AV).
+  currency String
+  unit     String  @default("pcs")
+
+  /// Ставка продавца, а не наша выплата: начисление появится вместе с эквайрингом.
+  cashbackPercent Decimal? @db.Decimal(5, 2)
+
+  saleRules String? @db.Text
+  onlineUrl String?
+
+  status OfferStatus @default(ACTIVE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([companyId, productId])
+  @@index([productId, status])
+  @@index([companyId, status])
 }
