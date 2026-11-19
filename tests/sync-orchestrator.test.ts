@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { syncPrices, syncGlobal, syncExchangeRates, syncExchanges, syncAdminAddedPrices, syncCardedCoinPrices, staleCardedIds, syncFearGreed, syncMarkets, syncCoinPaprikaExchanges } from "@/lib/sync/orchestrator";
+import { syncPrices, syncGlobal, syncExchangeRates, syncExchanges, syncAdminAddedPrices, syncCardedCoinPrices, staleCardedIds, syncFearGreed, syncMarkets, syncCoinPaprikaExchanges, syncCoinMetadata } from "@/lib/sync/orchestrator";
+import { CgHttpError } from "@/lib/coingecko-http";
 import { KEYS } from "@/lib/sync/keys";
 import type { MarketRow, GlobalSnap, Exchange } from "@/lib/coingecko";
 import type { FearGreed } from "@/lib/fear-greed";
@@ -514,7 +515,7 @@ describe("syncCoinPaprikaExchanges", () => {
       btcUsd: 50_000,
       detailCallBudget: 100,
     });
-    expect(result).toEqual({ created: 0, enriched: 0, skipped: 1, marketsUpserted: 0, detailsAttempted: 0 });
+    expect(result).toEqual({ created: 0, enriched: 0, skipped: 1, marketsUpserted: 0, detailsAttempted: 0, detailsOk: 0 });
     expect(fakePrisma.exchange.findUnique).not.toHaveBeenCalled();
   });
 
@@ -598,5 +599,101 @@ describe("staleCardedIds", () => {
       { coinId: "saga-2", lastSnapshotAt: null },
     ];
     expect(staleCardedIds(rows, now)).toEqual(["saga-2"]);
+  });
+});
+
+describe("syncCoinMetadata", () => {
+  const detail = {
+    id: "old",
+    descriptionEn: "описание",
+    websiteUrl: null,
+    explorerUrl: null,
+    whitepaperUrl: null,
+    githubUrl: null,
+    twitterUrl: null,
+    redditUrl: null,
+  };
+  const prismaStub = (coins: Array<{ id: string; metadataFetchedAt: Date | null }>) => {
+    const updates: Array<{ id: string; data: Record<string, unknown> }> = [];
+    return {
+      updates,
+      coin: {
+        findMany: async () => coins,
+        update: async (args: { where: { id: string }; data: Record<string, unknown> }) => {
+          updates.push({ id: args.where.id, data: args.data });
+          return {};
+        },
+      },
+    };
+  };
+  const noSleep = async () => {};
+
+  it("монета, которой нет в каталоге источника, скрывается — и больше не стоит вызова каждый прогон", async () => {
+    const prisma = prismaStub([{ id: "coinex-token", metadataFetchedAt: null }]);
+    const r = await syncCoinMetadata({
+      fetchCoinDetail: async () => {
+        throw new CgHttpError(404, "/coins/coinex-token", '{"error":"coin not found"}');
+      },
+      lastPricedAt: async () => null,
+      prisma: prisma as never,
+      sleep: noSleep,
+    });
+    expect([r.updated, r.failed, r.retired]).toEqual([0, 0, 1]);
+    expect(prisma.updates).toEqual([{ id: "coinex-token", data: { isActive: false } }]);
+  });
+
+  it("404 у монеты со свежей ценой монету не скрывает: цену ей кто-то пишет, значит ключ жив", async () => {
+    const prisma = prismaStub([{ id: "bitcoin", metadataFetchedAt: null }]);
+    const r = await syncCoinMetadata({
+      fetchCoinDetail: async () => {
+        throw new CgHttpError(404, "/coins/bitcoin", '{"error":"coin not found"}');
+      },
+      lastPricedAt: async () => new Date(Date.now() - 60_000),
+      prisma: prisma as never,
+      sleep: noSleep,
+    });
+    expect([r.updated, r.failed, r.retired]).toEqual([0, 1, 0]);
+    expect(prisma.updates).toEqual([]);
+  });
+
+  it("без проверки цены 404 остаётся сбоем: не зная, жив ли ключ, монету не скрываем", async () => {
+    const prisma = prismaStub([{ id: "coinex-token", metadataFetchedAt: null }]);
+    const r = await syncCoinMetadata({
+      fetchCoinDetail: async () => {
+        throw new CgHttpError(404, "/coins/coinex-token", '{"error":"coin not found"}');
+      },
+      prisma: prisma as never,
+      sleep: noSleep,
+    });
+    expect([r.failed, r.retired]).toEqual([1, 0]);
+    expect(prisma.updates).toEqual([]);
+  });
+
+  it("429 монету не скрывает никогда: это про частоту, а не про существование", async () => {
+    const prisma = prismaStub([{ id: "coinex-token", metadataFetchedAt: null }]);
+    const r = await syncCoinMetadata({
+      fetchCoinDetail: async () => {
+        throw new CgHttpError(429, "/coins/coinex-token", "rate limit");
+      },
+      lastPricedAt: async () => null,
+      prisma: prisma as never,
+      sleep: noSleep,
+    });
+    expect([r.failed, r.retired]).toEqual([1, 0]);
+    expect(prisma.updates).toEqual([]);
+  });
+
+  it("свежие метаданные пропускаются, ветхие пишутся", async () => {
+    const prisma = prismaStub([
+      { id: "fresh", metadataFetchedAt: new Date() },
+      { id: "old", metadataFetchedAt: new Date(Date.now() - 30 * 24 * 3600_000) },
+    ]);
+    const r = await syncCoinMetadata({
+      fetchCoinDetail: async () => detail,
+      prisma: prisma as never,
+      sleep: noSleep,
+    });
+    expect([r.updated, r.skipped, r.failed, r.retired]).toEqual([1, 1, 0, 0]);
+    expect(prisma.updates[0]!.id).toBe("old");
   });
 });

@@ -5,6 +5,7 @@ import { marketFetchOrder, type MarketAskedAt, type MarketInstrument, type Marke
 import { KEYS, TTL } from "./keys";
 import { mergeCuratedExchanges } from "@/lib/curated-exchanges";
 import { cpTypeToExchangeType, resolveCpId, type CoinPaprikaExchange, type CoinPaprikaExchangeDetail, type CoinPaprikaMarket } from "@/lib/coinpaprika";
+import { CgHttpError } from "@/lib/coingecko-http";
 
 // Minimal interfaces — we only use what we need so tests can pass fakes.
 type RedisLike = {
@@ -222,12 +223,18 @@ type PrismaCoinMetaUpdate = {
 export async function syncCoinMetadata(deps: {
   fetchCoinDetail: (id: string) => Promise<CoinDetail>;
   prisma: PrismaCoinMetaUpdate;
+  /**
+   * Когда монете в последний раз писали цену. Нужна только при 404: без неё
+   * «нет такой монеты» остаётся обычным сбоем — не зная, жив ли ключ, монету
+   * не скрываем.
+   */
+  lastPricedAt?: (id: string) => Promise<Date | null>;
   // ms between fetches — Free tier ~30 req/min → 2000ms is comfortable
   delayMs?: number;
   // skip coins fetched within this window (default 23h)
   staleMs?: number;
   sleep?: (ms: number) => Promise<void>;
-}): Promise<{ updated: number; skipped: number; failed: number }> {
+}): Promise<{ updated: number; skipped: number; failed: number; retired: number }> {
   const delayMs = deps.delayMs ?? 4000;
   // 7-day stale window — descriptions barely change, keeps monthly CoinGecko budget low.
   const staleMs = deps.staleMs ?? 7 * 24 * 60 * 60 * 1000;
@@ -243,6 +250,7 @@ export async function syncCoinMetadata(deps: {
   let updated = 0;
   let skipped = 0;
   let failed = 0;
+  let retired = 0;
 
   for (const c of coins) {
     if (c.metadataFetchedAt && now - c.metadataFetchedAt.getTime() < staleMs) {
@@ -266,13 +274,32 @@ export async function syncCoinMetadata(deps: {
       });
       updated++;
     } catch (err) {
-      failed++;
-      console.error(`[worker] metadata-sync ${c.id} failed:`, err);
+      // 404 — приговор каталога источника, а не сбой связи: ключа у него больше
+      // нет, значит метаданных этой монете не напишет никто и впредь. Такая
+      // монета стоила по вызову за прогон вечно (живой случай 19 ноября —
+      // `coinex-token`), а каждый вызов сверх запаса бесплатного тарифа
+      // отбирается у живых посетителей: лимит считается по адресу и общий у
+      // веба с воркером.
+      //
+      // Скрываем, только когда цены ей тоже никто не пишет. Строка в сотне
+      // категории layer-1 получает цену каждые десять минут — такой 404 означал
+      // бы сбой на стороне службы, и монету со свежей ценой этот путь не тронет
+      // никогда. Скрытие обратимо из админки (`toggleCoinActive`).
+      const gone = err instanceof CgHttpError && err.status === 404;
+      const pricedAt = gone && deps.lastPricedAt ? await deps.lastPricedAt(c.id) : null;
+      if (gone && deps.lastPricedAt && (!pricedAt || now - pricedAt.getTime() > staleMs)) {
+        await deps.prisma.coin.update({ where: { id: c.id }, data: { isActive: false } });
+        retired++;
+        console.warn(`[worker] metadata-sync ${c.id}: исчезла из каталога CoinGecko (404) и цены не получает — скрыта`);
+      } else {
+        failed++;
+        console.error(`[worker] metadata-sync ${c.id} failed:`, err);
+      }
     }
     await sleep(delayMs);
   }
 
-  return { updated, skipped, failed };
+  return { updated, skipped, failed, retired };
 }
 
 export async function syncExchanges(deps: {
@@ -512,11 +539,15 @@ export async function syncCoinPaprikaExchanges(deps: {
   btcUsd: number;
   /** Hard cap on per-exchange detail calls per run — CoinPaprika free tier is 60 req/hour. */
   detailCallBudget: number;
-}): Promise<{ created: number; enriched: number; skipped: number; marketsUpserted: number; detailsAttempted: number }> {
+  // Подробности, на которые служба ответила, считаются отдельно от попыток:
+  // `fetchDetail` молчание службы превращает в null (не повод валить обход), и
+  // строка лога «11 details» одинаково выглядела при одиннадцати ответах и при
+  // одиннадцати отказах — то есть исчерпанный запас в ней был не виден.
+}): Promise<{ created: number; enriched: number; skipped: number; marketsUpserted: number; detailsAttempted: number; detailsOk: number }> {
   const allRaw = await deps.fetchAll();
   // Sort by volume desc so top exchanges get fresh detail first within rate-limit budget.
   const all = [...allRaw].sort((a, b) => b.volume24hUsd - a.volume24hUsd);
-  let created = 0, enriched = 0, skipped = 0, marketsUpserted = 0, detailsAttempted = 0;
+  let created = 0, enriched = 0, skipped = 0, marketsUpserted = 0, detailsAttempted = 0, detailsOk = 0;
 
   for (const cp of all) {
     if (!cp.active || !cp.markets_data_fetched || cp.volume24hUsd <= deps.minVolumeUsd) {
@@ -528,6 +559,7 @@ export async function syncCoinPaprikaExchanges(deps: {
     const wantDetail = detailsAttempted < deps.detailCallBudget;
     const detail = wantDetail ? await deps.fetchDetail(cp.id) : null;
     if (wantDetail) detailsAttempted++;
+    if (detail) detailsOk++;
     const pairsCount = detail?.pairsCount ?? null;
     const fiats = cp.fiats.map((f) => f.symbol).filter((s): s is string => typeof s === "string" && s.length > 0);
     const socials = socialsFromLinks(cp.links);
@@ -607,5 +639,5 @@ export async function syncCoinPaprikaExchanges(deps: {
     }
   }
 
-  return { created, enriched, skipped, marketsUpserted, detailsAttempted };
+  return { created, enriched, skipped, marketsUpserted, detailsAttempted, detailsOk };
 }

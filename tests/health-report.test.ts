@@ -91,6 +91,7 @@ const facts = (patch: Partial<HealthFacts> = {}): HealthFacts => ({
   queue: { cards: 0, points: 0 },
   log: null,
   pages: [{ path: "/en", status: 200, ms: 120 }],
+  quotaBlocks: [],
   signups: 3,
   ...patch,
 });
@@ -106,6 +107,29 @@ describe("renderHealthReport", () => {
   it("все прогоны свежие — одна строка вместо списка", () => {
     const text = renderHealthReport(facts({ probes: [probe("цены монет", NOW, 40, NOW)] }));
     expect(text).toContain("Прогоны: все 1 свежие.");
+  });
+
+  it("исчерпанный запас чужой службы: причина, а не замолчавший прогон", () => {
+    const text = renderHealthReport(
+      facts({
+        quotaBlocks: [
+          { name: "CoinPaprika", since: new Date("2026-11-09T11:00:00Z"), lastOkAt: new Date("2026-11-09T08:00:00Z") },
+        ],
+      }),
+    );
+    expect(text).toContain("Чужие службы:");
+    expect(text).toContain("• CoinPaprika: запас исчерпан 11 ч назад, последняя удачная выборка 14 ч назад");
+  });
+
+  it("запаса не хватило ни разу с перезапуска: удачной выборки нет и она не выдумывается", () => {
+    const text = renderHealthReport(
+      facts({ quotaBlocks: [{ name: "CoinPaprika", since: new Date("2026-11-09T21:00:00Z"), lastOkAt: null }] }),
+    );
+    expect(text).toContain("• CoinPaprika: запас исчерпан 60 мин, удачной выборки в памяти нет");
+  });
+
+  it("служба отвечает — раздела о чужих службах нет вовсе", () => {
+    expect(renderHealthReport(facts())).not.toContain("Чужие службы");
   });
 
   it("страница с ошибкой и страница без ответа названы, живые — нет", () => {

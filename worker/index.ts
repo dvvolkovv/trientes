@@ -10,7 +10,8 @@ import { fetchFearGreed } from "../src/lib/fear-greed";
 import { fetchMarkets } from "../src/lib/markets";
 import { syncPrices, syncGlobal, syncExchangeRates, syncCoinMetadata, syncExchanges, syncAdminAddedPrices, syncCardedCoinPrices, staleCardedIds, syncNews, syncFearGreed, syncMarkets, syncCoinPaprikaExchanges } from "../src/lib/sync/orchestrator";
 import { fetchCoinPaprikaExchanges, fetchCoinPaprikaExchangeDetail } from "../src/lib/coinpaprika";
-import { CpQuotaBlockedError } from "../src/lib/coinpaprika-http";
+import { CpHttpError, CpQuotaBlockedError } from "../src/lib/coinpaprika-http";
+import { RUN_COINPAPRIKA, recordRun } from "../src/lib/sync/run-state";
 import { runAlertsEval } from "../src/lib/alerts-eval";
 import { syncOsmCryptoPois } from "../src/lib/osm-poi-store";
 import { expireStaleRevisions } from "../src/lib/coin-card-expiry";
@@ -119,11 +120,21 @@ async function runMetadataSync() {
   metadataSyncRunning = true;
   const t0 = Date.now();
   try {
-    const { updated, skipped, failed } = await syncCoinMetadata({
+    const { updated, skipped, failed, retired } = await syncCoinMetadata({
       fetchCoinDetail,
       prisma: prisma as never,
+      // Нужна только при 404: монету скрываем лишь тогда, когда ей и цены никто
+      // не пишет. Один запрос на такой случай, а не на каждую монету обхода.
+      lastPricedAt: async (id) => {
+        const row = await prisma.coinSnapshot.findFirst({
+          where: { coinId: id },
+          orderBy: { fetchedAt: "desc" },
+          select: { fetchedAt: true },
+        });
+        return row?.fetchedAt ?? null;
+      },
     });
-    console.log(`[worker] metadata-sync done in ${((Date.now() - t0) / 1000).toFixed(1)}s — updated=${updated} skipped=${skipped} failed=${failed}`);
+    console.log(`[worker] metadata-sync done in ${((Date.now() - t0) / 1000).toFixed(1)}s — updated=${updated} skipped=${skipped} failed=${failed} retired=${retired}`);
   } catch (err) {
     console.error("[worker] metadata-sync fatal:", err);
   } finally {
@@ -178,11 +189,18 @@ async function runCoinPaprikaSync() {
       // Запас месяца, а не частота: см. расписание прогона ниже.
       detailCallBudget: 10,
     });
-    console.log(`[worker] coinpaprika-sync ok: +${result.created} new, ~${result.enriched} enriched, ${result.skipped} skipped, ${result.detailsAttempted} details, ${result.marketsUpserted} markets in ${Date.now() - t0}ms`);
+    // Свой след прогона: строки `Exchange` трогает и прогон CoinGecko, поэтому
+    // по базе молчание CoinPaprika не видно, и ночной отчёт пять дней его не
+    // замечал (уборка BH).
+    await recordRun(redis, RUN_COINPAPRIKA, "ok", new Date());
+    console.log(`[worker] coinpaprika-sync ok: +${result.created} new, ~${result.enriched} enriched, ${result.skipped} skipped, ${result.detailsOk}/${result.detailsAttempted} details, ${result.marketsUpserted} markets in ${Date.now() - t0}ms`);
   } catch (err) {
     // Исчерпанный запас месяца — состояние службы, а не сбой прогона: звонить
     // некуда до обновления запаса, и строка об этом не должна выглядеть аварией.
-    if (err instanceof CpQuotaBlockedError) {
+    // Исчерпанный запас — состояние службы, а не сбой прогона: отчёт назовёт
+    // его причиной тишины, а не замолчавшим прогоном.
+    if (err instanceof CpQuotaBlockedError || (err instanceof CpHttpError && err.quotaExhausted)) {
+      await recordRun(redis, RUN_COINPAPRIKA, "quota", new Date());
       console.log(`[worker] coinpaprika-sync skipped: ${err.message}`);
       return;
     }

@@ -15,6 +15,7 @@
 import type { PrismaClient } from "@prisma/client";
 import type Redis from "ioredis";
 import { KEYS, TTL } from "@/lib/sync/keys";
+import { RUN_COINPAPRIKA, quotaBlocked, readRunState } from "@/lib/sync/run-state";
 import { OWN_DEX_NAME } from "@/lib/coin-card-dex-market";
 
 /** Окно, за которое считаются ответы nginx. */
@@ -66,6 +67,19 @@ export interface CardsHealth {
   mismatched: number;
 }
 
+/**
+ * Чужая служба, которая отвечает «запас исчерпан». Это состояние службы, а не
+ * сбой прогона: повторять нечего, пока запас не обновится, — поэтому строка
+ * объясняет причину, а не повторяет симптом замолчавшего прогона.
+ */
+export interface QuotaBlock {
+  name: string;
+  /** Когда прогон в последний раз получил отказ по запасу. */
+  since: Date;
+  /** Когда служба в последний раз ответила по-настоящему; null — в памяти такого нет. */
+  lastOkAt: Date | null;
+}
+
 export interface PageCheck {
   path: string;
   status: number | null;
@@ -81,6 +95,8 @@ export interface HealthFacts {
   /** null — лог nginx недоступен (нет прав, нет файла). */
   log: LogSummary | null;
   pages: PageCheck[];
+  /** Чужие службы, упёршиеся в свой запас: пусто — все отвечают. */
+  quotaBlocks: QuotaBlock[];
   /** Новые люди за сутки. */
   signups: number;
 }
@@ -174,6 +190,8 @@ export function ageWords(minutes: number | null): string {
   return m ? `${h} ч ${m} мин` : `${h} ч`;
 }
 
+const minutesSince = (at: Date, now: Date) => Math.round((now.getTime() - at.getTime()) / 60_000);
+
 const pct = (part: number, whole: number) => (whole === 0 ? "0%" : `${Math.round((part / whole) * 1000) / 10}%`);
 const codes = (m: Record<string, number>) =>
   Object.entries(m)
@@ -199,6 +217,18 @@ export function renderHealthReport(f: HealthFacts): string {
     out.push("", `Замолчали прогоны (${silent.length} из ${f.probes.length}):`, ...lines);
   } else {
     out.push("", `Прогоны: все ${f.probes.length} свежие.`);
+  }
+
+  if (f.quotaBlocks.length) {
+    out.push(
+      "",
+      "Чужие службы:",
+      ...f.quotaBlocks.map((q) =>
+        q.lastOkAt
+          ? `• ${q.name}: запас исчерпан ${ageWords(minutesSince(q.since, f.at))} назад, последняя удачная выборка ${ageWords(minutesSince(q.lastOkAt, f.at))} назад`
+          : `• ${q.name}: запас исчерпан ${ageWords(minutesSince(q.since, f.at))}, удачной выборки в памяти нет`,
+      ),
+    );
   }
 
   const dead = f.pages.filter((p) => p.status === null || p.status >= 400);
@@ -292,11 +322,14 @@ export async function collectHealth(deps: HealthDeps): Promise<HealthFacts> {
     }>,
   ]);
 
-  const [listAt, globalAt, marketsAt, newsAt] = await Promise.all([
+  const [listAt, globalAt, marketsAt, newsAt, cpRun] = await Promise.all([
     redisWrittenAt(redis, KEYS.topList, TTL.snapshot, now),
     redisWrittenAt(redis, KEYS.globalStats, TTL.globalStats, now),
     redisWrittenAt(redis, KEYS.markets, TTL.markets, now),
     redisWrittenAt(redis, KEYS.news, TTL.news, now),
+    // Обход каталога бирж своего следа в базе не оставляет: строки `Exchange`
+    // трогает и прогон CoinGecko. Поэтому прогон пишет факт о себе сам.
+    readRunState(redis, RUN_COINPAPRIKA),
   ]);
 
   // Нормы — вдвое-втрое больше периода прогона: один пропуск не повод будить человека.
@@ -315,6 +348,19 @@ export async function collectHealth(deps: HealthDeps): Promise<HealthFacts> {
     probe("рынки карточек, ветхая строка", stalestMarketAgg._min.checkedAt, 180, now),
     probe("точки BTC Map", poiAt, 36 * 60, now),
   ];
+
+  // Исчерпанный запас месяца — состояние службы: прогон о себе не виноват, и
+  // строка «замолчал» каждую ночь до обновления запаса была бы шумом. Поэтому
+  // при исчерпанном запасе прогон не мерится по свежести, а причина называется
+  // отдельной строкой.
+  const quotaBlocks: QuotaBlock[] = [];
+  const cpQuotaAt = quotaBlocked(cpRun) ? cpRun?.quotaAt ?? null : null;
+  if (cpQuotaAt) {
+    quotaBlocks.push({ name: "CoinPaprika", since: cpQuotaAt, lastOkAt: cpRun?.okAt ?? null });
+  } else {
+    // Норма — втрое больше периода: прогон идёт раз в час (`25 * * * *`).
+    probes.push(probe("каталог бирж (CoinPaprika)", cpRun?.okAt ?? null, 180, now));
+  }
 
   const [cards, factsErr, factsStale, supplyErr, mismatched, pendingCards, pendingPoints, signups] = await Promise.all([
     prisma.coinCardChainFacts.count(),
@@ -365,6 +411,7 @@ export async function collectHealth(deps: HealthDeps): Promise<HealthFacts> {
     queue: { cards: pendingCards, points: pendingPoints },
     log,
     pages,
+    quotaBlocks,
     signups,
   };
 }
