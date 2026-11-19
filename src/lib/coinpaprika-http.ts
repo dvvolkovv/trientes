@@ -79,6 +79,18 @@ export class CpQuotaBlockedError extends Error {
   }
 }
 
+/**
+ * Отказ относится ко всей службе, а не к тому, что мы просили: запас месяца
+ * исчерпан. Такой отказ нельзя считать «у этой биржи данных нет» — 19 ноября
+ * именно это и вышло: подробности отвечали 402 всем десяти биржам прогона,
+ * `fetchDetail` молчание превращал в null, прогон писал «ok», и ночной отчёт
+ * сказал бы, что служба здорова.
+ */
+export function isCpQuotaError(err: unknown): boolean {
+  if (err instanceof CpQuotaBlockedError) return true;
+  return err instanceof CpHttpError && err.quotaExhausted;
+}
+
 export class CpHttpError extends Error {
   constructor(
     readonly status: number,

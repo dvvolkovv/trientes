@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { cpGet } from "./coinpaprika-http";
+import { cpGet, isCpQuotaError } from "./coinpaprika-http";
 
 /**
  * Normalized shape we use internally after parsing CoinPaprika's response.
@@ -192,7 +192,11 @@ export async function fetchCoinPaprikaExchangeDetail(id: string): Promise<CoinPa
   let json: { markets?: unknown[] } & Record<string, unknown>;
   try {
     json = (await cpGet(`/exchanges/${encodeURIComponent(id)}`)) as typeof json;
-  } catch {
+  } catch (err) {
+    // Исчерпанный запас месяца — отказ всей службе, и проглотить его нельзя:
+    // «у этой биржи данных нет» и «служба больше не отвечает никому» требуют
+    // разного (живой случай 19 ноября — прогон писал «ok» при десяти отказах).
+    if (isCpQuotaError(err)) throw err;
     return null;
   }
   const base = parseCoinPaprikaExchange(json);

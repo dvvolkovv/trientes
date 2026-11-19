@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { syncPrices, syncGlobal, syncExchangeRates, syncExchanges, syncAdminAddedPrices, syncCardedCoinPrices, staleCardedIds, syncFearGreed, syncMarkets, syncCoinPaprikaExchanges, syncCoinMetadata } from "@/lib/sync/orchestrator";
 import { CgHttpError } from "@/lib/coingecko-http";
+import { CpHttpError } from "@/lib/coinpaprika-http";
 import { KEYS } from "@/lib/sync/keys";
 import type { MarketRow, GlobalSnap, Exchange } from "@/lib/coingecko";
 import type { FearGreed } from "@/lib/fear-greed";
@@ -515,7 +516,7 @@ describe("syncCoinPaprikaExchanges", () => {
       btcUsd: 50_000,
       detailCallBudget: 100,
     });
-    expect(result).toEqual({ created: 0, enriched: 0, skipped: 1, marketsUpserted: 0, detailsAttempted: 0, detailsOk: 0 });
+    expect(result).toEqual({ created: 0, enriched: 0, skipped: 1, marketsUpserted: 0, detailsAttempted: 0, detailsOk: 0, quotaExhausted: false });
     expect(fakePrisma.exchange.findUnique).not.toHaveBeenCalled();
   });
 
@@ -695,5 +696,75 @@ describe("syncCoinMetadata", () => {
     });
     expect([r.updated, r.skipped, r.failed, r.retired]).toEqual([1, 1, 0, 0]);
     expect(prisma.updates[0]!.id).toBe("old");
+  });
+});
+
+describe("syncCoinPaprikaExchanges — исчерпанный запас на подробностях", () => {
+  const cpRow = (id: string, volume: number): CoinPaprikaExchange => ({
+    id,
+    name: id,
+    type: ["cex", "spot"],
+    description: null,
+    active: true,
+    markets_data_fetched: true,
+    adjusted_rank: 1,
+    currencies: 10,
+    fiats: [],
+    volume24hUsd: volume,
+    links: {},
+  });
+  const prismaStub = () => ({
+    exchange: {
+      findUnique: async () => ({
+        id: "a",
+        description: "есть",
+        exchangeType: "CEX",
+        currencies: 1,
+        pairsCount: 1,
+        fiats: ["USD"],
+        socials: {},
+        source: "cp",
+      }),
+      update: async () => ({}),
+      create: async () => ({}),
+    },
+    exchangeMarket: { upsert: async () => ({}) },
+  });
+
+  it("отказ по запасу не тонет: обход доходит до конца, но подробностей больше не просит", async () => {
+    const asked: string[] = [];
+    const r = await syncCoinPaprikaExchanges({
+      fetchAll: async () => [cpRow("a", 3e6), cpRow("b", 2e6), cpRow("c", 1e6)],
+      fetchDetail: async (id) => {
+        asked.push(id);
+        throw new CpHttpError(402, `/exchanges/${id}`, '{"error":"This plan has 20000 monthly requests limit, your requests rate is: 20003.000000."}');
+      },
+      prisma: prismaStub() as never,
+      minVolumeUsd: 100_000,
+      btcUsd: 50_000,
+      detailCallBudget: 10,
+    });
+    // Спросили один раз: ответ «запас исчерпан» относится ко всей службе, а не к бирже.
+    expect(asked).toEqual(["a"]);
+    expect(r.quotaExhausted).toBe(true);
+    // Числа из списка записаны всем трём: они пришли одним запросом и уже у нас.
+    expect([r.enriched, r.detailsOk]).toEqual([3, 0]);
+  });
+
+  it("обычный отказ по одной бирже остаётся её отказом: остальных спрашиваем", async () => {
+    const asked: string[] = [];
+    const r = await syncCoinPaprikaExchanges({
+      fetchAll: async () => [cpRow("a", 3e6), cpRow("b", 2e6)],
+      fetchDetail: async (id) => {
+        asked.push(id);
+        return null;
+      },
+      prisma: prismaStub() as never,
+      minVolumeUsd: 100_000,
+      btcUsd: 50_000,
+      detailCallBudget: 10,
+    });
+    expect(asked).toEqual(["a", "b"]);
+    expect([r.quotaExhausted, r.detailsOk, r.detailsAttempted]).toEqual([false, 0, 2]);
   });
 });

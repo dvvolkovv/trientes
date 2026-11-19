@@ -6,6 +6,7 @@ import { KEYS, TTL } from "./keys";
 import { mergeCuratedExchanges } from "@/lib/curated-exchanges";
 import { cpTypeToExchangeType, resolveCpId, type CoinPaprikaExchange, type CoinPaprikaExchangeDetail, type CoinPaprikaMarket } from "@/lib/coinpaprika";
 import { CgHttpError } from "@/lib/coingecko-http";
+import { isCpQuotaError } from "@/lib/coinpaprika-http";
 
 // Minimal interfaces — we only use what we need so tests can pass fakes.
 type RedisLike = {
@@ -543,11 +544,15 @@ export async function syncCoinPaprikaExchanges(deps: {
   // `fetchDetail` молчание службы превращает в null (не повод валить обход), и
   // строка лога «11 details» одинаково выглядела при одиннадцати ответах и при
   // одиннадцати отказах — то есть исчерпанный запас в ней был не виден.
-}): Promise<{ created: number; enriched: number; skipped: number; marketsUpserted: number; detailsAttempted: number; detailsOk: number }> {
+}): Promise<{ created: number; enriched: number; skipped: number; marketsUpserted: number; detailsAttempted: number; detailsOk: number; quotaExhausted: boolean }> {
   const allRaw = await deps.fetchAll();
   // Sort by volume desc so top exchanges get fresh detail first within rate-limit budget.
   const all = [...allRaw].sort((a, b) => b.volume24hUsd - a.volume24hUsd);
   let created = 0, enriched = 0, skipped = 0, marketsUpserted = 0, detailsAttempted = 0, detailsOk = 0;
+  // Исчерпанный запас месяца — отказ всей службе: спрашивать о следующей бирже
+  // бессмысленно, а числа из списка уже у нас одним запросом, и записать их надо
+  // всем — иначе объёмы 580 бирж стояли бы ветхими до обновления запаса.
+  let quotaExhausted = false;
 
   for (const cp of all) {
     if (!cp.active || !cp.markets_data_fetched || cp.volume24hUsd <= deps.minVolumeUsd) {
@@ -556,9 +561,17 @@ export async function syncCoinPaprikaExchanges(deps: {
     }
     const targetId = resolveCpId(cp.id);
     const existing = await deps.prisma.exchange.findUnique({ where: { id: targetId } });
-    const wantDetail = detailsAttempted < deps.detailCallBudget;
-    const detail = wantDetail ? await deps.fetchDetail(cp.id) : null;
-    if (wantDetail) detailsAttempted++;
+    const wantDetail = !quotaExhausted && detailsAttempted < deps.detailCallBudget;
+    let detail: CoinPaprikaExchangeDetail | null = null;
+    if (wantDetail) {
+      detailsAttempted++;
+      try {
+        detail = await deps.fetchDetail(cp.id);
+      } catch (err) {
+        if (!isCpQuotaError(err)) throw err;
+        quotaExhausted = true;
+      }
+    }
     if (detail) detailsOk++;
     const pairsCount = detail?.pairsCount ?? null;
     const fiats = cp.fiats.map((f) => f.symbol).filter((s): s is string => typeof s === "string" && s.length > 0);
@@ -639,5 +652,5 @@ export async function syncCoinPaprikaExchanges(deps: {
     }
   }
 
-  return { created, enriched, skipped, marketsUpserted, detailsAttempted, detailsOk };
+  return { created, enriched, skipped, marketsUpserted, detailsAttempted, detailsOk, quotaExhausted };
 }

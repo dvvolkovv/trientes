@@ -191,9 +191,10 @@ async function runCoinPaprikaSync() {
     });
     // Свой след прогона: строки `Exchange` трогает и прогон CoinGecko, поэтому
     // по базе молчание CoinPaprika не видно, и ночной отчёт пять дней его не
-    // замечал (уборка BH).
-    await recordRun(redis, RUN_COINPAPRIKA, "ok", new Date());
-    console.log(`[worker] coinpaprika-sync ok: +${result.created} new, ~${result.enriched} enriched, ${result.skipped} skipped, ${result.detailsOk}/${result.detailsAttempted} details, ${result.marketsUpserted} markets in ${Date.now() - t0}ms`);
+    // замечал (уборка BH). Список прошёл, а подробности отказали по запасу —
+    // это не удачный прогон: `pairsCount` и рынки не обновятся ни у кого.
+    await recordRun(redis, RUN_COINPAPRIKA, result.quotaExhausted ? "quota" : "ok", new Date());
+    console.log(`[worker] coinpaprika-sync ${result.quotaExhausted ? "partial (quota exhausted on details)" : "ok"}: +${result.created} new, ~${result.enriched} enriched, ${result.skipped} skipped, ${result.detailsOk}/${result.detailsAttempted} details, ${result.marketsUpserted} markets in ${Date.now() - t0}ms`);
   } catch (err) {
     // Исчерпанный запас месяца — состояние службы, а не сбой прогона: звонить
     // некуда до обновления запаса, и строка об этом не должна выглядеть аварией.
