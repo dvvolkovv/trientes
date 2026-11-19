@@ -1594,7 +1594,8 @@
     "loyaltyLink": "캐시백",
     "teamLink": "팀",
     "journalLink": "활동 로그",
-    "tasksLink": "작업"
+    "tasksLink": "작업",
+    "promosLink": "혜택"
   },
   "cabinet": {
     "kicker": "섹션 · 캐비닛",
@@ -3180,6 +3181,11 @@
         "subject": "작업의 새 메시지: {title}",
         "body": "{company}의 \"{title}\" 작업에 누군가가 메시지를 남겼습니다."
       }
+    },
+    "promo": {
+      "from": "{shop}에 새 소식이 있어요",
+      "open": "열기: {url}",
+      "unsubscribe": "상점 메일링 끄기: {url}"
     }
   },
   "captcha": {
@@ -3749,7 +3755,8 @@
         "products": "상품",
         "warehouses": "창고 및 재고",
         "pricing": "가격 및 캐시백",
-        "tasks": "작업"
+        "tasks": "작업",
+        "promos": "프로모션 및 메일링"
       },
       "levels": {
         "NONE": "접근 권한 없음",
@@ -3828,7 +3835,12 @@
       "TASK_UPDATED": "작업이 편집됨",
       "TASK_STATUS_SET": "작업 상태가 변경됨",
       "TASK_CANCELLED": "작업이 취소됨",
-      "TASK_COMMENTED": "작업 내 메시지"
+      "TASK_COMMENTED": "작업 내 메시지",
+      "PROMO_CREATED": "프로모션이 생성됨",
+      "PROMO_UPDATED": "프로모션이 수정됨",
+      "PROMO_ARCHIVED": "프로모션이 보관됨",
+      "PROMO_RESTORED": "프로모션이 복구됨",
+      "PROMO_SENT": "팔로워에게 프로모션이 발송됨"
     }
   },
   "cabinetTasks": {
@@ -3938,6 +3950,86 @@
       "body_too_long": "메시지는 2000자 미만으로 작성하세요.",
       "too_many_comments": "이 작업에는 이미 메시지가 100개 있습니다.",
       "nothing_to_save": "변경된 사항이 없습니다."
+    }
+  },
+  "promos": {
+    "storefrontTitle": "프로모션",
+    "until": "{date}까지",
+    "product": "해당 상품",
+    "atPlace": "가게에서",
+    "atPlaceIn": "{city}에서",
+    "follow": "팔로우",
+    "following": "팔로우 중",
+    "subscriptions": {
+      "title": "구독",
+      "subtitle": "팔로우한 가게가 당신에게 글을 보낼 수 있습니다. 누구에게서 받을지, 받을지 말지는 당신이 결정합니다.",
+      "allSwitch": "팔로우한 가게가 소식을 보내도록 허용",
+      "empty": "아직 어떤 가게도 팔로우하지 않았습니다.",
+      "receiving": "소식 받는 중",
+      "muted": "소식 끔",
+      "notLive": "지금 쇼케이스에 없음",
+      "mute": "음소거",
+      "unmute": "음소거 해제",
+      "unfollow": "언팔로우"
+    }
+  },
+  "cabinetPromos": {
+    "title": "오퍼와 발송",
+    "subtitle": "가게의 약속 내용, 그리고 오퍼별로 팔로워에게 1회 발송합니다.",
+    "notListed": "가게가 아직 쇼케이스에 없어 오퍼가 공개되지 않았습니다.",
+    "followers": "팔로워: {count}",
+    "quota": "오늘 남은 발송: {perDay} 중 {left}. 한 사람은 하루에 모든 가게를 합쳐 최대 {perUser}개의 가게 메시지를 받습니다.",
+    "newTitle": "새 오퍼",
+    "fieldTitle": "제목",
+    "fieldBody": "본문",
+    "noLinks": "본문에는 링크를 넣지 마세요: 메시지는 우리 봇에서 발송되므로, 그 안의 링크에 대한 책임도 우리에게 있습니다. 하나의 링크는 우리 것이며 당신의 페이지로 연결됩니다.",
+    "fieldFrom": "시작",
+    "fieldTo": "종료",
+    "fieldProduct": "상품",
+    "fieldPoint": "장소",
+    "noLink": "— 연결되지 않음 —",
+    "create": "오퍼 생성",
+    "empty": "아직 오퍼가 없습니다.",
+    "send": "팔로워에게 보내기",
+    "archive": "보관",
+    "restore": "복원",
+    "openProduct": "상품 페이지",
+    "sendDone": "발송됨: {delivered}, 건너뜀: {skipped}.",
+    "sentNumbers": "발송 시점 팔로워: {followers} · 발송됨: {delivered} · 건너뜀: {skipped} · 클릭: {clicks}",
+    "notSent": "아직 팔로워에게 보내지 않음 · 클릭: {clicks}",
+    "state": {
+      "upcoming": "나중에 시작",
+      "running": "진행 중",
+      "finished": "종료됨",
+      "archived": "보관됨"
+    },
+    "error": {
+      "unauth": "다시 로그인하세요.",
+      "forbidden": "이 상점의 오퍼에 대한 권한이 없습니다.",
+      "not_found": "오퍼가 사라졌습니다.",
+      "title_required": "제목을 작성하세요.",
+      "title_too_long": "제목이 너무 깁니다.",
+      "body_required": "오퍼 내용을 작성하세요.",
+      "body_too_long": "내용이 너무 깁니다.",
+      "text_has_link": "링크를 제거하세요: 이 내용은 우리 봇의 메시지로 발송되며, 링크는 허용되지 않습니다.",
+      "window_invalid": "두 날짜를 모두 선택하세요.",
+      "window_backwards": "종료가 시작보다 앞섭니다.",
+      "window_past": "해당 기간이 이미 종료되었습니다.",
+      "window_too_long": "오퍼는 최대 90일 동안만 진행할 수 있습니다.",
+      "too_many": "활성 오퍼가 너무 많습니다 — 먼저 일부를 보관하세요.",
+      "point_not_found": "해당 장소는 귀하의 것이 아닙니다.",
+      "point_out_of_scope": "해당 장소는 귀하의 영역 밖입니다.",
+      "product_not_offered": "그 상품을 판매하지 않습니다 — 먼저 해당 상품에 대한 오퍼를 추가하세요.",
+      "already_sent": "이 오퍼는 이미 발송되었습니다. 두 번째 발송은 새로운 오퍼를 의미합니다.",
+      "archived": "오퍼가 보관되었습니다.",
+      "not_running": "오퍼가 현재 진행 중이 아닙니다.",
+      "daily_cap": "오늘의 발송 한도가 이미 소진되었습니다. 상점당 하루 한 번입니다.",
+      "too_soon": "마지막 발송 직후입니다 — 약 하루가 지나야 합니다.",
+      "no_followers": "아직 이 상점을 팔로우하는 사용자가 없어 보낼 대상이 없습니다."
+    },
+    "sendBlocked": {
+      "daily_cap": "오늘의 발송분은 소진되었습니다 — 다음 발송은 내일입니다.",
+      "not_listed": "상점이 쇼케이스에 등록되지 않아 발송이 비활성화되었습니다."
     }
   }
 }

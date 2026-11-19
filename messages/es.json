@@ -1594,7 +1594,8 @@
     "loyaltyLink": "Reembolso",
     "teamLink": "Equipo",
     "journalLink": "Registro de actividad",
-    "tasksLink": "Tareas"
+    "tasksLink": "Tareas",
+    "promosLink": "Ofertas"
   },
   "cabinet": {
     "kicker": "Sección · Panel",
@@ -3180,6 +3181,11 @@
         "subject": "Nuevo mensaje en la tarea: {title}",
         "body": "Alguien escribió en la tarea \"{title}\" en {company}."
       }
+    },
+    "promo": {
+      "from": "{shop} tiene novedades para ti",
+      "open": "Abrir: {url}",
+      "unsubscribe": "Desactivar comunicaciones de la tienda: {url}"
     }
   },
   "captcha": {
@@ -3749,7 +3755,8 @@
         "products": "Productos",
         "warehouses": "Almacenes y existencias",
         "pricing": "Precio y cashback",
-        "tasks": "Tareas"
+        "tasks": "Tareas",
+        "promos": "Ofertas y comunicaciones"
       },
       "levels": {
         "NONE": "Sin acceso",
@@ -3828,7 +3835,12 @@
       "TASK_UPDATED": "Tarea editada",
       "TASK_STATUS_SET": "Estado de la tarea cambiado",
       "TASK_CANCELLED": "Tarea cancelada",
-      "TASK_COMMENTED": "Mensaje en una tarea"
+      "TASK_COMMENTED": "Mensaje en una tarea",
+      "PROMO_CREATED": "Oferta creada",
+      "PROMO_UPDATED": "Oferta editada",
+      "PROMO_ARCHIVED": "Oferta archivada",
+      "PROMO_RESTORED": "Oferta restaurada",
+      "PROMO_SENT": "Oferta enviada a los seguidores"
     }
   },
   "cabinetTasks": {
@@ -3938,6 +3950,86 @@
       "body_too_long": "Mantén el mensaje por debajo de 2000 caracteres.",
       "too_many_comments": "Esta tarea ya tiene 100 mensajes.",
       "nothing_to_save": "Nada cambió."
+    }
+  },
+  "promos": {
+    "storefrontTitle": "Ofertas",
+    "until": "hasta {date}",
+    "product": "el producto",
+    "atPlace": "en la tienda",
+    "atPlaceIn": "en {city}",
+    "follow": "Seguir",
+    "following": "Siguiendo",
+    "subscriptions": {
+      "title": "Suscripciones",
+      "subtitle": "Las tiendas que sigues pueden escribirte. Tú decides quién y si lo permites.",
+      "allSwitch": "Permitir que las tiendas que sigo me envíen sus novedades",
+      "empty": "Aún no sigues ninguna tienda.",
+      "receiving": "recibiendo novedades",
+      "muted": "novedades silenciadas",
+      "notLive": "no está en el escaparate ahora mismo",
+      "mute": "Silenciar",
+      "unmute": "Quitar silencio",
+      "unfollow": "Dejar de seguir"
+    }
+  },
+  "cabinetPromos": {
+    "title": "Ofertas y envíos",
+    "subtitle": "Lo que promete la tienda, y un envío por oferta a quienes te siguen.",
+    "notListed": "La tienda aún no está en el escaparate, así que sus ofertas no son públicas.",
+    "followers": "Seguidores: {count}",
+    "quota": "Envíos restantes hoy: {left} de {perDay}. Una persona recibe como máximo {perUser} mensajes de tienda al día de todas las tiendas juntas.",
+    "newTitle": "Nueva oferta",
+    "fieldTitle": "Título",
+    "fieldBody": "Texto",
+    "noLinks": "Sin enlaces en el texto: el mensaje llega desde nuestro bot, así que un enlace en él sería nuestra responsabilidad. El único enlace es nuestro y lleva a tu página.",
+    "fieldFrom": "Desde",
+    "fieldTo": "Hasta",
+    "fieldProduct": "Producto",
+    "fieldPoint": "Lugar",
+    "noLink": "— sin vincular —",
+    "create": "Crear oferta",
+    "empty": "No hay ofertas aún.",
+    "send": "Enviar a seguidores",
+    "archive": "Archivar",
+    "restore": "Restaurar",
+    "openProduct": "Página del producto",
+    "sendDone": "Enviados: {delivered}, omitidos: {skipped}.",
+    "sentNumbers": "Seguidores al enviar: {followers} · enviados: {delivered} · omitidos: {skipped} · clics: {clicks}",
+    "notSent": "Aún no enviado a seguidores · clics: {clicks}",
+    "state": {
+      "upcoming": "empieza más tarde",
+      "running": "en curso",
+      "finished": "finalizado",
+      "archived": "archivado"
+    },
+    "error": {
+      "unauth": "Vuelve a iniciar sesión.",
+      "forbidden": "No tienes permiso para ofertas en esta tienda.",
+      "not_found": "La oferta ya no está.",
+      "title_required": "Escribe un título.",
+      "title_too_long": "El título es demasiado largo.",
+      "body_required": "Escribe el texto de la oferta.",
+      "body_too_long": "El texto es demasiado largo.",
+      "text_has_link": "Elimina el enlace: el texto se envía como un mensaje de nuestro bot y no se permiten enlaces en él.",
+      "window_invalid": "Elige ambas fechas.",
+      "window_backwards": "El final es anterior al inicio.",
+      "window_past": "Ese periodo ya terminó.",
+      "window_too_long": "Una oferta puede durar como máximo 90 días.",
+      "too_many": "Demasiadas ofertas activas — archiva algunas primero.",
+      "point_not_found": "Ese lugar no es tuyo.",
+      "point_out_of_scope": "Ese lugar está fuera de tu área.",
+      "product_not_offered": "No vendes ese producto — añade primero tu oferta para ese producto.",
+      "already_sent": "Esta oferta ya se ha enviado. Un segundo envío implica una oferta nueva.",
+      "archived": "La oferta está archivada.",
+      "not_running": "La oferta no está activa ahora mismo.",
+      "daily_cap": "El envío de hoy ya se ha utilizado. Uno por día por tienda.",
+      "too_soon": "Demasiado pronto tras el último envío — debe pasar aproximadamente un día.",
+      "no_followers": "Nadie sigue la tienda todavía, así que no hay a quién escribir."
+    },
+    "sendBlocked": {
+      "daily_cap": "El envío de hoy está agotado — el próximo, mañana.",
+      "not_listed": "La tienda no está en la vitrina, así que los envíos están desactivados."
     }
   }
 }

@@ -182,6 +182,11 @@ export type Poi = {
   description: string | null;
   /** Жалоб набралось достаточно: точка на карте, но с пометкой «проверяется». */
   underReview?: boolean;
+  /**
+   * Идущая акция заведения (слайс BG). Привязка к точке — это и есть «акция здесь»;
+   * вид булавки она не меняет: цвет каёмки занят источником, середина — категорией.
+   */
+  promo?: { id: string; title: string };
   // Optional in-app deep-link slug. Set only for fintech HQs (→ /{locale}/fintech/{slug}).
   slug?: string;
 };

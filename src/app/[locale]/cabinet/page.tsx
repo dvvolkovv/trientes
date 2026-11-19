@@ -15,6 +15,7 @@ import { CoinsSection } from "@/components/cabinet/coins-section";
 import { AdminSection } from "@/components/cabinet/admin-section";
 import { MfaSection } from "@/components/cabinet/mfa-section";
 import { LoyaltySection } from "@/components/cabinet/loyalty-section";
+import { SubscriptionsSection } from "@/components/cabinet/subscriptions-section";
 
 export default async function CabinetPage({
   params,
@@ -95,6 +96,9 @@ export default async function CabinetPage({
 
       {/* Лестница уровней одна на сеть и не зависит от покупок — видна всем вошедшим. */}
       <LoyaltySection />
+
+      {/* Подписки на магазины и отключение их рассылок (слайс BG, ТЗ 4.3). */}
+      <SubscriptionsSection locale={locale} />
 
       {isStaffRole(user.role as ViewerRole) ? <MfaSection locale={locale} userId={user.id} /> : null}
       {isStaffRole(user.role as ViewerRole) ? <AdminSection locale={locale} /> : null}

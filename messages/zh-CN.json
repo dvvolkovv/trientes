@@ -1594,7 +1594,8 @@
     "loyaltyLink": "返现",
     "teamLink": "团队",
     "journalLink": "活动日志",
-    "tasksLink": "任务"
+    "tasksLink": "任务",
+    "promosLink": "优惠"
   },
   "cabinet": {
     "kicker": "板块 · 个人中心",
@@ -3180,6 +3181,11 @@
         "subject": "任务有新消息：{title}",
         "body": "有人在 {company} 的“{title}”任务中发了新消息。"
       }
+    },
+    "promo": {
+      "from": "{shop} 有新消息给你",
+      "open": "打开：{url}",
+      "unsubscribe": "取消店铺订阅：{url}"
     }
   },
   "captcha": {
@@ -3749,7 +3755,8 @@
         "products": "商品",
         "warehouses": "仓库与库存",
         "pricing": "价格与返现",
-        "tasks": "任务"
+        "tasks": "任务",
+        "promos": "优惠与群发"
       },
       "levels": {
         "NONE": "无访问权限",
@@ -3828,7 +3835,12 @@
       "TASK_UPDATED": "任务已编辑",
       "TASK_STATUS_SET": "任务状态已更改",
       "TASK_CANCELLED": "任务已取消",
-      "TASK_COMMENTED": "任务中的消息"
+      "TASK_COMMENTED": "任务中的消息",
+      "PROMO_CREATED": "已创建优惠",
+      "PROMO_UPDATED": "已编辑优惠",
+      "PROMO_ARCHIVED": "已归档优惠",
+      "PROMO_RESTORED": "已恢复优惠",
+      "PROMO_SENT": "已向关注者发送优惠"
     }
   },
   "cabinetTasks": {
@@ -3938,6 +3950,86 @@
       "body_too_long": "消息请少于2000个字符。",
       "too_many_comments": "此任务已包含100条消息。",
       "nothing_to_save": "未发生任何变化。"
+    }
+  },
+  "promos": {
+    "storefrontTitle": "优惠",
+    "until": "截至 {date}",
+    "product": "该商品",
+    "atPlace": "在该店铺",
+    "atPlaceIn": "在 {city}",
+    "follow": "关注",
+    "following": "已关注",
+    "subscriptions": {
+      "title": "订阅",
+      "subtitle": "你关注的店铺可以给你发消息。由你决定接受谁的消息，或完全不收。",
+      "allSwitch": "允许我关注的店铺向我发送消息",
+      "empty": "你尚未关注任何店铺",
+      "receiving": "接收消息",
+      "muted": "消息已静音",
+      "notLive": "当前不在展示台",
+      "mute": "静音",
+      "unmute": "取消静音",
+      "unfollow": "取消关注"
+    }
+  },
+  "cabinetPromos": {
+    "title": "优惠与群发",
+    "subtitle": "店铺承诺的优惠，以及每个优惠向关注你的人群发一条消息。",
+    "notListed": "店铺尚未上架到橱窗，因此其优惠未公开。",
+    "followers": "关注者：{count}",
+    "quota": "今日剩余群发：{left}/{perDay}。每人每天最多接收来自所有商店的店铺消息 {perUser} 条。",
+    "newTitle": "新优惠",
+    "fieldTitle": "标题",
+    "fieldBody": "正文",
+    "noLinks": "正文中不要包含链接：消息由我们的机器人发送，包含的链接将由我们承担责任。唯一的链接由我们提供，指向你的页面。",
+    "fieldFrom": "开始",
+    "fieldTo": "截止",
+    "fieldProduct": "商品",
+    "fieldPoint": "地点",
+    "noLink": "— 未关联 —",
+    "create": "创建优惠",
+    "empty": "尚无优惠。",
+    "send": "发送给关注者",
+    "archive": "归档",
+    "restore": "恢复",
+    "openProduct": "商品页",
+    "sendDone": "已发送：{delivered}，已跳过：{skipped}。",
+    "sentNumbers": "发送时的关注者：{followers} · 已送达：{delivered} · 已跳过：{skipped} · 点击：{clicks}",
+    "notSent": "尚未发送给关注者 · 点击：{clicks}",
+    "state": {
+      "upcoming": "稍后开始",
+      "running": "进行中",
+      "finished": "已结束",
+      "archived": "已归档"
+    },
+    "error": {
+      "unauth": "请重新登录。",
+      "forbidden": "你没有管理此商店优惠的权限。",
+      "not_found": "该优惠已不存在。",
+      "title_required": "填写标题。",
+      "title_too_long": "标题过长。",
+      "body_required": "填写优惠正文。",
+      "body_too_long": "正文过长。",
+      "text_has_link": "请移除链接：该文本将由我们的机器人作为消息发送，内部不允许包含链接。",
+      "window_invalid": "请选择开始和结束日期。",
+      "window_backwards": "结束早于开始。",
+      "window_past": "该时间窗口已结束。",
+      "window_too_long": "优惠最多可运行 90 天。",
+      "too_many": "正在进行的优惠过多——请先归档一部分。",
+      "point_not_found": "该地点不属于你。",
+      "point_out_of_scope": "该地点不在你的区域内。",
+      "product_not_offered": "你未售卖该商品 — 请先为其添加你的报价。",
+      "already_sent": "该报价已发送。再次群发将视为新的报价。",
+      "archived": "该报价已归档。",
+      "not_running": "该报价目前未在进行。",
+      "daily_cap": "今日的群发额度已用完。每个店铺每天一次。",
+      "too_soon": "距离上次群发时间太近 — 需要间隔约一天。",
+      "no_followers": "尚无人关注该店铺，因此没有可发送的对象。"
+    },
+    "sendBlocked": {
+      "daily_cap": "今天的群发已用完——下一次在明天。",
+      "not_listed": "商店未在展示页中，因此已关闭群发。"
     }
   }
 }

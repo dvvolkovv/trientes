@@ -1594,7 +1594,8 @@
     "loyaltyLink": "Cashback",
     "teamLink": "Team",
     "journalLink": "Aktivitätsprotokoll",
-    "tasksLink": "Aufgaben"
+    "tasksLink": "Aufgaben",
+    "promosLink": "Angebote"
   },
   "cabinet": {
     "kicker": "Bereich · Kabinett",
@@ -3180,6 +3181,11 @@
         "subject": "Neue Nachricht in der Aufgabe: {title}",
         "body": "Jemand hat in der Aufgabe „{title}“ bei {company} geschrieben."
       }
+    },
+    "promo": {
+      "from": "{shop} hat Neuigkeiten für dich",
+      "open": "Öffnen: {url}",
+      "unsubscribe": "Shop-Mailings deaktivieren: {url}"
     }
   },
   "captcha": {
@@ -3749,7 +3755,8 @@
         "products": "Produkte",
         "warehouses": "Lager und Bestand",
         "pricing": "Preis und Cashback",
-        "tasks": "Aufgaben"
+        "tasks": "Aufgaben",
+        "promos": "Angebote und Mailings"
       },
       "levels": {
         "NONE": "Kein Zugriff",
@@ -3828,7 +3835,12 @@
       "TASK_UPDATED": "Aufgabe bearbeitet",
       "TASK_STATUS_SET": "Aufgabenstatus geändert",
       "TASK_CANCELLED": "Aufgabe abgebrochen",
-      "TASK_COMMENTED": "Nachricht in einer Aufgabe"
+      "TASK_COMMENTED": "Nachricht in einer Aufgabe",
+      "PROMO_CREATED": "Angebot erstellt",
+      "PROMO_UPDATED": "Angebot bearbeitet",
+      "PROMO_ARCHIVED": "Angebot archiviert",
+      "PROMO_RESTORED": "Angebot wiederhergestellt",
+      "PROMO_SENT": "Angebot an Follower gesendet"
     }
   },
   "cabinetTasks": {
@@ -3938,6 +3950,86 @@
       "body_too_long": "Halten Sie die Nachricht unter 2000 Zeichen.",
       "too_many_comments": "Diese Aufgabe hat bereits 100 Nachrichten.",
       "nothing_to_save": "Nichts geändert."
+    }
+  },
+  "promos": {
+    "storefrontTitle": "Angebote",
+    "until": "bis {date}",
+    "product": "das Produkt",
+    "atPlace": "im Shop",
+    "atPlaceIn": "in {city}",
+    "follow": "Folgen",
+    "following": "Gefolgt",
+    "subscriptions": {
+      "title": "Abonnements",
+      "subtitle": "Shops, denen du folgst, können dir schreiben. Du entscheidest, wer, und ob überhaupt.",
+      "allSwitch": "Shops, denen ich folge, dürfen mir ihre Neuigkeiten senden",
+      "empty": "Du folgst noch keinem Shop.",
+      "receiving": "Neuigkeiten empfangen",
+      "muted": "Neuigkeiten stummgeschaltet",
+      "notLive": "derzeit nicht im Schaufenster",
+      "mute": "Stummschalten",
+      "unmute": "Stummschaltung aufheben",
+      "unfollow": "Entfolgen"
+    }
+  },
+  "cabinetPromos": {
+    "title": "Angebote und Mailings",
+    "subtitle": "Was der Shop verspricht, und ein Mailing pro Angebot an jene, die Ihnen folgen.",
+    "notListed": "Der Shop ist noch nicht im Schaufenster, daher sind seine Angebote nicht öffentlich.",
+    "followers": "Follower: {count}",
+    "quota": "Heute verbleibende Mailings: {left} von {perDay}. Eine Person erhält höchstens {perUser} Shop-Nachrichten pro Tag aus allen Shops zusammen.",
+    "newTitle": "Neues Angebot",
+    "fieldTitle": "Überschrift",
+    "fieldBody": "Text",
+    "noLinks": "Keine Links im Text: Die Nachricht kommt von unserem Bot, daher müssten wir für einen Link darin geradestehen. Der eine Link ist von uns und führt zu Ihrer Seite.",
+    "fieldFrom": "Von",
+    "fieldTo": "Bis",
+    "fieldProduct": "Produkt",
+    "fieldPoint": "Ort",
+    "noLink": "— nicht verlinkt —",
+    "create": "Angebot erstellen",
+    "empty": "Noch keine Angebote.",
+    "send": "An Follower senden",
+    "archive": "Archivieren",
+    "restore": "Wiederherstellen",
+    "openProduct": "Produktseite",
+    "sendDone": "Gesendet: {delivered}, übersprungen: {skipped}.",
+    "sentNumbers": "Follower zum Sendezeitpunkt: {followers} · zugestellt: {delivered} · übersprungen: {skipped} · Klicks: {clicks}",
+    "notSent": "Noch nicht an Follower gesendet · Klicks: {clicks}",
+    "state": {
+      "upcoming": "beginnt später",
+      "running": "läuft",
+      "finished": "beendet",
+      "archived": "archiviert"
+    },
+    "error": {
+      "unauth": "Bitte melden Sie sich erneut an.",
+      "forbidden": "Sie haben keine Berechtigung für Angebote in diesem Shop.",
+      "not_found": "Das Angebot ist nicht mehr vorhanden.",
+      "title_required": "Schreiben Sie eine Überschrift.",
+      "title_too_long": "Die Überschrift ist zu lang.",
+      "body_required": "Schreiben Sie den Angebotstext.",
+      "body_too_long": "Der Text ist zu lang.",
+      "text_has_link": "Entfernen Sie den Link: Der Text wird als Nachricht von unserem Bot versendet, und Links darin sind nicht erlaubt.",
+      "window_invalid": "Wählen Sie beide Daten.",
+      "window_backwards": "Das Ende liegt vor dem Beginn.",
+      "window_past": "Dieses Zeitfenster ist bereits vorbei.",
+      "window_too_long": "Ein Angebot darf höchstens 90 Tage laufen.",
+      "too_many": "Zu viele laufende Angebote — archiviere zuerst einige.",
+      "point_not_found": "Dieser Ort gehört dir nicht.",
+      "point_out_of_scope": "Dieser Ort liegt außerhalb deines Bereichs.",
+      "product_not_offered": "Du verkaufst dieses Produkt nicht — füge zuerst dein Angebot dafür hinzu.",
+      "already_sent": "Dieses Angebot wurde bereits versendet. Eine zweite Aussendung bedeutet ein neues Angebot.",
+      "archived": "Das Angebot ist archiviert.",
+      "not_running": "Das Angebot läuft gerade nicht.",
+      "daily_cap": "Die heutige Aussendung ist bereits aufgebraucht. Eine pro Tag und Shop.",
+      "too_soon": "Zu früh nach der letzten Aussendung — es muss etwa ein Tag vergehen.",
+      "no_followers": "Dem Shop folgt noch niemand, daher gibt es niemanden, den man anschreiben kann."
+    },
+    "sendBlocked": {
+      "daily_cap": "Das heutige Mailing ist aufgebraucht — das nächste morgen.",
+      "not_listed": "Der Shop ist nicht im Schaufenster, daher sind Mailings deaktiviert."
     }
   }
 }

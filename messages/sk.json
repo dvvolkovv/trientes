@@ -1594,7 +1594,8 @@
     "loyaltyLink": "Cashback",
     "teamLink": "Tím",
     "journalLink": "Denník aktivít",
-    "tasksLink": "Úlohy"
+    "tasksLink": "Úlohy",
+    "promosLink": "Ponuky"
   },
   "cabinet": {
     "kicker": "Sekcia · Profil",
@@ -3180,6 +3181,11 @@
         "subject": "Nová správa v úlohe: {title}",
         "body": "Niekto napísal v úlohe „{title}“ v {company}."
       }
+    },
+    "promo": {
+      "from": "{shop} má pre vás novinky",
+      "open": "Otvoriť: {url}",
+      "unsubscribe": "Vypnúť zasielanie od obchodu: {url}"
     }
   },
   "captcha": {
@@ -3749,7 +3755,8 @@
         "products": "Produkty",
         "warehouses": "Sklady a zásoby",
         "pricing": "Cena a cashback",
-        "tasks": "Úlohy"
+        "tasks": "Úlohy",
+        "promos": "Ponuky a rozosielanie"
       },
       "levels": {
         "NONE": "Bez prístupu",
@@ -3828,7 +3835,12 @@
       "TASK_UPDATED": "Úloha upravená",
       "TASK_STATUS_SET": "Stav úlohy zmenený",
       "TASK_CANCELLED": "Úloha zrušená",
-      "TASK_COMMENTED": "Správa v úlohe"
+      "TASK_COMMENTED": "Správa v úlohe",
+      "PROMO_CREATED": "Ponuka vytvorená",
+      "PROMO_UPDATED": "Ponuka upravená",
+      "PROMO_ARCHIVED": "Ponuka archivovaná",
+      "PROMO_RESTORED": "Ponuka obnovená",
+      "PROMO_SENT": "Ponuka odoslaná sledovateľom"
     }
   },
   "cabinetTasks": {
@@ -3938,6 +3950,86 @@
       "body_too_long": "Nech je správa kratšia ako 2000 znakov.",
       "too_many_comments": "Táto úloha už má 100 správ.",
       "nothing_to_save": "Nič sa nezmenilo."
+    }
+  },
+  "promos": {
+    "storefrontTitle": "Ponuky",
+    "until": "do {date}",
+    "product": "produkt",
+    "atPlace": "v obchode",
+    "atPlaceIn": "v {city}",
+    "follow": "Sledovať",
+    "following": "Sledujete",
+    "subscriptions": {
+      "title": "Sledovania",
+      "subtitle": "Obchody, ktoré sledujete, vám môžu písať. Vy rozhodujete, kto a či vôbec.",
+      "allSwitch": "Povoliť obchodom, ktoré sledujem, posielať mi novinky",
+      "empty": "Zatiaľ nesledujete žiadny obchod.",
+      "receiving": "prijímate novinky",
+      "muted": "novinky stlmené",
+      "notLive": "teraz nie je na výklade",
+      "mute": "Stlmiť",
+      "unmute": "Zrušiť stlmenie",
+      "unfollow": "Prestať sledovať"
+    }
+  },
+  "cabinetPromos": {
+    "title": "Ponuky a hromadné správy",
+    "subtitle": "Čo obchod sľubuje, a jedna hromadná správa na ponuku pre tých, čo vás sledujú.",
+    "notListed": "Obchod ešte nie je na výklade, preto jeho ponuky nie sú verejné.",
+    "followers": "Sledujúci: {count}",
+    "quota": "Dnes zostáva rozosielok: {left} z {perDay}. Osoba dostane najviac {perUser} správ od obchodov denne zo všetkých obchodov spolu.",
+    "newTitle": "Nová ponuka",
+    "fieldTitle": "Nadpis",
+    "fieldBody": "Text",
+    "noLinks": "V texte bez odkazov: správa prichádza z nášho bota, takže za odkaz by sme zodpovedali my. Jeden odkaz je náš a vedie na vašu stránku.",
+    "fieldFrom": "Od",
+    "fieldTo": "Do",
+    "fieldProduct": "Produkt",
+    "fieldPoint": "Miesto",
+    "noLink": "— neprepojené —",
+    "create": "Vytvoriť ponuku",
+    "empty": "Zatiaľ žiadne ponuky.",
+    "send": "Poslať sledujúcim",
+    "archive": "Archivovať",
+    "restore": "Obnoviť",
+    "openProduct": "Stránka produktu",
+    "sendDone": "Odoslané: {delivered}, preskočené: {skipped}.",
+    "sentNumbers": "Sledujúcich pri odoslaní: {followers} · odoslané: {delivered} · preskočené: {skipped} · kliknutia: {clicks}",
+    "notSent": "Zatiaľ neposlané sledujúcim · kliknutia: {clicks}",
+    "state": {
+      "upcoming": "začne neskôr",
+      "running": "prebieha",
+      "finished": "ukončené",
+      "archived": "archivované"
+    },
+    "error": {
+      "unauth": "Prihláste sa znova.",
+      "forbidden": "Nemáte oprávnenie k ponukám v tomto obchode.",
+      "not_found": "Ponuka už neexistuje.",
+      "title_required": "Napíšte nadpis.",
+      "title_too_long": "Nadpis je príliš dlhý.",
+      "body_required": "Napíšte text ponuky.",
+      "body_too_long": "Text je príliš dlhý.",
+      "text_has_link": "Odstráňte odkaz: text odchádza ako správa z nášho bota a odkazy v nej nie sú povolené.",
+      "window_invalid": "Vyberte oba dátumy.",
+      "window_backwards": "Koniec je pred začiatkom.",
+      "window_past": "Toto obdobie sa už skončilo.",
+      "window_too_long": "Ponuka môže trvať najviac 90 dní.",
+      "too_many": "Príliš veľa aktívnych ponúk — najprv niektoré archivujte.",
+      "point_not_found": "To miesto nie je vaše.",
+      "point_out_of_scope": "To miesto je mimo vašej oblasti.",
+      "product_not_offered": "Tento produkt nepredávate — najprv preň pridajte svoju ponuku.",
+      "already_sent": "Táto ponuka už bola odoslaná. Druhé rozoslanie znamená novú ponuku.",
+      "archived": "Ponuka je archivovaná.",
+      "not_running": "Ponuka práve neprebieha.",
+      "daily_cap": "Dnešné rozoslanie je už vyčerpané. Jedno denne na obchod.",
+      "too_soon": "Príliš skoro po poslednom rozoslaní — musí uplynúť asi deň.",
+      "no_followers": "Obchod zatiaľ nikto nesleduje, takže niet komu napísať."
+    },
+    "sendBlocked": {
+      "daily_cap": "Dnešná rozosielka je vyčerpaná — ďalšia zajtra.",
+      "not_listed": "Obchod nie je na vitríne, takže rozosielky sú vypnuté."
     }
   }
 }

@@ -1594,7 +1594,8 @@
     "loyaltyLink": "Nakit iade",
     "teamLink": "Ekip",
     "journalLink": "Etkinlik günlüğü",
-    "tasksLink": "Görevler"
+    "tasksLink": "Görevler",
+    "promosLink": "Kampanyalar"
   },
   "cabinet": {
     "kicker": "Bölüm · Kabin",
@@ -3180,6 +3181,11 @@
         "subject": "Görevde yeni mesaj: {title}",
         "body": "{company} bünyesindeki \"{title}\" görevine biri mesaj yazdı."
       }
+    },
+    "promo": {
+      "from": "{shop}'un sizin için haberleri var",
+      "open": "Aç: {url}",
+      "unsubscribe": "Mağaza bültenlerini kapat: {url}"
     }
   },
   "captcha": {
@@ -3749,7 +3755,8 @@
         "products": "Ürünler",
         "warehouses": "Depolar ve stok",
         "pricing": "Fiyat ve cashback",
-        "tasks": "Görevler"
+        "tasks": "Görevler",
+        "promos": "Teklifler ve gönderimler"
       },
       "levels": {
         "NONE": "Erişim yok",
@@ -3828,7 +3835,12 @@
       "TASK_UPDATED": "Görev düzenlendi",
       "TASK_STATUS_SET": "Görev durumu değiştirildi",
       "TASK_CANCELLED": "Görev iptal edildi",
-      "TASK_COMMENTED": "Görevde mesaj"
+      "TASK_COMMENTED": "Görevde mesaj",
+      "PROMO_CREATED": "Teklif oluşturuldu",
+      "PROMO_UPDATED": "Teklif düzenlendi",
+      "PROMO_ARCHIVED": "Teklif arşivlendi",
+      "PROMO_RESTORED": "Teklif geri yüklendi",
+      "PROMO_SENT": "Teklif takipçilere gönderildi"
     }
   },
   "cabinetTasks": {
@@ -3938,6 +3950,86 @@
       "body_too_long": "Mesajı 2000 karakterin altında tutun.",
       "too_many_comments": "Bu görevde zaten 100 mesaj var.",
       "nothing_to_save": "Hiçbir şey değişmedi."
+    }
+  },
+  "promos": {
+    "storefrontTitle": "Teklifler",
+    "until": "{date} tarihine kadar",
+    "product": "ürün",
+    "atPlace": "mağazada",
+    "atPlaceIn": "{city} içinde",
+    "follow": "Takip et",
+    "following": "Takip ediliyor",
+    "subscriptions": {
+      "title": "Abonelikler",
+      "subtitle": "Takip ettiğin mağazalar sana yazabilir. Kimin yazabileceğine ve yazıp yazamayacaklarına sen karar verirsin.",
+      "allSwitch": "Takip ettiğim mağazaların bana haberlerini göndermesine izin ver",
+      "empty": "Henüz hiçbir mağazayı takip etmiyorsun.",
+      "receiving": "haber alınıyor",
+      "muted": "haberler susturuldu",
+      "notLive": "şu anda vitrinde değil",
+      "mute": "Sustur",
+      "unmute": "Susturmayı kaldır",
+      "unfollow": "Takibi bırak"
+    }
+  },
+  "cabinetPromos": {
+    "title": "Teklifler ve gönderimler",
+    "subtitle": "Mağazanın vaat ettikleri ve seni takip edenlere teklif başına bir gönderim.",
+    "notListed": "Mağaza henüz vitrinde değil, bu yüzden teklifleri herkese açık değil.",
+    "followers": "Takipçiler: {count}",
+    "quota": "Bugün kalan gönderim: {left} / {perDay}. Bir kişi tüm mağazalardan günde en fazla {perUser} mağaza mesajı alır.",
+    "newTitle": "Yeni teklif",
+    "fieldTitle": "Başlık",
+    "fieldBody": "Metin",
+    "noLinks": "Metinde bağlantı olmasın: mesaj botumuzdan gelir, bu yüzden içindeki bir bağlantının sorumluluğu bize ait olur. Tek bağlantı bize aittir ve sayfanıza götürür.",
+    "fieldFrom": "Başlangıç",
+    "fieldTo": "Bitiş",
+    "fieldProduct": "Ürün",
+    "fieldPoint": "Yer",
+    "noLink": "— bağlı değil —",
+    "create": "Teklif oluştur",
+    "empty": "Henüz teklif yok.",
+    "send": "Takipçilere gönder",
+    "archive": "Arşivle",
+    "restore": "Geri yükle",
+    "openProduct": "Ürün sayfası",
+    "sendDone": "İletildi: {delivered}, atlandı: {skipped}.",
+    "sentNumbers": "Gönderim anındaki takipçi sayısı: {followers} · iletilen: {delivered} · atlanan: {skipped} · tıklamalar: {clicks}",
+    "notSent": "Henüz takipçilere gönderilmedi · tıklamalar: {clicks}",
+    "state": {
+      "upcoming": "daha sonra başlar",
+      "running": "devam ediyor",
+      "finished": "bitti",
+      "archived": "arşivlendi"
+    },
+    "error": {
+      "unauth": "Lütfen yeniden oturum açın.",
+      "forbidden": "Bu mağazada teklifler için yetkiniz yok.",
+      "not_found": "Teklif artık yok.",
+      "title_required": "Bir başlık yazın.",
+      "title_too_long": "Başlık çok uzun.",
+      "body_required": "Teklifin metnini yazın.",
+      "body_too_long": "Metin çok uzun.",
+      "text_has_link": "Bağlantıyı kaldırın: metin botumuzdan bir mesaj olarak gönderilir ve içindeki bağlantılara izin verilmez.",
+      "window_invalid": "Her iki tarihi de seçin.",
+      "window_backwards": "Bitiş başlangıçtan önce.",
+      "window_past": "Bu zaman aralığı zaten bitti.",
+      "window_too_long": "Bir teklif en fazla 90 gün sürebilir.",
+      "too_many": "Çok fazla aktif teklif var — önce bazılarını arşivleyin.",
+      "point_not_found": "O yer sizin değil.",
+      "point_out_of_scope": "O yer alanınızın dışında.",
+      "product_not_offered": "Bu ürünü satmıyorsunuz — önce onun için teklifinizi ekleyin.",
+      "already_sent": "Bu teklif zaten gönderildi. İkinci bir gönderim yeni bir teklif anlamına gelir.",
+      "archived": "Teklif arşivlendi.",
+      "not_running": "Teklif şu anda yürürlükte değil.",
+      "daily_cap": "Bugünkü gönderim hakkı zaten kullanıldı. Mağaza başına günde bir.",
+      "too_soon": "Son gönderimin üzerinden çok az geçti — yaklaşık bir gün geçmesi gerekir.",
+      "no_followers": "Henüz mağazayı kimse takip etmiyor, yani yazılacak kimse yok."
+    },
+    "sendBlocked": {
+      "daily_cap": "Bugünkü gönderim limiti doldu — yenisi yarın.",
+      "not_listed": "Mağaza vitrinde değil, bu yüzden gönderimler kapalı."
     }
   }
 }

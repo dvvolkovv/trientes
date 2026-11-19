@@ -1594,7 +1594,8 @@
     "loyaltyLink": "キャッシュバック",
     "teamLink": "チーム",
     "journalLink": "アクティビティログ",
-    "tasksLink": "タスク"
+    "tasksLink": "タスク",
+    "promosLink": "特典"
   },
   "cabinet": {
     "kicker": "セクション · キャビネット",
@@ -3180,6 +3181,11 @@
         "subject": "タスクの新着メッセージ: {title}",
         "body": "誰かが{company}のタスク「{title}」に書き込みました。"
       }
+    },
+    "promo": {
+      "from": "{shop} からお知らせがあります",
+      "open": "開く: {url}",
+      "unsubscribe": "ショップの配信をオフにする: {url}"
     }
   },
   "captcha": {
@@ -3749,7 +3755,8 @@
         "products": "商品",
         "warehouses": "倉庫と在庫",
         "pricing": "価格とキャッシュバック",
-        "tasks": "タスク"
+        "tasks": "タスク",
+        "promos": "オファーと配信"
       },
       "levels": {
         "NONE": "アクセスなし",
@@ -3828,7 +3835,12 @@
       "TASK_UPDATED": "タスク編集",
       "TASK_STATUS_SET": "タスクのステータス変更",
       "TASK_CANCELLED": "タスクのキャンセル",
-      "TASK_COMMENTED": "タスク内のメッセージ"
+      "TASK_COMMENTED": "タスク内のメッセージ",
+      "PROMO_CREATED": "オファーを作成",
+      "PROMO_UPDATED": "オファーを編集",
+      "PROMO_ARCHIVED": "オファーをアーカイブ",
+      "PROMO_RESTORED": "オファーを復元",
+      "PROMO_SENT": "フォロワーにオファーを送信"
     }
   },
   "cabinetTasks": {
@@ -3938,6 +3950,86 @@
       "body_too_long": "メッセージは2000文字以内にしてください。",
       "too_many_comments": "このタスクにはすでに100件のメッセージがあります。",
       "nothing_to_save": "変更はありません."
+    }
+  },
+  "promos": {
+    "storefrontTitle": "オファー",
+    "until": "{date}まで",
+    "product": "その商品",
+    "atPlace": "ショップで",
+    "atPlaceIn": "{city}で",
+    "follow": "フォロー",
+    "following": "フォロー中",
+    "subscriptions": {
+      "title": "購読",
+      "subtitle": "フォロー中のショップから連絡が来る場合があります。受け取る相手や受け取るかどうかはあなたが決められます",
+      "allSwitch": "フォロー中のショップからニュースを受け取る",
+      "empty": "まだどのショップもフォローしていません",
+      "receiving": "ニュースを受信",
+      "muted": "ニュースをミュート中",
+      "notLive": "現在ショーケースに表示されていません",
+      "mute": "ミュート",
+      "unmute": "ミュート解除",
+      "unfollow": "フォロー解除"
+    }
+  },
+  "cabinetPromos": {
+    "title": "オファーと配信",
+    "subtitle": "ショップの告知内容と、各オファーにつきフォロワーへ1回の配信ができます",
+    "notListed": "このショップはまだショーケースに掲載されていないため、オファーは公開されていません",
+    "followers": "フォロワー: {count}",
+    "quota": "本日の残り配信数: {perDay}中{left}。1人が1日に受け取れるショップからのメッセージは合計で最大{perUser}通です",
+    "newTitle": "新規オファー",
+    "fieldTitle": "見出し",
+    "fieldBody": "本文",
+    "noLinks": "本文にリンクは入れないでください。メッセージは当社のボットから送信されるため、リンクがあると当社の責任になります。リンクは1つだけ当社のものが付き、あなたのページへ誘導します",
+    "fieldFrom": "開始",
+    "fieldTo": "終了",
+    "fieldProduct": "商品",
+    "fieldPoint": "場所",
+    "noLink": "— 未リンク —",
+    "create": "オファーを作成",
+    "empty": "まだオファーがありません",
+    "send": "フォロワーに送信",
+    "archive": "アーカイブ",
+    "restore": "復元",
+    "openProduct": "商品ページ",
+    "sendDone": "送信: {delivered}, スキップ: {skipped}.",
+    "sentNumbers": "送信時のフォロワー数: {followers} · 配信済み: {delivered} · スキップ: {skipped} · クリック: {clicks}",
+    "notSent": "まだフォロワーへ送信していません · クリック: {clicks}",
+    "state": {
+      "upcoming": "後で開始",
+      "running": "実施中",
+      "finished": "終了",
+      "archived": "アーカイブ済み"
+    },
+    "error": {
+      "unauth": "もう一度サインインしてください。",
+      "forbidden": "このショップでオファーを扱う権限がありません。",
+      "not_found": "このオファーは見つかりません。",
+      "title_required": "見出しを入力してください。",
+      "title_too_long": "見出しが長すぎます。",
+      "body_required": "オファーの本文を入力してください。",
+      "body_too_long": "本文が長すぎます。",
+      "text_has_link": "リンクを削除してください：本文は当社のボットからのメッセージとして送信され、その中でリンクは許可されていません。",
+      "window_invalid": "両方の日付を選択してください。",
+      "window_backwards": "終了が開始より前です。",
+      "window_past": "その期間はすでに終了しています。",
+      "window_too_long": "オファーの実施期間は最大90日です。",
+      "too_many": "稼働中のオファーが多すぎます—いくつかを先にアーカイブしてください。",
+      "point_not_found": "その場所はあなたのものではありません。",
+      "point_out_of_scope": "その場所はあなたの担当エリア外です。",
+      "product_not_offered": "その商品は販売していません—まずその商品のオファーを追加してください。",
+      "already_sent": "このオファーはすでに送信済みです。2回目の配信は新しいオファーとして扱われます。",
+      "archived": "オファーはアーカイブ済みです。",
+      "not_running": "現在このオファーは実施中ではありません。",
+      "daily_cap": "本日の配信はすでに使い切りました。ショップごとに1日1回までです。",
+      "too_soon": "直近の配信から間隔が短すぎます—約1日空けてください。",
+      "no_followers": "まだこのショップのフォロワーがいないため、送信先がありません."
+    },
+    "sendBlocked": {
+      "daily_cap": "本日の配信は使い切りました—次は明日です。",
+      "not_listed": "ショップがショーケースに掲載されていないため、配信はオフです。"
     }
   }
 }

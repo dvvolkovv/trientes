@@ -1594,7 +1594,8 @@
     "loyaltyLink": "Povrat novca",
     "teamLink": "Tim",
     "journalLink": "Dnevnik aktivnosti",
-    "tasksLink": "Zadaci"
+    "tasksLink": "Zadaci",
+    "promosLink": "Ponude"
   },
   "cabinet": {
     "kicker": "Odjeljak · Profil",
@@ -3180,6 +3181,11 @@
         "subject": "Nova poruka u zadatku: {title}",
         "body": "Netko je napisao poruku u zadatku \"{title}\" u {company}."
       }
+    },
+    "promo": {
+      "from": "{shop} ima novosti za vas",
+      "open": "Otvorite: {url}",
+      "unsubscribe": "Isključite mailing trgovine: {url}"
     }
   },
   "captcha": {
@@ -3749,7 +3755,8 @@
         "products": "Proizvodi",
         "warehouses": "Skladišta i zalihe",
         "pricing": "Cijena i povrat novca",
-        "tasks": "Zadaci"
+        "tasks": "Zadaci",
+        "promos": "Ponude i slanja e-poštom"
       },
       "levels": {
         "NONE": "Bez pristupa",
@@ -3828,7 +3835,12 @@
       "TASK_UPDATED": "Zadatak je uređen",
       "TASK_STATUS_SET": "Status zadatka je promijenjen",
       "TASK_CANCELLED": "Zadatak je otkazan",
-      "TASK_COMMENTED": "Poruka u zadatku"
+      "TASK_COMMENTED": "Poruka u zadatku",
+      "PROMO_CREATED": "Ponuda stvorena",
+      "PROMO_UPDATED": "Ponuda uređena",
+      "PROMO_ARCHIVED": "Ponuda arhivirana",
+      "PROMO_RESTORED": "Ponuda vraćena",
+      "PROMO_SENT": "Ponuda poslana pratiteljima"
     }
   },
   "cabinetTasks": {
@@ -3938,6 +3950,86 @@
       "body_too_long": "Zadržite poruku ispod 2000 znakova.",
       "too_many_comments": "Ovaj zadatak već ima 100 poruka.",
       "nothing_to_save": "Ništa se nije promijenilo."
+    }
+  },
+  "promos": {
+    "storefrontTitle": "Ponude",
+    "until": "do {date}",
+    "product": "proizvod",
+    "atPlace": "u trgovini",
+    "atPlaceIn": "u {city}",
+    "follow": "Pratite",
+    "following": "Praćeno",
+    "subscriptions": {
+      "title": "Pretplate",
+      "subtitle": "Trgovine koje pratite mogu vam pisati. Vi odlučujete tko, i hoće li uopće.",
+      "allSwitch": "Dopustiti trgovinama koje pratim da mi šalju svoje novosti",
+      "empty": "Još ne pratite nijednu trgovinu.",
+      "receiving": "prima novosti",
+      "muted": "novosti utišane",
+      "notLive": "trenutačno nije na izlogu",
+      "mute": "Utišati",
+      "unmute": "Poništiti utišavanje",
+      "unfollow": "Prestati pratiti"
+    }
+  },
+  "cabinetPromos": {
+    "title": "Ponude i slanja poruka",
+    "subtitle": "Što trgovina obećava i jedno slanje po ponudi onima koji vas prate.",
+    "notListed": "Trgovina još nije na izlogu, stoga njezine ponude nisu javne.",
+    "followers": "Pratitelji: {count}",
+    "quota": "Preostala slanja danas: {left} od {perDay}. Osoba može primiti najviše {perUser} poruka trgovina dnevno iz svih trgovina zajedno.",
+    "newTitle": "Nova ponuda",
+    "fieldTitle": "Naslov",
+    "fieldBody": "Tekst",
+    "noLinks": "Bez poveznica u tekstu: poruka dolazi od našeg bota, pa bismo za poveznice u njoj mi odgovarali. Jedina poveznica je naša i vodi na vašu stranicu.",
+    "fieldFrom": "Od",
+    "fieldTo": "Do",
+    "fieldProduct": "Proizvod",
+    "fieldPoint": "Lokacija",
+    "noLink": "— nije povezano —",
+    "create": "Stvoriti ponudu",
+    "empty": "Još nema ponuda.",
+    "send": "Poslati pratiteljima",
+    "archive": "Arhivirati",
+    "restore": "Obnoviti",
+    "openProduct": "Stranica proizvoda",
+    "sendDone": "Poslano: {delivered}, preskočeno: {skipped}.",
+    "sentNumbers": "Pratitelja u trenutku slanja: {followers} · isporučeno: {delivered} · preskočeno: {skipped} · klikovi: {clicks}",
+    "notSent": "Još nije poslano pratiteljima · klikovi: {clicks}",
+    "state": {
+      "upcoming": "počinje kasnije",
+      "running": "u tijeku",
+      "finished": "završeno",
+      "archived": "arhivirano"
+    },
+    "error": {
+      "unauth": "Prijavite se ponovno.",
+      "forbidden": "Nemate ovlasti za ponude u ovoj trgovini.",
+      "not_found": "Ponuda je nestala.",
+      "title_required": "Napišite naslov.",
+      "title_too_long": "Naslov je predugačak.",
+      "body_required": "Napišite tekst ponude.",
+      "body_too_long": "Tekst je predugačak.",
+      "text_has_link": "Uklonite poveznicu: tekst se šalje kao poruka našeg bota i poveznice u njemu nisu dopuštene.",
+      "window_invalid": "Odaberite oba datuma.",
+      "window_backwards": "Kraj je prije početka.",
+      "window_past": "To je razdoblje već završilo.",
+      "window_too_long": "Ponuda može trajati najviše 90 dana.",
+      "too_many": "Previše aktivnih ponuda — najprije neke arhivirajte.",
+      "point_not_found": "Ta lokacija nije vaša.",
+      "point_out_of_scope": "Ta je lokacija izvan vašeg područja.",
+      "product_not_offered": "Ne prodajete taj proizvod — najprije dodajte svoju ponudu za njega.",
+      "already_sent": "Ova je ponuda već poslana. Drugo slanje znači novu ponudu.",
+      "archived": "Ponuda je arhivirana.",
+      "not_running": "Ponuda trenutačno nije aktivna.",
+      "daily_cap": "Današnje slanje je već iskorišteno. Jedno dnevno po trgovini.",
+      "too_soon": "Prebrzo nakon zadnjeg slanja — mora proći otprilike jedan dan.",
+      "no_followers": "Nitko još ne prati trgovinu, pa nema kome pisati."
+    },
+    "sendBlocked": {
+      "daily_cap": "Današnje slanje je iskorišteno — sljedeće sutra",
+      "not_listed": "Trgovina nije u izlogu, pa su slanja isključena"
     }
   }
 }

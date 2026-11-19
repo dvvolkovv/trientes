@@ -3,6 +3,10 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { CompanyOffersBlock } from "@/components/company/offers-block";
 import { CompanyLoyaltyLine } from "@/components/company/loyalty-line";
+import { CompanyPromosBlock } from "@/components/company/promos-block";
+import { FollowButton } from "@/components/company/follow-button";
+import { auth } from "@/auth";
+import { readFollow } from "@/lib/promos/read";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { NOT_DELETED } from "@/lib/soft-delete";
@@ -71,6 +75,11 @@ export default async function PublicCompanyPage({
 
   const t = await getTranslations("companyPublic");
   const tk = await getTranslations("business.kyb");
+  // Подписка — согласие на рассылку (ТЗ 4.2), поэтому состояние читается на каждом
+  // показе: отписавшийся не должен видеть «вы подписаны» до перезахода.
+  const session = await auth();
+  const viewerId = (session?.user as { id?: string } | undefined)?.id ?? null;
+  const follow = viewerId ? await readFollow(viewerId, company.id) : null;
   const onlinePoints = company.points.filter((p) => p.type === "ONLINE");
   const physicalPoints = company.points.filter((p) => p.type !== "ONLINE");
 
@@ -145,6 +154,12 @@ export default async function PublicCompanyPage({
             </p>
           ) : null}
         </div>
+        <FollowButton
+          companyId={company.id}
+          locale={locale}
+          following={follow !== null}
+          signedIn={viewerId !== null}
+        />
       </header>
 
       {about.fields.description ? (
@@ -177,6 +192,9 @@ export default async function PublicCompanyPage({
 
       {/* Что продавец обещает вообще (слайс BD): ставка «на всё» и лучшая категория. */}
       <CompanyLoyaltyLine companyId={company.id} />
+
+      {/* Акции магазина (слайс BG). Текст — слово продавца, срок — его срок. */}
+      <CompanyPromosBlock companyId={company.id} locale={locale} />
 
       {/* Витрина товаров предприятия (слайс BC): цена и ставка — его заявления. */}
       <CompanyOffersBlock companyId={company.id} locale={locale} />

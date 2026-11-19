@@ -44,7 +44,12 @@ export type CompanyAction =
   | "TASK_UPDATED"
   | "TASK_STATUS_SET"
   | "TASK_CANCELLED"
-  | "TASK_COMMENTED";
+  | "TASK_COMMENTED"
+  | "PROMO_CREATED"
+  | "PROMO_UPDATED"
+  | "PROMO_ARCHIVED"
+  | "PROMO_SENT"
+  | "PROMO_RESTORED";
 
 export async function logCompanyAction(input: {
   companyId: string;

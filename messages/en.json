@@ -1594,7 +1594,8 @@
     "loyaltyLink": "Cashback",
     "teamLink": "Team",
     "journalLink": "Activity log",
-    "tasksLink": "Tasks"
+    "tasksLink": "Tasks",
+    "promosLink": "Offers"
   },
   "cabinet": {
     "kicker": "Section · Cabinet",
@@ -3180,6 +3181,11 @@
         "subject": "New message in task: {title}",
         "body": "Someone wrote in the task \"{title}\" at {company}."
       }
+    },
+    "promo": {
+      "from": "{shop} has news for you",
+      "open": "Open: {url}",
+      "unsubscribe": "Turn shop mailings off: {url}"
     }
   },
   "captcha": {
@@ -3749,7 +3755,8 @@
         "products": "Products",
         "warehouses": "Warehouses and stock",
         "pricing": "Price and cashback",
-        "tasks": "Tasks"
+        "tasks": "Tasks",
+        "promos": "Offers and mailings"
       },
       "levels": {
         "NONE": "No access",
@@ -3828,7 +3835,12 @@
       "TASK_UPDATED": "Task edited",
       "TASK_STATUS_SET": "Task status changed",
       "TASK_CANCELLED": "Task cancelled",
-      "TASK_COMMENTED": "Message in a task"
+      "TASK_COMMENTED": "Message in a task",
+      "PROMO_CREATED": "Offer created",
+      "PROMO_UPDATED": "Offer edited",
+      "PROMO_ARCHIVED": "Offer archived",
+      "PROMO_RESTORED": "Offer restored",
+      "PROMO_SENT": "Offer sent to followers"
     }
   },
   "cabinetTasks": {
@@ -3938,6 +3950,86 @@
       "body_too_long": "Keep the message under 2000 characters.",
       "too_many_comments": "This task already has 100 messages.",
       "nothing_to_save": "Nothing changed."
+    }
+  },
+  "promos": {
+    "storefrontTitle": "Offers",
+    "until": "until {date}",
+    "product": "the product",
+    "atPlace": "at the shop",
+    "atPlaceIn": "in {city}",
+    "follow": "Follow",
+    "following": "Following",
+    "subscriptions": {
+      "title": "Subscriptions",
+      "subtitle": "Shops you follow may write to you. You decide who, and whether at all.",
+      "allSwitch": "Let shops I follow send me their news",
+      "empty": "You are not following any shop yet.",
+      "receiving": "receiving news",
+      "muted": "news muted",
+      "notLive": "not on the showcase right now",
+      "mute": "Mute",
+      "unmute": "Unmute",
+      "unfollow": "Unfollow"
+    }
+  },
+  "cabinetPromos": {
+    "title": "Offers and mailings",
+    "subtitle": "What the shop promises, and one mailing per offer to those who follow you.",
+    "notListed": "The shop is not on the showcase yet, so its offers are not public.",
+    "followers": "Followers: {count}",
+    "quota": "Mailings left today: {left} of {perDay}. A person gets at most {perUser} shop messages a day from all shops together.",
+    "newTitle": "New offer",
+    "fieldTitle": "Headline",
+    "fieldBody": "Text",
+    "noLinks": "No links in the text: the message arrives from our bot, so a link in it would be ours to answer for. The one link is ours and leads to your page.",
+    "fieldFrom": "From",
+    "fieldTo": "Until",
+    "fieldProduct": "Product",
+    "fieldPoint": "Place",
+    "noLink": "— not linked —",
+    "create": "Create offer",
+    "empty": "No offers yet.",
+    "send": "Send to followers",
+    "archive": "Archive",
+    "restore": "Restore",
+    "openProduct": "Product page",
+    "sendDone": "Sent: {delivered}, skipped: {skipped}.",
+    "sentNumbers": "Followers at send time: {followers} · delivered: {delivered} · skipped: {skipped} · clicks: {clicks}",
+    "notSent": "Not sent to followers yet · clicks: {clicks}",
+    "state": {
+      "upcoming": "starts later",
+      "running": "running",
+      "finished": "finished",
+      "archived": "archived"
+    },
+    "error": {
+      "unauth": "Please sign in again.",
+      "forbidden": "You have no right to offers in this shop.",
+      "not_found": "The offer is gone.",
+      "title_required": "Write a headline.",
+      "title_too_long": "The headline is too long.",
+      "body_required": "Write the text of the offer.",
+      "body_too_long": "The text is too long.",
+      "text_has_link": "Remove the link: the text goes out as a message from our bot, and links in it are not allowed.",
+      "window_invalid": "Pick both dates.",
+      "window_backwards": "The end is before the start.",
+      "window_past": "That window is already over.",
+      "window_too_long": "An offer may run for 90 days at most.",
+      "too_many": "Too many live offers — archive some first.",
+      "point_not_found": "That place is not yours.",
+      "point_out_of_scope": "That place is outside your area.",
+      "product_not_offered": "You do not sell that product — add your offer for it first.",
+      "already_sent": "This offer has already been sent. A second mailing means a new offer.",
+      "archived": "The offer is archived.",
+      "not_running": "The offer is not running right now.",
+      "daily_cap": "Today's mailing is already spent. One per day per shop.",
+      "too_soon": "Too soon after the last mailing — about a day has to pass.",
+      "no_followers": "Nobody follows the shop yet, so there is nobody to write to."
+    },
+    "sendBlocked": {
+      "daily_cap": "Today's mailing is spent — the next one tomorrow.",
+      "not_listed": "The shop is not on the showcase, so mailings are off."
     }
   }
 }

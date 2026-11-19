@@ -108,6 +108,14 @@ export function PoiPaneCard({
         )}
 
         <section className="space-y-2.5">
+          {/* Идущая акция заведения (слайс BG). Строка, а не плашка: обещание
+              продавца не должно спорить за внимание с адресом и часами. */}
+          {poi.promo && (
+            <a href={`/${locale}/promo/${poi.promo.id}`} className={`${ROW_BTN} text-accent`}>
+              <span aria-hidden>🎁</span>
+              <span className="flex-1 truncate text-left">{poi.promo.title}</span>
+            </a>
+          )}
           {poi.description && <p className="text-[13px] leading-relaxed text-muted">{poi.description}</p>}
 
           {poi.openingHours && (

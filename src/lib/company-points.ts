@@ -1,6 +1,7 @@
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { PUBLIC_COMPANY } from "@/lib/company-visibility";
+import { readPointPromos } from "@/lib/promos/read";
 import type { AcceptedCoin, Bbox, CoinSelector, Poi, PoiLayer, Social } from "@/lib/crypto-map";
 
 // Shape returned by the prisma query in fetchApprovedPointsInBbox (point + its company).
@@ -288,5 +289,20 @@ export async function fetchApprovedPointsInBbox(
       cardRows.map((c) => [c.id, { symbol: c.symbol, name: c.name, logoUrl: c.logoUrl, slug: c.slug }]),
     ),
   };
-  return rows.map((r) => companyPointToPoi(r, selector, registry));
+  const pois = rows.map((r) => companyPointToPoi(r, selector, registry));
+  // Акции точек — одним запросом на кадр, как справочник монет выше. Сбой чтения
+  // оставляет карту без строки акции, но не без точек: акция — добавка, а не точка.
+  try {
+    const promos = await readPointPromos(rows.map((r) => r.id));
+    if (promos.length > 0) {
+      const byPoint = new Map(promos.map((p) => [p.pointId as string, p]));
+      for (const poi of pois) {
+        const promo = byPoint.get(poi.id.slice("company/".length));
+        if (promo) poi.promo = { id: promo.id, title: promo.title };
+      }
+    }
+  } catch (error) {
+    console.error("point_promos_failed", error);
+  }
+  return pois;
 }

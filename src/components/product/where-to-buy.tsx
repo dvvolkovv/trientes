@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getFormatter, getTranslations } from "next-intl/server";
 import { readProductOffers } from "@/lib/products/offers-read";
+import { readProductPromos } from "@/lib/promos/read";
 import { countryName } from "@/lib/countries";
 
 /**
@@ -23,11 +24,16 @@ export async function WhereToBuy({
   slug: string;
   locale: string;
 }) {
-  const [t, format, data] = await Promise.all([
+  const [t, tp, format, data, promos] = await Promise.all([
     getTranslations("products.whereToBuy"),
+    getTranslations("promos"),
     getFormatter(),
     readProductOffers(productId),
+    // Акция продавца стоит у его же строки: обещание относится к товару, и место ему
+    // там, где товар (то же решение, что ставка кэшбэка в BD).
+    readProductPromos(productId),
   ]);
+  const promoByCompany = new Map(promos.map((p) => [p.companyId, p]));
 
   const money = (price: number, currency: string) => {
     try {
@@ -73,6 +79,19 @@ export async function WhereToBuy({
                       {o.inStock ? t("inStock") : t("outOfStock")}
                     </div>
                     {o.saleRules ? <p className="text-[12px] text-muted mt-1 whitespace-pre-line">{o.saleRules}</p> : null}
+                    {promoByCompany.has(o.companyId) ? (
+                      <p className="text-[12px] mt-1">
+                        <Link href={`/${locale}/promo/${promoByCompany.get(o.companyId)!.id}`} className="text-accent underline">
+                          🎁 {promoByCompany.get(o.companyId)!.title}
+                        </Link>
+                        <span className="text-muted">
+                          {" · "}
+                          {tp("until", {
+                            date: format.dateTime(promoByCompany.get(o.companyId)!.endsAt, { day: "numeric", month: "short" }),
+                          })}
+                        </span>
+                      </p>
+                    ) : null}
                   </div>
                   {o.onlineUrl ? (
                     <a

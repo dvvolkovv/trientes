@@ -76,6 +76,9 @@ model User {
   notifyTelegram           Boolean                   @default(true)
   notifyEmail              Boolean                   @default(false)
   notifyWebPush            Boolean                   @default(false)
+  /// Общий выключатель рассылок магазинов (ТЗ 4.3). Канальные выключатели старше:
+  /// выключивший почту не получит почту и от магазина.
+  notifyPromos             Boolean                   @default(true)
   coinCardsStewarded       CoinCard[]                @relation("CoinCardSteward")
   coinCardClaims           CoinCardClaim[]           @relation("CoinCardClaimant")
   coinCardsReviewed        CoinCard[]                @relation("CoinCardReviewer")
@@ -112,6 +115,10 @@ model User {
   productRevisionsDecided  ProductRevision[]         @relation("ProductRevisionDecider")
   productReports           ProductReport[]           @relation("ProductReporter")
   stockMovements           StockMovement[]           @relation("StockMovementAuthor")
+  companyFollows           CompanyFollow[]           @relation("CompanyFollower")
+  promoSends               PromoSend[]               @relation("PromoSender")
+  promoDeliveries          PromoDelivery[]           @relation("PromoRecipient")
+  promoClicks              PromoClick[]              @relation("PromoClicker")
 }
 
 model PushSubscription {
@@ -842,6 +849,8 @@ model Company {
   teamRoles CompanyTeamRole[]
   actionLog CompanyActionLog[]
   tasks     CompanyTask[]
+  followers CompanyFollow[]
+  promos    MerchantPromo[]
 
   @@index([ownerUserId])
   @@index([status, createdAt])
@@ -893,6 +902,7 @@ model CompanyPoint {
   suspendedAt     DateTime?
   suspendReason   String?
   reports         PointReport[]
+  promos          MerchantPromo[]
   // Полки, стоящие на этой точке (слайс BC).
   warehouses      Warehouse[]
   // Участки сотрудников, в которые входит эта точка (слайс BE).
@@ -2022,6 +2032,7 @@ model Product {
   balances  StockBalance[]
   tasks     CompanyTask[]
   movements StockMovement[]
+  promos    MerchantPromo[]
 
   @@index([category, createdAt])
   @@index([ownerCompanyId])
@@ -2319,4 +2330,122 @@ model ProductOffer {
   @@unique([companyId, productId])
   @@index([productId, status])
   @@index([companyId, status])
+}
+
+/// Подписка человека на магазин (ТЗ 4.2 «избранное»). Строка создаётся нажатием
+/// человека и означает согласие на рассылку: рассылку получает только подписчик,
+/// рассылок «по всей базе» в проекте нет. `muted` — «следить, но не писать мне».
+model CompanyFollow {
+  id        String  @id @default(cuid())
+  userId    String
+  user      User    @relation("CompanyFollower", fields: [userId], references: [id], onDelete: Cascade)
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  muted     Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, companyId])
+  @@index([companyId, muted])
+}
+
+/// Акция магазина: то, что написано на витрине и действует до своего срока. Рассылка —
+/// отдельная вещь (`PromoSend`), и по одной акции она делается один раз: повторная
+/// рассылка того же текста и есть спам в чистом виде.
+model MerchantPromo {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  title String
+  /// Текст без URL: ссылка в сообщении от незнакомого магазина — дверь для фишинга, а
+  /// придёт оно из нашего бота. Переход у акции один, и ставим его мы.
+  body  String @db.Text
+
+  startsAt DateTime
+  endsAt   DateTime
+
+  /// Привязки необязательны. Снятая точка или снятый паспорт гасят привязку, а не акцию.
+  productId String?
+  product   Product?      @relation(fields: [productId], references: [id], onDelete: SetNull)
+  pointId   String?
+  point     CompanyPoint? @relation(fields: [pointId], references: [id], onDelete: SetNull)
+
+  archivedAt DateTime?
+  /// Штамп единственной рассылки по этой акции.
+  sentAt     DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sends  PromoSend[]
+  clicks PromoClick[]
+
+  @@index([companyId, archivedAt])
+  @@index([pointId, endsAt])
+  @@index([productId, endsAt])
+}
+
+/// Однократная рассылка по акции: кто послал и что из этого вышло. Числа по каналам
+/// денормализованы — их читает мерчант на своём экране, а не выгрузка.
+model PromoSend {
+  id      String        @id @default(cuid())
+  promoId String
+  promo   MerchantPromo @relation(fields: [promoId], references: [id], onDelete: Cascade)
+
+  senderUserId String?
+  sender       User?   @relation("PromoSender", fields: [senderUserId], references: [id], onDelete: SetNull)
+
+  followers Int @default(0)
+  delivered Int @default(0)
+  skipped   Int @default(0)
+
+  createdAt DateTime @default(now())
+
+  deliveries PromoDelivery[]
+
+  @@index([promoId, createdAt])
+}
+
+enum PromoDeliveryOutcome {
+  TELEGRAM
+  EMAIL
+  WEBPUSH
+  /// Пропуски — с причиной, потому что «не ушло» без причины ничего не говорит.
+  SKIPPED_MUTED
+  SKIPPED_OFF
+  SKIPPED_CAP
+  SKIPPED_NO_CHANNEL
+}
+
+/// Строка «кому и что из этого вышло». На ней же считается суточный потолок получателя:
+/// потолок принадлежит человеку, а не магазину.
+model PromoDelivery {
+  id     String    @id @default(cuid())
+  sendId String
+  send   PromoSend @relation(fields: [sendId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation("PromoRecipient", fields: [userId], references: [id], onDelete: Cascade)
+
+  outcome   PromoDeliveryOutcome
+  createdAt DateTime             @default(now())
+
+  @@index([userId, createdAt])
+  @@index([sendId, outcome])
+}
+
+/// Переход по нашей ссылке. Показы не считаем вовсе: честно считает их только счётчик в
+/// браузере, которого у нас нет, а приписать показ акции просмотру страницы — врать.
+model PromoClick {
+  id      String        @id @default(cuid())
+  promoId String
+  promo   MerchantPromo @relation(fields: [promoId], references: [id], onDelete: Cascade)
+
+  userId String?
+  user   User?   @relation("PromoClicker", fields: [userId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([promoId, createdAt])
 }
