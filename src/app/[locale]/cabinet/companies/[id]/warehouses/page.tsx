@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { getViewerCompanyById, canEditCompany } from "@/lib/business";
+import { getViewerCompanyById, canEditSection, canSeeSection } from "@/lib/business";
 import { readMovements, readShelfPoints, readWarehouses } from "@/lib/warehouse/read";
 import { WarehouseCreateForm } from "@/components/warehouse/warehouse-create-form";
 import { TransitList } from "@/components/warehouse/transit-list";
@@ -17,15 +17,16 @@ export default async function CompanyWarehousesPage({
   const { locale, id } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("warehouses");
-  const { userId, company, role } = await getViewerCompanyById(id);
+  const { userId, company, permissions, pointScope } = await getViewerCompanyById(id);
   if (!userId) redirect(`/${locale}/login`);
   if (!company) notFound();
-  const editable = canEditCompany(role);
+  if (!canSeeSection(permissions, "warehouses")) notFound();
+  const editable = canEditSection(permissions, "warehouses");
 
   const [rows, points, transit] = await Promise.all([
-    readWarehouses(company.id),
-    readShelfPoints(company.id),
-    readMovements(company.id, { status: "IN_TRANSIT", take: 50 }),
+    readWarehouses(company.id, pointScope),
+    readShelfPoints(company.id, pointScope),
+    readMovements(company.id, { status: "IN_TRANSIT", take: 50, scope: pointScope }),
   ]);
   const listed = company.status === "APPROVED" && !company.suspendedAt;
 
@@ -81,7 +82,7 @@ export default async function CompanyWarehousesPage({
 
       {editable && listed ? (
         <div className="mb-8">
-          <WarehouseCreateForm companyId={company.id} points={points} />
+          <WarehouseCreateForm companyId={company.id} points={points} scoped={pointScope.length > 0} />
         </div>
       ) : null}
 

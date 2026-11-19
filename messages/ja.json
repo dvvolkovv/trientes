@@ -1479,7 +1479,10 @@
         "invalid": "ロールが無効です。",
         "user_not_found": "ユーザーが見つかりません。",
         "self": "自分は追加できません。",
-        "last_owner": "オーナーが少なくとも1人必要です。"
+        "last_owner": "オーナーが少なくとも1人必要です。",
+        "not_found": "メンバーが見つかりません。",
+        "owner_target": "オーナーのアクセスは設定できません。",
+        "role_not_found": "そのロールは既に存在しません。"
       },
       "invites": {
         "title": "招待リンク",
@@ -1588,7 +1591,9 @@
     },
     "productsLink": "製品",
     "warehousesLink": "倉庫",
-    "loyaltyLink": "キャッシュバック"
+    "loyaltyLink": "キャッシュバック",
+    "teamLink": "チーム",
+    "journalLink": "アクティビティログ"
   },
   "cabinet": {
     "kicker": "セクション · キャビネット",
@@ -3640,7 +3645,8 @@
       "date_invalid": "その日付は読み取れません。",
       "not_in_transit": "これらの品はもう輸送中ではありません。",
       "not_cancellable": "到着済みのものはキャンセルできません：問題として返品するか、訂正で対応してください。",
-      "failed": "保存できませんでした。"
+      "failed": "保存できませんでした。",
+      "point_forbidden": "自分の販売拠点にしかアクセスできません：棚はそのいずれかに設置してください。"
     }
   },
   "loyalty": {
@@ -3689,6 +3695,107 @@
       "forbidden": "現在、あなたの会社はレートを変更できません。",
       "unauth": "もう一度サインインしてください。",
       "failed": "保存できませんでした。"
+    }
+  },
+  "cabinetTeam": {
+    "title": "チームとアクセス",
+    "subtitle": "メンバーを招待し、事業向けのロールを作成して、特定の販売拠点へのアクセスを制限します。",
+    "journalLink": "アクティビティログを開く →",
+    "roles": {
+      "title": "ロール",
+      "subtitle": "ロールはキャビネットの各セクションごとの権限セットです。テンプレートから始め、必要なものにチェックを付けてください。",
+      "empty": "まだロールはありません — チームは基本のオーナー/編集者/閲覧者ロールを使用しています。",
+      "newTitle": "新しいロール",
+      "editTitle": "ロールを編集",
+      "name": "ロール名",
+      "namePlaceholder": "倉庫管理者",
+      "template": "テンプレートから開始",
+      "templates": {
+        "manager": "マネージャー",
+        "stock": "倉庫管理者",
+        "marketing": "マーケター",
+        "observer": "オブザーバー"
+      },
+      "sections": {
+        "card": "店舗カード",
+        "points": "地図上の拠点",
+        "products": "商品",
+        "warehouses": "倉庫と在庫",
+        "pricing": "価格とキャッシュバック"
+      },
+      "levels": {
+        "NONE": "アクセスなし",
+        "VIEW": "閲覧",
+        "EDIT": "編集"
+      },
+      "inUse": "このロールの人数: {count}",
+      "edit": "編集",
+      "delete": "削除",
+      "confirmDelete": "ロール「{name}」を削除しますか？ {members} 人が閲覧のみのアクセスに降格します。",
+      "save": "ロールを保存",
+      "cancel": "キャンセル",
+      "errors": {
+        "unauth": "先にサインインしてください。",
+        "forbidden": "オーナーのみ。",
+        "name_invalid": "ロール名は2〜40文字で入力してください。",
+        "name_taken": "この名前のロールは既に存在します。",
+        "permissions_empty": "少なくとも1つの権限にチェックしてください — 権限がないロールはキャビネット全体を非表示にします。",
+        "too_many": "ロールが多すぎます — 先に1つ削除してください。",
+        "not_found": "そのロールは既に存在しません。"
+      }
+    },
+    "scope": {
+      "title": "販売拠点",
+      "all": "アクセス: 全拠点",
+      "some": "アクセス: {count} 拠点",
+      "hint": "何も選ばなければ全拠点にアクセスを付与します。拠点を選ぶと、その人は選んだ拠点とそこにある倉庫のみを閲覧できます — 中央倉庫にはアクセスできません。",
+      "save": "拠点を保存",
+      "errors": {
+        "unauth": "先にサインインしてください。",
+        "forbidden": "オーナーのみ。",
+        "not_found": "メンバーが見つかりません。",
+        "owner_target": "オーナーは拠点で制限されません。",
+        "point_unknown": "ポイントのうち1つがこの会社に属していません。"
+      }
+    }
+  },
+  "cabinetJournal": {
+    "title": "アクティビティログ",
+    "subtitle": "誰が何をいつ変更したか — 直近{count}件。",
+    "empty": "まだ記録がありません。",
+    "goneActor": "削除されたメンバー",
+    "actions": {
+      "PROFILE_SAVED": "ショップカードを保存",
+      "POINT_SUBMITTED": "ポイントを申請",
+      "POINT_UPDATED": "ポイントを編集",
+      "POINT_CLAIMED": "BTC Map のポイントを取得申請",
+      "PRODUCT_CREATED": "商品を作成",
+      "PRODUCT_UPDATED": "商品を編集",
+      "PRODUCT_EDIT_REVERTED": "商品の編集を取り消し",
+      "PRODUCT_CLAIM_SUBMITTED": "メーカー権利の申請を提出",
+      "PRODUCT_REVISION_DECIDED": "提案編集を決定",
+      "PRODUCT_REVISION_WITHDRAWN": "提案編集を撤回",
+      "OFFER_SAVED": "オファーを保存",
+      "OFFER_STATUS_SET": "オファーを一時停止または再開",
+      "OFFER_DELETED": "オファーを削除",
+      "CASHBACK_BASE_SET": "全体のキャッシュバック率を設定",
+      "CASHBACK_CATEGORY_SET": "カテゴリ別キャッシュバック率を設定",
+      "WAREHOUSE_CREATED": "倉庫を作成",
+      "WAREHOUSE_RENAMED": "倉庫名を変更",
+      "WAREHOUSE_ARCHIVED": "倉庫をアーカイブ",
+      "WAREHOUSE_RESTORED": "倉庫を復元",
+      "MOVEMENT_RECORDED": "在庫移動を記録",
+      "MOVEMENT_RECEIVED": "入荷を受領",
+      "MOVEMENT_CANCELLED": "移動を取り消し",
+      "MEMBER_ADDED": "チームメンバーを追加",
+      "MEMBER_ROLE_SET": "チームメンバーの役割を設定",
+      "MEMBER_POINTS_SET": "チームメンバーのポイントを設定",
+      "MEMBER_REMOVED": "チームメンバーを削除",
+      "TEAM_ROLE_SAVED": "役割を保存",
+      "TEAM_ROLE_DELETED": "役割を削除",
+      "INVITE_CREATED": "招待リンクを作成",
+      "INVITE_REVOKED": "招待リンクを失効",
+      "INVITE_ACCEPTED": "招待リンクを承諾"
     }
   }
 }

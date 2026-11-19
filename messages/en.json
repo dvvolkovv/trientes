@@ -1479,7 +1479,10 @@
         "invalid": "Invalid role.",
         "user_not_found": "User not found.",
         "self": "Cannot add yourself.",
-        "last_owner": "There must be at least one owner."
+        "last_owner": "There must be at least one owner.",
+        "not_found": "Member not found.",
+        "owner_target": "An owner's access is not configurable.",
+        "role_not_found": "That role no longer exists."
       },
       "invites": {
         "title": "Invite link",
@@ -1588,7 +1591,9 @@
     },
     "productsLink": "Products",
     "warehousesLink": "Warehouses",
-    "loyaltyLink": "Cashback"
+    "loyaltyLink": "Cashback",
+    "teamLink": "Team",
+    "journalLink": "Activity log"
   },
   "cabinet": {
     "kicker": "Section · Cabinet",
@@ -3640,7 +3645,8 @@
       "date_invalid": "That date cannot be read.",
       "not_in_transit": "These goods are not on the road any more.",
       "not_cancellable": "What already arrived cannot be cancelled: return it with an issue or a correction.",
-      "failed": "Could not save."
+      "failed": "Could not save.",
+      "point_forbidden": "You only have access to your own points of sale: put the shelf on one of them."
     }
   },
   "loyalty": {
@@ -3689,6 +3695,107 @@
       "forbidden": "Your company cannot change rates right now.",
       "unauth": "Please sign in again.",
       "failed": "Could not save."
+    }
+  },
+  "cabinetTeam": {
+    "title": "Team and access",
+    "subtitle": "Invite people, build roles for your trade and limit access to specific points of sale.",
+    "journalLink": "Open the activity log →",
+    "roles": {
+      "title": "Roles",
+      "subtitle": "A role is a set of permissions per cabinet section. Start from a template, then tick what you need.",
+      "empty": "No roles yet — your team uses the basic owner/editor/viewer roles.",
+      "newTitle": "New role",
+      "editTitle": "Edit role",
+      "name": "Role name",
+      "namePlaceholder": "Warehouse keeper",
+      "template": "Start from a template",
+      "templates": {
+        "manager": "Manager",
+        "stock": "Warehouse keeper",
+        "marketing": "Marketer",
+        "observer": "Observer"
+      },
+      "sections": {
+        "card": "Shop card",
+        "points": "Points on the map",
+        "products": "Products",
+        "warehouses": "Warehouses and stock",
+        "pricing": "Price and cashback"
+      },
+      "levels": {
+        "NONE": "No access",
+        "VIEW": "View",
+        "EDIT": "Edit"
+      },
+      "inUse": "People with this role: {count}",
+      "edit": "Edit",
+      "delete": "Delete",
+      "confirmDelete": "Delete the role \"{name}\"? {members} people will drop to view-only access.",
+      "save": "Save role",
+      "cancel": "Cancel",
+      "errors": {
+        "unauth": "Sign in first.",
+        "forbidden": "Owners only.",
+        "name_invalid": "Give the role a name of 2 to 40 characters.",
+        "name_taken": "A role with this name already exists.",
+        "permissions_empty": "Tick at least one permission — a role without permissions hides the cabinet entirely.",
+        "too_many": "Too many roles — delete one first.",
+        "not_found": "That role no longer exists."
+      }
+    },
+    "scope": {
+      "title": "Points of sale",
+      "all": "Access: all points",
+      "some": "Access: {count} point(s)",
+      "hint": "Pick nothing to give access to every point. With points picked, the person only sees those points and the warehouses standing on them — a central warehouse stays out of reach.",
+      "save": "Save points",
+      "errors": {
+        "unauth": "Sign in first.",
+        "forbidden": "Owners only.",
+        "not_found": "Member not found.",
+        "owner_target": "An owner is not limited to points.",
+        "point_unknown": "One of the points does not belong to this company."
+      }
+    }
+  },
+  "cabinetJournal": {
+    "title": "Activity log",
+    "subtitle": "Who changed what and when — the last {count} entries.",
+    "empty": "Nothing recorded yet.",
+    "goneActor": "deleted member",
+    "actions": {
+      "PROFILE_SAVED": "Shop card saved",
+      "POINT_SUBMITTED": "Point submitted",
+      "POINT_UPDATED": "Point edited",
+      "POINT_CLAIMED": "BTC Map point claimed",
+      "PRODUCT_CREATED": "Product created",
+      "PRODUCT_UPDATED": "Product edited",
+      "PRODUCT_EDIT_REVERTED": "Product edit reverted",
+      "PRODUCT_CLAIM_SUBMITTED": "Manufacturer claim submitted",
+      "PRODUCT_REVISION_DECIDED": "Suggested edit decided",
+      "PRODUCT_REVISION_WITHDRAWN": "Suggested edit withdrawn",
+      "OFFER_SAVED": "Offer saved",
+      "OFFER_STATUS_SET": "Offer paused or resumed",
+      "OFFER_DELETED": "Offer removed",
+      "CASHBACK_BASE_SET": "Cashback rate on everything set",
+      "CASHBACK_CATEGORY_SET": "Category cashback rate set",
+      "WAREHOUSE_CREATED": "Warehouse created",
+      "WAREHOUSE_RENAMED": "Warehouse renamed",
+      "WAREHOUSE_ARCHIVED": "Warehouse archived",
+      "WAREHOUSE_RESTORED": "Warehouse restored",
+      "MOVEMENT_RECORDED": "Stock movement recorded",
+      "MOVEMENT_RECEIVED": "Shipment received",
+      "MOVEMENT_CANCELLED": "Movement cancelled",
+      "MEMBER_ADDED": "Teammate added",
+      "MEMBER_ROLE_SET": "Teammate role set",
+      "MEMBER_POINTS_SET": "Teammate points set",
+      "MEMBER_REMOVED": "Teammate removed",
+      "TEAM_ROLE_SAVED": "Role saved",
+      "TEAM_ROLE_DELETED": "Role deleted",
+      "INVITE_CREATED": "Invite link created",
+      "INVITE_REVOKED": "Invite link revoked",
+      "INVITE_ACCEPTED": "Invite link accepted"
     }
   }
 }

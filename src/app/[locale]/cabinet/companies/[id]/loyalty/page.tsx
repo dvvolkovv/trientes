@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { getViewerCompanyById, canEditCompany } from "@/lib/business";
+import { getViewerCompanyById, canEditSection, canSeeSection } from "@/lib/business";
 import { countOffersByCategory, readCompanyRates } from "@/lib/loyalty/read";
 import { cashbackSummary } from "@/lib/loyalty/rates";
 import { CashbackRatesForm } from "@/components/loyalty/rates-form";
@@ -20,10 +20,11 @@ export default async function CompanyLoyaltyPage({
   const { locale, id } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("cabinetLoyalty");
-  const { userId, company, role } = await getViewerCompanyById(id);
+  const { userId, company, permissions, pointScope } = await getViewerCompanyById(id);
   if (!userId) redirect(`/${locale}/login`);
   if (!company) notFound();
-  const editable = canEditCompany(role);
+  if (!canSeeSection(permissions, "pricing")) notFound();
+  const editable = canEditSection(permissions, "pricing");
 
   const [rates, counts] = await Promise.all([
     readCompanyRates(company.id),

@@ -2,13 +2,12 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
-import { getViewerCompanyById, canEditCompany, canManageMembers } from "@/lib/business";
+import { getViewerCompanyById, canEditSection, canSeeSection, canManageMembers } from "@/lib/business";
 import { readTop100 } from "@/lib/snapshot";
 import { listSelfListedCards } from "@/lib/coin-card-directory";
 import { CompanyProfileForm } from "@/components/business/company-profile-form";
 import { PointForm, type PointFormInitial } from "@/components/business/point-form";
 import { PointsList, type PointListItem } from "@/components/business/points-list";
-import { MembersSection } from "@/components/business/members-section";
 import { DeletionRequestsSection } from "@/components/business/deletion-requests-section";
 import { DeleteCompanyBlock } from "@/components/business/delete-buttons";
 import { KybSection } from "@/components/business/kyb-section";
@@ -27,15 +26,23 @@ export default async function CompanyManagementPage({
   const { card: cardParam, edit: editParam } = await searchParams;
   setRequestLocale(locale);
   const t = await getTranslations("business");
-  const { userId, company, role } = await getViewerCompanyById(id);
+  const { userId, company, role, permissions, pointScope } = await getViewerCompanyById(id);
   if (!userId) redirect(`/${locale}/login`);
   if (!company) notFound();
-  const editable = canEditCompany(role);
+  // Профиль, точки и остальные разделы охраняются по отдельности (слайс BE).
+  const editable = canEditSection(permissions, "card");
+  const canSeePoints = canSeeSection(permissions, "points");
+  const canEditPoints = canEditSection(permissions, "points");
   const canManage = canManageMembers(role);
 
   const [points, coins, cards] = await Promise.all([
     prisma.companyPoint.findMany({
-      where: { companyId: company.id, ...NOT_DELETED },
+      // Участок сотрудника: пусто — все точки предприятия.
+      where: {
+        companyId: company.id,
+        ...NOT_DELETED,
+        ...(pointScope.length > 0 ? { id: { in: pointScope } } : {}),
+      },
       orderBy: { createdAt: "desc" },
       take: 100,
     }),
@@ -124,6 +131,7 @@ export default async function CompanyManagementPage({
             <div className="text-sm text-red-300">{company.rejectionReason}</div>
           </div>
         )}
+        {editable ? (
         <CompanyProfileForm
           companyId={company.id}
           initial={{
@@ -136,38 +144,63 @@ export default async function CompanyManagementPage({
             postalCode: company.postalCode ?? "",
           }}
         />
+        ) : null}
       </section>
       <section className="scroll-mt-24 mb-8 flex flex-wrap gap-2">
-        <Link
-          href={`/${locale}/cabinet/companies/${company.id}/products`}
-          className="inline-flex items-center justify-center h-12 px-4 rounded-md border border-hairline text-sm font-medium hover:border-accent"
-        >
-          {t("productsLink")}
-        </Link>
-        <Link
-          href={`/${locale}/cabinet/companies/${company.id}/warehouses`}
-          className="inline-flex items-center justify-center h-12 px-4 rounded-md border border-hairline text-sm font-medium hover:border-accent"
-        >
-          {t("warehousesLink")}
-        </Link>
-        <Link
-          href={`/${locale}/cabinet/companies/${company.id}/loyalty`}
-          className="inline-flex items-center justify-center h-12 px-4 rounded-md border border-hairline text-sm font-medium hover:border-accent"
-        >
-          {t("loyaltyLink")}
-        </Link>
+        {canSeeSection(permissions, "products") ? (
+          <Link
+            href={`/${locale}/cabinet/companies/${company.id}/products`}
+            className="inline-flex items-center justify-center h-12 px-4 rounded-md border border-hairline text-sm font-medium hover:border-accent"
+          >
+            {t("productsLink")}
+          </Link>
+        ) : null}
+        {canSeeSection(permissions, "warehouses") ? (
+          <Link
+            href={`/${locale}/cabinet/companies/${company.id}/warehouses`}
+            className="inline-flex items-center justify-center h-12 px-4 rounded-md border border-hairline text-sm font-medium hover:border-accent"
+          >
+            {t("warehousesLink")}
+          </Link>
+        ) : null}
+        {canSeeSection(permissions, "pricing") ? (
+          <Link
+            href={`/${locale}/cabinet/companies/${company.id}/loyalty`}
+            className="inline-flex items-center justify-center h-12 px-4 rounded-md border border-hairline text-sm font-medium hover:border-accent"
+          >
+            {t("loyaltyLink")}
+          </Link>
+        ) : null}
+        {canManage ? (
+          <>
+            <Link
+              href={`/${locale}/cabinet/companies/${company.id}/team`}
+              className="inline-flex items-center justify-center h-12 px-4 rounded-md border border-hairline text-sm font-medium hover:border-accent"
+            >
+              {t("teamLink")}
+            </Link>
+            <Link
+              href={`/${locale}/cabinet/companies/${company.id}/journal`}
+              className="inline-flex items-center justify-center h-12 px-4 rounded-md border border-hairline text-sm font-medium hover:border-accent"
+            >
+              {t("journalLink")}
+            </Link>
+          </>
+        ) : null}
       </section>
 
+      {canSeePoints ? (
       <section id="your-points" className="scroll-mt-24">
         <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-4">{t("yourPoints")}</h2>
         <PointsList
           points={items}
-          canDelete={editable}
+          canDelete={canEditPoints}
           canDeleteOutright={role === "OWNER"}
-          editHrefBase={editable ? `/${locale}/cabinet/companies/${company.id}` : undefined}
+          editHrefBase={canEditPoints ? `/${locale}/cabinet/companies/${company.id}` : undefined}
         />
       </section>
-      {editable ? (
+      ) : null}
+      {canEditPoints ? (
         <section id="add-point" className="scroll-mt-24">
           <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-4">
             {editing ? t("editPoint") : t("addPoint")}
@@ -198,11 +231,9 @@ export default async function CompanyManagementPage({
         </section>
       ) : null}
 
-      <MembersSection companyId={company.id} viewerId={userId} canManage={canManage} viewerRole={role} />
-
       <DeletionRequestsSection companyId={company.id} viewerId={userId} viewerRole={role} />
 
-      {editable ? (
+      {canManage ? (
         <DeleteCompanyBlock
           companyId={company.id}
           displayName={company.displayName}
@@ -210,13 +241,17 @@ export default async function CompanyManagementPage({
         />
       ) : null}
 
-      <KybSection
-        companyId={company.id}
-        status={company.kybStatus}
-        documents={company.kybDocuments}
-        rejectionReason={company.kybRejectionReason}
-        canManage={canManage}
-      />
+      {/* KYB — дело владельца (спека BE, § 2). Живой прогон поймал утечку: раздел
+          показывал список поданных документов любому члену, включая кладовщика. */}
+      {canManage ? (
+        <KybSection
+          companyId={company.id}
+          status={company.kybStatus}
+          documents={company.kybDocuments}
+          rejectionReason={company.kybRejectionReason}
+          canManage={canManage}
+        />
+      ) : null}
     </main>
   );
 }

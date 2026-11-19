@@ -1479,7 +1479,10 @@
         "invalid": "Neispravna uloga.",
         "user_not_found": "Korisnik nije pronađen.",
         "self": "Ne možete dodati sebe.",
-        "last_owner": "Mora postojati barem jedan vlasnik."
+        "last_owner": "Mora postojati barem jedan vlasnik.",
+        "not_found": "Član nije pronađen.",
+        "owner_target": "Pristup vlasnika nije moguće konfigurirati.",
+        "role_not_found": "Ta uloga više ne postoji."
       },
       "invites": {
         "title": "Pozivna poveznica",
@@ -1588,7 +1591,9 @@
     },
     "productsLink": "Proizvodi",
     "warehousesLink": "Skladišta",
-    "loyaltyLink": "Povrat novca"
+    "loyaltyLink": "Povrat novca",
+    "teamLink": "Tim",
+    "journalLink": "Dnevnik aktivnosti"
   },
   "cabinet": {
     "kicker": "Odjeljak · Profil",
@@ -3640,7 +3645,8 @@
       "date_invalid": "Taj datum se ne može pročitati.",
       "not_in_transit": "Ova roba više nije na putu.",
       "not_cancellable": "Ono što je već stiglo ne može se otkazati: vratite to s prijavom problema ili korekcijom.",
-      "failed": "Spremanje nije uspjelo."
+      "failed": "Spremanje nije uspjelo.",
+      "point_forbidden": "Imate pristup samo svojim lokacijama: postavite policu na jednu od njih"
     }
   },
   "loyalty": {
@@ -3689,6 +3695,107 @@
       "forbidden": "Vaša tvrtka trenutačno ne može mijenjati stope.",
       "unauth": "Prijavite se ponovno.",
       "failed": "Spremanje nije uspjelo."
+    }
+  },
+  "cabinetTeam": {
+    "title": "Tim i pristup",
+    "subtitle": "Pozvati osobe, izgraditi uloge za svoje poslovanje i ograničiti pristup određenim lokacijama",
+    "journalLink": "Otvorite dnevnik aktivnosti →",
+    "roles": {
+      "title": "Uloge",
+      "subtitle": "Uloga je skup dopuštenja po odjeljku profila. Krenite od predloška, zatim označite što vam treba",
+      "empty": "Još nema uloga — vaš tim koristi osnovne uloge vlasnik/urednik/pregledavatelj",
+      "newTitle": "Nova uloga",
+      "editTitle": "Uredi ulogu",
+      "name": "Naziv uloge",
+      "namePlaceholder": "Skladištar",
+      "template": "Započnite s predloškom",
+      "templates": {
+        "manager": "Menadžer",
+        "stock": "Skladištar",
+        "marketing": "Marketinški stručnjak",
+        "observer": "Promatrač"
+      },
+      "sections": {
+        "card": "Kartica trgovine",
+        "points": "Lokacije na karti",
+        "products": "Proizvodi",
+        "warehouses": "Skladišta i zalihe",
+        "pricing": "Cijena i povrat novca"
+      },
+      "levels": {
+        "NONE": "Bez pristupa",
+        "VIEW": "Pregled",
+        "EDIT": "Uređivanje"
+      },
+      "inUse": "Osobe s ovom ulogom: {count}",
+      "edit": "Uredi",
+      "delete": "Izbriši",
+      "confirmDelete": "Izbrisati ulogu \"{name}\"? {members} osoba imat će samo pristup za pregled.",
+      "save": "Spremi ulogu",
+      "cancel": "Odustani",
+      "errors": {
+        "unauth": "Prijavite se prvo.",
+        "forbidden": "Samo vlasnici.",
+        "name_invalid": "Dajte ulozi naziv od 2 do 40 znakova.",
+        "name_taken": "Uloga s ovim nazivom već postoji.",
+        "permissions_empty": "Označite barem jedno dopuštenje — uloga bez dopuštenja u potpunosti skriva profil.",
+        "too_many": "Previše uloga — najprije izbrišite jednu.",
+        "not_found": "Ta uloga više ne postoji."
+      }
+    },
+    "scope": {
+      "title": "Lokacije prodaje",
+      "all": "Pristup: sve lokacije",
+      "some": "Pristup: {count} lokacija",
+      "hint": "Ne odaberite ništa kako biste dali pristup svim lokacijama. S odabranim lokacijama, osoba vidi samo te lokacije i skladišta koja se na njima nalaze — središnje skladište ostaje nedostupno.",
+      "save": "Spremi lokacije",
+      "errors": {
+        "unauth": "Prijavite se prvo.",
+        "forbidden": "Samo vlasnici.",
+        "not_found": "Član nije pronađen.",
+        "owner_target": "Vlasnika se ne može ograničiti na lokacije.",
+        "point_unknown": "Jedna od lokacija ne pripada ovoj tvrtki."
+      }
+    }
+  },
+  "cabinetJournal": {
+    "title": "Dnevnik aktivnosti",
+    "subtitle": "Tko je što i kada promijenio — posljednjih {count} zapisa.",
+    "empty": "Još ništa nije zabilježeno",
+    "goneActor": "izbrisani član",
+    "actions": {
+      "PROFILE_SAVED": "Kartica trgovine spremljena",
+      "POINT_SUBMITTED": "Lokacija poslana",
+      "POINT_UPDATED": "Lokacija uređena",
+      "POINT_CLAIMED": "BTC Map lokacija preuzeta",
+      "PRODUCT_CREATED": "Proizvod kreiran",
+      "PRODUCT_UPDATED": "Proizvod uređen",
+      "PRODUCT_EDIT_REVERTED": "Uređivanje proizvoda vraćeno",
+      "PRODUCT_CLAIM_SUBMITTED": "Zahtjev proizvođača predan",
+      "PRODUCT_REVISION_DECIDED": "O predloženoj izmjeni odlučeno",
+      "PRODUCT_REVISION_WITHDRAWN": "Predložena izmjena povučena",
+      "OFFER_SAVED": "Ponuda spremljena",
+      "OFFER_STATUS_SET": "Ponuda pauzirana ili nastavljena",
+      "OFFER_DELETED": "Ponuda uklonjena",
+      "CASHBACK_BASE_SET": "Postavljena stopa cashbacka na sve",
+      "CASHBACK_CATEGORY_SET": "Postavljena stopa cashbacka za kategoriju",
+      "WAREHOUSE_CREATED": "Skladište kreirano",
+      "WAREHOUSE_RENAMED": "Skladište preimenovano",
+      "WAREHOUSE_ARCHIVED": "Skladište arhivirano",
+      "WAREHOUSE_RESTORED": "Skladište vraćeno",
+      "MOVEMENT_RECORDED": "Kretanje zaliha zabilježeno",
+      "MOVEMENT_RECEIVED": "Pošiljka primljena",
+      "MOVEMENT_CANCELLED": "Kretanje zaliha otkazano",
+      "MEMBER_ADDED": "Član tima dodan",
+      "MEMBER_ROLE_SET": "Uloga člana tima postavljena",
+      "MEMBER_POINTS_SET": "Bodovi člana tima postavljeni",
+      "MEMBER_REMOVED": "Član tima uklonjen",
+      "TEAM_ROLE_SAVED": "Uloga spremljena",
+      "TEAM_ROLE_DELETED": "Uloga izbrisana",
+      "INVITE_CREATED": "Pozivna poveznica kreirana",
+      "INVITE_REVOKED": "Pozivna poveznica opozvana",
+      "INVITE_ACCEPTED": "Pozivna poveznica prihvaćena"
     }
   }
 }

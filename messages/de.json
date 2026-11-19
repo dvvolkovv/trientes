@@ -1479,7 +1479,10 @@
         "invalid": "Ungültige Rolle.",
         "user_not_found": "Benutzer nicht gefunden.",
         "self": "Du kannst dich nicht selbst hinzufügen.",
-        "last_owner": "Mindestens ein Inhaber wird benötigt."
+        "last_owner": "Mindestens ein Inhaber wird benötigt.",
+        "not_found": "Mitglied nicht gefunden.",
+        "owner_target": "Die Zugriffsrechte eines Eigentümers sind nicht konfigurierbar.",
+        "role_not_found": "Diese Rolle existiert nicht mehr."
       },
       "invites": {
         "title": "Einladungslink",
@@ -1588,7 +1591,9 @@
     },
     "productsLink": "Produkte",
     "warehousesLink": "Lager",
-    "loyaltyLink": "Cashback"
+    "loyaltyLink": "Cashback",
+    "teamLink": "Team",
+    "journalLink": "Aktivitätsprotokoll"
   },
   "cabinet": {
     "kicker": "Bereich · Kabinett",
@@ -3640,7 +3645,8 @@
       "date_invalid": "Dieses Datum kann nicht gelesen werden.",
       "not_in_transit": "Diese Waren sind nicht mehr unterwegs.",
       "not_cancellable": "Was bereits angekommen ist, kann nicht storniert werden: Buchen Sie es mit einer Entnahme oder einer Korrektur zurück.",
-      "failed": "Konnte nicht gespeichert werden."
+      "failed": "Konnte nicht gespeichert werden.",
+      "point_forbidden": "Sie haben nur Zugriff auf Ihre eigenen Verkaufsstellen: Platzieren Sie das Regal auf einer von ihnen."
     }
   },
   "loyalty": {
@@ -3689,6 +3695,107 @@
       "forbidden": "Ihr Unternehmen kann Sätze derzeit nicht ändern.",
       "unauth": "Bitte melden Sie sich erneut an.",
       "failed": "Konnte nicht gespeichert werden."
+    }
+  },
+  "cabinetTeam": {
+    "title": "Team und Zugriff",
+    "subtitle": "Laden Sie Personen ein, erstellen Sie Rollen für Ihr Geschäft und beschränken Sie den Zugriff auf bestimmte Verkaufsstellen.",
+    "journalLink": "Aktivitätsprotokoll öffnen →",
+    "roles": {
+      "title": "Rollen",
+      "subtitle": "Eine Rolle ist ein Satz von Berechtigungen pro Bereich des Kontos. Beginnen Sie mit einer Vorlage und aktivieren Sie dann, was Sie benötigen.",
+      "empty": "Noch keine Rollen — Ihr Team verwendet die grundlegenden Rollen Eigentümer/Bearbeiter/Betrachter.",
+      "newTitle": "Neue Rolle",
+      "editTitle": "Rolle bearbeiten",
+      "name": "Rollenname",
+      "namePlaceholder": "Lagerverwalter",
+      "template": "Mit Vorlage beginnen",
+      "templates": {
+        "manager": "Manager",
+        "stock": "Lagerverwalter",
+        "marketing": "Marketingmanager",
+        "observer": "Beobachter"
+      },
+      "sections": {
+        "card": "Shop-Karte",
+        "points": "Punkte auf der Karte",
+        "products": "Produkte",
+        "warehouses": "Lager und Bestand",
+        "pricing": "Preis und Cashback"
+      },
+      "levels": {
+        "NONE": "Kein Zugriff",
+        "VIEW": "Ansehen",
+        "EDIT": "Bearbeiten"
+      },
+      "inUse": "Personen mit dieser Rolle: {count}",
+      "edit": "Bearbeiten",
+      "delete": "Löschen",
+      "confirmDelete": "Rolle „{name}“ löschen? {members} Personen erhalten nur Lesezugriff.",
+      "save": "Rolle speichern",
+      "cancel": "Abbrechen",
+      "errors": {
+        "unauth": "Zuerst anmelden.",
+        "forbidden": "Nur Eigentümer.",
+        "name_invalid": "Gib der Rolle einen Namen mit 2 bis 40 Zeichen.",
+        "name_taken": "Eine Rolle mit diesem Namen existiert bereits.",
+        "permissions_empty": "Wähle mindestens eine Berechtigung — eine Rolle ohne Berechtigungen blendet den Bereich vollständig aus.",
+        "too_many": "Zu viele Rollen — lösche zuerst eine.",
+        "not_found": "Diese Rolle existiert nicht mehr."
+      }
+    },
+    "scope": {
+      "title": "Verkaufsstellen",
+      "all": "Zugriff: alle Verkaufsstellen",
+      "some": "Zugriff: {count} Verkaufsstelle(n)",
+      "hint": "Wähle nichts aus, um Zugriff auf alle Verkaufsstellen zu geben. Mit ausgewählten Stellen sieht die Person nur diese Stellen und die darauf befindlichen Lager — ein zentrales Lager bleibt unerreichbar.",
+      "save": "Verkaufsstellen speichern",
+      "errors": {
+        "unauth": "Zuerst anmelden.",
+        "forbidden": "Nur Eigentümer.",
+        "not_found": "Mitglied nicht gefunden.",
+        "owner_target": "Ein Eigentümer ist nicht auf Verkaufsstellen beschränkt.",
+        "point_unknown": "Eine der Verkaufsstellen gehört nicht zu diesem Unternehmen."
+      }
+    }
+  },
+  "cabinetJournal": {
+    "title": "Aktivitätsprotokoll",
+    "subtitle": "Wer was wann geändert hat — die letzten {count} Einträge.",
+    "empty": "Noch nichts erfasst.",
+    "goneActor": "gelöschtes Mitglied",
+    "actions": {
+      "PROFILE_SAVED": "Shop-Karte gespeichert",
+      "POINT_SUBMITTED": "Verkaufsstelle eingereicht",
+      "POINT_UPDATED": "Verkaufsstelle bearbeitet",
+      "POINT_CLAIMED": "BTC Map-Punkt beansprucht",
+      "PRODUCT_CREATED": "Produkt erstellt",
+      "PRODUCT_UPDATED": "Produkt bearbeitet",
+      "PRODUCT_EDIT_REVERTED": "Produktbearbeitung rückgängig gemacht",
+      "PRODUCT_CLAIM_SUBMITTED": "Herstelleranspruch eingereicht",
+      "PRODUCT_REVISION_DECIDED": "Vorgeschlagene Bearbeitung entschieden",
+      "PRODUCT_REVISION_WITHDRAWN": "Vorgeschlagene Bearbeitung zurückgezogen",
+      "OFFER_SAVED": "Angebot gespeichert",
+      "OFFER_STATUS_SET": "Angebot pausiert oder fortgesetzt",
+      "OFFER_DELETED": "Angebot entfernt",
+      "CASHBACK_BASE_SET": "Cashback-Rate für alles festgelegt",
+      "CASHBACK_CATEGORY_SET": "Cashback-Rate für Kategorie festgelegt",
+      "WAREHOUSE_CREATED": "Lager erstellt",
+      "WAREHOUSE_RENAMED": "Lager umbenannt",
+      "WAREHOUSE_ARCHIVED": "Lager archiviert",
+      "WAREHOUSE_RESTORED": "Lager wiederhergestellt",
+      "MOVEMENT_RECORDED": "Bestandsbewegung erfasst",
+      "MOVEMENT_RECEIVED": "Lieferung erhalten",
+      "MOVEMENT_CANCELLED": "Bestandsbewegung storniert",
+      "MEMBER_ADDED": "Teammitglied hinzugefügt",
+      "MEMBER_ROLE_SET": "Rolle des Teammitglieds festgelegt",
+      "MEMBER_POINTS_SET": "Punkte des Teammitglieds festgelegt",
+      "MEMBER_REMOVED": "Teammitglied entfernt",
+      "TEAM_ROLE_SAVED": "Rolle gespeichert",
+      "TEAM_ROLE_DELETED": "Rolle gelöscht",
+      "INVITE_CREATED": "Einladungslink erstellt",
+      "INVITE_REVOKED": "Einladungslink widerrufen",
+      "INVITE_ACCEPTED": "Einladungslink angenommen"
     }
   }
 }

@@ -12,7 +12,17 @@ export type ShelfPoint = { id: string; name: string; city: string | null };
  * Заведение склада. Полка обязана где-то стоять: своя одобренная точка или онлайн —
  * иначе раздел «где взять» обещал бы покупателю место, которого нет.
  */
-export function WarehouseCreateForm({ companyId, points }: { companyId: string; points: ShelfPoint[] }) {
+export function WarehouseCreateForm({
+  companyId,
+  points,
+  scoped = false,
+}: {
+  companyId: string;
+  points: ShelfPoint[];
+  /// Сотрудник ограничен участком (слайс BE): склад он заводит только полкой на своей
+  /// точке. Форма не предлагает того, что действие всё равно отвергнет.
+  scoped?: boolean;
+}) {
   const t = useTranslations("warehouses");
   const router = useRouter();
   const [kind, setKind] = useState<string>("SHELF");
@@ -47,7 +57,7 @@ export function WarehouseCreateForm({ companyId, points }: { companyId: string; 
             }}
             className={field}
           >
-            {WAREHOUSE_KINDS.map((k) => (
+            {(scoped ? WAREHOUSE_KINDS.filter((k) => k === "SHELF") : WAREHOUSE_KINDS).map((k) => (
               <option key={k} value={k}>
                 {t(`kinds.${k}`)}
               </option>
@@ -71,7 +81,7 @@ export function WarehouseCreateForm({ companyId, points }: { companyId: string; 
               }}
               className={field}
             >
-              <option value="">{t("pointNone")}</option>
+              {scoped ? null : <option value="">{t("pointNone")}</option>}
               {points.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.city ? `${p.name} — ${p.city}` : p.name}

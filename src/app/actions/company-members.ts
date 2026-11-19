@@ -6,6 +6,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { notifyUser } from "@/lib/notify";
 import { NOT_DELETED } from "@/lib/soft-delete";
+import { logCompanyAction } from "@/lib/company-team/journal";
 
 const ROLES: CompanyRole[] = ["OWNER", "EDITOR", "VIEWER"];
 
@@ -59,6 +60,13 @@ export async function inviteMember(input: { companyId: string; identifier: strin
     subject: `Added to ${company?.displayName ?? "a company"} on Trientes`,
   }).catch(() => {});
 
+  await logCompanyAction({
+    companyId: input.companyId,
+    actorUserId: userId,
+    action: "MEMBER_ADDED",
+    subject: target.username ?? target.email ?? input.identifier,
+    meta: { role: input.role },
+  });
   revalidatePath("/", "layout");
   return { ok: true as const };
 }
@@ -80,7 +88,16 @@ export async function updateMemberRole(input: { companyId: string; userId: strin
 
   await prisma.companyMember.update({
     where: { companyId_userId: { companyId: input.companyId, userId: input.userId } },
-    data: { role: input.role },
+    // Базовая роль названа прямо — значит своя роль предприятия снимается: два
+    // источника прав у одного человека расходятся.
+    data: { role: input.role, roleId: null },
+  });
+  await logCompanyAction({
+    companyId: input.companyId,
+    actorUserId: actorId,
+    action: "MEMBER_ROLE_SET",
+    subject: input.userId,
+    meta: { role: input.role },
   });
   revalidatePath("/", "layout");
   return { ok: true as const };
@@ -98,6 +115,12 @@ export async function removeMember(input: { companyId: string; userId: string })
   }
   await prisma.companyMember.delete({
     where: { companyId_userId: { companyId: input.companyId, userId: input.userId } },
+  });
+  await logCompanyAction({
+    companyId: input.companyId,
+    actorUserId: actorId,
+    action: "MEMBER_REMOVED",
+    subject: input.userId,
   });
   revalidatePath("/", "layout");
   return { ok: true as const };

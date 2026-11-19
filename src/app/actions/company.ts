@@ -3,6 +3,9 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { editorCompany } from "@/lib/products/editor-company";
+import { logCompanyAction } from "@/lib/company-team/journal";
+import { pointScopeAllows } from "@/lib/company-team/permissions";
 import { ensureCase } from "@/lib/cases/ensure";
 import {
   validateCompanyProfile,
@@ -20,14 +23,6 @@ const MAX_PENDING_POINTS = 20;
 async function requireUser() {
   const session = await auth();
   return (session?.user as { id?: string } | undefined)?.id ?? null;
-}
-
-async function memberRole(companyId: string, userId: string) {
-  const m = await prisma.companyMember.findUnique({
-    where: { companyId_userId: { companyId, userId } },
-    select: { role: true },
-  });
-  return m?.role ?? null;
 }
 
 export async function createCompany(input: { legalName: string; displayName: string }) {
@@ -83,13 +78,19 @@ export async function createCompany(input: { legalName: string; displayName: str
 export async function saveCompanyProfile(companyId: string, input: CompanyProfileInput) {
   const userId = await requireUser();
   if (!userId) return { ok: false as const, reason: "unauth" as const };
-  const role = await memberRole(companyId, userId);
-  if (role !== "OWNER" && role !== "EDITOR") return { ok: false as const, reason: "not_found" as const };
+  // Право на раздел «карточка магазина» (слайс BE). Профиль правит и предприятие,
+  // ещё не прошедшее модерацию, — поэтому не `canWrite`, которая требует APPROVED:
+  // иначе заявитель не смог бы поправить то, что у него же на проверке.
+  const gate = await editorCompany(companyId, userId);
+  if (!gate || !gate.permissions.card || gate.permissions.card !== "EDIT") {
+    return { ok: false as const, reason: "not_found" as const };
+  }
   const company = await prisma.company.findFirst({ where: { id: companyId, ...NOT_DELETED } });
   if (!company) return { ok: false as const, reason: "not_found" as const };
   const v = validateCompanyProfile(input);
   if (!v.ok) return { ok: false as const, reason: v.reason };
   await prisma.company.update({ where: { id: company.id }, data: v.data });
+  await logCompanyAction({ companyId, actorUserId: userId, action: "PROFILE_SAVED", subject: v.data.displayName });
   revalidatePath("/", "layout");
   return { ok: true as const };
 }
@@ -100,8 +101,10 @@ export async function submitCompanyPoint(
 ) {
   const userId = await requireUser();
   if (!userId) return { ok: false as const, reason: "unauth" as const };
-  const role = await memberRole(companyId, userId);
-  if (role !== "OWNER" && role !== "EDITOR") return { ok: false as const, reason: "not_found" as const };
+  const gate = await editorCompany(companyId, userId);
+  if (!gate || gate.permissions.points !== "EDIT") return { ok: false as const, reason: "not_found" as const };
+  // Новая точка участком не ограничивается: её ещё нет ни в одном участке, а
+  // запретить сотруднику заводить точку значило бы запереть раздел целиком.
   const company = await prisma.company.findFirst({ where: { id: companyId, ...NOT_DELETED } });
   if (!company) return { ok: false as const, reason: "not_found" as const };
   const v = validateCompanyPoint(input);
@@ -151,6 +154,7 @@ export async function submitCompanyPoint(
     title: point.name,
     applicantUserId: company.ownerUserId,
   });
+  await logCompanyAction({ companyId, actorUserId: userId, action: "POINT_SUBMITTED", subject: point.name });
   revalidatePath("/", "layout");
   return { ok: true as const };
 }
@@ -173,8 +177,10 @@ export async function updateCompanyPoint(
   });
   if (!point) return { ok: false as const, reason: "not_found" as const };
 
-  const role = await memberRole(point.companyId, userId);
-  if (role !== "OWNER" && role !== "EDITOR") return { ok: false as const, reason: "not_found" as const };
+  const gate = await editorCompany(point.companyId, userId);
+  if (!gate || gate.permissions.points !== "EDIT") return { ok: false as const, reason: "not_found" as const };
+  // Сотрудник участка правит только свои точки.
+  if (!pointScopeAllows(gate.pointScope, point.id)) return { ok: false as const, reason: "not_found" as const };
 
   const v = validateCompanyPoint(input);
   if (!v.ok) return { ok: false as const, reason: v.reason };
@@ -246,6 +252,13 @@ export async function updateCompanyPoint(
       applicantUserId: owner?.userId ?? null,
     });
   }
+  await logCompanyAction({
+    companyId: point.companyId,
+    actorUserId: userId,
+    action: "POINT_UPDATED",
+    subject: v.data.name,
+    meta: { moderated: needsModeration },
+  });
   revalidatePath("/", "layout");
   return { ok: true as const, moderated: needsModeration };
 }

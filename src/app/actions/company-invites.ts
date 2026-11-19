@@ -5,6 +5,7 @@ import type { CompanyRole } from "@prisma/client";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { notifyUser } from "@/lib/notify";
+import { logCompanyAction } from "@/lib/company-team/journal";
 import {
   MAX_ACTIVE_INVITES,
   generateInviteToken,
@@ -53,6 +54,12 @@ export async function createInvite(input: { companyId: string; role: CompanyRole
     },
     select: { id: true, token: true, expiresAt: true },
   });
+  await logCompanyAction({
+    companyId: input.companyId,
+    actorUserId: userId,
+    action: "INVITE_CREATED",
+    meta: { role: input.role },
+  });
   revalidatePath("/", "layout");
   return { ok: true as const, ...invite };
 }
@@ -69,6 +76,7 @@ export async function revokeInvite(input: { companyId: string; inviteId: string 
     data: { revokedAt: new Date() },
   });
   if (r.count === 0) return { ok: false as const, reason: "invalid" as const };
+  await logCompanyAction({ companyId: input.companyId, actorUserId: userId, action: "INVITE_REVOKED", subject: input.inviteId });
   revalidatePath("/", "layout");
   return { ok: true as const };
 }
@@ -131,6 +139,13 @@ export async function acceptInvite(input: { token: string }) {
     }).catch(() => {});
   }
 
+  await logCompanyAction({
+    companyId: invite.companyId,
+    actorUserId: userId,
+    action: "INVITE_ACCEPTED",
+    subject: who,
+    meta: { role: invite.role },
+  });
   revalidatePath("/", "layout");
   return { ok: true as const, companyId: invite.companyId, already: false };
 }

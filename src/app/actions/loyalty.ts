@@ -5,6 +5,7 @@ import { Prisma } from "@prisma/client";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { canWrite, editorCompany } from "@/lib/products/editor-company";
+import { logCompanyAction } from "@/lib/company-team/journal";
 import { isProductCategory } from "@/lib/products/categories";
 import { parseRate } from "@/lib/loyalty/rates";
 
@@ -52,7 +53,7 @@ async function revalidateCompanyOffers(companyId: string, category?: string) {
 export async function saveBaseRate(companyId: string, raw: string) {
   const userId = await requireUser();
   if (!userId) return fail("unauth");
-  if (!canWrite(await editorCompany(companyId, userId))) return fail("forbidden");
+  if (!canWrite(await editorCompany(companyId, userId), "pricing")) return fail("forbidden");
 
   const parsed = parseRate(raw);
   if (!parsed.ok) return fail(parsed.reason);
@@ -63,6 +64,7 @@ export async function saveBaseRate(companyId: string, raw: string) {
       cashbackBasePercent: parsed.value === null ? null : new Prisma.Decimal(parsed.value),
     },
   });
+  await logCompanyAction({ companyId, actorUserId: userId, action: "CASHBACK_BASE_SET", meta: { percent: parsed.value } });
   await revalidateCompanyOffers(companyId);
   return { ok: true as const, percent: parsed.value };
 }
@@ -71,7 +73,7 @@ export async function saveBaseRate(companyId: string, raw: string) {
 export async function saveCategoryRate(companyId: string, category: string, raw: string) {
   const userId = await requireUser();
   if (!userId) return fail("unauth");
-  if (!canWrite(await editorCompany(companyId, userId))) return fail("forbidden");
+  if (!canWrite(await editorCompany(companyId, userId), "pricing")) return fail("forbidden");
   if (!isProductCategory(category)) return fail("category_invalid");
 
   const parsed = parseRate(raw);
@@ -87,6 +89,7 @@ export async function saveCategoryRate(companyId: string, category: string, raw:
       update: { percent },
     });
   }
+  await logCompanyAction({ companyId, actorUserId: userId, action: "CASHBACK_CATEGORY_SET", subject: category, meta: { percent: parsed.value } });
   await revalidateCompanyOffers(companyId, category);
   return { ok: true as const, percent: parsed.value };
 }

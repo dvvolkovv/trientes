@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { getViewerCompanyById } from "@/lib/business";
+import { getViewerCompanyById, canSeeSection, canEditSection } from "@/lib/business";
 import { prisma } from "@/lib/prisma";
 import { editKind } from "@/lib/products/rules";
 import { readProductHistory, readPendingRevisions } from "@/lib/products/read";
@@ -29,7 +29,7 @@ export default async function CompanyProductEditor({
   const { locale, id, productId } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("cabinetProducts");
-  const { userId, company, role } = await getViewerCompanyById(id);
+  const { userId, company, permissions } = await getViewerCompanyById(id);
   if (!userId) redirect(`/${locale}/login`);
   if (!company) notFound();
 
@@ -37,6 +37,7 @@ export default async function CompanyProductEditor({
   const product = creating ? null : await prisma.product.findFirst({ where: { id: productId, deletedAt: null } });
   if (!creating && !product) notFound();
 
+  if (!canSeeSection(permissions, "products")) notFound();
   const gate = editKind(
     product ?? { ownerCompanyId: null, suspendedAt: null, mergedIntoId: null, deletedAt: null },
     {
@@ -44,7 +45,7 @@ export default async function CompanyProductEditor({
       status: company.status,
       suspendedAt: company.suspendedAt,
       deletedAt: company.deletedAt,
-      role: role ?? "VIEWER",
+      permissions,
     },
   );
 
@@ -113,7 +114,9 @@ export default async function CompanyProductEditor({
         />
       )}
 
-      {product && gate !== "forbidden" ? (
+      {/* Предложение охраняется разделом «цена и кэшбэк», а не правом на паспорт:
+          маркетолог правит цену, не правя свойств вещи, и наоборот (слайс BE). */}
+      {product && canEditSection(permissions, "pricing") ? (
         <section className="mt-10 border border-hairline rounded-lg p-4">
           <h2 className="text-xs uppercase tracking-[0.2em] text-muted mb-3">{t("offerHeading")}</h2>
           {/* Цена и ставка — свойства продавца, а не паспорта: правятся там же, где товар. */}

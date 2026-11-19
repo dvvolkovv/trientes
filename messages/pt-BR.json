@@ -1479,7 +1479,10 @@
         "invalid": "Função inválida.",
         "user_not_found": "Usuário não encontrado.",
         "self": "Você não pode adicionar a si mesmo.",
-        "last_owner": "É necessário ao menos um proprietário."
+        "last_owner": "É necessário ao menos um proprietário.",
+        "not_found": "Membro não encontrado.",
+        "owner_target": "O acesso de um proprietário não é configurável.",
+        "role_not_found": "Essa função não existe mais."
       },
       "invites": {
         "title": "Link de convite",
@@ -1588,7 +1591,9 @@
     },
     "productsLink": "Produtos",
     "warehousesLink": "Armazéns",
-    "loyaltyLink": "Cashback"
+    "loyaltyLink": "Cashback",
+    "teamLink": "Equipe",
+    "journalLink": "Registro de atividades"
   },
   "cabinet": {
     "kicker": "Seção · Painel",
@@ -3640,7 +3645,8 @@
       "date_invalid": "Essa data não pode ser lida.",
       "not_in_transit": "Essas mercadorias não estão mais a caminho.",
       "not_cancellable": "O que já chegou não pode ser cancelado: devolva com uma ocorrência ou uma correção.",
-      "failed": "Não foi possível salvar."
+      "failed": "Não foi possível salvar.",
+      "point_forbidden": "Você só tem acesso aos seus próprios pontos de venda: coloque a prateleira em um deles."
     }
   },
   "loyalty": {
@@ -3689,6 +3695,107 @@
       "forbidden": "Sua empresa não pode alterar percentuais agora.",
       "unauth": "Por favor, faça login novamente.",
       "failed": "Não foi possível salvar."
+    }
+  },
+  "cabinetTeam": {
+    "title": "Equipe e acesso",
+    "subtitle": "Convide pessoas, crie funções para o seu comércio e limite o acesso a pontos de venda específicos.",
+    "journalLink": "Abrir o registro de atividades →",
+    "roles": {
+      "title": "Funções",
+      "subtitle": "Uma função é um conjunto de permissões por seção do painel. Comece com um modelo, depois marque o que precisar.",
+      "empty": "Ainda não há funções — sua equipe usa as funções básicas de proprietário/editor/visualizador.",
+      "newTitle": "Nova função",
+      "editTitle": "Editar função",
+      "name": "Nome da função",
+      "namePlaceholder": "Estoquista",
+      "template": "Começar com um modelo",
+      "templates": {
+        "manager": "Gerente",
+        "stock": "Estoquista",
+        "marketing": "Marketing",
+        "observer": "Observador"
+      },
+      "sections": {
+        "card": "Ficha da loja",
+        "points": "Pontos no mapa",
+        "products": "Produtos",
+        "warehouses": "Armazéns e estoque",
+        "pricing": "Preço e cashback"
+      },
+      "levels": {
+        "NONE": "Sem acesso",
+        "VIEW": "Visualizar",
+        "EDIT": "Editar"
+      },
+      "inUse": "Pessoas com esta função: {count}",
+      "edit": "Editar",
+      "delete": "Excluir",
+      "confirmDelete": "Excluir a função \"{name}\"? {members} pessoas ficarão com acesso apenas de visualização.",
+      "save": "Salvar função",
+      "cancel": "Cancelar",
+      "errors": {
+        "unauth": "Faça login primeiro.",
+        "forbidden": "Somente proprietários.",
+        "name_invalid": "Dê à função um nome de 2 a 40 caracteres.",
+        "name_taken": "Já existe uma função com esse nome.",
+        "permissions_empty": "Marque ao menos uma permissão — uma função sem permissões oculta todo o painel.",
+        "too_many": "Funções demais — exclua uma primeiro.",
+        "not_found": "Essa função não existe mais."
+      }
+    },
+    "scope": {
+      "title": "Pontos de venda",
+      "all": "Acesso: todos os pontos",
+      "some": "Acesso: {count} ponto(s)",
+      "hint": "Não selecione nada para dar acesso a todos os pontos. Com pontos selecionados, a pessoa só vê esses pontos e os armazéns situados neles — um armazém central fica fora do alcance.",
+      "save": "Salvar pontos",
+      "errors": {
+        "unauth": "Faça login primeiro.",
+        "forbidden": "Somente proprietários.",
+        "not_found": "Membro não encontrado.",
+        "owner_target": "Um proprietário não pode ser limitado a pontos.",
+        "point_unknown": "Um dos pontos não pertence a esta empresa."
+      }
+    }
+  },
+  "cabinetJournal": {
+    "title": "Registro de atividades",
+    "subtitle": "Quem mudou o quê e quando — as últimas {count} entradas.",
+    "empty": "Nada registrado ainda.",
+    "goneActor": "membro excluído",
+    "actions": {
+      "PROFILE_SAVED": "Perfil da loja salvo",
+      "POINT_SUBMITTED": "Ponto enviado",
+      "POINT_UPDATED": "Ponto editado",
+      "POINT_CLAIMED": "Ponto do BTC Map reivindicado",
+      "PRODUCT_CREATED": "Produto criado",
+      "PRODUCT_UPDATED": "Produto editado",
+      "PRODUCT_EDIT_REVERTED": "Edição do produto revertida",
+      "PRODUCT_CLAIM_SUBMITTED": "Reivindicação de fabricante enviada",
+      "PRODUCT_REVISION_DECIDED": "Revisão sugerida decidida",
+      "PRODUCT_REVISION_WITHDRAWN": "Revisão sugerida retirada",
+      "OFFER_SAVED": "Oferta salva",
+      "OFFER_STATUS_SET": "Oferta pausada ou retomada",
+      "OFFER_DELETED": "Oferta removida",
+      "CASHBACK_BASE_SET": "Taxa de cashback em tudo definida",
+      "CASHBACK_CATEGORY_SET": "Taxa de cashback por categoria definida",
+      "WAREHOUSE_CREATED": "Armazém criado",
+      "WAREHOUSE_RENAMED": "Armazém renomeado",
+      "WAREHOUSE_ARCHIVED": "Armazém arquivado",
+      "WAREHOUSE_RESTORED": "Armazém restaurado",
+      "MOVEMENT_RECORDED": "Movimentação de estoque registrada",
+      "MOVEMENT_RECEIVED": "Remessa recebida",
+      "MOVEMENT_CANCELLED": "Movimentação cancelada",
+      "MEMBER_ADDED": "Membro da equipe adicionado",
+      "MEMBER_ROLE_SET": "Função do membro da equipe definida",
+      "MEMBER_POINTS_SET": "Pontos do membro da equipe definidos",
+      "MEMBER_REMOVED": "Membro da equipe removido",
+      "TEAM_ROLE_SAVED": "Função salva",
+      "TEAM_ROLE_DELETED": "Função excluída",
+      "INVITE_CREATED": "Link de convite criado",
+      "INVITE_REVOKED": "Link de convite revogado",
+      "INVITE_ACCEPTED": "Link de convite aceito"
     }
   }
 }

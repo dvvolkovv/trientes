@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { getViewerCompanyById, canEditCompany } from "@/lib/business";
+import { getViewerCompanyById, canEditSection, canSeeSection } from "@/lib/business";
 import { readCompanyProducts } from "@/lib/products/read";
 import { prisma } from "@/lib/prisma";
 
@@ -16,10 +16,11 @@ export default async function CompanyProductsPage({
   const { locale, id } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("cabinetProducts");
-  const { userId, company, role } = await getViewerCompanyById(id);
+  const { userId, company, permissions, pointScope } = await getViewerCompanyById(id);
   if (!userId) redirect(`/${locale}/login`);
   if (!company) notFound();
-  const editable = canEditCompany(role);
+  if (!canSeeSection(permissions, "products")) notFound();
+  const editable = canEditSection(permissions, "products");
 
   const [rows, incoming] = await Promise.all([
     readCompanyProducts(company.id),

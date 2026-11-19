@@ -20,9 +20,18 @@ export type WarehouseRow = {
   totalQty: number;
 };
 
-export async function readWarehouses(companyId: string): Promise<WarehouseRow[]> {
+/**
+ * Участок сотрудника (слайс BE): пусто — все склады предприятия; непустой список
+ * оставляет только склады на его точках. Склад без точки — общий, и в участок не
+ * входит; правило живёт чистой `pointScopeAllows`, условие запроса — её ускорение.
+ */
+function scopeWhere(scope: readonly string[] | undefined) {
+  return scope && scope.length > 0 ? { pointId: { in: [...scope] } } : {};
+}
+
+export async function readWarehouses(companyId: string, scope?: readonly string[]): Promise<WarehouseRow[]> {
   const rows = await prisma.warehouse.findMany({
-    where: { companyId },
+    where: { companyId, ...scopeWhere(scope) },
     orderBy: [{ archivedAt: "asc" }, { kind: "asc" }, { name: "asc" }],
     select: {
       id: true,
@@ -57,9 +66,9 @@ export async function readWarehouses(companyId: string): Promise<WarehouseRow[]>
   });
 }
 
-export async function readWarehouse(companyId: string, id: string) {
+export async function readWarehouse(companyId: string, id: string, scope?: readonly string[]) {
   return prisma.warehouse.findFirst({
-    where: { id, companyId },
+    where: { id, companyId, ...scopeWhere(scope) },
     select: {
       id: true,
       kind: true,
@@ -154,14 +163,24 @@ export type MovementRow = {
 
 export async function readMovements(
   companyId: string,
-  opts: { warehouseId?: string; status?: "IN_TRANSIT"; take?: number } = {},
+  opts: { warehouseId?: string; status?: "IN_TRANSIT"; take?: number; scope?: readonly string[] } = {},
 ): Promise<MovementRow[]> {
+  const scoped = opts.scope && opts.scope.length > 0 ? [...opts.scope] : null;
   const rows = await prisma.stockMovement.findMany({
     where: {
       companyId,
       ...(opts.status ? { status: opts.status } : {}),
       ...(opts.warehouseId
         ? { OR: [{ fromWarehouseId: opts.warehouseId }, { toWarehouseId: opts.warehouseId }] }
+        : {}),
+      // Оба конца — в участке; пустой конец (приход, расход) участку не противоречит.
+      ...(scoped
+        ? {
+            AND: [
+              { OR: [{ fromWarehouseId: null }, { fromWarehouse: { pointId: { in: scoped } } }] },
+              { OR: [{ toWarehouseId: null }, { toWarehouse: { pointId: { in: scoped } } }] },
+            ],
+          }
         : {}),
     },
     orderBy: { createdAt: "desc" },
@@ -226,9 +245,15 @@ export async function readMovableProducts(companyId: string, take = 200) {
 }
 
 /** Свои одобренные живые точки — места, на которых может стоять полка. */
-export async function readShelfPoints(companyId: string) {
+export async function readShelfPoints(companyId: string, scope?: readonly string[]) {
   return prisma.companyPoint.findMany({
-    where: { companyId, status: "APPROVED", deletedAt: null, suspendedAt: null },
+    where: {
+      companyId,
+      status: "APPROVED",
+      deletedAt: null,
+      suspendedAt: null,
+      ...(scope && scope.length > 0 ? { id: { in: [...scope] } } : {}),
+    },
     orderBy: { name: "asc" },
     select: { id: true, name: true, city: true },
   });

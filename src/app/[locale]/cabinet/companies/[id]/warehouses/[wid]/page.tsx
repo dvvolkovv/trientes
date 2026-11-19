@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { setRequestLocale, getTranslations, getFormatter } from "next-intl/server";
-import { getViewerCompanyById, canEditCompany } from "@/lib/business";
+import { getViewerCompanyById, canEditSection, canSeeSection } from "@/lib/business";
 import {
   readMovableProducts,
   readMovements,
@@ -24,18 +24,21 @@ export default async function WarehousePage({
   setRequestLocale(locale);
   const t = await getTranslations("warehouses");
   const format = await getFormatter();
-  const { userId, company, role } = await getViewerCompanyById(id);
+  const { userId, company, permissions, pointScope } = await getViewerCompanyById(id);
   if (!userId) redirect(`/${locale}/login`);
   if (!company) notFound();
-  const editable = canEditCompany(role);
+  if (!canSeeSection(permissions, "warehouses")) notFound();
+  const editable = canEditSection(permissions, "warehouses");
 
-  const warehouse = await readWarehouse(company.id, wid);
+  const warehouse = await readWarehouse(company.id, wid, pointScope);
   if (!warehouse) notFound();
 
   const [stock, movements, all, products] = await Promise.all([
     readWarehouseStock(warehouse.id),
-    readMovements(company.id, { warehouseId: warehouse.id, take: 30 }),
-    readWarehouses(company.id),
+    readMovements(company.id, { warehouseId: warehouse.id, take: 30, scope: pointScope }),
+    // Второй конец перемещения — только склады участка: отдать в список склад,
+    // которого сотрудник не видит, значило бы предложить запрещённое движение.
+    readWarehouses(company.id, pointScope),
     readMovableProducts(company.id),
   ]);
 

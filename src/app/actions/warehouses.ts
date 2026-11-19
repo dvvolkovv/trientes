@@ -4,7 +4,9 @@ import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { canWrite, editorCompany } from "@/lib/products/editor-company";
+import { canWrite, editorCompany, type CompanyGate } from "@/lib/products/editor-company";
+import { movementScopeAllows, pointScopeAllows } from "@/lib/company-team/permissions";
+import { logCompanyAction } from "@/lib/company-team/journal";
 import {
   DAILY_MOVEMENTS,
   canArchiveWarehouse,
@@ -28,6 +30,25 @@ async function requireUser() {
   return (session?.user as { id?: string } | undefined)?.id ?? null;
 }
 
+/**
+ * Участок сотрудника: склады, которых он не видит, он и не трогает. Склад без точки
+ * (оптовый, сторонний) принадлежит предприятию целиком и в участок не попадает.
+ */
+async function scopedWarehouses(
+  gate: CompanyGate,
+  warehouseIds: readonly string[],
+): Promise<boolean> {
+  if (gate.pointScope.length === 0) return true;
+  const ids = warehouseIds.filter(Boolean);
+  if (ids.length === 0) return true;
+  const rows = await prisma.warehouse.findMany({
+    where: { id: { in: [...ids] }, companyId: gate.id },
+    select: { id: true, pointId: true },
+  });
+  if (rows.length !== new Set(ids).size) return false;
+  return rows.every((row) => pointScopeAllows(gate.pointScope, row.pointId));
+}
+
 /** Остаток в минус ушёл уже после записи — значит гонка: откатываем всю транзакцию. */
 class NegativeBalance extends Error {}
 
@@ -45,8 +66,10 @@ export async function createWarehouse(companyId: string, input: WarehouseFormInp
   const userId = await requireUser();
   if (!userId) return fail("unauth");
   const company = await editorCompany(companyId, userId);
-  if (!canWrite(company)) return fail("forbidden");
+  if (!canWrite(company, "warehouses")) return fail("forbidden");
   if (!isWarehouseKind(input.kind)) return fail("kind_invalid");
+  // Сотрудник участка заводит склад только на своей точке.
+  if (!pointScopeAllows(company!.pointScope, input.pointId)) return fail("point_forbidden");
 
   const [count, points] = await Promise.all([
     prisma.warehouse.count({ where: { companyId, archivedAt: null } }),
@@ -85,6 +108,7 @@ export async function createWarehouse(companyId: string, input: WarehouseFormInp
     },
     select: { id: true },
   });
+  await logCompanyAction({ companyId, actorUserId: userId, action: "WAREHOUSE_CREATED", subject: input.name.trim(), meta: { kind: input.kind } });
   revalidatePath(`/[locale]/cabinet/companies/${companyId}/warehouses`, "page");
   return { ok: true as const, id: warehouse.id };
 }
@@ -92,13 +116,16 @@ export async function createWarehouse(companyId: string, input: WarehouseFormInp
 export async function renameWarehouse(companyId: string, warehouseId: string, name: string) {
   const userId = await requireUser();
   if (!userId) return fail("unauth");
-  if (!canWrite(await editorCompany(companyId, userId))) return fail("forbidden");
+  const gate = await editorCompany(companyId, userId);
+  if (!canWrite(gate, "warehouses")) return fail("forbidden");
+  if (!(await scopedWarehouses(gate!, [warehouseId]))) return fail("forbidden");
   if (!name.trim()) return fail("name_required");
   const updated = await prisma.warehouse.updateMany({
     where: { id: warehouseId, companyId },
     data: { name: name.trim() },
   });
   if (updated.count === 0) return fail("not_found");
+  await logCompanyAction({ companyId, actorUserId: userId, action: "WAREHOUSE_RENAMED", subject: name.trim() });
   revalidatePath(`/[locale]/cabinet/companies/${companyId}/warehouses`, "page");
   return { ok: true as const };
 }
@@ -110,11 +137,13 @@ export async function renameWarehouse(companyId: string, warehouseId: string, na
 export async function archiveWarehouse(companyId: string, warehouseId: string) {
   const userId = await requireUser();
   if (!userId) return fail("unauth");
-  if (!canWrite(await editorCompany(companyId, userId))) return fail("forbidden");
+  const gate = await editorCompany(companyId, userId);
+  if (!canWrite(gate, "warehouses")) return fail("forbidden");
+  if (!(await scopedWarehouses(gate!, [warehouseId]))) return fail("forbidden");
 
   const warehouse = await prisma.warehouse.findFirst({
     where: { id: warehouseId, companyId },
-    select: { id: true, archivedAt: true, balances: { select: { qty: true } } },
+    select: { id: true, name: true, archivedAt: true, balances: { select: { qty: true } } },
   });
   if (!warehouse) return fail("not_found");
   if (warehouse.archivedAt) return fail("already_archived");
@@ -130,6 +159,7 @@ export async function archiveWarehouse(companyId: string, warehouseId: string) {
   if (transit > 0) return fail("transit_pending");
 
   await prisma.warehouse.update({ where: { id: warehouseId }, data: { archivedAt: new Date() } });
+  await logCompanyAction({ companyId, actorUserId: userId, action: "WAREHOUSE_ARCHIVED", subject: warehouse.name });
   revalidatePath(`/[locale]/cabinet/companies/${companyId}/warehouses`, "page");
   return { ok: true as const };
 }
@@ -137,12 +167,15 @@ export async function archiveWarehouse(companyId: string, warehouseId: string) {
 export async function restoreWarehouse(companyId: string, warehouseId: string) {
   const userId = await requireUser();
   if (!userId) return fail("unauth");
-  if (!canWrite(await editorCompany(companyId, userId))) return fail("forbidden");
+  const gate = await editorCompany(companyId, userId);
+  if (!canWrite(gate, "warehouses")) return fail("forbidden");
+  if (!(await scopedWarehouses(gate!, [warehouseId]))) return fail("forbidden");
   const updated = await prisma.warehouse.updateMany({
     where: { id: warehouseId, companyId, archivedAt: { not: null } },
     data: { archivedAt: null },
   });
   if (updated.count === 0) return fail("not_found");
+  await logCompanyAction({ companyId, actorUserId: userId, action: "WAREHOUSE_RESTORED", subject: warehouseId });
   revalidatePath(`/[locale]/cabinet/companies/${companyId}/warehouses`, "page");
   return { ok: true as const };
 }
@@ -194,7 +227,8 @@ async function applyDeltas(
 export async function recordMovement(companyId: string, input: MovementFormInput) {
   const userId = await requireUser();
   if (!userId) return fail("unauth");
-  if (!canWrite(await editorCompany(companyId, userId))) return fail("forbidden");
+  const gate = await editorCompany(companyId, userId);
+  if (!canWrite(gate, "warehouses")) return fail("forbidden");
   if (!isMoveKind(input.kind)) return fail("kind_invalid");
 
   const qty = parseQty(input.qty);
@@ -213,11 +247,21 @@ export async function recordMovement(companyId: string, input: MovementFormInput
   // Склады — только свои и не архивные: архивный склад новых движений не принимает.
   const ids = [input.fromWarehouseId, input.toWarehouseId].filter((x): x is string => Boolean(x));
   const [warehouses, product, movesToday] = await Promise.all([
-    prisma.warehouse.findMany({ where: { id: { in: ids }, companyId, archivedAt: null }, select: { id: true } }),
+    prisma.warehouse.findMany({ where: { id: { in: ids }, companyId, archivedAt: null }, select: { id: true, pointId: true } }),
     prisma.product.findFirst({ where: { id: input.productId, deletedAt: null }, select: { id: true, slug: true } }),
     prisma.stockMovement.count({ where: { companyId, createdAt: { gte: new Date(Date.now() - 86_400_000) } } }),
   ]);
   if (warehouses.length !== new Set(ids).size) return fail("warehouse_unknown");
+  // Оба конца — в участке: иначе сотрудник вывозил бы товар на склад, которого не видит.
+  const pointOf = (id: string | null) => (id ? (warehouses.find((w) => w.id === id)?.pointId ?? null) : undefined);
+  if (
+    !movementScopeAllows(gate!.pointScope, {
+      ...(input.fromWarehouseId ? { fromPointId: pointOf(input.fromWarehouseId) } : {}),
+      ...(input.toWarehouseId ? { toPointId: pointOf(input.toWarehouseId) } : {}),
+    })
+  ) {
+    return fail("forbidden");
+  }
   if (!product) return fail("product_not_found");
   if (movesToday >= DAILY_MOVEMENTS) return fail("daily_limit");
 
@@ -268,6 +312,13 @@ export async function recordMovement(companyId: string, input: MovementFormInput
       await applyDeltas(tx, product.id, plan.deltas, input.kind as MoveKind);
       return created;
     });
+    await logCompanyAction({
+      companyId,
+      actorUserId: userId,
+      action: "MOVEMENT_RECORDED",
+      subject: product.slug,
+      meta: { kind: input.kind, qty, status: plan.status },
+    });
     revalidatePath(`/[locale]/cabinet/companies/${companyId}/warehouses`, "page");
     revalidatePath(`/[locale]/product/${product.slug}`, "page");
     return { ok: true as const, id: movement.id, status: plan.status };
@@ -281,13 +332,17 @@ export async function recordMovement(companyId: string, input: MovementFormInput
 export async function receiveMovement(companyId: string, movementId: string) {
   const userId = await requireUser();
   if (!userId) return fail("unauth");
-  if (!canWrite(await editorCompany(companyId, userId))) return fail("forbidden");
+  const gate = await editorCompany(companyId, userId);
+  if (!canWrite(gate, "warehouses")) return fail("forbidden");
 
   const movement = await prisma.stockMovement.findFirst({
     where: { id: movementId, companyId },
     select: { id: true, status: true, qty: true, productId: true, fromWarehouseId: true, toWarehouseId: true },
   });
   if (!movement) return fail("not_found");
+  if (!(await scopedWarehouses(gate!, [movement.fromWarehouseId, movement.toWarehouseId].filter((x): x is string => Boolean(x))))) {
+    return fail("forbidden");
+  }
 
   const plan = receivePlan({
     status: movement.status,
@@ -309,6 +364,7 @@ export async function receiveMovement(companyId: string, movementId: string) {
   });
   if (!applied) return fail("not_in_transit");
 
+  await logCompanyAction({ companyId, actorUserId: userId, action: "MOVEMENT_RECEIVED", subject: movementId });
   revalidatePath(`/[locale]/cabinet/companies/${companyId}/warehouses`, "page");
   return { ok: true as const };
 }
@@ -317,13 +373,17 @@ export async function receiveMovement(companyId: string, movementId: string) {
 export async function cancelMovement(companyId: string, movementId: string, reason: string) {
   const userId = await requireUser();
   if (!userId) return fail("unauth");
-  if (!canWrite(await editorCompany(companyId, userId))) return fail("forbidden");
+  const gate = await editorCompany(companyId, userId);
+  if (!canWrite(gate, "warehouses")) return fail("forbidden");
 
   const movement = await prisma.stockMovement.findFirst({
     where: { id: movementId, companyId },
     select: { id: true, status: true, qty: true, productId: true, fromWarehouseId: true, toWarehouseId: true, kind: true },
   });
   if (!movement) return fail("not_found");
+  if (!(await scopedWarehouses(gate!, [movement.fromWarehouseId, movement.toWarehouseId].filter((x): x is string => Boolean(x))))) {
+    return fail("forbidden");
+  }
   const note = (reason ?? "").trim();
   if (note.length < 3) return fail("reason_required");
 
@@ -359,6 +419,7 @@ export async function cancelMovement(companyId: string, movementId: string, reas
   });
   if (!applied) return fail("not_cancellable");
 
+  await logCompanyAction({ companyId, actorUserId: userId, action: "MOVEMENT_CANCELLED", subject: movementId, meta: { reason: note } });
   revalidatePath(`/[locale]/cabinet/companies/${companyId}/warehouses`, "page");
   return { ok: true as const };
 }

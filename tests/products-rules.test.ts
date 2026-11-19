@@ -14,7 +14,7 @@ const listedCompany = {
   status: "APPROVED" as const,
   suspendedAt: null,
   deletedAt: null,
-  role: "EDITOR" as const,
+  permissions: { products: "EDIT" as const },
 };
 const freeProduct = { ownerCompanyId: null, suspendedAt: null, mergedIntoId: null, deletedAt: null };
 
@@ -36,7 +36,7 @@ describe("editKind", () => {
   });
 
   it("refuses a viewer and a stranger", () => {
-    expect(editKind(freeProduct, { ...listedCompany, role: "VIEWER" })).toBe("forbidden");
+    expect(editKind(freeProduct, { ...listedCompany, permissions: { products: "VIEW" } })).toBe("forbidden");
     expect(editKind(freeProduct, null)).toBe("forbidden");
   });
 

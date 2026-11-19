@@ -10,11 +10,16 @@ export async function MembersSection({
   viewerId,
   canManage,
   viewerRole,
+  teamRoles = [],
+  points = [],
 }: {
   companyId: string;
   viewerId: string;
   canManage: boolean;
   viewerRole: CompanyRole | null;
+  /// Свои роли предприятия (слайс BE) и точки, из которых собирается участок.
+  teamRoles?: { id: string; name: string }[];
+  points?: { id: string; name: string }[];
 }) {
   const t = await getTranslations("business.members");
   const members = await prisma.companyMember.findMany({
@@ -22,6 +27,7 @@ export async function MembersSection({
     orderBy: [{ role: "asc" }, { createdAt: "asc" }],
     include: {
       user: { select: { id: true, username: true, email: true, firstName: true, lastName: true } },
+      points: { select: { pointId: true } },
     },
   });
 
@@ -67,6 +73,10 @@ export async function MembersSection({
               handle={m.user.username ?? m.user.email ?? null}
               role={m.role}
               canManage={canManage}
+              teamRoles={teamRoles}
+              teamRoleId={m.roleId}
+              points={points}
+              memberPointIds={m.points.map((p) => p.pointId)}
             />
           </li>
         ))}

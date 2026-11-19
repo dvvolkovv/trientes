@@ -7,6 +7,8 @@ import { ensureCase } from "@/lib/cases/ensure";
 import { slugCandidates, slugify } from "@/lib/slugify";
 import { parseGtin } from "@/lib/products/gtin";
 import { editorCompany } from "@/lib/products/editor-company";
+import { logCompanyAction } from "@/lib/company-team/journal";
+import { can } from "@/lib/company-team/permissions";
 import {
   DAILY_EDITS,
   DAILY_PRODUCTS,
@@ -101,6 +103,7 @@ export async function createProduct(companyId: string, input: ProductInput) {
     data: { productId: product.id, companyId, userId, field: "created", after: { name: v.data.name } },
   });
 
+  await logCompanyAction({ companyId, actorUserId: userId, action: "PRODUCT_CREATED", subject: v.data.name, meta: { slug: product.slug } });
   revalidatePath("/[locale]/products", "page");
   return { ok: true as const, id: product.id, slug: product.slug };
 }
@@ -145,6 +148,13 @@ export async function updateProduct(companyId: string, productId: string, input:
       },
       select: { id: true },
     });
+    await logCompanyAction({
+      companyId,
+      actorUserId: userId,
+      action: "PRODUCT_UPDATED",
+      subject: product.name,
+      meta: { kind, fields: changes.map((c) => c.field) },
+    });
     return { ok: true as const, changed: changes.length, kind, revisionId: revision.id };
   }
 
@@ -154,6 +164,13 @@ export async function updateProduct(companyId: string, productId: string, input:
   if (!withinDailyLimit(editsToday, DAILY_EDITS)) return fail("daily_limit");
 
   await applyFields(productId, companyId, userId, changes, null);
+  await logCompanyAction({
+    companyId,
+    actorUserId: userId,
+    action: "PRODUCT_UPDATED",
+    subject: product.name,
+    meta: { kind, fields: changes.map((c) => c.field) },
+  });
   revalidatePath(`/[locale]/product/${product.slug}`, "page");
   return { ok: true as const, changed: changes.length, kind };
 }
@@ -207,6 +224,7 @@ export async function revertProductEdit(companyId: string, editId: string) {
 
   const patch = revertPatch(edit);
   await applyFields(edit.productId, companyId, userId, [{ field: patch.field, before: edit.after, after: patch.after }], edit.id);
+  await logCompanyAction({ companyId, actorUserId: userId, action: "PRODUCT_EDIT_REVERTED", subject: product.name, meta: { field: patch.field } });
   revalidatePath(`/[locale]/product/${product.slug}`, "page");
   return { ok: true as const };
 }
@@ -217,7 +235,7 @@ export async function submitProductClaim(companyId: string, productId: string, e
   if (!userId) return fail("unauth");
   const company = await editorCompany(companyId, userId);
   if (!company || company.status !== "APPROVED" || company.suspendedAt || company.deletedAt) return fail("forbidden");
-  if (company.role === "VIEWER") return fail("forbidden");
+  if (!can(company.permissions, "products", "EDIT")) return fail("forbidden");
 
   const product = await prisma.product.findFirst({ where: { id: productId, deletedAt: null } });
   if (!product) return fail("not_found");
@@ -244,6 +262,7 @@ export async function submitProductClaim(companyId: string, productId: string, e
     title: `${product.name} — ${company.displayName}`,
     applicantUserId: userId,
   });
+  await logCompanyAction({ companyId, actorUserId: userId, action: "PRODUCT_CLAIM_SUBMITTED", subject: product.name });
   return { ok: true as const, id: claim.id };
 }
 
@@ -274,6 +293,7 @@ export async function decideRevision(companyId: string, revisionId: string, acce
       where: { id: revisionId },
       data: { status: "REJECTED", decidedById: userId, decidedAt: new Date(), reason: note },
     });
+    await logCompanyAction({ companyId, actorUserId: userId, action: "PRODUCT_REVISION_DECIDED", subject: product.name, meta: { accepted: false, reason: note } });
     return { ok: true as const, applied: 0 };
   }
 
@@ -288,6 +308,7 @@ export async function decideRevision(companyId: string, revisionId: string, acce
     where: { id: revisionId },
     data: { status: "ACCEPTED", decidedById: userId, decidedAt: new Date() },
   });
+  await logCompanyAction({ companyId, actorUserId: userId, action: "PRODUCT_REVISION_DECIDED", subject: product.name, meta: { accepted: true, applied: changes.length } });
   revalidatePath(`/[locale]/product/${product.slug}`, "page");
   return { ok: true as const, applied: changes.length };
 }
@@ -304,11 +325,12 @@ export async function withdrawRevision(companyId: string, revisionId: string) {
   if (revision.companyId !== companyId) return fail("forbidden");
   if (revision.status !== "PENDING") return fail("not_pending");
   const company = await editorCompany(companyId, userId);
-  if (!company || company.role === "VIEWER") return fail("forbidden");
+  if (!company || !can(company.permissions, "products", "EDIT")) return fail("forbidden");
 
   await prisma.productRevision.update({
     where: { id: revisionId },
     data: { status: "WITHDRAWN", decidedAt: new Date() },
   });
+  await logCompanyAction({ companyId, actorUserId: userId, action: "PRODUCT_REVISION_WITHDRAWN", subject: revisionId });
   return { ok: true as const };
 }

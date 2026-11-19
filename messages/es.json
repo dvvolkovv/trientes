@@ -1479,7 +1479,10 @@
         "invalid": "Rol inválido.",
         "user_not_found": "Usuario no encontrado.",
         "self": "No puedes añadirte a ti mismo.",
-        "last_owner": "Debe quedar al menos un propietario."
+        "last_owner": "Debe quedar al menos un propietario.",
+        "not_found": "Miembro no encontrado.",
+        "owner_target": "El acceso del propietario no es configurable",
+        "role_not_found": "Ese rol ya no existe"
       },
       "invites": {
         "title": "Enlace de invitación",
@@ -1588,7 +1591,9 @@
     },
     "productsLink": "Productos",
     "warehousesLink": "Almacenes",
-    "loyaltyLink": "Reembolso"
+    "loyaltyLink": "Reembolso",
+    "teamLink": "Equipo",
+    "journalLink": "Registro de actividad"
   },
   "cabinet": {
     "kicker": "Sección · Panel",
@@ -3640,7 +3645,8 @@
       "date_invalid": "Esa fecha no se puede leer.",
       "not_in_transit": "Estas mercancías ya no están en camino.",
       "not_cancellable": "Lo que ya llegó no se puede cancelar: devuélvelo con una salida o una corrección.",
-      "failed": "No se pudo guardar."
+      "failed": "No se pudo guardar.",
+      "point_forbidden": "Solo tienes acceso a tus propios puntos de venta: coloca la estantería en uno de ellos."
     }
   },
   "loyalty": {
@@ -3689,6 +3695,107 @@
       "forbidden": "Tu empresa no puede cambiar las tasas ahora mismo.",
       "unauth": "Por favor, vuelve a iniciar sesión.",
       "failed": "No se pudo guardar."
+    }
+  },
+  "cabinetTeam": {
+    "title": "Equipo y acceso",
+    "subtitle": "Invita a personas, crea roles para tu comercio y limita el acceso a puntos de venta específicos.",
+    "journalLink": "Abrir el registro de actividad →",
+    "roles": {
+      "title": "Roles",
+      "subtitle": "Un rol es un conjunto de permisos por sección del panel. Comienza con una plantilla y marca lo que necesites.",
+      "empty": "Aún no hay roles — tu equipo usa los roles básicos de propietario/editor/visor.",
+      "newTitle": "Nuevo rol",
+      "editTitle": "Editar rol",
+      "name": "Nombre del rol",
+      "namePlaceholder": "Encargado de almacén",
+      "template": "Empezar desde una plantilla",
+      "templates": {
+        "manager": "Gerente",
+        "stock": "Encargado de almacén",
+        "marketing": "Especialista en marketing",
+        "observer": "Observador"
+      },
+      "sections": {
+        "card": "Ficha de la tienda",
+        "points": "Puntos en el mapa",
+        "products": "Productos",
+        "warehouses": "Almacenes y existencias",
+        "pricing": "Precio y cashback"
+      },
+      "levels": {
+        "NONE": "Sin acceso",
+        "VIEW": "Ver",
+        "EDIT": "Editar"
+      },
+      "inUse": "Personas con este rol: {count}",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "confirmDelete": "¿Eliminar el rol \"{name}\"? {members} personas pasarán a acceso solo de lectura.",
+      "save": "Guardar rol",
+      "cancel": "Cancelar",
+      "errors": {
+        "unauth": "Inicia sesión primero.",
+        "forbidden": "Solo propietarios.",
+        "name_invalid": "Asigna al rol un nombre de 2 a 40 caracteres.",
+        "name_taken": "Ya existe un rol con este nombre.",
+        "permissions_empty": "Marca al menos un permiso — un rol sin permisos oculta por completo el panel.",
+        "too_many": "Demasiados roles — elimina uno primero.",
+        "not_found": "Ese rol ya no existe."
+      }
+    },
+    "scope": {
+      "title": "Puntos de venta",
+      "all": "Acceso: todos los puntos",
+      "some": "Acceso: {count} punto(s)",
+      "hint": "No selecciones nada para dar acceso a todos los puntos. Con puntos seleccionados, la persona solo ve esos puntos y los almacenes ubicados en ellos — un almacén central queda fuera de su alcance.",
+      "save": "Guardar puntos",
+      "errors": {
+        "unauth": "Inicia sesión primero.",
+        "forbidden": "Solo propietarios.",
+        "not_found": "Miembro no encontrado.",
+        "owner_target": "Un propietario no está limitado a puntos.",
+        "point_unknown": "Uno de los puntos no pertenece a esta empresa."
+      }
+    }
+  },
+  "cabinetJournal": {
+    "title": "Registro de actividad",
+    "subtitle": "Quién cambió qué y cuándo — las últimas {count} entradas.",
+    "empty": "Nada registrado aún.",
+    "goneActor": "miembro eliminado",
+    "actions": {
+      "PROFILE_SAVED": "Ficha de la tienda guardada",
+      "POINT_SUBMITTED": "Punto enviado",
+      "POINT_UPDATED": "Punto editado",
+      "POINT_CLAIMED": "Punto de BTC Map reclamado",
+      "PRODUCT_CREATED": "Producto creado",
+      "PRODUCT_UPDATED": "Producto editado",
+      "PRODUCT_EDIT_REVERTED": "Edición de producto revertida",
+      "PRODUCT_CLAIM_SUBMITTED": "Reclamación de fabricante enviada",
+      "PRODUCT_REVISION_DECIDED": "Edición sugerida decidida",
+      "PRODUCT_REVISION_WITHDRAWN": "Edición sugerida retirada",
+      "OFFER_SAVED": "Oferta guardada",
+      "OFFER_STATUS_SET": "Oferta pausada o reanudada",
+      "OFFER_DELETED": "Oferta eliminada",
+      "CASHBACK_BASE_SET": "Tasa de cashback en todo establecida",
+      "CASHBACK_CATEGORY_SET": "Tasa de cashback por categoría establecida",
+      "WAREHOUSE_CREATED": "Almacén creado",
+      "WAREHOUSE_RENAMED": "Almacén renombrado",
+      "WAREHOUSE_ARCHIVED": "Almacén archivado",
+      "WAREHOUSE_RESTORED": "Almacén restaurado",
+      "MOVEMENT_RECORDED": "Movimiento de inventario registrado",
+      "MOVEMENT_RECEIVED": "Envío recibido",
+      "MOVEMENT_CANCELLED": "Movimiento cancelado",
+      "MEMBER_ADDED": "Miembro del equipo añadido",
+      "MEMBER_ROLE_SET": "Rol del miembro del equipo establecido",
+      "MEMBER_POINTS_SET": "Puntos del miembro del equipo establecidos",
+      "MEMBER_REMOVED": "Miembro del equipo eliminado",
+      "TEAM_ROLE_SAVED": "Rol guardado",
+      "TEAM_ROLE_DELETED": "Rol eliminado",
+      "INVITE_CREATED": "Enlace de invitación creado",
+      "INVITE_REVOKED": "Enlace de invitación revocado",
+      "INVITE_ACCEPTED": "Enlace de invitación aceptado"
     }
   }
 }

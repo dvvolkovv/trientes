@@ -1479,7 +1479,10 @@
         "invalid": "Rôle invalide.",
         "user_not_found": "Utilisateur introuvable.",
         "self": "Tu ne peux pas t'ajouter toi-même.",
-        "last_owner": "Au moins un propriétaire est requis."
+        "last_owner": "Au moins un propriétaire est requis.",
+        "not_found": "Membre introuvable.",
+        "owner_target": "L'accès d'un propriétaire n'est pas configurable.",
+        "role_not_found": "Ce rôle n'existe plus."
       },
       "invites": {
         "title": "Lien d'invitation",
@@ -1588,7 +1591,9 @@
     },
     "productsLink": "Produits",
     "warehousesLink": "Entrepôts",
-    "loyaltyLink": "Cashback"
+    "loyaltyLink": "Cashback",
+    "teamLink": "Équipe",
+    "journalLink": "Journal d'activité"
   },
   "cabinet": {
     "kicker": "Section · Espace personnel",
@@ -3640,7 +3645,8 @@
       "date_invalid": "Cette date est illisible.",
       "not_in_transit": "Ces marchandises ne sont plus en route.",
       "not_cancellable": "Ce qui est déjà arrivé ne peut pas être annulé : retournez-le avec un incident ou une correction.",
-      "failed": "Impossible d'enregistrer."
+      "failed": "Impossible d'enregistrer.",
+      "point_forbidden": "Vous n'avez accès qu'à vos propres points de vente : placez l'étagère sur l'un d'eux."
     }
   },
   "loyalty": {
@@ -3689,6 +3695,107 @@
       "forbidden": "Votre entreprise ne peut pas modifier les taux pour le moment.",
       "unauth": "Veuillez vous reconnecter.",
       "failed": "Impossible d'enregistrer."
+    }
+  },
+  "cabinetTeam": {
+    "title": "Équipe et accès",
+    "subtitle": "Invitez des personnes, créez des rôles pour votre commerce et limitez l'accès à des points de vente spécifiques.",
+    "journalLink": "Ouvrir le journal d'activité →",
+    "roles": {
+      "title": "Rôles",
+      "subtitle": "Un rôle est un ensemble d'autorisations par section de l'espace. Commencez à partir d'un modèle, puis cochez ce dont vous avez besoin.",
+      "empty": "Pas encore de rôles — votre équipe utilise les rôles de base propriétaire/éditeur/lecteur.",
+      "newTitle": "Nouveau rôle",
+      "editTitle": "Modifier le rôle",
+      "name": "Nom du rôle",
+      "namePlaceholder": "Magasinier",
+      "template": "Commencer à partir d'un modèle",
+      "templates": {
+        "manager": "Gestionnaire",
+        "stock": "Magasinier",
+        "marketing": "Responsable marketing",
+        "observer": "Observateur"
+      },
+      "sections": {
+        "card": "Fiche boutique",
+        "points": "Points sur la carte",
+        "products": "Produits",
+        "warehouses": "Entrepôts et stock",
+        "pricing": "Prix et cashback"
+      },
+      "levels": {
+        "NONE": "Aucun accès",
+        "VIEW": "Voir",
+        "EDIT": "Modifier"
+      },
+      "inUse": "Personnes avec ce rôle : {count}",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "confirmDelete": "Supprimer le rôle « {name} » ? {members} personnes passeront à un accès en lecture seule.",
+      "save": "Enregistrer le rôle",
+      "cancel": "Annuler",
+      "errors": {
+        "unauth": "Connectez-vous d'abord.",
+        "forbidden": "Réservé aux propriétaires.",
+        "name_invalid": "Donnez au rôle un nom de 2 à 40 caractères.",
+        "name_taken": "Un rôle portant ce nom existe déjà.",
+        "permissions_empty": "Cochez au moins une autorisation — un rôle sans autorisations masque entièrement l'espace.",
+        "too_many": "Trop de rôles — supprimez-en un d'abord.",
+        "not_found": "Ce rôle n'existe plus."
+      }
+    },
+    "scope": {
+      "title": "Points de vente",
+      "all": "Accès : tous les points",
+      "some": "Accès : {count} point(s)",
+      "hint": "Ne rien sélectionner pour donner l'accès à tous les points. Avec des points sélectionnés, la personne ne voit que ces points et les entrepôts qui s'y trouvent — un entrepôt central reste inaccessible",
+      "save": "Enregistrer les points",
+      "errors": {
+        "unauth": "Connectez-vous d'abord.",
+        "forbidden": "Propriétaires uniquement.",
+        "not_found": "Membre introuvable.",
+        "owner_target": "Un propriétaire n'est pas limité aux points.",
+        "point_unknown": "L'un des points n'appartient pas à cette entreprise."
+      }
+    }
+  },
+  "cabinetJournal": {
+    "title": "Journal d'activité",
+    "subtitle": "Qui a changé quoi et quand — les {count} dernières entrées.",
+    "empty": "Rien n'a encore été enregistré.",
+    "goneActor": "membre supprimé",
+    "actions": {
+      "PROFILE_SAVED": "Fiche boutique enregistrée",
+      "POINT_SUBMITTED": "Point soumis",
+      "POINT_UPDATED": "Point modifié",
+      "POINT_CLAIMED": "Point BTC Map revendiqué",
+      "PRODUCT_CREATED": "Produit créé",
+      "PRODUCT_UPDATED": "Produit modifié",
+      "PRODUCT_EDIT_REVERTED": "Modification de produit annulée",
+      "PRODUCT_CLAIM_SUBMITTED": "Revendication de fabricant soumise",
+      "PRODUCT_REVISION_DECIDED": "Proposition de modification décidée",
+      "PRODUCT_REVISION_WITHDRAWN": "Proposition de modification retirée",
+      "OFFER_SAVED": "Offre enregistrée",
+      "OFFER_STATUS_SET": "Offre mise en pause ou reprise",
+      "OFFER_DELETED": "Offre supprimée",
+      "CASHBACK_BASE_SET": "Taux de cashback sur tout défini",
+      "CASHBACK_CATEGORY_SET": "Taux de cashback de catégorie défini",
+      "WAREHOUSE_CREATED": "Entrepôt créé",
+      "WAREHOUSE_RENAMED": "Entrepôt renommé",
+      "WAREHOUSE_ARCHIVED": "Entrepôt archivé",
+      "WAREHOUSE_RESTORED": "Entrepôt restauré",
+      "MOVEMENT_RECORDED": "Mouvement de stock enregistré",
+      "MOVEMENT_RECEIVED": "Livraison reçue",
+      "MOVEMENT_CANCELLED": "Mouvement annulé",
+      "MEMBER_ADDED": "Membre d'équipe ajouté",
+      "MEMBER_ROLE_SET": "Rôle du membre d'équipe défini",
+      "MEMBER_POINTS_SET": "Points du membre d'équipe définis",
+      "MEMBER_REMOVED": "Membre d'équipe supprimé",
+      "TEAM_ROLE_SAVED": "Rôle enregistré",
+      "TEAM_ROLE_DELETED": "Rôle supprimé",
+      "INVITE_CREATED": "Lien d'invitation créé",
+      "INVITE_REVOKED": "Lien d'invitation révoqué",
+      "INVITE_ACCEPTED": "Lien d'invitation accepté"
     }
   }
 }

@@ -3,6 +3,8 @@
  * готов ли он к токенизации и что принимается в поля. Спека
  * `docs/superpowers/specs/2026-11-18-product-passport-catalog-design.md`, разделы 4, 6, 7.
  */
+import { can, type TeamPermissions } from "@/lib/company-team/permissions";
+
 
 export const MAX_PHOTOS = 8;
 export const MAX_ATTRS = 50;
@@ -28,7 +30,9 @@ export type EditorCompany = {
   status: "PENDING" | "APPROVED" | "REJECTED";
   suspendedAt: Date | null;
   deletedAt: Date | null;
-  role: "OWNER" | "EDITOR" | "VIEWER";
+  /// Права того, кто нажал, по разделам кабинета (слайс BE). Прежде здесь стояла роль
+  /// предприятия, и `EDITOR` правил всё: и паспорт, и цену, и остаток.
+  permissions: TeamPermissions;
 };
 
 /**
@@ -43,7 +47,7 @@ export function editKind(product: ProductGate, company: EditorCompany | null): E
   // защита паспорта вместо очереди на каждую правку.
   if (company.status !== "APPROVED") return "forbidden";
   if (company.suspendedAt || company.deletedAt) return "forbidden";
-  if (company.role === "VIEWER") return "forbidden";
+  if (!can(company.permissions, "products", "EDIT")) return "forbidden";
   // Снятый надзором возвращает сотрудник, а не правка автора; у слитого правят главный.
   if (product.suspendedAt || product.mergedIntoId || product.deletedAt) return "forbidden";
   if (!product.ownerCompanyId) return "direct";

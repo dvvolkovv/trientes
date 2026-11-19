@@ -1479,7 +1479,10 @@
         "invalid": "Neplatná rola.",
         "user_not_found": "Používateľ sa nenašiel.",
         "self": "Nemôžete pridať sami seba.",
-        "last_owner": "Musí byť aspoň jeden vlastník."
+        "last_owner": "Musí byť aspoň jeden vlastník.",
+        "not_found": "Člen sa nenašiel.",
+        "owner_target": "Prístup vlastníka nie je možné konfigurovať.",
+        "role_not_found": "Táto rola už neexistuje."
       },
       "invites": {
         "title": "Pozvánkový odkaz",
@@ -1588,7 +1591,9 @@
     },
     "productsLink": "Produkty",
     "warehousesLink": "Sklady",
-    "loyaltyLink": "Cashback"
+    "loyaltyLink": "Cashback",
+    "teamLink": "Tím",
+    "journalLink": "Denník aktivít"
   },
   "cabinet": {
     "kicker": "Sekcia · Profil",
@@ -3640,7 +3645,8 @@
       "date_invalid": "Tento dátum sa nedá prečítať.",
       "not_in_transit": "Tento tovar už nie je na ceste.",
       "not_cancellable": "Čo už dorazilo, sa nedá zrušiť: vráťte to s chybou alebo opravou.",
-      "failed": "Nepodarilo sa uložiť."
+      "failed": "Nepodarilo sa uložiť.",
+      "point_forbidden": "Máte prístup iba k vlastným miestam predaja: umiestnite policu na jedno z nich."
     }
   },
   "loyalty": {
@@ -3689,6 +3695,107 @@
       "forbidden": "Vaša spoločnosť teraz nemôže meniť sadzby.",
       "unauth": "Prosím, prihláste sa znova.",
       "failed": "Nepodarilo sa uložiť."
+    }
+  },
+  "cabinetTeam": {
+    "title": "Tím a prístupy",
+    "subtitle": "Pozvite ľudí, vytvorte roly pre váš obchod a obmedzte prístup k konkrétnym miestam predaja.",
+    "journalLink": "Otvoriť denník aktivít →",
+    "roles": {
+      "title": "Roly",
+      "subtitle": "Rola je súbor povolení pre sekciu profilu. Začnite zo šablóny, potom zaškrtnite, čo potrebujete.",
+      "empty": "Zatiaľ žiadne roly — váš tím používa základné roly vlastník/editor/pozorovateľ.",
+      "newTitle": "Nová rola",
+      "editTitle": "Upraviť rolu",
+      "name": "Názov roly",
+      "namePlaceholder": "Skladník",
+      "template": "Začať zo šablóny",
+      "templates": {
+        "manager": "Manažér",
+        "stock": "Skladník",
+        "marketing": "Marketér",
+        "observer": "Pozorovateľ"
+      },
+      "sections": {
+        "card": "Karta obchodu",
+        "points": "Miesta na mape",
+        "products": "Produkty",
+        "warehouses": "Sklady a zásoby",
+        "pricing": "Cena a cashback"
+      },
+      "levels": {
+        "NONE": "Bez prístupu",
+        "VIEW": "Zobraziť",
+        "EDIT": "Upraviť"
+      },
+      "inUse": "Ľudia s touto rolou: {count}",
+      "edit": "Upraviť",
+      "delete": "Odstrániť",
+      "confirmDelete": "Odstrániť rolu „{name}“? {members} ľudí prejde na prístup iba na zobrazenie.",
+      "save": "Uložiť rolu",
+      "cancel": "Zrušiť",
+      "errors": {
+        "unauth": "Najprv sa prihláste.",
+        "forbidden": "Len vlastníci.",
+        "name_invalid": "Zadajte názov roly s dĺžkou 2 až 40 znakov.",
+        "name_taken": "Rola s týmto názvom už existuje.",
+        "permissions_empty": "Zaškrtnite aspoň jedno povolenie — rola bez povolení úplne skryje profil.",
+        "too_many": "Príliš veľa rolí — najprv jednu odstráňte.",
+        "not_found": "Táto rola už neexistuje."
+      }
+    },
+    "scope": {
+      "title": "Predajné miesta",
+      "all": "Prístup: všetky miesta",
+      "some": "Prístup: {count} miest",
+      "hint": "Nezvoľte nič, aby ste dali prístup ku každému miestu. Pri zvolených miestach osoba uvidí iba tieto miesta a sklady, ktoré na nich stoja — centrálny sklad zostane nedostupný.",
+      "save": "Uložiť miesta",
+      "errors": {
+        "unauth": "Najprv sa prihláste.",
+        "forbidden": "Len vlastníci.",
+        "not_found": "Člen sa nenašiel.",
+        "owner_target": "Vlastník nie je obmedzený na miesta",
+        "point_unknown": "Jedno z miest nepatrí tejto spoločnosti"
+      }
+    }
+  },
+  "cabinetJournal": {
+    "title": "Záznam aktivít",
+    "subtitle": "Kto čo a kedy zmenil — posledných {count} záznamov.",
+    "empty": "Zatiaľ nič zaznamenané.",
+    "goneActor": "odstránený člen",
+    "actions": {
+      "PROFILE_SAVED": "Karta obchodu uložená",
+      "POINT_SUBMITTED": "Miesto odoslané",
+      "POINT_UPDATED": "Miesto upravené",
+      "POINT_CLAIMED": "Miesto BTC Map nárokované",
+      "PRODUCT_CREATED": "Produkt vytvorený",
+      "PRODUCT_UPDATED": "Produkt upravený",
+      "PRODUCT_EDIT_REVERTED": "Úprava produktu vrátená",
+      "PRODUCT_CLAIM_SUBMITTED": "Nárok výrobcu odoslaný",
+      "PRODUCT_REVISION_DECIDED": "Navrhovaná úprava rozhodnutá",
+      "PRODUCT_REVISION_WITHDRAWN": "Navrhovaná úprava stiahnutá",
+      "OFFER_SAVED": "Ponuka uložená",
+      "OFFER_STATUS_SET": "Ponuka pozastavená alebo obnovená",
+      "OFFER_DELETED": "Ponuka odstránená",
+      "CASHBACK_BASE_SET": "Sadzba cashbacku na všetko nastavená",
+      "CASHBACK_CATEGORY_SET": "Sadzba cashbacku pre kategóriu nastavená",
+      "WAREHOUSE_CREATED": "Sklad vytvorený",
+      "WAREHOUSE_RENAMED": "Sklad premenovaný",
+      "WAREHOUSE_ARCHIVED": "Sklad archivovaný",
+      "WAREHOUSE_RESTORED": "Sklad obnovený",
+      "MOVEMENT_RECORDED": "Pohyb zásob zaznamenaný",
+      "MOVEMENT_RECEIVED": "Dodávka prijatá",
+      "MOVEMENT_CANCELLED": "Pohyb zrušený",
+      "MEMBER_ADDED": "Člen tímu pridaný",
+      "MEMBER_ROLE_SET": "Rola člena tímu nastavená",
+      "MEMBER_POINTS_SET": "Miesta člena tímu nastavené",
+      "MEMBER_REMOVED": "Člen tímu odstránený",
+      "TEAM_ROLE_SAVED": "Rola uložená",
+      "TEAM_ROLE_DELETED": "Rola odstránená",
+      "INVITE_CREATED": "Pozvánkový odkaz vytvorený",
+      "INVITE_REVOKED": "Pozvánkový odkaz zrušený",
+      "INVITE_ACCEPTED": "Pozvánkový odkaz prijatý"
     }
   }
 }

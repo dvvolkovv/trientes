@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { editorCompany } from "@/lib/products/editor-company";
+import { logCompanyAction } from "@/lib/company-team/journal";
 import { ensureCase } from "@/lib/cases/ensure";
 import { validateCompanyPoint } from "@/lib/company";
 import { NOT_DELETED } from "@/lib/soft-delete";
@@ -29,14 +31,9 @@ export async function claimOsmPoint(companyId: string, osmKey: string): Promise<
   const userId = (session?.user as { id?: string } | undefined)?.id;
   if (!userId) return { ok: false, reason: "unauth" };
 
-  // Право то же, что у подачи новой точки: владелец или редактор предприятия.
-  const member = await prisma.companyMember.findUnique({
-    where: { companyId_userId: { companyId, userId } },
-    select: { role: true },
-  });
-  if (member?.role !== "OWNER" && member?.role !== "EDITOR") {
-    return { ok: false, reason: "not_found" };
-  }
+  // Право то же, что у подачи новой точки: раздел «точки» на правку (слайс BE).
+  const gate = await editorCompany(companyId, userId);
+  if (!gate || gate.permissions.points !== "EDIT") return { ok: false, reason: "not_found" };
   const company = await prisma.company.findFirst({
     where: { id: companyId, ...NOT_DELETED },
     select: { id: true, ownerUserId: true },
@@ -122,6 +119,7 @@ export async function claimOsmPoint(companyId: string, osmKey: string): Promise<
     title: point.name,
     applicantUserId: company.ownerUserId,
   });
+  await logCompanyAction({ companyId, actorUserId: userId, action: "POINT_CLAIMED", subject: point.name, meta: { osmId: osmKey } });
   revalidatePath("/", "layout");
   return { ok: true, pointId: point.id };
 }

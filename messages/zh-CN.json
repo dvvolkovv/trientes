@@ -1479,7 +1479,10 @@
         "invalid": "角色无效。",
         "user_not_found": "未找到用户。",
         "self": "不能添加自己。",
-        "last_owner": "至少需要一个所有者。"
+        "last_owner": "至少需要一个所有者。",
+        "not_found": "未找到成员。",
+        "owner_target": "所有者的访问权限不可配置。",
+        "role_not_found": "该角色已不存在。"
       },
       "invites": {
         "title": "邀请链接",
@@ -1588,7 +1591,9 @@
     },
     "productsLink": "产品",
     "warehousesLink": "仓库",
-    "loyaltyLink": "返现"
+    "loyaltyLink": "返现",
+    "teamLink": "团队",
+    "journalLink": "活动日志"
   },
   "cabinet": {
     "kicker": "板块 · 个人中心",
@@ -3640,7 +3645,8 @@
       "date_invalid": "无法读取该日期。",
       "not_in_transit": "这些货物已不在运输途中。",
       "not_cancellable": "已到货的不可取消：请通过问题或更正退回。",
-      "failed": "无法保存。"
+      "failed": "无法保存。",
+      "point_forbidden": "你只能访问你自己的门店：请将该货架放到其中一个门店下。"
     }
   },
   "loyalty": {
@@ -3689,6 +3695,107 @@
       "forbidden": "您的公司目前无法更改费率。",
       "unauth": "请重新登录。",
       "failed": "无法保存。"
+    }
+  },
+  "cabinetTeam": {
+    "title": "团队与访问",
+    "subtitle": "邀请成员，为你的业务构建角色，并将访问限制到特定门店。",
+    "journalLink": "打开活动日志 →",
+    "roles": {
+      "title": "角色",
+      "subtitle": "角色是针对控制台各部分的一组权限。先从模板开始，然后勾选所需项。",
+      "empty": "尚无自定义角色—你的团队正在使用基础的所有者/编辑者/查看者角色。",
+      "newTitle": "新建角色",
+      "editTitle": "编辑角色",
+      "name": "角色名称",
+      "namePlaceholder": "仓库管理员",
+      "template": "从模板开始",
+      "templates": {
+        "manager": "经理",
+        "stock": "仓库管理员",
+        "marketing": "营销人员",
+        "observer": "观察者"
+      },
+      "sections": {
+        "card": "店铺卡片",
+        "points": "地图上的门店",
+        "products": "商品",
+        "warehouses": "仓库与库存",
+        "pricing": "价格与返现"
+      },
+      "levels": {
+        "NONE": "无访问权限",
+        "VIEW": "查看",
+        "EDIT": "编辑"
+      },
+      "inUse": "拥有此角色的人员：{count}",
+      "edit": "编辑",
+      "delete": "删除",
+      "confirmDelete": "删除角色“{name}”？{members} 人将降为仅查看权限。",
+      "save": "保存角色",
+      "cancel": "取消",
+      "errors": {
+        "unauth": "请先登录。",
+        "forbidden": "仅限所有者。",
+        "name_invalid": "角色名称需为 2 到 40 个字符。",
+        "name_taken": "已存在同名角色。",
+        "permissions_empty": "至少勾选一项权限——没有权限的角色会使整个管理面板不可见。",
+        "too_many": "角色过多——请先删除一个。",
+        "not_found": "该角色已不存在。"
+      }
+    },
+    "scope": {
+      "title": "销售网点",
+      "all": "访问：全部网点",
+      "some": "访问：{count} 个网点",
+      "hint": "不选择任何项则可访问所有网点。选择了网点后，此人仅能看到这些网点及其上的仓库——中央仓库不可访问。",
+      "save": "保存网点",
+      "errors": {
+        "unauth": "请先登录。",
+        "forbidden": "仅限所有者。",
+        "not_found": "未找到成员。",
+        "owner_target": "所有者不受网点限制。",
+        "point_unknown": "有一个网点不属于该公司。"
+      }
+    }
+  },
+  "cabinetJournal": {
+    "title": "活动日志",
+    "subtitle": "谁在何时改了什么——最近 {count} 条记录。",
+    "empty": "尚无记录。",
+    "goneActor": "已删除成员",
+    "actions": {
+      "PROFILE_SAVED": "店铺卡片已保存",
+      "POINT_SUBMITTED": "网点已提交",
+      "POINT_UPDATED": "网点已编辑",
+      "POINT_CLAIMED": "已认领 BTC Map 网点",
+      "PRODUCT_CREATED": "商品已创建",
+      "PRODUCT_UPDATED": "商品已编辑",
+      "PRODUCT_EDIT_REVERTED": "商品编辑已回退",
+      "PRODUCT_CLAIM_SUBMITTED": "制造商认领已提交",
+      "PRODUCT_REVISION_DECIDED": "建议编辑已裁定",
+      "PRODUCT_REVISION_WITHDRAWN": "建议编辑已撤回",
+      "OFFER_SAVED": "报价已保存",
+      "OFFER_STATUS_SET": "报价已暂停或已恢复",
+      "OFFER_DELETED": "报价已移除",
+      "CASHBACK_BASE_SET": "全场返现比例已设置",
+      "CASHBACK_CATEGORY_SET": "分类返现比例已设置",
+      "WAREHOUSE_CREATED": "仓库已创建",
+      "WAREHOUSE_RENAMED": "仓库已重命名",
+      "WAREHOUSE_ARCHIVED": "仓库已归档",
+      "WAREHOUSE_RESTORED": "仓库已恢复",
+      "MOVEMENT_RECORDED": "库存变动已记录",
+      "MOVEMENT_RECEIVED": "货件已接收",
+      "MOVEMENT_CANCELLED": "库存变动已取消",
+      "MEMBER_ADDED": "已添加团队成员",
+      "MEMBER_ROLE_SET": "团队成员角色已设置",
+      "MEMBER_POINTS_SET": "团队成员积分已设置",
+      "MEMBER_REMOVED": "已移除团队成员",
+      "TEAM_ROLE_SAVED": "角色已保存",
+      "TEAM_ROLE_DELETED": "角色已删除",
+      "INVITE_CREATED": "邀请链接已创建",
+      "INVITE_REVOKED": "邀请链接已撤销",
+      "INVITE_ACCEPTED": "邀请链接已接受"
     }
   }
 }

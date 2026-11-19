@@ -1479,7 +1479,10 @@
         "invalid": "Geçersiz rol.",
         "user_not_found": "Kullanıcı bulunamadı.",
         "self": "Kendini ekleyemezsin.",
-        "last_owner": "En az bir sahip olmalı."
+        "last_owner": "En az bir sahip olmalı.",
+        "not_found": "Üye bulunamadı.",
+        "owner_target": "Bir sahibin erişimi yapılandırılamaz.",
+        "role_not_found": "Bu rol artık mevcut değil."
       },
       "invites": {
         "title": "Davet bağlantısı",
@@ -1588,7 +1591,9 @@
     },
     "productsLink": "Ürünler",
     "warehousesLink": "Depolar",
-    "loyaltyLink": "Nakit iade"
+    "loyaltyLink": "Nakit iade",
+    "teamLink": "Ekip",
+    "journalLink": "Etkinlik günlüğü"
   },
   "cabinet": {
     "kicker": "Bölüm · Kabin",
@@ -3640,7 +3645,8 @@
       "date_invalid": "Bu tarih okunamıyor.",
       "not_in_transit": "Bu mallar artık yolda değil.",
       "not_cancellable": "Zaten gelen iptal edilemez: bir çıkış işlemi veya düzeltme ile geri gönderin.",
-      "failed": "Kaydedilemedi."
+      "failed": "Kaydedilemedi.",
+      "point_forbidden": "Yalnızca kendi satış noktalarınıza erişiminiz var: rafı onlardan birine yerleştirin"
     }
   },
   "loyalty": {
@@ -3689,6 +3695,107 @@
       "forbidden": "Şirketiniz şu anda oranları değiştiremez.",
       "unauth": "Lütfen tekrar oturum açın.",
       "failed": "Kaydedilemedi."
+    }
+  },
+  "cabinetTeam": {
+    "title": "Ekip ve erişim",
+    "subtitle": "Kişileri davet edin, ticaretiniz için roller oluşturun ve erişimi belirli satış noktalarıyla sınırlayın.",
+    "journalLink": "Etkinlik günlüğünü aç →",
+    "roles": {
+      "title": "Roller",
+      "subtitle": "Rol, panelin her bölümü için bir izin kümesidir. Bir şablondan başlayın, ardından ihtiyacınız olanları işaretleyin.",
+      "empty": "Henüz rol yok — ekibiniz temel sahip/düzenleyici/izleyici rollerini kullanıyor.",
+      "newTitle": "Yeni rol",
+      "editTitle": "Rolü düzenle",
+      "name": "Rol adı",
+      "namePlaceholder": "Depo sorumlusu",
+      "template": "Şablondan başlayın",
+      "templates": {
+        "manager": "Yönetici",
+        "stock": "Depo sorumlusu",
+        "marketing": "Pazarlamacı",
+        "observer": "Gözlemci"
+      },
+      "sections": {
+        "card": "Mağaza kartı",
+        "points": "Haritadaki noktalar",
+        "products": "Ürünler",
+        "warehouses": "Depolar ve stok",
+        "pricing": "Fiyat ve cashback"
+      },
+      "levels": {
+        "NONE": "Erişim yok",
+        "VIEW": "Görüntüle",
+        "EDIT": "Düzenle"
+      },
+      "inUse": "Bu role sahip kişiler: {count}",
+      "edit": "Düzenle",
+      "delete": "Sil",
+      "confirmDelete": "Rol \"{name}\" silinsin mi? {members} kişi yalnızca görüntüleme erişimine düşecek.",
+      "save": "Rolü kaydet",
+      "cancel": "İptal",
+      "errors": {
+        "unauth": "Önce oturum açın.",
+        "forbidden": "Yalnızca sahipler.",
+        "name_invalid": "Role 2 ile 40 karakter arasında bir ad verin.",
+        "name_taken": "Bu adda bir rol zaten var.",
+        "permissions_empty": "En az bir izni işaretleyin — izin olmayan bir rol paneli tamamen gizler.",
+        "too_many": "Çok fazla rol var — önce birini silin.",
+        "not_found": "Bu rol artık mevcut değil."
+      }
+    },
+    "scope": {
+      "title": "Satış noktaları",
+      "all": "Erişim: tüm noktalar",
+      "some": "Erişim: {count} nokta",
+      "hint": "Hiçbirini seçmeyerek tüm noktalara erişim verin. Noktalar seçildiğinde, kişi yalnızca bu noktaları ve onlardaki depoları görür — merkezi bir depo erişim dışında kalır.",
+      "save": "Noktaları kaydet",
+      "errors": {
+        "unauth": "Önce oturum açın.",
+        "forbidden": "Yalnızca sahipler.",
+        "not_found": "Üye bulunamadı.",
+        "owner_target": "Bir sahip noktalarla sınırlı değildir.",
+        "point_unknown": "Noktalardan biri bu şirkete ait değil."
+      }
+    }
+  },
+  "cabinetJournal": {
+    "title": "Etkinlik günlüğü",
+    "subtitle": "Kim neyi ne zaman değiştirdi — son {count} kayıt.",
+    "empty": "Henüz bir şey kaydedilmedi.",
+    "goneActor": "silinmiş üye",
+    "actions": {
+      "PROFILE_SAVED": "Mağaza kartı kaydedildi",
+      "POINT_SUBMITTED": "Nokta gönderildi",
+      "POINT_UPDATED": "Nokta düzenlendi",
+      "POINT_CLAIMED": "BTC Map noktası talep edildi",
+      "PRODUCT_CREATED": "Ürün oluşturuldu",
+      "PRODUCT_UPDATED": "Ürün düzenlendi",
+      "PRODUCT_EDIT_REVERTED": "Ürün düzenlemesi geri alındı",
+      "PRODUCT_CLAIM_SUBMITTED": "Üretici talebi gönderildi",
+      "PRODUCT_REVISION_DECIDED": "Önerilen düzenleme karara bağlandı",
+      "PRODUCT_REVISION_WITHDRAWN": "Önerilen düzenleme geri çekildi",
+      "OFFER_SAVED": "Teklif kaydedildi",
+      "OFFER_STATUS_SET": "Teklif duraklatıldı veya devam ettirildi",
+      "OFFER_DELETED": "Teklif kaldırıldı",
+      "CASHBACK_BASE_SET": "Cashback oranı tüm ürünler için ayarlandı",
+      "CASHBACK_CATEGORY_SET": "Kategori cashback oranı ayarlandı",
+      "WAREHOUSE_CREATED": "Depo oluşturuldu",
+      "WAREHOUSE_RENAMED": "Depo yeniden adlandırıldı",
+      "WAREHOUSE_ARCHIVED": "Depo arşivlendi",
+      "WAREHOUSE_RESTORED": "Depo geri yüklendi",
+      "MOVEMENT_RECORDED": "Stok hareketi kaydedildi",
+      "MOVEMENT_RECEIVED": "Sevkiyat alındı",
+      "MOVEMENT_CANCELLED": "Hareket iptal edildi",
+      "MEMBER_ADDED": "Ekip üyesi eklendi",
+      "MEMBER_ROLE_SET": "Ekip üyesinin rolü ayarlandı",
+      "MEMBER_POINTS_SET": "Ekip üyesinin noktaları ayarlandı",
+      "MEMBER_REMOVED": "Takım üyesi kaldırıldı",
+      "TEAM_ROLE_SAVED": "Rol kaydedildi",
+      "TEAM_ROLE_DELETED": "Rol silindi",
+      "INVITE_CREATED": "Davet bağlantısı oluşturuldu",
+      "INVITE_REVOKED": "Davet bağlantısı iptal edildi",
+      "INVITE_ACCEPTED": "Davet bağlantısı kabul edildi"
     }
   }
 }

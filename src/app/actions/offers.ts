@@ -5,6 +5,7 @@ import { Prisma } from "@prisma/client";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { canWrite, editorCompany } from "@/lib/products/editor-company";
+import { logCompanyAction } from "@/lib/company-team/journal";
 import { validateOffer, type OfferInput } from "@/lib/products/offers-rules";
 
 type Fail = { ok: false; reason: string };
@@ -24,7 +25,7 @@ async function requireUser() {
 export async function saveOffer(companyId: string, productId: string, input: OfferInput) {
   const userId = await requireUser();
   if (!userId) return fail("unauth");
-  if (!canWrite(await editorCompany(companyId, userId))) return fail("forbidden");
+  if (!canWrite(await editorCompany(companyId, userId), "pricing")) return fail("forbidden");
 
   const v = validateOffer(input);
   if (!v.ok) return fail(v.reason);
@@ -53,6 +54,13 @@ export async function saveOffer(companyId: string, productId: string, input: Off
     select: { id: true, status: true },
   });
 
+  await logCompanyAction({
+    companyId,
+    actorUserId: userId,
+    action: "OFFER_SAVED",
+    subject: product.slug,
+    meta: { price: v.value.price, currency: v.value.currency, cashbackPercent: v.value.cashbackPercent },
+  });
   revalidatePath(`/[locale]/product/${product.slug}`, "page");
   revalidatePath(`/[locale]/companies/${companyId}`, "page");
   return { ok: true as const, id: offer.id, status: offer.status };
@@ -62,13 +70,14 @@ export async function saveOffer(companyId: string, productId: string, input: Off
 export async function setOfferStatus(companyId: string, productId: string, status: "ACTIVE" | "PAUSED") {
   const userId = await requireUser();
   if (!userId) return fail("unauth");
-  if (!canWrite(await editorCompany(companyId, userId))) return fail("forbidden");
+  if (!canWrite(await editorCompany(companyId, userId), "pricing")) return fail("forbidden");
 
   const updated = await prisma.productOffer.updateMany({
     where: { companyId, productId },
     data: { status },
   });
   if (updated.count === 0) return fail("not_found");
+  await logCompanyAction({ companyId, actorUserId: userId, action: "OFFER_STATUS_SET", subject: productId, meta: { status } });
   revalidatePath(`/[locale]/companies/${companyId}`, "page");
   return { ok: true as const };
 }
@@ -80,11 +89,12 @@ export async function setOfferStatus(companyId: string, productId: string, statu
 export async function deleteOffer(companyId: string, productId: string) {
   const userId = await requireUser();
   if (!userId) return fail("unauth");
-  if (!canWrite(await editorCompany(companyId, userId))) return fail("forbidden");
+  if (!canWrite(await editorCompany(companyId, userId), "pricing")) return fail("forbidden");
 
   const product = await prisma.product.findUnique({ where: { id: productId }, select: { slug: true } });
   const deleted = await prisma.productOffer.deleteMany({ where: { companyId, productId } });
   if (deleted.count === 0) return fail("not_found");
+  await logCompanyAction({ companyId, actorUserId: userId, action: "OFFER_DELETED", subject: product?.slug ?? productId });
   if (product) revalidatePath(`/[locale]/product/${product.slug}`, "page");
   revalidatePath(`/[locale]/companies/${companyId}`, "page");
   return { ok: true as const };

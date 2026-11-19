@@ -64,6 +64,7 @@ model User {
   priceAlerts              PriceAlert[]
   geoAlerts                GeoAlert[]
   companyMemberships       CompanyMember[]
+  companyActions           CompanyActionLog[]
   companyInvitesCreated    CompanyInvite[]           @relation("CompanyInviteCreator")
   companyInvitesAccepted   CompanyInvite[]           @relation("CompanyInviteAcceptor")
   pushSubscriptions        PushSubscription[]
@@ -162,8 +163,69 @@ model CompanyMember {
   invitedById String?
   createdAt   DateTime    @default(now())
 
+  /// Своя роль предприятия (слайс BE). Пусто — работает наследие фазы 10: `EDITOR`
+  /// правит все разделы, `VIEWER` смотрит. Бэкфилл «завести каждому предприятию по
+  /// роли» завёл бы роли тем, кто о них не просил.
+  roleId   String?
+  teamRole CompanyTeamRole?     @relation(fields: [roleId], references: [id], onDelete: SetNull)
+  /// Участок: точки продаж, которыми член ограничен. Пусто — все точки.
+  points   CompanyMemberPoint[]
+
   @@unique([companyId, userId])
   @@index([userId])
+  @@index([roleId])
+}
+
+/// Роль, собранная мерчантом в конструкторе (ТЗ 6.6). Набор прав лежит JSONB и
+/// разбирается `parsePermissions` с запретом по умолчанию: неизвестный раздел
+/// выбрасывается, негодный уровень означает «нельзя».
+model CompanyTeamRole {
+  id          String   @id @default(cuid())
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  name        String
+  /// { card|points|products|warehouses|pricing: "VIEW"|"EDIT" }
+  permissions Json
+  createdById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  members CompanyMember[]
+
+  @@unique([companyId, name])
+  @@index([companyId])
+}
+
+/// Точка участка. Снос точки снимает строку каскадом: участок — это ссылки на живые
+/// точки, а не журнал.
+model CompanyMemberPoint {
+  id       String        @id @default(cuid())
+  memberId String
+  member   CompanyMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  pointId  String
+  point    CompanyPoint  @relation(fields: [pointId], references: [id], onDelete: Cascade)
+
+  @@unique([memberId, pointId])
+  @@index([pointId])
+}
+
+/// Журнал действий предприятия: кто, что и когда изменил (ТЗ 6.6). Только вставка.
+/// Автор снимается в SET NULL, а не RESTRICT: уборка AU уже упиралась в
+/// `AdminAuditLog.actorId` с RESTRICT — удаление пробной учётки блокировало транзакцию.
+model CompanyActionLog {
+  id          String   @id @default(cuid())
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  actorUserId String?
+  actor       User?    @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+  /// Код действия: "PRODUCT_UPDATED", "MOVEMENT_RECORDED", "MEMBER_ROLE_SET"…
+  action      String
+  /// Человеку видимое имя затронутого объекта (товар, склад, точка, сотрудник).
+  subject     String?
+  meta        Json?
+  createdAt   DateTime @default(now())
+
+  @@index([companyId, createdAt])
 }
 
 // Shareable invite link. Created by an OWNER when the person being invited has
@@ -685,6 +747,9 @@ model Company {
   cashbackBasePercent Decimal?       @db.Decimal(5, 2)
   cashbackRules       CashbackRule[]
 
+  teamRoles CompanyTeamRole[]
+  actionLog CompanyActionLog[]
+
   @@index([ownerUserId])
   @@index([status, createdAt])
   @@index([kybStatus])
@@ -693,12 +758,12 @@ model Company {
 }
 
 model CompanyPoint {
-  id              String        @id @default(cuid())
+  id              String               @id @default(cuid())
   companyId       String
-  company         Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  company         Company              @relation(fields: [companyId], references: [id], onDelete: Cascade)
   type            PointType
   name            String
-  description     String?       @db.Text
+  description     String?              @db.Text
   lat             Float?
   lon             Float?
   countryCode     String?
@@ -723,9 +788,9 @@ model CompanyPoint {
   phone           String?
   website         String?
   socials         Json?
-  status          RequestStatus @default(PENDING)
+  status          RequestStatus        @default(PENDING)
   reviewedById    String?
-  reviewer        User?         @relation("PointReviewer", fields: [reviewedById], references: [id])
+  reviewer        User?                @relation("PointReviewer", fields: [reviewedById], references: [id])
   reviewedAt      DateTime?
   rejectReason    String?
   // Жалоб набралось достаточно: точка видна на карте с пометкой «проверяется».
@@ -737,6 +802,8 @@ model CompanyPoint {
   reports         PointReport[]
   // Полки, стоящие на этой точке (слайс BC).
   warehouses      Warehouse[]
+  // Участки сотрудников, в которые входит эта точка (слайс BE).
+  memberScopes    CompanyMemberPoint[]
   // Мягкое удаление, как у компании.
   deletedAt       DateTime?
   deletedById     String?
