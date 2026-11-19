@@ -20,7 +20,8 @@ export function TalerIdButton() {
       onClick={() => start(() => signInWithProvider("talerid"))}
       className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[#167EF2] bg-[#167EF2] px-4 text-sm font-semibold text-white transition-colors hover:border-[#1570D6] hover:bg-[#1570D6] disabled:opacity-50"
     >
-      <Image src="/brand/taler-id.png" alt="" width={22} height={22} aria-hidden />
+      {/* У логотипа из brand-кита непрозрачный белый фон — круг делает из него значок. */}
+      <Image src="/brand/taler-id.png" alt="" width={22} height={22} className="rounded-full" aria-hidden />
       {t("continueWithTalerId")}
     </button>
   );
