@@ -137,12 +137,18 @@ export default async function CompanyManagementPage({
           }}
         />
       </section>
-      <section className="scroll-mt-24 mb-8">
+      <section className="scroll-mt-24 mb-8 flex flex-wrap gap-2">
         <Link
           href={`/${locale}/cabinet/companies/${company.id}/products`}
           className="inline-flex items-center justify-center h-12 px-4 rounded-md border border-hairline text-sm font-medium hover:border-accent"
         >
           {t("productsLink")}
+        </Link>
+        <Link
+          href={`/${locale}/cabinet/companies/${company.id}/warehouses`}
+          className="inline-flex items-center justify-center h-12 px-4 rounded-md border border-hairline text-sm font-medium hover:border-accent"
+        >
+          {t("warehousesLink")}
         </Link>
       </section>
 

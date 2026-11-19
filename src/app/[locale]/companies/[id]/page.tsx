@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { CompanyOffersBlock } from "@/components/company/offers-block";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { NOT_DELETED } from "@/lib/soft-delete";
@@ -172,6 +173,9 @@ export default async function PublicCompanyPage({
         {company.phone ? <Field label={t("phone")}><span>{company.phone}</span></Field> : null}
         {company.address ? <Field label={t("address")}><span>{company.address}</span></Field> : null}
       </section>
+
+      {/* Витрина товаров предприятия (слайс BC): цена и ставка — его заявления. */}
+      <CompanyOffersBlock companyId={company.id} locale={locale} />
 
       {physicalPoints.length > 0 ? (
         <section>

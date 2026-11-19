@@ -1586,7 +1586,8 @@
       "noReason": "Nenhum motivo foi registrado.",
       "hint": "Responda no tópico do seu caso e vamos analisar novamente."
     },
-    "productsLink": "Produtos"
+    "productsLink": "Produtos",
+    "warehousesLink": "Armazéns"
   },
   "cabinet": {
     "kicker": "Seção · Painel",
@@ -3327,7 +3328,36 @@
     },
     "scanLooking": "Procurando o passaporte…",
     "scanNotFound": "Nenhum passaporte possui o código de barras {code} ainda.",
-    "scanCreate": "Criar um"
+    "scanCreate": "Criar um",
+    "whereToBuy": {
+      "heading": "Onde comprar",
+      "empty": "Ninguém vende isso ainda. Se você vende, publique seu preço no seu painel empresarial",
+      "inStock": "Em estoque",
+      "outOfStock": "Sem estoque no momento",
+      "cashback": "cashback {percent}%",
+      "toShop": "Ir à loja",
+      "whereExactly": "onde exatamente",
+      "openMap": "Abrir no mapa",
+      "units": {
+        "pcs": "unidade",
+        "pack": "pacote",
+        "set": "conjunto",
+        "kg": "kg",
+        "g": "g",
+        "l": "l",
+        "ml": "ml",
+        "m": "m",
+        "m2": "m²",
+        "hour": "hora",
+        "service": "serviço"
+      }
+    },
+    "showcase": {
+      "heading": "Produtos",
+      "inStock": "Em estoque",
+      "outOfStock": "Fora de estoque",
+      "cashback": "cashback {percent}%"
+    }
   },
   "cabinetProducts": {
     "title": "Produtos",
@@ -3435,7 +3465,12 @@
     "info": {
       "gtin_free": "Ainda não há passaporte com esse código de barras — você é o primeiro.",
       "proposed": "Sua edição foi enviada ao fabricante."
-    }
+    },
+    "offerHeading": "Sua oferta",
+    "stockHeading": "Seu estoque",
+    "stockEmpty": "Este produto não está em nenhum dos seus armazéns.",
+    "inTransit": "{qty} a caminho",
+    "toWarehouses": "Armazéns"
   },
   "scanner": {
     "open": "Escanear",
@@ -3460,6 +3495,145 @@
       "audio-capture": "Não há microfone neste dispositivo.",
       "language-not-supported": "Este navegador não consegue reconhecer a fala no idioma da descrição.",
       "failed": "Ditado interrompido."
+    }
+  },
+  "offers": {
+    "price": "Preço",
+    "currency": "Moeda",
+    "unit": "Por",
+    "cashback": "Cashback, %",
+    "cashbackNote": "A taxa de cashback é sua promessa ao comprador. A contabilização começa quando o pagamento pela carteira da plataforma estiver ativo.",
+    "onlineUrl": "Link para este item na sua loja online",
+    "saleRules": "Termos de venda",
+    "publish": "Publicar a oferta",
+    "save": "Salvar a oferta",
+    "pause": "Pausar",
+    "resume": "Retomar",
+    "remove": "Remover a oferta",
+    "pausedNote": "A oferta está em pausa: os compradores não a veem.",
+    "saved": "Salvo.",
+    "units": {
+      "pcs": "peça",
+      "pack": "pacote",
+      "set": "conjunto",
+      "kg": "kg",
+      "g": "g",
+      "l": "l",
+      "ml": "ml",
+      "m": "m",
+      "m2": "m²",
+      "hour": "hora",
+      "service": "serviço"
+    },
+    "error": {
+      "unauth": "Faça login primeiro.",
+      "forbidden": "Sua empresa não pode publicar ofertas: não está listada, está sob supervisão ou sua função é somente leitura.",
+      "price_invalid": "O preço deve ser um número maior que zero, com no máximo duas casas decimais.",
+      "currency_invalid": "Escolha uma moeda da lista.",
+      "unit_invalid": "Escolha uma unidade da lista.",
+      "cashback_invalid": "A taxa de cashback deve estar entre 0,1 e 50 por cento.",
+      "url_invalid": "O link deve começar com http:// ou https://.",
+      "product_not_found": "Este passaporte não existe mais, foi suspenso ou mesclado a outro.",
+      "not_found": "Nenhuma oferta para alterar.",
+      "failed": "Não foi possível salvar."
+    }
+  },
+  "warehouses": {
+    "title": "Armazéns",
+    "subtitle": "Uma loja de atacado, prateleiras nos seus pontos de venda ou online e lojas de terceiros.",
+    "notListed": "Sua empresa ainda não está listada, então suas prateleiras ficam invisíveis para os compradores.",
+    "empty": "Ainda não há armazéns.",
+    "open": "Abrir",
+    "createHeading": "Novo armazém",
+    "create": "Criar",
+    "kind": "Tipo",
+    "kinds": {
+      "WHOLESALE": "Loja de atacado",
+      "SHELF": "Prateleira (vendas)",
+      "THIRD_PARTY": "Loja de terceiros"
+    },
+    "name": "Nome",
+    "point": "Ponto de venda",
+    "pointNone": "— sem ponto —",
+    "onlineShelf": "Prateleira online",
+    "countryCode": "Código do país",
+    "address": "Endereço",
+    "archived": "arquivado",
+    "archive": "Arquivar",
+    "restore": "Restaurar",
+    "positions": "{count} posições",
+    "totalQty": "{qty} no total",
+    "stockHeading": "Estoque",
+    "stockEmpty": "Nada neste armazém ainda.",
+    "moveHeading": "Registrar um movimento",
+    "moveKind": "Tipo",
+    "moveKinds": {
+      "RECEIPT": "Entrada",
+      "ISSUE": "Saída",
+      "TRANSFER": "Transferência",
+      "ADJUST": "Correção"
+    },
+    "moveStatus": {
+      "IN_TRANSIT": "em trânsito",
+      "DONE": "concluído",
+      "CANCELLED": "cancelado"
+    },
+    "product": "Produto",
+    "noProducts": "— ainda sem produtos —",
+    "from": "De",
+    "to": "Para",
+    "warehouse": "Armazém",
+    "qty": "Quantidade",
+    "carrier": "Transportadora",
+    "carrierPlaceholder": "quem transporta",
+    "carrierNote": "Informe uma transportadora e as mercadorias saem da origem agora e só chegam quando você as aceitar: em trânsito é um terceiro lugar, não a prateleira de destino.",
+    "adjustNote": "Uma correção precisa de um motivo: «menos três» sem palavras não significa nada um ano depois.",
+    "tracking": "Número de rastreamento",
+    "expectedAt": "Previsto",
+    "expectedShort": "previsto",
+    "note": "Observação",
+    "reason": "Motivo",
+    "record": "Registrar",
+    "recorded": {
+      "done": "Registrado.",
+      "transit": "Registrado: as mercadorias estão a caminho e aguardam ser aceitas."
+    },
+    "movesHeading": "Movimentações recentes",
+    "movesEmpty": "Ainda não há movimentações neste armazém.",
+    "transitHeading": "A caminho",
+    "transitEmpty": "Nada está em trânsito no momento.",
+    "receive": "Aceitar",
+    "cancel": "Cancelar",
+    "cancelReason": "Por que foi cancelado",
+    "cancelConfirm": "Cancelar e devolver ao remetente",
+    "error": {
+      "unauth": "Faça login primeiro.",
+      "forbidden": "Sua empresa não pode alterar armazéns: ela não está listada, está sob supervisão ou sua função é somente leitura.",
+      "kind_invalid": "Escolha um tipo na lista.",
+      "name_required": "Dê um nome ao armazém.",
+      "shelf_needs_place": "Uma prateleira precisa ficar em algum lugar: escolha um ponto de venda ou marque-a como online.",
+      "point_unknown": "Escolha um dos seus pontos aprovados.",
+      "point_not_allowed": "Apenas uma prateleira fica em um ponto de venda.",
+      "too_many": "Você já tem o número máximo de armazéns.",
+      "warehouse_not_empty": "Este armazém ainda contém mercadorias. Movimente-as primeiro, ou o estoque sumirá silenciosamente.",
+      "transit_pending": "Ainda há algo em trânsito para ou a partir deste armazém.",
+      "already_archived": "Já arquivado.",
+      "not_found": "Não encontrado.",
+      "qty_invalid": "A quantidade deve ser um número com no máximo três casas decimais.",
+      "qty_zero": "Uma movimentação de zero não muda nada.",
+      "qty_negative": "Apenas uma correção usa quantidade negativa.",
+      "reason_required": "Escreva o motivo (pelo menos 3 caracteres).",
+      "from_required": "Escolha o armazém de onde as mercadorias saem.",
+      "to_required": "Escolha o armazém para onde as mercadorias chegam.",
+      "same_warehouse": "Uma transferência precisa de dois armazéns diferentes.",
+      "warehouse_unknown": "Escolha seus próprios armazéns não arquivados.",
+      "product_not_found": "Este produto não existe mais.",
+      "insufficient_stock": "Não há tanto assim na prateleira. Estoque negativo é um erro de digitação, não um fato.",
+      "daily_limit": "Muitas movimentações hoje. Tente novamente amanhã.",
+      "date_invalid": "Essa data não pode ser lida.",
+      "not_in_transit": "Essas mercadorias não estão mais a caminho.",
+      "not_cancellable": "O que já chegou não pode ser cancelado: devolva com uma ocorrência ou uma correção.",
+      "failed": "Não foi possível salvar."
     }
   }
 }

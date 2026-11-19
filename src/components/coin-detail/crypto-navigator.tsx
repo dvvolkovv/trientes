@@ -222,6 +222,7 @@ export default function CryptoNavigator({
   coinName,
   focus = null,
   area = null,
+  productSlug = null,
 }: {
   coinId: string;
   symbol: string;
@@ -230,6 +231,11 @@ export default function CryptoNavigator({
   focus?: MapFocus | null;
   /** Где эту монету принимают: карта садится на все точки сразу. */
   area?: MapArea | null;
+  /**
+   * Фильтр по товару (слайс BC): фид отдаёт только свои точки, где он лежит на полке.
+   * Монета при этом не фильтрует — человек ищет товар, а не способ оплаты.
+   */
+  productSlug?: string | null;
 }) {
   const t = useTranslations("cryptoMap");
   const locale = useLocale();
@@ -528,7 +534,8 @@ export default function CryptoNavigator({
     const controller = new AbortController();
     poiAbortRef.current = controller;
     setLoading(true);
-    fetch(`/api/crypto-map/poi?bbox=${bbox}&coin=${encodeURIComponent(coinId)}&symbol=${encodeURIComponent(symbol)}`, {
+    const productQuery = productSlug ? `&product=${encodeURIComponent(productSlug)}` : "";
+    fetch(`/api/crypto-map/poi?bbox=${bbox}&coin=${encodeURIComponent(coinId)}&symbol=${encodeURIComponent(symbol)}${productQuery}`, {
       signal: controller.signal,
     })
       .then((r) => r.json())

@@ -1586,7 +1586,8 @@
       "noReason": "사유가 기록되지 않았습니다.",
       "hint": "케이스 스레드에 답장해 주시면 다시 검토하겠습니다."
     },
-    "productsLink": "제품"
+    "productsLink": "제품",
+    "warehousesLink": "창고"
   },
   "cabinet": {
     "kicker": "섹션 · 캐비닛",
@@ -3327,7 +3328,36 @@
     },
     "scanLooking": "패스포트를 찾는 중…",
     "scanNotFound": "바코드 {code}를 가진 패스포트가 아직 없습니다.",
-    "scanCreate": "하나 만들기"
+    "scanCreate": "하나 만들기",
+    "whereToBuy": {
+      "heading": "구매처",
+      "empty": "아직 판매하는 곳이 없습니다. 판매하신다면 비즈니스 캐비닛에서 가격을 게시하세요.",
+      "inStock": "재고 있음",
+      "outOfStock": "현재 재고 없음",
+      "cashback": "캐시백 {percent}%",
+      "toShop": "상점으로 이동",
+      "whereExactly": "정확한 위치",
+      "openMap": "지도에서 열기",
+      "units": {
+        "pcs": "개",
+        "pack": "팩",
+        "set": "세트",
+        "kg": "kg",
+        "g": "g",
+        "l": "l",
+        "ml": "ml",
+        "m": "m",
+        "m2": "m²",
+        "hour": "시간",
+        "service": "서비스"
+      }
+    },
+    "showcase": {
+      "heading": "제품",
+      "inStock": "재고 있음",
+      "outOfStock": "재고 없음",
+      "cashback": "캐시백 {percent}%"
+    }
   },
   "cabinetProducts": {
     "title": "제품",
@@ -3435,7 +3465,12 @@
     "info": {
       "gtin_free": "이 바코드의 패스포트는 아직 없습니다 — 귀하가 처음입니다.",
       "proposed": "귀하의 수정이 제조사에 전송되었습니다."
-    }
+    },
+    "offerHeading": "내 제안",
+    "stockHeading": "내 재고",
+    "stockEmpty": "이 상품은 보유한 어떤 창고에도 없습니다",
+    "inTransit": "{qty} 운송 중",
+    "toWarehouses": "창고"
   },
   "scanner": {
     "open": "스캔",
@@ -3460,6 +3495,145 @@
       "audio-capture": "이 기기에 마이크가 없습니다.",
       "language-not-supported": "이 브라우저는 설명의 언어로 음성을 인식할 수 없습니다.",
       "failed": "받아쓰기가 중지되었습니다."
+    }
+  },
+  "offers": {
+    "price": "가격",
+    "currency": "통화",
+    "unit": "단위당",
+    "cashback": "캐시백, %",
+    "cashbackNote": "캐시백 비율은 구매자에게 한 약속입니다. 플랫폼 지갑을 통한 결제가 활성화되면 적립이 시작됩니다.",
+    "onlineUrl": "내 웹샵의 이 상품 링크",
+    "saleRules": "판매 조건",
+    "publish": "오퍼 게시",
+    "save": "오퍼 저장",
+    "pause": "일시 중지",
+    "resume": "재개",
+    "remove": "오퍼 삭제",
+    "pausedNote": "오퍼가 일시 중지되었습니다: 구매자는 볼 수 없습니다.",
+    "saved": "저장됨.",
+    "units": {
+      "pcs": "개",
+      "pack": "팩",
+      "set": "세트",
+      "kg": "kg",
+      "g": "g",
+      "l": "l",
+      "ml": "ml",
+      "m": "m",
+      "m2": "m²",
+      "hour": "시간",
+      "service": "서비스"
+    },
+    "error": {
+      "unauth": "먼저 로그인하세요.",
+      "forbidden": "귀하의 비즈니스는 오퍼를 게시할 수 없습니다: 등록되지 않았거나, 감독 중이거나, 귀하의 역할이 읽기 전용입니다.",
+      "price_invalid": "가격은 0보다 큰 숫자여야 하며 소수점 둘째 자리까지 가능합니다.",
+      "currency_invalid": "목록에서 통화를 선택하세요.",
+      "unit_invalid": "목록에서 단위를 선택하세요.",
+      "cashback_invalid": "캐시백 비율은 0.1%에서 50% 사이여야 합니다.",
+      "url_invalid": "링크는 http:// 또는 https://로 시작해야 합니다.",
+      "product_not_found": "이 패스포트는 삭제되었거나 중단되었거나 다른 패스포트에 병합되었습니다.",
+      "not_found": "변경할 오퍼가 없습니다.",
+      "failed": "저장할 수 없습니다."
+    }
+  },
+  "warehouses": {
+    "title": "창고",
+    "subtitle": "도매점, 판매 지점이나 온라인에 설치된 선반, 그리고 타사 상점.",
+    "notListed": "귀하의 비즈니스가 아직 등록되지 않아 진열대가 구매자에게 보이지 않습니다.",
+    "empty": "아직 창고가 없습니다.",
+    "open": "열기",
+    "createHeading": "새 창고",
+    "create": "만들기",
+    "kind": "종류",
+    "kinds": {
+      "WHOLESALE": "도매점",
+      "SHELF": "선반(판매)",
+      "THIRD_PARTY": "타사 상점"
+    },
+    "name": "이름",
+    "point": "판매 지점",
+    "pointNone": "— 지점에 없음 —",
+    "onlineShelf": "온라인 선반",
+    "countryCode": "국가 코드",
+    "address": "주소",
+    "archived": "보관됨",
+    "archive": "보관",
+    "restore": "복원",
+    "positions": "{count}개 품목",
+    "totalQty": "총 {qty}",
+    "stockHeading": "재고",
+    "stockEmpty": "이 창고에는 아직 아무것도 없습니다.",
+    "moveHeading": "이동 기록",
+    "moveKind": "종류",
+    "moveKinds": {
+      "RECEIPT": "입고",
+      "ISSUE": "출고",
+      "TRANSFER": "이동",
+      "ADJUST": "조정"
+    },
+    "moveStatus": {
+      "IN_TRANSIT": "운송 중",
+      "DONE": "완료",
+      "CANCELLED": "취소됨"
+    },
+    "product": "상품",
+    "noProducts": "— 아직 상품 없음 —",
+    "from": "보낸 곳",
+    "to": "받는 곳",
+    "warehouse": "창고",
+    "qty": "수량",
+    "carrier": "운송업체",
+    "carrierPlaceholder": "누가 운송하나요",
+    "carrierNote": "운송사를 지정하면 물품은 지금 출발하며, 당신이 수락할 때에만 도착합니다: 운송 중은 목적지 선반이 아닌 제3의 장소입니다.",
+    "adjustNote": "수정에는 이유가 필요합니다: 설명 없는 «세 개 줄임»은 1년 뒤 아무 의미도 없습니다.",
+    "tracking": "운송장 번호",
+    "expectedAt": "도착 예정",
+    "expectedShort": "예정",
+    "note": "메모",
+    "reason": "사유",
+    "record": "기록",
+    "recorded": {
+      "done": "기록되었습니다.",
+      "transit": "기록됨: 물품이 이동 중이며 수락을 기다립니다."
+    },
+    "movesHeading": "최근 이동",
+    "movesEmpty": "이 창고에는 아직 이동이 없습니다.",
+    "transitHeading": "이동 중",
+    "transitEmpty": "지금 이동 중인 것이 없습니다.",
+    "receive": "수락",
+    "cancel": "취소",
+    "cancelReason": "왜 취소되었나요",
+    "cancelConfirm": "취소하고 발신자에게 반송",
+    "error": {
+      "unauth": "먼저 로그인하세요.",
+      "forbidden": "귀사의 비즈니스는 창고를 변경할 수 없습니다: 목록에 없거나, 감독 중이거나, 사용자의 역할이 읽기 전용입니다.",
+      "kind_invalid": "목록에서 종류를 선택하세요.",
+      "name_required": "창고에 이름을 지정하세요.",
+      "shelf_needs_place": "선반은 어딘가에 있어야 합니다: 판매 지점을 선택하거나 온라인으로 표시하세요.",
+      "point_unknown": "승인된 본인 판매 지점 중 하나를 선택하세요.",
+      "point_not_allowed": "판매 지점에는 선반만 둘 수 있습니다.",
+      "too_many": "이미 최대 개수의 창고를 보유하고 있습니다.",
+      "warehouse_not_empty": "이 창고에는 아직 물품이 있습니다. 먼저 옮기지 않으면 재고가 조용히 사라집니다.",
+      "transit_pending": "이 창고로 오가며 이동 중인 것이 아직 있습니다.",
+      "already_archived": "이미 아카이브되었습니다.",
+      "not_found": "찾을 수 없습니다.",
+      "qty_invalid": "수량은 소수점 이하 최대 세 자리의 숫자여야 합니다.",
+      "qty_zero": "수량 0의 이동은 아무 것도 바꾸지 않습니다.",
+      "qty_negative": "음수 수량은 수정일 때만 사용할 수 있습니다.",
+      "reason_required": "사유를 작성하세요(최소 3자).",
+      "from_required": "물품이 출발하는 창고를 선택하세요.",
+      "to_required": "물품이 도착하는 창고를 선택하세요.",
+      "same_warehouse": "이체에는 서로 다른 두 창고가 필요합니다.",
+      "warehouse_unknown": "아카이브되지 않은 본인 창고를 선택하세요.",
+      "product_not_found": "이 상품은 더 이상 존재하지 않습니다.",
+      "insufficient_stock": "선반에 그만큼 없습니다. 재고의 음수는 사실이 아니라 오기입니다.",
+      "daily_limit": "오늘 이동이 너무 많습니다. 내일 다시 시도하세요.",
+      "date_invalid": "해당 날짜를 읽을 수 없습니다.",
+      "not_in_transit": "해당 물품은 더 이상 운송 중이 아닙니다.",
+      "not_cancellable": "이미 도착한 것은 취소할 수 없습니다: 이슈 또는 정정으로 반품하세요.",
+      "failed": "저장할 수 없습니다."
     }
   }
 }

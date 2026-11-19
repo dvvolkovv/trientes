@@ -1586,7 +1586,8 @@
       "noReason": "No se registró ningún motivo.",
       "hint": "Responde en el hilo de tu caso y lo volveremos a revisar."
     },
-    "productsLink": "Productos"
+    "productsLink": "Productos",
+    "warehousesLink": "Almacenes"
   },
   "cabinet": {
     "kicker": "Sección · Panel",
@@ -3327,7 +3328,36 @@
     },
     "scanLooking": "Buscando el pasaporte…",
     "scanNotFound": "Ningún pasaporte lleva aún el código de barras {code}.",
-    "scanCreate": "Crear uno"
+    "scanCreate": "Crear uno",
+    "whereToBuy": {
+      "heading": "Dónde comprar",
+      "empty": "Nadie vende esto todavía. Si tú sí, publica tu precio desde tu panel empresarial.",
+      "inStock": "En stock",
+      "outOfStock": "Sin existencias ahora mismo",
+      "cashback": "cashback {percent}%",
+      "toShop": "A la tienda",
+      "whereExactly": "dónde exactamente",
+      "openMap": "Abrir en el mapa",
+      "units": {
+        "pcs": "pieza",
+        "pack": "paquete",
+        "set": "conjunto",
+        "kg": "kg",
+        "g": "g",
+        "l": "l",
+        "ml": "ml",
+        "m": "m",
+        "m2": "m²",
+        "hour": "hora",
+        "service": "servicio"
+      }
+    },
+    "showcase": {
+      "heading": "Productos",
+      "inStock": "En stock",
+      "outOfStock": "Sin existencias",
+      "cashback": "cashback {percent}%"
+    }
   },
   "cabinetProducts": {
     "title": "Productos",
@@ -3435,7 +3465,12 @@
     "info": {
       "gtin_free": "Aún no hay un pasaporte con este código de barras — eres el primero.",
       "proposed": "Tu edición fue enviada al fabricante."
-    }
+    },
+    "offerHeading": "Tu oferta",
+    "stockHeading": "Tu inventario",
+    "stockEmpty": "Este producto no está en ninguno de tus almacenes.",
+    "inTransit": "{qty} en camino",
+    "toWarehouses": "Almacenes"
   },
   "scanner": {
     "open": "Escanear",
@@ -3460,6 +3495,145 @@
       "audio-capture": "No hay micrófono en este dispositivo.",
       "language-not-supported": "Este navegador no puede reconocer voz en el idioma de la descripción.",
       "failed": "El dictado se detuvo."
+    }
+  },
+  "offers": {
+    "price": "Precio",
+    "currency": "Moneda",
+    "unit": "Por",
+    "cashback": "Cashback, %",
+    "cashbackNote": "La tasa de cashback es tu promesa al comprador. La acumulación comienza cuando el pago a través del monedero de la plataforma esté activo.",
+    "onlineUrl": "Enlace a este artículo en tu tienda online",
+    "saleRules": "Términos de venta",
+    "publish": "Publicar la oferta",
+    "save": "Guardar la oferta",
+    "pause": "Pausar",
+    "resume": "Reanudar",
+    "remove": "Eliminar la oferta",
+    "pausedNote": "La oferta está en pausa: los compradores no la ven.",
+    "saved": "Guardado.",
+    "units": {
+      "pcs": "pieza",
+      "pack": "paquete",
+      "set": "juego",
+      "kg": "kg",
+      "g": "g",
+      "l": "l",
+      "ml": "ml",
+      "m": "m",
+      "m2": "m²",
+      "hour": "hora",
+      "service": "servicio"
+    },
+    "error": {
+      "unauth": "Inicia sesión primero.",
+      "forbidden": "Tu negocio no puede publicar ofertas: no está listado, está bajo supervisión o tu rol es solo de lectura.",
+      "price_invalid": "El precio debe ser un número mayor que cero, con como máximo dos decimales.",
+      "currency_invalid": "Elige una moneda de la lista.",
+      "unit_invalid": "Elige una unidad de la lista.",
+      "cashback_invalid": "La tasa de cashback debe estar entre 0.1 y 50 por ciento.",
+      "url_invalid": "El enlace debe comenzar con http:// o https://.",
+      "product_not_found": "Este pasaporte ha desaparecido, está suspendido o se ha fusionado con otro.",
+      "not_found": "No hay ninguna oferta para cambiar.",
+      "failed": "No se pudo guardar."
+    }
+  },
+  "warehouses": {
+    "title": "Almacenes",
+    "subtitle": "Una tienda mayorista, estanterías que están en tus puntos de venta o en línea, y tiendas de terceros.",
+    "notListed": "Tu negocio aún no está listado, por lo que sus estanterías permanecen invisibles para los compradores.",
+    "empty": "Aún no hay almacenes.",
+    "open": "Abrir",
+    "createHeading": "Nuevo almacén",
+    "create": "Crear",
+    "kind": "Tipo",
+    "kinds": {
+      "WHOLESALE": "Tienda mayorista",
+      "SHELF": "Estantería (ventas)",
+      "THIRD_PARTY": "Tienda de terceros"
+    },
+    "name": "Nombre",
+    "point": "Punto de venta",
+    "pointNone": "— no en un punto —",
+    "onlineShelf": "Estantería en línea",
+    "countryCode": "Código de país",
+    "address": "Dirección",
+    "archived": "archivado",
+    "archive": "Archivar",
+    "restore": "Restaurar",
+    "positions": "{count} posiciones",
+    "totalQty": "{qty} en total",
+    "stockHeading": "Existencias",
+    "stockEmpty": "Aún no hay nada en este almacén.",
+    "moveHeading": "Registrar un movimiento",
+    "moveKind": "Tipo",
+    "moveKinds": {
+      "RECEIPT": "Recepción",
+      "ISSUE": "Salida",
+      "TRANSFER": "Transferencia",
+      "ADJUST": "Corrección"
+    },
+    "moveStatus": {
+      "IN_TRANSIT": "en tránsito",
+      "DONE": "completado",
+      "CANCELLED": "cancelado"
+    },
+    "product": "Producto",
+    "noProducts": "— aún no hay productos —",
+    "from": "De",
+    "to": "A",
+    "warehouse": "Almacén",
+    "qty": "Cantidad",
+    "carrier": "Transportista",
+    "carrierPlaceholder": "quién lo transporta",
+    "carrierNote": "Indica un transportista y la mercancía sale del origen ahora y llega solo cuando la aceptes: en tránsito es un tercer lugar, no la estantería de destino.",
+    "adjustNote": "Una corrección necesita un motivo: «tres menos» sin explicación no significa nada un año después.",
+    "tracking": "Número de seguimiento",
+    "expectedAt": "Previsto",
+    "expectedShort": "previsto",
+    "note": "Nota",
+    "reason": "Motivo",
+    "record": "Registrar",
+    "recorded": {
+      "done": "Registrado.",
+      "transit": "Registrado: la mercancía está en camino y espera ser aceptada."
+    },
+    "movesHeading": "Movimientos recientes",
+    "movesEmpty": "Aún no hay movimientos en este almacén.",
+    "transitHeading": "En camino",
+    "transitEmpty": "Nada está en tránsito ahora mismo.",
+    "receive": "Aceptar",
+    "cancel": "Cancelar",
+    "cancelReason": "Motivo de la cancelación",
+    "cancelConfirm": "Cancelar y devolver al remitente",
+    "error": {
+      "unauth": "Inicia sesión primero.",
+      "forbidden": "Tu empresa no puede cambiar almacenes: no está listada, está bajo supervisión o tu rol es de solo lectura.",
+      "kind_invalid": "Elige un tipo de la lista.",
+      "name_required": "Ponle un nombre al almacén.",
+      "shelf_needs_place": "Una estantería tiene que estar en algún sitio: elige un punto de venta o márcala como en línea.",
+      "point_unknown": "Elige uno de tus puntos aprobados.",
+      "point_not_allowed": "Solo una estantería puede estar en un punto de venta.",
+      "too_many": "Ya tienes el número máximo de almacenes.",
+      "warehouse_not_empty": "Este almacén aún tiene mercancía. Muévela primero, o el stock desaparecería sin aviso.",
+      "transit_pending": "Algo todavía está viajando hacia o desde este almacén.",
+      "already_archived": "Ya archivado.",
+      "not_found": "No encontrado.",
+      "qty_invalid": "La cantidad debe ser un número con como máximo tres decimales.",
+      "qty_zero": "Un movimiento de cero no cambia nada.",
+      "qty_negative": "Solo una corrección admite una cantidad negativa.",
+      "reason_required": "Escribe el motivo (al menos 3 caracteres).",
+      "from_required": "Elige el almacén del que salen las mercancías.",
+      "to_required": "Elige el almacén al que llegan las mercancías.",
+      "same_warehouse": "Una transferencia necesita dos almacenes distintos.",
+      "warehouse_unknown": "Elige tus propios almacenes no archivados.",
+      "product_not_found": "Este producto ya no está.",
+      "insufficient_stock": "No hay tanto en la estantería. El stock negativo es un error tipográfico, no un hecho.",
+      "daily_limit": "Demasiados movimientos hoy. Inténtalo mañana.",
+      "date_invalid": "Esa fecha no se puede leer.",
+      "not_in_transit": "Estas mercancías ya no están en camino.",
+      "not_cancellable": "Lo que ya llegó no se puede cancelar: devuélvelo con una salida o una corrección.",
+      "failed": "No se pudo guardar."
     }
   }
 }

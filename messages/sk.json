@@ -1586,7 +1586,8 @@
       "noReason": "Dôvod nebol zaznamenaný.",
       "hint": "Odpovedzte vo vlákne vášho prípadu a pozrieme sa na to znova."
     },
-    "productsLink": "Produkty"
+    "productsLink": "Produkty",
+    "warehousesLink": "Sklady"
   },
   "cabinet": {
     "kicker": "Sekcia · Profil",
@@ -3327,7 +3328,36 @@
     },
     "scanLooking": "Hľadáme pas…",
     "scanNotFound": "Žiadny pas zatiaľ nemá čiarový kód {code}.",
-    "scanCreate": "Vytvoriť"
+    "scanCreate": "Vytvoriť",
+    "whereToBuy": {
+      "heading": "Kde kúpiť",
+      "empty": "Toto ešte nikto nepredáva. Ak áno, zverejnite svoju cenu zo svojho firemného profilu",
+      "inStock": "Skladom",
+      "outOfStock": "Momentálne nie je na sklade",
+      "cashback": "cashback {percent}%",
+      "toShop": "Do obchodu",
+      "whereExactly": "kde presne",
+      "openMap": "Otvoriť na mape",
+      "units": {
+        "pcs": "kus",
+        "pack": "balenie",
+        "set": "sada",
+        "kg": "kg",
+        "g": "g",
+        "l": "l",
+        "ml": "ml",
+        "m": "m",
+        "m2": "m²",
+        "hour": "hodina",
+        "service": "služba"
+      }
+    },
+    "showcase": {
+      "heading": "Produkty",
+      "inStock": "Skladom",
+      "outOfStock": "Vypredané",
+      "cashback": "cashback {percent}%"
+    }
   },
   "cabinetProducts": {
     "title": "Produkty",
@@ -3435,7 +3465,12 @@
     "info": {
       "gtin_free": "S týmto čiarovým kódom zatiaľ neexistuje žiadny pas — ste prví.",
       "proposed": "Vaša úprava bola odoslaná výrobcovi."
-    }
+    },
+    "offerHeading": "Vaša ponuka",
+    "stockHeading": "Vaše zásoby",
+    "stockEmpty": "Tento produkt nie je na žiadnom z vašich skladov.",
+    "inTransit": "{qty} na ceste",
+    "toWarehouses": "Sklady"
   },
   "scanner": {
     "open": "Skenovať",
@@ -3460,6 +3495,145 @@
       "audio-capture": "Na tomto zariadení nie je mikrofón.",
       "language-not-supported": "Tento prehliadač nedokáže rozpoznať reč v jazyku popisu.",
       "failed": "Diktovanie sa zastavilo."
+    }
+  },
+  "offers": {
+    "price": "Cena",
+    "currency": "Mena",
+    "unit": "Za",
+    "cashback": "Cashback, %",
+    "cashbackNote": "Sadzba cashbacku je váš sľub kupujúcemu. Pripisovanie sa začne, keď bude platba cez peňaženku platformy aktívna.",
+    "onlineUrl": "Odkaz na túto položku vo vašom e-shope",
+    "saleRules": "Podmienky predaja",
+    "publish": "Zverejniť ponuku",
+    "save": "Uložiť ponuku",
+    "pause": "Pozastaviť",
+    "resume": "Obnoviť",
+    "remove": "Odstrániť ponuku",
+    "pausedNote": "Ponuka je pozastavená: kupujúci ju nevidia.",
+    "saved": "Uložené.",
+    "units": {
+      "pcs": "kus",
+      "pack": "balenie",
+      "set": "súprava",
+      "kg": "kg",
+      "g": "g",
+      "l": "l",
+      "ml": "ml",
+      "m": "m",
+      "m2": "m²",
+      "hour": "hodina",
+      "service": "služba"
+    },
+    "error": {
+      "unauth": "Najprv sa prihláste.",
+      "forbidden": "Váš podnik nemôže zverejňovať ponuky: nie je zaradený, je pod dohľadom alebo vaša rola je len na čítanie.",
+      "price_invalid": "Cena musí byť číslo väčšie ako nula, s najviac dvoma desatinnými miestami.",
+      "currency_invalid": "Vyberte menu zo zoznamu.",
+      "unit_invalid": "Vyberte jednotku zo zoznamu.",
+      "cashback_invalid": "Sadzba cashbacku musí byť medzi 0,1 a 50 percentami.",
+      "url_invalid": "Odkaz sa musí začínať na http:// alebo https://.",
+      "product_not_found": "Tento pas už neexistuje, je pozastavený alebo zlúčený do iného.",
+      "not_found": "Žiadna ponuka na zmenu.",
+      "failed": "Nepodarilo sa uložiť."
+    }
+  },
+  "warehouses": {
+    "title": "Sklady",
+    "subtitle": "Veľkoobchodný obchod, police umiestnené na vašich predajných miestach alebo online a obchody tretích strán.",
+    "notListed": "Váš podnik ešte nie je zaradený, takže jeho police zostávajú pre kupujúcich neviditeľné.",
+    "empty": "Zatiaľ žiadne sklady.",
+    "open": "Otvoriť",
+    "createHeading": "Nový sklad",
+    "create": "Vytvoriť",
+    "kind": "Typ",
+    "kinds": {
+      "WHOLESALE": "Veľkoobchodný obchod",
+      "SHELF": "Polica (predaj)",
+      "THIRD_PARTY": "Obchod tretej strany"
+    },
+    "name": "Názov",
+    "point": "Predajné miesto",
+    "pointNone": "— nie je na predajnom mieste —",
+    "onlineShelf": "Online polica",
+    "countryCode": "Kód krajiny",
+    "address": "Adresa",
+    "archived": "archivované",
+    "archive": "Archivovať",
+    "restore": "Obnoviť",
+    "positions": "{count} položiek",
+    "totalQty": "{qty} celkom",
+    "stockHeading": "Zásoby",
+    "stockEmpty": "V tomto sklade zatiaľ nič nie je.",
+    "moveHeading": "Zaznamenať pohyb",
+    "moveKind": "Typ",
+    "moveKinds": {
+      "RECEIPT": "Príjem",
+      "ISSUE": "Výdaj",
+      "TRANSFER": "Presun",
+      "ADJUST": "Korekcia"
+    },
+    "moveStatus": {
+      "IN_TRANSIT": "na ceste",
+      "DONE": "dokončené",
+      "CANCELLED": "zrušené"
+    },
+    "product": "Produkt",
+    "noProducts": "— zatiaľ žiadne produkty —",
+    "from": "Z",
+    "to": "Do",
+    "warehouse": "Sklad",
+    "qty": "Množstvo",
+    "carrier": "Dopravca",
+    "carrierPlaceholder": "kto to prepraví",
+    "carrierNote": "Pomenujte dopravcu a tovar teraz opustí zdroj a dorazí až keď ho prijmete: počas prepravy je na treťom mieste, nie na cieľovej polici.",
+    "adjustNote": "Korekcia potrebuje dôvod: „o tri menej“ bez slov o rok nič neznamená.",
+    "tracking": "Sledovacie číslo",
+    "expectedAt": "Očakávané",
+    "expectedShort": "očakávané",
+    "note": "Poznámka",
+    "reason": "Dôvod",
+    "record": "Zaznamenať",
+    "recorded": {
+      "done": "Zaznamenané.",
+      "transit": "Zaznamenané: tovar je na ceste a čaká na prijatie."
+    },
+    "movesHeading": "Posledné pohyby",
+    "movesEmpty": "V tomto sklade zatiaľ neboli žiadne pohyby.",
+    "transitHeading": "Na ceste",
+    "transitEmpty": "Momentálne nič necestuje.",
+    "receive": "Prijať",
+    "cancel": "Zrušiť",
+    "cancelReason": "Prečo je to zrušené",
+    "cancelConfirm": "Zrušiť a vrátiť odosielateľovi",
+    "error": {
+      "unauth": "Najprv sa prihláste.",
+      "forbidden": "Vaše podnikanie nemôže meniť sklady: nie je zaradené, je pod dohľadom alebo vaša rola je len na čítanie.",
+      "kind_invalid": "Vyberte typ zo zoznamu.",
+      "name_required": "Pomenujte sklad.",
+      "shelf_needs_place": "Polica musí niekde stáť: vyberte predajné miesto alebo ju označte ako online.",
+      "point_unknown": "Vyberte jedno z vašich vlastných schválených miest.",
+      "point_not_allowed": "Na predajnom mieste môže stáť len polica.",
+      "too_many": "Už máte maximálny počet skladov.",
+      "warehouse_not_empty": "Tento sklad stále obsahuje tovar. Najprv ho presuňte preč, inak by zásoby potichu zmizli.",
+      "transit_pending": "Niečo ešte cestuje do tohto skladu alebo z neho.",
+      "already_archived": "Už archivované.",
+      "not_found": "Nenájdené.",
+      "qty_invalid": "Množstvo musí byť číslo s najviac tromi desatinnými miestami.",
+      "qty_zero": "Pohyb s nulou nič nemení.",
+      "qty_negative": "Len korekcia môže mať záporné množstvo.",
+      "reason_required": "Napíšte dôvod (aspoň 3 znaky).",
+      "from_required": "Vyberte sklad, z ktorého tovar odchádza.",
+      "to_required": "Vyberte sklad, do ktorého tovar prichádza.",
+      "same_warehouse": "Presun vyžaduje dva rôzne sklady.",
+      "warehouse_unknown": "Vyberte svoje vlastné, nearchivované sklady.",
+      "product_not_found": "Tento produkt je preč.",
+      "insufficient_stock": "Toľko na sklade nie je. Záporný stav zásob je preklep, nie fakt.",
+      "daily_limit": "Dnes príliš veľa pohybov. Skúste znova zajtra.",
+      "date_invalid": "Tento dátum sa nedá prečítať.",
+      "not_in_transit": "Tento tovar už nie je na ceste.",
+      "not_cancellable": "Čo už dorazilo, sa nedá zrušiť: vráťte to s chybou alebo opravou.",
+      "failed": "Nepodarilo sa uložiť."
     }
   }
 }

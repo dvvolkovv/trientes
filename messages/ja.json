@@ -1586,7 +1586,8 @@
       "noReason": "理由は記録されていません。",
       "hint": "ケースのスレッドで返信してください。再確認します。"
     },
-    "productsLink": "製品"
+    "productsLink": "製品",
+    "warehousesLink": "倉庫"
   },
   "cabinet": {
     "kicker": "セクション · キャビネット",
@@ -3327,7 +3328,36 @@
     },
     "scanLooking": "パスポートを検索中…",
     "scanNotFound": "バーコード{code}を持つパスポートはまだありません。",
-    "scanCreate": "作成"
+    "scanCreate": "作成",
+    "whereToBuy": {
+      "heading": "購入先",
+      "empty": "まだ販売者がいません。あなたが販売している場合は、ビジネスキャビネットから価格を公開してください",
+      "inStock": "在庫あり",
+      "outOfStock": "現在在庫切れ",
+      "cashback": "キャッシュバック {percent}%",
+      "toShop": "ショップへ",
+      "whereExactly": "詳しい場所",
+      "openMap": "地図で開く",
+      "units": {
+        "pcs": "個",
+        "pack": "パック",
+        "set": "セット",
+        "kg": "kg",
+        "g": "g",
+        "l": "l",
+        "ml": "ml",
+        "m": "m",
+        "m2": "m²",
+        "hour": "時間",
+        "service": "サービス"
+      }
+    },
+    "showcase": {
+      "heading": "商品",
+      "inStock": "在庫あり",
+      "outOfStock": "在庫切れ",
+      "cashback": "キャッシュバック {percent}%"
+    }
   },
   "cabinetProducts": {
     "title": "製品",
@@ -3435,7 +3465,12 @@
     "info": {
       "gtin_free": "このバーコードのパスポートはまだありません — あなたが最初です。",
       "proposed": "あなたの編集はメーカーに送信されました."
-    }
+    },
+    "offerHeading": "あなたのオファー",
+    "stockHeading": "あなたの在庫",
+    "stockEmpty": "この商品はあなたのどの倉庫にもありません",
+    "inTransit": "{qty} は輸送中",
+    "toWarehouses": "倉庫"
   },
   "scanner": {
     "open": "スキャン",
@@ -3460,6 +3495,145 @@
       "audio-capture": "このデバイスにはマイクがありません。",
       "language-not-supported": "このブラウザは説明の言語での音声を認識できません。",
       "failed": "音声入力を停止しました."
+    }
+  },
+  "offers": {
+    "price": "価格",
+    "currency": "通貨",
+    "unit": "単位",
+    "cashback": "キャッシュバック, %",
+    "cashbackNote": "キャッシュバック率は購入者へのあなたの約束です。プラットフォームのウォレットでの支払いが有効になると計上が開始されます",
+    "onlineUrl": "あなたのウェブショップでのこの商品のリンク",
+    "saleRules": "販売条件",
+    "publish": "オファーを公開",
+    "save": "オファーを保存",
+    "pause": "一時停止",
+    "resume": "再開",
+    "remove": "オファーを削除",
+    "pausedNote": "オファーは一時停止中です：購入者には表示されません。",
+    "saved": "保存しました。",
+    "units": {
+      "pcs": "個",
+      "pack": "パック",
+      "set": "セット",
+      "kg": "kg",
+      "g": "g",
+      "l": "l",
+      "ml": "ml",
+      "m": "m",
+      "m2": "m²",
+      "hour": "時間",
+      "service": "サービス"
+    },
+    "error": {
+      "unauth": "まずサインインしてください。",
+      "forbidden": "あなたの事業ではオファーを公開できません：掲載されていない、監督下にある、またはあなたのロールが閲覧専用です。",
+      "price_invalid": "価格は0より大きい数値で、小数は最大2桁まででなければなりません。",
+      "currency_invalid": "リストから通貨を選択してください。",
+      "unit_invalid": "リストから単位を選択してください。",
+      "cashback_invalid": "キャッシュバック率は0.1～50%の範囲でなければなりません。",
+      "url_invalid": "リンクは http:// または https:// で始まる必要があります。",
+      "product_not_found": "このパスポートは削除されたか、停止中か、別のものに統合されました。",
+      "not_found": "変更するオファーがありません。",
+      "failed": "保存できませんでした。"
+    }
+  },
+  "warehouses": {
+    "title": "倉庫",
+    "subtitle": "卸売店、販売拠点やオンラインに設置する棚、およびサードパーティ店舗。",
+    "notListed": "まだビジネスが掲載されていないため、棚は購入者に表示されません。",
+    "empty": "まだ倉庫がありません。",
+    "open": "開く",
+    "createHeading": "新規倉庫",
+    "create": "作成",
+    "kind": "種類",
+    "kinds": {
+      "WHOLESALE": "卸売店",
+      "SHELF": "棚（販売）",
+      "THIRD_PARTY": "サードパーティ店舗"
+    },
+    "name": "名称",
+    "point": "販売拠点",
+    "pointNone": "— 拠点なし —",
+    "onlineShelf": "オンライン棚",
+    "countryCode": "国コード",
+    "address": "住所",
+    "archived": "アーカイブ済み",
+    "archive": "アーカイブ",
+    "restore": "復元",
+    "positions": "{count} 件",
+    "totalQty": "合計 {qty}",
+    "stockHeading": "在庫",
+    "stockEmpty": "この倉庫にはまだ何もありません。",
+    "moveHeading": "移動を記録",
+    "moveKind": "種類",
+    "moveKinds": {
+      "RECEIPT": "入庫",
+      "ISSUE": "出庫",
+      "TRANSFER": "振替",
+      "ADJUST": "修正"
+    },
+    "moveStatus": {
+      "IN_TRANSIT": "輸送中",
+      "DONE": "完了",
+      "CANCELLED": "キャンセル済み"
+    },
+    "product": "商品",
+    "noProducts": "— まだ商品がありません —",
+    "from": "出庫元",
+    "to": "入庫先",
+    "warehouse": "倉庫",
+    "qty": "数量",
+    "carrier": "運送業者",
+    "carrierPlaceholder": "誰が運ぶか",
+    "carrierNote": "運送業者を指定すると、商品は元の場所を今すぐ出発し、あなたが受け入れるまで到着しません: 輸送中は第三の場所であり、到着先の棚ではありません。",
+    "adjustNote": "修正には理由が必要です: 説明のない「3減」は1年後には何の意味もありません。",
+    "tracking": "追跡番号",
+    "expectedAt": "到着予定",
+    "expectedShort": "予定",
+    "note": "メモ",
+    "reason": "理由",
+    "record": "記録",
+    "recorded": {
+      "done": "記録しました。",
+      "transit": "記録しました: 商品は輸送中で、受け入れ待ちです。"
+    },
+    "movesHeading": "最近の移動",
+    "movesEmpty": "この倉庫での移動はまだありません。",
+    "transitHeading": "輸送中",
+    "transitEmpty": "現在移動中のものはありません。",
+    "receive": "受け入れ",
+    "cancel": "キャンセル",
+    "cancelReason": "キャンセルの理由",
+    "cancelConfirm": "キャンセルして差出人に返送",
+    "error": {
+      "unauth": "まずサインインしてください。",
+      "forbidden": "あなたの事業は倉庫を変更できません: 掲載されていない、監督下にある、またはあなたの権限が閲覧専用です。",
+      "kind_invalid": "一覧から種類を選んでください。",
+      "name_required": "倉庫に名前を付けてください。",
+      "shelf_needs_place": "棚はどこかに設置する必要があります: 販売拠点を選ぶか、オンラインとしてマークしてください。",
+      "point_unknown": "あなたの承認済み拠点のいずれかを選んでください。",
+      "point_not_allowed": "販売拠点に設置できるのは棚のみです。",
+      "too_many": "倉庫数が上限に達しています。",
+      "warehouse_not_empty": "この倉庫にはまだ在庫があります。先に移動してください。そうしないと在庫が黙って消えてしまいます。",
+      "transit_pending": "この倉庫への出入荷でまだ移動中のものがあります。",
+      "already_archived": "既にアーカイブ済みです。",
+      "not_found": "見つかりません。",
+      "qty_invalid": "数量は小数点以下3桁までの数値である必要があります。",
+      "qty_zero": "数量0の移動は何も変えません。",
+      "qty_negative": "負の数量を取れるのは修正のみです。",
+      "reason_required": "理由を記入してください（3文字以上）。",
+      "from_required": "出庫元の倉庫を選んでください。",
+      "to_required": "入庫先の倉庫を選んでください。",
+      "same_warehouse": "振替には異なる2つの倉庫が必要です。",
+      "warehouse_unknown": "あなたのアーカイブされていない倉庫を選んでください.",
+      "product_not_found": "この商品はありません。",
+      "insufficient_stock": "そんなに棚に在庫はありません。マイナス在庫は事実ではなく、入力ミスです。",
+      "daily_limit": "今日は入出庫が多すぎます。明日もう一度お試しください。",
+      "date_invalid": "その日付は読み取れません。",
+      "not_in_transit": "これらの品はもう輸送中ではありません。",
+      "not_cancellable": "到着済みのものはキャンセルできません：問題として返品するか、訂正で対応してください。",
+      "failed": "保存できませんでした。"
     }
   }
 }

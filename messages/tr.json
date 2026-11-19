@@ -1586,7 +1586,8 @@
       "noReason": "Bir neden kaydedilmedi.",
       "hint": "Talebinizde yanıt verin, tekrar inceleyelim."
     },
-    "productsLink": "Ürünler"
+    "productsLink": "Ürünler",
+    "warehousesLink": "Depolar"
   },
   "cabinet": {
     "kicker": "Bölüm · Kabin",
@@ -3327,7 +3328,36 @@
     },
     "scanLooking": "Pasaport aranıyor…",
     "scanNotFound": "Henüz hiçbir pasaport {code} barkodunu taşımıyor.",
-    "scanCreate": "Bir tane oluştur"
+    "scanCreate": "Bir tane oluştur",
+    "whereToBuy": {
+      "heading": "Nereden alınır",
+      "empty": "Bunu henüz kimse satmıyor. Satıyorsanız, fiyatınızı işletme panelinizden yayınlayın.",
+      "inStock": "Stokta",
+      "outOfStock": "Şu anda stokta yok",
+      "cashback": "nakit iade {percent}%",
+      "toShop": "Mağazaya git",
+      "whereExactly": "tam olarak nerede",
+      "openMap": "Haritada aç",
+      "units": {
+        "pcs": "adet",
+        "pack": "paket",
+        "set": "takım",
+        "kg": "kg",
+        "g": "g",
+        "l": "l",
+        "ml": "ml",
+        "m": "m",
+        "m2": "m²",
+        "hour": "saat",
+        "service": "hizmet"
+      }
+    },
+    "showcase": {
+      "heading": "Ürünler",
+      "inStock": "Stokta",
+      "outOfStock": "Stokta yok",
+      "cashback": "cashback {percent}%"
+    }
   },
   "cabinetProducts": {
     "title": "Ürünler",
@@ -3435,7 +3465,12 @@
     "info": {
       "gtin_free": "Bu barkodla henüz pasaport yok — ilk sizsiniz.",
       "proposed": "Düzenlemeniz üreticiye gönderildi."
-    }
+    },
+    "offerHeading": "Teklifiniz",
+    "stockHeading": "Stoğunuz",
+    "stockEmpty": "Bu ürün hiçbir deponuzda yok.",
+    "inTransit": "{qty} yolda",
+    "toWarehouses": "Depolar"
   },
   "scanner": {
     "open": "Tara",
@@ -3460,6 +3495,145 @@
       "audio-capture": "Bu cihazda mikrofon yok.",
       "language-not-supported": "Bu tarayıcı, açıklamanın dilindeki konuşmayı tanıyamıyor.",
       "failed": "Dikte durduruldu."
+    }
+  },
+  "offers": {
+    "price": "Fiyat",
+    "currency": "Para birimi",
+    "unit": "Başına",
+    "cashback": "Cashback, %",
+    "cashbackNote": "Cashback oranı, alıcıya verdiğiniz taahhüttür. Tahakkuk, platform cüzdanı üzerinden ödeme etkin olduğunda başlar.",
+    "onlineUrl": "Bu ürünün web mağazanızdaki bağlantısı",
+    "saleRules": "Satış koşulları",
+    "publish": "Teklifi yayınla",
+    "save": "Teklifi kaydet",
+    "pause": "Duraklat",
+    "resume": "Sürdür",
+    "remove": "Teklifi kaldır",
+    "pausedNote": "Teklif duraklatıldı: alıcılar bunu göremez.",
+    "saved": "Kaydedildi.",
+    "units": {
+      "pcs": "adet",
+      "pack": "paket",
+      "set": "takım",
+      "kg": "kg",
+      "g": "g",
+      "l": "l",
+      "ml": "ml",
+      "m": "m",
+      "m2": "m²",
+      "hour": "saat",
+      "service": "hizmet"
+    },
+    "error": {
+      "unauth": "Önce oturum açın.",
+      "forbidden": "İşletmeniz ilan yayımlayamaz: listelenmemiş, denetim altında ya da rolünüz salt okunur.",
+      "price_invalid": "Fiyat sıfırın üzerinde, en fazla iki ondalıklı bir sayı olmalı.",
+      "currency_invalid": "Listeden bir para birimi seçin.",
+      "unit_invalid": "Listeden bir birim seçin.",
+      "cashback_invalid": "Cashback oranı yüzde 0,1 ile 50 arasında olmalı.",
+      "url_invalid": "Bağlantı http:// veya https:// ile başlamalı.",
+      "product_not_found": "Bu pasaport silinmiş, askıya alınmış ya da başkasıyla birleştirilmiş.",
+      "not_found": "Değiştirilecek ilan yok.",
+      "failed": "Kaydedilemedi."
+    }
+  },
+  "warehouses": {
+    "title": "Depolar",
+    "subtitle": "Toptan mağaza, satış noktalarınızda veya çevrimiçinde duran raflar ve üçüncü taraf mağazalar.",
+    "notListed": "İşletmeniz henüz listelenmedi, bu yüzden rafları alıcılara görünür değil.",
+    "empty": "Henüz depo yok.",
+    "open": "Aç",
+    "createHeading": "Yeni depo",
+    "create": "Oluştur",
+    "kind": "Tür",
+    "kinds": {
+      "WHOLESALE": "Toptan mağaza",
+      "SHELF": "Raf (satış)",
+      "THIRD_PARTY": "Üçüncü taraf mağaza"
+    },
+    "name": "Ad",
+    "point": "Satış noktası",
+    "pointNone": "— bir noktada değil —",
+    "onlineShelf": "Çevrimiçi raf",
+    "countryCode": "Ülke kodu",
+    "address": "Adres",
+    "archived": "arşivde",
+    "archive": "Arşivle",
+    "restore": "Geri yükle",
+    "positions": "{count} kalem",
+    "totalQty": "{qty} toplamda",
+    "stockHeading": "Stok",
+    "stockEmpty": "Bu depoda henüz hiçbir şey yok.",
+    "moveHeading": "Bir hareket kaydet",
+    "moveKind": "Tür",
+    "moveKinds": {
+      "RECEIPT": "Giriş",
+      "ISSUE": "Çıkış",
+      "TRANSFER": "Transfer",
+      "ADJUST": "Düzeltme"
+    },
+    "moveStatus": {
+      "IN_TRANSIT": "yolda",
+      "DONE": "tamamlandı",
+      "CANCELLED": "iptal edildi"
+    },
+    "product": "Ürün",
+    "noProducts": "— henüz ürün yok —",
+    "from": "Nereden",
+    "to": "Nereye",
+    "warehouse": "Depo",
+    "qty": "Miktar",
+    "carrier": "Taşıyıcı",
+    "carrierPlaceholder": "kim taşıyor",
+    "carrierNote": "Bir taşıyıcı belirtin; mallar hemen kaynaktan çıkar ve siz kabul edinceye kadar varmaz: yolda durumu varış rafı değil, üçüncü bir yerdir.",
+    "adjustNote": "Bir düzeltme bir neden gerektirir: «üç eksik» açıklamasız olursa bir yıl sonra hiçbir şey ifade etmez.",
+    "tracking": "Takip numarası",
+    "expectedAt": "Beklenen",
+    "expectedShort": "bekleniyor",
+    "note": "Not",
+    "reason": "Gerekçe",
+    "record": "Kaydet",
+    "recorded": {
+      "done": "Kaydedildi.",
+      "transit": "Kaydedildi: mallar yolda ve kabul edilmeyi bekliyor."
+    },
+    "movesHeading": "Son hareketler",
+    "movesEmpty": "Bu depoda henüz hareket yok.",
+    "transitHeading": "Yolda",
+    "transitEmpty": "Şu anda taşınan bir şey yok.",
+    "receive": "Kabul et",
+    "cancel": "İptal et",
+    "cancelReason": "Neden iptal edildi",
+    "cancelConfirm": "İptal et ve gönderenine geri gönder",
+    "error": {
+      "unauth": "Önce oturum açın.",
+      "forbidden": "İşletmeniz depoları değiştiremez: listede değil, denetim altında veya rolünüz salt okunur.",
+      "kind_invalid": "Listeden bir tür seçin.",
+      "name_required": "Depoya bir ad verin.",
+      "shelf_needs_place": "Bir rafın bir yerde durması gerekir: bir satış noktası seçin veya çevrimiçi olarak işaretleyin.",
+      "point_unknown": "Onaylı kendi noktalarınızdan birini seçin.",
+      "point_not_allowed": "Bir satış noktasına yalnızca raf konabilir.",
+      "too_many": "Zaten azami sayıda deponuz var.",
+      "warehouse_not_empty": "Bu depoda hâlâ mallar var. Önce onları çıkarın, yoksa stok sessizce kaybolur.",
+      "transit_pending": "Bu depoya veya bu depodan hâlâ bir şeyler taşınıyor.",
+      "already_archived": "Zaten arşivlendi.",
+      "not_found": "Bulunamadı.",
+      "qty_invalid": "Miktar en fazla üç ondalık basamaklı bir sayı olmalı.",
+      "qty_zero": "Sıfır miktarlı bir hareket hiçbir şeyi değiştirmez.",
+      "qty_negative": "Negatif miktar yalnızca bir düzeltmede kullanılır.",
+      "reason_required": "Nedeni yazın (en az 3 karakter).",
+      "from_required": "Malların çıkacağı depoyu seçin.",
+      "to_required": "Malların varacağı depoyu seçin.",
+      "same_warehouse": "Bir transfer iki farklı depo gerektirir.",
+      "warehouse_unknown": "Kendi, arşivlenmemiş depolarınızı seçin.",
+      "product_not_found": "Bu ürün artık yok.",
+      "insufficient_stock": "Raflarda o kadar yok. Negatif stok bir yazım hatasıdır, gerçek değil.",
+      "daily_limit": "Bugün çok fazla hareket var. Yarın tekrar deneyin.",
+      "date_invalid": "Bu tarih okunamıyor.",
+      "not_in_transit": "Bu mallar artık yolda değil.",
+      "not_cancellable": "Zaten gelen iptal edilemez: bir çıkış işlemi veya düzeltme ile geri gönderin.",
+      "failed": "Kaydedilemedi."
     }
   }
 }

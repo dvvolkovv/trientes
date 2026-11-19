@@ -20,6 +20,7 @@ export function CryptoMapSection({
   coinName,
   focus = null,
   area = null,
+  productSlug = null,
 }: {
   coinId: string;
   symbol: string;
@@ -28,6 +29,8 @@ export function CryptoMapSection({
   focus?: MapFocus | null;
   /** Прямоугольник точек приёма: карта открывается на них всех. */
   area?: MapArea | null;
+  /** Товар из адреса: фид отдаёт только полки, где он лежит. */
+  productSlug?: string | null;
 }) {
   const t = useTranslations("cryptoMap");
   return (
@@ -39,12 +42,13 @@ export function CryptoMapSection({
           место той же монеты обязан пересобрать карту, иначе она осталась бы
           на прежнем виде — камера выбирается один раз, при создании. */}
       <CryptoNavigator
-        key={`${coinId}|${focus?.id ?? ""}|${areaKey(area)}`}
+        key={`${coinId}|${productSlug ?? ""}|${focus?.id ?? ""}|${areaKey(area)}`}
         coinId={coinId}
         symbol={symbol}
         coinName={coinName}
         focus={focus}
         area={area}
+        productSlug={productSlug}
       />
     </section>
   );

@@ -8,6 +8,7 @@ import { tokenizationReadiness } from "@/lib/products/rules";
 import { ProductGallery, type GalleryPhoto } from "@/components/product/gallery";
 import { SpeakButton } from "@/components/product/speak-button";
 import { ProductReportDialog } from "@/components/product/report-dialog";
+import { WhereToBuy } from "@/components/product/where-to-buy";
 
 export const dynamic = "force-dynamic";
 
@@ -196,6 +197,9 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
           </ul>
         </section>
       ) : null}
+
+      {/* Где взять — предложения продавцов и полки с остатком (слайс BC). */}
+      <WhereToBuy productId={product.id} slug={product.slug} locale={locale} />
 
       <section className="mt-10 border border-hairline rounded-lg p-4">
         <h2 className="text-xs uppercase tracking-[0.2em] text-muted mb-2">{t("tokenHeading")}</h2>

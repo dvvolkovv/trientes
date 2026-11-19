@@ -1586,7 +1586,8 @@
       "noReason": "未记录原因。",
       "hint": "请在您的案件帖中回复，我们会重新审核。"
     },
-    "productsLink": "产品"
+    "productsLink": "产品",
+    "warehousesLink": "仓库"
   },
   "cabinet": {
     "kicker": "板块 · 个人中心",
@@ -3327,7 +3328,36 @@
     },
     "scanLooking": "正在查找该护照…",
     "scanNotFound": "尚无带有条码 {code} 的护照。",
-    "scanCreate": "创建一个"
+    "scanCreate": "创建一个",
+    "whereToBuy": {
+      "heading": "在哪里买",
+      "empty": "尚无人出售。如果你有，请在你的商家后台发布价格",
+      "inStock": "有货",
+      "outOfStock": "当前无货",
+      "cashback": "返现 {percent}%",
+      "toShop": "去商店",
+      "whereExactly": "具体位置",
+      "openMap": "在地图上打开",
+      "units": {
+        "pcs": "件",
+        "pack": "包",
+        "set": "套",
+        "kg": "千克",
+        "g": "克",
+        "l": "升",
+        "ml": "毫升",
+        "m": "米",
+        "m2": "平方米",
+        "hour": "小时",
+        "service": "项服务"
+      }
+    },
+    "showcase": {
+      "heading": "商品",
+      "inStock": "有货",
+      "outOfStock": "无货",
+      "cashback": "返现 {percent}%"
+    }
   },
   "cabinetProducts": {
     "title": "产品",
@@ -3435,7 +3465,12 @@
     "info": {
       "gtin_free": "该条形码尚无护照——您是第一个。",
       "proposed": "您的编辑已发送给制造商。"
-    }
+    },
+    "offerHeading": "你的报价",
+    "stockHeading": "你的库存",
+    "stockEmpty": "此商品不在你的任何仓库中",
+    "inTransit": "{qty} 在途",
+    "toWarehouses": "仓库"
   },
   "scanner": {
     "open": "扫描",
@@ -3460,6 +3495,145 @@
       "audio-capture": "此设备没有麦克风。",
       "language-not-supported": "此浏览器无法识别该说明所用语言的语音。",
       "failed": "口述已停止。"
+    }
+  },
+  "offers": {
+    "price": "价格",
+    "currency": "货币",
+    "unit": "每",
+    "cashback": "返现，%",
+    "cashbackNote": "返现比例是您对买家的承诺。通过平台钱包的支付上线后开始计提。",
+    "onlineUrl": "您网店中该商品的链接",
+    "saleRules": "销售条款",
+    "publish": "发布报价",
+    "save": "保存报价",
+    "pause": "暂停",
+    "resume": "恢复",
+    "remove": "删除报价",
+    "pausedNote": "该报价已暂停：买家不见它。",
+    "saved": "已保存。",
+    "units": {
+      "pcs": "件",
+      "pack": "包",
+      "set": "套",
+      "kg": "千克",
+      "g": "克",
+      "l": "升",
+      "ml": "毫升",
+      "m": "米",
+      "m2": "平方米",
+      "hour": "小时",
+      "service": "服务"
+    },
+    "error": {
+      "unauth": "请先登录。",
+      "forbidden": "您的企业无法发布报价：未挂牌、受监管中，或您的角色为只读。",
+      "price_invalid": "价格必须为大于零的数字，小数位最多两位。",
+      "currency_invalid": "请从列表中选择一种货币。",
+      "unit_invalid": "请从列表中选择一种单位。",
+      "cashback_invalid": "返现比例必须在0.1%到50%之间。",
+      "url_invalid": "链接必须以 http:// 或 https:// 开头。",
+      "product_not_found": "此护照已删除、已暂停或已与其他合并。",
+      "not_found": "没有可更改的报价。",
+      "failed": "无法保存。"
+    }
+  },
+  "warehouses": {
+    "title": "仓库",
+    "subtitle": "批发仓、您销售点或线上平台上的货架，以及第三方仓。",
+    "notListed": "您的企业尚未挂牌，因此其货架对买家不可见。",
+    "empty": "尚无仓库。",
+    "open": "打开",
+    "createHeading": "新仓库",
+    "create": "创建",
+    "kind": "类型",
+    "kinds": {
+      "WHOLESALE": "批发店",
+      "SHELF": "货架（销售）",
+      "THIRD_PARTY": "第三方店"
+    },
+    "name": "名称",
+    "point": "销售点",
+    "pointNone": "— 不在任何销售点 —",
+    "onlineShelf": "线上货架",
+    "countryCode": "国家代码",
+    "address": "地址",
+    "archived": "已归档",
+    "archive": "归档",
+    "restore": "恢复",
+    "positions": "{count} 个品项",
+    "totalQty": "共计 {qty}",
+    "stockHeading": "库存",
+    "stockEmpty": "此仓库尚无库存。",
+    "moveHeading": "记录一笔出入库",
+    "moveKind": "类型",
+    "moveKinds": {
+      "RECEIPT": "入库",
+      "ISSUE": "出库",
+      "TRANSFER": "调拨",
+      "ADJUST": "更正"
+    },
+    "moveStatus": {
+      "IN_TRANSIT": "运输中",
+      "DONE": "已完成",
+      "CANCELLED": "已取消"
+    },
+    "product": "商品",
+    "noProducts": "— 暂无商品 —",
+    "from": "从",
+    "to": "至",
+    "warehouse": "仓库",
+    "qty": "数量",
+    "carrier": "承运方",
+    "carrierPlaceholder": "谁来承运",
+    "carrierNote": "指定承运方后，货物将立即离开源仓库，只有在你接收时才算到达：在途是第三个地点，而非目标货架。",
+    "adjustNote": "更正需要理由：«少了三个» 若无说明，一年后将毫无意义。",
+    "tracking": "追踪号",
+    "expectedAt": "预计",
+    "expectedShort": "预计",
+    "note": "备注",
+    "reason": "原因",
+    "record": "登记",
+    "recorded": {
+      "done": "已登记。",
+      "transit": "已登记：货物在途，等待接收。"
+    },
+    "movesHeading": "最近变动",
+    "movesEmpty": "此仓库暂无变动。",
+    "transitHeading": "在途",
+    "transitEmpty": "当前没有在途货物。",
+    "receive": "接收",
+    "cancel": "取消",
+    "cancelReason": "为什么取消",
+    "cancelConfirm": "取消并退回发件人",
+    "error": {
+      "unauth": "请先登录。",
+      "forbidden": "你的企业无法更改仓库：未被列出、受监管，或你的角色为只读。",
+      "kind_invalid": "从列表中选择一种类型。",
+      "name_required": "请为仓库命名。",
+      "shelf_needs_place": "货架必须放在某处：选择一个销售点或标记为在线。",
+      "point_unknown": "选择你自己已获批准的网点。",
+      "point_not_allowed": "只有货架可以放在销售点。",
+      "too_many": "你的仓库数量已达上限。",
+      "warehouse_not_empty": "此仓库仍有库存。请先转出，否则库存将会悄然消失。",
+      "transit_pending": "仍有在途货物正在发往或离开此仓库。",
+      "already_archived": "已归档。",
+      "not_found": "未找到。",
+      "qty_invalid": "数量必须是最多三位小数的数字。",
+      "qty_zero": "数量为零不会产生变动。",
+      "qty_negative": "只有更正才可以使用负数量。",
+      "reason_required": "填写原因（至少3个字符）。",
+      "from_required": "选择货物离开的仓库。",
+      "to_required": "选择货物到达的仓库。",
+      "same_warehouse": "调拨需要两个不同的仓库。",
+      "warehouse_unknown": "选择你自己的、未归档的仓库。",
+      "product_not_found": "该产品已不存在。",
+      "insufficient_stock": "货架上没有那么多。负库存是笔误，不是事实。",
+      "daily_limit": "今日变动过多。请明天再试。",
+      "date_invalid": "无法读取该日期。",
+      "not_in_transit": "这些货物已不在运输途中。",
+      "not_cancellable": "已到货的不可取消：请通过问题或更正退回。",
+      "failed": "无法保存。"
     }
   }
 }

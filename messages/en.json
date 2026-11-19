@@ -1586,7 +1586,8 @@
       "noReason": "No reason was recorded.",
       "hint": "Reply in your case thread and we will look at it again."
     },
-    "productsLink": "Products"
+    "productsLink": "Products",
+    "warehousesLink": "Warehouses"
   },
   "cabinet": {
     "kicker": "Section · Cabinet",
@@ -3327,7 +3328,36 @@
     },
     "scanLooking": "Looking for the passport…",
     "scanNotFound": "No passport carries the barcode {code} yet.",
-    "scanCreate": "Create one"
+    "scanCreate": "Create one",
+    "whereToBuy": {
+      "heading": "Where to buy",
+      "empty": "Nobody sells this yet. If you do, publish your price from your business cabinet.",
+      "inStock": "In stock",
+      "outOfStock": "Out of stock right now",
+      "cashback": "cashback {percent}%",
+      "toShop": "To the shop",
+      "whereExactly": "where exactly",
+      "openMap": "Open on the map",
+      "units": {
+        "pcs": "piece",
+        "pack": "pack",
+        "set": "set",
+        "kg": "kg",
+        "g": "g",
+        "l": "l",
+        "ml": "ml",
+        "m": "m",
+        "m2": "m²",
+        "hour": "hour",
+        "service": "service"
+      }
+    },
+    "showcase": {
+      "heading": "Products",
+      "inStock": "In stock",
+      "outOfStock": "Out of stock",
+      "cashback": "cashback {percent}%"
+    }
   },
   "cabinetProducts": {
     "title": "Products",
@@ -3435,7 +3465,12 @@
     "info": {
       "gtin_free": "No passport with this barcode yet — you are the first.",
       "proposed": "Your edit was sent to the manufacturer."
-    }
+    },
+    "offerHeading": "Your offer",
+    "stockHeading": "Your stock",
+    "stockEmpty": "This product is on none of your warehouses.",
+    "inTransit": "{qty} on the road",
+    "toWarehouses": "Warehouses"
   },
   "scanner": {
     "open": "Scan",
@@ -3460,6 +3495,145 @@
       "audio-capture": "No microphone on this device.",
       "language-not-supported": "This browser cannot recognise speech in the language of the description.",
       "failed": "Dictation stopped."
+    }
+  },
+  "offers": {
+    "price": "Price",
+    "currency": "Currency",
+    "unit": "Per",
+    "cashback": "Cashback, %",
+    "cashbackNote": "The cashback rate is your promise to the buyer. Accrual starts once payment through the platform wallet is live.",
+    "onlineUrl": "Link to this item in your web shop",
+    "saleRules": "Terms of sale",
+    "publish": "Publish the offer",
+    "save": "Save the offer",
+    "pause": "Pause",
+    "resume": "Resume",
+    "remove": "Remove the offer",
+    "pausedNote": "The offer is paused: buyers do not see it.",
+    "saved": "Saved.",
+    "units": {
+      "pcs": "piece",
+      "pack": "pack",
+      "set": "set",
+      "kg": "kg",
+      "g": "g",
+      "l": "l",
+      "ml": "ml",
+      "m": "m",
+      "m2": "m²",
+      "hour": "hour",
+      "service": "service"
+    },
+    "error": {
+      "unauth": "Sign in first.",
+      "forbidden": "Your business cannot publish offers: it is not listed, is under supervision, or your role is read-only.",
+      "price_invalid": "The price must be a number above zero, with at most two decimals.",
+      "currency_invalid": "Pick a currency from the list.",
+      "unit_invalid": "Pick a unit from the list.",
+      "cashback_invalid": "The cashback rate must be between 0.1 and 50 percent.",
+      "url_invalid": "The link must start with http:// or https://.",
+      "product_not_found": "This passport is gone, suspended, or merged into another one.",
+      "not_found": "No offer to change.",
+      "failed": "Could not save."
+    }
+  },
+  "warehouses": {
+    "title": "Warehouses",
+    "subtitle": "A wholesale store, shelves that stand on your sales points or online, and third-party stores.",
+    "notListed": "Your business is not listed yet, so its shelves stay invisible to buyers.",
+    "empty": "No warehouses yet.",
+    "open": "Open",
+    "createHeading": "New warehouse",
+    "create": "Create",
+    "kind": "Kind",
+    "kinds": {
+      "WHOLESALE": "Wholesale store",
+      "SHELF": "Shelf (sales)",
+      "THIRD_PARTY": "Third-party store"
+    },
+    "name": "Name",
+    "point": "Sales point",
+    "pointNone": "— not on a point —",
+    "onlineShelf": "Online shelf",
+    "countryCode": "Country code",
+    "address": "Address",
+    "archived": "archived",
+    "archive": "Archive",
+    "restore": "Restore",
+    "positions": "{count} positions",
+    "totalQty": "{qty} in total",
+    "stockHeading": "Stock",
+    "stockEmpty": "Nothing on this warehouse yet.",
+    "moveHeading": "Record a movement",
+    "moveKind": "Kind",
+    "moveKinds": {
+      "RECEIPT": "Receipt",
+      "ISSUE": "Issue",
+      "TRANSFER": "Transfer",
+      "ADJUST": "Correction"
+    },
+    "moveStatus": {
+      "IN_TRANSIT": "in transit",
+      "DONE": "done",
+      "CANCELLED": "cancelled"
+    },
+    "product": "Product",
+    "noProducts": "— no products yet —",
+    "from": "From",
+    "to": "To",
+    "warehouse": "Warehouse",
+    "qty": "Quantity",
+    "carrier": "Carrier",
+    "carrierPlaceholder": "who carries it",
+    "carrierNote": "Name a carrier and the goods leave the source now and arrive only when you accept them: in transit is a third place, not the destination shelf.",
+    "adjustNote": "A correction needs a reason: «three fewer» without words means nothing a year later.",
+    "tracking": "Tracking number",
+    "expectedAt": "Expected",
+    "expectedShort": "expected",
+    "note": "Note",
+    "reason": "Reason",
+    "record": "Record",
+    "recorded": {
+      "done": "Recorded.",
+      "transit": "Recorded: the goods are on the road and wait to be accepted."
+    },
+    "movesHeading": "Recent movements",
+    "movesEmpty": "No movements on this warehouse yet.",
+    "transitHeading": "On the road",
+    "transitEmpty": "Nothing is travelling right now.",
+    "receive": "Accept",
+    "cancel": "Cancel",
+    "cancelReason": "Why is it cancelled",
+    "cancelConfirm": "Cancel and return to the sender",
+    "error": {
+      "unauth": "Sign in first.",
+      "forbidden": "Your business cannot change warehouses: it is not listed, is under supervision, or your role is read-only.",
+      "kind_invalid": "Pick a kind from the list.",
+      "name_required": "Give the warehouse a name.",
+      "shelf_needs_place": "A shelf has to stand somewhere: pick a sales point or mark it as online.",
+      "point_unknown": "Pick one of your own approved points.",
+      "point_not_allowed": "Only a shelf stands on a sales point.",
+      "too_many": "You already have the maximum number of warehouses.",
+      "warehouse_not_empty": "This warehouse still holds goods. Move them out first, or the stock would vanish silently.",
+      "transit_pending": "Something is still travelling to or from this warehouse.",
+      "already_archived": "Already archived.",
+      "not_found": "Not found.",
+      "qty_invalid": "The quantity must be a number with at most three decimals.",
+      "qty_zero": "A movement of zero changes nothing.",
+      "qty_negative": "Only a correction takes a negative quantity.",
+      "reason_required": "Write the reason (at least 3 characters).",
+      "from_required": "Pick the warehouse the goods leave.",
+      "to_required": "Pick the warehouse the goods arrive at.",
+      "same_warehouse": "A transfer needs two different warehouses.",
+      "warehouse_unknown": "Pick your own, non-archived warehouses.",
+      "product_not_found": "This product is gone.",
+      "insufficient_stock": "There is not that much on the shelf. Negative stock is a typo, not a fact.",
+      "daily_limit": "Too many movements today. Try again tomorrow.",
+      "date_invalid": "That date cannot be read.",
+      "not_in_transit": "These goods are not on the road any more.",
+      "not_cancellable": "What already arrived cannot be cancelled: return it with an issue or a correction.",
+      "failed": "Could not save."
     }
   }
 }

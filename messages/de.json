@@ -1586,7 +1586,8 @@
       "noReason": "Es wurde kein Grund angegeben.",
       "hint": "Antworten Sie in Ihrem Fall-Thread und wir schauen es uns erneut an."
     },
-    "productsLink": "Produkte"
+    "productsLink": "Produkte",
+    "warehousesLink": "Lager"
   },
   "cabinet": {
     "kicker": "Bereich · Kabinett",
@@ -3327,7 +3328,36 @@
     },
     "scanLooking": "Suche nach dem Pass…",
     "scanNotFound": "Noch enthält kein Pass den Barcode {code}.",
-    "scanCreate": "Erstellen"
+    "scanCreate": "Erstellen",
+    "whereToBuy": {
+      "heading": "Wo kaufen",
+      "empty": "Niemand verkauft das bisher. Wenn doch, veröffentliche deinen Preis in deinem Unternehmensbereich",
+      "inStock": "Auf Lager",
+      "outOfStock": "Derzeit nicht auf Lager",
+      "cashback": "Cashback {percent}%",
+      "toShop": "Zum Shop",
+      "whereExactly": "wo genau",
+      "openMap": "Auf der Karte öffnen",
+      "units": {
+        "pcs": "Stück",
+        "pack": "Packung",
+        "set": "Set",
+        "kg": "kg",
+        "g": "g",
+        "l": "l",
+        "ml": "ml",
+        "m": "m",
+        "m2": "m²",
+        "hour": "Stunde",
+        "service": "Dienstleistung"
+      }
+    },
+    "showcase": {
+      "heading": "Produkte",
+      "inStock": "Auf Lager",
+      "outOfStock": "Nicht vorrätig",
+      "cashback": "Cashback {percent}%"
+    }
   },
   "cabinetProducts": {
     "title": "Produkte",
@@ -3435,7 +3465,12 @@
     "info": {
       "gtin_free": "Noch kein Pass mit diesem Barcode — Sie sind die/der Erste.",
       "proposed": "Ihre Änderung wurde an den Hersteller gesendet."
-    }
+    },
+    "offerHeading": "Ihr Angebot",
+    "stockHeading": "Ihr Bestand",
+    "stockEmpty": "Dieses Produkt befindet sich in keinem Ihrer Lager.",
+    "inTransit": "{qty} unterwegs",
+    "toWarehouses": "Lager"
   },
   "scanner": {
     "open": "Scannen",
@@ -3460,6 +3495,145 @@
       "audio-capture": "Kein Mikrofon auf diesem Gerät.",
       "language-not-supported": "Dieser Browser kann Sprache in der Sprache der Beschreibung nicht erkennen.",
       "failed": "Diktieren wurde beendet."
+    }
+  },
+  "offers": {
+    "price": "Preis",
+    "currency": "Währung",
+    "unit": "Pro",
+    "cashback": "Cashback, %",
+    "cashbackNote": "Der Cashback-Satz ist Ihr Versprechen an den Käufer. Die Gutschrift beginnt, sobald Zahlungen über die Plattform-Wallet live sind.",
+    "onlineUrl": "Link zu diesem Artikel in Ihrem Webshop",
+    "saleRules": "Verkaufsbedingungen",
+    "publish": "Angebot veröffentlichen",
+    "save": "Angebot speichern",
+    "pause": "Pausieren",
+    "resume": "Fortsetzen",
+    "remove": "Angebot entfernen",
+    "pausedNote": "Das Angebot ist pausiert: Käufer sehen es nicht.",
+    "saved": "Gespeichert.",
+    "units": {
+      "pcs": "Stück",
+      "pack": "Packung",
+      "set": "Set",
+      "kg": "kg",
+      "g": "g",
+      "l": "l",
+      "ml": "ml",
+      "m": "m",
+      "m2": "m²",
+      "hour": "Stunde",
+      "service": "Service"
+    },
+    "error": {
+      "unauth": "Melden Sie sich zuerst an.",
+      "forbidden": "Ihr Unternehmen kann keine Angebote veröffentlichen: Es ist nicht gelistet, steht unter Aufsicht oder Ihre Rolle ist schreibgeschützt.",
+      "price_invalid": "Der Preis muss eine Zahl über Null sein, mit höchstens zwei Dezimalstellen.",
+      "currency_invalid": "Wählen Sie eine Währung aus der Liste.",
+      "unit_invalid": "Wählen Sie eine Einheit aus der Liste.",
+      "cashback_invalid": "Der Cashback-Satz muss zwischen 0,1 und 50 Prozent liegen.",
+      "url_invalid": "Der Link muss mit http:// oder https:// beginnen.",
+      "product_not_found": "Dieser Pass ist nicht mehr vorhanden, gesperrt oder mit einem anderen zusammengeführt.",
+      "not_found": "Kein Angebot zum Ändern.",
+      "failed": "Konnte nicht gespeichert werden."
+    }
+  },
+  "warehouses": {
+    "title": "Lager",
+    "subtitle": "Ein Großhandelslager, Regale an Ihren Verkaufsstellen oder online sowie Drittanbieterlager.",
+    "notListed": "Ihr Unternehmen ist noch nicht gelistet, daher bleiben seine Regale für Käufer unsichtbar.",
+    "empty": "Noch keine Lager.",
+    "open": "Öffnen",
+    "createHeading": "Neues Lager",
+    "create": "Erstellen",
+    "kind": "Art",
+    "kinds": {
+      "WHOLESALE": "Großhandelslager",
+      "SHELF": "Regal (Verkauf)",
+      "THIRD_PARTY": "Drittanbieterlager"
+    },
+    "name": "Name",
+    "point": "Verkaufsstelle",
+    "pointNone": "— nicht an einer Verkaufsstelle —",
+    "onlineShelf": "Online-Regal",
+    "countryCode": "Ländercode",
+    "address": "Adresse",
+    "archived": "archiviert",
+    "archive": "Archivieren",
+    "restore": "Wiederherstellen",
+    "positions": "{count} Positionen",
+    "totalQty": "{qty} insgesamt",
+    "stockHeading": "Bestand",
+    "stockEmpty": "In diesem Lager ist noch nichts.",
+    "moveHeading": "Bewegung erfassen",
+    "moveKind": "Art",
+    "moveKinds": {
+      "RECEIPT": "Eingang",
+      "ISSUE": "Ausgang",
+      "TRANSFER": "Umlagerung",
+      "ADJUST": "Korrektur"
+    },
+    "moveStatus": {
+      "IN_TRANSIT": "unterwegs",
+      "DONE": "abgeschlossen",
+      "CANCELLED": "storniert"
+    },
+    "product": "Produkt",
+    "noProducts": "— noch keine Produkte —",
+    "from": "Von",
+    "to": "An",
+    "warehouse": "Lager",
+    "qty": "Menge",
+    "carrier": "Frachtführer",
+    "carrierPlaceholder": "wer es transportiert",
+    "carrierNote": "Nennen Sie einen Frachtführer, und die Ware verlässt die Quelle jetzt und trifft erst ein, wenn Sie sie annehmen: «Unterwegs» ist ein dritter Ort, nicht das Zielregal.",
+    "adjustNote": "Eine Korrektur braucht einen Grund: «drei weniger» ohne Worte bedeutet in einem Jahr nichts mehr.",
+    "tracking": "Sendungsnummer",
+    "expectedAt": "Erwartet",
+    "expectedShort": "erwartet",
+    "note": "Notiz",
+    "reason": "Grund",
+    "record": "Erfassen",
+    "recorded": {
+      "done": "Erfasst.",
+      "transit": "Erfasst: Die Ware ist unterwegs und wartet auf Annahme."
+    },
+    "movesHeading": "Letzte Bewegungen",
+    "movesEmpty": "In diesem Lager gab es noch keine Bewegungen.",
+    "transitHeading": "Unterwegs",
+    "transitEmpty": "Derzeit ist nichts unterwegs.",
+    "receive": "Annehmen",
+    "cancel": "Abbrechen",
+    "cancelReason": "Warum wird es storniert",
+    "cancelConfirm": "Abbrechen und an den Absender zurücksenden",
+    "error": {
+      "unauth": "Zuerst anmelden.",
+      "forbidden": "Ihr Unternehmen kann Lager nicht ändern: Es ist nicht gelistet, steht unter Aufsicht oder Ihre Rolle ist schreibgeschützt.",
+      "kind_invalid": "Wählen Sie einen Typ aus der Liste.",
+      "name_required": "Geben Sie dem Lager einen Namen.",
+      "shelf_needs_place": "Ein Regal muss irgendwo stehen: Wählen Sie eine Verkaufsstelle oder markieren Sie es als online.",
+      "point_unknown": "Wählen Sie eine Ihrer eigenen genehmigten Verkaufsstellen.",
+      "point_not_allowed": "Nur ein Regal kann an einer Verkaufsstelle stehen.",
+      "too_many": "Sie haben bereits die maximale Anzahl an Lagern.",
+      "warehouse_not_empty": "In diesem Lager befinden sich noch Waren. Bewegen Sie sie zuerst heraus, sonst würde der Bestand stillschweigend verschwinden.",
+      "transit_pending": "Etwas ist noch zu oder von diesem Lager unterwegs.",
+      "already_archived": "Bereits archiviert.",
+      "not_found": "Nicht gefunden.",
+      "qty_invalid": "Die Menge muss eine Zahl mit höchstens drei Dezimalstellen sein.",
+      "qty_zero": "Eine Bewegung von Null ändert nichts.",
+      "qty_negative": "Nur eine Korrektur darf eine negative Menge haben.",
+      "reason_required": "Geben Sie den Grund an (mindestens 3 Zeichen).",
+      "from_required": "Wählen Sie das Lager, von dem die Waren abgehen.",
+      "to_required": "Wählen Sie das Lager, in dem die Waren ankommen.",
+      "same_warehouse": "Eine Umlagerung benötigt zwei verschiedene Lager.",
+      "warehouse_unknown": "Wählen Sie Ihre eigenen, nicht archivierten Lager.",
+      "product_not_found": "Dieses Produkt ist nicht mehr vorhanden.",
+      "insufficient_stock": "So viel liegt nicht im Regal. Negativer Bestand ist ein Tippfehler, keine Tatsache.",
+      "daily_limit": "Zu viele Bewegungen heute. Versuchen Sie es morgen erneut.",
+      "date_invalid": "Dieses Datum kann nicht gelesen werden.",
+      "not_in_transit": "Diese Waren sind nicht mehr unterwegs.",
+      "not_cancellable": "Was bereits angekommen ist, kann nicht storniert werden: Buchen Sie es mit einer Entnahme oder einer Korrektur zurück.",
+      "failed": "Konnte nicht gespeichert werden."
     }
   }
 }

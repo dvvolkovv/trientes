@@ -10,6 +10,7 @@ import { fetchOsmPoisInBbox } from "@/lib/osm-poi-store";
 import { fetchApprovedPointsInBbox, fetchClaimedOsmKeysInBbox } from "@/lib/company-points";
 import { poiIdToOsmKey } from "@/lib/osm-key";
 import { fetchApprovedFintechHqInBbox } from "@/lib/fintech-pois";
+import { pointIdsWithProduct } from "@/lib/products/offers-read";
 
 export const dynamic = "force-dynamic";
 
@@ -18,9 +19,29 @@ export async function GET(req: Request) {
   const bboxParam = url.searchParams.get("bbox");
   const selector = parseCoinSelector(url.searchParams.get("coin"));
   const symbol = url.searchParams.get("symbol") ?? "btc";
+  const productSlug = url.searchParams.get("product");
 
   const bbox = parseBbox(bboxParam);
   if (!bbox) return NextResponse.json({ error: "invalid bbox" }, { status: 400 });
+
+  // Фильтр по товару (слайс BC): отдаём только свои точки, где он лежит на полке.
+  // Зеркало BTC Map и каталог финтеха о товарах не знают, и домешивать их значило бы
+  // показывать места, где товара нет.
+  if (productSlug) {
+    let pointIds: string[] = [];
+    try {
+      pointIds = await pointIdsWithProduct(productSlug);
+    } catch {
+      // Сбой чтения — пустая карта, а не карта всех точек: вторая врала бы о товаре.
+      return NextResponse.json({ pois: [] });
+    }
+    try {
+      const points = await fetchApprovedPointsInBbox(bbox, selector, pointIds);
+      return NextResponse.json({ pois: points });
+    } catch {
+      return NextResponse.json({ pois: [] });
+    }
+  }
 
   // В зеркале BTC Map собственных карточек заведомо нет, и притворяться, что
   // есть, нельзя: для карточки берём общий крипто-тег, а фильтр по карточке

@@ -9,6 +9,9 @@ import { ProductForm } from "@/components/product/product-form";
 import { emptyProduct, type ProductFormValues } from "@/lib/products/form-values";
 import { ProductHistory } from "@/components/product/history";
 import { RevisionsInbox } from "@/components/product/revisions-inbox";
+import { OfferForm } from "@/components/offers/offer-form";
+import { readOfferForCabinet } from "@/lib/products/offers-read";
+import { readStockByProduct } from "@/lib/warehouse/read";
 
 export const dynamic = "force-dynamic";
 
@@ -62,9 +65,14 @@ export default async function CompanyProductEditor({
       }
     : emptyProduct(locale);
 
-  const [history, revisions] = product
-    ? await Promise.all([readProductHistory(product.id), readPendingRevisions(product.id)])
-    : [[], []];
+  const [history, revisions, offer, stock] = product
+    ? await Promise.all([
+        readProductHistory(product.id),
+        readPendingRevisions(product.id),
+        readOfferForCabinet(company.id, product.id),
+        readStockByProduct(company.id, product.id),
+      ])
+    : [[], [], null, null];
 
   const owned = product?.ownerCompanyId === company.id;
 
@@ -89,6 +97,57 @@ export default async function CompanyProductEditor({
           willPropose={gate === "revision"}
         />
       )}
+
+      {product && gate !== "forbidden" ? (
+        <section className="mt-10 border border-hairline rounded-lg p-4">
+          <h2 className="text-xs uppercase tracking-[0.2em] text-muted mb-3">{t("offerHeading")}</h2>
+          {/* Цена и ставка — свойства продавца, а не паспорта: правятся там же, где товар. */}
+          <OfferForm
+            companyId={company.id}
+            productId={product.id}
+            initial={{
+              price: offer ? String(offer.price) : "",
+              currency: offer?.currency ?? "EUR",
+              unit: offer?.unit ?? "pcs",
+              cashbackPercent: offer?.cashbackPercent === null || offer === null ? "" : String(offer.cashbackPercent),
+              saleRules: offer?.saleRules ?? "",
+              onlineUrl: offer?.onlineUrl ?? "",
+              status: offer?.status ?? "ACTIVE",
+              exists: Boolean(offer),
+            }}
+          />
+
+          <div className="mt-4 pt-4 border-t border-hairline">
+            <h3 className="text-xs uppercase tracking-[0.2em] text-muted mb-2">{t("stockHeading")}</h3>
+            {stock && stock.byWarehouse.length > 0 ? (
+              <ul className="text-[13px] flex flex-col gap-1">
+                {stock.byWarehouse.map((row) => (
+                  <li key={row.warehouseId}>
+                    <Link
+                      href={`/${locale}/cabinet/companies/${company.id}/warehouses/${row.warehouseId}`}
+                      className="hover:text-accent"
+                    >
+                      {row.name}
+                    </Link>
+                    <span className="num text-muted"> · {row.qty}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-[13px] text-muted">{t("stockEmpty")}</p>
+            )}
+            {stock && stock.inTransit !== 0 ? (
+              <p className="text-[13px] text-muted mt-1 num">{t("inTransit", { qty: stock.inTransit })}</p>
+            ) : null}
+            <Link
+              href={`/${locale}/cabinet/companies/${company.id}/warehouses`}
+              className="inline-flex items-center h-12 px-4 mt-3 rounded-md border border-hairline text-sm"
+            >
+              {t("toWarehouses")}
+            </Link>
+          </div>
+        </section>
+      ) : null}
 
       {product && owned && revisions.length > 0 ? (
         <section className="mt-10">

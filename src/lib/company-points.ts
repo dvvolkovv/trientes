@@ -229,7 +229,13 @@ export async function fetchClaimedOsmKeysInBbox(bbox: Bbox): Promise<Set<string>
 export async function fetchApprovedPointsInBbox(
   bbox: Bbox,
   selector: CoinSelector,
+  /**
+   * Фильтр карты по товару (слайс BC): точки, где товар лежит на полке. Пустой массив —
+   * не «все точки», а «ни одной»: товара нет нигде, и карта обязана быть пустой.
+   */
+  onlyPointIds?: readonly string[],
 ): Promise<Poi[]> {
+  if (onlyPointIds && onlyPointIds.length === 0) return [];
   const rows = await prisma.companyPoint.findMany({
     where: {
       status: "APPROVED",
@@ -239,7 +245,10 @@ export async function fetchApprovedPointsInBbox(
       suspendedAt: null,
       lat: { gte: bbox.minLat, lte: bbox.maxLat },
       lon: { gte: bbox.minLon, lte: bbox.maxLon },
-      ...(selector.kind === "card"
+      ...(onlyPointIds ? { id: { in: [...onlyPointIds] } } : {}),
+      // Монета при фильтре по товару не применяется: человек ищет товар, а чем за него
+      // заплатить — отдельный вопрос, и ответ на него стоит в карточке точки.
+      ...(selector.kind === "card" && !onlyPointIds
         ? { acceptedCardIds: { has: selector.cardId } }
         : {}),
     },

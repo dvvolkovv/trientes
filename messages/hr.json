@@ -1586,7 +1586,8 @@
       "noReason": "Nije zabilježen razlog.",
       "hint": "Odgovorite u niti vašeg slučaja i ponovno ćemo to razmotriti."
     },
-    "productsLink": "Proizvodi"
+    "productsLink": "Proizvodi",
+    "warehousesLink": "Skladišta"
   },
   "cabinet": {
     "kicker": "Odjeljak · Profil",
@@ -3327,7 +3328,36 @@
     },
     "scanLooking": "Traži se putovnica…",
     "scanNotFound": "Još nijedna putovnica ne sadrži barkod {code}.",
-    "scanCreate": "Izradite jednu"
+    "scanCreate": "Izradite jednu",
+    "whereToBuy": {
+      "heading": "Gdje kupiti",
+      "empty": "Nitko to još ne prodaje. Ako prodajete, objavite svoju cijenu iz svojeg poslovnog profila",
+      "inStock": "Na zalihi",
+      "outOfStock": "Trenutačno nije na zalihi",
+      "cashback": "povrat novca {percent}%",
+      "toShop": "U trgovinu",
+      "whereExactly": "gdje točno",
+      "openMap": "Otvori na karti",
+      "units": {
+        "pcs": "komad",
+        "pack": "pakiranje",
+        "set": "set",
+        "kg": "kg",
+        "g": "g",
+        "l": "l",
+        "ml": "ml",
+        "m": "m",
+        "m2": "m²",
+        "hour": "sat",
+        "service": "usluga"
+      }
+    },
+    "showcase": {
+      "heading": "Proizvodi",
+      "inStock": "Na zalihi",
+      "outOfStock": "Nema na zalihi",
+      "cashback": "povrat novca {percent}%"
+    }
   },
   "cabinetProducts": {
     "title": "Proizvodi",
@@ -3435,7 +3465,12 @@
     "info": {
       "gtin_free": "Još nema putovnice s ovim barkodom — vi ste prvi.",
       "proposed": "Vaša je izmjena poslana proizvođaču."
-    }
+    },
+    "offerHeading": "Vaša ponuda",
+    "stockHeading": "Vaše zalihe",
+    "stockEmpty": "Ovaj proizvod nije ni u jednom vašem skladištu.",
+    "inTransit": "{qty} u tranzitu",
+    "toWarehouses": "Skladišta"
   },
   "scanner": {
     "open": "Skenirati",
@@ -3460,6 +3495,145 @@
       "audio-capture": "Na ovom uređaju nema mikrofona.",
       "language-not-supported": "Ovaj preglednik ne može prepoznati govor na jeziku opisa.",
       "failed": "Diktiranje je zaustavljeno."
+    }
+  },
+  "offers": {
+    "price": "Cijena",
+    "currency": "Valuta",
+    "unit": "Po",
+    "cashback": "Cashback, %",
+    "cashbackNote": "Stopa cashbacka vaša je obveza prema kupcu. Obračun počinje kada je omogućeno plaćanje putem novčanika platforme.",
+    "onlineUrl": "Poveznica na ovaj artikl u vašoj web trgovini",
+    "saleRules": "Uvjeti prodaje",
+    "publish": "Objaviti ponudu",
+    "save": "Spremiti ponudu",
+    "pause": "Pauzirati",
+    "resume": "Nastaviti",
+    "remove": "Ukloniti ponudu",
+    "pausedNote": "Ponuda je pauzirana: kupci je ne vide.",
+    "saved": "Spremljeno.",
+    "units": {
+      "pcs": "komad",
+      "pack": "pakiranje",
+      "set": "set",
+      "kg": "kg",
+      "g": "g",
+      "l": "l",
+      "ml": "ml",
+      "m": "m",
+      "m2": "m²",
+      "hour": "sat",
+      "service": "usluga"
+    },
+    "error": {
+      "unauth": "Najprije se prijavite.",
+      "forbidden": "Vaš poslovni subjekt ne može objavljivati ponude: nije uvršten, pod nadzorom je ili je vaša uloga samo za čitanje.",
+      "price_invalid": "Cijena mora biti broj veći od nule, s najviše dvije decimale.",
+      "currency_invalid": "Odaberite valutu s popisa.",
+      "unit_invalid": "Odaberite jedinicu s popisa.",
+      "cashback_invalid": "Stopa cashbacka mora biti između 0,1 i 50 posto.",
+      "url_invalid": "Poveznica mora počinjati s http:// ili https://.",
+      "product_not_found": "Ova putovnica je uklonjena, suspendirana ili spojena s drugom.",
+      "not_found": "Nema ponude za izmjenu.",
+      "failed": "Spremanje nije uspjelo."
+    }
+  },
+  "warehouses": {
+    "title": "Skladišta",
+    "subtitle": "Veleprodajna trgovina, police koje stoje na vašim prodajnim lokacijama ili online, i trgovine treće strane.",
+    "notListed": "Vaše poslovanje još nije uvršteno, pa su njegove police nevidljive kupcima.",
+    "empty": "Još nema skladišta.",
+    "open": "Otvori",
+    "createHeading": "Novo skladište",
+    "create": "Stvori",
+    "kind": "Vrsta",
+    "kinds": {
+      "WHOLESALE": "Veleprodajna trgovina",
+      "SHELF": "Polica (prodaja)",
+      "THIRD_PARTY": "Trgovina treće strane"
+    },
+    "name": "Naziv",
+    "point": "Prodajna lokacija",
+    "pointNone": "— nije na lokaciji —",
+    "onlineShelf": "Online polica",
+    "countryCode": "Kôd zemlje",
+    "address": "Adresa",
+    "archived": "arhivirano",
+    "archive": "Arhiviraj",
+    "restore": "Vrati",
+    "positions": "{count} stavki",
+    "totalQty": "{qty} ukupno",
+    "stockHeading": "Zalihe",
+    "stockEmpty": "Na ovom skladištu još ništa nema.",
+    "moveHeading": "Evidentirati kretanje",
+    "moveKind": "Vrsta",
+    "moveKinds": {
+      "RECEIPT": "Primitak",
+      "ISSUE": "Izdavanje",
+      "TRANSFER": "Prijenos",
+      "ADJUST": "Ispravak"
+    },
+    "moveStatus": {
+      "IN_TRANSIT": "u tranzitu",
+      "DONE": "dovršeno",
+      "CANCELLED": "otkazano"
+    },
+    "product": "Proizvod",
+    "noProducts": "— još nema proizvoda —",
+    "from": "Iz",
+    "to": "U",
+    "warehouse": "Skladište",
+    "qty": "Količina",
+    "carrier": "Prijevoznik",
+    "carrierPlaceholder": "tko to prevozi",
+    "carrierNote": "Imenujte prijevoznika i roba polazi s izvora sada te stiže tek kada je prihvatite: u tranzitu je treće mjesto, a ne odredišna polica.",
+    "adjustNote": "Ispravak treba razlog: «tri manje» bez riječi ne znači ništa godinu dana poslije.",
+    "tracking": "Broj za praćenje",
+    "expectedAt": "Očekivano",
+    "expectedShort": "očekivano",
+    "note": "Bilješka",
+    "reason": "Razlog",
+    "record": "Evidentirati",
+    "recorded": {
+      "done": "Evidentirano.",
+      "transit": "Evidentirano: roba je na putu i čeka prihvat."
+    },
+    "movesHeading": "Nedavna kretanja",
+    "movesEmpty": "Još nema kretanja na ovom skladištu.",
+    "transitHeading": "Na putu",
+    "transitEmpty": "Trenutno ništa ne putuje.",
+    "receive": "Prihvatiti",
+    "cancel": "Otkazati",
+    "cancelReason": "Zašto je otkazano",
+    "cancelConfirm": "Otkazati i vratiti pošiljatelju",
+    "error": {
+      "unauth": "Najprije se prijavite.",
+      "forbidden": "Vaše poduzeće ne može mijenjati skladišta: nije uvršteno, pod nadzorom je ili vaša uloga je samo za čitanje.",
+      "kind_invalid": "Odabrati vrstu s popisa.",
+      "name_required": "Dati skladištu naziv.",
+      "shelf_needs_place": "Polica mora negdje stajati: odabrati prodajnu lokaciju ili je označiti kao online.",
+      "point_unknown": "Odabrati jednu od svojih odobrenih lokacija.",
+      "point_not_allowed": "Samo polica može stajati na prodajnoj lokaciji.",
+      "too_many": "Već imate maksimalan broj skladišta.",
+      "warehouse_not_empty": "Ovo skladište još sadrži robu. Najprije je premjestiti, inače bi zaliha neopaženo nestala.",
+      "transit_pending": "Nešto još uvijek putuje u ili iz ovog skladišta.",
+      "already_archived": "Već arhivirano.",
+      "not_found": "Nije pronađeno.",
+      "qty_invalid": "Količina mora biti broj s najviše tri decimale.",
+      "qty_zero": "Kretanje od nule ništa ne mijenja.",
+      "qty_negative": "Samo ispravak može imati negativnu količinu.",
+      "reason_required": "Napisati razlog (najmanje 3 znaka).",
+      "from_required": "Odabrati skladište iz kojeg roba odlazi.",
+      "to_required": "Odabrati skladište u koje roba dolazi.",
+      "same_warehouse": "Prijenos treba dva različita skladišta.",
+      "warehouse_unknown": "Odabrati vlastita, nearhivirana skladišta.",
+      "product_not_found": "Taj proizvod više ne postoji.",
+      "insufficient_stock": "Nema toliko na polici. Negativna zaliha je tipkarska pogreška, a ne činjenica.",
+      "daily_limit": "Previše premještaja danas. Pokušajte ponovno sutra.",
+      "date_invalid": "Taj datum se ne može pročitati.",
+      "not_in_transit": "Ova roba više nije na putu.",
+      "not_cancellable": "Ono što je već stiglo ne može se otkazati: vratite to s prijavom problema ili korekcijom.",
+      "failed": "Spremanje nije uspjelo."
     }
   }
 }

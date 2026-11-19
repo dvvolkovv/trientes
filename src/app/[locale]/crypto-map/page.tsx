@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { LIVE_CARD_COMPANY, PUBLIC_COMPANY } from "@/lib/company-visibility";
 import { parseCoinSelector, parsePointId } from "@/lib/crypto-map";
 import { getAcceptanceArea } from "@/lib/coin-card-acceptance";
+import { readProductOffers } from "@/lib/products/offers-read";
 import type { MapArea, MapFocus } from "@/lib/map-start";
 import { CryptoMapSection } from "@/components/coin-detail/crypto-map-section";
 
@@ -72,6 +73,22 @@ async function resolveArea(selector: ReturnType<typeof parseCoinSelector>): Prom
   }
 }
 
+/** Прямоугольник полок с товаром: то же число, что считает раздел «где взять». */
+async function resolveProductArea(slug: string): Promise<MapArea | null> {
+  try {
+    const product = await prisma.product.findFirst({
+      where: { slug, deletedAt: null, suspendedAt: null, mergedIntoId: null },
+      select: { id: true },
+    });
+    if (!product) return null;
+    const { area } = await readProductOffers(product.id);
+    return area;
+  } catch {
+    // Сбой чтения — карта просто открывается как прежде, а не падает.
+    return null;
+  }
+}
+
 /**
  * Полноэкранный навигатор. До слайса F карта жила только секцией внутри
  * страницы монеты, но кнопка «открыть на карте» с карточки должна вести по
@@ -84,10 +101,10 @@ export default async function CryptoMapPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ coin?: string; point?: string }>;
+  searchParams: Promise<{ coin?: string; point?: string; product?: string }>;
 }) {
   const { locale } = await params;
-  const { coin, point } = await searchParams;
+  const { coin, point, product } = await searchParams;
   setRequestLocale(locale);
 
   const selector = parseCoinSelector(coin);
@@ -121,6 +138,9 @@ export default async function CryptoMapPage({
 
   // Названное место важнее области: в него и зовёт ссылка «где именно».
   const focus = await resolveFocus(point);
+  // Фильтр по товару (слайс BC): карта садится на полки, где он лежит, а не под ноги
+  // нажавшему — единственный магазин может оказаться в другой стране.
+  const productArea = product ? await resolveProductArea(product) : null;
   return (
     <main className="max-w-[1600px] mx-auto px-4 md:px-12 xl:px-20 py-8 space-y-6">
       <CryptoMapSection
@@ -128,7 +148,8 @@ export default async function CryptoMapPage({
         symbol={symbol}
         coinName={coinName}
         focus={focus}
-        area={focus ? null : await resolveArea(selector)}
+        area={focus ? null : (productArea ?? (await resolveArea(selector)))}
+        productSlug={product ?? null}
       />
     </main>
   );
