@@ -13,6 +13,25 @@ export type ExchangeFresh = {
 const TTL_SECONDS = 60 * 5;
 const NEG_TTL_SECONDS = 60; // short — try again soon if upstream is down/rate-limited
 
+/**
+ * Сколько страница ждёт чужую службу. Три секунды — тот же срок, что у рельса
+ * пожертвований на главной: у страницы уже есть числа из базы со своим штампом
+ * времени, и живой посетитель не должен платить за молчание CoinPaprika.
+ *
+ * Живой случай 19 ноября: запас месяца исчерпан, каждый 402 повторялся через 10
+ * и 30 секунд, страница биржи отдавалась **50 секунд**. Обход поисковика по
+ * двенадцати языкам разом догонял веб до 800 МБ, pm2 перезапускал его по памяти
+ * (17:03, 17:34, 18:36), и в эти секунды все посетители получали 502.
+ */
+export const FRESH_DEADLINE_MS = 3_000;
+
+/**
+ * Запросы в полёте по ключу биржи. Двенадцать языков одной страницы — это один
+ * вопрос службе, а не двенадцать: без этого обход поисковика множил и запросы, и
+ * память на число локалей.
+ */
+const inFlight = new Map<string, Promise<ExchangeFresh | null>>();
+
 function marketRowId(exchangeId: string, m: CoinPaprikaMarket): string {
   const cat = m.category ?? "spot";
   return `${exchangeId}:${m.baseSymbol}:${m.quoteSymbol}:${cat}`;
@@ -69,6 +88,16 @@ export async function getFreshExchangeDetail(
   cpId: string,
   exchangeId: string,
 ): Promise<ExchangeFresh | null> {
+  const running = inFlight.get(cpId);
+  if (running) return running;
+  const started = read(cpId, exchangeId).finally(() => {
+    inFlight.delete(cpId);
+  });
+  inFlight.set(cpId, started);
+  return started;
+}
+
+async function read(cpId: string, exchangeId: string): Promise<ExchangeFresh | null> {
   const key = `exch-fresh:${cpId}`;
   try {
     const cached = await redis.get(key);
@@ -82,7 +111,12 @@ export async function getFreshExchangeDetail(
 
   let detail;
   try {
-    detail = await fetchCoinPaprikaExchangeDetail(cpId);
+    // Срок: что не успело к отрисовке, для этой страницы не существует. Сам
+    // запрос продолжает жить — его ответ просто ляжет в снимок для следующего.
+    detail = await Promise.race([
+      fetchCoinPaprikaExchangeDetail(cpId),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), FRESH_DEADLINE_MS)),
+    ]);
   } catch {
     detail = null;
   }

@@ -10,6 +10,7 @@ import { fetchFearGreed } from "../src/lib/fear-greed";
 import { fetchMarkets } from "../src/lib/markets";
 import { syncPrices, syncGlobal, syncExchangeRates, syncCoinMetadata, syncExchanges, syncAdminAddedPrices, syncCardedCoinPrices, staleCardedIds, syncNews, syncFearGreed, syncMarkets, syncCoinPaprikaExchanges } from "../src/lib/sync/orchestrator";
 import { fetchCoinPaprikaExchanges, fetchCoinPaprikaExchangeDetail } from "../src/lib/coinpaprika";
+import { CpQuotaBlockedError } from "../src/lib/coinpaprika-http";
 import { runAlertsEval } from "../src/lib/alerts-eval";
 import { syncOsmCryptoPois } from "../src/lib/osm-poi-store";
 import { expireStaleRevisions } from "../src/lib/coin-card-expiry";
@@ -173,10 +174,17 @@ async function runCoinPaprikaSync() {
       prisma: prisma as never,
       minVolumeUsd: 100_000,
       btcUsd,
-      detailCallBudget: 25,
+      // Запас месяца, а не частота: см. расписание прогона ниже.
+      detailCallBudget: 10,
     });
     console.log(`[worker] coinpaprika-sync ok: +${result.created} new, ~${result.enriched} enriched, ${result.skipped} skipped, ${result.detailsAttempted} details, ${result.marketsUpserted} markets in ${Date.now() - t0}ms`);
   } catch (err) {
+    // Исчерпанный запас месяца — состояние службы, а не сбой прогона: звонить
+    // некуда до обновления запаса, и строка об этом не должна выглядеть аварией.
+    if (err instanceof CpQuotaBlockedError) {
+      console.log(`[worker] coinpaprika-sync skipped: ${err.message}`);
+      return;
+    }
     console.error(`[worker] coinpaprika-sync failed:`, err);
   }
 }
@@ -569,7 +577,10 @@ async function main() {
   await runGlobalSync();
   await runRatesSync();
   await runExchangesSync();
-  void runCoinPaprikaSync();
+  // CoinPaprika при старте **не зовём**: её ответы ложатся в базу, а не в Redis,
+  // греть нечего. А воркер перезапускается по нескольку раз в день (19 ноября —
+  // четырнадцать), и каждый такой прогон съедал 26 запросов из месячного запаса
+  // в 20 000. Каталог бирж наполняет часовой прогон ниже.
   await runAdminAddedSync();
   await runNewsSync();
   await runFearGreedSync();
@@ -606,8 +617,18 @@ async function main() {
   // Markets (Stooq) — key-less, independent of CoinGecko; every 20 min, offset off the others.
   cron.schedule("8,28,48 * * * *", () => void runMarketsSync());
 
-  // CoinPaprika exchanges — hourly enrichment + new-exchange discovery; offset to :25/:55.
-  cron.schedule("25,55 * * * *", () => {
+  // CoinPaprika exchanges — обогащение каталога и поиск новых бирж.
+  //
+  // Расписание считается **от запаса месяца**, а не от частоты. У тарифа 20 000
+  // запросов в месяц, то есть около 27 в час на всё: и на прогон, и на страницы
+  // бирж, которые зовут подробности при отрисовке. Прежние два прогона в час по
+  // 26 запросов (список плюс 25 подробностей) — это 37 тысяч в месяц, вдвое
+  // больше запаса, и 19 ноября он кончился на середине месяца: служба начала
+  // отвечать 402 на всё, страница биржи стала отдаваться 50 секунд, веб падал по
+  // памяти. Теперь один прогон в час по 11 запросов — около 8 тысяч в месяц,
+  // остаток остаётся живым посетителям. Каталог в 581 бирже обходится за двое
+  // суток; данные эти меняются медленнее.
+  cron.schedule("25 * * * *", () => {
     void runCoinPaprikaSync();
   });
 

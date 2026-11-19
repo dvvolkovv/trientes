@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CpHttpError, cpGet } from "@/lib/coinpaprika-http";
+import { CP_QUOTA_BLOCK_MS, CpHttpError, CpQuotaBlockedError, cpGet, resetCpQuotaBlock } from "@/lib/coinpaprika-http";
 import { createRateGate } from "@/lib/rate-gate";
 import type { JsonFetch } from "@/lib/coingecko-http";
 
@@ -85,5 +85,75 @@ describe("cpGet", () => {
     const err = await cpGet("/exchanges/nope", { ...base(c), fetchImpl: s.impl }).catch((e) => e);
     expect(err).toBeInstanceOf(CpHttpError);
     expect(String(err)).toContain("coinpaprika /exchanges/nope 404");
+  });
+});
+
+/**
+ * Живой случай 19 ноября: месячный запас тарифа кончился
+ * («This plan has 20000 monthly requests limit, your requests rate is:
+ * 20003.000000»), и каждый ответ 402 повторялся через 10 и 30 секунд. Страница
+ * биржи зовёт подробности при отрисовке, поэтому она отдавалась 50 секунд, обход
+ * поисковика по двенадцати языкам разом догонял веб до 800 МБ, pm2 перезапускал
+ * его по памяти — и все посетители получали 502. Исчерпанный запас месяца за
+ * десять секунд не вернётся: такой 402 повторять нельзя, и звонить до обновления
+ * запаса тоже некуда.
+ */
+describe("cpGet при исчерпанном запасе месяца", () => {
+  const quotaBody =
+    '{"error":"This plan has 20000 monthly requests limit, your requests rate is: 20003.000000. Check plans on coinpaprika.com"}';
+  const rateBody =
+    '{"error":"This plan has 20000 monthly requests limit, your requests rate is: 5000.000000."}';
+
+  const base = (c: ReturnType<typeof clock>) => ({
+    sleep: c.sleep,
+    jitter: () => 0.5,
+    gate: createRateGate({ minIntervalMs: 0, sleep: c.sleep, now: c.now }),
+    retryDelaysMs: [1_000],
+    now: c.now,
+  });
+
+  it("не повторяет такой 402 и называет причину", async () => {
+    resetCpQuotaBlock();
+    const c = clock();
+    const s = stub(res(402, quotaBody));
+    const err = await cpGet("/exchanges", { ...base(c), fetchImpl: s.impl }).catch((e) => e);
+    expect(err).toBeInstanceOf(CpHttpError);
+    expect((err as CpHttpError).quotaExhausted).toBe(true);
+    expect(s.urls).toHaveLength(1);
+    expect(c.slept).toEqual([]);
+  });
+
+  it("402 внутри запаса месяца по-прежнему повторяется — это частота", async () => {
+    resetCpQuotaBlock();
+    const c = clock();
+    const s = stub(res(402, rateBody), res(200, []));
+    await expect(cpGet("/exchanges", { ...base(c), fetchImpl: s.impl })).resolves.toEqual([]);
+    expect(s.urls).toHaveLength(2);
+  });
+
+  it("после исчерпанного запаса следующие вызовы не уходят в сеть вовсе", async () => {
+    resetCpQuotaBlock();
+    const c = clock();
+    const s = stub(res(402, quotaBody));
+    await cpGet("/exchanges", { ...base(c), fetchImpl: s.impl }).catch(() => undefined);
+
+    const s2 = stub(res(200, [{ id: "binance" }]));
+    const err = await cpGet("/exchanges/binance", { ...base(c), fetchImpl: s2.impl }).catch((e) => e);
+    expect(err).toBeInstanceOf(CpQuotaBlockedError);
+    expect(s2.urls).toHaveLength(0);
+  });
+
+  it("через окно ожидания запас проверяется снова", async () => {
+    resetCpQuotaBlock();
+    const c = clock();
+    const s = stub(res(402, quotaBody));
+    await cpGet("/exchanges", { ...base(c), fetchImpl: s.impl }).catch(() => undefined);
+
+    const later = clock(c.now() + CP_QUOTA_BLOCK_MS + 1);
+    const s2 = stub(res(200, [{ id: "binance" }]));
+    await expect(
+      cpGet("/exchanges", { ...base(later), fetchImpl: s2.impl }),
+    ).resolves.toEqual([{ id: "binance" }]);
+    expect(s2.urls).toHaveLength(1);
   });
 });
