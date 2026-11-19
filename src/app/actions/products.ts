@@ -6,13 +6,13 @@ import { prisma } from "@/lib/prisma";
 import { ensureCase } from "@/lib/cases/ensure";
 import { slugCandidates, slugify } from "@/lib/slugify";
 import { parseGtin } from "@/lib/products/gtin";
+import { editorCompany } from "@/lib/products/editor-company";
 import {
   DAILY_EDITS,
   DAILY_PRODUCTS,
   editKind,
   revertPatch,
   withinDailyLimit,
-  type EditorCompany,
 } from "@/lib/products/rules";
 import { TRACKED_FIELDS, diffProduct, validateProductInput, type ProductInput, type TrackedField } from "@/lib/products/validate";
 
@@ -22,36 +22,6 @@ const fail = (reason: string): Fail => ({ ok: false, reason });
 async function requireUser() {
   const session = await auth();
   return (session?.user as { id?: string } | undefined)?.id ?? null;
-}
-
-/**
- * Предприятие глазами правила правки: статус, надзор, удаление и роль в нём того, кто
- * нажал. Читается из базы на каждом вызове — снятое надзором предприятие перестаёт
- * править паспорта тем же сеансом, без перезахода.
- */
-async function editorCompany(
-  companyId: string,
-  userId: string,
-): Promise<(EditorCompany & { displayName: string }) | null> {
-  const [company, member] = await Promise.all([
-    prisma.company.findUnique({
-      where: { id: companyId },
-      select: { id: true, status: true, suspendedAt: true, deletedAt: true, displayName: true },
-    }),
-    prisma.companyMember.findUnique({
-      where: { companyId_userId: { companyId, userId } },
-      select: { role: true },
-    }),
-  ]);
-  if (!company || !member) return null;
-  return {
-    id: company.id,
-    status: company.status,
-    suspendedAt: company.suspendedAt,
-    deletedAt: company.deletedAt,
-    role: member.role,
-    displayName: company.displayName,
-  };
 }
 
 function dayAgo(): Date {
