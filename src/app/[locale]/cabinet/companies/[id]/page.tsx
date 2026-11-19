@@ -147,6 +147,14 @@ export default async function CompanyManagementPage({
         ) : null}
       </section>
       <section className="scroll-mt-24 mb-8 flex flex-wrap gap-2">
+        {/* Задачи видит каждый член предприятия: свои задачи есть у каждого, и
+            поручение, которого исполнитель не видит, — не поручение (слайс BF). */}
+        <Link
+          href={`/${locale}/cabinet/companies/${company.id}/tasks`}
+          className="inline-flex items-center justify-center h-12 px-4 rounded-md border border-hairline text-sm font-medium hover:border-accent"
+        >
+          {t("tasksLink")}
+        </Link>
         {canSeeSection(permissions, "products") ? (
           <Link
             href={`/${locale}/cabinet/companies/${company.id}/products`}

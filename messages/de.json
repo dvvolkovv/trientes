@@ -953,7 +953,7 @@
       "invite": {
         "title": "Mitarbeiter einladen",
         "subtitle": "Zuerst die Zugriffe ankreuzen — sie gelten, sobald die Einladung angenommen wird.",
-        "titleField": "Position",
+        "titleField": "Funktion",
         "titlePlaceholder": "Leitender Prüfer",
         "dutiesField": "Aufgaben, in eigenen Worten",
         "dutiesPlaceholder": "Coin-Karten und Punktberichte; KYB nur als zweite Unterschrift.",
@@ -1593,7 +1593,8 @@
     "warehousesLink": "Lager",
     "loyaltyLink": "Cashback",
     "teamLink": "Team",
-    "journalLink": "Aktivitätsprotokoll"
+    "journalLink": "Aktivitätsprotokoll",
+    "tasksLink": "Aufgaben"
   },
   "cabinet": {
     "kicker": "Bereich · Kabinett",
@@ -3153,6 +3154,32 @@
       "asked": "Wir haben mehrere Meldungen zu Ihrem Standort «{point}» erhalten. Bitte bestätigen Sie, dass er geöffnet ist und weiterhin Krypto akzeptiert, oder korrigieren Sie seine Angaben.",
       "warned": "Wir haben seit 14 Tagen keine Antwort zu «{point}» erhalten. Ohne Rückmeldung innerhalb weiterer 14 Tage wird der Standort von der Karte entfernt, bis die Angelegenheit geklärt ist.",
       "suspended": "«{point}» wurde von der Karte entfernt, weil die Meldungen dazu unbeantwortet geblieben sind. Antworten Sie hier und wir setzen ihn wieder auf die Karte."
+    },
+    "task": {
+      "assigned": {
+        "subject": "Eine Aufgabe für dich: {title}",
+        "body": "{company} hat dir eine Aufgabe zugewiesen: {title}"
+      },
+      "submitted": {
+        "subject": "Aufgabe eingereicht: {title}",
+        "body": "Die Aufgabe \"{title}\" bei {company} ist zur Überprüfung bereit."
+      },
+      "accepted": {
+        "subject": "Aufgabe angenommen: {title}",
+        "body": "Deine Aufgabe \"{title}\" bei {company} wurde angenommen."
+      },
+      "returned": {
+        "subject": "Aufgabe wieder in Bearbeitung: {title}",
+        "body": "Die Aufgabe \"{title}\" bei {company} wurde zur weiteren Bearbeitung an dich zurückgegeben."
+      },
+      "cancelled": {
+        "subject": "Aufgabe abgebrochen: {title}",
+        "body": "Die Aufgabe „{title}“ bei {company} wurde abgebrochen."
+      },
+      "commented": {
+        "subject": "Neue Nachricht in der Aufgabe: {title}",
+        "body": "Jemand hat in der Aufgabe „{title}“ bei {company} geschrieben."
+      }
     }
   },
   "captcha": {
@@ -3721,7 +3748,8 @@
         "points": "Punkte auf der Karte",
         "products": "Produkte",
         "warehouses": "Lager und Bestand",
-        "pricing": "Preis und Cashback"
+        "pricing": "Preis und Cashback",
+        "tasks": "Aufgaben"
       },
       "levels": {
         "NONE": "Kein Zugriff",
@@ -3795,7 +3823,121 @@
       "TEAM_ROLE_DELETED": "Rolle gelöscht",
       "INVITE_CREATED": "Einladungslink erstellt",
       "INVITE_REVOKED": "Einladungslink widerrufen",
-      "INVITE_ACCEPTED": "Einladungslink angenommen"
+      "INVITE_ACCEPTED": "Einladungslink angenommen",
+      "TASK_CREATED": "Aufgabe erstellt",
+      "TASK_UPDATED": "Aufgabe bearbeitet",
+      "TASK_STATUS_SET": "Aufgabenstatus geändert",
+      "TASK_CANCELLED": "Aufgabe abgebrochen",
+      "TASK_COMMENTED": "Nachricht in einer Aufgabe"
+    }
+  },
+  "cabinetTasks": {
+    "title": "Aufgaben",
+    "subtitle": "Wer was zu tun hat: Aufgabe zuweisen, Fälligkeitsdatum setzen, zusehen, wie sie von übernommen zu akzeptiert wechselt.",
+    "subtitleOwn": "Dir zugewiesene Aufgaben. Bitte den Inhaber um Zugriff auf das Team-Board.",
+    "frozen": "Dieses Unternehmen wird überprüft, daher können Aufgaben derzeit nur gelesen werden.",
+    "empty": "Noch keine Aufgaben.",
+    "nobody": "Noch niemand",
+    "gone": "Konto entfernt",
+    "overdue": "Überfällig",
+    "saving": "Wird gespeichert…",
+    "create": "Aufgabe erstellen",
+    "createHeading": "Neue Aufgabe",
+    "comment": "Senden",
+    "commentPlaceholder": "Regal zur Hälfte gefüllt, der Rest ist unterwegs.",
+    "reassign": "Neu zuweisen",
+    "cancelReason": "Warum abbrechen",
+    "actionsHeading": "Aktionen",
+    "threadHeading": "Diskussion",
+    "threadEmpty": "In dieser Aufgabe gibt es noch keine Nachrichten.",
+    "waitingAcceptance": "Du hast diese Aufgabe abgegeben, daher muss sie jemand anderes annehmen.",
+    "filters": {
+      "all": "Alle",
+      "mine": "Meine",
+      "overdue": "Überfällig",
+      "mineOverdue": "Meine, überfällig"
+    },
+    "statuses": {
+      "NEW": "Erstellt",
+      "IN_PROGRESS": "In Bearbeitung",
+      "ON_REVIEW": "Zur Prüfung",
+      "DONE": "Erledigt",
+      "CANCELLED": "Abgebrochen"
+    },
+    "moves": {
+      "IN_PROGRESS": "Übernehmen",
+      "ON_REVIEW": "Abgeben",
+      "DONE": "Annehmen",
+      "CANCELLED": "Aufgabe abbrechen",
+      "RETURN": "Zur Überarbeitung zurücksenden"
+    },
+    "priorities": {
+      "LOW": "Niedrig",
+      "NORMAL": "Normal",
+      "HIGH": "Hoch",
+      "URGENT": "Dringend"
+    },
+    "fields": {
+      "title": "Was zu tun ist",
+      "details": "Details",
+      "assignee": "Zuständiger",
+      "assigneeNone": "Jeder, der sie übernimmt",
+      "priority": "Priorität",
+      "due": "Fälligkeitsdatum",
+      "point": "Verkaufsstelle",
+      "product": "Produkt",
+      "warehouse": "Lager",
+      "none": "Nicht verknüpft"
+    },
+    "meta": {
+      "priority": "Priorität: {value}",
+      "due": "fällig {value}",
+      "author": "Erstellt von",
+      "assignee": "Zugewiesen an",
+      "taken": "Übernommen von",
+      "links": "Verknüpft mit",
+      "closed": "Geschlossen von"
+    },
+    "reports": {
+      "title": "Berichte",
+      "note": "Gezählt über die Aufgaben, die Sie sehen können. Die durchschnittliche Abschlusszeit wird noch nicht angezeigt — es gibt keine geschlossenen Aufgaben zum Messen.",
+      "byAssignee": "Nach Bearbeiter",
+      "byPoint": "Nach Verkaufsstelle",
+      "noPoint": "Keiner Verkaufsstelle zugeordnet",
+      "empty": "Noch nichts zu zählen.",
+      "open": "offen: {count}",
+      "overdue": "überfällig: {count}",
+      "onReview": "in Prüfung: {count}",
+      "done30": "in 30 Tagen erledigt: {count}"
+    },
+    "errors": {
+      "unauth": "Melden Sie sich zuerst an.",
+      "forbidden": "Sie haben darauf keinen Zugriff.",
+      "not_found": "Die Aufgabe ist weg.",
+      "task_closed": "Diese Aufgabe ist geschlossen — eine zurückgegebene Aufgabe ist eine neue Aufgabe mit eigenem Fälligkeitsdatum.",
+      "status_changed": "Jemand hat die Aufgabe geändert, während Sie sie gelesen haben. Laden Sie die Seite neu.",
+      "not_a_transition": "Dieser Schritt ist vom aktuellen Status aus nicht möglich.",
+      "status_invalid": "Unbekannter Status.",
+      "priority_invalid": "Unbekannte Priorität.",
+      "title_required": "Geben Sie an, was zu tun ist.",
+      "title_too_long": "Halten Sie den Titel unter 200 Zeichen.",
+      "details_too_long": "Halten Sie die Details unter 4000 Zeichen.",
+      "due_invalid": "Wählen Sie ein Datum.",
+      "due_past": "Dieses Datum liegt in der Vergangenheit.",
+      "too_many_open": "Sie haben bereits 300 offene Aufgaben — schließen Sie zuerst einige.",
+      "daily_limit": "Tägliches Aufgabenlimit erreicht. Versuchen Sie es morgen erneut.",
+      "reason_required": "Geben Sie an, warum Sie sie stornieren.",
+      "assignee_unknown": "Diese Person ist nicht in Ihrem Team.",
+      "assignee_out_of_scope": "Diese Person hat keinen Zugriff auf diese Verkaufsstelle und würde die Aufgabe daher nie sehen.",
+      "point_unknown": "Unbekannte Verkaufsstelle.",
+      "point_forbidden": "Diese Verkaufsstelle liegt außerhalb Ihres Bereichs.",
+      "warehouse_unknown": "Unbekanntes Lager.",
+      "warehouse_forbidden": "Dieses Lager liegt außerhalb Ihres Bereichs.",
+      "product_unknown": "Unbekanntes Produkt.",
+      "body_required": "Schreiben Sie zuerst etwas.",
+      "body_too_long": "Halten Sie die Nachricht unter 2000 Zeichen.",
+      "too_many_comments": "Diese Aufgabe hat bereits 100 Nachrichten.",
+      "nothing_to_save": "Nichts geändert."
     }
   }
 }

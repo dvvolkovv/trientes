@@ -1593,7 +1593,8 @@
     "warehousesLink": "Skladišta",
     "loyaltyLink": "Povrat novca",
     "teamLink": "Tim",
-    "journalLink": "Dnevnik aktivnosti"
+    "journalLink": "Dnevnik aktivnosti",
+    "tasksLink": "Zadaci"
   },
   "cabinet": {
     "kicker": "Odjeljak · Profil",
@@ -2097,9 +2098,9 @@
     "empty": "Odaberite barem jednu kovanicu za usporedbu.",
     "rank": "Rang",
     "price": "Cijena",
-    "change1h": "1h %",
-    "change24h": "24h %",
-    "change7d": "7d %",
+    "change1h": "1 h %",
+    "change24h": "24 h %",
+    "change7d": "7 d %",
     "marketCap": "Tržišna kapitalizacija",
     "volume24h": "Volumen (24h)",
     "circulating": "Ponuda u optjecaju",
@@ -2205,7 +2206,7 @@
       "status": "Status",
       "claimed": "navodi projekt",
       "confirmed": "potvrđeno",
-      "change24h": "24h",
+      "change24h": "24 h",
       "volume24h": "24h volumen",
       "outlier": "nije u indeksu",
       "outlierHint": "Cijena je predaleko od volumenski ponderirane medijane — tržište je prikazano, ali je isključeno iz izračuna",
@@ -3153,6 +3154,32 @@
       "asked": "Primili smo nekoliko prijava o vašoj lokaciji «{point}». Molimo potvrdite da je otvorena i da i dalje prihvaća kripto, ili ispravite njezine podatke.",
       "warned": "Nismo dobili odgovor o «{point}» već 14 dana. Ako ne odgovorite u sljedećih 14 dana, lokacija će biti uklonjena s karte dok se stvar ne razjasni.",
       "suspended": "«{point}» je uklonjena s karte jer prijave o njoj nisu dobile odgovor. Odgovorite ovdje i vratit ćemo je."
+    },
+    "task": {
+      "assigned": {
+        "subject": "Zadatak za vas: {title}",
+        "body": "Dodijeljen vam je zadatak od {company}: {title}"
+      },
+      "submitted": {
+        "subject": "Zadatak predan: {title}",
+        "body": "Zadatak \"{title}\" u {company} spreman je za pregled."
+      },
+      "accepted": {
+        "subject": "Zadatak prihvaćen: {title}",
+        "body": "Vaš zadatak \"{title}\" u {company} je prihvaćen."
+      },
+      "returned": {
+        "subject": "Zadatak ponovno u tijeku: {title}",
+        "body": "Zadatak \"{title}\" u {company} vraćen vam je na doradu."
+      },
+      "cancelled": {
+        "subject": "Zadatak otkazan: {title}",
+        "body": "Zadatak \"{title}\" u {company} je otkazan."
+      },
+      "commented": {
+        "subject": "Nova poruka u zadatku: {title}",
+        "body": "Netko je napisao poruku u zadatku \"{title}\" u {company}."
+      }
     }
   },
   "captcha": {
@@ -3721,7 +3748,8 @@
         "points": "Lokacije na karti",
         "products": "Proizvodi",
         "warehouses": "Skladišta i zalihe",
-        "pricing": "Cijena i povrat novca"
+        "pricing": "Cijena i povrat novca",
+        "tasks": "Zadaci"
       },
       "levels": {
         "NONE": "Bez pristupa",
@@ -3795,7 +3823,121 @@
       "TEAM_ROLE_DELETED": "Uloga izbrisana",
       "INVITE_CREATED": "Pozivna poveznica kreirana",
       "INVITE_REVOKED": "Pozivna poveznica opozvana",
-      "INVITE_ACCEPTED": "Pozivna poveznica prihvaćena"
+      "INVITE_ACCEPTED": "Pozivna poveznica prihvaćena",
+      "TASK_CREATED": "Zadatak je kreiran",
+      "TASK_UPDATED": "Zadatak je uređen",
+      "TASK_STATUS_SET": "Status zadatka je promijenjen",
+      "TASK_CANCELLED": "Zadatak je otkazan",
+      "TASK_COMMENTED": "Poruka u zadatku"
+    }
+  },
+  "cabinetTasks": {
+    "title": "Zadaci",
+    "subtitle": "Tko što mora učiniti: dodijelite zadatak, postavite rok, gledajte kako prelazi iz preuzetog u prihvaćeno",
+    "subtitleOwn": "Zadaci dodijeljeni vama. Zatražite od vlasnika pristup ploči tima",
+    "frozen": "Ova je tvrtka u pregledu, pa se zadaci zasad mogu samo čitati",
+    "empty": "Još nema zadataka",
+    "nobody": "Još nitko",
+    "gone": "Račun uklonjen",
+    "overdue": "Kasni",
+    "saving": "Spremanje…",
+    "create": "Stvoriti zadatak",
+    "createHeading": "Novi zadatak",
+    "comment": "Objaviti",
+    "commentPlaceholder": "Polica je napola popunjena, ostatak je na putu",
+    "reassign": "Ponovno dodijeliti",
+    "cancelReason": "Zašto otkazati",
+    "actionsHeading": "Radnje",
+    "threadHeading": "Rasprava",
+    "threadEmpty": "Još nema poruka u ovom zadatku",
+    "waitingAcceptance": "Predali ste ovaj zadatak, netko drugi ga mora prihvatiti",
+    "filters": {
+      "all": "Svi",
+      "mine": "Moji",
+      "overdue": "S zakašnjenjem",
+      "mineOverdue": "Moji, s zakašnjenjem"
+    },
+    "statuses": {
+      "NEW": "Stvoreno",
+      "IN_PROGRESS": "U tijeku",
+      "ON_REVIEW": "Na pregledu",
+      "DONE": "Dovršeno",
+      "CANCELLED": "Otkazano"
+    },
+    "moves": {
+      "IN_PROGRESS": "Preuzeti",
+      "ON_REVIEW": "Predati",
+      "DONE": "Prihvatiti",
+      "CANCELLED": "Otkazati zadatak",
+      "RETURN": "Vratiti na doradu"
+    },
+    "priorities": {
+      "LOW": "Nisko",
+      "NORMAL": "Normalno",
+      "HIGH": "Visoko",
+      "URGENT": "Hitno"
+    },
+    "fields": {
+      "title": "Što treba napraviti",
+      "details": "Pojedinosti",
+      "assignee": "Izvršitelj",
+      "assigneeNone": "Tko god je preuzme",
+      "priority": "Prioritet",
+      "due": "Rok",
+      "point": "Lokacija",
+      "product": "Proizvod",
+      "warehouse": "Skladište",
+      "none": "Nije povezano"
+    },
+    "meta": {
+      "priority": "Prioritet: {value}",
+      "due": "rok {value}",
+      "author": "Postavio/la",
+      "assignee": "Dodijeljeno",
+      "taken": "Preuzeo/la",
+      "links": "Povezano s",
+      "closed": "Zatvorio/la"
+    },
+    "reports": {
+      "title": "Izvješća",
+      "note": "Izračunato na temelju zadataka koje možete vidjeti. Prosječno vrijeme dovršetka još nije prikazano — nema zatvorenih zadataka za mjerenje.",
+      "byAssignee": "Po izvršitelju",
+      "byPoint": "Po lokaciji",
+      "noPoint": "Nije povezano s lokacijom",
+      "empty": "Još nema što za izračunati.",
+      "open": "otvoreno: {count}",
+      "overdue": "preko roka: {count}",
+      "onReview": "na provjeri: {count}",
+      "done30": "dovršeno u 30 dana: {count}"
+    },
+    "errors": {
+      "unauth": "Najprije se prijavite.",
+      "forbidden": "Nemate pristup ovome.",
+      "not_found": "Zadatak više ne postoji.",
+      "task_closed": "Ovaj je zadatak zatvoren — vraćeni posao je novi zadatak s vlastitim rokom.",
+      "status_changed": "Netko je promijenio zadatak dok ste ga čitali. Učitajte stranicu ponovno.",
+      "not_a_transition": "Taj korak nije moguć iz trenutačnog statusa.",
+      "status_invalid": "Nepoznat status.",
+      "priority_invalid": "Nepoznat prioritet.",
+      "title_required": "Navedite što treba učiniti.",
+      "title_too_long": "Držite naslov ispod 200 znakova.",
+      "details_too_long": "Držite detalje ispod 4000 znakova.",
+      "due_invalid": "Odaberite datum.",
+      "due_past": "Taj je datum u prošlosti.",
+      "too_many_open": "Već imate 300 otvorenih zadataka — najprije zatvorite neke.",
+      "daily_limit": "Dosegnut je dnevni limit zadataka. Pokušajte ponovno sutra.",
+      "reason_required": "Navedite zašto to otkazujete.",
+      "assignee_unknown": "Ta osoba nije u vašem timu.",
+      "assignee_out_of_scope": "Ta osoba nema pristup ovoj lokaciji, pa taj zadatak neće vidjeti.",
+      "point_unknown": "Nepoznata lokacija.",
+      "point_forbidden": "Ta lokacija je izvan vašeg područja.",
+      "warehouse_unknown": "Nepoznato skladište.",
+      "warehouse_forbidden": "To skladište je izvan vašeg područja.",
+      "product_unknown": "Nepoznat proizvod.",
+      "body_required": "Najprije nešto napišite.",
+      "body_too_long": "Zadržite poruku ispod 2000 znakova.",
+      "too_many_comments": "Ovaj zadatak već ima 100 poruka.",
+      "nothing_to_save": "Ništa se nije promijenilo."
     }
   }
 }

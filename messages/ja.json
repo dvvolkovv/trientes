@@ -1593,7 +1593,8 @@
     "warehousesLink": "倉庫",
     "loyaltyLink": "キャッシュバック",
     "teamLink": "チーム",
-    "journalLink": "アクティビティログ"
+    "journalLink": "アクティビティログ",
+    "tasksLink": "タスク"
   },
   "cabinet": {
     "kicker": "セクション · キャビネット",
@@ -3153,6 +3154,32 @@
       "asked": "あなたの拠点「{point}」について複数の報告を受け取りました。現在も営業しており暗号資産を受け付けているかご確認いただくか、詳細を修正してください。",
       "warned": "「{point}」について14日間ご回答がありません。さらに14日以内にご返信がない場合、この拠点は問題が解決するまで地図から非表示になります。",
       "suspended": "報告にご回答がなかったため「{point}」は地図から非表示になりました。ここにご返信いただければ地図に戻します。"
+    },
+    "task": {
+      "assigned": {
+        "subject": "あなたへのタスク: {title}",
+        "body": "{company}があなたにタスクを割り当てました: {title}"
+      },
+      "submitted": {
+        "subject": "タスクが提出されました: {title}",
+        "body": "{company}のタスク「{title}」はレビュー可能です。"
+      },
+      "accepted": {
+        "subject": "タスクが承認されました: {title}",
+        "body": "{company}のあなたのタスク「{title}」が承認されました。"
+      },
+      "returned": {
+        "subject": "タスクが進行中に戻りました: {title}",
+        "body": "{company}のタスク「{title}」は追加の作業のため、あなたに差し戻されました。"
+      },
+      "cancelled": {
+        "subject": "タスクがキャンセルされました: {title}",
+        "body": "{company}のタスク「{title}」はキャンセルされました。"
+      },
+      "commented": {
+        "subject": "タスクの新着メッセージ: {title}",
+        "body": "誰かが{company}のタスク「{title}」に書き込みました。"
+      }
     }
   },
   "captcha": {
@@ -3721,7 +3748,8 @@
         "points": "地図上の拠点",
         "products": "商品",
         "warehouses": "倉庫と在庫",
-        "pricing": "価格とキャッシュバック"
+        "pricing": "価格とキャッシュバック",
+        "tasks": "タスク"
       },
       "levels": {
         "NONE": "アクセスなし",
@@ -3795,7 +3823,121 @@
       "TEAM_ROLE_DELETED": "役割を削除",
       "INVITE_CREATED": "招待リンクを作成",
       "INVITE_REVOKED": "招待リンクを失効",
-      "INVITE_ACCEPTED": "招待リンクを承諾"
+      "INVITE_ACCEPTED": "招待リンクを承諾",
+      "TASK_CREATED": "タスク作成",
+      "TASK_UPDATED": "タスク編集",
+      "TASK_STATUS_SET": "タスクのステータス変更",
+      "TASK_CANCELLED": "タスクのキャンセル",
+      "TASK_COMMENTED": "タスク内のメッセージ"
+    }
+  },
+  "cabinetTasks": {
+    "title": "タスク",
+    "subtitle": "誰が何をすべきか：タスクを割り当て、期限を設定し、担当から承認までの進行を見守りましょう。",
+    "subtitleOwn": "あなたに割り当てられたタスク。チームボードへのアクセスはオーナーに依頼してください.",
+    "frozen": "この企業は審査中のため、現在はタスクの閲覧のみ可能です。",
+    "empty": "まだタスクはありません。",
+    "nobody": "まだいません",
+    "gone": "アカウントは削除されました",
+    "overdue": "期限切れ",
+    "saving": "保存中…",
+    "create": "タスクを作成",
+    "createHeading": "新規タスク",
+    "comment": "投稿",
+    "commentPlaceholder": "棚は半分埋まり、残りは輸送中です。",
+    "reassign": "再割り当て",
+    "cancelReason": "キャンセル理由",
+    "actionsHeading": "アクション",
+    "threadHeading": "ディスカッション",
+    "threadEmpty": "このタスクにはまだメッセージがありません。",
+    "waitingAcceptance": "このタスクは提出済みのため、他の誰かの承認待ちです。",
+    "filters": {
+      "all": "すべて",
+      "mine": "自分の",
+      "overdue": "期限切れ",
+      "mineOverdue": "自分の、期限切れ"
+    },
+    "statuses": {
+      "NEW": "作成済み",
+      "IN_PROGRESS": "進行中",
+      "ON_REVIEW": "レビュー中",
+      "DONE": "完了",
+      "CANCELLED": "キャンセル済み"
+    },
+    "moves": {
+      "IN_PROGRESS": "引き受ける",
+      "ON_REVIEW": "提出する",
+      "DONE": "承認する",
+      "CANCELLED": "タスクをキャンセル",
+      "RETURN": "再作業のため差し戻す"
+    },
+    "priorities": {
+      "LOW": "低",
+      "NORMAL": "標準",
+      "HIGH": "高",
+      "URGENT": "緊急"
+    },
+    "fields": {
+      "title": "何をすべきか",
+      "details": "詳細",
+      "assignee": "担当者",
+      "assigneeNone": "取った人なら誰でも",
+      "priority": "優先度",
+      "due": "期日",
+      "point": "販売拠点",
+      "product": "商品",
+      "warehouse": "倉庫",
+      "none": "未連携"
+    },
+    "meta": {
+      "priority": "優先度: {value}",
+      "due": "期日 {value}",
+      "author": "設定者",
+      "assignee": "割り当て先",
+      "taken": "引受者",
+      "links": "連携先",
+      "closed": "クローズ者"
+    },
+    "reports": {
+      "title": "レポート",
+      "note": "表示可能なタスクのみを集計します。平均完了時間は未表示です — 計測できるクローズ済みタスクがありません。",
+      "byAssignee": "担当者別",
+      "byPoint": "販売拠点別",
+      "noPoint": "拠点に未連携",
+      "empty": "まだ集計できるものがありません。",
+      "open": "オープン: {count}",
+      "overdue": "期限超過: {count}",
+      "onReview": "レビュー中: {count}",
+      "done30": "30日以内に完了: {count}"
+    },
+    "errors": {
+      "unauth": "先にサインインしてください。",
+      "forbidden": "アクセス権がありません。",
+      "not_found": "タスクが見つかりません。",
+      "task_closed": "このタスクはクローズ済みです — 差し戻しは新規タスクとして別の期日を設定してください。",
+      "status_changed": "読んでいる間に誰かがタスクを変更しました。ページを再読み込みしてください。",
+      "not_a_transition": "現在のステータスからはその手順に進めません。",
+      "status_invalid": "不明なステータスです。",
+      "priority_invalid": "不明な優先度です。",
+      "title_required": "やるべきことを入力してください。",
+      "title_too_long": "タイトルは200文字以内にしてください。",
+      "details_too_long": "詳細は4000文字以内にしてください。",
+      "due_invalid": "日付を選択してください。",
+      "due_past": "過去の日付です。",
+      "too_many_open": "すでにオープンなタスクが300件あります — 先にいくつかクローズしてください.",
+      "daily_limit": "1日のタスク上限に達しました。明日お試しください。",
+      "reason_required": "キャンセルする理由を入力してください。",
+      "assignee_unknown": "その人はあなたのチームにいません。",
+      "assignee_out_of_scope": "その人はこの販売拠点へのアクセス権がないため、タスクを見ることはできません。",
+      "point_unknown": "不明な販売拠点です。",
+      "point_forbidden": "その販売拠点はあなたの担当エリア外です。",
+      "warehouse_unknown": "不明な倉庫です。",
+      "warehouse_forbidden": "その倉庫はあなたの担当エリア外です。",
+      "product_unknown": "不明な商品です。",
+      "body_required": "まず何か入力してください。",
+      "body_too_long": "メッセージは2000文字以内にしてください。",
+      "too_many_comments": "このタスクにはすでに100件のメッセージがあります。",
+      "nothing_to_save": "変更はありません."
     }
   }
 }

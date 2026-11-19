@@ -1593,7 +1593,8 @@
     "warehousesLink": "Sklady",
     "loyaltyLink": "Cashback",
     "teamLink": "Tím",
-    "journalLink": "Denník aktivít"
+    "journalLink": "Denník aktivít",
+    "tasksLink": "Úlohy"
   },
   "cabinet": {
     "kicker": "Sekcia · Profil",
@@ -3153,6 +3154,32 @@
       "asked": "Dostali sme niekoľko hlásení o vašom mieste «{point}». Potvrďte, prosím, že je otvorené a stále prijíma krypto, alebo opravte jeho údaje.",
       "warned": "Na «{point}» sme 14 dní nedostali odpoveď. Ak neodpoviete do ďalších 14 dní, miesto bude odstránené z mapy, kým sa vec nevyjasní.",
       "suspended": "«{point}» bolo odstránené z mapy, pretože hlásenia o ňom zostali bez odpovede. Odpovedzte tu a vrátime ho späť."
+    },
+    "task": {
+      "assigned": {
+        "subject": "Úloha pre vás: {title}",
+        "body": "{company} vám priradila úlohu: {title}"
+      },
+      "submitted": {
+        "subject": "Úloha odovzdaná: {title}",
+        "body": "Úloha „{title}“ v {company} je pripravená na vašu kontrolu."
+      },
+      "accepted": {
+        "subject": "Úloha prijatá: {title}",
+        "body": "Vaša úloha „{title}“ v {company} bola prijatá."
+      },
+      "returned": {
+        "subject": "Úloha vrátená do práce: {title}",
+        "body": "Úloha „{title}“ v {company} sa vám vrátila na ďalšiu prácu."
+      },
+      "cancelled": {
+        "subject": "Úloha zrušená: {title}",
+        "body": "Úloha „{title}“ v {company} bola zrušená."
+      },
+      "commented": {
+        "subject": "Nová správa v úlohe: {title}",
+        "body": "Niekto napísal v úlohe „{title}“ v {company}."
+      }
     }
   },
   "captcha": {
@@ -3721,7 +3748,8 @@
         "points": "Miesta na mape",
         "products": "Produkty",
         "warehouses": "Sklady a zásoby",
-        "pricing": "Cena a cashback"
+        "pricing": "Cena a cashback",
+        "tasks": "Úlohy"
       },
       "levels": {
         "NONE": "Bez prístupu",
@@ -3795,7 +3823,121 @@
       "TEAM_ROLE_DELETED": "Rola odstránená",
       "INVITE_CREATED": "Pozvánkový odkaz vytvorený",
       "INVITE_REVOKED": "Pozvánkový odkaz zrušený",
-      "INVITE_ACCEPTED": "Pozvánkový odkaz prijatý"
+      "INVITE_ACCEPTED": "Pozvánkový odkaz prijatý",
+      "TASK_CREATED": "Úloha vytvorená",
+      "TASK_UPDATED": "Úloha upravená",
+      "TASK_STATUS_SET": "Stav úlohy zmenený",
+      "TASK_CANCELLED": "Úloha zrušená",
+      "TASK_COMMENTED": "Správa v úlohe"
+    }
+  },
+  "cabinetTasks": {
+    "title": "Úlohy",
+    "subtitle": "Kto má čo robiť: priraďte úlohu, nastavte termín a sledujte, ako sa posúva od prevzatej po akceptovanú.",
+    "subtitleOwn": "Úlohy priradené vám. Požiadajte vlastníka o prístup k tímovej nástenke.",
+    "frozen": "Táto spoločnosť je v procese preverovania, takže úlohy je momentálne možné len čítať.",
+    "empty": "Zatiaľ žiadne úlohy.",
+    "nobody": "Zatiaľ nikto",
+    "gone": "Účet odstránený",
+    "overdue": "Po termíne",
+    "saving": "Ukladá sa…",
+    "create": "Vytvoriť úlohu",
+    "createHeading": "Nová úloha",
+    "comment": "Odoslať",
+    "commentPlaceholder": "Polica je z polovice naplnená, zvyšok je na ceste.",
+    "reassign": "Preradiť",
+    "cancelReason": "Prečo to rušíte",
+    "actionsHeading": "Akcie",
+    "threadHeading": "Diskusia",
+    "threadEmpty": "V tejto úlohe zatiaľ nie sú žiadne správy.",
+    "waitingAcceptance": "Túto úlohu ste odovzdali, takže ju musí niekto iný akceptovať.",
+    "filters": {
+      "all": "Všetky",
+      "mine": "Moje",
+      "overdue": "Po termíne",
+      "mineOverdue": "Moje, po termíne"
+    },
+    "statuses": {
+      "NEW": "Vytvorená",
+      "IN_PROGRESS": "Prebieha",
+      "ON_REVIEW": "Na kontrole",
+      "DONE": "Hotová",
+      "CANCELLED": "Zrušená"
+    },
+    "moves": {
+      "IN_PROGRESS": "Prevziať",
+      "ON_REVIEW": "Odovzdať",
+      "DONE": "Akceptovať",
+      "CANCELLED": "Zrušiť úlohu",
+      "RETURN": "Vrátiť na dopracovanie"
+    },
+    "priorities": {
+      "LOW": "Nízka",
+      "NORMAL": "Normálna",
+      "HIGH": "Vysoká",
+      "URGENT": "Súrna"
+    },
+    "fields": {
+      "title": "Čo treba urobiť",
+      "details": "Podrobnosti",
+      "assignee": "Riešiteľ",
+      "assigneeNone": "Ktokoľvek, kto si to vezme",
+      "priority": "Priorita",
+      "due": "Termín",
+      "point": "Miesto predaja",
+      "product": "Produkt",
+      "warehouse": "Sklad",
+      "none": "Neprepojené"
+    },
+    "meta": {
+      "priority": "Priorita: {value}",
+      "due": "do {value}",
+      "author": "Nastavil(a)",
+      "assignee": "Pridelené",
+      "taken": "Prevzal(a)",
+      "links": "Prepojené s",
+      "closed": "Uzavrel(a)"
+    },
+    "reports": {
+      "title": "Prehľady",
+      "note": "Počítané z úloh, ktoré vidíte. Priemerný čas dokončenia sa zatiaľ nezobrazuje — nie sú žiadne uzavreté úlohy na meranie.",
+      "byAssignee": "Podľa riešiteľa",
+      "byPoint": "Podľa miesta predaja",
+      "noPoint": "Neprepojené s miestom",
+      "empty": "Zatiaľ nie je čo počítať.",
+      "open": "otvorené: {count}",
+      "overdue": "po termíne: {count}",
+      "onReview": "na kontrole: {count}",
+      "done30": "hotové za 30 dní: {count}"
+    },
+    "errors": {
+      "unauth": "Najprv sa prihláste.",
+      "forbidden": "Nemáte k tomu prístup.",
+      "not_found": "Úloha je preč.",
+      "task_closed": "Táto úloha je uzavretá — vrátená práca je nová úloha s vlastným termínom.",
+      "status_changed": "Niekto zmenil úlohu, kým ste si ju prezerali. Obnovte stránku.",
+      "not_a_transition": "Tento krok nie je možný z aktuálneho stavu.",
+      "status_invalid": "Neznámy stav.",
+      "priority_invalid": "Neznáma priorita.",
+      "title_required": "Povedzte, čo treba urobiť.",
+      "title_too_long": "Názov udržte pod 200 znakmi.",
+      "details_too_long": "Podrobnosti udržte pod 4000 znakmi.",
+      "due_invalid": "Vyberte dátum.",
+      "due_past": "Tento dátum je v minulosti.",
+      "too_many_open": "Už máte 300 otvorených úloh — najprv niektoré zatvorte.",
+      "daily_limit": "Dosiahli ste denný limit úloh. Skúste to znova zajtra.",
+      "reason_required": "Uveďte, prečo to rušíte.",
+      "assignee_unknown": "Tá osoba nie je vo vašom tíme.",
+      "assignee_out_of_scope": "Tá osoba nemá prístup k tomuto miestu, takže túto úlohu nikdy neuvidí.",
+      "point_unknown": "Neznáme miesto.",
+      "point_forbidden": "Toto miesto je mimo vašej oblasti.",
+      "warehouse_unknown": "Neznámy sklad.",
+      "warehouse_forbidden": "Tento sklad je mimo vašej oblasti.",
+      "product_unknown": "Neznámy produkt.",
+      "body_required": "Najprv niečo napíšte.",
+      "body_too_long": "Nech je správa kratšia ako 2000 znakov.",
+      "too_many_comments": "Táto úloha už má 100 správ.",
+      "nothing_to_save": "Nič sa nezmenilo."
     }
   }
 }

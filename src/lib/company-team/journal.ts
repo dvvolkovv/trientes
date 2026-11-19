@@ -39,7 +39,12 @@ export type CompanyAction =
   | "TEAM_ROLE_DELETED"
   | "INVITE_CREATED"
   | "INVITE_REVOKED"
-  | "INVITE_ACCEPTED";
+  | "INVITE_ACCEPTED"
+  | "TASK_CREATED"
+  | "TASK_UPDATED"
+  | "TASK_STATUS_SET"
+  | "TASK_CANCELLED"
+  | "TASK_COMMENTED";
 
 export async function logCompanyAction(input: {
   companyId: string;

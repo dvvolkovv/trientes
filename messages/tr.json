@@ -1593,7 +1593,8 @@
     "warehousesLink": "Depolar",
     "loyaltyLink": "Nakit iade",
     "teamLink": "Ekip",
-    "journalLink": "Etkinlik günlüğü"
+    "journalLink": "Etkinlik günlüğü",
+    "tasksLink": "Görevler"
   },
   "cabinet": {
     "kicker": "Bölüm · Kabin",
@@ -3153,6 +3154,32 @@
       "asked": "Konumunuz «{point}» hakkında birkaç rapor aldık. Lütfen açık olduğunu ve hâlâ kripto kabul ettiğini doğrulayın ya da ayrıntılarını düzeltin.",
       "warned": "«{point}» hakkında 14 gündür yanıt almadık. Önümüzdeki 14 gün içinde yanıt gelmezse, konu netleşene kadar konum haritadan kaldırılacaktır.",
       "suspended": "«{point}», hakkındaki raporlar yanıtsız kaldığı için haritadan kaldırıldı. Buradan yanıt verin, geri ekleyelim."
+    },
+    "task": {
+      "assigned": {
+        "subject": "Sizin için bir görev: {title}",
+        "body": "{company} size bir görev atadı: {title}"
+      },
+      "submitted": {
+        "subject": "Görev teslim edildi: {title}",
+        "body": "{company} bünyesindeki \"{title}\" görevi incelemeniz için hazır."
+      },
+      "accepted": {
+        "subject": "Görev kabul edildi: {title}",
+        "body": "{company} bünyesindeki \"{title}\" göreviniz kabul edildi."
+      },
+      "returned": {
+        "subject": "Görev yeniden işleme alındı: {title}",
+        "body": "{company} bünyesindeki \"{title}\" görevi ek çalışma için size geri döndü."
+      },
+      "cancelled": {
+        "subject": "Görev iptal edildi: {title}",
+        "body": "{company} bünyesindeki \"{title}\" görevi iptal edildi."
+      },
+      "commented": {
+        "subject": "Görevde yeni mesaj: {title}",
+        "body": "{company} bünyesindeki \"{title}\" görevine biri mesaj yazdı."
+      }
     }
   },
   "captcha": {
@@ -3721,7 +3748,8 @@
         "points": "Haritadaki noktalar",
         "products": "Ürünler",
         "warehouses": "Depolar ve stok",
-        "pricing": "Fiyat ve cashback"
+        "pricing": "Fiyat ve cashback",
+        "tasks": "Görevler"
       },
       "levels": {
         "NONE": "Erişim yok",
@@ -3795,7 +3823,121 @@
       "TEAM_ROLE_DELETED": "Rol silindi",
       "INVITE_CREATED": "Davet bağlantısı oluşturuldu",
       "INVITE_REVOKED": "Davet bağlantısı iptal edildi",
-      "INVITE_ACCEPTED": "Davet bağlantısı kabul edildi"
+      "INVITE_ACCEPTED": "Davet bağlantısı kabul edildi",
+      "TASK_CREATED": "Görev oluşturuldu",
+      "TASK_UPDATED": "Görev düzenlendi",
+      "TASK_STATUS_SET": "Görev durumu değiştirildi",
+      "TASK_CANCELLED": "Görev iptal edildi",
+      "TASK_COMMENTED": "Görevde mesaj"
+    }
+  },
+  "cabinetTasks": {
+    "title": "Görevler",
+    "subtitle": "Kimin ne yapacağını belirleyin: görev atayın, son tarih koyun, alınandan kabul edilene kadar ilerleyişini izleyin.",
+    "subtitleOwn": "Size atanmış görevler. Ekip panosuna erişim için sahibinden isteyin.",
+    "frozen": "Bu şirket incelemede, bu yüzden görevler şu anda yalnızca okunabilir.",
+    "empty": "Henüz görev yok.",
+    "nobody": "Henüz kimse yok",
+    "gone": "Hesap kaldırıldı",
+    "overdue": "Gecikmiş",
+    "saving": "Kaydediliyor…",
+    "create": "Görevi oluştur",
+    "createHeading": "Yeni görev",
+    "comment": "Gönder",
+    "commentPlaceholder": "Raf yarı dolu, kalanı yolda.",
+    "reassign": "Yeniden ata",
+    "cancelReason": "Neden iptal ediliyor",
+    "actionsHeading": "İşlemler",
+    "threadHeading": "Tartışma",
+    "threadEmpty": "Bu görevde henüz mesaj yok.",
+    "waitingAcceptance": "Bu görevi teslim ettiniz, bu yüzden bir başkasının kabul etmesi gerekiyor.",
+    "filters": {
+      "all": "Tümü",
+      "mine": "Benimkiler",
+      "overdue": "Gecikmiş",
+      "mineOverdue": "Benimkiler, gecikmiş"
+    },
+    "statuses": {
+      "NEW": "Oluşturuldu",
+      "IN_PROGRESS": "Devam ediyor",
+      "ON_REVIEW": "İncelemede",
+      "DONE": "Tamamlandı",
+      "CANCELLED": "İptal"
+    },
+    "moves": {
+      "IN_PROGRESS": "Üstlen",
+      "ON_REVIEW": "Teslim et",
+      "DONE": "Kabul et",
+      "CANCELLED": "Görevi iptal et",
+      "RETURN": "Daha fazla çalışma için geri gönder"
+    },
+    "priorities": {
+      "LOW": "Düşük",
+      "NORMAL": "Normal",
+      "HIGH": "Yüksek",
+      "URGENT": "Acil"
+    },
+    "fields": {
+      "title": "Ne yapılacak",
+      "details": "Ayrıntılar",
+      "assignee": "Atanan",
+      "assigneeNone": "Üstlenen herkes",
+      "priority": "Öncelik",
+      "due": "Son tarih",
+      "point": "Satış noktası",
+      "product": "Ürün",
+      "warehouse": "Depo",
+      "none": "Bağlı değil"
+    },
+    "meta": {
+      "priority": "Öncelik: {value}",
+      "due": "son tarih {value}",
+      "author": "Belirleyen",
+      "assignee": "Atanan",
+      "taken": "Üstlenen",
+      "links": "Bağlı olduğu",
+      "closed": "Kapatan"
+    },
+    "reports": {
+      "title": "Raporlar",
+      "note": "Gördüğünüz görevler üzerinden hesaplanır. Ortalama tamamlama süresi henüz gösterilmiyor — ölçülecek kapalı görev yok.",
+      "byAssignee": "Atanana göre",
+      "byPoint": "Satış noktasına göre",
+      "noPoint": "Bir noktaya bağlı değil",
+      "empty": "Hesaplanacak bir şey yok.",
+      "open": "açık: {count}",
+      "overdue": "gecikmiş: {count}",
+      "onReview": "incelemede: {count}",
+      "done30": "30 günde tamamlanan: {count}"
+    },
+    "errors": {
+      "unauth": "Önce oturum açın.",
+      "forbidden": "Buna erişiminiz yok.",
+      "not_found": "Görev yok.",
+      "task_closed": "Bu görev kapatıldı — iade edilen iş, kendi son tarihi olan yeni bir görevdir.",
+      "status_changed": "Siz okurken biri görevi değiştirdi. Sayfayı yenileyin.",
+      "not_a_transition": "Mevcut durumdan bu adım mümkün değil.",
+      "status_invalid": "Bilinmeyen durum.",
+      "priority_invalid": "Bilinmeyen öncelik.",
+      "title_required": "Ne yapılması gerektiğini söyleyin.",
+      "title_too_long": "Başlığı 200 karakterin altında tutun.",
+      "details_too_long": "Ayrıntıları 4000 karakterin altında tutun.",
+      "due_invalid": "Bir tarih seçin.",
+      "due_past": "Bu tarih geçmişte.",
+      "too_many_open": "Zaten 300 açık göreviniz var — önce birkaçını kapatın.",
+      "daily_limit": "Günlük görev sınırına ulaşıldı. Yarın tekrar deneyin.",
+      "reason_required": "Neden iptal ettiğinizi söyleyin.",
+      "assignee_unknown": "O kişi ekibinizde değil.",
+      "assignee_out_of_scope": "O kişinin bu satış noktasına erişimi yok, bu yüzden görevi asla görmez.",
+      "point_unknown": "Bilinmeyen satış noktası.",
+      "point_forbidden": "Bu satış noktası alanınızın dışında.",
+      "warehouse_unknown": "Bilinmeyen depo.",
+      "warehouse_forbidden": "Bu depo alanınızın dışında.",
+      "product_unknown": "Bilinmeyen ürün.",
+      "body_required": "Önce bir şey yazın.",
+      "body_too_long": "Mesajı 2000 karakterin altında tutun.",
+      "too_many_comments": "Bu görevde zaten 100 mesaj var.",
+      "nothing_to_save": "Hiçbir şey değişmedi."
     }
   }
 }

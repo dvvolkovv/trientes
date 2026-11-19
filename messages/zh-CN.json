@@ -1593,7 +1593,8 @@
     "warehousesLink": "仓库",
     "loyaltyLink": "返现",
     "teamLink": "团队",
-    "journalLink": "活动日志"
+    "journalLink": "活动日志",
+    "tasksLink": "任务"
   },
   "cabinet": {
     "kicker": "板块 · 个人中心",
@@ -3153,6 +3154,32 @@
       "asked": "我们已收到关于您地点«{point}»的多份报告。请确认其仍在营业并接受加密货币，或更正其详细信息。",
       "warned": "关于«{point}»我们已14天未收到回复。若在接下来的14天内仍无答复，该地点将从地图上移除，直至情况澄清。",
       "suspended": "由于关于其的报告未获回应，«{point}»已从地图上移除。在此回复后我们会将其恢复。"
+    },
+    "task": {
+      "assigned": {
+        "subject": "给你的任务：{title}",
+        "body": "{company} 指派给你一个任务：{title}"
+      },
+      "submitted": {
+        "subject": "任务已提交：{title}",
+        "body": "{company} 的“{title}”任务已准备好供你审核。"
+      },
+      "accepted": {
+        "subject": "任务已接受：{title}",
+        "body": "你在 {company} 的“{title}”任务已被接受。"
+      },
+      "returned": {
+        "subject": "任务重新进行中：{title}",
+        "body": "{company} 的“{title}”任务已退回给你，需继续处理。"
+      },
+      "cancelled": {
+        "subject": "任务已取消：{title}",
+        "body": "{company} 的“{title}”任务已被取消。"
+      },
+      "commented": {
+        "subject": "任务有新消息：{title}",
+        "body": "有人在 {company} 的“{title}”任务中发了新消息。"
+      }
     }
   },
   "captcha": {
@@ -3721,7 +3748,8 @@
         "points": "地图上的门店",
         "products": "商品",
         "warehouses": "仓库与库存",
-        "pricing": "价格与返现"
+        "pricing": "价格与返现",
+        "tasks": "任务"
       },
       "levels": {
         "NONE": "无访问权限",
@@ -3795,7 +3823,121 @@
       "TEAM_ROLE_DELETED": "角色已删除",
       "INVITE_CREATED": "邀请链接已创建",
       "INVITE_REVOKED": "邀请链接已撤销",
-      "INVITE_ACCEPTED": "邀请链接已接受"
+      "INVITE_ACCEPTED": "邀请链接已接受",
+      "TASK_CREATED": "任务已创建",
+      "TASK_UPDATED": "任务已编辑",
+      "TASK_STATUS_SET": "任务状态已更改",
+      "TASK_CANCELLED": "任务已取消",
+      "TASK_COMMENTED": "任务中的消息"
+    }
+  },
+  "cabinetTasks": {
+    "title": "任务",
+    "subtitle": "谁该做什么：指派任务、设置截止日期，观察任务从被领取到被接受。",
+    "subtitleOwn": "分配给你的任务。向所有者申请访问团队看板。",
+    "frozen": "该公司正在审核中，目前任务仅可查看。",
+    "empty": "还没有任务。",
+    "nobody": "暂无",
+    "gone": "账户已移除",
+    "overdue": "逾期",
+    "saving": "正在保存…",
+    "create": "创建任务",
+    "createHeading": "新任务",
+    "comment": "发布",
+    "commentPlaceholder": "货架已填了一半，其余在运输中。",
+    "reassign": "重新指派",
+    "cancelReason": "取消原因",
+    "actionsHeading": "操作",
+    "threadHeading": "讨论",
+    "threadEmpty": "此任务尚无消息",
+    "waitingAcceptance": "你已提交此任务，需由他人验收",
+    "filters": {
+      "all": "全部",
+      "mine": "我的",
+      "overdue": "已逾期",
+      "mineOverdue": "我的，已逾期"
+    },
+    "statuses": {
+      "NEW": "已创建",
+      "IN_PROGRESS": "进行中",
+      "ON_REVIEW": "审核中",
+      "DONE": "已完成",
+      "CANCELLED": "已取消"
+    },
+    "moves": {
+      "IN_PROGRESS": "领取",
+      "ON_REVIEW": "提交",
+      "DONE": "验收",
+      "CANCELLED": "取消任务",
+      "RETURN": "退回以便进一步处理"
+    },
+    "priorities": {
+      "LOW": "低",
+      "NORMAL": "正常",
+      "HIGH": "高",
+      "URGENT": "紧急"
+    },
+    "fields": {
+      "title": "需要做什么",
+      "details": "详情",
+      "assignee": "执行人",
+      "assigneeNone": "任何人可领取",
+      "priority": "优先级",
+      "due": "截止日期",
+      "point": "销售点",
+      "product": "产品",
+      "warehouse": "仓库",
+      "none": "未关联"
+    },
+    "meta": {
+      "priority": "优先级：{value}",
+      "due": "截止 {value}",
+      "author": "设置者",
+      "assignee": "指派给",
+      "taken": "领取者",
+      "links": "关联到",
+      "closed": "关闭者"
+    },
+    "reports": {
+      "title": "报告",
+      "note": "基于你可见的任务统计。平均完成时间尚未显示 — 还没有可用于计算的已关闭任务。",
+      "byAssignee": "按负责人",
+      "byPoint": "按门店",
+      "noPoint": "未关联到门店",
+      "empty": "暂无可统计内容。",
+      "open": "未完成: {count}",
+      "overdue": "已逾期: {count}",
+      "onReview": "审核中: {count}",
+      "done30": "30天内完成: {count}"
+    },
+    "errors": {
+      "unauth": "请先登录。",
+      "forbidden": "你无权访问此内容。",
+      "not_found": "该任务不存在。",
+      "task_closed": "此任务已关闭 — 退回的工作将作为新任务，拥有其自己的截止日期。",
+      "status_changed": "你阅读时有人更改了该任务。请重新加载页面。",
+      "not_a_transition": "当前状态无法执行该步骤。",
+      "status_invalid": "未知状态。",
+      "priority_invalid": "未知优先级。",
+      "title_required": "说明需要完成的事项。",
+      "title_too_long": "标题请少于200个字符。",
+      "details_too_long": "详情请少于4000个字符。",
+      "due_invalid": "请选择日期。",
+      "due_past": "该日期已是过去。",
+      "too_many_open": "你已有300个未完成任务 — 请先关闭一些。",
+      "daily_limit": "已达每日任务上限。请明天再试。",
+      "reason_required": "说明取消的原因。",
+      "assignee_unknown": "该人员不在你的团队中。",
+      "assignee_out_of_scope": "该人员无权访问此门店，因此他们将看不到该任务。",
+      "point_unknown": "未知门店。",
+      "point_forbidden": "该门店不在你的管辖范围内。",
+      "warehouse_unknown": "未知仓库。",
+      "warehouse_forbidden": "该仓库不在你的管辖范围内。",
+      "product_unknown": "未知产品。",
+      "body_required": "请先输入内容。",
+      "body_too_long": "消息请少于2000个字符。",
+      "too_many_comments": "此任务已包含100条消息。",
+      "nothing_to_save": "未发生任何变化。"
     }
   }
 }

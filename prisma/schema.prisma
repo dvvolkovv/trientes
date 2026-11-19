@@ -65,6 +65,11 @@ model User {
   geoAlerts                GeoAlert[]
   companyMemberships       CompanyMember[]
   companyActions           CompanyActionLog[]
+  tasksCreated             CompanyTask[]             @relation("CompanyTaskAuthor")
+  tasksAssigned            CompanyTask[]             @relation("CompanyTaskAssignee")
+  tasksTaken               CompanyTask[]             @relation("CompanyTaskTaker")
+  tasksClosed              CompanyTask[]             @relation("CompanyTaskCloser")
+  taskComments             CompanyTaskComment[]      @relation("CompanyTaskCommentAuthor")
   companyInvitesCreated    CompanyInvite[]           @relation("CompanyInviteCreator")
   companyInvitesAccepted   CompanyInvite[]           @relation("CompanyInviteAcceptor")
   pushSubscriptions        PushSubscription[]
@@ -226,6 +231,93 @@ model CompanyActionLog {
   createdAt   DateTime @default(now())
 
   @@index([companyId, createdAt])
+}
+
+/// Задача команды (ТЗ 6.6). Статусы — четыре рабочих плюс отмена; «на проверке» имеет
+/// смысл только потому, что принять работу вправе не тот, кто её сдавал. Задача не
+/// удаляется: отменённая остаётся строкой, как движение склада и строка журнала.
+model CompanyTask {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  title    String
+  details  String?             @db.Text
+  status   CompanyTaskStatus   @default(NEW)
+  priority CompanyTaskPriority @default(NORMAL)
+  /// Срок — дата, хранится концом дня по UTC: часового пояса у предприятия нет.
+  dueAt    DateTime?
+
+  /// Авторы снимаются в SET NULL, а не RESTRICT: удаление учётной записи не должно
+  /// блокировать транзакцию (уборка AU уже упиралась в это с `AdminAuditLog`).
+  createdById String?
+  createdBy   User?   @relation("CompanyTaskAuthor", fields: [createdById], references: [id], onDelete: SetNull)
+
+  /// Кому поручено и кто взял — два разных поля: ТЗ просит видеть оба.
+  assigneeId String?
+  assignee   User?     @relation("CompanyTaskAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  assignedAt DateTime?
+  takenById  String?
+  takenBy    User?     @relation("CompanyTaskTaker", fields: [takenById], references: [id], onDelete: SetNull)
+  takenAt    DateTime?
+
+  /// Кто сдал на проверку: он же не вправе принять свою работу.
+  submittedById String?
+  submittedAt   DateTime?
+
+  closedById   String?
+  closedBy     User?     @relation("CompanyTaskCloser", fields: [closedById], references: [id], onDelete: SetNull)
+  closedAt     DateTime?
+  cancelReason String?
+
+  /// Привязки. Связь рвётся, а не каскадит: архивация склада и снос точки не уносят
+  /// поручение. Акции в проекте нет, и поля под неё не заводим (решение BD/BC).
+  pointId     String?
+  point       CompanyPoint? @relation(fields: [pointId], references: [id], onDelete: SetNull)
+  productId   String?
+  product     Product?      @relation(fields: [productId], references: [id], onDelete: SetNull)
+  warehouseId String?
+  warehouse   Warehouse?    @relation(fields: [warehouseId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  comments CompanyTaskComment[]
+
+  @@index([companyId, status])
+  @@index([companyId, createdAt])
+  @@index([assigneeId, status])
+  @@index([pointId])
+  @@index([dueAt])
+}
+
+/// Обсуждение внутри задачи. Общий чат команды из того же пункта ТЗ — отдельная линия
+/// со своей моделью и своим непрочитанным.
+model CompanyTaskComment {
+  id           String      @id @default(cuid())
+  taskId       String
+  task         CompanyTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  authorUserId String?
+  author       User?       @relation("CompanyTaskCommentAuthor", fields: [authorUserId], references: [id], onDelete: SetNull)
+  body         String      @db.Text
+  createdAt    DateTime    @default(now())
+
+  @@index([taskId, createdAt])
+}
+
+enum CompanyTaskStatus {
+  NEW
+  IN_PROGRESS
+  ON_REVIEW
+  DONE
+  CANCELLED
+}
+
+enum CompanyTaskPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
 }
 
 // Shareable invite link. Created by an OWNER when the person being invited has
@@ -749,6 +841,7 @@ model Company {
 
   teamRoles CompanyTeamRole[]
   actionLog CompanyActionLog[]
+  tasks     CompanyTask[]
 
   @@index([ownerUserId])
   @@index([status, createdAt])
@@ -804,6 +897,7 @@ model CompanyPoint {
   warehouses      Warehouse[]
   // Участки сотрудников, в которые входит эта точка (слайс BE).
   memberScopes    CompanyMemberPoint[]
+  tasks           CompanyTask[]
   // Мягкое удаление, как у компании.
   deletedAt       DateTime?
   deletedById     String?
@@ -1926,6 +2020,7 @@ model Product {
   reports   ProductReport[]
   offers    ProductOffer[]
   balances  StockBalance[]
+  tasks     CompanyTask[]
   movements StockMovement[]
 
   @@index([category, createdAt])
@@ -2088,6 +2183,7 @@ model Warehouse {
   balances  StockBalance[]
   movesFrom StockMovement[] @relation("MoveFrom")
   movesTo   StockMovement[] @relation("MoveTo")
+  tasks     CompanyTask[]
 
   @@index([companyId, kind])
   @@index([pointId])

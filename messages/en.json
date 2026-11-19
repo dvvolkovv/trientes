@@ -1593,7 +1593,8 @@
     "warehousesLink": "Warehouses",
     "loyaltyLink": "Cashback",
     "teamLink": "Team",
-    "journalLink": "Activity log"
+    "journalLink": "Activity log",
+    "tasksLink": "Tasks"
   },
   "cabinet": {
     "kicker": "Section · Cabinet",
@@ -3153,6 +3154,32 @@
       "asked": "We have received several reports about your location «{point}». Please confirm it is open and still accepts crypto, or correct its details.",
       "warned": "We have had no answer about «{point}» for 14 days. Without a reply within another 14 days the location will be taken off the map until the matter is clarified.",
       "suspended": "«{point}» has been taken off the map because the reports about it went unanswered. Reply here and we will put it back."
+    },
+    "task": {
+      "assigned": {
+        "subject": "A task for you: {title}",
+        "body": "{company} assigned you a task: {title}"
+      },
+      "submitted": {
+        "subject": "Task handed in: {title}",
+        "body": "The task \"{title}\" at {company} is ready for your review."
+      },
+      "accepted": {
+        "subject": "Task accepted: {title}",
+        "body": "Your task \"{title}\" at {company} has been accepted."
+      },
+      "returned": {
+        "subject": "Task back in progress: {title}",
+        "body": "The task \"{title}\" at {company} went back to you for more work."
+      },
+      "cancelled": {
+        "subject": "Task cancelled: {title}",
+        "body": "The task \"{title}\" at {company} has been cancelled."
+      },
+      "commented": {
+        "subject": "New message in task: {title}",
+        "body": "Someone wrote in the task \"{title}\" at {company}."
+      }
     }
   },
   "captcha": {
@@ -3721,7 +3748,8 @@
         "points": "Points on the map",
         "products": "Products",
         "warehouses": "Warehouses and stock",
-        "pricing": "Price and cashback"
+        "pricing": "Price and cashback",
+        "tasks": "Tasks"
       },
       "levels": {
         "NONE": "No access",
@@ -3795,7 +3823,121 @@
       "TEAM_ROLE_DELETED": "Role deleted",
       "INVITE_CREATED": "Invite link created",
       "INVITE_REVOKED": "Invite link revoked",
-      "INVITE_ACCEPTED": "Invite link accepted"
+      "INVITE_ACCEPTED": "Invite link accepted",
+      "TASK_CREATED": "Task created",
+      "TASK_UPDATED": "Task edited",
+      "TASK_STATUS_SET": "Task status changed",
+      "TASK_CANCELLED": "Task cancelled",
+      "TASK_COMMENTED": "Message in a task"
+    }
+  },
+  "cabinetTasks": {
+    "title": "Tasks",
+    "subtitle": "Who has to do what: assign a task, set a due date, watch it move from taken to accepted.",
+    "subtitleOwn": "Tasks assigned to you. Ask the owner for access to the team board.",
+    "frozen": "This company is under review, so tasks can only be read right now.",
+    "empty": "No tasks yet.",
+    "nobody": "Nobody yet",
+    "gone": "Account removed",
+    "overdue": "Overdue",
+    "saving": "Saving…",
+    "create": "Create the task",
+    "createHeading": "New task",
+    "comment": "Post",
+    "commentPlaceholder": "Shelf half filled, the rest is in transit.",
+    "reassign": "Reassign",
+    "cancelReason": "Why cancel it",
+    "actionsHeading": "Actions",
+    "threadHeading": "Discussion",
+    "threadEmpty": "No messages in this task yet.",
+    "waitingAcceptance": "You handed this task in, so someone else has to accept it.",
+    "filters": {
+      "all": "All",
+      "mine": "Mine",
+      "overdue": "Overdue",
+      "mineOverdue": "Mine, overdue"
+    },
+    "statuses": {
+      "NEW": "Created",
+      "IN_PROGRESS": "In progress",
+      "ON_REVIEW": "On review",
+      "DONE": "Done",
+      "CANCELLED": "Cancelled"
+    },
+    "moves": {
+      "IN_PROGRESS": "Take it",
+      "ON_REVIEW": "Hand it in",
+      "DONE": "Accept",
+      "CANCELLED": "Cancel the task",
+      "RETURN": "Send it back for more work"
+    },
+    "priorities": {
+      "LOW": "Low",
+      "NORMAL": "Normal",
+      "HIGH": "High",
+      "URGENT": "Urgent"
+    },
+    "fields": {
+      "title": "What has to be done",
+      "details": "Details",
+      "assignee": "Assignee",
+      "assigneeNone": "Anyone who takes it",
+      "priority": "Priority",
+      "due": "Due date",
+      "point": "Point of sale",
+      "product": "Product",
+      "warehouse": "Warehouse",
+      "none": "Not linked"
+    },
+    "meta": {
+      "priority": "Priority: {value}",
+      "due": "due {value}",
+      "author": "Set by",
+      "assignee": "Assigned to",
+      "taken": "Taken by",
+      "links": "Linked to",
+      "closed": "Closed by"
+    },
+    "reports": {
+      "title": "Reports",
+      "note": "Counted over the tasks you can see. Average completion time is not shown yet — there are no closed tasks to measure.",
+      "byAssignee": "By assignee",
+      "byPoint": "By point of sale",
+      "noPoint": "Not linked to a point",
+      "empty": "Nothing to count yet.",
+      "open": "open: {count}",
+      "overdue": "overdue: {count}",
+      "onReview": "on review: {count}",
+      "done30": "done in 30 days: {count}"
+    },
+    "errors": {
+      "unauth": "Sign in first.",
+      "forbidden": "You do not have access to this.",
+      "not_found": "The task is gone.",
+      "task_closed": "This task is closed — a returned job is a new task with its own due date.",
+      "status_changed": "Someone changed the task while you were reading it. Reload the page.",
+      "not_a_transition": "That step is not possible from the current status.",
+      "status_invalid": "Unknown status.",
+      "priority_invalid": "Unknown priority.",
+      "title_required": "Say what has to be done.",
+      "title_too_long": "Keep the title under 200 characters.",
+      "details_too_long": "Keep the details under 4000 characters.",
+      "due_invalid": "Pick a date.",
+      "due_past": "That date is in the past.",
+      "too_many_open": "You already have 300 open tasks — close some first.",
+      "daily_limit": "Daily task limit reached. Try again tomorrow.",
+      "reason_required": "Say why you are cancelling it.",
+      "assignee_unknown": "That person is not in your team.",
+      "assignee_out_of_scope": "That person does not have access to this point of sale, so they would never see the task.",
+      "point_unknown": "Unknown point of sale.",
+      "point_forbidden": "That point of sale is outside your area.",
+      "warehouse_unknown": "Unknown warehouse.",
+      "warehouse_forbidden": "That warehouse is outside your area.",
+      "product_unknown": "Unknown product.",
+      "body_required": "Write something first.",
+      "body_too_long": "Keep the message under 2000 characters.",
+      "too_many_comments": "This task already has 100 messages.",
+      "nothing_to_save": "Nothing changed."
     }
   }
 }

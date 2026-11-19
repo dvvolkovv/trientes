@@ -1593,7 +1593,8 @@
     "warehousesLink": "Entrepôts",
     "loyaltyLink": "Cashback",
     "teamLink": "Équipe",
-    "journalLink": "Journal d'activité"
+    "journalLink": "Journal d'activité",
+    "tasksLink": "Tâches"
   },
   "cabinet": {
     "kicker": "Section · Espace personnel",
@@ -3153,6 +3154,32 @@
       "asked": "Nous avons reçu plusieurs signalements concernant votre emplacement «{point}». Veuillez confirmer qu'il est ouvert et accepte toujours la crypto, ou corriger ses informations.",
       "warned": "Nous n'avons reçu aucune réponse concernant «{point}» depuis 14 jours. Sans réponse sous 14 jours supplémentaires l'emplacement sera retiré de la carte jusqu'à clarification.",
       "suspended": "«{point}» a été retiré de la carte car les signalements à son sujet sont restés sans réponse. Répondez ici et nous le remettrons."
+    },
+    "task": {
+      "assigned": {
+        "subject": "Une tâche pour vous : {title}",
+        "body": "{company} vous a attribué une tâche : {title}"
+      },
+      "submitted": {
+        "subject": "Tâche remise : {title}",
+        "body": "La tâche « {title} » chez {company} est prête pour votre examen."
+      },
+      "accepted": {
+        "subject": "Tâche acceptée : {title}",
+        "body": "Votre tâche « {title} » chez {company} a été acceptée."
+      },
+      "returned": {
+        "subject": "Tâche de nouveau en cours : {title}",
+        "body": "La tâche « {title} » chez {company} vous a été renvoyée pour travail supplémentaire."
+      },
+      "cancelled": {
+        "subject": "Tâche annulée : {title}",
+        "body": "La tâche « {title} » chez {company} a été annulée."
+      },
+      "commented": {
+        "subject": "Nouveau message dans la tâche : {title}",
+        "body": "Quelqu'un a écrit dans la tâche « {title} » chez {company}."
+      }
     }
   },
   "captcha": {
@@ -3721,7 +3748,8 @@
         "points": "Points sur la carte",
         "products": "Produits",
         "warehouses": "Entrepôts et stock",
-        "pricing": "Prix et cashback"
+        "pricing": "Prix et cashback",
+        "tasks": "Tâches"
       },
       "levels": {
         "NONE": "Aucun accès",
@@ -3795,7 +3823,121 @@
       "TEAM_ROLE_DELETED": "Rôle supprimé",
       "INVITE_CREATED": "Lien d'invitation créé",
       "INVITE_REVOKED": "Lien d'invitation révoqué",
-      "INVITE_ACCEPTED": "Lien d'invitation accepté"
+      "INVITE_ACCEPTED": "Lien d'invitation accepté",
+      "TASK_CREATED": "Tâche créée",
+      "TASK_UPDATED": "Tâche modifiée",
+      "TASK_STATUS_SET": "Statut de la tâche modifié",
+      "TASK_CANCELLED": "Tâche annulée",
+      "TASK_COMMENTED": "Message dans une tâche"
+    }
+  },
+  "cabinetTasks": {
+    "title": "Tâches",
+    "subtitle": "Qui doit faire quoi : attribuez une tâche, définissez une date d’échéance, regardez-la passer de prise en charge à acceptée.",
+    "subtitleOwn": "Tâches qui vous sont assignées. Demandez au propriétaire l’accès au tableau de l’équipe.",
+    "frozen": "Cette entreprise est en cours d’examen, donc les tâches ne peuvent être lues que pour le moment.",
+    "empty": "Aucune tâche pour le moment.",
+    "nobody": "Personne pour le moment",
+    "gone": "Compte supprimé",
+    "overdue": "En retard",
+    "saving": "Enregistrement…",
+    "create": "Créer la tâche",
+    "createHeading": "Nouvelle tâche",
+    "comment": "Publier",
+    "commentPlaceholder": "Étagère à moitié remplie, le reste est en transit.",
+    "reassign": "Réattribuer",
+    "cancelReason": "Pourquoi l’annuler",
+    "actionsHeading": "Actions",
+    "threadHeading": "Discussion",
+    "threadEmpty": "Aucun message dans cette tâche pour le moment.",
+    "waitingAcceptance": "Vous avez rendu cette tâche, donc quelqu’un d’autre doit l’accepter.",
+    "filters": {
+      "all": "Tous",
+      "mine": "Les miennes",
+      "overdue": "En retard",
+      "mineOverdue": "Les miennes, en retard"
+    },
+    "statuses": {
+      "NEW": "Créée",
+      "IN_PROGRESS": "En cours",
+      "ON_REVIEW": "En revue",
+      "DONE": "Terminée",
+      "CANCELLED": "Annulée"
+    },
+    "moves": {
+      "IN_PROGRESS": "La prendre",
+      "ON_REVIEW": "La remettre",
+      "DONE": "Accepter",
+      "CANCELLED": "Annuler la tâche",
+      "RETURN": "Renvoyer pour travail supplémentaire"
+    },
+    "priorities": {
+      "LOW": "Faible",
+      "NORMAL": "Normale",
+      "HIGH": "Élevée",
+      "URGENT": "Urgente"
+    },
+    "fields": {
+      "title": "Ce qu'il faut faire",
+      "details": "Détails",
+      "assignee": "Responsable",
+      "assigneeNone": "N'importe qui la prendra",
+      "priority": "Priorité",
+      "due": "Date d'échéance",
+      "point": "Point de vente",
+      "product": "Produit",
+      "warehouse": "Entrepôt",
+      "none": "Non lié"
+    },
+    "meta": {
+      "priority": "Priorité : {value}",
+      "due": "pour le {value}",
+      "author": "Définie par",
+      "assignee": "Attribuée à",
+      "taken": "Prise par",
+      "links": "Liée à",
+      "closed": "Fermée par"
+    },
+    "reports": {
+      "title": "Rapports",
+      "note": "Compté sur les tâches que vous pouvez voir. Le temps moyen d'exécution n'est pas encore affiché — il n'y a pas de tâches clôturées à mesurer.",
+      "byAssignee": "Par assigné",
+      "byPoint": "Par point de vente",
+      "noPoint": "Non lié à un point",
+      "empty": "Rien à comptabiliser pour l'instant.",
+      "open": "ouvertes : {count}",
+      "overdue": "en retard : {count}",
+      "onReview": "en révision : {count}",
+      "done30": "terminées en 30 jours : {count}"
+    },
+    "errors": {
+      "unauth": "Connectez-vous d'abord.",
+      "forbidden": "Vous n'y avez pas accès.",
+      "not_found": "La tâche a disparu.",
+      "task_closed": "Cette tâche est clôturée — un travail renvoyé est une nouvelle tâche avec sa propre échéance.",
+      "status_changed": "Quelqu'un a modifié la tâche pendant que vous la lisiez. Rechargez la page.",
+      "not_a_transition": "Cette étape est impossible depuis l'état actuel.",
+      "status_invalid": "Statut inconnu.",
+      "priority_invalid": "Priorité inconnue.",
+      "title_required": "Indiquez ce qu’il faut faire.",
+      "title_too_long": "Limitez le titre à moins de 200 caractères.",
+      "details_too_long": "Limitez les détails à moins de 4000 caractères.",
+      "due_invalid": "Choisissez une date.",
+      "due_past": "Cette date est passée.",
+      "too_many_open": "Vous avez déjà 300 tâches ouvertes — fermez-en d’abord.",
+      "daily_limit": "Limite quotidienne de tâches atteinte. Réessayez demain.",
+      "reason_required": "Indiquez pourquoi vous l’annulez.",
+      "assignee_unknown": "Cette personne ne fait pas partie de votre équipe.",
+      "assignee_out_of_scope": "Cette personne n’a pas accès à ce point de vente, elle ne verra donc jamais la tâche.",
+      "point_unknown": "Point de vente inconnu.",
+      "point_forbidden": "Ce point de vente est en dehors de votre zone.",
+      "warehouse_unknown": "Entrepôt inconnu.",
+      "warehouse_forbidden": "Cet entrepôt est en dehors de votre zone.",
+      "product_unknown": "Produit inconnu.",
+      "body_required": "Écrivez quelque chose d’abord.",
+      "body_too_long": "Limitez le message à moins de 2000 caractères.",
+      "too_many_comments": "Cette tâche a déjà 100 messages.",
+      "nothing_to_save": "Rien n’a changé."
     }
   }
 }

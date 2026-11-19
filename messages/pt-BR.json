@@ -1593,7 +1593,8 @@
     "warehousesLink": "Armazéns",
     "loyaltyLink": "Cashback",
     "teamLink": "Equipe",
-    "journalLink": "Registro de atividades"
+    "journalLink": "Registro de atividades",
+    "tasksLink": "Tarefas"
   },
   "cabinet": {
     "kicker": "Seção · Painel",
@@ -3153,6 +3154,32 @@
       "asked": "Recebemos vários relatos sobre sua localização «{point}». Confirme que está aberta e ainda aceita cripto, ou corrija seus detalhes.",
       "warned": "Não recebemos resposta sobre «{point}» há 14 dias. Sem retorno em mais 14 dias a localização será removida do mapa até que a questão seja esclarecida.",
       "suspended": "«{point}» foi removida do mapa porque os relatos sobre ela não foram respondidos. Responda aqui e nós a recolocaremos."
+    },
+    "task": {
+      "assigned": {
+        "subject": "Uma tarefa para você: {title}",
+        "body": "{company} atribuiu uma tarefa a você: {title}"
+      },
+      "submitted": {
+        "subject": "Tarefa entregue: {title}",
+        "body": "A tarefa \"{title}\" em {company} está pronta para sua revisão."
+      },
+      "accepted": {
+        "subject": "Tarefa aceita: {title}",
+        "body": "Sua tarefa \"{title}\" em {company} foi aceita."
+      },
+      "returned": {
+        "subject": "Tarefa novamente em andamento: {title}",
+        "body": "A tarefa \"{title}\" em {company} voltou para você para mais trabalho."
+      },
+      "cancelled": {
+        "subject": "Tarefa cancelada: {title}",
+        "body": "A tarefa \"{title}\" em {company} foi cancelada."
+      },
+      "commented": {
+        "subject": "Nova mensagem na tarefa: {title}",
+        "body": "Alguém escreveu na tarefa \"{title}\" em {company}."
+      }
     }
   },
   "captcha": {
@@ -3721,7 +3748,8 @@
         "points": "Pontos no mapa",
         "products": "Produtos",
         "warehouses": "Armazéns e estoque",
-        "pricing": "Preço e cashback"
+        "pricing": "Preço e cashback",
+        "tasks": "Tarefas"
       },
       "levels": {
         "NONE": "Sem acesso",
@@ -3795,7 +3823,121 @@
       "TEAM_ROLE_DELETED": "Função excluída",
       "INVITE_CREATED": "Link de convite criado",
       "INVITE_REVOKED": "Link de convite revogado",
-      "INVITE_ACCEPTED": "Link de convite aceito"
+      "INVITE_ACCEPTED": "Link de convite aceito",
+      "TASK_CREATED": "Tarefa criada",
+      "TASK_UPDATED": "Tarefa editada",
+      "TASK_STATUS_SET": "Status da tarefa alterado",
+      "TASK_CANCELLED": "Tarefa cancelada",
+      "TASK_COMMENTED": "Mensagem em uma tarefa"
+    }
+  },
+  "cabinetTasks": {
+    "title": "Tarefas",
+    "subtitle": "Quem deve fazer o quê: atribua uma tarefa, defina um prazo e veja ela avançar de assumida a aceita.",
+    "subtitleOwn": "Tarefas atribuídas a você. Peça ao proprietário acesso ao quadro da equipe.",
+    "frozen": "Esta empresa está em revisão, então as tarefas só podem ser lidas por enquanto.",
+    "empty": "Ainda não há tarefas.",
+    "nobody": "Ninguém ainda",
+    "gone": "Conta removida",
+    "overdue": "Em atraso",
+    "saving": "Salvando…",
+    "create": "Criar a tarefa",
+    "createHeading": "Nova tarefa",
+    "comment": "Publicar",
+    "commentPlaceholder": "Prateleira meio cheia, o restante está em trânsito.",
+    "reassign": "Reatribuir",
+    "cancelReason": "Por que cancelá-la",
+    "actionsHeading": "Ações",
+    "threadHeading": "Discussão",
+    "threadEmpty": "Ainda não há mensagens nesta tarefa.",
+    "waitingAcceptance": "Você entregou esta tarefa, então outra pessoa precisa aceitá-la.",
+    "filters": {
+      "all": "Todas",
+      "mine": "Minhas",
+      "overdue": "Em atraso",
+      "mineOverdue": "Minhas, em atraso"
+    },
+    "statuses": {
+      "NEW": "Criada",
+      "IN_PROGRESS": "Em andamento",
+      "ON_REVIEW": "Em revisão",
+      "DONE": "Concluída",
+      "CANCELLED": "Cancelada"
+    },
+    "moves": {
+      "IN_PROGRESS": "Assumir",
+      "ON_REVIEW": "Entregar",
+      "DONE": "Aceitar",
+      "CANCELLED": "Cancelar a tarefa",
+      "RETURN": "Enviar de volta para mais trabalho"
+    },
+    "priorities": {
+      "LOW": "Baixa",
+      "NORMAL": "Normal",
+      "HIGH": "Alta",
+      "URGENT": "Urgente"
+    },
+    "fields": {
+      "title": "O que precisa ser feito",
+      "details": "Detalhes",
+      "assignee": "Responsável",
+      "assigneeNone": "Quem assumir",
+      "priority": "Prioridade",
+      "due": "Prazo",
+      "point": "Ponto de venda",
+      "product": "Produto",
+      "warehouse": "Depósito",
+      "none": "Não vinculado"
+    },
+    "meta": {
+      "priority": "Prioridade: {value}",
+      "due": "vence em {value}",
+      "author": "Definida por",
+      "assignee": "Atribuída a",
+      "taken": "Assumida por",
+      "links": "Vinculada a",
+      "closed": "Encerrada por"
+    },
+    "reports": {
+      "title": "Relatórios",
+      "note": "Contados com base nas tarefas que você pode ver. O tempo médio de conclusão ainda não é exibido — não há tarefas encerradas para medir.",
+      "byAssignee": "Por responsável",
+      "byPoint": "Por ponto de venda",
+      "noPoint": "Não vinculadas a um ponto",
+      "empty": "Nada para contar ainda.",
+      "open": "abertas: {count}",
+      "overdue": "atrasadas: {count}",
+      "onReview": "em revisão: {count}",
+      "done30": "concluídas em 30 dias: {count}"
+    },
+    "errors": {
+      "unauth": "Faça login primeiro.",
+      "forbidden": "Você não tem acesso a isto.",
+      "not_found": "A tarefa não existe mais.",
+      "task_closed": "Esta tarefa está encerrada — um trabalho devolvido é uma nova tarefa com seu próprio prazo.",
+      "status_changed": "Alguém alterou a tarefa enquanto você a lia. Recarregue a página.",
+      "not_a_transition": "Essa etapa não é possível a partir do status atual.",
+      "status_invalid": "Status desconhecido.",
+      "priority_invalid": "Prioridade desconhecida.",
+      "title_required": "Diga o que precisa ser feito.",
+      "title_too_long": "Mantenha o título com menos de 200 caracteres.",
+      "details_too_long": "Mantenha os detalhes com menos de 4000 caracteres.",
+      "due_invalid": "Escolha uma data.",
+      "due_past": "Essa data é no passado.",
+      "too_many_open": "Você já tem 300 tarefas abertas — feche algumas antes.",
+      "daily_limit": "Limite diário de tarefas atingido. Tente novamente amanhã.",
+      "reason_required": "Diga por que você está cancelando.",
+      "assignee_unknown": "Essa pessoa não está na sua equipe.",
+      "assignee_out_of_scope": "Essa pessoa não tem acesso a este ponto de venda, então ela nunca veria a tarefa.",
+      "point_unknown": "Ponto de venda desconhecido.",
+      "point_forbidden": "Esse ponto de venda está fora da sua área.",
+      "warehouse_unknown": "Depósito desconhecido.",
+      "warehouse_forbidden": "Esse depósito está fora da sua área.",
+      "product_unknown": "Produto desconhecido.",
+      "body_required": "Escreva algo primeiro.",
+      "body_too_long": "Mantenha a mensagem com menos de 2000 caracteres.",
+      "too_many_comments": "Esta tarefa já tem 100 mensagens.",
+      "nothing_to_save": "Nada mudou."
     }
   }
 }
