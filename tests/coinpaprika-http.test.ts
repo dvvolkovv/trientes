@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { CP_QUOTA_BLOCK_MS, CpHttpError, CpQuotaBlockedError, cpGet, resetCpQuotaBlock } from "@/lib/coinpaprika-http";
 import { createRateGate } from "@/lib/rate-gate";
-import type { JsonFetch } from "@/lib/coingecko-http";
+import type { JsonFetch } from "@/lib/rate-gate";
 
 function clock(start = 10_000) {
   let t = start;
@@ -155,5 +155,30 @@ describe("cpGet при исчерпанном запасе месяца", () => 
       cpGet("/exchanges", { ...base(later), fetchImpl: s2.impl }),
     ).resolves.toEqual([{ id: "binance" }]);
     expect(s2.urls).toHaveLength(1);
+  });
+});
+
+/**
+ * У обоих клиентов чужих служб не было **никакого** срока запроса: служба,
+ * принявшая соединение и замолчавшая, держала бы отрисовку страницы столько,
+ * сколько молчит. Это та же болезнь, что стоила 19 ноября окон 502, только
+ * хуже: там ожидание было хотя бы конечным (10 и 30 секунд повторов).
+ */
+describe("срок запроса", () => {
+  it("молчащая служба отвергается по сроку, а не ждётся вечно", async () => {
+    resetCpQuotaBlock();
+    const hang: JsonFetch = (_url, init) =>
+      new Promise((_resolve, reject) => {
+        init?.signal?.addEventListener("abort", () => reject(new Error("aborted")));
+      });
+
+    await expect(
+      cpGet("/exchanges", {
+        fetchImpl: hang,
+        gate: createRateGate({ minIntervalMs: 0 }),
+        retryDelaysMs: [],
+        timeoutMs: 30,
+      }),
+    ).rejects.toThrow();
   });
 });

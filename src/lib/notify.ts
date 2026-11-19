@@ -25,15 +25,21 @@ export type NotifyResult = {
 // have started a conversation with the bot at least once (or signed in via the
 // Telegram Login widget) for this to succeed — Telegram does not let bots DM
 // arbitrary users.
+/** Срок одного запроса в Telegram. */
+export const TELEGRAM_TIMEOUT_MS = 8_000;
+
 export async function sendTelegram(chatId: string, text: string): Promise<{ ok: boolean; reason?: string }> {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   if (!token) return { ok: false, reason: "no_token" };
   try {
+    // Срок запроса: уведомление уходит из серверного действия (ответ сотруднику,
+    // рассылка магазина), и молчащий Telegram держал бы само действие.
     const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ chat_id: chatId, text, disable_web_page_preview: true }),
       cache: "no-store",
+      signal: AbortSignal.timeout(TELEGRAM_TIMEOUT_MS),
     });
     if (!res.ok) {
       const body = await res.text().catch(() => "");

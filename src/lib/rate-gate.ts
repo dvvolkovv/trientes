@@ -39,7 +39,7 @@ export type Sleep = (ms: number) => Promise<void>;
  */
 export type JsonFetch = (
   url: string,
-  init?: { headers?: Record<string, string>; cache?: string },
+  init?: { headers?: Record<string, string>; cache?: string; signal?: AbortSignal },
 ) => Promise<{ ok: boolean; status: number; json(): Promise<unknown>; text(): Promise<string> }>;
 
 const realSleep: Sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

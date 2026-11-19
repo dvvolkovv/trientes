@@ -44,6 +44,15 @@ export const CG_RETRY_DELAYS_MS = [15_000, 45_000];
 export const CG_UI_MIN_INTERVAL_MS = 250;
 export const CG_UI_RETRY_DELAYS_MS = [1_500];
 
+/**
+ * Срок одного запроса: своего у `fetch` нет, и служба, принявшая соединение и
+ * замолчавшая, держала бы отрисовку страницы столько, сколько молчит. Фоновому
+ * прогону дано больше (каталог монет — ответ в несколько мегабайт), чтению по
+ * запросу посетителя — вдвое меньше: он ждёт страницу, а не таблицу рынков.
+ */
+export const CG_TIMEOUT_MS = 15_000;
+export const CG_UI_TIMEOUT_MS = 6_000;
+
 export class CgHttpError extends Error {
   constructor(
     readonly status: number,
@@ -66,6 +75,7 @@ export type CgGetOptions = {
   sleep?: Sleep;
   jitter?: () => number;
   retryDelaysMs?: number[];
+  timeoutMs?: number;
 };
 
 /** Общий шлюз процесса: все вызовы без своего `gate` выстраиваются в него. */
@@ -88,8 +98,13 @@ export async function cgGet(
   const qs = new URLSearchParams(params).toString();
   const url = qs ? `${CG_BASE}${path}?${qs}` : `${CG_BASE}${path}`;
 
+  const timeoutMs = opts.timeoutMs ?? CG_TIMEOUT_MS;
   const once = async (): Promise<unknown> => {
-    const res = await fetchImpl(url, { headers: { accept: "application/json" }, cache: "no-store" });
+    const res = await fetchImpl(url, {
+      headers: { accept: "application/json" },
+      cache: "no-store",
+      signal: AbortSignal.timeout(timeoutMs),
+    });
     if (!res.ok) {
       const body = await res.text().catch(() => "");
       throw new CgHttpError(res.status, path, body);
@@ -118,6 +133,7 @@ export async function cgGetUi(
   return cgGet(path, params, {
     gate: opts.gate ?? uiGate,
     retryDelaysMs: opts.retryDelaysMs ?? CG_UI_RETRY_DELAYS_MS,
+    timeoutMs: opts.timeoutMs ?? CG_UI_TIMEOUT_MS,
     fetchImpl: opts.fetchImpl,
     sleep: opts.sleep,
     jitter: opts.jitter,

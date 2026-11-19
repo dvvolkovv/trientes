@@ -27,6 +27,15 @@ export const CP_BASE = "https://api.coinpaprika.com/v1";
 
 /** Прогон делает ~26 запросов подряд; промежуток держит их редкой струйкой. */
 export const CP_MIN_INTERVAL_MS = 500;
+
+/**
+ * Срок одного запроса. Служба, принявшая соединение и замолчавшая, без него
+ * держала бы отрисовку страницы ровно столько, сколько молчит: своего срока у
+ * `fetch` нет. Десять секунд — заведомо больше живого ответа (доли секунды) и
+ * заведомо меньше терпения посетителя; страницу всё равно охраняет её
+ * собственный срок в три секунды (`exchange-fresh`).
+ */
+export const CP_TIMEOUT_MS = 10_000;
 export const CP_RETRY_DELAYS_MS = [10_000, 30_000];
 
 /**
@@ -98,6 +107,7 @@ export type CpGetOptions = {
   jitter?: () => number;
   retryDelaysMs?: number[];
   now?: () => number;
+  timeoutMs?: number;
 };
 
 const sharedGate = createRateGate({ minIntervalMs: CP_MIN_INTERVAL_MS });
@@ -115,8 +125,13 @@ export async function cpGet(path: string, opts: CpGetOptions = {}): Promise<unkn
 
   if (blockedUntil > now()) throw new CpQuotaBlockedError(path, blockedUntil);
 
+  const timeoutMs = opts.timeoutMs ?? CP_TIMEOUT_MS;
   const once = async (): Promise<unknown> => {
-    const res = await fetchImpl(url, { headers: { Accept: "application/json" }, cache: "no-store" });
+    const res = await fetchImpl(url, {
+      headers: { Accept: "application/json" },
+      cache: "no-store",
+      signal: AbortSignal.timeout(timeoutMs),
+    });
     if (!res.ok) {
       const body = await res.text().catch(() => "");
       throw new CpHttpError(res.status, path, body);

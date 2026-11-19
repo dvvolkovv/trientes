@@ -5,6 +5,9 @@
 
 import type { OHLCV } from "@/lib/binance-klines";
 import { parseKline } from "@/lib/binance-klines";
+
+/** Срок одного запроса к бирже: ответ живой биржи — доли секунды. */
+export const CEX_TIMEOUT_MS = 8_000;
 import { CG_TO_BINANCE } from "@/lib/live/binance-mapping";
 
 export type ExchangeId = "binance" | "bybit" | "kucoin" | "cryptocom" | "kraken";
@@ -144,9 +147,13 @@ export async function fetchExchangeKlines(
   const adapter = ADAPTERS[id];
   const param = adapter.intervalParam[canonicalInterval];
   if (!param) throw new Error(`${id} does not support interval ${canonicalInterval}`);
+  // Срок запроса: маршрут графика зовут при отрисовке страницы монеты, а своего
+  // срока у `fetch` нет — биржа, принявшая соединение и замолчавшая, держала бы
+  // запрос столько, сколько молчит.
   const res = await fetch(adapter.url(base, param, limit), {
     headers: { accept: "application/json" },
     cache: "no-store",
+    signal: AbortSignal.timeout(CEX_TIMEOUT_MS),
   });
   if (!res.ok) {
     const body = await res.text().catch(() => "");

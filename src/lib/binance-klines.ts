@@ -21,6 +21,9 @@ export function parseKline(tuple: unknown): OHLCV {
   };
 }
 
+/** Срок одного запроса к Binance. */
+export const BINANCE_TIMEOUT_MS = 8_000;
+
 export async function fetchKlines(
   symbol: string,
   interval: string,
@@ -29,7 +32,12 @@ export async function fetchKlines(
   const url = `${BINANCE_BASE}/api/v3/klines?symbol=${encodeURIComponent(
     symbol,
   )}&interval=${encodeURIComponent(interval)}&limit=${Math.min(limit, 1000)}`;
-  const res = await fetch(url, { headers: { accept: "application/json" }, cache: "no-store" });
+  // Срок запроса: своего у `fetch` нет (см. тот же разбор в `coingecko-http`).
+  const res = await fetch(url, {
+    headers: { accept: "application/json" },
+    cache: "no-store",
+    signal: AbortSignal.timeout(BINANCE_TIMEOUT_MS),
+  });
   if (!res.ok) {
     const body = await res.text().catch(() => "");
     throw new Error(`binance klines ${res.status}: ${body.slice(0, 200)}`);

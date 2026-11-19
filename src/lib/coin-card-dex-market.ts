@@ -22,6 +22,9 @@ import { DEX_CANDLES_API, dexPairKey, parseDexCandles, sumDexVolumeUsd } from "@
 /** Адрес сайта: и обмен, и служба заявок стоят за ним же. */
 export const DEX_ORIGIN = process.env.PUBLIC_ORIGIN ?? "https://trientes.org";
 
+/** Срок одного запроса к службе заявок обмена: она своя и отвечает за доли секунды. */
+export const DEX_TIMEOUT_MS = 8_000;
+
 /** Имя биржи в таблице рынков. Оно же — признак авторства значения. */
 export const OWN_DEX_NAME = "Trientes DEX";
 /** Сеть, в которой стоит обмен (не сеть монеты). */
@@ -71,7 +74,11 @@ export async function readOwnDexVolumeUsd(
   if (!key) return null;
   const [base, quote] = key.split("-");
   try {
-    const res = await fetchImpl(`${origin}${DEX_CANDLES_API}/${key}/1h`);
+    // Срок запроса: своего у `fetch` нет, а прогон ходит по всем карточкам — на
+    // молчащей службе он встал бы целиком (тот же разбор, что в `coingecko-http`).
+    const res = await fetchImpl(`${origin}${DEX_CANDLES_API}/${key}/1h`, {
+      signal: AbortSignal.timeout(DEX_TIMEOUT_MS),
+    });
     if (!res.ok) return null;
     const parsed = parseDexCandles(await res.json(), {
       pair: { key, base, quote },

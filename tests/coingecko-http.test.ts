@@ -181,3 +181,36 @@ describe("cgGetUi", () => {
     expect(order).toEqual(["ui", "background"]);
   });
 });
+
+/**
+ * Своего срока у `fetch` нет, и чтение тикеров монеты идёт **при отрисовке**
+ * страницы: служба, принявшая соединение и замолчавшая, держала бы страницу
+ * столько, сколько молчит. 19 ноября такое ожидание (пусть и конечное — повторы
+ * CoinPaprika по 10 и 30 секунд) довело веб до перезапусков по памяти и окон 502.
+ */
+describe("срок запроса", () => {
+  const hang: JsonFetch = (_url, init) =>
+    new Promise((_resolve, reject) => {
+      init?.signal?.addEventListener("abort", () => reject(new Error("aborted")));
+    });
+
+  it("молчащая служба отвергается по сроку — и в фоне, и при отрисовке", async () => {
+    await expect(
+      cgGet("/coins/markets", {}, {
+        fetchImpl: hang,
+        gate: createRateGate({ minIntervalMs: 0 }),
+        retryDelaysMs: [],
+        timeoutMs: 30,
+      }),
+    ).rejects.toThrow();
+
+    await expect(
+      cgGetUi("/coins/bitcoin/tickers", {}, {
+        fetchImpl: hang,
+        gate: createRateGate({ minIntervalMs: 0 }),
+        retryDelaysMs: [],
+        timeoutMs: 30,
+      }),
+    ).rejects.toThrow();
+  });
+});
