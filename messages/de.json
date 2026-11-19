@@ -1595,7 +1595,8 @@
     "teamLink": "Team",
     "journalLink": "Aktivitätsprotokoll",
     "tasksLink": "Aufgaben",
-    "promosLink": "Angebote"
+    "promosLink": "Angebote",
+    "supplyLink": "Beschaffung"
   },
   "cabinet": {
     "kicker": "Bereich · Kabinett",
@@ -3186,6 +3187,28 @@
       "from": "{shop} hat Neuigkeiten für dich",
       "open": "Öffnen: {url}",
       "unsubscribe": "Shop-Mailings deaktivieren: {url}"
+    },
+    "supply": {
+      "sent": {
+        "subject": "Neue Bestellung von {company}",
+        "body": "{company} hat Ihnen eine Bestellung gesendet. Bestätigen Sie das Lieferdatum oder lehnen Sie sie ab."
+      },
+      "confirmed": {
+        "subject": "Bestellung bestätigt",
+        "body": "{company}: Ihr Lieferant hat die Bestellung bestätigt und ein Lieferdatum genannt."
+      },
+      "declined": {
+        "subject": "Bestellung abgelehnt",
+        "body": "{company}: Ihr Lieferant hat die Bestellung abgelehnt."
+      },
+      "shipped": {
+        "subject": "Waren sind unterwegs",
+        "body": "{company}: Ihr Lieferant hat die Bestellung als versandt markiert. Nehmen Sie sie bei Ankunft in Empfang."
+      },
+      "autodraft": {
+        "subject": "Bestand wird knapp",
+        "body": "{company}: Der Bestand ist unter den Schwellenwert gefallen, daher wartet ein Entwurf einer Einkaufsbestellung auf Sie. Es wurde nichts gesendet — prüfen Sie sie und senden Sie sie selbst"
+      }
     }
   },
   "captcha": {
@@ -3756,7 +3779,8 @@
         "warehouses": "Lager und Bestand",
         "pricing": "Preis und Cashback",
         "tasks": "Aufgaben",
-        "promos": "Angebote und Mailings"
+        "promos": "Angebote und Mailings",
+        "supply": "Lieferanten und Bestellungen"
       },
       "levels": {
         "NONE": "Kein Zugriff",
@@ -3799,6 +3823,7 @@
     "subtitle": "Wer was wann geändert hat — die letzten {count} Einträge.",
     "empty": "Noch nichts erfasst.",
     "goneActor": "gelöschtes Mitglied",
+    "systemActor": "nächtlicher Lauf",
     "actions": {
       "PROFILE_SAVED": "Shop-Karte gespeichert",
       "POINT_SUBMITTED": "Verkaufsstelle eingereicht",
@@ -3840,7 +3865,21 @@
       "PROMO_UPDATED": "Angebot bearbeitet",
       "PROMO_ARCHIVED": "Angebot archiviert",
       "PROMO_RESTORED": "Angebot wiederhergestellt",
-      "PROMO_SENT": "Angebot an Follower gesendet"
+      "PROMO_SENT": "Angebot an Follower gesendet",
+      "SUPPLIER_SAVED": "Lieferant gespeichert",
+      "SUPPLIER_ARCHIVED": "Lieferant archiviert",
+      "SUPPLIER_RESTORED": "Lieferant wiederhergestellt",
+      "ORDER_CREATED": "Einkaufsbestellung erstellt",
+      "ORDER_SENT": "Einkaufsbestellung an den Lieferanten gesendet",
+      "ORDER_CONFIRMED": "Einkaufsbestellung bestätigt",
+      "ORDER_DECLINED": "Einkaufsbestellung abgelehnt",
+      "ORDER_SHIPPED": "Einkaufsbestellung als versendet markiert",
+      "ORDER_RECEIVED": "Waren eingelagert",
+      "ORDER_CLOSED": "Einkaufsbestellung geschlossen",
+      "ORDER_CANCELLED": "Einkaufsbestellung storniert",
+      "ORDER_DOC_ADDED": "Dokument an Einkaufsbestellung angehängt",
+      "REORDER_RULE_SAVED": "Automatische Bestellregel gespeichert",
+      "REORDER_RULE_DELETED": "Automatische Bestellregel gelöscht"
     }
   },
   "cabinetTasks": {
@@ -4031,5 +4070,152 @@
       "daily_cap": "Das heutige Mailing ist aufgebraucht — das nächste morgen.",
       "not_listed": "Der Shop ist nicht im Schaufenster, daher sind Mailings deaktiviert."
     }
+  },
+  "supply": {
+    "title": "Lieferung",
+    "subtitle": "Lieferanten, Einkaufsbestellungen und automatische Bestellschwellen. Die Zahlung erfolgt außerhalb der Plattform.",
+    "open": "Öffnen",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "create": "Erstellen",
+    "edit": "Bearbeiten",
+    "archive": "Archivieren",
+    "restore": "Wiederherstellen",
+    "archived": "archiviert",
+    "reason": "Grund",
+    "ordersHeading": "Einkaufsbestellungen",
+    "ordersEmpty": "Noch keine Einkaufsbestellungen.",
+    "newOrder": "Neue Einkaufsbestellung",
+    "needSupplier": "Fügen Sie zuerst einen Lieferanten hinzu — eine Bestellung braucht einen Empfänger.",
+    "incomingHeading": "Bestellungen an uns",
+    "incomingIntro": "Unternehmen, die Sie als ihren Lieferanten eingetragen haben. Bestätigen Sie ein Lieferdatum, lehnen Sie ab oder markieren Sie die Waren als versandt.",
+    "autoDrafted": "automatisch entworfen",
+    "lineCount": "Artikel: {count}",
+    "etaConfirmed": "Lieferant bestätigt: {date}",
+    "etaAsked": "Angefragt: {date}",
+    "etaAskedByBuyer": "Vom Käufer angefragt: {date}",
+    "sideBuyer": "Sie sind der Käufer",
+    "sideSupplier": "Sie sind der Lieferant",
+    "supplier": "Lieferant",
+    "warehouse": "Liefern an",
+    "warehouseNone": "Noch nicht ausgewählt",
+    "expectedAt": "Gewünschtes Datum",
+    "confirmedEta": "Vom Lieferanten bestätigtes Datum",
+    "note": "Notiz",
+    "total": "Referenzsumme",
+    "declineReason": "Warum der Lieferant abgelehnt hat",
+    "cancelReason": "Warum es storniert wurde",
+    "suppliersHeading": "Lieferanten",
+    "suppliersEmpty": "Noch keine Lieferanten.",
+    "addSupplier": "Lieferanten hinzufügen",
+    "supplierName": "Name",
+    "portalCompany": "Unternehmen auf Trientes",
+    "portalNone": "Nicht auf Trientes",
+    "portalHint": "Ein Lieferant, der selbst ein Unternehmen auf Trientes ist, erhält ein Portal: Ihre Bestellung öffnet sich in seinem eigenen Bereich, und dort bestätigen sie den Termin. Für alle anderen bleibt die Bestellung Ihr eigenes Dokument.",
+    "contactName": "Kontaktperson",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "hasPortal": "Hat ein Portal — {company}",
+    "noPortal": "Kein Portal: Die Bestellung bleibt Ihr Dokument",
+    "openOrders": "Offene Bestellungen: {count}",
+    "linesHeading": "Positionen",
+    "linesEmpty": "Noch keine Positionen.",
+    "lineQty": "{qty} {unit}",
+    "lineReceived": "eingegangen {qty}",
+    "lineFull": "Vollständig erhalten.",
+    "removeLine": "Entfernen",
+    "addLine": "Position hinzufügen",
+    "product": "Produkt",
+    "qty": "Menge",
+    "priceOptional": "Preis in {currency}, optional",
+    "needProducts": "Noch keine Produkte zu bestellen — fügen Sie zuerst einen Produktpass oder ein Angebot hinzu.",
+    "paymentOutside": "Die Preise hier dienen nur als Referenz: Die Bezahlung erfolgt außerhalb der Plattform.",
+    "receiveQty": "Empfangen, bis zu {left}",
+    "receive": "Empfangen",
+    "needWarehouse": "Wählen Sie ein Lager für diese Bestellung — es gibt keinen Ort, um die Waren zu empfangen.",
+    "docsHeading": "Dokumente",
+    "docsEmpty": "Noch keine Dokumente.",
+    "openDoc": "Öffnen",
+    "addDoc": "Dokument anhängen",
+    "uploading": "Wird hochgeladen…",
+    "docSide": {
+      "buyer": "vom Käufer",
+      "supplier": "vom Lieferanten"
+    },
+    "actionsHeading": "Was Sie tun können",
+    "noActions": "Hier ist gerade nichts zu tun: Der nächste Schritt liegt bei der anderen Seite.",
+    "closedNoActions": "Diese Bestellung ist abgeschlossen — hier passiert nichts mehr.",
+    "readOnly": "Sie können diese Bestellung lesen, aber nicht darauf handeln.",
+    "rulesHeading": "Auto-Bestellung",
+    "rulesIntro": "Wenn der Bestand in einem Regal den Schwellenwert unterschreitet, erstellt der nächtliche Lauf einen Entwurf einer Einkaufsbestellung und informiert alle, die bestellen dürfen. Es wird nichts automatisch gesendet — das Senden ist ein Kaufversprechen, und das entscheidet ein Mensch.",
+    "rulesEmpty": "Noch keine Schwellenwerte.",
+    "rulesNeedParts": "Sie benötigen ein Lager, ein Produkt und einen Lieferanten, bevor ein Schwellenwert Sinn ergibt.",
+    "addRule": "Schwellenwert hinzufügen",
+    "deleteRule": "Löschen",
+    "minQty": "Schwellenwert",
+    "targetQty": "Auffüllen bis",
+    "ruleThreshold": "unter {min} → auffüllen bis {target}",
+    "ruleOnHand": "auf Lager {qty}",
+    "status": {
+      "DRAFT": "Entwurf",
+      "SENT": "Gesendet",
+      "CONFIRMED": "Bestätigt",
+      "DECLINED": "Abgelehnt",
+      "SHIPPED": "Versandt",
+      "RECEIVED": "Geschlossen",
+      "CANCELLED": "Storniert"
+    },
+    "moves": {
+      "SEND": "An Lieferanten senden",
+      "CONFIRM": "Datum bestätigen",
+      "DECLINE": "Ablehnen",
+      "SHIP": "Als versandt markieren",
+      "CLOSE": "Bestellung schließen",
+      "CANCEL": "Bestellung stornieren",
+      "CONFIRM_SELF": "Datum des Lieferanten eintragen",
+      "SHIP_SELF": "Als vom Lieferanten versendet markieren"
+    },
+    "error": {
+      "unauth": "Melden Sie sich zuerst an.",
+      "forbidden": "Sie sind hier nicht berechtigt, mit Lieferungen zu arbeiten.",
+      "not_found": "Nicht gefunden.",
+      "failed": "Konnte nicht gespeichert werden. Versuchen Sie es erneut.",
+      "name_required": "Geben Sie dem Lieferanten einen Namen.",
+      "name_long": "Der Name ist zu lang.",
+      "email_invalid": "Diese E-Mail-Adresse scheint nicht korrekt zu sein.",
+      "self_supplier": "Ein Unternehmen kann nicht sein eigener Lieferant sein — das Bewegen von Waren zwischen eigenen Lagern ist eine Umlagerung.",
+      "too_many": "Sie haben das Limit erreicht.",
+      "portal_company_unknown": "Dieses Unternehmen ist nicht gelistet und hat daher kein Portal, um Ihre Bestellung zu empfangen.",
+      "supplier_has_orders": "Dieser Lieferant hat noch offene Bestellungen.",
+      "supplier_unknown": "Wählen Sie einen Lieferanten.",
+      "supplier_required": "Eine Auto-Bestellregel benötigt einen Lieferanten: Es gibt niemanden, an den die Anfrage gesendet werden kann.",
+      "warehouse_out_of_scope": "Dieses Lager liegt außerhalb Ihres Zuständigkeitsbereichs.",
+      "warehouse_required": "Wählen Sie zuerst ein Lager für diese Bestellung.",
+      "too_many_open": "Zu viele offene Bestellungen.",
+      "daily_limit": "Heute zu viele Bestellungen. Versuchen Sie es morgen erneut.",
+      "date_invalid": "Dieses Datum scheint nicht korrekt zu sein.",
+      "not_editable": "Positionen können nur in einem Entwurf geändert werden.",
+      "qty_invalid": "Geben Sie eine Menge größer als Null ein.",
+      "price_invalid": "Dieser Preis scheint nicht korrekt zu sein.",
+      "too_many_lines": "Zu viele Positionen in einer Bestellung.",
+      "duplicate_product": "Dieses Produkt ist bereits in der Bestellung — ändern Sie stattdessen die Zeile.",
+      "product_unknown": "Wählen Sie ein Produkt.",
+      "no_lines": "Fügen Sie vor dem Senden mindestens einen Artikel hinzu.",
+      "not_listed": "Ihr Unternehmen ist noch nicht gelistet und kann hier keine Bestellungen an andere Unternehmen senden.",
+      "not_allowed": "Dieser Schritt ist in dieser Phase nicht verfügbar.",
+      "not_shipped": "Sie können Waren erst empfangen, nachdem der Lieferant sie als versandt markiert hat.",
+      "reason_required": "Geben Sie einen Grund an — mindestens drei Zeichen.",
+      "already_received": "Dieser Artikel ist vollständig erhalten.",
+      "qty_over_remaining": "Das ist mehr, als die Bestellung noch erwartet.",
+      "concurrent_receipt": "Jemand hat diesen Artikel zur gleichen Zeit erhalten. Laden Sie die Seite neu.",
+      "target_not_above_min": "\"Auffüllen bis\" muss größer als der Schwellenwert sein.",
+      "too_many_docs": "Zu viele Dokumente zu dieser Bestellung.",
+      "too_large": "Die Datei ist zu groß.",
+      "bad_type": "Es werden nur PDF-, PNG-, JPEG- und WebP-Dateien akzeptiert.",
+      "order_required": "Bestellung fehlt.",
+      "bad_form": "Upload konnte nicht gelesen werden.",
+      "no_file": "Wählen Sie eine Datei."
+    },
+    "selfDrivenHint": "Dieser Lieferant hat kein Portal auf Trientes, daher pflegen Sie die Auftragsstatus selbst: Notieren Sie das von ihm genannte Datum und markieren Sie den Versand, sobald er erfolgt."
   }
 }

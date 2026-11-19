@@ -33,6 +33,7 @@ import { sendHealthReport } from "../src/lib/health-report";
 import { runCaseDueSweep } from "../src/lib/cases/due-sweep";
 import { runPointReportSweep } from "../src/lib/points/report-sweep";
 import { runCompanyReviewSweep } from "../src/lib/cases/company-review-sweep";
+import { runReorderSweep } from "../src/lib/supply/reorder-sweep";
 import { runStaffAccessReviewSweep } from "../src/lib/staff-access-sweep";
 import { startBinance, stopBinance } from "./binance";
 
@@ -328,6 +329,20 @@ async function runPointReportJob() {
     }
   } catch (err) {
     console.error("[worker] point report sweep failed:", err);
+  }
+}
+
+async function runReorderJob() {
+  const t0 = Date.now();
+  try {
+    const stats = await runReorderSweep();
+    if (stats.drafts) {
+      console.log(
+        `[worker] reorder ok: ${stats.drafts} drafts, ${stats.lines} lines, ${stats.rules} rules, ${stats.skippedOpenOrder} skipped (open order) in ${Date.now() - t0}ms`,
+      );
+    }
+  } catch (err) {
+    console.error("[worker] reorder sweep failed:", err);
   }
 }
 
@@ -654,6 +669,10 @@ async function main() {
   // Пересмотр залистованных предприятий — сразу после лестницы жалоб: шаги
   // тоже считаются днями.
   cron.schedule("35 5 * * *", () => void runCompanyReviewJob());
+  // Автозаказ — раз в сутки, рядом с остальными суточными: порог меряется днями
+  // поставки, и частый прогон ничего не ускорит. Прогон формирует **черновик** —
+  // отправка заказа остаётся обещанием человека.
+  cron.schedule("30 5 * * *", () => void runReorderJob());
   // Пересмотр доступа — рядом с пересмотром предприятий: обе ревизии суточные,
   // обе адресованы владельцу, и читать их удобнее одним утром.
   cron.schedule("45 5 * * *", () => void runStaffAccessReviewJob());

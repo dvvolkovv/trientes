@@ -1595,7 +1595,8 @@
     "teamLink": "Team",
     "journalLink": "Activity log",
     "tasksLink": "Tasks",
-    "promosLink": "Offers"
+    "promosLink": "Offers",
+    "supplyLink": "Supply"
   },
   "cabinet": {
     "kicker": "Section · Cabinet",
@@ -3186,6 +3187,28 @@
       "from": "{shop} has news for you",
       "open": "Open: {url}",
       "unsubscribe": "Turn shop mailings off: {url}"
+    },
+    "supply": {
+      "sent": {
+        "subject": "New purchase order from {company}",
+        "body": "{company} sent you a purchase order. Confirm the delivery date or decline it."
+      },
+      "confirmed": {
+        "subject": "Purchase order confirmed",
+        "body": "{company}: your supplier confirmed the order and named a delivery date."
+      },
+      "declined": {
+        "subject": "Purchase order declined",
+        "body": "{company}: your supplier declined the order."
+      },
+      "shipped": {
+        "subject": "Goods are on the way",
+        "body": "{company}: your supplier marked the order as shipped. Receive it when it arrives."
+      },
+      "autodraft": {
+        "subject": "Stock is running low",
+        "body": "{company}: stock dropped below the threshold, so a draft purchase order is waiting for you. Nothing was sent — review it and send it yourself."
+      }
     }
   },
   "captcha": {
@@ -3756,7 +3779,8 @@
         "warehouses": "Warehouses and stock",
         "pricing": "Price and cashback",
         "tasks": "Tasks",
-        "promos": "Offers and mailings"
+        "promos": "Offers and mailings",
+        "supply": "Suppliers and orders"
       },
       "levels": {
         "NONE": "No access",
@@ -3799,6 +3823,7 @@
     "subtitle": "Who changed what and when — the last {count} entries.",
     "empty": "Nothing recorded yet.",
     "goneActor": "deleted member",
+    "systemActor": "nightly run",
     "actions": {
       "PROFILE_SAVED": "Shop card saved",
       "POINT_SUBMITTED": "Point submitted",
@@ -3840,7 +3865,21 @@
       "PROMO_UPDATED": "Offer edited",
       "PROMO_ARCHIVED": "Offer archived",
       "PROMO_RESTORED": "Offer restored",
-      "PROMO_SENT": "Offer sent to followers"
+      "PROMO_SENT": "Offer sent to followers",
+      "SUPPLIER_SAVED": "Supplier saved",
+      "SUPPLIER_ARCHIVED": "Supplier archived",
+      "SUPPLIER_RESTORED": "Supplier restored",
+      "ORDER_CREATED": "Purchase order created",
+      "ORDER_SENT": "Purchase order sent to the supplier",
+      "ORDER_CONFIRMED": "Purchase order confirmed",
+      "ORDER_DECLINED": "Purchase order declined",
+      "ORDER_SHIPPED": "Purchase order marked as shipped",
+      "ORDER_RECEIVED": "Goods received into stock",
+      "ORDER_CLOSED": "Purchase order closed",
+      "ORDER_CANCELLED": "Purchase order cancelled",
+      "ORDER_DOC_ADDED": "Document attached to a purchase order",
+      "REORDER_RULE_SAVED": "Auto-order rule saved",
+      "REORDER_RULE_DELETED": "Auto-order rule deleted"
     }
   },
   "cabinetTasks": {
@@ -4031,5 +4070,152 @@
       "daily_cap": "Today's mailing is spent — the next one tomorrow.",
       "not_listed": "The shop is not on the showcase, so mailings are off."
     }
+  },
+  "supply": {
+    "title": "Supply",
+    "subtitle": "Suppliers, purchase orders and auto-order thresholds. Payment happens outside the platform.",
+    "open": "Open",
+    "save": "Save",
+    "cancel": "Cancel",
+    "create": "Create",
+    "edit": "Edit",
+    "archive": "Archive",
+    "restore": "Restore",
+    "archived": "archived",
+    "reason": "Reason",
+    "ordersHeading": "Purchase orders",
+    "ordersEmpty": "No purchase orders yet.",
+    "newOrder": "New purchase order",
+    "needSupplier": "Add a supplier first — an order needs someone to send it to.",
+    "incomingHeading": "Orders to us",
+    "incomingIntro": "Businesses that listed you as their supplier. Confirm a delivery date, decline, or mark the goods as shipped.",
+    "autoDrafted": "drafted automatically",
+    "lineCount": "Items: {count}",
+    "etaConfirmed": "Supplier confirmed: {date}",
+    "etaAsked": "You asked for: {date}",
+    "etaAskedByBuyer": "The buyer asked for: {date}",
+    "sideBuyer": "You are the buyer",
+    "sideSupplier": "You are the supplier",
+    "supplier": "Supplier",
+    "warehouse": "Deliver to",
+    "warehouseNone": "Not chosen yet",
+    "expectedAt": "Date you ask for",
+    "confirmedEta": "Date the supplier confirmed",
+    "note": "Note",
+    "total": "Reference total",
+    "declineReason": "Why the supplier declined",
+    "cancelReason": "Why it was cancelled",
+    "suppliersHeading": "Suppliers",
+    "suppliersEmpty": "No suppliers yet.",
+    "addSupplier": "Add a supplier",
+    "supplierName": "Name",
+    "portalCompany": "Business on Trientes",
+    "portalNone": "Not on Trientes",
+    "portalHint": "A supplier that is itself a business on Trientes gets a portal: your order opens in their own cabinet, and they confirm the date there. For anyone else the order stays your own document.",
+    "contactName": "Contact person",
+    "email": "Email",
+    "phone": "Phone",
+    "hasPortal": "Has a portal — {company}",
+    "noPortal": "No portal: the order stays your document",
+    "openOrders": "Open orders: {count}",
+    "linesHeading": "Items",
+    "linesEmpty": "No items yet.",
+    "lineQty": "{qty} {unit}",
+    "lineReceived": "received {qty}",
+    "lineFull": "Fully received.",
+    "removeLine": "Remove",
+    "addLine": "Add item",
+    "product": "Product",
+    "qty": "Quantity",
+    "priceOptional": "Price in {currency}, optional",
+    "needProducts": "No products to order yet — add a product passport or an offer first.",
+    "paymentOutside": "Prices here are for reference only: payment happens outside the platform.",
+    "receiveQty": "Receive, up to {left}",
+    "receive": "Receive",
+    "needWarehouse": "Choose a warehouse for this order — there is nowhere to receive the goods.",
+    "docsHeading": "Documents",
+    "docsEmpty": "No documents yet.",
+    "openDoc": "Open",
+    "addDoc": "Attach a document",
+    "uploading": "Uploading…",
+    "docSide": {
+      "buyer": "from the buyer",
+      "supplier": "from the supplier"
+    },
+    "actionsHeading": "What you can do",
+    "noActions": "Nothing to do here right now: the next step belongs to the other side.",
+    "closedNoActions": "This order is closed — nothing more happens here.",
+    "readOnly": "You can read this order but not act on it.",
+    "rulesHeading": "Auto-order",
+    "rulesIntro": "When stock on a shelf drops to the threshold, the nightly run drafts a purchase order and tells whoever may order. Nothing is sent automatically — sending is a promise to buy, and a person makes it.",
+    "rulesEmpty": "No thresholds yet.",
+    "rulesNeedParts": "You need a warehouse, a product and a supplier before a threshold makes sense.",
+    "addRule": "Add a threshold",
+    "deleteRule": "Delete",
+    "minQty": "Threshold",
+    "targetQty": "Top up to",
+    "ruleThreshold": "below {min} → top up to {target}",
+    "ruleOnHand": "on hand {qty}",
+    "status": {
+      "DRAFT": "Draft",
+      "SENT": "Sent",
+      "CONFIRMED": "Confirmed",
+      "DECLINED": "Declined",
+      "SHIPPED": "Shipped",
+      "RECEIVED": "Closed",
+      "CANCELLED": "Cancelled"
+    },
+    "moves": {
+      "SEND": "Send to supplier",
+      "CONFIRM": "Confirm the date",
+      "DECLINE": "Decline",
+      "SHIP": "Mark as shipped",
+      "CLOSE": "Close the order",
+      "CANCEL": "Cancel the order",
+      "CONFIRM_SELF": "Record the supplier's date",
+      "SHIP_SELF": "Mark as shipped by the supplier"
+    },
+    "error": {
+      "unauth": "Sign in first.",
+      "forbidden": "You do not have the right to work with supply here.",
+      "not_found": "Not found.",
+      "failed": "Could not save. Try again.",
+      "name_required": "Give the supplier a name.",
+      "name_long": "The name is too long.",
+      "email_invalid": "That email address does not look right.",
+      "self_supplier": "A business cannot be its own supplier — moving goods between your own warehouses is a transfer.",
+      "too_many": "You have reached the limit.",
+      "portal_company_unknown": "That business is not listed, so it has no portal to receive your order.",
+      "supplier_has_orders": "This supplier still has open orders.",
+      "supplier_unknown": "Choose a supplier.",
+      "supplier_required": "An auto-order rule needs a supplier: there is no one to send the request to.",
+      "warehouse_out_of_scope": "That warehouse is outside the points you are responsible for.",
+      "warehouse_required": "Choose a warehouse for this order first.",
+      "too_many_open": "Too many open orders.",
+      "daily_limit": "Too many orders today. Try again tomorrow.",
+      "date_invalid": "That date does not look right.",
+      "not_editable": "Items can be changed in a draft only.",
+      "qty_invalid": "Enter a quantity greater than zero.",
+      "price_invalid": "That price does not look right.",
+      "too_many_lines": "Too many items in one order.",
+      "duplicate_product": "This product is already in the order — change its line instead.",
+      "product_unknown": "Choose a product.",
+      "no_lines": "Add at least one item before sending.",
+      "not_listed": "Your business is not listed yet, so it cannot send orders to other businesses here.",
+      "not_allowed": "This step is not available at this stage.",
+      "not_shipped": "You can receive goods only after the supplier marks them as shipped.",
+      "reason_required": "Write a reason — at least three characters.",
+      "already_received": "This item is fully received.",
+      "qty_over_remaining": "That is more than the order is still waiting for.",
+      "concurrent_receipt": "Someone received this item at the same moment. Reload the page.",
+      "target_not_above_min": "\"Top up to\" must be larger than the threshold.",
+      "too_many_docs": "Too many documents on this order.",
+      "too_large": "The file is too large.",
+      "bad_type": "Only PDF, PNG, JPEG and WebP files are accepted.",
+      "order_required": "Order is missing.",
+      "bad_form": "Could not read the upload.",
+      "no_file": "Choose a file."
+    },
+    "selfDrivenHint": "This supplier has no portal on Trientes, so you keep the order's statuses yourself: write down the date they gave you and mark the shipment when it leaves."
   }
 }

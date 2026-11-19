@@ -119,6 +119,7 @@ model User {
   promoSends               PromoSend[]               @relation("PromoSender")
   promoDeliveries          PromoDelivery[]           @relation("PromoRecipient")
   promoClicks              PromoClick[]              @relation("PromoClicker")
+  supplyOrders             SupplyOrder[]             @relation("SupplyOrderAuthor")
 }
 
 model PushSubscription {
@@ -851,6 +852,13 @@ model Company {
   tasks     CompanyTask[]
   followers CompanyFollow[]
   promos    MerchantPromo[]
+
+  // Поставки (BI). «Заказы нам» читаются через `Supplier.supplierCompany`: заказ
+  // принадлежит покупателю, а поставщик — его адресат, а не второй владелец.
+  suppliers    Supplier[]    @relation("SupplierOwner")
+  supplierFor  Supplier[]    @relation("SupplierCompany")
+  supplyOrders SupplyOrder[] @relation("SupplyOrderBuyer")
+  reorderRules ReorderRule[] @relation("ReorderRuleCompany")
 
   @@index([ownerUserId])
   @@index([status, createdAt])
@@ -2024,15 +2032,17 @@ model Product {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  edits     ProductEdit[]
-  claims    ProductClaim[]
-  revisions ProductRevision[]
-  reports   ProductReport[]
-  offers    ProductOffer[]
-  balances  StockBalance[]
-  tasks     CompanyTask[]
-  movements StockMovement[]
-  promos    MerchantPromo[]
+  edits        ProductEdit[]
+  claims       ProductClaim[]
+  revisions    ProductRevision[]
+  reports      ProductReport[]
+  offers       ProductOffer[]
+  balances     StockBalance[]
+  tasks        CompanyTask[]
+  movements    StockMovement[]
+  promos       MerchantPromo[]
+  supplyLines  SupplyOrderLine[]
+  reorderRules ReorderRule[]
 
   @@index([category, createdAt])
   @@index([ownerCompanyId])
@@ -2191,10 +2201,12 @@ model Warehouse {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  balances  StockBalance[]
-  movesFrom StockMovement[] @relation("MoveFrom")
-  movesTo   StockMovement[] @relation("MoveTo")
-  tasks     CompanyTask[]
+  balances     StockBalance[]
+  movesFrom    StockMovement[] @relation("MoveFrom")
+  movesTo      StockMovement[] @relation("MoveTo")
+  tasks        CompanyTask[]
+  supplyOrders SupplyOrder[]   @relation("SupplyOrderWarehouse")
+  reorderRules ReorderRule[]   @relation("ReorderRuleWarehouse")
 
   @@index([companyId, kind])
   @@index([pointId])
@@ -2262,6 +2274,11 @@ model StockMovement {
   /// Встречное движение отмены ссылается на отменённое: журнал неизменяем, запись не
   /// удаляется, а получает пару.
   reverseOfId String?
+
+  /// Приход по заказу поставщику: иначе через месяц не ответить, откуда взялся приход.
+  /// Связь рвётся, а не каскадит — документ может уйти, движение остаётся.
+  supplyLineId String?
+  supplyLine   SupplyOrderLine? @relation("MovementSupplyLine", fields: [supplyLineId], references: [id], onDelete: SetNull)
 
   createdById String?
   createdBy   User?   @relation("StockMovementAuthor", fields: [createdById], references: [id], onDelete: SetNull)
@@ -2448,4 +2465,156 @@ model PromoClick {
   createdAt DateTime @default(now())
 
   @@index([promoId, createdAt])
+}
+
+// ───────────────────────────── Поставки (слайс BI) ─────────────────────────────
+// Спека `docs/superpowers/specs/2026-11-19-supplier-portal-autoorder-design.md`.
+
+/// Поставщик. Третьего вида учётной записи мы не заводим: поставщик либо сам есть
+/// предприятие платформы (тогда портал — его собственный кабинет), либо это
+/// запись-контакт без портала вовсе. Приглашение ссылкой заводило бы `Company` в обход
+/// очереди модерации.
+model Supplier {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation("SupplierOwner", fields: [companyId], references: [id], onDelete: Cascade)
+
+  name String
+
+  /// Поставщик на платформе — у него есть портал. Связь рвётся, а не каскадит: уход
+  /// предприятия-поставщика не должен стирать записанные заказы покупателя.
+  supplierCompanyId String?
+  supplierCompany   Company? @relation("SupplierCompany", fields: [supplierCompanyId], references: [id], onDelete: SetNull)
+
+  contactName String?
+  email       String?
+  phone       String?
+  note        String? @db.Text
+
+  /// Поставщик архивируется, а не удаляется: заказы по нему записаны.
+  archivedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders       SupplyOrder[]
+  reorderRules ReorderRule[]
+
+  @@index([companyId, archivedAt])
+  @@index([supplierCompanyId])
+}
+
+enum SupplyOrderStatus {
+  /// Собирается покупателем; поставщик его не видит. Сюда же ложится черновик автозаказа.
+  DRAFT
+  SENT
+  /// Поставщик подтвердил срок.
+  CONFIRMED
+  DECLINED
+  SHIPPED
+  /// Принято по всем строкам — или закрыто покупателем раньше.
+  RECEIVED
+  CANCELLED
+}
+
+/// Заказ поставщику — документ, а не платёж: цена справочная, ни счёта, ни долга мы не
+/// считаем (правило линии мерчантов — денежной логики не заводим). Подтверждает и
+/// отправляет поставщик, принимает покупатель: остаток меняет только приёмка покупателя.
+model SupplyOrder {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation("SupplyOrderBuyer", fields: [companyId], references: [id], onDelete: Cascade)
+
+  supplierId String
+  supplier   Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+
+  /// Куда везти. Связь рвётся, а не каскадит: архивация склада не уносит документ.
+  warehouseId String?
+  warehouse   Warehouse? @relation("SupplyOrderWarehouse", fields: [warehouseId], references: [id], onDelete: SetNull)
+
+  status   SupplyOrderStatus @default(DRAFT)
+  currency String            @default("USD")
+
+  /// Срок, который просит покупатель, и срок, который назвал поставщик, — два разных
+  /// числа: подтверждение срока и есть суть портала.
+  expectedAt   DateTime?
+  confirmedEta DateTime?
+
+  note          String? @db.Text
+  declineReason String?
+  cancelReason  String?
+
+  /// Черновик собран прогоном автозаказа, а не человеком: отправка остаётся за человеком.
+  autoDrafted Boolean @default(false)
+
+  /// Накладные и акты — приватные файлы, список тот же JSONB, что у вложений переписки.
+  docs Json?
+
+  sentAt      DateTime?
+  confirmedAt DateTime?
+  shippedAt   DateTime?
+  closedAt    DateTime?
+
+  createdById String?
+  createdBy   User?   @relation("SupplyOrderAuthor", fields: [createdById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lines SupplyOrderLine[]
+
+  @@index([companyId, status])
+  @@index([supplierId, status])
+  @@index([createdAt])
+}
+
+model SupplyOrderLine {
+  id      String      @id @default(cuid())
+  orderId String
+  order   SupplyOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  qty         Decimal @db.Decimal(18, 3)
+  /// Принято — строкой, а не заказом: недовоз обычное дело.
+  receivedQty Decimal @default(0) @db.Decimal(18, 3)
+
+  /// Цена поставщика справочная: платежа у нас нет.
+  price Decimal? @db.Decimal(18, 2)
+  unit  String   @default("pcs")
+  note  String?
+
+  createdAt DateTime @default(now())
+
+  movements StockMovement[] @relation("MovementSupplyLine")
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+/// Правило автозаказа: порог на паре «склад × товар». Поставщик обязателен — заявку
+/// иначе некому адресовать, а правило без адресата это сигнал, которого мы не шлём.
+model ReorderRule {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation("ReorderRuleCompany", fields: [companyId], references: [id], onDelete: Cascade)
+
+  warehouseId String
+  warehouse   Warehouse @relation("ReorderRuleWarehouse", fields: [warehouseId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  supplierId String
+  supplier   Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+
+  minQty    Decimal @db.Decimal(18, 3)
+  targetQty Decimal @db.Decimal(18, 3)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([warehouseId, productId])
+  @@index([companyId])
+  @@index([supplierId])
 }

@@ -49,7 +49,21 @@ export type CompanyAction =
   | "PROMO_UPDATED"
   | "PROMO_ARCHIVED"
   | "PROMO_SENT"
-  | "PROMO_RESTORED";
+  | "PROMO_RESTORED"
+  | "SUPPLIER_SAVED"
+  | "SUPPLIER_ARCHIVED"
+  | "SUPPLIER_RESTORED"
+  | "ORDER_CREATED"
+  | "ORDER_SENT"
+  | "ORDER_CONFIRMED"
+  | "ORDER_DECLINED"
+  | "ORDER_SHIPPED"
+  | "ORDER_RECEIVED"
+  | "ORDER_CLOSED"
+  | "ORDER_CANCELLED"
+  | "ORDER_DOC_ADDED"
+  | "REORDER_RULE_SAVED"
+  | "REORDER_RULE_DELETED";
 
 export async function logCompanyAction(input: {
   companyId: string;

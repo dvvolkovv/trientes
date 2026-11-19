@@ -171,6 +171,14 @@ export default async function CompanyManagementPage({
             {t("warehousesLink")}
           </Link>
         ) : null}
+        {canSeeSection(permissions, "supply") ? (
+          <Link
+            href={`/${locale}/cabinet/companies/${company.id}/supply`}
+            className="inline-flex items-center justify-center h-12 px-4 rounded-md border border-hairline text-sm font-medium hover:border-accent"
+          >
+            {t("supplyLink")}
+          </Link>
+        ) : null}
         {canSeeSection(permissions, "promos") ? (
           <Link
             href={`/${locale}/cabinet/companies/${company.id}/promos`}

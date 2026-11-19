@@ -54,7 +54,13 @@ export default async function CompanyJournalPage({
                 {row.subject ? <span className="text-muted"> · {row.subject}</span> : null}
               </div>
               <div className="text-xs text-muted mt-0.5">
-                {row.actor?.username ?? row.actor?.name ?? row.actor?.email ?? t("goneActor")}
+                {row.actor?.username ??
+                  row.actor?.name ??
+                  row.actor?.email ??
+                  // Пустой автор означает две разные вещи: участника удалили (связь
+                  // `SET NULL`) или строку написал ночной прогон. Прогон помечает себя
+                  // сам — иначе журнал подписывал бы его «удалённым участником».
+                  ((row.meta as { by?: string } | null)?.by === "system" ? t("systemActor") : t("goneActor"))}
                 {" · "}
                 {format.dateTime(row.createdAt, { dateStyle: "medium", timeStyle: "short" })}
               </div>

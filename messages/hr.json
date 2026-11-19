@@ -1595,7 +1595,8 @@
     "teamLink": "Tim",
     "journalLink": "Dnevnik aktivnosti",
     "tasksLink": "Zadaci",
-    "promosLink": "Ponude"
+    "promosLink": "Ponude",
+    "supplyLink": "Opskrba"
   },
   "cabinet": {
     "kicker": "Odjeljak · Profil",
@@ -3186,6 +3187,28 @@
       "from": "{shop} ima novosti za vas",
       "open": "Otvorite: {url}",
       "unsubscribe": "Isključite mailing trgovine: {url}"
+    },
+    "supply": {
+      "sent": {
+        "subject": "Nova narudžbenica od {company}",
+        "body": "Poslana vam je narudžbenica od {company}. Potvrdite datum isporuke ili je odbijte."
+      },
+      "confirmed": {
+        "subject": "Narudžbenica potvrđena",
+        "body": "{company}: vaš je dobavljač potvrdio narudžbu i naveo datum isporuke."
+      },
+      "declined": {
+        "subject": "Narudžbenica odbijena",
+        "body": "{company}: vaš je dobavljač odbio narudžbu."
+      },
+      "shipped": {
+        "subject": "Roba je na putu",
+        "body": "{company}: vaš je dobavljač označio narudžbu kao poslanu. Preuzmite je kada stigne."
+      },
+      "autodraft": {
+        "subject": "Zalihe su pri kraju",
+        "body": "{company}: zalihe su pale ispod praga, stoga vas čeka nacrt narudžbenice. Ništa nije poslano — pregledajte ga i pošaljite sami."
+      }
     }
   },
   "captcha": {
@@ -3756,7 +3779,8 @@
         "warehouses": "Skladišta i zalihe",
         "pricing": "Cijena i povrat novca",
         "tasks": "Zadaci",
-        "promos": "Ponude i slanja e-poštom"
+        "promos": "Ponude i slanja e-poštom",
+        "supply": "Dobavljači i narudžbe"
       },
       "levels": {
         "NONE": "Bez pristupa",
@@ -3799,6 +3823,7 @@
     "subtitle": "Tko je što i kada promijenio — posljednjih {count} zapisa.",
     "empty": "Još ništa nije zabilježeno",
     "goneActor": "izbrisani član",
+    "systemActor": "noćno pokretanje",
     "actions": {
       "PROFILE_SAVED": "Kartica trgovine spremljena",
       "POINT_SUBMITTED": "Lokacija poslana",
@@ -3840,7 +3865,21 @@
       "PROMO_UPDATED": "Ponuda uređena",
       "PROMO_ARCHIVED": "Ponuda arhivirana",
       "PROMO_RESTORED": "Ponuda vraćena",
-      "PROMO_SENT": "Ponuda poslana pratiteljima"
+      "PROMO_SENT": "Ponuda poslana pratiteljima",
+      "SUPPLIER_SAVED": "Dobavljač spremljen",
+      "SUPPLIER_ARCHIVED": "Dobavljač arhiviran",
+      "SUPPLIER_RESTORED": "Dobavljač vraćen",
+      "ORDER_CREATED": "Narudžbenica kreirana",
+      "ORDER_SENT": "Narudžbenica poslana dobavljaču",
+      "ORDER_CONFIRMED": "Narudžbenica potvrđena",
+      "ORDER_DECLINED": "Narudžbenica odbijena",
+      "ORDER_SHIPPED": "Narudžbenica označena kao otpremljena",
+      "ORDER_RECEIVED": "Roba zaprimljena na zalihu",
+      "ORDER_CLOSED": "Narudžbenica zatvorena",
+      "ORDER_CANCELLED": "Narudžbenica otkazana",
+      "ORDER_DOC_ADDED": "Dokument priložen uz narudžbenicu",
+      "REORDER_RULE_SAVED": "Pravilo automatske narudžbe spremljeno",
+      "REORDER_RULE_DELETED": "Pravilo automatske narudžbe izbrisano"
     }
   },
   "cabinetTasks": {
@@ -4031,5 +4070,152 @@
       "daily_cap": "Današnje slanje je iskorišteno — sljedeće sutra",
       "not_listed": "Trgovina nije u izlogu, pa su slanja isključena"
     }
+  },
+  "supply": {
+    "title": "Nabava",
+    "subtitle": "Dobavljači, narudžbenice i pragovi automatske narudžbe. Plaćanje se odvija izvan platforme.",
+    "open": "Otvori",
+    "save": "Spremi",
+    "cancel": "Odustani",
+    "create": "Stvori",
+    "edit": "Uredi",
+    "archive": "Arhiviraj",
+    "restore": "Vrati",
+    "archived": "arhivirano",
+    "reason": "Razlog",
+    "ordersHeading": "Narudžbenice",
+    "ordersEmpty": "Još nema narudžbenica.",
+    "newOrder": "Nova narudžbenica",
+    "needSupplier": "Najprije dodajte dobavljača — narudžbenicu treba nekome poslati.",
+    "incomingHeading": "Narudžbe za nas",
+    "incomingIntro": "Tvrtke koje su vas navele kao svojeg dobavljača. Potvrdite datum isporuke, odbijte ili označite robu kao otpremljenu.",
+    "autoDrafted": "automatski izrađeno",
+    "lineCount": "Stavke: {count}",
+    "etaConfirmed": "Dobavljač potvrdio: {date}",
+    "etaAsked": "Zatražili ste: {date}",
+    "etaAskedByBuyer": "Kupac je zatražio: {date}",
+    "sideBuyer": "Vi ste kupac",
+    "sideSupplier": "Vi ste dobavljač",
+    "supplier": "Dobavljač",
+    "warehouse": "Dostaviti u",
+    "warehouseNone": "Još nije odabrano",
+    "expectedAt": "Traženi datum",
+    "confirmedEta": "Datum koji je potvrdio dobavljač",
+    "note": "Bilješka",
+    "total": "Referentni ukupni iznos",
+    "declineReason": "Zašto je dobavljač odbio",
+    "cancelReason": "Zašto je otkazano",
+    "suppliersHeading": "Dobavljači",
+    "suppliersEmpty": "Još nema dobavljača.",
+    "addSupplier": "Dodati dobavljača",
+    "supplierName": "Naziv",
+    "portalCompany": "Poslovni subjekt na Trientes",
+    "portalNone": "Nije na Trientes",
+    "portalHint": "Dobavljač koji je i sam poslovni subjekt na Trientes dobiva portal: vaša se narudžba otvara u njihovom vlastitom poslovnom profilu, a oni tamo potvrđuju datum. Za sve ostale narudžba ostaje vaš vlastiti dokument.",
+    "contactName": "Kontakt osoba",
+    "email": "E-mail",
+    "phone": "Telefon",
+    "hasPortal": "Ima portal — {company}",
+    "noPortal": "Nema portala: narudžba ostaje vaš dokument",
+    "openOrders": "Otvorene narudžbe: {count}",
+    "linesHeading": "Stavke",
+    "linesEmpty": "Još nema stavki.",
+    "lineQty": "{qty} {unit}",
+    "lineReceived": "zaprimljeno {qty}",
+    "lineFull": "U potpunosti zaprimljeno.",
+    "removeLine": "Ukloniti",
+    "addLine": "Dodati stavku",
+    "product": "Proizvod",
+    "qty": "Količina",
+    "priceOptional": "Cijena u {currency}, neobavezno",
+    "needProducts": "Još nema proizvoda za naručivanje — najprije dodati proizvodni pasoš ili ponudu.",
+    "paymentOutside": "Ovdje su cijene samo informativne: plaćanje se obavlja izvan platforme.",
+    "receiveQty": "Zaprimiti, do {left}",
+    "receive": "Zaprimiti",
+    "needWarehouse": "Odabrati skladište za ovu narudžbu — nema gdje zaprimiti robu.",
+    "docsHeading": "Dokumenti",
+    "docsEmpty": "Još nema dokumenata.",
+    "openDoc": "Otvoriti",
+    "addDoc": "Priložiti dokument",
+    "uploading": "Učitavanje…",
+    "docSide": {
+      "buyer": "od kupca",
+      "supplier": "od dobavljača"
+    },
+    "actionsHeading": "Što možete učiniti",
+    "noActions": "Trenutačno ovdje nema ništa za učiniti: sljedeći je korak na drugoj strani.",
+    "closedNoActions": "Ova narudžba je zatvorena — ovdje se više ništa ne događa.",
+    "readOnly": "Možete pročitati ovu narudžbu, ali ne možete poduzimati radnje na njoj.",
+    "rulesHeading": "Automatska narudžba",
+    "rulesIntro": "Kada zaliha na polici padne na prag, noćni proces priprema nacrt narudžbe i obavještava onoga tko može naručiti. Ništa se ne šalje automatski — slanje je obveza kupnje, a obavlja ga osoba.",
+    "rulesEmpty": "Još nema pragova.",
+    "rulesNeedParts": "Prije nego što prag ima smisla, potrebni su vam skladište, proizvod i dobavljač.",
+    "addRule": "Dodaj prag",
+    "deleteRule": "Izbriši",
+    "minQty": "Prag",
+    "targetQty": "Nadopuniti do",
+    "ruleThreshold": "ispod {min} → nadopuniti do {target}",
+    "ruleOnHand": "na stanju {qty}",
+    "status": {
+      "DRAFT": "Nacrt",
+      "SENT": "Poslano",
+      "CONFIRMED": "Potvrđeno",
+      "DECLINED": "Odbijeno",
+      "SHIPPED": "Otpremljeno",
+      "RECEIVED": "Zatvoreno",
+      "CANCELLED": "Otkazano"
+    },
+    "moves": {
+      "SEND": "Pošalji dobavljaču",
+      "CONFIRM": "Potvrdi datum",
+      "DECLINE": "Odbij",
+      "SHIP": "Označi kao otpremljeno",
+      "CLOSE": "Zatvori narudžbu",
+      "CANCEL": "Otkaži narudžbu",
+      "CONFIRM_SELF": "Zabilježite datum dobavljača",
+      "SHIP_SELF": "Označite kao otpremljeno od strane dobavljača"
+    },
+    "error": {
+      "unauth": "Najprije se prijavite.",
+      "forbidden": "Nemate ovlasti za rad s nabavom ovdje.",
+      "not_found": "Nije pronađeno.",
+      "failed": "Nije moguće spremiti. Pokušajte ponovno.",
+      "name_required": "Dodajte dobavljaču naziv.",
+      "name_long": "Naziv je predugačak.",
+      "email_invalid": "Ta adresa e-pošte ne izgleda ispravno.",
+      "self_supplier": "Tvrtka ne može biti sama sebi dobavljač — premještanje robe između vlastitih skladišta je prijenos.",
+      "too_many": "Dostigli ste ograničenje.",
+      "portal_company_unknown": "Ta tvrtka nije uvrštena, pa nema portal za primanje vaše narudžbe.",
+      "supplier_has_orders": "Ovaj dobavljač još ima otvorene narudžbe.",
+      "supplier_unknown": "Odaberite dobavljača.",
+      "supplier_required": "Pravilo automatske narudžbe treba dobavljača: nema kome poslati zahtjev.",
+      "warehouse_out_of_scope": "To je skladište izvan lokacija za koje ste odgovorni.",
+      "warehouse_required": "Najprije odaberite skladište za ovu narudžbu.",
+      "too_many_open": "Previše otvorenih narudžbi.",
+      "daily_limit": "Previše narudžbi danas. Pokušajte ponovno sutra.",
+      "date_invalid": "Taj datum ne izgleda ispravno.",
+      "not_editable": "Stavke se mogu mijenjati samo u nacrtu.",
+      "qty_invalid": "Unesite količinu veću od nule.",
+      "price_invalid": "Ta cijena ne izgleda ispravno.",
+      "too_many_lines": "Previše stavki u jednoj narudžbi.",
+      "duplicate_product": "Ovaj proizvod je već u narudžbi — umjesto toga promijenite njegovu stavku.",
+      "product_unknown": "Odaberite proizvod.",
+      "no_lines": "Dodajte barem jednu stavku prije slanja.",
+      "not_listed": "Vaše poduzeće još nije uvršteno, pa ovdje ne može slati narudžbe drugim poduzećima.",
+      "not_allowed": "Ovaj korak nije dostupan u ovoj fazi.",
+      "not_shipped": "Robu možete zaprimiti tek nakon što je dobavljač označi kao otpremljenu.",
+      "reason_required": "Napišite razlog — najmanje tri znaka.",
+      "already_received": "Ova stavka je u potpunosti zaprimljena.",
+      "qty_over_remaining": "To je više nego što je još preostalo u narudžbi.",
+      "concurrent_receipt": "Netko je zaprimio ovu stavku u istom trenutku. Ponovno učitajte stranicu.",
+      "target_not_above_min": "\"Nadopuniti do\" mora biti veće od praga.",
+      "too_many_docs": "Previše dokumenata na ovoj narudžbi.",
+      "too_large": "Datoteka je prevelika.",
+      "bad_type": "Prihvaćaju se samo PDF, PNG, JPEG i WebP datoteke.",
+      "order_required": "Nedostaje narudžba.",
+      "bad_form": "Nije moguće pročitati učitanu datoteku.",
+      "no_file": "Odaberite datoteku."
+    },
+    "selfDrivenHint": "Ovaj dobavljač nema portal na Trientesu, stoga sami vodite statuse narudžbe: zabilježite datum koji su vam dali i označite pošiljku kada bude otpremljena."
   }
 }

@@ -1595,7 +1595,8 @@
     "teamLink": "Tím",
     "journalLink": "Denník aktivít",
     "tasksLink": "Úlohy",
-    "promosLink": "Ponuky"
+    "promosLink": "Ponuky",
+    "supplyLink": "Zásoby"
   },
   "cabinet": {
     "kicker": "Sekcia · Profil",
@@ -3186,6 +3187,28 @@
       "from": "{shop} má pre vás novinky",
       "open": "Otvoriť: {url}",
       "unsubscribe": "Vypnúť zasielanie od obchodu: {url}"
+    },
+    "supply": {
+      "sent": {
+        "subject": "Nová nákupná objednávka od {company}",
+        "body": "Spoločnosť {company} vám zaslala nákupnú objednávku. Potvrďte dátum dodania alebo ju odmietnite."
+      },
+      "confirmed": {
+        "subject": "Nákupná objednávka potvrdená",
+        "body": "{company}: váš dodávateľ potvrdil objednávku a uviedol dátum dodania."
+      },
+      "declined": {
+        "subject": "Nákupná objednávka odmietnutá",
+        "body": "{company}: váš dodávateľ odmietol objednávku."
+      },
+      "shipped": {
+        "subject": "Tovar je na ceste",
+        "body": "{company}: váš dodávateľ označil objednávku ako odoslanú. Prevezmite ju, keď dorazí."
+      },
+      "autodraft": {
+        "subject": "Zásoby sa míňajú",
+        "body": "{company}: zásoby klesli pod limit, preto na vás čaká návrh nákupnej objednávky. Nič nebolo odoslané — skontrolujte ho a odošlite sami."
+      }
     }
   },
   "captcha": {
@@ -3756,7 +3779,8 @@
         "warehouses": "Sklady a zásoby",
         "pricing": "Cena a cashback",
         "tasks": "Úlohy",
-        "promos": "Ponuky a rozosielanie"
+        "promos": "Ponuky a rozosielanie",
+        "supply": "Dodávatelia a objednávky"
       },
       "levels": {
         "NONE": "Bez prístupu",
@@ -3799,6 +3823,7 @@
     "subtitle": "Kto čo a kedy zmenil — posledných {count} záznamov.",
     "empty": "Zatiaľ nič zaznamenané.",
     "goneActor": "odstránený člen",
+    "systemActor": "nočný beh",
     "actions": {
       "PROFILE_SAVED": "Karta obchodu uložená",
       "POINT_SUBMITTED": "Miesto odoslané",
@@ -3840,7 +3865,21 @@
       "PROMO_UPDATED": "Ponuka upravená",
       "PROMO_ARCHIVED": "Ponuka archivovaná",
       "PROMO_RESTORED": "Ponuka obnovená",
-      "PROMO_SENT": "Ponuka odoslaná sledovateľom"
+      "PROMO_SENT": "Ponuka odoslaná sledovateľom",
+      "SUPPLIER_SAVED": "Dodávateľ uložený",
+      "SUPPLIER_ARCHIVED": "Dodávateľ archivovaný",
+      "SUPPLIER_RESTORED": "Dodávateľ obnovený",
+      "ORDER_CREATED": "Nákupná objednávka vytvorená",
+      "ORDER_SENT": "Nákupná objednávka odoslaná dodávateľovi",
+      "ORDER_CONFIRMED": "Nákupná objednávka potvrdená",
+      "ORDER_DECLINED": "Nákupná objednávka odmietnutá",
+      "ORDER_SHIPPED": "Nákupná objednávka označená ako odoslaná",
+      "ORDER_RECEIVED": "Tovar prijatý na sklad",
+      "ORDER_CLOSED": "Nákupná objednávka uzavretá",
+      "ORDER_CANCELLED": "Nákupná objednávka zrušená",
+      "ORDER_DOC_ADDED": "K nákupnej objednávke priložený dokument",
+      "REORDER_RULE_SAVED": "Pravidlo automatickej objednávky uložené",
+      "REORDER_RULE_DELETED": "Pravidlo automatickej objednávky odstránené"
     }
   },
   "cabinetTasks": {
@@ -4031,5 +4070,152 @@
       "daily_cap": "Dnešná rozosielka je vyčerpaná — ďalšia zajtra.",
       "not_listed": "Obchod nie je na vitríne, takže rozosielky sú vypnuté."
     }
+  },
+  "supply": {
+    "title": "Zásobovanie",
+    "subtitle": "Dodávatelia, nákupné objednávky a prahy automatických objednávok. Platba prebieha mimo platformy.",
+    "open": "Otvoriť",
+    "save": "Uložiť",
+    "cancel": "Zrušiť",
+    "create": "Vytvoriť",
+    "edit": "Upraviť",
+    "archive": "Archivovať",
+    "restore": "Obnoviť",
+    "archived": "archivované",
+    "reason": "Dôvod",
+    "ordersHeading": "Nákupné objednávky",
+    "ordersEmpty": "Zatiaľ žiadne nákupné objednávky.",
+    "newOrder": "Nová nákupná objednávka",
+    "needSupplier": "Najprv pridajte dodávateľa — objednávku treba niekomu odoslať.",
+    "incomingHeading": "Objednávky pre nás",
+    "incomingIntro": "Firmy, ktoré si vás uviedli ako svojho dodávateľa. Potvrďte dátum dodania, odmietnite alebo označte tovar ako odoslaný.",
+    "autoDrafted": "automaticky rozpracované",
+    "lineCount": "Položky: {count}",
+    "etaConfirmed": "Dodávateľ potvrdil: {date}",
+    "etaAsked": "Požiadali ste o: {date}",
+    "etaAskedByBuyer": "Kupujúci požiadal o: {date}",
+    "sideBuyer": "Ste kupujúci",
+    "sideSupplier": "Ste dodávateľ",
+    "supplier": "Dodávateľ",
+    "warehouse": "Doručiť do",
+    "warehouseNone": "Zatiaľ nevybrané",
+    "expectedAt": "Požadovaný dátum",
+    "confirmedEta": "Dodávateľom potvrdený dátum",
+    "note": "Poznámka",
+    "total": "Referenčná suma spolu",
+    "declineReason": "Prečo dodávateľ odmietol",
+    "cancelReason": "Prečo bolo zrušené",
+    "suppliersHeading": "Dodávatelia",
+    "suppliersEmpty": "Zatiaľ žiadni dodávatelia.",
+    "addSupplier": "Pridať dodávateľa",
+    "supplierName": "Názov",
+    "portalCompany": "Firma na Trientes",
+    "portalNone": "Nie je na Trientes",
+    "portalHint": "Dodávateľ, ktorý je sám firmou na Trientes, dostane portál: vaša objednávka sa otvorí v ich vlastnom profile a tam potvrdia dátum. Pre kohokoľvek iného zostáva objednávka vaším dokumentom.",
+    "contactName": "Kontaktná osoba",
+    "email": "E-mail",
+    "phone": "Telefón",
+    "hasPortal": "Má portál — {company}",
+    "noPortal": "Bez portálu: objednávka zostáva vaším dokumentom",
+    "openOrders": "Otvorené objednávky: {count}",
+    "linesHeading": "Položky",
+    "linesEmpty": "Zatiaľ žiadne položky.",
+    "lineQty": "{qty} {unit}",
+    "lineReceived": "prijaté {qty}",
+    "lineFull": "Prijaté úplne.",
+    "removeLine": "Odstrániť",
+    "addLine": "Pridať položku",
+    "product": "Produkt",
+    "qty": "Množstvo",
+    "priceOptional": "Cena v {currency}, voliteľné",
+    "needProducts": "Zatiaľ nie sú produkty na objednanie — najprv pridajte produktový pas alebo ponuku.",
+    "paymentOutside": "Ceny sú tu len orientačné: platba prebieha mimo platformy.",
+    "receiveQty": "Prijať, až do {left}",
+    "receive": "Prijať",
+    "needWarehouse": "Vyberte sklad pre túto objednávku — tovar nie je kde prijať.",
+    "docsHeading": "Dokumenty",
+    "docsEmpty": "Zatiaľ žiadne dokumenty.",
+    "openDoc": "Otvoriť",
+    "addDoc": "Priložiť dokument",
+    "uploading": "Nahráva sa…",
+    "docSide": {
+      "buyer": "od kupujúceho",
+      "supplier": "od dodávateľa"
+    },
+    "actionsHeading": "Čo môžete urobiť",
+    "noActions": "Momentálne tu nie je čo robiť: ďalší krok je na druhej strane.",
+    "closedNoActions": "Táto objednávka je uzavretá — už sa tu nič ďalšie nedeje.",
+    "readOnly": "Túto objednávku si môžete prečítať, ale nemôžete v nej konať.",
+    "rulesHeading": "Automatická objednávka",
+    "rulesIntro": "Keď zásoba na polici klesne pod prah, nočný beh pripraví návrh nákupnej objednávky a upozorní toho, kto môže objednať. Nič sa neposiela automaticky — odoslanie je záväzok kúpy a vykoná ho človek.",
+    "rulesEmpty": "Zatiaľ žiadne prahy.",
+    "rulesNeedParts": "Skôr než bude mať prah zmysel, potrebujete sklad, produkt a dodávateľa.",
+    "addRule": "Pridať prah",
+    "deleteRule": "Odstrániť",
+    "minQty": "Prah",
+    "targetQty": "Doplniť na",
+    "ruleThreshold": "pod {min} → doplniť na {target}",
+    "ruleOnHand": "na sklade {qty}",
+    "status": {
+      "DRAFT": "Návrh",
+      "SENT": "Odoslané",
+      "CONFIRMED": "Potvrdené",
+      "DECLINED": "Zamietnuté",
+      "SHIPPED": "Expedované",
+      "RECEIVED": "Uzatvorené",
+      "CANCELLED": "Zrušené"
+    },
+    "moves": {
+      "SEND": "Odoslať dodávateľovi",
+      "CONFIRM": "Potvrdiť dátum",
+      "DECLINE": "Odmietnuť",
+      "SHIP": "Označiť ako expedované",
+      "CLOSE": "Uzatvoriť objednávku",
+      "CANCEL": "Zrušiť objednávku",
+      "CONFIRM_SELF": "Zapísať dátum dodávateľa",
+      "SHIP_SELF": "Označiť ako odoslané dodávateľom"
+    },
+    "error": {
+      "unauth": "Najprv sa prihláste.",
+      "forbidden": "Nemáte oprávnenie pracovať tu so zásobovaním.",
+      "not_found": "Nenašlo sa.",
+      "failed": "Uloženie sa nepodarilo. Skúste znova.",
+      "name_required": "Zadajte dodávateľovi názov.",
+      "name_long": "Názov je príliš dlhý.",
+      "email_invalid": "Tá e‑mailová adresa nevyzerá správne.",
+      "self_supplier": "Firma nemôže byť sama sebe dodávateľom — presuny tovaru medzi vlastnými skladmi sú prevody.",
+      "too_many": "Dosiahli ste limit.",
+      "portal_company_unknown": "Tá firma nie je v zozname, takže nemá portál na prijatie vašej objednávky.",
+      "supplier_has_orders": "Tento dodávateľ má stále otvorené objednávky.",
+      "supplier_unknown": "Vyberte dodávateľa.",
+      "supplier_required": "Pravidlo automatickej objednávky potrebuje dodávateľa: nie je komu odoslať žiadosť.",
+      "warehouse_out_of_scope": "Tento sklad je mimo miest, za ktoré zodpovedáte.",
+      "warehouse_required": "Najprv vyberte sklad pre túto objednávku.",
+      "too_many_open": "Príliš veľa otvorených objednávok.",
+      "daily_limit": "Dnes príliš veľa objednávok. Skúste znova zajtra.",
+      "date_invalid": "Ten dátum nevyzerá správne.",
+      "not_editable": "Položky možno meniť iba v návrhu.",
+      "qty_invalid": "Zadajte množstvo väčšie ako nula.",
+      "price_invalid": "Tá cena nevyzerá správne.",
+      "too_many_lines": "Príliš veľa položiek v jednej objednávke.",
+      "duplicate_product": "Tento produkt už je v objednávke — namiesto toho upravte jeho riadok.",
+      "product_unknown": "Vyberte produkt.",
+      "no_lines": "Pred odoslaním pridajte aspoň jednu položku.",
+      "not_listed": "Vaša firma ešte nie je zaradená, preto tu nemôže posielať objednávky iným firmám.",
+      "not_allowed": "Tento krok nie je v tomto štádiu dostupný.",
+      "not_shipped": "Tovar môžete prijať až po tom, čo ho dodávateľ označí ako odoslaný.",
+      "reason_required": "Uveďte dôvod — aspoň tri znaky.",
+      "already_received": "Táto položka je úplne prijatá.",
+      "qty_over_remaining": "To je viac, než koľko v objednávke ešte zostáva.",
+      "concurrent_receipt": "Niekto túto položku práve prijal. Obnovte stránku.",
+      "target_not_above_min": "\"Doplniť do\" musí byť vyššie ako prah.",
+      "too_many_docs": "Príliš veľa dokumentov pri tejto objednávke.",
+      "too_large": "Súbor je príliš veľký.",
+      "bad_type": "Akceptujú sa iba súbory PDF, PNG, JPEG a WebP.",
+      "order_required": "Chýba objednávka.",
+      "bad_form": "Nahraný súbor sa nepodarilo prečítať.",
+      "no_file": "Vyberte súbor."
+    },
+    "selfDrivenHint": "Tento dodávateľ nemá portál na Trientes, preto si stavy objednávky vediete sami: zapíšte si dátum, ktorý vám poskytol, a označte zásielku pri odoslaní."
   }
 }

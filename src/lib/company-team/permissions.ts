@@ -2,16 +2,19 @@
  * Права внутри предприятия — чистые правила, без Prisma. Спека
  * `docs/superpowers/specs/2026-11-19-merchant-team-roles-design.md`, разделы 2–5.
  *
- * Разделов семь, и каждый охраняет живые действия кабинета. Право, за которым нет ни
+ * Разделов восемь, и каждый охраняет живые действия кабинета. Право, за которым нет ни
  * одного охраняемого действия, не заводим: эквайринга и отчётности в проекте нет (то же
  * решение, что `minQty` в BC — «в схеме не заводим, пока нечему его читать»). Раздел
- * `promos` появился в BG вместе с акциями: до него рекламы в проекте не было.
+ * `promos` появился в BG вместе с акциями: до него рекламы в проекте не было, а `supply`
+ * — в BI вместе с заказами поставщику. Почему заказ не лёг в `warehouses`: кладовщик,
+ * которому поручено вести приход на полку, не должен заказывать у поставщика — заказ это
+ * обещание заплатить (тот же мотив, которым BE отделил `pricing` от `warehouses`).
  */
 
 /** Ролей на предприятие — столько, сколько читает человек в списке. */
 export const MAX_TEAM_ROLES = 20;
 
-export const TEAM_SECTIONS = ["card", "points", "products", "warehouses", "pricing", "tasks", "promos"] as const;
+export const TEAM_SECTIONS = ["card", "points", "products", "warehouses", "pricing", "tasks", "promos", "supply"] as const;
 export type TeamSection = (typeof TEAM_SECTIONS)[number];
 
 /** Уровней два; отсутствие строки — запрет по умолчанию, как очередь без гранта в AS. */
@@ -84,10 +87,11 @@ export function visibleSections(perms: TeamPermissions): TeamSection[] {
  * сохранённая роль хранит свой набор и от шаблона больше не зависит.
  */
 export const ROLE_TEMPLATES: { key: string; permissions: TeamPermissions }[] = [
-  { key: "manager", permissions: { card: "EDIT", points: "EDIT", products: "EDIT", warehouses: "EDIT", pricing: "EDIT", tasks: "EDIT", promos: "EDIT" } },
-  { key: "stock", permissions: { points: "VIEW", products: "VIEW", warehouses: "EDIT", tasks: "VIEW" } },
+  { key: "manager", permissions: { card: "EDIT", points: "EDIT", products: "EDIT", warehouses: "EDIT", pricing: "EDIT", tasks: "EDIT", promos: "EDIT", supply: "EDIT" } },
+  // Кладовщик видит, что едет на его полку, но не заказывает: заказ — обещание денег.
+  { key: "stock", permissions: { points: "VIEW", products: "VIEW", warehouses: "EDIT", tasks: "VIEW", supply: "VIEW" } },
   { key: "marketing", permissions: { card: "EDIT", products: "VIEW", pricing: "EDIT", tasks: "VIEW", promos: "EDIT" } },
-  { key: "observer", permissions: { card: "VIEW", points: "VIEW", products: "VIEW", warehouses: "VIEW", pricing: "VIEW", tasks: "VIEW", promos: "VIEW" } },
+  { key: "observer", permissions: { card: "VIEW", points: "VIEW", products: "VIEW", warehouses: "VIEW", pricing: "VIEW", tasks: "VIEW", promos: "VIEW", supply: "VIEW" } },
 ];
 
 /**

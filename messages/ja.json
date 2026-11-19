@@ -1595,7 +1595,8 @@
     "teamLink": "チーム",
     "journalLink": "アクティビティログ",
     "tasksLink": "タスク",
-    "promosLink": "特典"
+    "promosLink": "特典",
+    "supplyLink": "供給"
   },
   "cabinet": {
     "kicker": "セクション · キャビネット",
@@ -3186,6 +3187,28 @@
       "from": "{shop} からお知らせがあります",
       "open": "開く: {url}",
       "unsubscribe": "ショップの配信をオフにする: {url}"
+    },
+    "supply": {
+      "sent": {
+        "subject": "{company}からの新規発注書",
+        "body": "{company}があなたに発注書を送信しました。納期を確定するか、辞退してください。"
+      },
+      "confirmed": {
+        "subject": "発注が確定しました",
+        "body": "{company}: 仕入先が発注を確定し、納期を指定しました。"
+      },
+      "declined": {
+        "subject": "発注が拒否されました",
+        "body": "{company}: 仕入先が発注を拒否しました。"
+      },
+      "shipped": {
+        "subject": "商品は配送中です",
+        "body": "{company}: 仕入先が発注を発送済みにしました。到着したら受領してください。"
+      },
+      "autodraft": {
+        "subject": "在庫が少なくなっています",
+        "body": "{company}: 在庫がしきい値を下回ったため、発注書の下書きが用意されています。何も送信されていません — 内容を確認し、ご自身で送信してください。"
+      }
     }
   },
   "captcha": {
@@ -3756,7 +3779,8 @@
         "warehouses": "倉庫と在庫",
         "pricing": "価格とキャッシュバック",
         "tasks": "タスク",
-        "promos": "オファーと配信"
+        "promos": "オファーと配信",
+        "supply": "仕入先と発注"
       },
       "levels": {
         "NONE": "アクセスなし",
@@ -3799,6 +3823,7 @@
     "subtitle": "誰が何をいつ変更したか — 直近{count}件。",
     "empty": "まだ記録がありません。",
     "goneActor": "削除されたメンバー",
+    "systemActor": "夜間実行",
     "actions": {
       "PROFILE_SAVED": "ショップカードを保存",
       "POINT_SUBMITTED": "ポイントを申請",
@@ -3840,7 +3865,21 @@
       "PROMO_UPDATED": "オファーを編集",
       "PROMO_ARCHIVED": "オファーをアーカイブ",
       "PROMO_RESTORED": "オファーを復元",
-      "PROMO_SENT": "フォロワーにオファーを送信"
+      "PROMO_SENT": "フォロワーにオファーを送信",
+      "SUPPLIER_SAVED": "仕入先を保存しました",
+      "SUPPLIER_ARCHIVED": "仕入先をアーカイブしました",
+      "SUPPLIER_RESTORED": "仕入先を復元しました",
+      "ORDER_CREATED": "購買発注を作成しました",
+      "ORDER_SENT": "購買発注を仕入先に送信しました",
+      "ORDER_CONFIRMED": "購買発注が確認されました",
+      "ORDER_DECLINED": "購買発注が拒否されました",
+      "ORDER_SHIPPED": "購買発注を出荷済みにしました",
+      "ORDER_RECEIVED": "在庫に入荷しました",
+      "ORDER_CLOSED": "購買発注をクローズしました",
+      "ORDER_CANCELLED": "購買発注をキャンセルしました",
+      "ORDER_DOC_ADDED": "購買発注にドキュメントを添付しました",
+      "REORDER_RULE_SAVED": "自動発注ルールを保存しました",
+      "REORDER_RULE_DELETED": "自動発注ルールを削除しました"
     }
   },
   "cabinetTasks": {
@@ -4031,5 +4070,152 @@
       "daily_cap": "本日の配信は使い切りました—次は明日です。",
       "not_listed": "ショップがショーケースに掲載されていないため、配信はオフです。"
     }
+  },
+  "supply": {
+    "title": "調達",
+    "subtitle": "仕入先、購買発注、自動発注のしきい値。支払いはプラットフォーム外で行われます",
+    "open": "開く",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "create": "作成",
+    "edit": "編集",
+    "archive": "アーカイブ",
+    "restore": "復元",
+    "archived": "アーカイブ済み",
+    "reason": "理由",
+    "ordersHeading": "購買発注",
+    "ordersEmpty": "まだ購買発注がありません",
+    "newOrder": "新しい購買発注",
+    "needSupplier": "まず仕入先を追加してください。発注には送付先が必要です",
+    "incomingHeading": "自社宛の発注",
+    "incomingIntro": "あなたを仕入先として登録している事業者からの発注です。納期を確定する、辞退する、または出荷済みにします",
+    "autoDrafted": "自動で下書き作成",
+    "lineCount": "アイテム: {count}",
+    "etaConfirmed": "仕入先が確定: {date}",
+    "etaAsked": "あなたの希望: {date}",
+    "etaAskedByBuyer": "購入者の希望日: {date}",
+    "sideBuyer": "あなたは買い手です",
+    "sideSupplier": "あなたは仕入先です",
+    "supplier": "仕入先",
+    "warehouse": "納品先",
+    "warehouseNone": "未選択",
+    "expectedAt": "希望日",
+    "confirmedEta": "仕入先確認日",
+    "note": "メモ",
+    "total": "参考合計",
+    "declineReason": "仕入先が却下した理由",
+    "cancelReason": "キャンセル理由",
+    "suppliersHeading": "仕入先",
+    "suppliersEmpty": "仕入先はまだありません。",
+    "addSupplier": "仕入先を追加",
+    "supplierName": "名称",
+    "portalCompany": "Trientes上の事業者",
+    "portalNone": "Trientes未登録",
+    "portalHint": "Trientes上の事業者である仕入先にはポータルが提供されます。あなたの発注は相手の専用画面で開き、そこで日付を確認します。その他の相手の場合、発注はあなたの文書のままです。",
+    "contactName": "担当者",
+    "email": "メール",
+    "phone": "電話",
+    "hasPortal": "ポータルあり — {company}",
+    "noPortal": "ポータルなし：発注はあなたの文書のまま",
+    "openOrders": "オープン注文: {count}",
+    "linesHeading": "品目",
+    "linesEmpty": "品目はまだありません。",
+    "lineQty": "{qty} {unit}",
+    "lineReceived": "受領済み {qty}",
+    "lineFull": "全量受領済み。",
+    "removeLine": "削除",
+    "addLine": "品目を追加",
+    "product": "製品",
+    "qty": "数量",
+    "priceOptional": "{currency}建ての価格（任意）",
+    "needProducts": "発注する製品がまだありません — 先に製品パスポートまたはオファーを追加してください。",
+    "paymentOutside": "ここでの価格は参考用のみです：支払いはプラットフォーム外で行われます。",
+    "receiveQty": "受領（最大 {left}）",
+    "receive": "受領",
+    "needWarehouse": "この発注の倉庫を選択してください — 受領先がありません。",
+    "docsHeading": "ドキュメント",
+    "docsEmpty": "ドキュメントはまだありません。",
+    "openDoc": "開く",
+    "addDoc": "ドキュメントを添付",
+    "uploading": "アップロード中…",
+    "docSide": {
+      "buyer": "購入者から",
+      "supplier": "仕入先から"
+    },
+    "actionsHeading": "できること",
+    "noActions": "今ここでできることはありません：次の手順は相手側の担当です。",
+    "closedNoActions": "この注文はクローズされています—ここではこれ以上何も起きません。",
+    "readOnly": "この発注書は閲覧できますが、操作はできません。",
+    "rulesHeading": "自動発注",
+    "rulesIntro": "棚の在庫がしきい値を下回ると、夜間実行で発注書の下書きを作成し、発注可能な担当者に通知します。自動送信はされません—送信は購入の約束であり、人が行います。",
+    "rulesEmpty": "しきい値はまだありません。",
+    "rulesNeedParts": "しきい値を設定するには、倉庫、商品、そして仕入先が必要です。",
+    "addRule": "しきい値を追加",
+    "deleteRule": "削除",
+    "minQty": "しきい値",
+    "targetQty": "まで補充",
+    "ruleThreshold": "在庫が{min}未満 → {target}まで補充",
+    "ruleOnHand": "手持ち {qty}",
+    "status": {
+      "DRAFT": "下書き",
+      "SENT": "送信済み",
+      "CONFIRMED": "確定",
+      "DECLINED": "却下",
+      "SHIPPED": "出荷済み",
+      "RECEIVED": "クローズ",
+      "CANCELLED": "キャンセル済み"
+    },
+    "moves": {
+      "SEND": "仕入先に送信",
+      "CONFIRM": "日付を確定",
+      "DECLINE": "却下",
+      "SHIP": "出荷済みにする",
+      "CLOSE": "注文をクローズ",
+      "CANCEL": "注文をキャンセル",
+      "CONFIRM_SELF": "仕入先の日付を記録",
+      "SHIP_SELF": "仕入先が出荷済みとしてマーク"
+    },
+    "error": {
+      "unauth": "まずサインインしてください。",
+      "forbidden": "ここで調達に関する操作を行う権限がありません。",
+      "not_found": "見つかりません。",
+      "failed": "保存できませんでした。もう一度お試しください。",
+      "name_required": "仕入先に名前を付けてください。",
+      "name_long": "名前が長すぎます。",
+      "email_invalid": "そのメールアドレスは正しくないようです。",
+      "self_supplier": "事業者が自分自身を仕入先にすることはできません—自社倉庫間の移動は振替です。",
+      "too_many": "上限に達しました。",
+      "portal_company_unknown": "その事業者は掲載されていないため、あなたの発注を受け取るポータルがありません。",
+      "supplier_has_orders": "この仕入先には未完了の注文がまだあります。",
+      "supplier_unknown": "仕入先を選択してください.",
+      "supplier_required": "自動発注ルールには仕入先が必要です: リクエストを送る相手がいません。",
+      "warehouse_out_of_scope": "その倉庫はあなたの担当範囲外です。",
+      "warehouse_required": "先にこの注文の倉庫を選択してください。",
+      "too_many_open": "未処理の注文が多すぎます。",
+      "daily_limit": "今日は注文が多すぎます。明日お試しください。",
+      "date_invalid": "その日付は正しくないようです。",
+      "not_editable": "明細は下書きのときのみ変更できます。",
+      "qty_invalid": "0より大きい数量を入力してください。",
+      "price_invalid": "その価格は正しくないようです。",
+      "too_many_lines": "1件の注文に明細が多すぎます。",
+      "duplicate_product": "この商品は既に注文に含まれています—その行を変更してください。",
+      "product_unknown": "商品を選択してください。",
+      "no_lines": "送信する前に少なくとも1件の明細を追加してください。",
+      "not_listed": "あなたの事業はまだ掲載されていないため、ここで他社に注文を送信できません。",
+      "not_allowed": "この段階ではこのステップを利用できません。",
+      "not_shipped": "仕入先が出荷済みにしてからでないと入荷できません。",
+      "reason_required": "理由を記入してください—3文字以上。",
+      "already_received": "この明細はすでに全量入荷済みです。",
+      "qty_over_remaining": "それは注文の未入荷分を超えています。",
+      "concurrent_receipt": "同時に誰かがこの明細を入荷しました。ページを再読み込みしてください。",
+      "target_not_above_min": "\"Top up to\" はしきい値より大きくなければなりません。",
+      "too_many_docs": "この注文のドキュメントが多すぎます。",
+      "too_large": "ファイルが大きすぎます。",
+      "bad_type": "PDF、PNG、JPEG、WebP のファイルのみ受け付けます。",
+      "order_required": "注文が見つかりません。",
+      "bad_form": "アップロードを読み取れませんでした。",
+      "no_file": "ファイルを選択してください。"
+    },
+    "selfDrivenHint": "この仕入先にはTrientes上のポータルがないため、注文のステータスはあなたが自分で管理します：相手から伝えられた日付を書き留め、出荷されたらマークしてください。"
   }
 }

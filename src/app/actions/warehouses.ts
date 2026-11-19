@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { canWrite, editorCompany, type CompanyGate } from "@/lib/products/editor-company";
 import { movementScopeAllows, pointScopeAllows } from "@/lib/company-team/permissions";
 import { logCompanyAction } from "@/lib/company-team/journal";
+import { NegativeBalance, applyDeltas } from "@/lib/warehouse/apply";
 import {
   DAILY_MOVEMENTS,
   canArchiveWarehouse,
@@ -18,7 +19,6 @@ import {
   receivePlan,
   validateMovement,
   validateWarehouse,
-  type Delta,
   type MoveKind,
 } from "@/lib/warehouse/rules";
 
@@ -48,9 +48,6 @@ async function scopedWarehouses(
   if (rows.length !== new Set(ids).size) return false;
   return rows.every((row) => pointScopeAllows(gate.pointScope, row.pointId));
 }
-
-/** Остаток в минус ушёл уже после записи — значит гонка: откатываем всю транзакцию. */
-class NegativeBalance extends Error {}
 
 export type WarehouseFormInput = {
   kind: string;
@@ -201,29 +198,10 @@ function parseQty(raw: string): number | null {
 
 /**
  * Запись движения и остатков — одной транзакцией: движение без остатка оставило бы
- * склад врать, остаток без движения — необъяснимым.
- *
- * Проверка «хватает ли» делается **после** применения, по получившемуся числу: проверка
- * «до» под двумя одновременными расходами пропускает оба, а `UPDATE … increment`
- * блокирует строку. Ушло в минус — вся транзакция откатывается.
+ * склад врать, остаток без движения — необъяснимым. Само применение живёт в
+ * `src/lib/warehouse/apply.ts`: ту же запись делает приёмка заказа поставщику (BI), и у
+ * остатка должен быть один автор.
  */
-async function applyDeltas(
-  tx: Prisma.TransactionClient,
-  productId: string,
-  deltas: readonly Delta[],
-  kind: MoveKind,
-) {
-  for (const d of deltas) {
-    const row = await tx.stockBalance.upsert({
-      where: { warehouseId_productId: { warehouseId: d.warehouseId, productId } },
-      create: { warehouseId: d.warehouseId, productId, qty: new Prisma.Decimal(d.delta) },
-      update: { qty: { increment: new Prisma.Decimal(d.delta) } },
-      select: { qty: true },
-    });
-    if (kind !== "ADJUST" && Number(row.qty) < 0) throw new NegativeBalance();
-  }
-}
-
 export async function recordMovement(companyId: string, input: MovementFormInput) {
   const userId = await requireUser();
   if (!userId) return fail("unauth");

@@ -1595,7 +1595,8 @@
     "teamLink": "Ekip",
     "journalLink": "Etkinlik günlüğü",
     "tasksLink": "Görevler",
-    "promosLink": "Kampanyalar"
+    "promosLink": "Kampanyalar",
+    "supplyLink": "Arz"
   },
   "cabinet": {
     "kicker": "Bölüm · Kabin",
@@ -3186,6 +3187,28 @@
       "from": "{shop}'un sizin için haberleri var",
       "open": "Aç: {url}",
       "unsubscribe": "Mağaza bültenlerini kapat: {url}"
+    },
+    "supply": {
+      "sent": {
+        "subject": "{company}'den yeni satın alma siparişi",
+        "body": "{company} size bir satın alma siparişi gönderdi. Teslimat tarihini onaylayın veya reddedin."
+      },
+      "confirmed": {
+        "subject": "Satın alma siparişi onaylandı",
+        "body": "{company}: tedarikçiniz siparişi onayladı ve bir teslimat tarihi belirledi."
+      },
+      "declined": {
+        "subject": "Satın alma siparişi reddedildi",
+        "body": "{company}: tedarikçiniz siparişi reddetti."
+      },
+      "shipped": {
+        "subject": "Ürünler yolda",
+        "body": "{company}: tedarikçiniz siparişi gönderildi olarak işaretledi. Ulaştığında teslim alın."
+      },
+      "autodraft": {
+        "subject": "Stok tükenmek üzere",
+        "body": "{company}: stok eşik değerin altına düştü, bu yüzden sizi bekleyen bir taslak satın alma siparişi var. Hiçbir şey gönderilmedi — gözden geçirip kendiniz gönderin."
+      }
     }
   },
   "captcha": {
@@ -3756,7 +3779,8 @@
         "warehouses": "Depolar ve stok",
         "pricing": "Fiyat ve cashback",
         "tasks": "Görevler",
-        "promos": "Teklifler ve gönderimler"
+        "promos": "Teklifler ve gönderimler",
+        "supply": "Tedarikçiler ve siparişler"
       },
       "levels": {
         "NONE": "Erişim yok",
@@ -3799,6 +3823,7 @@
     "subtitle": "Kim neyi ne zaman değiştirdi — son {count} kayıt.",
     "empty": "Henüz bir şey kaydedilmedi.",
     "goneActor": "silinmiş üye",
+    "systemActor": "gecelik çalışma",
     "actions": {
       "PROFILE_SAVED": "Mağaza kartı kaydedildi",
       "POINT_SUBMITTED": "Nokta gönderildi",
@@ -3840,7 +3865,21 @@
       "PROMO_UPDATED": "Teklif düzenlendi",
       "PROMO_ARCHIVED": "Teklif arşivlendi",
       "PROMO_RESTORED": "Teklif geri yüklendi",
-      "PROMO_SENT": "Teklif takipçilere gönderildi"
+      "PROMO_SENT": "Teklif takipçilere gönderildi",
+      "SUPPLIER_SAVED": "Tedarikçi kaydedildi",
+      "SUPPLIER_ARCHIVED": "Tedarikçi arşivlendi",
+      "SUPPLIER_RESTORED": "Tedarikçi geri yüklendi",
+      "ORDER_CREATED": "Satın alma siparişi oluşturuldu",
+      "ORDER_SENT": "Satın alma siparişi tedarikçiye gönderildi",
+      "ORDER_CONFIRMED": "Satın alma siparişi onaylandı",
+      "ORDER_DECLINED": "Satın alma siparişi reddedildi",
+      "ORDER_SHIPPED": "Satın alma siparişi gönderildi olarak işaretlendi",
+      "ORDER_RECEIVED": "Ürünler stoğa alındı",
+      "ORDER_CLOSED": "Satın alma siparişi kapatıldı",
+      "ORDER_CANCELLED": "Satın alma siparişi iptal edildi",
+      "ORDER_DOC_ADDED": "Satın alma siparişine belge eklendi",
+      "REORDER_RULE_SAVED": "Otomatik sipariş kuralı kaydedildi",
+      "REORDER_RULE_DELETED": "Otomatik sipariş kuralı silindi"
     }
   },
   "cabinetTasks": {
@@ -4031,5 +4070,152 @@
       "daily_cap": "Bugünkü gönderim limiti doldu — yenisi yarın.",
       "not_listed": "Mağaza vitrinde değil, bu yüzden gönderimler kapalı."
     }
+  },
+  "supply": {
+    "title": "Tedarik",
+    "subtitle": "Tedarikçiler, satın alma siparişleri ve otomatik sipariş eşikleri. Ödeme platform dışında gerçekleşir.",
+    "open": "Aç",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "create": "Oluştur",
+    "edit": "Düzenle",
+    "archive": "Arşivle",
+    "restore": "Geri yükle",
+    "archived": "arşivlendi",
+    "reason": "Gerekçe",
+    "ordersHeading": "Satın alma siparişleri",
+    "ordersEmpty": "Henüz satın alma siparişi yok.",
+    "newOrder": "Yeni satın alma siparişi",
+    "needSupplier": "Önce bir tedarikçi ekleyin — bir siparişin gönderileceği birine ihtiyacı var",
+    "incomingHeading": "Bize gelen siparişler",
+    "incomingIntro": "Sizi tedarikçi olarak listeleyen işletmeler. Teslimat tarihini onaylayın, reddedin veya ürünleri gönderildi olarak işaretleyin.",
+    "autoDrafted": "otomatik olarak taslaklandı",
+    "lineCount": "Öğeler: {count}",
+    "etaConfirmed": "Tedarikçi onayladı: {date}",
+    "etaAsked": "Talep ettiğiniz: {date}",
+    "etaAskedByBuyer": "Alıcının istediği tarih: {date}",
+    "sideBuyer": "Alıcısınız",
+    "sideSupplier": "Tedarikçisiniz",
+    "supplier": "Tedarikçi",
+    "warehouse": "Teslimat yeri",
+    "warehouseNone": "Henüz seçilmedi",
+    "expectedAt": "Talep ettiğiniz tarih",
+    "confirmedEta": "Tedarikçinin onayladığı tarih",
+    "note": "Not",
+    "total": "Referans toplam",
+    "declineReason": "Tedarikçinin reddetme nedeni",
+    "cancelReason": "İptal edilme nedeni",
+    "suppliersHeading": "Tedarikçiler",
+    "suppliersEmpty": "Henüz tedarikçi yok.",
+    "addSupplier": "Tedarikçi ekle",
+    "supplierName": "Ad",
+    "portalCompany": "Trientes'te işletme",
+    "portalNone": "Trientes'te değil",
+    "portalHint": "Kendisi de Trientes'te bir işletme olan tedarikçi bir portal alır: siparişiniz onların kendi panelinde açılır ve tarihi orada onaylarlar. Diğerleri için sipariş sizin belgeniz olarak kalır.",
+    "contactName": "İrtibat kişisi",
+    "email": "E-posta",
+    "phone": "Telefon",
+    "hasPortal": "Portalı var — {company}",
+    "noPortal": "Portal yok: sipariş sizin belgeniz olarak kalır",
+    "openOrders": "Açık emirler: {count}",
+    "linesHeading": "Kalemler",
+    "linesEmpty": "Henüz kalem yok.",
+    "lineQty": "{qty} {unit}",
+    "lineReceived": "{qty} alındı",
+    "lineFull": "Tamamı alındı.",
+    "removeLine": "Kaldır",
+    "addLine": "Kalem ekle",
+    "product": "Ürün",
+    "qty": "Miktar",
+    "priceOptional": "{currency} cinsinden fiyat, isteğe bağlı",
+    "needProducts": "Henüz sipariş edilecek ürün yok — önce bir ürün pasaportu veya bir teklif ekleyin.",
+    "paymentOutside": "Buradaki fiyatlar yalnızca referans içindir: ödeme platform dışında gerçekleşir.",
+    "receiveQty": "Teslim al, en fazla {left}",
+    "receive": "Teslim al",
+    "needWarehouse": "Bu sipariş için bir depo seçin — malları teslim alacak yer yok.",
+    "docsHeading": "Belgeler",
+    "docsEmpty": "Henüz belge yok.",
+    "openDoc": "Aç",
+    "addDoc": "Belge ekle",
+    "uploading": "Yükleniyor…",
+    "docSide": {
+      "buyer": "alıcıdan",
+      "supplier": "tedarikçiden"
+    },
+    "actionsHeading": "Yapabilecekleriniz",
+    "noActions": "Şu anda burada yapılacak bir şey yok: sıradaki adım karşı tarafa ait.",
+    "closedNoActions": "Bu emir kapatıldı — burada artık başka bir şey olmaz.",
+    "readOnly": "Bu siparişi okuyabilirsiniz ancak işlem yapamazsınız.",
+    "rulesHeading": "Otomatik sipariş",
+    "rulesIntro": "Bir raftaki stok eşik seviyesine düştüğünde, gece çalışan süreç bir satın alma siparişi taslağı oluşturur ve sipariş verebilecek kişiye haber verir. Hiçbir şey otomatik olarak gönderilmez — göndermek satın alma taahhüdüdür ve bunu bir kişi yapar.",
+    "rulesEmpty": "Henüz eşik yok.",
+    "rulesNeedParts": "Bir eşik anlamlı olsun diye önce bir depo, bir ürün ve bir tedarikçiye ihtiyaç var.",
+    "addRule": "Eşik ekle",
+    "deleteRule": "Sil",
+    "minQty": "Eşik",
+    "targetQty": "Şu seviyeye tamamla",
+    "ruleThreshold": "{min} altına inerse → {target} seviyesine tamamla",
+    "ruleOnHand": "elde {qty}",
+    "status": {
+      "DRAFT": "Taslak",
+      "SENT": "Gönderildi",
+      "CONFIRMED": "Onaylandı",
+      "DECLINED": "Reddedildi",
+      "SHIPPED": "Sevk edildi",
+      "RECEIVED": "Kapalı",
+      "CANCELLED": "İptal edildi"
+    },
+    "moves": {
+      "SEND": "Tedarikçiye gönder",
+      "CONFIRM": "Tarihi onayla",
+      "DECLINE": "Reddet",
+      "SHIP": "Sevk edildi olarak işaretle",
+      "CLOSE": "Siparişi kapat",
+      "CANCEL": "Siparişi iptal et",
+      "CONFIRM_SELF": "Tedarikçinin tarihini kaydet",
+      "SHIP_SELF": "Tedarikçi tarafından gönderildi olarak işaretle"
+    },
+    "error": {
+      "unauth": "Önce oturum açın.",
+      "forbidden": "Burada tedarikle çalışmaya yetkiniz yok.",
+      "not_found": "Bulunamadı.",
+      "failed": "Kaydedilemedi. Tekrar deneyin.",
+      "name_required": "Tedarikçiye bir ad verin.",
+      "name_long": "Ad çok uzun.",
+      "email_invalid": "Bu e-posta adresi doğru görünmüyor.",
+      "self_supplier": "Bir işletme kendi tedarikçisi olamaz — kendi depolarınız arasında mal taşımak bir transferdir.",
+      "too_many": "Sınıra ulaştınız.",
+      "portal_company_unknown": "O işletme listede değil, bu yüzden siparişinizi alacak bir portalı yok.",
+      "supplier_has_orders": "Bu tedarikçinin hala açık siparişleri var.",
+      "supplier_unknown": "Bir tedarikçi seçin.",
+      "supplier_required": "Otomatik sipariş kuralı bir tedarikçi gerektirir: isteği gönderecek kimse yok.",
+      "warehouse_out_of_scope": "Bu depo sorumlu olduğunuz noktaların dışında.",
+      "warehouse_required": "Önce bu sipariş için bir depo seçin.",
+      "too_many_open": "Çok fazla açık sipariş var.",
+      "daily_limit": "Bugün çok fazla sipariş var. Yarın tekrar deneyin.",
+      "date_invalid": "Bu tarih doğru görünmüyor.",
+      "not_editable": "Kalemler yalnızca taslakta değiştirilebilir.",
+      "qty_invalid": "Sıfırdan büyük bir miktar girin.",
+      "price_invalid": "Bu fiyat doğru görünmüyor.",
+      "too_many_lines": "Bir siparişte çok fazla kalem var.",
+      "duplicate_product": "Bu ürün zaten siparişte — satırını değiştirin.",
+      "product_unknown": "Bir ürün seçin.",
+      "no_lines": "Göndermeden önce en az bir kalem ekleyin.",
+      "not_listed": "İşletmeniz henüz listede değil, bu yüzden burada diğer işletmelere sipariş gönderemez.",
+      "not_allowed": "Bu adım bu aşamada mevcut değil.",
+      "not_shipped": "Malları yalnızca tedarikçi onları sevk edildi olarak işaretledikten sonra alabilirsiniz.",
+      "reason_required": "Bir neden yazın — en az üç karakter.",
+      "already_received": "Bu kalem tamamen alındı.",
+      "qty_over_remaining": "Bu, siparişte kalan miktardan daha fazla.",
+      "concurrent_receipt": "Birisi bu kalemi aynı anda aldı. Sayfayı yeniden yükleyin.",
+      "target_not_above_min": "\"Şuna kadar tamamla\" eşikten büyük olmalı.",
+      "too_many_docs": "Bu siparişte çok fazla belge var.",
+      "too_large": "Dosya çok büyük.",
+      "bad_type": "Yalnızca PDF, PNG, JPEG ve WebP dosyaları kabul edilir.",
+      "order_required": "Sipariş eksik.",
+      "bad_form": "Yükleme okunamadı.",
+      "no_file": "Bir dosya seçin."
+    },
+    "selfDrivenHint": "Bu tedarikçinin Trientes'te bir portalı yok, bu yüzden sipariş durumlarını kendin takip edersin: verdikleri tarihi not al ve sevkiyat yola çıktığında işaretle."
   }
 }

@@ -1595,7 +1595,8 @@
     "teamLink": "Équipe",
     "journalLink": "Journal d'activité",
     "tasksLink": "Tâches",
-    "promosLink": "Offres"
+    "promosLink": "Offres",
+    "supplyLink": "Approvisionnement"
   },
   "cabinet": {
     "kicker": "Section · Espace personnel",
@@ -3186,6 +3187,28 @@
       "from": "{shop} a des nouveautés pour vous",
       "open": "Ouvrir: {url}",
       "unsubscribe": "Désactiver les envois de la boutique: {url}"
+    },
+    "supply": {
+      "sent": {
+        "subject": "Nouveau bon de commande de la part de {company}",
+        "body": "{company} vous a envoyé un bon de commande. Confirmez la date de livraison ou refusez-le."
+      },
+      "confirmed": {
+        "subject": "Bon de commande confirmé",
+        "body": "{company}: votre fournisseur a confirmé la commande et indiqué une date de livraison."
+      },
+      "declined": {
+        "subject": "Bon de commande refusé",
+        "body": "{company}: votre fournisseur a refusé la commande."
+      },
+      "shipped": {
+        "subject": "Les marchandises sont en route",
+        "body": "{company}: votre fournisseur a marqué la commande comme expédiée. Réceptionnez-la à son arrivée."
+      },
+      "autodraft": {
+        "subject": "Le stock est bas",
+        "body": "{company}: le stock est passé sous le seuil, un brouillon de bon de commande vous attend. Rien n'a été envoyé — vérifiez-le et envoyez-le vous-même."
+      }
     }
   },
   "captcha": {
@@ -3756,7 +3779,8 @@
         "warehouses": "Entrepôts et stock",
         "pricing": "Prix et cashback",
         "tasks": "Tâches",
-        "promos": "Offres et envois"
+        "promos": "Offres et envois",
+        "supply": "Fournisseurs et commandes"
       },
       "levels": {
         "NONE": "Aucun accès",
@@ -3799,6 +3823,7 @@
     "subtitle": "Qui a changé quoi et quand — les {count} dernières entrées.",
     "empty": "Rien n'a encore été enregistré.",
     "goneActor": "membre supprimé",
+    "systemActor": "exécution nocturne",
     "actions": {
       "PROFILE_SAVED": "Fiche boutique enregistrée",
       "POINT_SUBMITTED": "Point soumis",
@@ -3840,7 +3865,21 @@
       "PROMO_UPDATED": "Offre modifiée",
       "PROMO_ARCHIVED": "Offre archivée",
       "PROMO_RESTORED": "Offre restaurée",
-      "PROMO_SENT": "Offre envoyée aux abonnés"
+      "PROMO_SENT": "Offre envoyée aux abonnés",
+      "SUPPLIER_SAVED": "Fournisseur enregistré",
+      "SUPPLIER_ARCHIVED": "Fournisseur archivé",
+      "SUPPLIER_RESTORED": "Fournisseur restauré",
+      "ORDER_CREATED": "Bon de commande créé",
+      "ORDER_SENT": "Bon de commande envoyé au fournisseur",
+      "ORDER_CONFIRMED": "Bon de commande confirmé",
+      "ORDER_DECLINED": "Bon de commande refusé",
+      "ORDER_SHIPPED": "Bon de commande marqué comme expédié",
+      "ORDER_RECEIVED": "Marchandises réceptionnées en stock",
+      "ORDER_CLOSED": "Bon de commande clôturé",
+      "ORDER_CANCELLED": "Bon de commande annulé",
+      "ORDER_DOC_ADDED": "Document joint à un bon de commande",
+      "REORDER_RULE_SAVED": "Règle de commande automatique enregistrée",
+      "REORDER_RULE_DELETED": "Règle de commande automatique supprimée"
     }
   },
   "cabinetTasks": {
@@ -4031,5 +4070,152 @@
       "daily_cap": "Le quota d'envoi d'aujourd'hui est épuisé — le prochain demain.",
       "not_listed": "La boutique n'est pas sur la vitrine, donc les envois sont désactivés."
     }
+  },
+  "supply": {
+    "title": "Approvisionnement",
+    "subtitle": "Fournisseurs, bons de commande et seuils de commande automatique. Le paiement a lieu en dehors de la plateforme.",
+    "open": "Ouvrir",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "create": "Créer",
+    "edit": "Modifier",
+    "archive": "Archiver",
+    "restore": "Restaurer",
+    "archived": "archivé",
+    "reason": "Motif",
+    "ordersHeading": "Bons de commande",
+    "ordersEmpty": "Aucun bon de commande pour le moment.",
+    "newOrder": "Nouveau bon de commande",
+    "needSupplier": "Ajoutez d’abord un fournisseur — une commande a besoin d’un destinataire.",
+    "incomingHeading": "Commandes reçues",
+    "incomingIntro": "Entreprises qui vous ont indiqué comme fournisseur. Confirmez une date de livraison, refusez ou marquez les marchandises comme expédiées.",
+    "autoDrafted": "créé automatiquement",
+    "lineCount": "Articles : {count}",
+    "etaConfirmed": "Confirmé par le fournisseur : {date}",
+    "etaAsked": "Vous avez demandé : {date}",
+    "etaAskedByBuyer": "L’acheteur a demandé : {date}",
+    "sideBuyer": "Vous êtes l'acheteur",
+    "sideSupplier": "Vous êtes le fournisseur",
+    "supplier": "Fournisseur",
+    "warehouse": "Livrer à",
+    "warehouseNone": "Pas encore choisi",
+    "expectedAt": "Date demandée",
+    "confirmedEta": "Date confirmée par le fournisseur",
+    "note": "Remarque",
+    "total": "Total de référence",
+    "declineReason": "Raison du refus du fournisseur",
+    "cancelReason": "Raison de l'annulation",
+    "suppliersHeading": "Fournisseurs",
+    "suppliersEmpty": "Aucun fournisseur pour l'instant.",
+    "addSupplier": "Ajouter un fournisseur",
+    "supplierName": "Nom",
+    "portalCompany": "Entreprise sur Trientes",
+    "portalNone": "Pas sur Trientes",
+    "portalHint": "Un fournisseur qui est lui-même une entreprise sur Trientes dispose d'un portail : votre commande s'ouvre dans son propre espace, et il y confirme la date. Pour les autres, la commande reste votre propre document.",
+    "contactName": "Personne de contact",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "hasPortal": "Dispose d'un portail — {company}",
+    "noPortal": "Pas de portail : la commande reste votre document",
+    "openOrders": "Ordres ouverts : {count}",
+    "linesHeading": "Articles",
+    "linesEmpty": "Aucun article pour l'instant.",
+    "lineQty": "{qty} {unit}",
+    "lineReceived": "reçu {qty}",
+    "lineFull": "Entièrement reçu.",
+    "removeLine": "Supprimer",
+    "addLine": "Ajouter un article",
+    "product": "Produit",
+    "qty": "Quantité",
+    "priceOptional": "Prix en {currency}, facultatif",
+    "needProducts": "Aucun produit à commander pour l'instant — ajoutez d'abord un passeport produit ou une offre.",
+    "paymentOutside": "Les prix ici sont donnés à titre indicatif : le paiement a lieu en dehors de la plateforme.",
+    "receiveQty": "Recevoir, jusqu’à {left}",
+    "receive": "Recevoir",
+    "needWarehouse": "Choisissez un entrepôt pour cette commande — il n’y a nulle part où recevoir les marchandises.",
+    "docsHeading": "Documents",
+    "docsEmpty": "Aucun document pour l’instant.",
+    "openDoc": "Ouvrir",
+    "addDoc": "Joindre un document",
+    "uploading": "Téléversement…",
+    "docSide": {
+      "buyer": "de l’acheteur",
+      "supplier": "du fournisseur"
+    },
+    "actionsHeading": "Ce que vous pouvez faire",
+    "noActions": "Rien à faire ici pour le moment : la prochaine étape revient à l’autre partie.",
+    "closedNoActions": "Cet ordre est clôturé — il ne se passe plus rien ici.",
+    "readOnly": "Vous pouvez lire cette commande mais ne pouvez pas agir dessus.",
+    "rulesHeading": "Commande automatique",
+    "rulesIntro": "Quand le stock d’une étagère passe sous le seuil, l’exécution nocturne prépare un bon de commande et avertit les personnes autorisées à commander. Rien n’est envoyé automatiquement — envoyer engage un achat, et c’est une personne qui le fait.",
+    "rulesEmpty": "Aucun seuil pour l’instant.",
+    "rulesNeedParts": "Il vous faut un entrepôt, un produit et un fournisseur avant qu’un seuil ait du sens.",
+    "addRule": "Ajouter un seuil",
+    "deleteRule": "Supprimer",
+    "minQty": "Seuil",
+    "targetQty": "Compléter jusqu’à",
+    "ruleThreshold": "en dessous de {min} → compléter jusqu’à {target}",
+    "ruleOnHand": "en stock {qty}",
+    "status": {
+      "DRAFT": "Brouillon",
+      "SENT": "Envoyé",
+      "CONFIRMED": "Confirmé",
+      "DECLINED": "Refusé",
+      "SHIPPED": "Expédié",
+      "RECEIVED": "Clôturé",
+      "CANCELLED": "Annulé"
+    },
+    "moves": {
+      "SEND": "Envoyer au fournisseur",
+      "CONFIRM": "Confirmer la date",
+      "DECLINE": "Refuser",
+      "SHIP": "Marquer comme expédié",
+      "CLOSE": "Clore la commande",
+      "CANCEL": "Annuler la commande",
+      "CONFIRM_SELF": "Enregistrer la date du fournisseur",
+      "SHIP_SELF": "Marquer comme expédié par le fournisseur"
+    },
+    "error": {
+      "unauth": "Connectez-vous d’abord.",
+      "forbidden": "Vous n’avez pas les droits pour gérer l’approvisionnement ici.",
+      "not_found": "Introuvable.",
+      "failed": "Impossible d’enregistrer. Réessayez.",
+      "name_required": "Donnez un nom au fournisseur.",
+      "name_long": "Le nom est trop long.",
+      "email_invalid": "Cette adresse e-mail ne semble pas correcte.",
+      "self_supplier": "Une entreprise ne peut pas être son propre fournisseur — déplacer des marchandises entre vos propres entrepôts est un transfert.",
+      "too_many": "Vous avez atteint la limite.",
+      "portal_company_unknown": "Cette entreprise n’est pas répertoriée, elle n’a donc pas de portail pour recevoir votre commande.",
+      "supplier_has_orders": "Ce fournisseur a encore des commandes ouvertes.",
+      "supplier_unknown": "Choisissez un fournisseur.",
+      "supplier_required": "Une règle de commande automatique nécessite un fournisseur : il n’y a personne à qui envoyer la demande.",
+      "warehouse_out_of_scope": "Cet entrepôt est en dehors des points dont vous êtes responsable.",
+      "warehouse_required": "Choisissez d’abord un entrepôt pour cette commande.",
+      "too_many_open": "Trop de commandes ouvertes.",
+      "daily_limit": "Trop de commandes aujourd’hui. Réessayez demain.",
+      "date_invalid": "Cette date ne semble pas correcte.",
+      "not_editable": "Les articles ne peuvent être modifiés que dans un brouillon.",
+      "qty_invalid": "Saisissez une quantité supérieure à zéro.",
+      "price_invalid": "Ce prix ne semble pas correct.",
+      "too_many_lines": "Trop d’articles dans une seule commande.",
+      "duplicate_product": "Ce produit est déjà dans la commande — modifiez plutôt sa ligne.",
+      "product_unknown": "Choisissez un produit.",
+      "no_lines": "Ajoutez au moins un article avant l’envoi.",
+      "not_listed": "Votre entreprise n’est pas encore répertoriée, elle ne peut donc pas envoyer de commandes à d’autres entreprises ici.",
+      "not_allowed": "Cette étape n’est pas disponible à ce stade.",
+      "not_shipped": "Vous ne pouvez recevoir les marchandises qu’après que le fournisseur les a marquées comme expédiées.",
+      "reason_required": "Indiquez un motif — au moins trois caractères.",
+      "already_received": "Cet article est entièrement reçu.",
+      "qty_over_remaining": "C’est plus que ce qu’il reste à recevoir sur la commande.",
+      "concurrent_receipt": "Quelqu’un a reçu cet article au même moment. Rechargez la page.",
+      "target_not_above_min": "\"Compléter jusqu’à\" doit être supérieur au seuil.",
+      "too_many_docs": "Trop de documents sur cette commande.",
+      "too_large": "Le fichier est trop volumineux.",
+      "bad_type": "Seuls les fichiers PDF, PNG, JPEG et WebP sont acceptés.",
+      "order_required": "La commande est manquante.",
+      "bad_form": "Impossible de lire le téléversement.",
+      "no_file": "Choisissez un fichier."
+    },
+    "selfDrivenHint": "Ce fournisseur n'a pas de portail sur Trientes, vous gérez donc vous-même les statuts de la commande : notez la date qu'ils vous ont donnée et marquez l'expédition à son départ."
   }
 }

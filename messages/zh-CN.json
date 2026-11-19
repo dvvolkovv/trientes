@@ -1595,7 +1595,8 @@
     "teamLink": "团队",
     "journalLink": "活动日志",
     "tasksLink": "任务",
-    "promosLink": "优惠"
+    "promosLink": "优惠",
+    "supplyLink": "供应"
   },
   "cabinet": {
     "kicker": "板块 · 个人中心",
@@ -3186,6 +3187,28 @@
       "from": "{shop} 有新消息给你",
       "open": "打开：{url}",
       "unsubscribe": "取消店铺订阅：{url}"
+    },
+    "supply": {
+      "sent": {
+        "subject": "来自{company}的新采购订单",
+        "body": "{company} 向你发送了一张采购订单。确认交货日期或拒绝。"
+      },
+      "confirmed": {
+        "subject": "采购订单已确认",
+        "body": "{company}：你的供应商已确认该订单并给出了交货日期。"
+      },
+      "declined": {
+        "subject": "采购订单被拒绝",
+        "body": "{company}：你的供应商已拒绝该订单。"
+      },
+      "shipped": {
+        "subject": "货物在途",
+        "body": "{company}：你的供应商已将该订单标记为已发货。到达后请收货。"
+      },
+      "autodraft": {
+        "subject": "库存偏低",
+        "body": "{company}：库存已低于阈值，因此有一张采购订单草稿在等你。尚未发送——请查看并自行发送。"
+      }
     }
   },
   "captcha": {
@@ -3756,7 +3779,8 @@
         "warehouses": "仓库与库存",
         "pricing": "价格与返现",
         "tasks": "任务",
-        "promos": "优惠与群发"
+        "promos": "优惠与群发",
+        "supply": "供应商与订单"
       },
       "levels": {
         "NONE": "无访问权限",
@@ -3799,6 +3823,7 @@
     "subtitle": "谁在何时改了什么——最近 {count} 条记录。",
     "empty": "尚无记录。",
     "goneActor": "已删除成员",
+    "systemActor": "夜间作业",
     "actions": {
       "PROFILE_SAVED": "店铺卡片已保存",
       "POINT_SUBMITTED": "网点已提交",
@@ -3840,7 +3865,21 @@
       "PROMO_UPDATED": "已编辑优惠",
       "PROMO_ARCHIVED": "已归档优惠",
       "PROMO_RESTORED": "已恢复优惠",
-      "PROMO_SENT": "已向关注者发送优惠"
+      "PROMO_SENT": "已向关注者发送优惠",
+      "SUPPLIER_SAVED": "供应商已保存",
+      "SUPPLIER_ARCHIVED": "供应商已归档",
+      "SUPPLIER_RESTORED": "供应商已恢复",
+      "ORDER_CREATED": "采购订单已创建",
+      "ORDER_SENT": "采购订单已发送给供应商",
+      "ORDER_CONFIRMED": "采购订单已确认",
+      "ORDER_DECLINED": "采购订单已拒绝",
+      "ORDER_SHIPPED": "采购订单已标记为已发货",
+      "ORDER_RECEIVED": "货物已入库",
+      "ORDER_CLOSED": "采购订单已关闭",
+      "ORDER_CANCELLED": "采购订单已取消",
+      "ORDER_DOC_ADDED": "已向采购订单附加文档",
+      "REORDER_RULE_SAVED": "自动下单规则已保存",
+      "REORDER_RULE_DELETED": "自动下单规则已删除"
     }
   },
   "cabinetTasks": {
@@ -4031,5 +4070,152 @@
       "daily_cap": "今天的群发已用完——下一次在明天。",
       "not_listed": "商店未在展示页中，因此已关闭群发。"
     }
+  },
+  "supply": {
+    "title": "供应",
+    "subtitle": "供应商、采购订单和自动订购阈值。付款在平台外进行。",
+    "open": "打开",
+    "save": "保存",
+    "cancel": "取消",
+    "create": "新建",
+    "edit": "编辑",
+    "archive": "归档",
+    "restore": "恢复",
+    "archived": "已归档",
+    "reason": "原因",
+    "ordersHeading": "采购订单",
+    "ordersEmpty": "尚无采购订单。",
+    "newOrder": "新建采购订单",
+    "needSupplier": "请先添加供应商—订单需要有人接收。",
+    "incomingHeading": "给我们的订单",
+    "incomingIntro": "将你列为其供应商的企业。确认交货日期、拒绝，或标记货物已发货。",
+    "autoDrafted": "已自动起草",
+    "lineCount": "项目: {count}",
+    "etaConfirmed": "供应商已确认：{date}",
+    "etaAsked": "你要求的：{date}",
+    "etaAskedByBuyer": "买家要求为: {date}",
+    "sideBuyer": "你是买方",
+    "sideSupplier": "你是供应商",
+    "supplier": "供应商",
+    "warehouse": "送达至",
+    "warehouseNone": "尚未选择",
+    "expectedAt": "你要求的日期",
+    "confirmedEta": "供应商确认的日期",
+    "note": "备注",
+    "total": "参考总额",
+    "declineReason": "供应商拒绝的原因",
+    "cancelReason": "取消原因",
+    "suppliersHeading": "供应商",
+    "suppliersEmpty": "尚无供应商。",
+    "addSupplier": "添加供应商",
+    "supplierName": "名称",
+    "portalCompany": "Trientes 上的企业",
+    "portalNone": "不在 Trientes 上",
+    "portalHint": "本身也是 Trientes 上企业的供应商会获得一个门户：你的订单会在他们自己的后台中打开，他们会在那里确认日期。对其他人，订单仍然是你的文档。",
+    "contactName": "联系人",
+    "email": "邮箱",
+    "phone": "电话",
+    "hasPortal": "有门户 — {company}",
+    "noPortal": "无门户：该订单仍然是你的文档",
+    "openOrders": "未完成订单: {count}",
+    "linesHeading": "条目",
+    "linesEmpty": "尚无条目。",
+    "lineQty": "{qty} {unit}",
+    "lineReceived": "已收 {qty}",
+    "lineFull": "已全部收货。",
+    "removeLine": "移除",
+    "addLine": "添加条目",
+    "product": "产品",
+    "qty": "数量",
+    "priceOptional": "价格（{currency}），选填",
+    "needProducts": "尚无可下单的产品 — 请先添加产品护照或报价。",
+    "paymentOutside": "此处价格仅供参考：付款在平台外进行。",
+    "receiveQty": "收货，最多 {left}",
+    "receive": "收货",
+    "needWarehouse": "为此订单选择一个仓库 — 否则无处收货。",
+    "docsHeading": "文档",
+    "docsEmpty": "尚无文档。",
+    "openDoc": "打开",
+    "addDoc": "附加文档",
+    "uploading": "正在上传…",
+    "docSide": {
+      "buyer": "来自买方",
+      "supplier": "来自供应商"
+    },
+    "actionsHeading": "可执行操作",
+    "noActions": "当前无可执行操作：下一步由对方进行。",
+    "closedNoActions": "此订单已关闭——此处不会再有后续操作。",
+    "readOnly": "你可以查看此订单，但不能对其执行操作。",
+    "rulesHeading": "自动下单",
+    "rulesIntro": "当货架库存降至阈值时，夜间任务会起草采购订单并通知可下单的人。不会自动发送 — 发送即为购买承诺，需由人工完成。",
+    "rulesEmpty": "尚无阈值。",
+    "rulesNeedParts": "在设置阈值前，你需要有仓库、产品和供应商。",
+    "addRule": "添加阈值",
+    "deleteRule": "删除",
+    "minQty": "阈值",
+    "targetQty": "补至",
+    "ruleThreshold": "低于 {min} → 补至 {target}",
+    "ruleOnHand": "在库 {qty}",
+    "status": {
+      "DRAFT": "草稿",
+      "SENT": "已发送",
+      "CONFIRMED": "已确认",
+      "DECLINED": "已拒绝",
+      "SHIPPED": "已发货",
+      "RECEIVED": "已关闭",
+      "CANCELLED": "已取消"
+    },
+    "moves": {
+      "SEND": "发送给供应商",
+      "CONFIRM": "确认日期",
+      "DECLINE": "拒绝",
+      "SHIP": "标记为已发货",
+      "CLOSE": "关闭订单",
+      "CANCEL": "取消订单",
+      "CONFIRM_SELF": "记录供应商的日期",
+      "SHIP_SELF": "标记为供应商已发货"
+    },
+    "error": {
+      "unauth": "请先登录。",
+      "forbidden": "您无权在此处理供应。",
+      "not_found": "未找到。",
+      "failed": "无法保存。请重试。",
+      "name_required": "请为供应商命名。",
+      "name_long": "名称过长。",
+      "email_invalid": "该邮箱地址看起来不正确。",
+      "self_supplier": "企业不能作为自己的供应商——在自己的仓库之间移动货物属于调拨。",
+      "too_many": "您已达到上限。",
+      "portal_company_unknown": "该企业尚未入驻，因此没有门户来接收您的订单。",
+      "supplier_has_orders": "该供应商仍有未关闭的订单。",
+      "supplier_unknown": "请选择一个供应商。",
+      "supplier_required": "自动下单规则需要供应商：没有可发送请求的对象。",
+      "warehouse_out_of_scope": "该仓库不在您负责的范围内。",
+      "warehouse_required": "请先为此订单选择仓库。",
+      "too_many_open": "未关闭订单过多。",
+      "daily_limit": "今日订单过多。请明天再试。",
+      "date_invalid": "该日期看起来不正确。",
+      "not_editable": "仅能在草稿中修改项目。",
+      "qty_invalid": "请输入大于零的数量。",
+      "price_invalid": "该价格看起来不正确。",
+      "too_many_lines": "单个订单中的项目过多。",
+      "duplicate_product": "此商品已在订单中——请改为修改其明细行。",
+      "product_unknown": "请选择一个商品。",
+      "no_lines": "发送前请至少添加一项。",
+      "not_listed": "您的企业尚未入驻，因此无法在此向其他企业发送订单。",
+      "not_allowed": "当前阶段不可执行此步骤。",
+      "not_shipped": "仅当供应商标记为已发货后，您才能收货。",
+      "reason_required": "请输入原因——至少三个字符。",
+      "already_received": "该项已全部收货。",
+      "qty_over_remaining": "这超过了订单仍在等待的数量。",
+      "concurrent_receipt": "有人同时收到了此项。请重新加载页面。",
+      "target_not_above_min": "\"Top up to\" 必须大于阈值。",
+      "too_many_docs": "该订单的文档过多。",
+      "too_large": "文件过大。",
+      "bad_type": "仅接受 PDF、PNG、JPEG 和 WebP 文件。",
+      "order_required": "缺少订单。",
+      "bad_form": "无法读取上传内容。",
+      "no_file": "请选择文件。"
+    },
+    "selfDrivenHint": "该供应商在 Trientes 上没有门户，因此订单状态由你自行维护：记下他们提供的日期，并在发货时进行标记。"
   }
 }

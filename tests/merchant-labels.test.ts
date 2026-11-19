@@ -24,6 +24,10 @@ const ACTIONS: CompanyAction[] = [
   "INVITE_CREATED", "INVITE_REVOKED", "INVITE_ACCEPTED",
   "TASK_CREATED", "TASK_UPDATED", "TASK_STATUS_SET", "TASK_CANCELLED", "TASK_COMMENTED",
   "PROMO_CREATED", "PROMO_UPDATED", "PROMO_ARCHIVED", "PROMO_SENT", "PROMO_RESTORED",
+  "SUPPLIER_SAVED", "SUPPLIER_ARCHIVED", "SUPPLIER_RESTORED",
+  "ORDER_CREATED", "ORDER_SENT", "ORDER_CONFIRMED", "ORDER_DECLINED", "ORDER_SHIPPED",
+  "ORDER_RECEIVED", "ORDER_CLOSED", "ORDER_CANCELLED", "ORDER_DOC_ADDED",
+  "REORDER_RULE_SAVED", "REORDER_RULE_DELETED",
 ];
 
 describe("подписи разделов и журнала", () => {
@@ -46,6 +50,7 @@ describe("подписи разделов и журнала", () => {
       pricing: "loyaltyLink",
       tasks: "tasksLink",
       promos: "promosLink",
+      supply: "supplyLink",
     };
     const business = (en as Record<string, any>).business as Record<string, unknown>;
     for (const section of TEAM_SECTIONS) {
