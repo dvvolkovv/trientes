@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Prisma } from "@prisma/client";
 import type { MarketRow } from "@/lib/coingecko";
 
@@ -112,6 +112,10 @@ const expectedRows: MarketRow[] = [
 
 beforeEach(() => {
   vi.clearAllMocks();
+  // Снимки в наборе помечены 7 ноября, а свежесть читателя считается от «сейчас»:
+  // без остановленных часов фикстуры через час стали бы просроченными сами собой.
+  vi.useFakeTimers();
+  vi.setSystemTime(new Date("2026-11-07T12:05:00Z"));
   mocks.redis.status = "ready";
   mocks.redis.get.mockResolvedValue(null);
   mocks.prisma.coin.findMany.mockImplementation(async (args?: {
@@ -145,6 +149,10 @@ beforeEach(() => {
     },
     latestSnapshots[0],
   ]);
+});
+
+afterEach(() => {
+  vi.useRealTimers();
 });
 
 describe("readTop100 cold-cache fallback", () => {
@@ -190,5 +198,135 @@ describe("readTop100 cold-cache fallback", () => {
     });
     expect(mocks.prisma.$queryRaw).not.toHaveBeenCalled();
     expect(mocks.redis.set).not.toHaveBeenCalled();
+  });
+});
+
+/**
+ * Снимок основного списка держится 15 минут, а прогон цен ходит раз в десять и
+ * иногда получает от CoinGecko 429 (бесплатный тариф, лимит на IP общий у веба
+ * и воркера). Один сорванный прогон — и ключ `topList` просто истекает, тогда
+ * как список монет, заведённых руками, живёт час и остаётся на месте. Прежнее
+ * условие `l1.length > 0 || admin.length > 0` в этом случае отдавало **половину
+ * списка**: 19 ноября главная четверть часа показывала 27 монет без биткойна.
+ * Поэтому снимок годен только целиком; уцелела половина — читаем базу.
+ */
+describe("readTop100 partial cache", () => {
+  function cacheWith(values: Partial<Record<string, string>>) {
+    mocks.redis.get.mockImplementation(async (key: string) => values[key] ?? null);
+  }
+
+  const cachedRow: MarketRow = {
+    id: "cached-coin",
+    symbol: "CCH",
+    name: "Cached",
+    logoUrl: null,
+    rank: 7,
+    priceUsd: 1,
+    marketCapUsd: 2,
+    volume24hUsd: 3,
+    circulatingSupply: null,
+    totalSupply: null,
+    maxSupply: null,
+    pctChange1h: null,
+    pctChange24h: null,
+    pctChange7d: null,
+    sparkline7d: null,
+  };
+
+  it("falls back to the database when the main list expired but the admin list survived", async () => {
+    cacheWith({ [KEYS.adminAddedList]: JSON.stringify([cachedRow]) });
+
+    await expect(readTop100()).resolves.toEqual(expectedRows);
+    expect(mocks.prisma.$queryRaw).toHaveBeenCalledTimes(1);
+  });
+
+  it("falls back to the database when the admin list expired but the main list survived", async () => {
+    cacheWith({ [KEYS.topList]: JSON.stringify([cachedRow]) });
+
+    await expect(readTop100()).resolves.toEqual(expectedRows);
+    expect(mocks.prisma.$queryRaw).toHaveBeenCalledTimes(1);
+  });
+
+  it("treats an empty main list as a broken read, not an empty market", async () => {
+    cacheWith({
+      [KEYS.topList]: JSON.stringify([]),
+      [KEYS.adminAddedList]: JSON.stringify([cachedRow]),
+    });
+
+    await expect(readTop100()).resolves.toEqual(expectedRows);
+    expect(mocks.prisma.$queryRaw).toHaveBeenCalledTimes(1);
+  });
+
+  it("serves both halves from cache without touching the database", async () => {
+    cacheWith({
+      [KEYS.topList]: JSON.stringify([expectedRows[0]]),
+      [KEYS.adminAddedList]: JSON.stringify([cachedRow]),
+    });
+
+    await expect(readTop100()).resolves.toEqual([expectedRows[0], cachedRow]);
+    expect(mocks.prisma.coin.findMany).not.toHaveBeenCalled();
+    expect(mocks.prisma.$queryRaw).not.toHaveBeenCalled();
+  });
+
+  it("accepts an empty admin list as an answer — there may be no hand-added coins", async () => {
+    cacheWith({
+      [KEYS.topList]: JSON.stringify([expectedRows[0]]),
+      [KEYS.adminAddedList]: JSON.stringify([]),
+    });
+
+    await expect(readTop100()).resolves.toEqual([expectedRows[0]]);
+    expect(mocks.prisma.$queryRaw).not.toHaveBeenCalled();
+  });
+
+  it("keeps the surviving half when the database answers with nothing", async () => {
+    cacheWith({ [KEYS.adminAddedList]: JSON.stringify([cachedRow]) });
+    mocks.prisma.coin.findMany.mockResolvedValue([]);
+
+    await expect(readTop100()).resolves.toEqual([cachedRow]);
+  });
+
+  it("treats a corrupt main list as missing", async () => {
+    cacheWith({
+      [KEYS.topList]: "{not json",
+      [KEYS.adminAddedList]: JSON.stringify([cachedRow]),
+    });
+
+    await expect(readTop100()).resolves.toEqual(expectedRows);
+  });
+});
+
+/**
+ * Запасной путь читает базу, а в базе лежат и монеты, выпавшие из категории
+ * layer-1: их цену не обновляет никто, и самый старый снимок живого прода был
+ * от 22 октября. Показать такую цену как сегодняшнюю — соврать, поэтому порог
+ * тот же, что у закреплённой строки (слайс AW): старше шести часов в список не
+ * идёт. Снимок без штампа времени остаётся: «не знаю, когда» — это не «знаю,
+ * что давно» (то же правило у замерших пар бирж).
+ */
+describe("readTop100 fallback freshness", () => {
+  it("drops coins whose latest snapshot is older than six hours", async () => {
+    mocks.prisma.$queryRaw.mockResolvedValue([
+      makeSnapshot("bitcoin"),
+      makeSnapshot("ethereum", {
+        priceUsd: "200.5",
+        circulatingSupply: null,
+        totalSupply: null,
+        maxSupply: null,
+        sparkline7d: null,
+        fetchedAt: new Date("2026-11-07T05:00:00Z"),
+      }),
+    ]);
+
+    const rows = await readTop100();
+    expect(rows.map((r) => r.id)).toEqual(["bitcoin"]);
+  });
+
+  it("keeps a snapshot with no timestamp — unknown is not stale", async () => {
+    mocks.prisma.$queryRaw.mockResolvedValue([
+      makeSnapshot("bitcoin", { fetchedAt: null }),
+    ]);
+
+    const rows = await readTop100();
+    expect(rows.map((r) => r.id)).toEqual(["bitcoin"]);
   });
 });

@@ -28,31 +28,61 @@ async function redisGet(key: string): Promise<string | null> {
   }
 }
 
+/**
+ * Порог свежести запасного пути — шесть часов, тот же, что у закреплённой строки
+ * списка (слайс AW). В базе лежат и монеты, выпавшие из категории layer-1: их
+ * цену не обновляет ни один прогон, и самому старому снимку живого прода без
+ * этого порога было бы четыре недели. Показать такую цену как сегодняшнюю —
+ * соврать, а список без пяти выпавших монет по-прежнему список.
+ */
+const FALLBACK_MAX_AGE_MS = 6 * 60 * 60 * 1000;
+
+/** Снимок без штампа времени остаётся: «не знаю, когда» — это не «знаю, что давно». */
+function isFreshEnough(fetchedAt: Date | null): boolean {
+  if (!(fetchedAt instanceof Date)) return true;
+  return Date.now() - fetchedAt.getTime() <= FALLBACK_MAX_AGE_MS;
+}
+
+/** Разбор половины снимка: негодная строка — это «нет снимка», а не пустой список. */
+function parseRows(cached: string | null): MarketRow[] | null {
+  if (cached === null) return null;
+  try {
+    const parsed = JSON.parse(cached) as unknown;
+    return Array.isArray(parsed) ? (parsed as MarketRow[]) : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Список монет: снимок Redis целиком или база.
+ *
+ * Снимок состоит из двух половин с разным сроком жизни — основной список
+ * (категория layer-1, 15 минут) и монеты, заведённые руками (час). Прогон цен
+ * ходит раз в десять минут и иногда получает от CoinGecko 429: лимит бесплатного
+ * тарифа считается по IP и общий у `trientes-web` с `trientes-worker`. Один
+ * сорванный прогон — и основная половина истекает, а вторая остаётся на месте.
+ *
+ * Прежнее условие («есть хоть одна половина — отдаём её») в этом случае отдавало
+ * **половину списка**: 19 ноября главная четверть часа показывала 27 монет,
+ * заведённых руками, без биткойна и эфира. Поэтому снимок годен только целиком;
+ * уцелела половина — читаем базу, где лежат снимки всех монет от последнего
+ * удачного прогона. Пустой основной список считается сорванным чтением: в
+ * категории layer-1 всегда около сотни монет, пустого рынка там не бывает.
+ * Пустой список заведённых руками — законный ответ, таких монет может не быть.
+ */
 export async function readTop100(): Promise<MarketRow[]> {
   const [l1Cached, adminCached] = await Promise.all([
     redisGet(KEYS.topList),
     redisGet(KEYS.adminAddedList),
   ]);
 
-  let l1: MarketRow[] = [];
-  if (l1Cached) {
-    try {
-      l1 = JSON.parse(l1Cached) as MarketRow[];
-    } catch {
-      l1 = [];
-    }
-  }
-  let admin: MarketRow[] = [];
-  if (adminCached) {
-    try {
-      admin = JSON.parse(adminCached) as MarketRow[];
-    } catch {
-      admin = [];
-    }
-  }
-  if (l1.length > 0 || admin.length > 0) {
+  const l1 = parseRows(l1Cached);
+  const admin = parseRows(adminCached);
+  if (l1 !== null && l1.length > 0 && admin !== null) {
     return [...l1, ...admin];
   }
+  const cachedHalf = [...(l1 ?? []), ...(admin ?? [])];
 
   // DB fallback: latest snapshot per active coin, ordered by rank.
   const coins = await prisma.coin.findMany({
@@ -61,7 +91,7 @@ export async function readTop100(): Promise<MarketRow[]> {
     take: 200,
   });
   const coinIds = coins.map((c) => c.id);
-  if (coinIds.length === 0) return [];
+  if (coinIds.length === 0) return cachedHalf;
 
   const snapshots = await prisma.$queryRaw<LatestSnapshotRow[]>`
     SELECT
@@ -98,8 +128,8 @@ export async function readTop100(): Promise<MarketRow[]> {
     return { ...coin, snapshots: snapshot ? [snapshot] : [] };
   });
 
-  return coinsWithSnapshots
-    .filter((c) => c.snapshots[0])
+  const fromDb = coinsWithSnapshots
+    .filter((c) => c.snapshots[0] && isFreshEnough(c.snapshots[0].fetchedAt))
     .map((c) => {
       const s = c.snapshots[0];
       return {
@@ -120,6 +150,8 @@ export async function readTop100(): Promise<MarketRow[]> {
         sparkline7d: Array.isArray(s.sparkline7d) ? (s.sparkline7d as number[]) : null,
       };
     });
+  // База молчит или пуста — уцелевшая половина снимка лучше пустой страницы.
+  return fromDb.length > 0 ? fromDb : cachedHalf;
 }
 
 export async function readExchanges(): Promise<Exchange[]> {

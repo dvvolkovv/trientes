@@ -102,6 +102,24 @@ describe("syncPrices", () => {
       }),
     ).rejects.toThrow("network");
   });
+
+  // Пустой ответ — сорванное чтение, а не пустой рынок: в категории layer-1
+  // всегда около сотни монет. Записанный пустым снимок читался бы как годный и
+  // оставил бы главную без списка на все пятнадцать минут его жизни, поэтому
+  // прогон падает вслух, а прежний снимок остаётся на месте.
+  it("refuses to overwrite the list snapshot with an empty answer", async () => {
+    const { redisStore, fakeRedis, fakePrisma } = makeFakes();
+    redisStore.set(KEYS.topList, JSON.stringify([row]));
+    await expect(
+      syncPrices({
+        fetchTop100L1: async () => [],
+        redis: fakeRedis as never,
+        prisma: fakePrisma as never,
+      }),
+    ).rejects.toThrow(/no rows/i);
+    expect(JSON.parse(redisStore.get(KEYS.topList)!)).toHaveLength(1);
+    expect(fakePrisma.coinSnapshot.create).not.toHaveBeenCalled();
+  });
 });
 
 describe("syncGlobal", () => {

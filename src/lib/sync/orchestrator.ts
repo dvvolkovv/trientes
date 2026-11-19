@@ -38,6 +38,11 @@ export async function syncPrices(deps: {
   prisma: PrismaLike;
 }): Promise<{ count: number }> {
   const rows = await deps.fetchTop100L1();
+  // Пустой ответ — сорванное чтение, а не пустой рынок: в категории layer-1
+  // всегда около сотни монет. Записанный пустым снимок читатель счёл бы годным
+  // (см. `readTop100`) и четверть часа отдавал бы главную без списка, поэтому
+  // прогон падает вслух, а прежний снимок остаётся на месте.
+  if (rows.length === 0) throw new Error("coingecko /coins/markets returned no rows");
 
   // Write Redis snapshot first — fast cache for readers.
   const listJson = JSON.stringify(rows);
