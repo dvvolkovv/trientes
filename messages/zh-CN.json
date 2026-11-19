@@ -1800,6 +1800,7 @@
     "orSeparator": "或",
     "continueWithGoogle": "使用Google继续",
     "continueWithGitHub": "使用GitHub继续",
+    "continueWithTalerId": "使用Taler ID继续",
     "orWithTelegram": "或使用Telegram",
     "signIn": "登录",
     "createAccount": "立即创建",

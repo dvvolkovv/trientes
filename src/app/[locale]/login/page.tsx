@@ -1,6 +1,7 @@
 import { setRequestLocale } from "next-intl/server";
 import { getTranslations } from "next-intl/server";
 import { LoginButtons } from "@/components/login-buttons";
+import { talerIdProvider } from "@/lib/taler-id";
 
 export default async function LoginPage({
   params,
@@ -30,6 +31,7 @@ export default async function LoginPage({
           locale={locale}
           telegramBotUsername={process.env.TELEGRAM_BOT_USERNAME}
           next={typeof next === "string" ? next : undefined}
+          talerIdEnabled={talerIdProvider() !== null}
         />
       </div>
     </main>

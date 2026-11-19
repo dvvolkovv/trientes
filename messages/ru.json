@@ -1800,6 +1800,7 @@
     "orSeparator": "или",
     "continueWithGoogle": "Продолжить через Google",
     "continueWithGitHub": "Продолжить через GitHub",
+    "continueWithTalerId": "Продолжить через Taler ID",
     "orWithTelegram": "Или через Telegram",
     "signIn": "Войти",
     "createAccount": "Создать",

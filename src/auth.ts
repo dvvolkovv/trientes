@@ -8,8 +8,10 @@ import {
   parseAdminWhitelist,
 } from "@/lib/admin-whitelist";
 import { authConfig } from "@/auth.config";
+import { talerIdProvider } from "@/lib/taler-id";
 
 const adminWhitelist = parseAdminWhitelist(process.env.ADMIN_WHITELIST);
+const talerId = talerIdProvider();
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -24,6 +26,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     }),
+    ...(talerId ? [talerId] : []),
   ],
   adapter: PrismaAdapter(prisma),
   session: { strategy: "database" },

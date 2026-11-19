@@ -5,15 +5,18 @@ import { useTranslations } from "next-intl";
 import { signInWithProvider } from "@/app/actions/auth";
 import { TelegramLogin } from "@/components/telegram-login";
 import { PasswordLoginForm } from "@/components/password-login-form";
+import { TalerIdButton } from "@/components/taler-id-button";
 
 export function LoginButtons({
   locale,
   telegramBotUsername,
   next,
+  talerIdEnabled,
 }: {
   locale: string;
   telegramBotUsername?: string;
   next?: string;
+  talerIdEnabled?: boolean;
 }) {
   const [pending, start] = useTransition();
   const t = useTranslations("register");
@@ -25,6 +28,7 @@ export function LoginButtons({
         <span className="px-3 text-[11px] uppercase tracking-[0.2em] text-muted">{t("orSeparator")}</span>
         <div className="flex-grow border-t border-hairline" />
       </div>
+      {talerIdEnabled ? <TalerIdButton /> : null}
       <button
         type="button"
         disabled={pending}

@@ -1800,6 +1800,7 @@
     "orSeparator": "ili",
     "continueWithGoogle": "Nastavite s Googleom",
     "continueWithGitHub": "Nastavite s GitHubom",
+    "continueWithTalerId": "Nastavite s Taler ID-om",
     "orWithTelegram": "Ili putem Telegrama",
     "signIn": "Prijava",
     "createAccount": "Stvorite ga",

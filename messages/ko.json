@@ -1800,6 +1800,7 @@
     "orSeparator": "또는",
     "continueWithGoogle": "Google로 계속",
     "continueWithGitHub": "GitHub로 계속",
+    "continueWithTalerId": "Taler ID로 계속",
     "orWithTelegram": "또는 Telegram으로 계속",
     "signIn": "로그인",
     "createAccount": "계정 만들기",

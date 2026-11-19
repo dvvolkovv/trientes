@@ -3,6 +3,8 @@ import { setRequestLocale } from "next-intl/server";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
 import { RegisterForm } from "@/components/register-form";
+import { TalerIdButton } from "@/components/taler-id-button";
+import { talerIdProvider } from "@/lib/taler-id";
 import { safeNext } from "@/lib/safe-next";
 
 export default async function RegisterPage({
@@ -29,6 +31,16 @@ export default async function RegisterPage({
       </h1>
       <p className="text-muted mb-8">{t("subtitle")}</p>
       <div className="bg-card border border-hairline rounded-[20px] p-6 md:p-8">
+        {talerIdProvider() !== null ? (
+          <div className="flex flex-col gap-5 mb-5">
+            <TalerIdButton />
+            <div className="relative flex items-center my-1">
+              <div className="flex-grow border-t border-hairline" />
+              <span className="px-3 text-[11px] uppercase tracking-[0.2em] text-muted">{t("orSeparator")}</span>
+              <div className="flex-grow border-t border-hairline" />
+            </div>
+          </div>
+        ) : null}
         <RegisterForm locale={locale} next={target} />
       </div>
     </main>

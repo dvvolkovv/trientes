@@ -203,8 +203,8 @@ async function beginOAuth(
     GET: (request: NextRequest) => Promise<Response>;
     POST: (request: NextRequest) => Promise<Response>;
   },
-  provider: "google" | "github",
-): Promise<{ cookie: string }> {
+  provider: "google" | "github" | "talerid",
+): Promise<{ cookie: string; authorizationUrl: URL }> {
   const csrfResponse = await handlers.GET(
     new NextRequest(`${TEST_ORIGIN}/api/auth/csrf`, {
       headers: requestHeaders(),
@@ -229,16 +229,20 @@ async function beginOAuth(
   expect(location).toBeTruthy();
   const authorizationUrl = new URL(location!);
   expect(authorizationUrl.origin).toBe(
-    provider === "google" ? "https://accounts.google.com" : "https://github.com",
+    {
+      google: "https://accounts.google.com",
+      github: "https://github.com",
+      talerid: "https://api.talerid.io",
+    }[provider],
   );
   const codeChallenge = authorizationUrl.searchParams.get("code_challenge");
   expect(codeChallenge).toBeTruthy();
   expect(cookieHeader(response)).toContain("authjs.pkce.code_verifier=");
-  return { cookie: cookieHeader(response) };
+  return { cookie: cookieHeader(response), authorizationUrl };
 }
 
 function expectDatabaseOAuthSession(
-  provider: "google" | "github",
+  provider: "google" | "github" | "talerid",
   providerAccountId: string,
   email: string,
   response: Response,
@@ -497,5 +501,220 @@ describe.sequential("NextAuth security regressions through the application confi
       );
     });
     expect(consumers).toEqual([]);
+  });
+});
+
+const TALER_ID_ISSUER = "https://api.talerid.io/oauth";
+
+/**
+ * Taler ID as it answers in production: discovery, JWKS, token and userinfo.
+ * Its id_token carries only `sub` (oidc-provider puts profile and e-mail claims
+ * into userinfo for `response_type=code`), so the profile must come from
+ * `/oauth/me`.
+ */
+async function talerIdServer(userinfo: Record<string, unknown>) {
+  const { publicKey, privateKey } = await generateKeyPair("RS256", {
+    modulusLength: 2048,
+    extractable: true,
+  });
+  const publicJwk = await exportJWK(publicKey);
+  Object.assign(publicJwk, { kid: "taler-id-rsa", use: "sig", alg: "RS256" });
+  const requests: Array<{ url: string; headers: Headers; body: string }> = [];
+  let idToken = "";
+
+  const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+    const url = requestUrl(input);
+    requests.push({
+      url,
+      headers: new Headers(input instanceof Request ? input.headers : init?.headers),
+      body: typeof init?.body === "string" ? init.body : String(init?.body ?? ""),
+    });
+    if (url === `${TALER_ID_ISSUER}/.well-known/openid-configuration`) {
+      return jsonResponse({
+        issuer: TALER_ID_ISSUER,
+        authorization_endpoint: `${TALER_ID_ISSUER}/auth`,
+        token_endpoint: `${TALER_ID_ISSUER}/token`,
+        userinfo_endpoint: `${TALER_ID_ISSUER}/me`,
+        jwks_uri: `${TALER_ID_ISSUER}/jwks`,
+        code_challenge_methods_supported: ["S256"],
+        authorization_response_iss_parameter_supported: true,
+        token_endpoint_auth_methods_supported: [
+          "client_secret_basic",
+          "client_secret_post",
+          "none",
+        ],
+      });
+    }
+    if (url === `${TALER_ID_ISSUER}/jwks`) {
+      return jsonResponse({ keys: [publicJwk] });
+    }
+    if (url === `${TALER_ID_ISSUER}/token`) {
+      return jsonResponse({
+        access_token: "test-taler-access-token",
+        token_type: "Bearer",
+        expires_in: 900,
+        scope: "openid profile email",
+        id_token: idToken,
+      });
+    }
+    if (url === `${TALER_ID_ISSUER}/me`) {
+      return jsonResponse(userinfo);
+    }
+    throw new Error(`unexpected_external_oauth_request: ${url}`);
+  });
+  vi.stubGlobal("fetch", fetchMock);
+
+  return {
+    requests,
+    async signIdToken(nonce: string) {
+      idToken = await new SignJWT({ nonce })
+        .setProtectedHeader({ alg: "RS256", kid: "taler-id-rsa" })
+        .setIssuer(TALER_ID_ISSUER)
+        .setAudience("test-taler-client")
+        .setSubject(String(userinfo.sub))
+        .setIssuedAt()
+        .setExpirationTime("5m")
+        .sign(privateKey);
+    },
+  };
+}
+
+async function completeTalerIdSignIn(
+  server: Awaited<ReturnType<typeof talerIdServer>>,
+): Promise<Response> {
+  const { handlers } = await importApplicationAuth();
+  const { cookie, authorizationUrl } = await beginOAuth(handlers, "talerid");
+  await server.signIdToken(authorizationUrl.searchParams.get("nonce")!);
+  const callback = new URLSearchParams({
+    code: "test-taler-code",
+    state: authorizationUrl.searchParams.get("state")!,
+    iss: TALER_ID_ISSUER,
+  });
+  return handlers.GET(
+    new NextRequest(`${TEST_ORIGIN}/api/auth/callback/talerid?${callback}`, {
+      headers: requestHeaders(cookie),
+    }),
+  );
+}
+
+describe.sequential("Taler ID sign-in through the application config", () => {
+  beforeEach(() => {
+    authDb.reset();
+    vi.clearAllMocks();
+    vi.unstubAllEnvs();
+    vi.unstubAllGlobals();
+    vi.stubEnv("NODE_ENV", "test");
+    vi.stubEnv("AUTH_SECRET", "test-only-auth-secret-not-for-production");
+    vi.stubEnv("NEXTAUTH_SECRET", "");
+    vi.stubEnv("AUTH_URL", "");
+    vi.stubEnv("NEXTAUTH_URL", "");
+    vi.stubEnv("GOOGLE_CLIENT_ID", "test-google-client");
+    vi.stubEnv("GOOGLE_CLIENT_SECRET", "test-google-secret");
+    vi.stubEnv("GITHUB_CLIENT_ID", "test-github-client");
+    vi.stubEnv("GITHUB_CLIENT_SECRET", "test-github-secret");
+    vi.stubEnv("TALERID_CLIENT_ID", "test-taler-client");
+    vi.stubEnv("TALERID_CLIENT_SECRET", "test-taler-secret");
+    vi.stubEnv("ADMIN_WHITELIST", "");
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.unstubAllEnvs();
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  it("offers no Taler ID sign-in until its client is configured", async () => {
+    vi.stubEnv("TALERID_CLIENT_ID", "");
+    vi.stubEnv("TALERID_CLIENT_SECRET", "");
+    const { handlers } = await importApplicationAuth();
+
+    const response = await handlers.GET(
+      new NextRequest(`${TEST_ORIGIN}/api/auth/providers`, {
+        headers: requestHeaders(),
+      }),
+    );
+
+    expect(Object.keys(await response.json()).sort()).toEqual(["github", "google"]);
+  });
+
+  it("sends the person to Taler ID with S256 PKCE, state, nonce and only the default scopes", async () => {
+    await talerIdServer({ sub: "taler-sub-1" });
+    const { handlers } = await importApplicationAuth();
+
+    const { authorizationUrl } = await beginOAuth(handlers, "talerid");
+
+    expect(authorizationUrl.pathname).toBe("/oauth/auth");
+    const params = authorizationUrl.searchParams;
+    expect(params.get("client_id")).toBe("test-taler-client");
+    expect(params.get("response_type")).toBe("code");
+    expect(params.get("redirect_uri")).toBe(`${TEST_ORIGIN}/api/auth/callback/talerid`);
+    expect(params.get("scope")).toBe("openid profile email");
+    expect(params.get("code_challenge_method")).toBe("S256");
+    expect(params.get("state")).toBeTruthy();
+    expect(params.get("nonce")).toBeTruthy();
+  });
+
+  it("creates User, Account and a database session from Taler ID userinfo", async () => {
+    const server = await talerIdServer({
+      sub: "taler-sub-1",
+      name: "Taler Test User",
+      email: "taler-user@example.com",
+      email_verified: true,
+    });
+
+    const response = await completeTalerIdSignIn(server);
+
+    expectDatabaseOAuthSession("talerid", "taler-sub-1", "taler-user@example.com", response);
+    expect(authDb.state.users[0].name).toBe("Taler Test User");
+    const token = server.requests.find((r) => r.url === `${TALER_ID_ISSUER}/token`)!;
+    expect(token.headers.get("authorization")).toBe(
+      `Basic ${Buffer.from("test-taler-client:test-taler-secret").toString("base64")}`,
+    );
+    expect(token.body).toContain("code_verifier=");
+    const me = server.requests.find((r) => r.url === `${TALER_ID_ISSUER}/me`)!;
+    expect(me.headers.get("authorization")).toBe("Bearer test-taler-access-token");
+  });
+
+  it("does not take an unverified Taler ID e-mail, so it neither links nor promotes", async () => {
+    vi.stubEnv("ADMIN_WHITELIST", "email:owner@example.com");
+    authDb.state.users.push({ id: "existing-owner", email: "owner@example.com", role: "OWNER" });
+    const server = await talerIdServer({
+      sub: "taler-sub-2",
+      name: "Someone Else",
+      email: "owner@example.com",
+      email_verified: false,
+    });
+
+    const response = await completeTalerIdSignIn(server);
+
+    expect(response.status).toBe(302);
+    expect(authDb.state.users).toHaveLength(2);
+    const created = authDb.state.users[1];
+    // Prisma writes an absent field as NULL.
+    expect(created.email ?? null).toBeNull();
+    expect(created.role).toBe("USER");
+    expect(authDb.state.accounts).toEqual([
+      expect.objectContaining({ provider: "talerid", providerAccountId: "taler-sub-2", userId: created.id }),
+    ]);
+  });
+
+  it("links Taler ID to the existing account with the same verified e-mail", async () => {
+    authDb.state.users.push({ id: "existing-user", email: "member@example.com", role: "USER" });
+    const server = await talerIdServer({
+      sub: "taler-sub-3",
+      name: "Member",
+      email: "Member@Example.com",
+      email_verified: true,
+    });
+
+    const response = await completeTalerIdSignIn(server);
+
+    expect(response.status).toBe(302);
+    expect(authDb.state.users).toHaveLength(1);
+    expect(authDb.state.accounts).toEqual([
+      expect.objectContaining({ provider: "talerid", providerAccountId: "taler-sub-3", userId: "existing-user" }),
+    ]);
+    expect(authDb.state.sessions).toEqual([expect.objectContaining({ userId: "existing-user" })]);
   });
 });
