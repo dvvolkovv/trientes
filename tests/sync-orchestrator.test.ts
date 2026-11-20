@@ -285,8 +285,12 @@ describe("syncMarkets", () => {
       now: () => new Date("2026-11-18T18:00:00.000Z"),
     });
     expect(result).toEqual({ count: 0 });
-    // Прошлый снимок табло не тронут: пустой ответ — отказ службы, а не «рынков нет».
-    expect(JSON.parse(redisStore.get(KEYS.markets)!)).toEqual([{ symbol: "^DJI", last: 1 }]);
+    // Значения прошлого снимка не тронуты: пустой ответ — отказ службы, а не
+    // «рынков нет». Добавился только наш штамп (у карточки прежней формы его
+    // не было) — срок жизни снимка при этом продлён.
+    expect(JSON.parse(redisStore.get(KEYS.markets)!)).toEqual([
+      { symbol: "^DJI", last: 1, gotAt: "2026-11-18T18:00:00.000Z" },
+    ]);
     expect(JSON.parse(redisStore.get(KEYS.marketsAsked)!)).toEqual({
       "PL=F": "2026-11-18T18:00:00.000Z",
       "PA=F": "2026-11-18T18:00:00.000Z",
@@ -371,6 +375,17 @@ describe("syncMarkets", () => {
     expect(JSON.parse(redisStore.get(KEYS.markets)!)).toEqual([
       { symbol: "^DJI", last: 1, gotAt: "2026-11-20T06:00:00.000Z" },
     ]);
+  });
+
+  it("пустой ответ ставит штамп карточке прежней формы: иначе возраст не начнёт считаться", async () => {
+    const { redisStore, fakeRedis } = makeFakes();
+    redisStore.set(KEYS.markets, JSON.stringify([{ symbol: "^DJI", last: 1 }]));
+    await syncMarkets({
+      fetchMarkets: async () => sweep([], ["^DJI"]),
+      redis: fakeRedis as never,
+      now: () => new Date("2026-11-20T15:00:00.000Z"),
+    });
+    expect(JSON.parse(redisStore.get(KEYS.markets)!)[0].gotAt).toBe("2026-11-20T15:00:00.000Z");
   });
 
   it("пустой ответ без прежнего снимка не пишет пустого табло", async () => {

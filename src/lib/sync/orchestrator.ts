@@ -200,9 +200,16 @@ export async function syncMarkets(deps: {
   // честнее пустого табло. Свежесть после этого мерится не временем записи, а
   // штампом самой ветхой карточки (`stalestQuoteAt`) — иначе продление срока
   // выглядело бы как свежий ответ службы.
+  const stampedAt = now().toISOString();
+  // Снимок прежней формы штампов не нёс. Такой карточке ставится штамп этого
+  // прогона — перенос одноразовый, и возраст её отсчитывается с него. Правило
+  // одно на оба пути: иначе снимок, доживший до правки, так и остался бы без
+  // штампов, пока служба молчит, — то есть ровно тогда, когда возраст и нужен.
+  const carry = (p: MarketQuote): MarketQuote => (p.gotAt ? p : { ...p, gotAt: stampedAt });
+
   if (quotes.length === 0) {
     if (previous.length > 0) {
-      await deps.redis.set(KEYS.markets, JSON.stringify(previous), "EX", TTL.markets);
+      await deps.redis.set(KEYS.markets, JSON.stringify(previous.map(carry)), "EX", TTL.markets);
     }
     return { count: 0 };
   }
@@ -215,11 +222,6 @@ export async function syncMarkets(deps: {
   // Наш штамп ставится здесь, а не в разборе ответа: разбор чистый, а время
   // взятия — факт прогона. Перенесённая карточка свой штамп сохраняет, иначе
   // её возраст обнулялся бы чужим ответом.
-  const stampedAt = now().toISOString();
-  const carry = (p: MarketQuote): MarketQuote =>
-    // Снимок прежней формы штампов не нёс. Такой карточке ставится штамп этого
-    // прогона — перенос одноразовый, и возраст её отсчитывается с него.
-    p.gotAt ? p : { ...p, gotAt: stampedAt };
   // Previous order is the canonical instrument order, so rebuild from it and append
   // anything newly added to the instrument list.
   const merged = [
