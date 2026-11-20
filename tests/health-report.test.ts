@@ -6,6 +6,7 @@ import {
   renderHealthReport,
   summarizeAccessLog,
   type HealthFacts,
+  renderQuotaSection,
 } from "@/lib/health-report";
 
 const NOW = new Date("2026-11-09T22:00:00.000Z");
@@ -92,6 +93,7 @@ const facts = (patch: Partial<HealthFacts> = {}): HealthFacts => ({
   log: null,
   pages: [{ path: "/en", status: 200, ms: 120 }],
   quotaBlocks: [],
+  quotaSpend: [],
   signups: 3,
   ...patch,
 });
@@ -171,5 +173,52 @@ describe("renderHealthReport", () => {
 
   it("очередь модерации названа, когда в ней кто-то есть", () => {
     expect(renderHealthReport(facts({ queue: { cards: 2, points: 1 } }))).toContain("Ждут модерации: карточки 2, точки 1.");
+  });
+});
+
+describe("renderQuotaSection", () => {
+  const nov = (d: number) => new Date(Date.UTC(2026, 10, d));
+
+  it("молчит, пока расход мал", () => {
+    const text = renderQuotaSection([
+      {
+        label: "CoinPaprika",
+        verdict: { level: "quiet", spent: 900, budget: 16_000, remaining: 15_100, projected: 2_700, exhaustsOn: null },
+      },
+    ]).join("\n");
+    expect(text).toContain("запасы в норме");
+    expect(text).not.toContain("900");
+  });
+
+  it("называет числа и дату стены", () => {
+    const text = renderQuotaSection([
+      {
+        label: "CoinPaprika",
+        verdict: { level: "loud", spent: 9_000, budget: 16_000, remaining: 7_000, projected: 27_000, exhaustsOn: nov(24) },
+      },
+    ]).join("\n");
+    expect(text).toContain("истрачено 9000");
+    expect(text).toContain("из 16000");
+    expect(text).toContain("осталось 7000");
+    expect(text).toContain("2026-11-24");
+  });
+
+  it("неизвестный расход называется неизвестным, а не нулём", () => {
+    expect(renderQuotaSection([{ label: "CoinGecko", verdict: null }]).join("\n")).toContain("не записал ничего");
+  });
+
+  it("у службы без месячного запаса строка идёт без слова «из»", () => {
+    const text = renderQuotaSection([
+      {
+        label: "CoinGecko",
+        verdict: { level: "loud", spent: 12_000, budget: null, remaining: null, projected: 18_000, exhaustsOn: null },
+      },
+    ]).join("\n");
+    expect(text).toContain("истрачено 12000");
+    expect(text).not.toContain("из ");
+  });
+
+  it("пустой список раздела не рисует вовсе", () => {
+    expect(renderQuotaSection([])).toEqual([]);
   });
 });

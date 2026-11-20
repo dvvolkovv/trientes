@@ -17,6 +17,8 @@ import type Redis from "ioredis";
 import { KEYS, TTL } from "@/lib/sync/keys";
 import { RUN_COINPAPRIKA, quotaBlocked, readRunState } from "@/lib/sync/run-state";
 import { OWN_DEX_NAME } from "@/lib/coin-card-dex-market";
+import { QUOTA_SERVICES, budgetVerdict, type BudgetVerdict } from "@/lib/quota/budget";
+import { readSpend } from "@/lib/quota/ledger";
 
 /** Окно, за которое считаются ответы nginx. */
 export const LOG_WINDOW_HOURS = 24;
@@ -80,6 +82,15 @@ export interface QuotaBlock {
   lastOkAt: Date | null;
 }
 
+/**
+ * Расход запаса одной чужой службы. `verdict: null` — счётчика нет вовсе (нет
+ * Redis или окно пустое): это «неизвестно», а не ноль, и отчёт говорит так.
+ */
+export interface QuotaRow {
+  label: string;
+  verdict: BudgetVerdict | null;
+}
+
 export interface PageCheck {
   path: string;
   status: number | null;
@@ -97,6 +108,8 @@ export interface HealthFacts {
   pages: PageCheck[];
   /** Чужие службы, упёршиеся в свой запас: пусто — все отвечают. */
   quotaBlocks: QuotaBlock[];
+  /** Расход нашего запаса по службам. Считается по нашим счётчикам, без запросов наружу. */
+  quotaSpend: QuotaRow[];
   /** Новые люди за сутки. */
   signups: number;
 }
@@ -200,6 +213,35 @@ const codes = (m: Record<string, number>) =>
     .join(", ");
 
 /**
+ * Раздел расхода запаса. Правило слайса AA остаётся: двадцать ровных строк
+ * перестают читать, поэтому строка печатается только у службы, где истрачено
+ * больше половины запаса или прогноз выше запаса. Всё в норме — одна строка.
+ *
+ * **Ни одного запроса наружу этот раздел не делает**: он читает только наши
+ * счётчики. Иначе измерение само тратило бы то, что измеряет.
+ */
+export function renderQuotaSection(rows: QuotaRow[]): string[] {
+  if (rows.length === 0) return [];
+  const loud: string[] = [];
+  for (const r of rows) {
+    if (!r.verdict) {
+      loud.push(`• ${r.label}: не записал ничего`);
+      continue;
+    }
+    const v = r.verdict;
+    if (v.level !== "loud") continue;
+    const parts = [`истрачено ${v.spent}`];
+    if (v.budget !== null) parts.push(`из ${v.budget}`);
+    if (v.remaining !== null) parts.push(`осталось ${v.remaining}`);
+    parts.push(`к концу месяца ожидается ${v.projected}`);
+    const wall = v.exhaustsOn ? `, запас кончится ${v.exhaustsOn.toISOString().slice(0, 10)}` : "";
+    loud.push(`• ${r.label}: ${parts.join(", ")}${wall}`);
+  }
+  if (loud.length === 0) return ["", "Запас чужих служб: запасы в норме."];
+  return ["", "Запас чужих служб:", ...loud];
+}
+
+/**
  * Отчёт одним сообщением Telegram: сначала то, что требует человека, потом ровные
  * строки. Молчание — хорошая новость: у прогона, который успел, строки нет.
  */
@@ -230,6 +272,8 @@ export function renderHealthReport(f: HealthFacts): string {
       ),
     );
   }
+
+  out.push(...renderQuotaSection(f.quotaSpend));
 
   const dead = f.pages.filter((p) => p.status === null || p.status >= 400);
   if (dead.length) out.push("", "Страницы не отвечают:", ...dead.map((p) => `• ${p.path}: ${p.status ?? "нет ответа"} (${p.ms} мс)`));
@@ -362,6 +406,16 @@ export async function collectHealth(deps: HealthDeps): Promise<HealthFacts> {
     probes.push(probe("каталог бирж (CoinPaprika)", cpRun?.okAt ?? null, 180, now));
   }
 
+  // Расход запаса — по нашим счётчикам. Запросов наружу раздел не делает.
+  const quotaSpend: QuotaRow[] = [];
+  for (const service of Object.values(QUOTA_SERVICES)) {
+    const spend = await readSpend(redis as never, service.key, now);
+    quotaSpend.push({
+      label: service.label,
+      verdict: spend ? budgetVerdict(service, spend.bgMonth + spend.uiMonth, now) : null,
+    });
+  }
+
   const [cards, factsErr, factsStale, supplyErr, mismatched, pendingCards, pendingPoints, signups] = await Promise.all([
     prisma.coinCardChainFacts.count(),
     prisma.coinCardChainFacts.groupBy({ by: ["checkError"], _count: true, where: { checkError: { not: null } } }) as never as Promise<
@@ -412,6 +466,7 @@ export async function collectHealth(deps: HealthDeps): Promise<HealthFacts> {
     log,
     pages,
     quotaBlocks,
+    quotaSpend,
     signups,
   };
 }

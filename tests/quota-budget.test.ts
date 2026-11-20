@@ -53,6 +53,13 @@ describe("доли", () => {
     expect(dailyBackgroundAllowance(QUOTA_SERVICES.coinpaprika, 11_000, nov(20))).toBe(90);
   });
 
+  it("ровная доля не даёт бюджету нагонять расход", () => {
+    // Счётчик заведён 20-го и показывает ноль, хотя месяц уже прожит: «остаток
+    // ÷ сутки до конца» выдал бы 1090 за день (живой прогон 20 ноября).
+    expect(dailyBackgroundAllowance(QUOTA_SERVICES.coinpaprika, 0, nov(20))).toBe(400);
+    expect(dailyBackgroundAllowance(QUOTA_SERVICES.coinpaprika, 0, nov(30))).toBe(400);
+  });
+
   it("истраченная доля даёт ноль, а не отрицательное число", () => {
     expect(dailyBackgroundAllowance(QUOTA_SERVICES.coinpaprika, 99_999, nov(20))).toBe(0);
   });

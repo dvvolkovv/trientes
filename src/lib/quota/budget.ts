@@ -107,12 +107,27 @@ export function backgroundMonthlyAllowance(service: QuotaService): number | null
   return Math.floor(service.monthlyBudget * (1 - service.visitorReserve));
 }
 
-/** Сколько фон может истратить за сегодня: остаток месяца, делённый на сутки. */
+/**
+ * Сколько фон может истратить за сегодня.
+ *
+ * Два предела, и берётся **меньший**: ровная доля (вся месячная доля, делённая
+ * на сутки месяца) и остаток, делённый на сутки до конца месяца.
+ *
+ * Ровная доля — не украшение, а защита, и нашлась она живым прогоном. Счётчик
+ * заводится в какой-то день, а не первого числа: 20 ноября он показал ноль
+ * истраченного при настоящем расходе больше двадцати тысяч (запас кончился
+ * девятнадцатого). «Остаток ÷ сутки до конца месяца» на таком счётчике выдал
+ * 1090 вызовов за день вместо 400 — то есть **бюджет сам нагонял расход** и
+ * сжёг бы остаток за трое суток. То же самое случилось бы после очистки Redis
+ * или суток простоя прогона: наверстывание и есть то, что жжёт запас.
+ */
 export function dailyBackgroundAllowance(service: QuotaService, bgSpentMonth: number, now: Date): number {
   const monthly = backgroundMonthlyAllowance(service);
   if (monthly === null) return service.dailyBackgroundCap ?? 0;
+  const even = Math.floor(monthly / daysInMonth(now));
   const left = Math.max(0, monthly - bgSpentMonth);
-  const byMonth = Math.floor(left / daysLeftInMonth(now));
+  const byRemainder = Math.floor(left / daysLeftInMonth(now));
+  const byMonth = Math.min(even, byRemainder);
   return service.dailyBackgroundCap === null ? byMonth : Math.min(byMonth, service.dailyBackgroundCap);
 }
 
