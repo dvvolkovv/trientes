@@ -10,6 +10,10 @@ import { readFollow } from "@/lib/promos/read";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { NOT_DELETED } from "@/lib/soft-delete";
+import { HoursTable, OpenBadge } from "@/components/business/hours-view";
+import { parseWeekHours } from "@/lib/opening-hours";
+import { companyMode } from "@/lib/company-mode";
+import { effectiveCategory, merchantCategory } from "@/lib/merchant-categories";
 import { PUBLIC_COMPANY } from "@/lib/company-visibility";
 import { localizedProse } from "@/lib/localized-prose";
 import { serializeJsonLd } from "@/lib/json-ld";
@@ -65,6 +69,7 @@ export default async function PublicCompanyPage({
         select: {
           id: true, type: true, name: true, address: true, lat: true, lon: true,
           city: true, countryCode: true, openingHours: true, website: true, photos: true,
+          hours: true, timezone: true, category: true, suspendedAt: true,
         },
       },
     },
@@ -75,6 +80,9 @@ export default async function PublicCompanyPage({
 
   const t = await getTranslations("companyPublic");
   const tk = await getTranslations("business.kyb");
+  // Названия видов заведения живут в `business.category.*` — один список на кабинет
+  // и на витрину: второй разошёлся бы с первым.
+  const tb = await getTranslations("business");
   // Подписка — согласие на рассылку (ТЗ 4.2), поэтому состояние читается на каждом
   // показе: отписавшийся не должен видеть «вы подписаны» до перезахода.
   const session = await auth();
@@ -82,6 +90,24 @@ export default async function PublicCompanyPage({
   const follow = viewerId ? await readFollow(viewerId, company.id) : null;
   const onlinePoints = company.points.filter((p) => p.type === "ONLINE");
   const physicalPoints = company.points.filter((p) => p.type !== "ONLINE");
+
+  // Тип магазина (ТЗ § 3.1) выводится из фактов, а не заявляется: заявленный соврал
+  // бы в тот же день, когда у предприятия сняли надзором последнюю точку.
+  const onlineStockShelves = await prisma.warehouse.count({
+    where: {
+      companyId: company.id,
+      kind: "SHELF",
+      online: true,
+      archivedAt: null,
+      balances: { some: { qty: { gt: 0 } } },
+    },
+  });
+  const mode = companyMode({
+    offlinePoints: physicalPoints.filter((p) => p.lat !== null && p.lon !== null && !p.suspendedAt).length,
+    onlinePoints: onlinePoints.length,
+    onlineStockShelves,
+  });
+  const companyCategory = merchantCategory(company.category);
 
   const breadcrumbLd = {
     "@context": "https://schema.org",
@@ -153,6 +179,19 @@ export default async function PublicCompanyPage({
               {[company.city, company.country].filter(Boolean).join(", ")}
             </p>
           ) : null}
+          <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[12px]">
+            {companyCategory ? (
+              <span className="inline-flex items-center gap-1 rounded-full border border-hairline bg-bg-tint px-2 py-0.5">
+                <span aria-hidden>{companyCategory.emoji}</span>
+                {tb(`category.${companyCategory.key}`)}
+              </span>
+            ) : null}
+            {mode !== "none" ? (
+              <span className="inline-flex items-center rounded-full border border-hairline bg-bg-tint px-2 py-0.5">
+                {t(`mode.${mode}`)}
+              </span>
+            ) : null}
+          </div>
         </div>
         <FollowButton
           companyId={company.id}
@@ -188,6 +227,21 @@ export default async function PublicCompanyPage({
         ) : null}
         {company.phone ? <Field label={t("phone")}><span>{company.phone}</span></Field> : null}
         {company.address ? <Field label={t("address")}><span>{company.address}</span></Field> : null}
+        {/* Политика возврата: ТЗ § 3.1 требует её показывать. Не указана — говорим
+            это словами, а не прячем раздел. */}
+        <Field label={t("returns")}>
+          {company.returnPolicy || company.returnDays !== null ? (
+            <span className="whitespace-pre-wrap">
+              {company.returnDays !== null ? (
+                <span className="num">{t("returnDays", { days: company.returnDays })}</span>
+              ) : null}
+              {company.returnDays !== null && company.returnPolicy ? " · " : null}
+              {company.returnPolicy}
+            </span>
+          ) : (
+            <span className="text-muted">{t("returnsUnknown")}</span>
+          )}
+        </Field>
       </section>
 
       {/* Что продавец обещает вообще (слайс BD): ставка «на всё» и лучшая категория. */}
@@ -209,14 +263,25 @@ export default async function PublicCompanyPage({
                 <li key={p.id} className="border border-hairline rounded-md px-3 py-2.5">
                   <div className="font-medium">{p.name}</div>
                   <div className="text-xs text-muted">{p.address ?? "—"}</div>
-                  <div className="text-[11px] text-muted mt-1 flex flex-wrap gap-x-3">
+                  <div className="text-[11px] text-muted mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
                     <span>{t(`pointType.${p.type}`)}</span>
-                    {p.openingHours ? <span>{p.openingHours}</span> : null}
+                    {(() => {
+                      const cat = merchantCategory(effectiveCategory(p.category, company.category));
+                      return cat ? <span>{cat.emoji} {tb(`category.${cat.key}`)}</span> : null;
+                    })()}
+                    <OpenBadge hours={parseWeekHours(p.hours)} timezone={p.timezone} />
                     {p.lat !== null && p.lon !== null ? (
                       <Link href={`/${locale}/coin/bitcoin`} className="text-accent underline">
                         {t("openOnMap")} →
                       </Link>
                     ) : null}
+                  </div>
+                  <div className="mt-1.5">
+                    <HoursTable
+                      hours={parseWeekHours(p.hours)}
+                      timezone={p.timezone}
+                      fallbackText={p.openingHours}
+                    />
                   </div>
                   {photos.length > 0 ? (
                     <div className="mt-2 flex gap-1.5 overflow-x-auto">

@@ -3,6 +3,8 @@ import en from "../messages/en.json";
 import { TEAM_SECTIONS, ROLE_TEMPLATES } from "@/lib/company-team/permissions";
 import type { CompanyAction } from "@/lib/company-team/journal";
 import { COMPANY_TILES, COMPANY_GROUPS } from "@/lib/cabinet/company-nav";
+import { MERCHANT_CATEGORIES } from "@/lib/merchant-categories";
+import { WEEK_DAYS } from "@/lib/opening-hours";
 
 /**
  * Код без слов выходит на экран кодом. Живой прогон BF поймал ровно это:
@@ -53,6 +55,24 @@ describe("подписи разделов и журнала", () => {
       expect(business.tiles[tile.key], `tiles.${tile.key}`).toBeTruthy();
       expect(business.tileUnit[tile.key], `tileUnit.${tile.key}`).toBeTruthy();
       expect(groups.has(tile.group), tile.group).toBe(true);
+    }
+  });
+
+  // Слайс BN: вид заведения виден покупателю на витрине и в карточке точки, а
+  // расписание — семью строками. Ключ без слов вышел бы на экран ключом.
+  it("у каждого вида заведения есть название в переводах", () => {
+    const labels = (en as Record<string, any>).business.category as Record<string, string>;
+    for (const c of MERCHANT_CATEGORIES) expect(labels[c.key], c.key).toBeTruthy();
+  });
+
+  it("у каждого дня недели и состояния дня есть слова", () => {
+    const hours = (en as Record<string, any>).business.hours as Record<string, any>;
+    for (const day of WEEK_DAYS) {
+      expect(hours.day[day], `day.${day}`).toBeTruthy();
+      expect(hours.dayShort[day], `dayShort.${day}`).toBeTruthy();
+    }
+    for (const kind of ["open", "allday", "closed"]) {
+      expect(hours.kind[kind], `kind.${kind}`).toBeTruthy();
     }
   });
 

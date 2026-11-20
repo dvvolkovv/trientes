@@ -38,6 +38,13 @@ export type SellerOffer = {
   cashbackSource: CashbackSource | null;
   saleRules: string | null;
   onlineUrl: string | null;
+  /**
+   * Политика возврата продавца (слайс BN). ТЗ § 3.1 требует показывать её «на
+   * карточке и перед оплатой»; оплаты у нас нет, поэтому «перед оплатой» — это
+   * место, где названа цена, то есть вот эта строка.
+   */
+  returnPolicy: string | null;
+  returnDays: number | null;
   /** Хоть где-то на полке есть. */
   inStock: boolean;
   places: SellerPlace[];
@@ -101,6 +108,8 @@ export async function readProductOffers(productId: string): Promise<WhereToBuy> 
           suspendedAt: true,
           deletedAt: true,
           cashbackBasePercent: true,
+          returnPolicy: true,
+          returnDays: true,
           warehouses: {
             where: LIVE_SHELF,
             select: {
@@ -165,6 +174,8 @@ export async function readProductOffers(productId: string): Promise<WhereToBuy> 
         cashbackSource: cashback?.source ?? null,
         saleRules: o.saleRules,
         onlineUrl: o.onlineUrl,
+        returnPolicy: o.company.returnPolicy,
+        returnDays: o.company.returnDays,
         inStock: places.some((p) => p.inStock),
         places: places.filter((p) => p.inStock),
       };

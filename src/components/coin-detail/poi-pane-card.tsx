@@ -8,6 +8,7 @@ import { PoiBannerOverlay } from "@/components/coin-detail/poi-banner-overlay";
 import { PoiReportDialog } from "@/components/coin-detail/poi-report-dialog";
 import { reportablePointId, TILE_PAD_CLASS, TILE_SHELL } from "@/lib/poi-tile";
 import { safeHttpUrl } from "@/lib/safe-url";
+import { PoiHours } from "@/components/coin-detail/poi-hours";
 
 /**
  * Страница «Карточка»: только то, что проверили мы — адрес из OSM, монеты из
@@ -118,14 +119,9 @@ export function PoiPaneCard({
           )}
           {poi.description && <p className="text-[13px] leading-relaxed text-muted">{poi.description}</p>}
 
-          {poi.openingHours && (
-            <div className="flex gap-2 text-[13px] leading-snug">
-              <span aria-hidden className="w-5 shrink-0 text-center text-muted">
-                🕒
-              </span>
-              <span className="flex-1">{poi.openingHours}</span>
-            </div>
-          )}
+          {/* Часы: у своей точки расписание со состоянием «открыто сейчас» (BN), у
+              точки зеркала BTC Map — прежний текст из тегов OSM как есть. */}
+          <PoiHours hours={poi.hours} timezone={poi.timezone} fallbackText={poi.openingHours} />
           {poi.address && (
             <div className="flex gap-2 text-[13px] leading-snug">
               <span aria-hidden className="w-5 shrink-0 text-center text-muted">

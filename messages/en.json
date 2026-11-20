@@ -1467,7 +1467,12 @@
       "bad_form": "Invalid request",
       "coin_not_selectable": "This coin card is not approved, so it cannot be selected.",
       "documents_required": "Attach the registration documents: the legal name is proved by paper.",
-      "nothing_to_apply": "There is nothing left to apply in this change."
+      "nothing_to_apply": "There is nothing left to apply in this change.",
+      "hours_invalid": "Opening hours look wrong — check the times.",
+      "hours_empty": "Mark at least one working day, otherwise the schedule says nothing.",
+      "timezone_invalid": "Unknown time zone.",
+      "category_invalid": "Unknown kind of business.",
+      "return_days_invalid": "Return window must be a whole number of days, 0 to 365."
     },
     "websiteHint": "https://, http://, or just www.example.com — all work",
     "addressSection": "Address",
@@ -1686,6 +1691,69 @@
     "tileEmpty": "nothing yet",
     "tileBadge": {
       "moderation": "{count} in review"
+    },
+    "categorySection": "Kind of business",
+    "categoryTitle": "Kind of place",
+    "categoryHint": "Sets the label on your public card, the colour of the map pin and which travellers see you on their route.",
+    "category": {
+      "grocery": "Grocery",
+      "cafe": "Café",
+      "restaurant": "Restaurant",
+      "bar": "Bar",
+      "fuel": "Fuel station",
+      "charging": "EV charging",
+      "hotel": "Hotel",
+      "clothing": "Clothing",
+      "electronics": "Electronics",
+      "pharmacy": "Pharmacy",
+      "beauty": "Beauty",
+      "services": "Services",
+      "exchange": "Exchange office",
+      "atm": "ATM",
+      "other": "Other"
+    },
+    "returnPolicy": "Return policy",
+    "returnPolicyHint": "Buyers see this on your public card and next to every price. Leave it empty and we say so plainly.",
+    "returnDays": "Return window, days",
+    "hours": {
+      "title": "Opening hours",
+      "add": "Add opening hours",
+      "drop": "Remove opening hours",
+      "from": "From",
+      "to": "To",
+      "addSpan": "another interval",
+      "removeSpan": "Remove interval",
+      "copyToWeekdays": "Copy {day} to all weekdays",
+      "timezone": "Time zone",
+      "timezonePick": "Pick a time zone",
+      "timezoneHint": "Without a time zone the schedule is still shown, but we never claim “open now”: a wrong “closed” would send someone past an open door.",
+      "openNow": "Open now",
+      "closedNow": "Closed",
+      "until": "until {time}",
+      "opensAt": "opens {day} at {time}",
+      "day": {
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat",
+        "sun": "Sun"
+      },
+      "dayShort": {
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat",
+        "sun": "Sun"
+      },
+      "kind": {
+        "open": "Hours",
+        "allday": "24/7",
+        "closed": "Closed"
+      }
     }
   },
   "cabinet": {
@@ -2153,7 +2221,15 @@
       "SALES_OFFICE": "Sales office",
       "COMPANY": "Office",
       "ONLINE": "Online"
-    }
+    },
+    "mode": {
+      "online": "Online, 24/7",
+      "offline": "Physical locations",
+      "mixed": "Online and physical locations"
+    },
+    "returns": "Returns",
+    "returnDays": "{days} days",
+    "returnsUnknown": "The seller has not stated a return policy."
   },
   "companiesDirectory": {
     "kicker": "Directory",
@@ -3503,7 +3579,10 @@
         "m2": "m²",
         "hour": "hour",
         "service": "service"
-      }
+      },
+      "returns": "Returns",
+      "returnDays": "{days} days",
+      "returnsUnknown": "not stated by the seller"
     },
     "showcase": {
       "heading": "Products",

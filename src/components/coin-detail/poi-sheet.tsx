@@ -24,6 +24,8 @@ import {
 } from "@/components/coin-detail/poi-sheet-ui";
 import type { StepTranslator } from "@/components/coin-detail/route-steps-panel";
 import type { CompassMode } from "@/lib/compass-mode";
+import { useTranslations } from "next-intl";
+import { merchantCategory } from "@/lib/merchant-categories";
 
 export { MODE_ICON };
 export type { SheetRoute };
@@ -105,6 +107,10 @@ export function PoiSheet({
   onCompass: () => void;
   t: StepTranslator;
 }) {
+  // Вид заведения (слайс BN): у своей точки в текстовой категории стоит имя
+  // предприятия, и без ключа понять, что это за место, нельзя.
+  const tb = useTranslations("business");
+  const poiCategory = merchantCategory(poi.categoryKey);
   const phone = usePhone();
   const pages = useMemo(() => pagesFor(phone), [phone]);
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -277,6 +283,7 @@ export function PoiSheet({
         <div className="min-w-0 flex-1">
           <div className="truncate text-[16px] font-semibold leading-tight">{poi.name}</div>
           <div className="truncate text-[12px] text-muted">
+            {poiCategory ? `${poiCategory.emoji} ${tb(`category.${poiCategory.key}`)} · ` : ""}
             {poi.category}
             {poi.lightning ? " · ⚡ Lightning" : ""}
             {poi.coinSpecific ? " · ✓" : ""}

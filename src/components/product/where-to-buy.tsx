@@ -105,6 +105,23 @@ export async function WhereToBuy({
                   ) : null}
                 </div>
 
+                {/* Политика возврата (слайс BN, ТЗ § 3.1 — «обязательно видна клиенту
+                    на карточке и перед оплатой»). Не указана — так и пишем:
+                    промолчать значит создать впечатление, которого мы не вправе
+                    создавать ни в ту, ни в другую сторону. */}
+                <p className="mt-2 text-[12px] text-muted">
+                  <span className="uppercase tracking-wider text-[10.5px]">{t("returns")}: </span>
+                  {o.returnPolicy || o.returnDays !== null ? (
+                    <>
+                      {o.returnDays !== null ? <span className="num">{t("returnDays", { days: o.returnDays })}</span> : null}
+                      {o.returnDays !== null && o.returnPolicy ? " · " : null}
+                      {o.returnPolicy ? <span className="whitespace-pre-line">{o.returnPolicy}</span> : null}
+                    </>
+                  ) : (
+                    t("returnsUnknown")
+                  )}
+                </p>
+
                 {o.places.length > 0 ? (
                   <ul className="mt-3 pt-3 border-t border-hairline flex flex-col gap-1 text-[12px]">
                     {o.places.map((p, i) => (
