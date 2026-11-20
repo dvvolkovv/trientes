@@ -822,6 +822,15 @@ model Company {
   displayName     String
   logoUrl         String?
   description     String?         @db.Text
+  /// Вид заведения из реестра `src/lib/merchant-categories.ts` (слайс BN). Уточнение
+  /// у точки сильнее: `effectiveCategory`. Свободное поле — вид не меняет ни места,
+  /// ни принимаемых монет, ни хозяина.
+  category        String?
+  /// Политика возврата. ТЗ § 3.1 требует показывать её покупателю; не указана —
+  /// так и пишем, промолчать значит создать впечатление, которого мы не вправе
+  /// создавать.
+  returnPolicy    String?         @db.Text
+  returnDays      Int?
   country         String?
   countryCode     String?
   city            String?
@@ -961,7 +970,19 @@ model CompanyPoint {
   osmId           String?
   logoUrl         String?
   photos          Json? // [{ url, label? }], max 5
+  /// Часы работы текстом. Остаётся ради точки зеркала BTC Map: там это строка из
+  /// тегов OSM, и единственное, что мы о тех часах знаем. Структурные `hours`
+  /// сильнее — состояние «открыто сейчас» считается только по ним.
   openingHours    String?
+  /// Расписание по дням недели (слайс BN): { mon: { kind, spans } }. Разбор —
+  /// `parseWeekHours`; синтаксис OSM мы не разбираем и не пишем.
+  hours           Json?
+  /// Часовой пояс заведения (IANA). Без него «открыто сейчас» не считается вовсе:
+  /// сервер стоит в UTC, браузер покупателя — в его поясе, и ни один из них не
+  /// пояс магазина.
+  timezone        String?
+  /// Вид заведения, уточняющий категорию предприятия (слайс BN).
+  category        String?
   phone           String?
   website         String?
   socials         Json?
