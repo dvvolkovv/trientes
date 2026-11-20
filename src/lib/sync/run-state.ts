@@ -45,6 +45,7 @@ export const runStateKey = (name: string) => `run:${name}`;
 
 /** Имя прогона — одно на запись и на чтение: вторая копия строки разошлась бы с первой. */
 export const RUN_COINPAPRIKA = "coinpaprika";
+export const RUN_COINLORE = "coinlore";
 
 const asDate = (v: unknown): Date | null => {
   if (typeof v !== "string") return null;

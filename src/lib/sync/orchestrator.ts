@@ -7,6 +7,7 @@ import { mergeCuratedExchanges } from "@/lib/curated-exchanges";
 import { cpTypeToExchangeType, resolveCpId, type CoinPaprikaExchange, type CoinPaprikaExchangeDetail, type CoinPaprikaMarket } from "@/lib/coinpaprika";
 import { CgHttpError } from "@/lib/coingecko-http";
 import { isCpQuotaError } from "@/lib/coinpaprika-http";
+import { PAIR_MAX_AGE_MS, matchExchange, type CoinloreExchange, type CoinlorePair } from "@/lib/coinlore";
 
 // Minimal interfaces — we only use what we need so tests can pass fakes.
 type RedisLike = {
@@ -653,4 +654,111 @@ export async function syncCoinPaprikaExchanges(deps: {
   }
 
   return { created, enriched, skipped, marketsUpserted, detailsAttempted, detailsOk, quotaExhausted };
+}
+
+/**
+ * Пары бирж от Coinlore — бесплатно, без ключа и без месячного запаса.
+ *
+ * Заполняет `pairsCount` и строки `ExchangeMarket` — таблицу, пустую у всех 581
+ * биржи с начала проекта (слайс AD это записал, но наполнять её было нечем:
+ * подробности CoinPaprika упирались в месячный запас, уборка BH — в его
+ * исчерпание).
+ *
+ * **Новых бирж не заводит и объём чужой строки не затирает.** Каталог и так
+ * наполняют два источника, и в базе уже лежат `gate` и `gateio`, `bybit_spot` и
+ * `bybit-spot` — одна биржа двумя строками; третий автор умножил бы это. Объём
+ * пишется только там, где у нашей строки его нет: автор значения один.
+ */
+export async function syncCoinloreExchanges(deps: {
+  fetchExchanges: () => Promise<CoinloreExchange[]>;
+  fetchPairs: (id: string) => Promise<CoinlorePair[]>;
+  prisma: {
+    exchange: {
+      findMany(args: { select: Record<string, boolean> }): Promise<{ id: string; name: string; volume24hUsd: number | null }[]>;
+      update(args: { where: { id: string }; data: Record<string, unknown> }): Promise<unknown>;
+    };
+    exchangeMarket: {
+      upsert(args: { where: { id: string }; update: Record<string, unknown>; create: Record<string, unknown> }): Promise<unknown>;
+    };
+  };
+  /** Сколько бирж спросить о парах за прогон — считает бюджет (`planRun`). */
+  pairBudget: number;
+  now: Date;
+}): Promise<{
+  matched: number;
+  unmatched: number;
+  marketsUpserted: number;
+  pairsStale: number;
+  pairFailures: number;
+  pairsSkippedByBudget: number;
+}> {
+  const ours = await deps.prisma.exchange.findMany({ select: { id: true, name: true, volume24hUsd: true } });
+  const list = [...(await deps.fetchExchanges())].sort((a, b) => (b.volumeUsd ?? 0) - (a.volumeUsd ?? 0));
+
+  let matched = 0, unmatched = 0, marketsUpserted = 0, pairsStale = 0, pairFailures = 0, pairsSkippedByBudget = 0;
+  let pairCalls = 0;
+
+  for (const cl of list) {
+    const ourId = matchExchange(cl, ours);
+    if (!ourId) {
+      unmatched++;
+      continue;
+    }
+    matched++;
+    const existing = ours.find((o) => o.id === ourId);
+
+    const data: Record<string, unknown> = {};
+    if (cl.activePairs !== null) data.pairsCount = cl.activePairs;
+    // Объём — только в пустое место: у строки уже есть автор (CoinGecko или
+    // CoinPaprika), и второе число той же величины разошлось бы с первым.
+    if (cl.volumeUsd !== null && (existing?.volume24hUsd === null || existing?.volume24hUsd === undefined)) {
+      data.volume24hUsd = cl.volumeUsd;
+    }
+
+    let pairs: CoinlorePair[] | null = null;
+    if (pairCalls < deps.pairBudget) {
+      pairCalls++;
+      try {
+        pairs = await deps.fetchPairs(cl.id);
+      } catch {
+        // Сбой пар одной биржи прогон не роняет: у остальных данные свои.
+        pairFailures++;
+      }
+    } else {
+      pairsSkippedByBudget++;
+    }
+
+    let wrote = 0;
+    for (const p of pairs ?? []) {
+      // Пара, не торговавшаяся неделю, не пишется вовсе: биржа её сняла, а
+      // показанная как живая она была бы той самой ложью, которую починила AV.
+      if (p.tradedAt && deps.now.getTime() - p.tradedAt.getTime() > PAIR_MAX_AGE_MS) {
+        pairsStale++;
+        continue;
+      }
+      const id = `${ourId}:${p.base}:${p.quote}:spot`;
+      const common = {
+        pair: `${p.base}/${p.quote}`,
+        baseSymbol: p.base,
+        quoteSymbol: p.quote,
+        category: "spot",
+        priceUsd: p.priceUsd,
+        volumeUsd24h: p.volumeUsd,
+        lastTradedAt: p.tradedAt,
+        lastSeenAt: deps.now,
+      };
+      await deps.prisma.exchangeMarket.upsert({
+        where: { id },
+        update: common,
+        create: { id, exchangeId: ourId, ...common },
+      });
+      wrote++;
+      marketsUpserted++;
+    }
+    if (wrote > 0) data.marketsFetchedAt = deps.now;
+
+    if (Object.keys(data).length > 0) await deps.prisma.exchange.update({ where: { id: ourId }, data });
+  }
+
+  return { matched, unmatched, marketsUpserted, pairsStale, pairFailures, pairsSkippedByBudget };
 }

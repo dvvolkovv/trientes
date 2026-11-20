@@ -8,10 +8,11 @@ import { fetchTop100L1, fetchGlobalSnap, fetchExchangeRates, fetchCoinDetail, fe
 import { fetchNews } from "../src/lib/news";
 import { fetchFearGreed } from "../src/lib/fear-greed";
 import { fetchMarkets } from "../src/lib/markets";
-import { syncPrices, syncGlobal, syncExchangeRates, syncCoinMetadata, syncExchanges, syncAdminAddedPrices, syncCardedCoinPrices, staleCardedIds, syncNews, syncFearGreed, syncMarkets, syncCoinPaprikaExchanges } from "../src/lib/sync/orchestrator";
+import { syncPrices, syncGlobal, syncExchangeRates, syncCoinMetadata, syncExchanges, syncAdminAddedPrices, syncCardedCoinPrices, staleCardedIds, syncNews, syncFearGreed, syncMarkets, syncCoinPaprikaExchanges, syncCoinloreExchanges } from "../src/lib/sync/orchestrator";
 import { fetchCoinPaprikaExchanges, fetchCoinPaprikaExchangeDetail } from "../src/lib/coinpaprika";
+import { fetchCoinloreExchanges, fetchCoinlorePairs } from "../src/lib/coinlore";
 import { CpHttpError, CpQuotaBlockedError } from "../src/lib/coinpaprika-http";
-import { RUN_COINPAPRIKA, recordRun } from "../src/lib/sync/run-state";
+import { RUN_COINPAPRIKA, RUN_COINLORE, recordRun } from "../src/lib/sync/run-state";
 import { installQuotaCounter } from "../src/lib/quota/install";
 import { planRun } from "../src/lib/quota/plan";
 import { QUOTA_SERVICES } from "../src/lib/quota/budget";
@@ -223,6 +224,40 @@ async function runCoinPaprikaSync() {
       return;
     }
     console.error(`[worker] coinpaprika-sync failed:`, err);
+  }
+}
+
+/**
+ * Пары бирж от Coinlore — раз в сутки. Служба бесплатна и месячного запаса не
+ * имеет, поэтому предел здесь наш собственный (защита от разгона), а не её.
+ */
+async function runCoinloreSync() {
+  const t0 = Date.now();
+  try {
+    const plan = await planRun(redis, QUOTA_SERVICES.coinlore, {
+      runsPerDay: 1,
+      fixedCostPerRun: 1, // запрос списка бирж
+      perRunCap: 200,
+    });
+    if (!plan.allowed) {
+      console.log(`[worker] coinlore-sync skipped by budget: ${plan.reason}`);
+      return;
+    }
+    const r = await syncCoinloreExchanges({
+      fetchExchanges: () => fetchCoinloreExchanges(),
+      fetchPairs: (id) => fetchCoinlorePairs(id),
+      prisma: prisma as never,
+      pairBudget: plan.calls,
+      now: new Date(),
+    });
+    await recordRun(redis, RUN_COINLORE, "ok", new Date());
+    console.log(
+      `[worker] coinlore-sync ok: ${r.matched} matched, ${r.unmatched} unmatched, ${r.marketsUpserted} markets, ` +
+        `${r.pairsStale} stale pairs, ${r.pairFailures} pair failures, ${r.pairsSkippedByBudget} skipped by budget ` +
+        `(budget ${plan.calls}) in ${Date.now() - t0}ms`,
+    );
+  } catch (err) {
+    console.error("[worker] coinlore-sync failed:", err);
   }
 }
 
@@ -686,6 +721,11 @@ async function main() {
   cron.schedule("25 * * * *", () => {
     void runCoinPaprikaSync();
   });
+
+  // Пары бирж от Coinlore — в 02:15, перед синком BTC Map (02:40) и вдали от
+  // часового обхода CoinPaprika (:25). Служба бесплатна, но ходить к ней чаще
+  // незачем: число пар и состав пар меняются медленнее суток.
+  cron.schedule("15 2 * * *", () => void runCoinloreSync());
 
   // Daily kick; staleMs in syncCoinMetadata skips coins fetched within 7 days.
   cron.schedule("30 3 * * *", () => void runMetadataSync());
