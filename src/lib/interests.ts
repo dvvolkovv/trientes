@@ -7,6 +7,7 @@
  * Спека: `docs/superpowers/specs/2026-11-20-route-interests-stops-design.md`.
  */
 import type { PoiLayer } from "@/lib/crypto-map";
+import { categoryInterest } from "@/lib/merchant-categories";
 
 export const INTEREST_KEYS = ["fuel", "food", "lodging", "shop", "cash"] as const;
 
@@ -39,7 +40,13 @@ export function interestOf(poi: {
   id?: string;
   layer: PoiLayer;
   category?: string | null;
+  categoryKey?: string | null;
 }): InterestKey | null {
+  // Свой вид заведения (слайс BN) сильнее всего прочего: это не догадка по словам,
+  // а ключ реестра, который назвал сам мерчант. Заправка предприятия поэтому
+  // наконец находится по интересу «топливо», а кофейня — по «еде».
+  const own = categoryInterest(poi.categoryKey);
+  if (own) return own;
   if (CASH_LAYERS.includes(poi.layer)) return "cash";
   // У нашей точки в поле категории стоит **название предприятия** (`companyPointToPoi`),
   // а вида заведения в данных нет вовсе: `CompanyPoint.type` знает только SHOP, ATM, POS,

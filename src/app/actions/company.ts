@@ -15,8 +15,8 @@ import {
 } from "@/lib/company";
 import { checkCompanyLimits } from "@/lib/company-limits";
 import { pointEditNeedsModeration } from "@/lib/point-edit";
-import { splitCompanyEdit } from "@/lib/company-edit";
-import { type PointType, type Prisma } from "@prisma/client";
+import { toCompanyPatch, splitCompanyEdit } from "@/lib/company-edit";
+import { Prisma, type PointType } from "@prisma/client";
 import { LIVE_POINT, NOT_DELETED } from "@/lib/soft-delete";
 
 const MAX_PENDING_POINTS = 20;
@@ -116,7 +116,7 @@ export async function saveCompanyProfile(
   // Выводимая строка адреса следует за структурными частями, а они ждут модератора:
   // записать её сразу значило бы показать на витрине новый адрес до решения.
   if (Object.keys(split.free).length > 0) {
-    await prisma.company.update({ where: { id: company.id }, data: split.free });
+    await prisma.company.update({ where: { id: company.id }, data: toCompanyPatch(split.free) });
     await logCompanyAction({ companyId, actorUserId: userId, action: "PROFILE_SAVED", subject: company.displayName });
   }
   if (split.pending.length === 0) {
@@ -221,6 +221,9 @@ export async function submitCompanyPoint(
       logoUrl: v.data.logoUrl,
       photos: v.data.photos.length ? (v.data.photos as unknown as Prisma.InputJsonValue) : undefined,
       openingHours: v.data.openingHours,
+      hours: (v.data.hours ?? undefined) as Prisma.InputJsonValue | undefined,
+      timezone: v.data.timezone,
+      category: v.data.category,
       phone: v.data.phone,
       website: v.data.website,
       socials: Array.isArray(input.socials) ? input.socials : undefined,
@@ -306,6 +309,14 @@ export async function updateCompanyPoint(
       logoUrl: v.data.logoUrl,
       photos: v.data.photos.length ? (v.data.photos as unknown as Prisma.InputJsonValue) : undefined,
       openingHours: v.data.openingHours,
+      // Часы, пояс и вид заведения — свободные поля: правка не возвращает точку в
+      // очередь. На праздники часы меняют каждый год, а возврат означает, что
+      // точка уходит с карты до решения человека (правило AT).
+      // `null` в JSONB-колонке Prisma требует `DbNull`; строкой "null" тут была бы
+      // запись слова вместо очистки поля.
+      hours: (v.data.hours ?? Prisma.DbNull) as Prisma.InputJsonValue,
+      timezone: v.data.timezone,
+      category: v.data.category,
       phone: v.data.phone,
       website: v.data.website,
       socials: Array.isArray(input.socials) ? input.socials : undefined,

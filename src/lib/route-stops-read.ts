@@ -190,7 +190,7 @@ async function readCompanyStops(
       company: {
         select: {
           displayName: true, logoUrl: true, website: true, socials: true,
-          description: true, email: true, phone: true,
+          description: true, email: true, phone: true, category: true,
         },
       },
     },

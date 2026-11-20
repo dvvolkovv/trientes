@@ -9,8 +9,29 @@
  * полем означала бы, что одобренную проверку можно переписать на другое лицо.
  */
 
-/** Применяются сразу: заявление о себе, за которое отвечает сам продавец. */
-export const COMPANY_FREE_FIELDS = ["description", "logoUrl"] as const;
+/**
+ * Применяются сразу: заявление о себе, за которое отвечает сам продавец.
+ *
+ * Вид заведения и политика возврата (слайс BN) свободны по разным причинам, и обе
+ * стоит помнить. Вид не меняет ни места, ни принимаемых монет, ни хозяина — а
+ * очередь за уточнение вида означала бы, что вид никто не уточнит (злоупотребление
+ * ловится жалобой на точку, AQ). Политика возврата — собственное обещание продавца
+ * покупателю, и чем быстрее оно появляется на витрине, тем лучше покупателю.
+ */
+export const COMPANY_FREE_FIELDS = [
+  "description",
+  "logoUrl",
+  "category",
+  "returnPolicy",
+  "returnDays",
+] as const;
+
+/**
+ * Поля, которые в базе целые числа. Набор изменений и сравнение «было → стало»
+ * ведутся строками (их читает человек), а в предприятие нужно записать число —
+ * иначе Postgres откажет на `"14"` в колонке `integer`.
+ */
+export const COMPANY_INT_FIELDS = ["returnDays"] as const;
 
 /**
  * Ждут модератора: витрина держит прежнее значение, пока правку не одобрят.
@@ -62,9 +83,33 @@ export const COMPANY_CARD_FIELDS: CompanyEditField[] = [
   "street",
   "houseNumber",
   "postalCode",
+  "category",
+  "returnDays",
+  "returnPolicy",
 ];
 
-export type CompanyEditState = Partial<Record<CompanyEditField, string | null | undefined>>;
+export type CompanyEditState = Partial<
+  Record<CompanyEditField, string | number | null | undefined>
+>;
+
+/**
+ * Значения для записи в предприятие: целые поля — числами, остальные строками.
+ * Одно место на оба пути записи (свободные поля сразу и одобренная правка), иначе
+ * второй путь однажды запишет строку в число.
+ */
+export function toCompanyPatch(
+  values: Partial<Record<CompanyEditField, string | null>>,
+): Record<string, string | number | null> {
+  const out: Record<string, string | number | null> = {};
+  for (const [field, value] of Object.entries(values)) {
+    if ((COMPANY_INT_FIELDS as readonly string[]).includes(field)) {
+      out[field] = value === null || value === undefined || value === "" ? null : Number(value);
+      continue;
+    }
+    out[field] = value ?? null;
+  }
+  return out;
+}
 
 export type FieldChange = { field: CompanyEditField; before: string | null; after: string | null };
 
@@ -77,7 +122,7 @@ export type CompanyEditSplit = {
   needsDocuments: boolean;
 };
 
-function norm(v: string | null | undefined): string | null {
+function norm(v: string | number | null | undefined): string | null {
   if (v === null || v === undefined) return null;
   const s = String(v).trim();
   return s === "" ? null : s;

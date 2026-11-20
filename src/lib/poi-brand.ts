@@ -24,6 +24,7 @@
 
 import type { Poi, PoiLayer } from "@/lib/crypto-map";
 import { LAYER_COLOR } from "@/lib/poi-layers";
+import { categoryInterest } from "@/lib/merchant-categories";
 
 export type PoiBrand = "own" | "institution" | "osm";
 
@@ -50,7 +51,17 @@ export const FUEL_PULSE = "#4D8DF6";
  * к нам как «магазин» (в OSM это `amenity=fuel`), а владелец назвал ей свой
  * цвет — значит, решает категория.
  */
-export function poiPulseColor(poi: { layer: PoiLayer; category?: string | null }): string {
+export function poiPulseColor(poi: {
+  layer: PoiLayer;
+  category?: string | null;
+  categoryKey?: string | null;
+}): string {
+  // Названный вид (слайс BN) сильнее слов: у своей точки в текстовой категории
+  // стоит имя предприятия, и «Benzina s.r.o.» заправкой по тексту не опознать.
+  const own = categoryInterest(poi.categoryKey);
+  if (own === "fuel") return FUEL_PULSE;
+  if (own === "cash") return LAYER_COLOR.atm;
+  if (own) return LAYER_COLOR.merchant;
   if (poi.layer === "merchant" && poi.category && FUEL_CATEGORY.test(poi.category)) {
     return FUEL_PULSE;
   }

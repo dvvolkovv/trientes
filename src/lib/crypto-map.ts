@@ -9,6 +9,7 @@
 
 import { lookup } from "node:dns/promises";
 import { isWebsiteBlocked } from "@/lib/poi-blocklist";
+import type { WeekHours } from "@/lib/opening-hours";
 
 export { safeHttpUrl } from "./safe-url";
 
@@ -161,7 +162,18 @@ export type Poi = {
   lon: number;
   name: string;
   layer: PoiLayer;
+  /** Подпись вида для глаза: род занятия из OSM, у своей точки — имя предприятия. */
   category: string;
+  /**
+   * Вид заведения ключом нашего реестра (слайс BN). Текст нужен глазу, ключ —
+   * правилам: по нему красится середина булавки и считается интерес в маршруте.
+   * У точки зеркала BTC Map ключа нет — там род занятия приходит словами.
+   */
+  categoryKey?: string | null;
+  /** Расписание по дням (слайс BN) — только у своей точки; `null` у зеркала. */
+  hours?: WeekHours | null;
+  /** Пояс заведения; без него состояние «открыто сейчас» не считается. */
+  timezone?: string | null;
   address: string | null;
   lightning: boolean;
   coinSpecific: boolean;

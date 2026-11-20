@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { PUBLIC_COMPANY } from "@/lib/company-visibility";
 import { readPointPromos } from "@/lib/promos/read";
 import type { AcceptedCoin, Bbox, CoinSelector, Poi, PoiLayer, Social } from "@/lib/crypto-map";
+import { effectiveCategory } from "@/lib/merchant-categories";
+import { parseWeekHours } from "@/lib/opening-hours";
 
 // Shape returned by the prisma query in fetchApprovedPointsInBbox (point + its company).
 export type PointWithCompany = Prisma.CompanyPointGetPayload<{
@@ -10,7 +12,7 @@ export type PointWithCompany = Prisma.CompanyPointGetPayload<{
     company: {
       select: {
         displayName: true; logoUrl: true; website: true; socials: true;
-        description: true; email: true; phone: true;
+        description: true; email: true; phone: true; category: true;
       };
     };
   };
@@ -129,6 +131,11 @@ export function companyPointToPoi(
     name: p.name,
     layer: layerFor(p.type),
     category: p.company.displayName,
+    // Вид заведения: уточнение точки сильнее категории предприятия. Текстовую
+    // подпись не подменяем — она про то, с кем человек имеет дело.
+    categoryKey: effectiveCategory(p.category, p.company.category),
+    hours: parseWeekHours(p.hours),
+    timezone: p.timezone,
     address: p.address,
     lightning: false,
     // Своя карточка и монета CoinGecko живут в разных пространствах id, поэтому
@@ -258,7 +265,7 @@ export async function fetchApprovedPointsInBbox(
       company: {
         select: {
           displayName: true, logoUrl: true, website: true, socials: true,
-          description: true, email: true, phone: true,
+          description: true, email: true, phone: true, category: true,
         },
       },
     },

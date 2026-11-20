@@ -46,3 +46,30 @@ describe("вид заведения", () => {
     expect(categoryInterest("hotel")).toBe("lodging");
   });
 });
+
+describe("вид заведения в правилах карты", () => {
+  it("интерес маршрута читается из нашего вида, а не из слоя", async () => {
+    const { interestOf } = await import("@/lib/interests");
+    // Своя заправка: в текстовой категории стоит имя предприятия, и опознать её
+    // словами нельзя — до слайса BN она считалась магазином.
+    expect(
+      interestOf({ id: "company/x", layer: "merchant", category: "Benzina s.r.o.", categoryKey: "fuel" }),
+    ).toBe("fuel");
+    expect(
+      interestOf({ id: "company/x", layer: "merchant", category: "Coffee & Co", categoryKey: "cafe" }),
+    ).toBe("food");
+    // Вида нет — прежнее поведение: своя точка это магазин.
+    expect(interestOf({ id: "company/x", layer: "merchant", category: "Benzina s.r.o." })).toBe("shop");
+  });
+
+  it("середина булавки красится по виду", async () => {
+    const { poiPulseColor, FUEL_PULSE } = await import("@/lib/poi-brand");
+    const { LAYER_COLOR } = await import("@/lib/poi-layers");
+    expect(poiPulseColor({ layer: "merchant", category: "Benzina s.r.o.", categoryKey: "fuel" })).toBe(FUEL_PULSE);
+    expect(poiPulseColor({ layer: "merchant", category: "Benzina s.r.o.", categoryKey: "charging" })).toBe(FUEL_PULSE);
+    expect(poiPulseColor({ layer: "merchant", categoryKey: "exchange" })).toBe(LAYER_COLOR.atm);
+    expect(poiPulseColor({ layer: "merchant", categoryKey: "grocery" })).toBe(LAYER_COLOR.merchant);
+    // Зеркало BTC Map: ключа нет, остаётся опознание по тексту OSM.
+    expect(poiPulseColor({ layer: "merchant", category: "Fuel" })).toBe(FUEL_PULSE);
+  });
+});

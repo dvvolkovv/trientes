@@ -1,5 +1,9 @@
 // Pure validation for company profiles and point submissions. No I/O.
 
+import { isEmptyWeek, parseWeekHours, type WeekHours } from "@/lib/opening-hours";
+import { isKnownTimezone } from "@/lib/timezones";
+import { isMerchantCategory } from "@/lib/merchant-categories";
+
 const POINT_TYPES = ["SHOP", "ATM", "POS", "SALES_OFFICE", "COMPANY", "ONLINE"] as const;
 export type PointTypeStr = (typeof POINT_TYPES)[number];
 
@@ -83,16 +87,34 @@ export type CompanyProfileInput = {
   email?: string | null;
   website?: string | null;
   logoUrl?: string | null;
+  /** Вид заведения (слайс BN) — ключ реестра `merchant-categories`. */
+  category?: string | null;
+  /** Политика возврата: обязательна к показу (ТЗ § 3.1), но не к заполнению. */
+  returnPolicy?: string | null;
+  returnDays?: string | number | null;
 };
 export type ValidatedProfile = {
   legalName: string; displayName: string; description: string | null;
   country: string | null; countryCode: string | null;
   city: string | null; street: string | null; houseNumber: string | null; postalCode: string | null;
   address: string | null; phone: string | null; email: string | null; website: string | null; logoUrl: string | null;
+  category: string | null; returnPolicy: string | null; returnDays: number | null;
 };
 export type ProfileResult =
   | { ok: true; data: ValidatedProfile }
-  | { ok: false; reason: "legal_name_required" | "display_name_required" | "website_invalid" | "logo_invalid" };
+  | {
+      ok: false;
+      reason:
+        | "legal_name_required"
+        | "display_name_required"
+        | "website_invalid"
+        | "logo_invalid"
+        | "category_invalid"
+        | "return_days_invalid";
+    };
+
+/** Предел текста политики возврата: это условия, а не договор на сто страниц. */
+export const RETURN_POLICY_MAX = 2000;
 
 export function validateCompanyProfile(input: CompanyProfileInput): ProfileResult {
   const legalName = (input.legalName ?? "").trim();
@@ -110,12 +132,31 @@ export function validateCompanyProfile(input: CompanyProfileInput): ProfileResul
   };
   // Prefer explicit `address` if provided; otherwise build from structured parts.
   const address = t(input.address) ?? buildDisplayAddress(structured, t(input.country));
+
+  const category = t(input.category);
+  if (category !== null && !isMerchantCategory(category)) {
+    return { ok: false, reason: "category_invalid" };
+  }
+
+  // Срок без текста законен («14 дней»), и текст без срока тоже: одно без другого
+  // покупателю всё равно что-то говорит, а требовать оба значило бы, что не будет
+  // ни одного.
+  let returnDays: number | null = null;
+  if (input.returnDays !== null && input.returnDays !== undefined && String(input.returnDays).trim() !== "") {
+    const n = Number(input.returnDays);
+    if (!Number.isInteger(n) || n < 0 || n > 365) return { ok: false, reason: "return_days_invalid" };
+    returnDays = n;
+  }
+
+  const returnPolicy = t(input.returnPolicy)?.slice(0, RETURN_POLICY_MAX) ?? null;
+
   return {
     ok: true,
     data: {
       legalName, displayName, description: t(input.description),
       country: t(input.country), ...structured, address,
       phone: t(input.phone), email: t(input.email), website, logoUrl,
+      category, returnPolicy, returnDays,
     },
   };
 }
@@ -137,6 +178,10 @@ export type CompanyPointInput = {
   logoUrl?: string | null;
   photos?: { url: string; label?: string | null }[] | null;
   openingHours?: string | null;
+  /** Расписание по дням (слайс BN) — в том виде, в каком его отдаёт форма. */
+  hours?: unknown;
+  timezone?: string | null;
+  category?: string | null;
   phone?: string | null;
   website?: string | null;
 };
@@ -151,6 +196,7 @@ export type ValidatedPoint = {
   logoUrl: string | null;
   photos: PointPhoto[];
   openingHours: string | null; phone: string | null; website: string | null;
+  hours: WeekHours | null; timezone: string | null; category: string | null;
 };
 
 // Storefront photos: keep first 5, drop any URL that isn't http(s) or a local
@@ -181,7 +227,19 @@ export function sanitizePointPhotos(raw: unknown): PointPhoto[] {
 }
 export type PointResult =
   | { ok: true; data: ValidatedPoint }
-  | { ok: false; reason: "type_invalid" | "name_required" | "coords_invalid" | "website_invalid" | "logo_invalid" };
+  | {
+      ok: false;
+      reason:
+        | "type_invalid"
+        | "name_required"
+        | "coords_invalid"
+        | "website_invalid"
+        | "logo_invalid"
+        | "hours_invalid"
+        | "hours_empty"
+        | "timezone_invalid"
+        | "category_invalid";
+    };
 
 export function validateCompanyPoint(input: CompanyPointInput): PointResult {
   const type = (input.type ?? "") as PointTypeStr;
@@ -222,6 +280,35 @@ export function validateCompanyPoint(input: CompanyPointInput): PointResult {
     houseNumber: t(input.houseNumber), postalCode: t(input.postalCode),
   };
   const address = t(input.address) ?? buildDisplayAddress(structured, null);
+
+  // Вид заведения — только ключ нашего реестра: выдуманный покрасил бы булавку и
+  // попал бы в интересы маршрута, то есть соврал бы о том, что это за место.
+  const rawCategory = t(input.category);
+  if (rawCategory !== null && !isMerchantCategory(rawCategory)) {
+    return { ok: false, reason: "category_invalid" };
+  }
+
+  // Часы у онлайн-услуги смысла не имеют: у неё нет ни двери, ни пояса.
+  const rawHours = type === "ONLINE" ? null : input.hours;
+  let hours: WeekHours | null = null;
+  const hoursGiven =
+    rawHours !== null &&
+    rawHours !== undefined &&
+    !(typeof rawHours === "object" && Object.keys(rawHours as object).length === 0);
+  if (hoursGiven) {
+    hours = parseWeekHours(rawHours);
+    if (!hours) return { ok: false, reason: "hours_invalid" };
+    // Семь закрытых дней — это не «закрыто навсегда», а расписание, из которого
+    // ничего не следует: точка стоит на карте, и постоянное «закрыто» было бы
+    // либо ложью, либо бессмыслицей. Отказываем вслух, а не принимаем молча.
+    if (isEmptyWeek(hours)) return { ok: false, reason: "hours_empty" };
+  }
+
+  const timezone = type === "ONLINE" ? null : t(input.timezone);
+  if (timezone !== null && !isKnownTimezone(timezone)) {
+    return { ok: false, reason: "timezone_invalid" };
+  }
+
   return {
     ok: true,
     data: {
@@ -229,6 +316,7 @@ export function validateCompanyPoint(input: CompanyPointInput): PointResult {
       acceptedCoinIds, acceptedCardIds, logoUrl,
       photos: sanitizePointPhotos(input.photos),
       openingHours: t(input.openingHours), phone: t(input.phone), website,
+      hours, timezone, category: rawCategory,
     },
   };
 }
