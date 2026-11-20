@@ -99,11 +99,16 @@ export async function findStopsAlongRoute(i: {
     if (productPoints.size === 0) return EMPTY;
   }
 
-  const [osm, points, fintech] = await Promise.all([
-    readOsmStops(ranges),
-    readCompanyStops(ranges, productPoints ? [...productPoints.keys()] : null),
-    readFintechStops(chunks),
-  ]);
+  // Фильтр по товару сужает список так же, как фид карты в слайсе BC: зеркало BTC Map и
+  // каталог финтеха о товарах не знают, и показывать их рядом с ценой значило бы
+  // предлагать по пути места, где товара нет.
+  const [osm, points, fintech] = productPoints
+    ? await Promise.all([
+        Promise.resolve({ pois: [] as Poi[], truncated: false }),
+        readCompanyStops(ranges, [...productPoints.keys()]),
+        Promise.resolve([] as Poi[]),
+      ])
+    : await Promise.all([readOsmStops(ranges), readCompanyStops(ranges, null), readFintechStops(chunks)]);
 
   const rates = await readRatesFor(points.map((p) => p.companyId));
 

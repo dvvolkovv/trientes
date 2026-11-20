@@ -1383,7 +1383,8 @@
       "prefsHint": "Les centres d’intérêt et le corridor se trouvent dans votre espace",
       "cryptoOnly": "Ce sont des lieux qui acceptent la crypto — pas tous les arrêts sur la route",
       "markHint": "Un lieu marqué est un rappel, pas un détour : l’itinéraire reste tel quel et la voix vous prévient avant de l’atteindre",
-      "open": "Afficher sur la carte"
+      "open": "Afficher sur la carte",
+      "atStart": "au début"
     }
   },
   "markets": {

@@ -1383,7 +1383,8 @@
       "prefsHint": "Los intereses y el corredor están en tu panel.",
       "cryptoOnly": "Estos son lugares que aceptan cripto — no todas las paradas en la ruta.",
       "markHint": "Un lugar marcado es un recordatorio, no un desvío: la ruta permanece igual y la voz te avisa antes de que llegues.",
-      "open": "Mostrar en el mapa"
+      "open": "Mostrar en el mapa",
+      "atStart": "al inicio"
     }
   },
   "markets": {

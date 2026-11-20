@@ -150,12 +150,17 @@ export function RouteStopsPanel({
                           {stop.poi.name}
                         </button>
                       </div>
-                      <div className="text-[11px] text-muted truncate">
-                        {tAxis(stop.interest)} · {t("along", { distance: dist(stop.alongMeters) })} ·{" "}
-                        {t("offset", { distance: dist(stop.offsetMeters) })}
+                      <div className="text-[11px] text-muted">
+                        {tAxis(stop.interest)} ·{" "}
+                        {/* «Через 0 м» — это не расстояние, а округление: место стоит у
+                            самого начала пути, и так про него и написано. */}
+                        {stop.alongMeters < 250
+                          ? t("atStart")
+                          : t("along", { distance: dist(stop.alongMeters) })}{" "}
+                        · {t("offset", { distance: dist(stop.offsetMeters) })}
                       </div>
                       {stop.offer || stop.cashbackPercent !== null ? (
-                        <div className="num text-[11px] text-foreground truncate">
+                        <div className="num text-[11px] text-foreground">
                           {stop.offer
                             ? `${stop.offer.price} ${stop.offer.currency}/${stop.offer.unit}`
                             : null}

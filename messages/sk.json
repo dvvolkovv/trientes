@@ -1383,7 +1383,8 @@
       "prefsHint": "Záujmy a koridor sú vo vašom profile.",
       "cryptoOnly": "Toto sú miesta, ktoré prijímajú krypto — nie každá zastávka na ceste.",
       "markHint": "Označené miesto je pripomienka, nie obchádzka: trasa zostáva taká, aká je, a hlas vás upozorní, skôr než k nemu dorazíte.",
-      "open": "Zobraziť na mape"
+      "open": "Zobraziť na mape",
+      "atStart": "na začiatku"
     }
   },
   "markets": {

@@ -1383,7 +1383,8 @@
       "prefsHint": "関心とコリドーはあなたのキャビネットにあります",
       "cryptoOnly": "これらは暗号資産を受け入れる場所で、道中のすべての立ち寄り先ではありません",
       "markHint": "マークした場所はリマインダーであって寄り道ではありません—ルートはそのままで、到着前に音声が知らせます",
-      "open": "地図で表示"
+      "open": "地図で表示",
+      "atStart": "開始地点で"
     }
   },
   "markets": {
@@ -4142,7 +4143,7 @@
     "openOrders": "オープン注文: {count}",
     "linesHeading": "品目",
     "linesEmpty": "品目はまだありません。",
-    "lineQty": "{qty} {unit}",
+    "lineQty": "{qty}{unit}",
     "lineReceived": "受領済み {qty}",
     "lineFull": "全量受領済み。",
     "removeLine": "削除",

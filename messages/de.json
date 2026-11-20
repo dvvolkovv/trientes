@@ -1383,7 +1383,8 @@
       "prefsHint": "Interessen und der Korridor sind in deinem Account.",
       "cryptoOnly": "Dies sind Orte, die Krypto akzeptieren — nicht jeder Stopp auf der Strecke.",
       "markHint": "Ein markierter Ort ist eine Erinnerung, kein Umweg: Die Route bleibt wie sie ist, und die Stimme informiert dich, bevor du ihn erreichst.",
-      "open": "Auf Karte anzeigen"
+      "open": "Auf Karte anzeigen",
+      "atStart": "am Anfang"
     }
   },
   "markets": {

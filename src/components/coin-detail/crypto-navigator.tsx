@@ -1301,6 +1301,31 @@ export default function CryptoNavigator({
     [],
   );
 
+  // Узел панели собирается один раз: он уезжает либо в карточку точки, либо под карту —
+  // две копии означали бы два запроса об одном и том же маршруте.
+  const stopsPanel =
+    route && route.mode !== "transit" && route.coordinates.length > 1 && !navActive ? (
+        <RouteStopsPanel
+          coords={route.coordinates}
+          mode={route.mode}
+          product={productSlug}
+          destId={routePoi?.id ?? null}
+          marked={marked.map((m) => m.id)}
+          onToggleMark={toggleMark}
+          onStops={onStops}
+          onOpen={(poi) => {
+            changePoiPage(DEFAULT_POI_PAGE);
+            setMapExpanded(false);
+            setSelected(poi);
+            try {
+              mapRef.current?.easeTo({ center: [poi.lon, poi.lat] });
+            } catch {
+              // карта ещё не готова — карточка всё равно открыта
+            }
+          }}
+        />
+    ) : null;
+
 
   // A browser without speech synthesis simply never shows the voice control.
   const voiceSupported = useSyncExternalStore(subscribeNever, hasSpeech, () => false);
@@ -1857,6 +1882,7 @@ export default function CryptoNavigator({
             mapExpanded={mapExpanded}
             onMapExpandedChange={setMapExpanded}
             mapTileRef={mapTileRef}
+            stopsPanel={stopsPanel}
             onClose={() => setSelected(null)}
             onMode={(m) => switchMode(m, selected)}
             onBuildRoute={() => routeTo(selected)}
@@ -2066,29 +2092,10 @@ export default function CryptoNavigator({
         </div>
       )}
 
-      {/* Места по пути: панель принадлежит маршруту, поэтому стоит под картой рядом со
-          сводкой, а не страницей в карточке точки (слайс BK, ТЗ 4.4). */}
-      {!selected && !navActive && route && route.mode !== "transit" && route.coordinates.length > 1 && (
-        <RouteStopsPanel
-          coords={route.coordinates}
-          mode={route.mode}
-          product={productSlug}
-          destId={routePoi?.id ?? null}
-          marked={marked.map((m) => m.id)}
-          onToggleMark={toggleMark}
-          onStops={onStops}
-          onOpen={(poi) => {
-            changePoiPage(DEFAULT_POI_PAGE);
-            setMapExpanded(false);
-            setSelected(poi);
-            try {
-              mapRef.current?.easeTo({ center: [poi.lon, poi.lat] });
-            } catch {
-              // карта ещё не готова — карточка всё равно открыта
-            }
-          }}
-        />
-      )}
+      {/* Места по пути. Карточка точки открыта — панель живёт в ней, рядом с остальным
+          управлением маршрутом (правило слайса AI); карточка закрыта — под картой, рядом
+          со сводкой. Один узел рисуется в одном месте, поэтому и запрос один. */}
+      {!selected && stopsPanel}
 
       <p className="text-[10px] text-muted/60 leading-relaxed">{t("dataNote")}</p>
 

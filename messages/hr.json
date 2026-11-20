@@ -1383,7 +1383,8 @@
       "prefsHint": "Interesi i koridor nalaze se u vašem profilu.",
       "cryptoOnly": "Ovo su mjesta koja prihvaćaju kripto — ne svako stajalište na cesti.",
       "markHint": "Označeno mjesto je podsjetnik, ne i obilazak: ruta ostaje kakva jest, a glas vas obavještava prije nego što ga dosegnete.",
-      "open": "Prikazati na karti"
+      "open": "Prikazati na karti",
+      "atStart": "na početku"
     }
   },
   "markets": {

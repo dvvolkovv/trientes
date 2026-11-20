@@ -43,6 +43,14 @@ describe("ось интересов", () => {
     expect(interestOf({ layer: "merchant", category: null })).toBe("shop");
   });
 
+  it("у своей точки вид по названию предприятия не угадывается", () => {
+    // В категории своей точки стоит название предприятия, а не вид заведения.
+    expect(interestOf({ id: "company/abc", layer: "merchant", category: "Benzina s.r.o." })).toBe("shop");
+    expect(interestOf({ id: "company/abc", layer: "atm", category: "Crypto Kiosk" })).toBe("cash");
+    // У точки зеркала категория — это тег OSM, и ей верим.
+    expect(interestOf({ id: "node/1", layer: "merchant", category: "Fuel" })).toBe("fuel");
+  });
+
   it("наличные — это банкоматы, банки и финтех", () => {
     expect(interestOf({ layer: "atm", category: "Crypto ATM" })).toBe("cash");
     expect(interestOf({ layer: "financial", category: "Bank" })).toBe("cash");

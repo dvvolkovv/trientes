@@ -1383,7 +1383,8 @@
       "prefsHint": "Interests and the corridor live in your cabinet.",
       "cryptoOnly": "These are places that accept crypto — not every stop on the road.",
       "markHint": "A marked place is a reminder, not a detour: the route stays as it is, and the voice tells you before you reach it.",
-      "open": "Show on map"
+      "open": "Show on map",
+      "atStart": "at the start"
     }
   },
   "markets": {

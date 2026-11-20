@@ -48,6 +48,7 @@ const HANDOFF_LABEL = { apple: "handoffApple", google: "handoffGoogle", web: "ha
  * окна, каким бы оно сейчас ни было.
  */
 export function PoiPaneMap({
+  stopsPanel,
   poi,
   route,
   mode,
@@ -74,6 +75,8 @@ export function PoiPaneMap({
 }: {
   poi: Poi;
   route: SheetRoute | null;
+  /** Панель «По пути»: места на маршруте по интересам (слайс BK). Рисует навигатор. */
+  stopsPanel?: React.ReactNode;
   mode: RouteMode;
   status: string | null;
   hasOrigin: boolean;
@@ -225,6 +228,10 @@ export function PoiPaneMap({
             )}
           </div>
         )}
+
+        {/* Места по пути — здесь же, где всё управление маршрутом (правило слайса AI):
+            карточка точки открыта, и уводить человека под карту за списком незачем. */}
+        {route && stopsPanel}
 
         {/* Передача родному навигатору: единственная дорога на экран машины.
             CarPlay и Android Auto рисуют нативными шаблонами, в которые

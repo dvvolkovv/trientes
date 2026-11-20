@@ -46,6 +46,7 @@ export function PoiSheet({
   poi,
   locale,
   route,
+  stopsPanel,
   mode,
   status,
   hasOrigin,
@@ -75,6 +76,8 @@ export function PoiSheet({
   poi: Poi;
   locale: string;
   route: SheetRoute | null;
+  /** Панель «По пути» (слайс BK) — приходит готовым узлом от навигатора. */
+  stopsPanel?: React.ReactNode;
   mode: RouteMode;
   status: string | null;
   hasOrigin: boolean;
@@ -349,6 +352,7 @@ export function PoiSheet({
                 <PoiPaneMap
                   poi={poi}
                   route={route}
+                  stopsPanel={stopsPanel}
                   mode={mode}
                   status={status}
                   hasOrigin={hasOrigin}
@@ -405,6 +409,7 @@ export function PoiSheet({
           <PoiPaneMap
             poi={poi}
             route={route}
+            stopsPanel={stopsPanel}
             mode={mode}
             status={status}
             hasOrigin={hasOrigin}

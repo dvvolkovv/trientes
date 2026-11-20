@@ -35,8 +35,18 @@ const CASH_LAYERS: PoiLayer[] = ["atm", "financial", "fintech"];
  * отдельное правило: место, не попавшее ни в одно правило, честнее показать магазином,
  * чем не показать вовсе. Возвращает `null` только у слоя, которого в оси нет.
  */
-export function interestOf(poi: { layer: PoiLayer; category?: string | null }): InterestKey | null {
+export function interestOf(poi: {
+  id?: string;
+  layer: PoiLayer;
+  category?: string | null;
+}): InterestKey | null {
   if (CASH_LAYERS.includes(poi.layer)) return "cash";
+  // У нашей точки в поле категории стоит **название предприятия** (`companyPointToPoi`),
+  // а вида заведения в данных нет вовсе: `CompanyPoint.type` знает только SHOP, ATM, POS,
+  // SALES_OFFICE. Поэтому вид по названию мы не угадываем — предприятие «Benzina s.r.o.»,
+  // торгующее одеждой, стало бы заправкой, а наша кофейня «Coffee & Co» — едой по
+  // случайному совпадению слов. Своя точка, кроме банкомата, это «магазин».
+  if (poi.id?.startsWith("company/")) return "shop";
   const category = poi.category ?? "";
   for (const rule of RULES) {
     if (rule.re.test(category)) return rule.key;
