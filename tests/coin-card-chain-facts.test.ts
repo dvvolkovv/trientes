@@ -769,8 +769,10 @@ describe("семья Bitcoin (слайс Y)", () => {
   });
 
   it("чужой генезис — тоже genesis_mismatch", async () => {
+    // Цепь берётся любая из Esplora: с 20 ноября Litecoin читается
+    // BlockCypher'ом, а правило проверки общее для семьи.
     const facts = await readChainFacts({
-      chain: "litecoin",
+      chain: "digibyte",
       fetchImpl: esplora({ genesis: "a".repeat(64) }),
     });
     expect(facts.error).toBe("genesis_mismatch");

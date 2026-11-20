@@ -64,8 +64,20 @@ export const BITCOIN_CHAINS: readonly BitcoinChain[] = [
   {
     key: "litecoin",
     label: "Litecoin",
-    api: "ESPLORA",
-    defaultApiUrl: "https://litecoinspace.org/api",
+    // Переехал с Esplora (`litecoinspace.org`) 20 ноября 2026. Тот хост за
+    // Cloudflare отдаёт 520/525 пачками: живой замер — 30 одинаковых запросов с
+    // паузой 0,3 с дали серии отказов по 5 и по 11 подряд при половине удачных
+    // ответов. Чтение цепи это пять-шесть запросов подряд, поэтому карточка
+    // неделю стояла с `rpc_unreachable`, а служба заявок обмена, читающая
+    // комиссию LTC через ту же Esplora, за восемь часов ответила 503 четыреста
+    // раз. Повторы по времени (см. `bitcoin-rest`) помогают всей семье, но
+    // пачку длиной в полминуты не переживают — нужен другой хост. Второй
+    // Esplora для LTC не нашлось (`explorer.litecoin.net` — 301,
+    // `ltc.bitaps.com` — 403 Cloudflare, Blockbook `litecoin.atomicwallet.io`
+    // отвечает 500 и говорит на другом языке), а BlockCypher у нас уже
+    // работает на Dogecoin и Dash и хэш блока 0 отдаёт тот же.
+    api: "BLOCKCYPHER",
+    defaultApiUrl: "https://api.blockcypher.com/v1/ltc/main",
     genesisHash: "12a765e31ffd4059bada1e25190f6e98c99d9714d334efa41a195a7e7e04bfe2",
     symbol: "LTC",
     decimals: 8,

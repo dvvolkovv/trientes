@@ -9,7 +9,10 @@
  *
  * Правило классификации здесь своё и важное: **4xx — это ответ узла**
  * (`rpc_error`, повторять нечего), **5xx и обрыв — связь** (`rpc_unreachable`,
- * один повтор). У Litecoin нет `/fee-estimates`, узел отвечает 404 с текстом
+ * повтор есть). Повторов при этом разное число: быстрый отказ (статус ответа)
+ * пережидают окном в несколько секунд (он приходит пачками), медленный (обрыв,
+ * таймаут) повторяется один раз — каждая его попытка стоит целый таймаут.
+ * У Litecoin нет `/fee-estimates`, узел отвечает 404 с текстом
  * `endpoint does not exist`; со правилом Cosmos («не ok — значит недоступен»)
  * это выглядело бы как молчащий узел и роняло бы все факты цепи — ровно та
  * ошибка, которую слайс W поймал на Neutron.
@@ -28,9 +31,33 @@ export type TextFetch = (
 export type BitcoinHttpOptions = {
   fetchImpl?: TextFetch;
   timeoutMs?: number;
-  /** Один повтор по умолчанию: публичный узел любит отдавать 429 и 502. */
+  /**
+   * Повторы по **медленному** отказу — обрыв связи и таймаут. Один по
+   * умолчанию: каждая такая попытка стоит целый таймаут (8 с), и бюджет
+   * повторов — это время, а не попытки.
+   */
   retries?: number;
+  /**
+   * Окно повторов по **быстрому** отказу — 5xx и 429 от узла.
+   *
+   * Почему окно, а не число попыток: у публичного узла Litecoin отказ приходит
+   * **пачками**. Живой замер 20 ноября 2026 — 30 одинаковых запросов с паузой
+   * 0,3 с дали `.xxxxxxxxxxx.xxxxx..x.....x.x.`, то есть серии по 5 и по 11
+   * подряд при половине удачных ответов в целом. Три-четыре попытки за полторы
+   * секунды такую серию не переживают, и чтение цепи (пять-шесть запросов
+   * подряд) не проходило вовсе — карточка неделю стояла с `rpc_unreachable` у
+   * живого узла. Бюджет повторов здесь — время, а не попытки.
+   */
+  statusBudgetMs?: number;
+  /** Пауза перед повтором. 0 — в тестах. */
+  backoffMs?: number;
 };
+
+/**
+ * Больше этого числа попыток по одному запросу не делается ни при каком окне:
+ * отказ бывает мгновенным, и без потолка цикл бился бы о узел тысячи раз.
+ */
+export const MAX_ATTEMPTS = 15;
 
 async function once(url: string, fetchImpl: TextFetch, timeoutMs: number): Promise<string> {
   let res: { ok: boolean; status: number; text(): Promise<string> };
@@ -59,22 +86,39 @@ async function once(url: string, fetchImpl: TextFetch, timeoutMs: number): Promi
   return body;
 }
 
-/** Текстовый ответ: высота головы и хэш блока приходят без JSON. */
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
+ * Текстовый ответ: высота головы и хэш блока приходят без JSON.
+ *
+ * Повторы считаются **по классу отказа**, и это не придирка: 525 от Cloudflare
+ * приходит мгновенно и пачками, а таймаут — через восемь секунд и по одному.
+ * Поэтому у первого бюджет во времени (пережидаем пачку), у второго — в
+ * попытках (каждая стоит таймаут). Пауза между попытками нужна тому же 525:
+ * это сбой рукопожатия Cloudflare с источником, и мгновенный повтор попадает в
+ * то же сломанное соединение.
+ */
 export async function httpGetText(url: string, opts: BitcoinHttpOptions = {}): Promise<string> {
   const fetchImpl = opts.fetchImpl ?? (globalThis.fetch as unknown as TextFetch);
   const timeoutMs = opts.timeoutMs ?? 8_000;
-  const retries = opts.retries ?? 1;
+  const backoffMs = opts.backoffMs ?? 600;
+  const statusBudgetMs = opts.statusBudgetMs ?? 8_000;
+  const startedAt = Date.now();
+  let slowLeft = opts.retries ?? 1;
 
-  let last: unknown;
-  for (let attempt = 0; attempt <= retries; attempt++) {
+  for (let attempt = 1; ; attempt++) {
     try {
       return await once(url, fetchImpl, timeoutMs);
     } catch (e) {
-      last = e;
       if (!(e instanceof RpcError) || e.code !== "rpc_unreachable") throw e;
+      // Отказ со статусом ответа — быстрый, его пережидают; обрыв и таймаут —
+      // медленный, каждая попытка стоит таймаут, и их число считается.
+      const fromStatus = e.detail?.startsWith("http ") ?? false;
+      const mayRetry = fromStatus ? Date.now() - startedAt < statusBudgetMs : slowLeft-- > 0;
+      if (!mayRetry || attempt >= MAX_ATTEMPTS) throw e;
+      if (backoffMs > 0) await sleep(backoffMs);
     }
   }
-  throw last instanceof Error ? last : new RpcError("rpc_unreachable");
 }
 
 export async function httpGetJson(url: string, opts: BitcoinHttpOptions = {}): Promise<unknown> {

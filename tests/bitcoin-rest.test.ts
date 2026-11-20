@@ -12,6 +12,8 @@ import {
   readBitcoinBlockHash,
   readBitcoinFeeRate,
   readBitcoinTip,
+  httpGetText,
+  MAX_ATTEMPTS,
   transferFeeSats,
   type TextFetch,
 } from "../src/lib/bitcoin-rest";
@@ -20,6 +22,8 @@ import { RpcError } from "../src/lib/json-rpc";
 const BTC = resolveBitcoinChain("bitcoin")!;
 const DOGE = resolveBitcoinChain("dogecoin")!;
 const ESPLORA = "https://mempool.space/api";
+/** Хост, на котором замерена пачка отказов; сам Litecoin с 20 ноября читается BlockCypher'ом. */
+const ESPLORA_LTC = "https://litecoinspace.org/api";
 const CYPHER = "https://api.blockcypher.com/v1/doge/main";
 
 /** Хэш нужной формы: ридер отбрасывает всё, что не 64 hex. */
@@ -220,17 +224,28 @@ describe("классификация сбоя", () => {
     expect(calls).toHaveLength(1);
   });
 
-  it("5xx — связь: один повтор", async () => {
+  it("5xx — связь: быстрый отказ пережидают, пока не кончится окно", async () => {
+    // Было «один повтор»: правило писалось 9 ноября по узлу, который отказывал
+    // изредка. У половинного узла (Litecoin, замер 20 ноября) этого не хватало
+    // — см. «повторы по классу отказа» ниже.
     const calls: string[] = [];
     await expect(
-      readBitcoinTip(BTC, ESPLORA, { fetchImpl: esplora({ status: 503, calls }) }),
+      readBitcoinTip(BTC, ESPLORA, { fetchImpl: esplora({ status: 503, calls }), backoffMs: 0 }),
     ).rejects.toMatchObject({ code: "rpc_unreachable" });
-    expect(calls).toHaveLength(2);
+    expect(calls).toHaveLength(MAX_ATTEMPTS);
+  });
+
+  it("окно исчерпано — повтора нет вовсе", async () => {
+    const calls: string[] = [];
+    await expect(
+      readBitcoinTip(BTC, ESPLORA, { fetchImpl: esplora({ status: 503, calls }), statusBudgetMs: 0 }),
+    ).rejects.toMatchObject({ code: "rpc_unreachable" });
+    expect(calls).toHaveLength(1);
   });
 
   it("429 считается связью, а не суждением о цепи", async () => {
     await expect(
-      readBitcoinTip(BTC, ESPLORA, { fetchImpl: esplora({ status: 429 }) }),
+      readBitcoinTip(BTC, ESPLORA, { fetchImpl: esplora({ status: 429 }), backoffMs: 0 }),
     ).rejects.toMatchObject({ code: "rpc_unreachable" });
   });
 
@@ -272,7 +287,7 @@ describe("комиссия", () => {
 
   it("недоступный узел при чтении комиссии не превращается в null", async () => {
     await expect(
-      readBitcoinFeeRate(BTC, ESPLORA, { fetchImpl: esplora({ status: 503 }) }),
+      readBitcoinFeeRate(BTC, ESPLORA, { fetchImpl: esplora({ status: 503 }), backoffMs: 0 }),
     ).rejects.toBeInstanceOf(RpcError);
   });
 
@@ -303,5 +318,93 @@ describe("комиссия", () => {
     const btc: BitcoinChain = BTC;
     expect(btc.txVsize).toBe(141);
     expect(DOGE.txVsize).toBe(226);
+  });
+});
+
+/**
+ * Публичный узел Litecoin (`litecoinspace.org`) за Cloudflare отдаёт 525 ровно
+ * на половине запросов — живой замер 20 ноября: 8 ответов 200 из 16 одинаковых
+ * запросов подряд. Один повтор давал 25 % отказа на запрос, а чтение цепи это
+ * пять-шесть запросов подряд: карточка не обновлялась неделю и стояла с
+ * `rpc_unreachable`, хотя узел жив.
+ *
+ * Отсюда правило: **быстрый отказ можно повторять чаще медленного**, потому что
+ * бюджет повторов — это время, а не попытки. 525 приходит за десятую долю
+ * секунды, обрыв и таймаут — за восемь.
+ */
+describe("повторы по классу отказа", () => {
+  /** Узел, который отвечает отказом первые `fails` раз, потом высотой головы. */
+  const flaky = (fails: number, kind: "status" | "slow", calls: { n: number }): TextFetch =>
+    async () => {
+      calls.n += 1;
+      if (calls.n <= fails) {
+        if (kind === "slow") throw new Error("ECONNRESET");
+        return { ok: false, status: 525, text: async () => "error code: 525" };
+      }
+      return { ok: true, status: 200, text: async () => "3216005" };
+    };
+
+  it("быстрый отказ повторяется: с четвёртой попытки голова читается", async () => {
+    const calls = { n: 0 };
+    const body = await httpGetText(`${ESPLORA_LTC}/blocks/tip/height`, { fetchImpl: flaky(3, "status", calls), backoffMs: 0 });
+    expect(body).toBe("3216005");
+    expect(calls.n).toBe(4);
+  });
+
+  it("пачка короче окна переживается: девять отказов подряд — и всё равно ответ", async () => {
+    // Живая пачка у Litecoin доходила до одиннадцати подряд.
+    const calls = { n: 0 };
+    const body = await httpGetText(`${ESPLORA_LTC}/blocks/tip/height`, {
+      fetchImpl: flaky(9, "status", calls),
+      backoffMs: 0,
+    });
+    expect(body).toBe("3216005");
+    expect(calls.n).toBe(10);
+  });
+
+  it("потолок попыток держит цикл при мгновенных отказах", async () => {
+    const calls = { n: 0 };
+    await expect(
+      httpGetText(`${ESPLORA_LTC}/blocks/tip/height`, { fetchImpl: flaky(99, "status", calls), backoffMs: 0 }),
+    ).rejects.toMatchObject({ code: "rpc_unreachable" });
+    expect(calls.n).toBe(MAX_ATTEMPTS);
+  });
+
+  it("обрыв связи повторяется один раз: медленный отказ тратит время, а не попытки", async () => {
+    const one = { n: 0 };
+    const body = await httpGetText(`${ESPLORA_LTC}/blocks/tip/height`, { fetchImpl: flaky(1, "slow", one), backoffMs: 0 });
+    expect(body).toBe("3216005");
+    expect(one.n).toBe(2);
+
+    const two = { n: 0 };
+    await expect(
+      httpGetText(`${ESPLORA_LTC}/blocks/tip/height`, { fetchImpl: flaky(2, "slow", two), backoffMs: 0 }),
+    ).rejects.toMatchObject({ code: "rpc_unreachable" });
+    expect(two.n).toBe(2);
+  });
+
+  it("4xx не повторяется вовсе: это ответ узла, а не связь", async () => {
+    const calls = { n: 0 };
+    const node: TextFetch = async () => {
+      calls.n += 1;
+      return { ok: false, status: 404, text: async () => "endpoint does not exist" };
+    };
+    await expect(httpGetText(`${ESPLORA_LTC}/blocks/tip/height`, { fetchImpl: node, backoffMs: 0 })).rejects.toMatchObject({
+      code: "rpc_error",
+    });
+    expect(calls.n).toBe(1);
+  });
+
+  it("комиссия у половинного узла читается, а не теряет все факты цепи", async () => {
+    // Первый запрос цены за байт отказал статусом — повтор его и спасает.
+    let n = 0;
+    const node: TextFetch = async (url) => {
+      n += 1;
+      if (url.endsWith("/v1/fees/recommended") && n === 1) {
+        return { ok: false, status: 525, text: async () => "error code: 525" };
+      }
+      return { ok: true, status: 200, text: async () => JSON.stringify({ halfHourFee: 1 }) };
+    };
+    await expect(readBitcoinFeeRate(BTC, ESPLORA, { fetchImpl: node, backoffMs: 0 })).resolves.toBe(1);
   });
 });

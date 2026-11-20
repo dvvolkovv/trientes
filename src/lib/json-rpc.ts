@@ -17,9 +17,17 @@ export type RpcErrorCode = "rpc_unreachable" | "rpc_error" | "decode_failed";
 
 export class RpcError extends Error {
   readonly code: RpcErrorCode;
+  /**
+   * Чем именно кончилось: «http 525», «not_json», текст обрыва. Хранится
+   * полем, а не только в тексте сообщения: по нему `bitcoin-rest` отличает
+   * быстрый отказ (статус ответа) от медленного (обрыв, таймаут) — им дано
+   * разное число повторов.
+   */
+  readonly detail?: string;
   constructor(code: RpcErrorCode, detail?: string) {
     super(detail ? `${code}: ${detail}` : code);
     this.code = code;
+    this.detail = detail;
   }
 }
 
