@@ -742,7 +742,8 @@
         "pointStillListed": "その地点は地図上にまだ掲載されている",
         "brandRightProven": "ブランドの権利が証明された（登録、ライセンス、または契約）",
         "reportReproduced": "報告内容は情報源と照合して確認済み",
-        "passportMatchesSource": "パスポートはメーカー自身のデータと一致"
+        "passportMatchesSource": "パスポートはメーカー自身のデータと一致",
+        "changeExplained": "変更は説明されており、妥当です"
       },
       "checklist": {
         "title": "チェック",
@@ -847,6 +848,10 @@
         "productClaim": {
           "approve": "メーカーを確認する",
           "reject": "申請を拒否する"
+        },
+        "companyRevision": {
+          "approve": "カードに変更を適用",
+          "reject": "変更を却下 — 現在のカードを維持"
         }
       },
       "reports": {
@@ -1460,7 +1465,9 @@
       "company_required": "会社が必要",
       "forbidden": "許可されていません",
       "bad_form": "不正なリクエスト",
-      "coin_not_selectable": "このコインカードは未承認のため選択できません。"
+      "coin_not_selectable": "このコインカードは未承認のため選択できません。",
+      "documents_required": "登録書類を添付してください: 法的名称は書面で証明されます",
+      "nothing_to_apply": "この変更で適用するものは残っていません"
     },
     "websiteHint": "https://、http://、または www.example.com の形式でOK",
     "addressSection": "住所",
@@ -1557,7 +1564,9 @@
       },
       "uploadFile": "ファイルをアップロード",
       "uploading": "アップロード中…",
-      "uploadHint": "PDF / PNG / JPG — 最大 8 MB"
+      "uploadHint": "PDF / PNG / JPG — 最大 8 MB",
+      "startCta": "ビジネスを確認",
+      "manageCta": "確認書類"
     },
     "viewPublic": "公開ページを見る",
     "photos": "店舗写真",
@@ -1619,7 +1628,65 @@
     "journalLink": "アクティビティログ",
     "tasksLink": "タスク",
     "promosLink": "特典",
-    "supplyLink": "供給"
+    "supplyLink": "供給",
+    "notSet": "未設定",
+    "underReview": "審査中",
+    "editCard": "カードを編集",
+    "backToCard": "カードに戻る",
+    "remove": "削除",
+    "pointType": "どのような場所ですか?",
+    "sendForReview": "変更を審査に送信",
+    "moderatedEditHint": "あなたの会社は公開中のため、ストアフロント上の名称、ウェブサイト、連絡先、住所はすぐには変更されません。これらは審査担当者に送られ、変更が承認されるまで来訪者には現在のカードが表示されます。説明文とロゴは即時に保存されます。",
+    "profileSentToReview": "保存しました。{count} 件の変更が審査へ送られました—承認されるまでストアフロントには現在のカードが表示されます。",
+    "pendingChanges": "審査待ち: {count} 件の変更",
+    "pendingChangesHint": "再度編集すると、保留中の変更は新しい内容で置き換えられます—保留中の変更は企業ごとに常に1件までです。",
+    "documentsRequiredTitle": "必要書類",
+    "documentsRequiredHint": "正式名称はテキスト入力ではなく書類で証明します。登録書類を添付してください。この変更を承認すると、確認手続きが再開されます。",
+    "typeHint": {
+      "SHOP": "店舗、カフェ、カウンターのある場所",
+      "ATM": "暗号資産ATMまたは両替機",
+      "POS": "他施設内の決済端末",
+      "SALES_OFFICE": "顧客と面会するオフィス",
+      "COMPANY": "本社または生産拠点",
+      "ONLINE": "住所なし—オンラインで対応"
+    },
+    "groups": {
+      "heading": "ビジネスの運営",
+      "showcase": "ストアフロント",
+      "household": "バックオフィス",
+      "order": "チームと運用"
+    },
+    "groupHint": {
+      "showcase": "顧客が見るもの: 地図上の拠点、商品、価格、キャッシュバック、オファー。",
+      "household": "顧客が見ないもの: 倉庫、在庫、仕入先への発注。",
+      "order": "誰が何をするか: チーム、タスク、発生した全ての記録。"
+    },
+    "tiles": {
+      "points": "拠点",
+      "products": "商品",
+      "pricing": "価格とキャッシュバック",
+      "promos": "オファー",
+      "warehouses": "倉庫",
+      "supply": "調達",
+      "team": "チーム",
+      "tasks": "タスク",
+      "journal": "アクティビティログ"
+    },
+    "tileUnit": {
+      "points": "{count}件（地図上）",
+      "products": "{count}件販売中",
+      "pricing": "{count}件（カテゴリ別）",
+      "promos": "{count}件公開中",
+      "warehouses": "{count}件の保管場所",
+      "supply": "{count}件の未処理発注",
+      "team": "{count}人",
+      "tasks": "{count}件の未処理",
+      "journal": "{count}件の記録"
+    },
+    "tileEmpty": "まだありません",
+    "tileBadge": {
+      "moderation": "{count}件 審査中"
+    }
   },
   "cabinet": {
     "kicker": "セクション · キャビネット",
@@ -3561,7 +3628,47 @@
       "category": "あなたのカテゴリーの料率がここに適用されます：{percent}%。",
       "company": "あなたの全商品に対する料率がここに適用されます：{percent}%。"
     },
-    "loyaltyLink": "キャッシュバック料率"
+    "loyaltyLink": "キャッシュバック料率",
+    "ladder": {
+      "heading": "この製品の設定",
+      "progress": "{total} 中 {done}",
+      "blocked": "「{step}」が完了するまで何も変わりません",
+      "missing": "まだ必要なもの: {list}",
+      "step": {
+        "passport": "パスポート — それが何か",
+        "offer": "あなたのオファー — 価格と単位",
+        "where": "どこで売るか — 棚かオンライン",
+        "cashback": "この商品へのキャッシュバック",
+        "promo": "お客さま向けのオファー",
+        "supply": "在庫と自動発注"
+      },
+      "doneHint": {
+        "passport": "パスポートが記入済み",
+        "offer": "価格が公開され、顧客に表示されています",
+        "where": "在庫があり、場所が地図に表示されています",
+        "cashback": "この商品に料率が適用されています",
+        "promo": "公開中のオファーにこの商品が含まれています",
+        "supply": "自動発注が在庫を監視しています"
+      },
+      "todoHint": {
+        "passport": "パスポートを入力する",
+        "offer": "価格を設定して、顧客が商品を見られるようにする",
+        "where": "棚またはオンライン倉庫に配置する",
+        "cashback": "キャッシュバックを約束する — 自社の料率または会社の料率",
+        "promo": "フォロワーに知らせる",
+        "supply": "再発注する在庫水準を設定する"
+      },
+      "need": {
+        "name": "名前",
+        "category": "カテゴリ",
+        "description": "詳細な説明",
+        "photo": "写真",
+        "gtin": "バーコード",
+        "offer": "価格",
+        "price": "0より大きい価格",
+        "paused": "オファーは一時停止中"
+      }
+    }
   },
   "scanner": {
     "open": "スキャン",
@@ -3902,7 +4009,8 @@
       "ORDER_CANCELLED": "購買発注をキャンセルしました",
       "ORDER_DOC_ADDED": "購買発注にドキュメントを添付しました",
       "REORDER_RULE_SAVED": "自動発注ルールを保存しました",
-      "REORDER_RULE_DELETED": "自動発注ルールを削除しました"
+      "REORDER_RULE_DELETED": "自動発注ルールを削除しました",
+      "PROFILE_CHANGES_SUBMITTED": "カードの変更を審査に提出"
     }
   },
   "cabinetTasks": {

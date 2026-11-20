@@ -14,6 +14,8 @@ import { readOfferForCabinet } from "@/lib/products/offers-read";
 import { readStockByProduct } from "@/lib/warehouse/read";
 import { readCompanyRates } from "@/lib/loyalty/read";
 import { effectiveCashback } from "@/lib/loyalty/rates";
+import { productLadder, ladderProgress } from "@/lib/products/ladder";
+import { ProductLadder } from "@/components/cabinet/product-ladder";
 
 export const dynamic = "force-dynamic";
 
@@ -92,6 +94,34 @@ export default async function CompanyProductEditor({
 
   const owned = product?.ownerCompanyId === company.id;
 
+  // Лестница настройки (слайс BM): две дешёвые выборки сверх уже прочитанного —
+  // живые акции с этим товаром и правила автозаказа по нему.
+  const [promoCount, reorderRules] = product
+    ? await Promise.all([
+        prisma.merchantPromo.count({
+          where: { companyId: company.id, productId: product.id, archivedAt: null },
+        }),
+        prisma.reorderRule.count({ where: { companyId: company.id, productId: product.id } }),
+      ])
+    : [0, 0];
+  const ladder = product
+    ? productLadder({
+        passport: {
+          name: product.name,
+          category: product.category,
+          description: product.description ?? "",
+          photoCount: Array.isArray(product.photos) ? product.photos.length : 0,
+          gtin: product.gtin,
+        },
+        offer: offer ? { price: Number(offer.price), unit: offer.unit, active: offer.status === "ACTIVE" } : null,
+        stockQty: stock?.byWarehouse.reduce((sum, row) => sum + row.qty, 0) ?? 0,
+        cashbackPercent: effective ? effective.percent : null,
+        promoCount,
+        reorderRules,
+      })
+    : null;
+  const companyBase = `/${locale}/cabinet/companies/${company.id}`;
+
   return (
     <main className="max-w-[900px] mx-auto px-4 md:px-12 py-10">
       <nav className="text-xs text-muted mb-6">
@@ -113,6 +143,22 @@ export default async function CompanyProductEditor({
           willPropose={gate === "revision"}
         />
       )}
+
+      {ladder ? (
+        <div className="mt-8">
+          <ProductLadder
+            steps={ladder}
+            done={ladderProgress(ladder).done}
+            total={ladderProgress(ladder).total}
+            hrefs={{
+              where: `${companyBase}/warehouses`,
+              cashback: `${companyBase}/loyalty`,
+              promo: `${companyBase}/promos`,
+              supply: `${companyBase}/supply`,
+            }}
+          />
+        </div>
+      ) : null}
 
       {/* Предложение охраняется разделом «цена и кэшбэк», а не правом на паспорт:
           маркетолог правит цену, не правя свойств вещи, и наоборот (слайс BE). */}

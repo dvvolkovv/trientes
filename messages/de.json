@@ -742,7 +742,8 @@
         "pointStillListed": "Der Punkt ist noch auf der Karte",
         "brandRightProven": "Recht an der Marke ist nachgewiesen (Register, Lizenz oder Vertrag)",
         "reportReproduced": "Die Meldung ist anhand der Quellen verifiziert",
-        "passportMatchesSource": "Pass stimmt mit den Herstellerangaben überein"
+        "passportMatchesSource": "Pass stimmt mit den Herstellerangaben überein",
+        "changeExplained": "Die Änderung ist erläutert und sinnvoll"
       },
       "checklist": {
         "title": "Prüfungen",
@@ -847,6 +848,10 @@
         "productClaim": {
           "approve": "Hersteller bestätigen",
           "reject": "Anspruch ablehnen"
+        },
+        "companyRevision": {
+          "approve": "Änderungen auf die Karte übernehmen",
+          "reject": "Änderungen verwerfen — aktuelle Karte beibehalten"
         }
       },
       "reports": {
@@ -1460,7 +1465,9 @@
       "company_required": "Firma erforderlich",
       "forbidden": "Nicht erlaubt",
       "bad_form": "Ungültige Anfrage",
-      "coin_not_selectable": "Diese Münzkarte ist nicht freigegeben und kann nicht ausgewählt werden."
+      "coin_not_selectable": "Diese Münzkarte ist nicht freigegeben und kann nicht ausgewählt werden.",
+      "documents_required": "Fügen Sie die Registrierungsdokumente bei: Der rechtliche Name wird durch Dokumente nachgewiesen.",
+      "nothing_to_apply": "Für diese Änderung gibt es nichts mehr anzuwenden."
     },
     "websiteHint": "Mit https://, http:// oder einfach www.example.com — alles möglich",
     "addressSection": "Adresse",
@@ -1557,7 +1564,9 @@
       },
       "uploadFile": "Datei hochladen",
       "uploading": "Hochladen…",
-      "uploadHint": "PDF / PNG / JPG — bis 8 MB"
+      "uploadHint": "PDF / PNG / JPG — bis 8 MB",
+      "startCta": "Unternehmen verifizieren",
+      "manageCta": "Verifizierungsdokumente"
     },
     "viewPublic": "Öffentliche Seite öffnen",
     "photos": "Foto-Galerie",
@@ -1619,7 +1628,65 @@
     "journalLink": "Aktivitätsprotokoll",
     "tasksLink": "Aufgaben",
     "promosLink": "Angebote",
-    "supplyLink": "Beschaffung"
+    "supplyLink": "Beschaffung",
+    "notSet": "nicht festgelegt",
+    "underReview": "in Prüfung",
+    "editCard": "Karte bearbeiten",
+    "backToCard": "Zurück zur Karte",
+    "remove": "Entfernen",
+    "pointType": "Welche Art von Ort ist das?",
+    "sendForReview": "Änderungen zur Prüfung senden",
+    "moderatedEditHint": "Ihr Unternehmen ist live, daher werden der Name im Schaufenster, die Website, die Kontakte und die Adresse nicht sofort geändert: Sie gehen an eine prüfende Person, und Besucher sehen weiterhin die aktuelle Karte, bis die Änderung genehmigt ist. Die Beschreibung und das Logo werden sofort gespeichert.",
+    "profileSentToReview": "Gespeichert. {count} Änderung(en) gingen an eine prüfende Person — das Schaufenster behält die aktuelle Karte bei, bis sie genehmigt sind.",
+    "pendingChanges": "Warten auf Prüfung: {count} Änderung(en)",
+    "pendingChangesHint": "Erneut bearbeiten, dann wird die ausstehende Änderung durch die neue ersetzt — ein Unternehmen kann jeweils nur eine ausstehende Änderung haben.",
+    "documentsRequiredTitle": "Erforderliche Dokumente",
+    "documentsRequiredHint": "Der juristische Name wird durch Unterlagen belegt, nicht durch ein Textfeld. Fügen Sie die Registrierungsdokumente bei: Die Genehmigung dieser Änderung startet die Verifizierung erneut.",
+    "typeHint": {
+      "SHOP": "Ein Laden, Café oder jeder Ort mit Theke",
+      "ATM": "Ein Krypto-Geldautomat oder Wechselautomat",
+      "POS": "Ein Zahlungsterminal in den Räumlichkeiten eines anderen Betriebs",
+      "SALES_OFFICE": "Ein Büro, in dem Sie Kunden empfangen",
+      "COMPANY": "Eine Zentrale oder Produktionsstätte",
+      "ONLINE": "Keine Adresse — Sie bedienen Kunden online"
+    },
+    "groups": {
+      "heading": "Den Betrieb führen",
+      "showcase": "Schaufenster",
+      "household": "Backoffice",
+      "order": "Team und Ablauf"
+    },
+    "groupHint": {
+      "showcase": "Was ein Kunde sieht: Orte auf der Karte, Waren, Preise, Cashback und Angebote.",
+      "household": "Was ein Kunde nicht sieht: Lager, Bestand und Bestellungen an Lieferanten.",
+      "order": "Wer was macht: das Team, Aufgaben und das Protokoll aller Vorgänge."
+    },
+    "tiles": {
+      "points": "Orte",
+      "products": "Waren",
+      "pricing": "Preise und Cashback",
+      "promos": "Angebote",
+      "warehouses": "Lager",
+      "supply": "Beschaffung",
+      "team": "Team",
+      "tasks": "Aufgaben",
+      "journal": "Aktivitätsprotokoll"
+    },
+    "tileUnit": {
+      "points": "{count} auf der Karte",
+      "products": "{count} im Verkauf",
+      "pricing": "{count} nach Kategorie",
+      "promos": "{count} live",
+      "warehouses": "{count} Lagerorte",
+      "supply": "{count} offene Aufträge",
+      "team": "{count} Personen",
+      "tasks": "{count} offen",
+      "journal": "{count} Einträge"
+    },
+    "tileEmpty": "noch nichts",
+    "tileBadge": {
+      "moderation": "{count} in Prüfung"
+    }
   },
   "cabinet": {
     "kicker": "Bereich · Kabinett",
@@ -3561,7 +3628,47 @@
       "category": "Ihr Kategoriesatz gilt hier: {percent}%.",
       "company": "Ihr Satz für alles gilt hier: {percent}%."
     },
-    "loyaltyLink": "Cashback-Sätze"
+    "loyaltyLink": "Cashback-Sätze",
+    "ladder": {
+      "heading": "Dieses Produkt einrichten",
+      "progress": "{done} von {total}",
+      "blocked": "Nichts ändert sich, bis «{step}» erledigt ist",
+      "missing": "Noch benötigt: {list}",
+      "step": {
+        "passport": "Steckbrief — was es ist",
+        "offer": "Dein Angebot — Preis und Einheit",
+        "where": "Wo es verkauft wird — Regal oder online",
+        "cashback": "Cashback dafür",
+        "promo": "Ein Angebot für Kunden",
+        "supply": "Bestand und automatische Nachbestellung"
+      },
+      "doneHint": {
+        "passport": "Der Steckbrief ist ausgefüllt",
+        "offer": "Der Preis ist live und Kunden können ihn sehen",
+        "where": "Bestand ist vorhanden und der Ort erscheint auf der Karte",
+        "cashback": "Ein Prozentsatz gilt für dieses Produkt",
+        "promo": "Ein aktives Angebot erwähnt dieses Produkt",
+        "supply": "Die automatische Nachbestellung überwacht den Bestand"
+      },
+      "todoHint": {
+        "passport": "Fülle den Steckbrief aus",
+        "offer": "Setze einen Preis, damit Kunden das Produkt sehen können",
+        "where": "Lege es ins Regal oder in ein Online-Lager",
+        "cashback": "Versprich Cashback — deinen eigenen Prozentsatz oder den des Unternehmens",
+        "promo": "Erzähle deinen Followern davon",
+        "supply": "Lege die Schwelle für die Nachbestellung fest"
+      },
+      "need": {
+        "name": "einen Namen",
+        "category": "eine Kategorie",
+        "description": "eine längere Beschreibung",
+        "photo": "ein Foto",
+        "gtin": "ein Barcode",
+        "offer": "ein Preis",
+        "price": "ein Preis über 0",
+        "paused": "das Angebot ist pausiert"
+      }
+    }
   },
   "scanner": {
     "open": "Scannen",
@@ -3902,7 +4009,8 @@
       "ORDER_CANCELLED": "Einkaufsbestellung storniert",
       "ORDER_DOC_ADDED": "Dokument an Einkaufsbestellung angehängt",
       "REORDER_RULE_SAVED": "Automatische Bestellregel gespeichert",
-      "REORDER_RULE_DELETED": "Automatische Bestellregel gelöscht"
+      "REORDER_RULE_DELETED": "Automatische Bestellregel gelöscht",
+      "PROFILE_CHANGES_SUBMITTED": "Kartenänderungen zur Prüfung gesendet"
     }
   },
   "cabinetTasks": {

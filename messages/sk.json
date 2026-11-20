@@ -742,7 +742,8 @@
         "pointStillListed": "Miesto je stále na mape",
         "brandRightProven": "Právo na značku je preukázané (register, licencia alebo zmluva)",
         "reportReproduced": "Nahlásenie sa potvrdilo podľa zdrojov",
-        "passportMatchesSource": "Pas zodpovedá údajom výrobcu"
+        "passportMatchesSource": "Pas zodpovedá údajom výrobcu",
+        "changeExplained": "Zmena je vysvetlená a dáva zmysel"
       },
       "checklist": {
         "title": "Kontroly",
@@ -847,6 +848,10 @@
         "productClaim": {
           "approve": "Potvrdiť výrobcu",
           "reject": "Odmietnuť nárok"
+        },
+        "companyRevision": {
+          "approve": "Použiť zmeny na kartu",
+          "reject": "Zamietnuť zmeny — ponechať aktuálnu kartu"
         }
       },
       "reports": {
@@ -1460,7 +1465,9 @@
       "company_required": "Je potrebná spoločnosť",
       "forbidden": "Nepovolené",
       "bad_form": "Neplatná žiadosť",
-      "coin_not_selectable": "Táto karta mince nie je schválená, preto ju nemožno vybrať."
+      "coin_not_selectable": "Táto karta mince nie je schválená, preto ju nemožno vybrať.",
+      "documents_required": "Priložte registračné dokumenty: právny názov sa preukazuje dokumentmi.",
+      "nothing_to_apply": "V tejto zmene už nie je čo uplatniť."
     },
     "websiteHint": "https://, http://, alebo len www.example.com — všetko funguje",
     "addressSection": "Adresa",
@@ -1557,7 +1564,9 @@
       },
       "uploadFile": "Nahrať súbor",
       "uploading": "Nahráva sa…",
-      "uploadHint": "PDF / PNG / JPG — do 8 MB"
+      "uploadHint": "PDF / PNG / JPG — do 8 MB",
+      "startCta": "Overiť firmu",
+      "manageCta": "Overovacie dokumenty"
     },
     "viewPublic": "Zobraziť verejnú stránku",
     "photos": "Fotky prevádzky",
@@ -1619,7 +1628,65 @@
     "journalLink": "Denník aktivít",
     "tasksLink": "Úlohy",
     "promosLink": "Ponuky",
-    "supplyLink": "Zásoby"
+    "supplyLink": "Zásoby",
+    "notSet": "nenastavené",
+    "underReview": "na posúdení",
+    "editCard": "Upraviť kartu",
+    "backToCard": "Späť na kartu",
+    "remove": "Odstrániť",
+    "pointType": "O aké miesto ide?",
+    "sendForReview": "Odoslať zmeny na posúdenie",
+    "moderatedEditHint": "Vaša spoločnosť je zverejnená, preto sa názov vo výklade, web, kontakty a adresa nemenia hneď: putujú k posudzovateľovi a návštevníci dovtedy vidia aktuálnu kartu, kým sa zmena neschváli. Popis a logo sa ukladajú okamžite.",
+    "profileSentToReview": "Uložené. {count} zmien odoslaných posudzovateľovi — výklad ponechá aktuálnu kartu, kým nebudú schválené.",
+    "pendingChanges": "Čaká na posudzovateľa: {count} zmien",
+    "pendingChangesHint": "Upravte znova a čakajúca zmena sa nahradí novou — spoločnosť môže mať naraz len jednu čakajúcu zmenu.",
+    "documentsRequiredTitle": "Potrebné dokumenty",
+    "documentsRequiredHint": "Právny názov sa preukazuje dokumentmi, nie textovým poľom. Priložte registračné dokumenty: schválením tejto zmeny sa overenie začne znova.",
+    "typeHint": {
+      "SHOP": "Obchod, kaviareň alebo akékoľvek miesto s pultom",
+      "ATM": "Krypto bankomat alebo zmenárenský automat",
+      "POS": "Platobný terminál v priestoroch niekoho iného",
+      "SALES_OFFICE": "Kancelária, kde sa stretávate so zákazníkmi",
+      "COMPANY": "Ústredie alebo výrobný závod",
+      "ONLINE": "Bez adresy — obsluhujete zákazníkov online"
+    },
+    "groups": {
+      "heading": "Prevádzka firmy",
+      "showcase": "Výklad",
+      "household": "Zázemie",
+      "order": "Tím a evidencia"
+    },
+    "groupHint": {
+      "showcase": "Čo zákazník vidí: miesta na mape, tovar, ceny, cashback a ponuky.",
+      "household": "Čo zákazník nevidí: sklady, zásoby a objednávky dodávateľom.",
+      "order": "Kto čo robí: tím, úlohy a záznam všetkého, čo sa stalo."
+    },
+    "tiles": {
+      "points": "Miesta",
+      "products": "Tovar",
+      "pricing": "Ceny a cashback",
+      "promos": "Promo akcie",
+      "warehouses": "Sklady",
+      "supply": "Zásobovanie",
+      "team": "Tím",
+      "tasks": "Úlohy",
+      "journal": "Záznam aktivít"
+    },
+    "tileUnit": {
+      "points": "{count} na mape",
+      "products": "{count} v predaji",
+      "pricing": "{count} podľa kategórie",
+      "promos": "{count} aktívnych",
+      "warehouses": "{count} miest na uskladnenie tovaru",
+      "supply": "{count} otvorených objednávok",
+      "team": "{count} ľudí",
+      "tasks": "{count} otvorených",
+      "journal": "{count} záznamov"
+    },
+    "tileEmpty": "zatiaľ nič",
+    "tileBadge": {
+      "moderation": "{count} v posudzovaní"
+    }
   },
   "cabinet": {
     "kicker": "Sekcia · Profil",
@@ -3561,7 +3628,47 @@
       "category": "Vaša sadzba pre kategóriu sa tu uplatní: {percent}%.",
       "company": "Vaša sadzba pre všetky produkty sa tu uplatní: {percent}%."
     },
-    "loyaltyLink": "Sadzby cashbacku"
+    "loyaltyLink": "Sadzby cashbacku",
+    "ladder": {
+      "heading": "Nastavenie tohto produktu",
+      "progress": "{done} z {total}",
+      "blocked": "Nič sa nezmení, kým sa nedokončí «{step}»",
+      "missing": "Ešte potrebné: {list}",
+      "step": {
+        "passport": "Pas — čo to je",
+        "offer": "Vaša ponuka — cena a jednotka",
+        "where": "Kde sa predáva — regál alebo online",
+        "cashback": "Cashback na ňom",
+        "promo": "Ponuka pre zákazníkov",
+        "supply": "Zásoba a automatické objednávanie"
+      },
+      "doneHint": {
+        "passport": "Pas je vyplnený",
+        "offer": "Cena je aktívna a zákazníci ju vidia",
+        "where": "Je skladom a miesto sa zobrazuje na mape",
+        "cashback": "Na tento produkt sa uplatňuje sadzba",
+        "promo": "Aktívna ponuka uvádza tento produkt",
+        "supply": "Automatické objednávanie sleduje zásobu"
+      },
+      "todoHint": {
+        "passport": "Vyplňte pas",
+        "offer": "Nastavte cenu, aby zákazníci videli produkt",
+        "where": "Umiestnite ho na regál alebo do online skladu",
+        "cashback": "Sľúbte cashback — vlastnú sadzbu alebo firemnú",
+        "promo": "Povedzte o ňom svojim sledovateľom",
+        "supply": "Nastavte úroveň, pri ktorej sa doobjednáva"
+      },
+      "need": {
+        "name": "názov",
+        "category": "kategória",
+        "description": "dlhší popis",
+        "photo": "fotka",
+        "gtin": "čiarový kód",
+        "offer": "cena",
+        "price": "cena nad nulou",
+        "paused": "ponuka je pozastavená"
+      }
+    }
   },
   "scanner": {
     "open": "Skenovať",
@@ -3902,7 +4009,8 @@
       "ORDER_CANCELLED": "Nákupná objednávka zrušená",
       "ORDER_DOC_ADDED": "K nákupnej objednávke priložený dokument",
       "REORDER_RULE_SAVED": "Pravidlo automatickej objednávky uložené",
-      "REORDER_RULE_DELETED": "Pravidlo automatickej objednávky odstránené"
+      "REORDER_RULE_DELETED": "Pravidlo automatickej objednávky odstránené",
+      "PROFILE_CHANGES_SUBMITTED": "Zmeny karty odoslané na kontrolu"
     }
   },
   "cabinetTasks": {

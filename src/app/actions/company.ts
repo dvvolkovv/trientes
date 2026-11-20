@@ -15,6 +15,7 @@ import {
 } from "@/lib/company";
 import { checkCompanyLimits } from "@/lib/company-limits";
 import { pointEditNeedsModeration } from "@/lib/point-edit";
+import { splitCompanyEdit } from "@/lib/company-edit";
 import { type PointType, type Prisma } from "@prisma/client";
 import { LIVE_POINT, NOT_DELETED } from "@/lib/soft-delete";
 
@@ -75,12 +76,26 @@ export async function createCompany(input: { legalName: string; displayName: str
   return { ok: true as const, id: company.id };
 }
 
-export async function saveCompanyProfile(companyId: string, input: CompanyProfileInput) {
+/**
+ * Сохранение карточки предприятия (слайс BM).
+ *
+ * У залистованного предприятия модерируемые поля в карточку **не пишутся**: они
+ * ложатся правкой `CompanyRevision`, а витрина держит прежнее значение, пока
+ * модератор не одобрит. Свободные поля (описание, логотип) применяются сразу.
+ *
+ * У предприятия в `PENDING`/`REJECTED` на витрине защищать нечего, а заявитель
+ * обязан иметь возможность дозаполнить то, что у него же на проверке — там всё
+ * пишется сразу, как было до слайса.
+ */
+export async function saveCompanyProfile(
+  companyId: string,
+  input: CompanyProfileInput,
+  documents?: { kind: string; url: string; label?: string | null }[],
+) {
   const userId = await requireUser();
   if (!userId) return { ok: false as const, reason: "unauth" as const };
   // Право на раздел «карточка магазина» (слайс BE). Профиль правит и предприятие,
-  // ещё не прошедшее модерацию, — поэтому не `canWrite`, которая требует APPROVED:
-  // иначе заявитель не смог бы поправить то, что у него же на проверке.
+  // ещё не прошедшее модерацию, — поэтому не `canWrite`, которая требует APPROVED.
   const gate = await editorCompany(companyId, userId);
   if (!gate || !gate.permissions.card || gate.permissions.card !== "EDIT") {
     return { ok: false as const, reason: "not_found" as const };
@@ -89,10 +104,73 @@ export async function saveCompanyProfile(companyId: string, input: CompanyProfil
   if (!company) return { ok: false as const, reason: "not_found" as const };
   const v = validateCompanyProfile(input);
   if (!v.ok) return { ok: false as const, reason: v.reason };
-  await prisma.company.update({ where: { id: company.id }, data: v.data });
-  await logCompanyAction({ companyId, actorUserId: userId, action: "PROFILE_SAVED", subject: v.data.displayName });
+
+  if (company.status !== "APPROVED") {
+    await prisma.company.update({ where: { id: company.id }, data: v.data });
+    await logCompanyAction({ companyId, actorUserId: userId, action: "PROFILE_SAVED", subject: v.data.displayName });
+    revalidatePath("/", "layout");
+    return { ok: true as const, moderated: 0 };
+  }
+
+  const split = splitCompanyEdit(company, v.data);
+  // Выводимая строка адреса следует за структурными частями, а они ждут модератора:
+  // записать её сразу значило бы показать на витрине новый адрес до решения.
+  if (Object.keys(split.free).length > 0) {
+    await prisma.company.update({ where: { id: company.id }, data: split.free });
+    await logCompanyAction({ companyId, actorUserId: userId, action: "PROFILE_SAVED", subject: company.displayName });
+  }
+  if (split.pending.length === 0) {
+    revalidatePath("/", "layout");
+    return { ok: true as const, moderated: 0 };
+  }
+
+  const docs = (documents ?? [])
+    .map((d) => ({ kind: String(d.kind), url: String(d.url).trim(), label: d.label?.trim() || null }))
+    .filter((d) => d.url.startsWith("/uploads/") || d.url.startsWith("https://"))
+    .slice(0, 8);
+  // Юридическое имя подтверждается бумагой, а не словом заявителя: отказ вслух,
+  // а не молчаливое применение.
+  if (split.needsDocuments && docs.length === 0) {
+    return { ok: false as const, reason: "documents_required" as const };
+  }
+
+  // Одна ждущая правка на предприятие: новая правка переписывает прежнюю, а дело
+  // остаётся тем же. Две ждущие означали бы, что модератор одобряет изменения в
+  // порядке, которого никто не выбирал. Различия всегда считаются от живой
+  // карточки, поэтому «было» в деле — это то, что сейчас на витрине.
+  const existing = await prisma.companyRevision.findFirst({
+    where: { companyId: company.id, status: "PENDING" },
+    orderBy: { createdAt: "desc" },
+  });
+  const changes = split.pending as unknown as Prisma.InputJsonValue;
+  const revision = existing
+    ? await prisma.companyRevision.update({
+        where: { id: existing.id },
+        data: { changes, documents: docs.length > 0 ? (docs as unknown as Prisma.InputJsonValue) : undefined, authorId: userId },
+      })
+    : await prisma.companyRevision.create({
+        data: {
+          companyId: company.id,
+          authorId: userId,
+          changes,
+          documents: docs.length > 0 ? (docs as unknown as Prisma.InputJsonValue) : undefined,
+        },
+      });
+
+  await ensureCase({
+    subjectType: "COMPANY_REVISION",
+    subjectId: revision.id,
+    title: company.displayName,
+    applicantUserId: company.ownerUserId,
+  });
+  await logCompanyAction({
+    companyId,
+    actorUserId: userId,
+    action: "PROFILE_CHANGES_SUBMITTED",
+    subject: company.displayName,
+  });
   revalidatePath("/", "layout");
-  return { ok: true as const };
+  return { ok: true as const, moderated: split.pending.length };
 }
 
 export async function submitCompanyPoint(

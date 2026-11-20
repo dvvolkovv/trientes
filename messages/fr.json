@@ -742,7 +742,8 @@
         "pointStillListed": "Le point est toujours sur la carte",
         "brandRightProven": "Le droit à la marque est prouvé (registre, licence ou contrat)",
         "reportReproduced": "Le signalement est confirmé par les sources",
-        "passportMatchesSource": "Le passeport correspond aux données du fabricant"
+        "passportMatchesSource": "Le passeport correspond aux données du fabricant",
+        "changeExplained": "La modification est expliquée et a du sens"
       },
       "checklist": {
         "title": "Vérifications",
@@ -847,6 +848,10 @@
         "productClaim": {
           "approve": "Confirmer le fabricant",
           "reject": "Refuser la réclamation"
+        },
+        "companyRevision": {
+          "approve": "Appliquer les modifications à la fiche",
+          "reject": "Rejeter les modifications — conserver la fiche actuelle"
         }
       },
       "reports": {
@@ -1460,7 +1465,9 @@
       "company_required": "Entreprise requise",
       "forbidden": "Interdit",
       "bad_form": "Requête invalide",
-      "coin_not_selectable": "Cette fiche de monnaie n'est pas approuvée, elle ne peut pas être sélectionnée."
+      "coin_not_selectable": "Cette fiche de monnaie n'est pas approuvée, elle ne peut pas être sélectionnée.",
+      "documents_required": "Joignez les documents d’enregistrement : la raison sociale est prouvée par des documents papier",
+      "nothing_to_apply": "Il n’y a plus rien à appliquer dans cette modification"
     },
     "websiteHint": "Avec https://, http:// ou juste www.example.com — tout fonctionne",
     "addressSection": "Adresse",
@@ -1557,7 +1564,9 @@
       },
       "uploadFile": "Téléverser un fichier",
       "uploading": "Téléversement…",
-      "uploadHint": "PDF / PNG / JPG — jusqu'à 8 Mo"
+      "uploadHint": "PDF / PNG / JPG — jusqu'à 8 Mo",
+      "startCta": "Vérifier l’entreprise",
+      "manageCta": "Documents de vérification"
     },
     "viewPublic": "Voir la page publique",
     "photos": "Photos du lieu",
@@ -1619,7 +1628,65 @@
     "journalLink": "Journal d'activité",
     "tasksLink": "Tâches",
     "promosLink": "Offres",
-    "supplyLink": "Approvisionnement"
+    "supplyLink": "Approvisionnement",
+    "notSet": "non défini",
+    "underReview": "en cours d’examen",
+    "editCard": "Modifier la fiche",
+    "backToCard": "Retour à la fiche",
+    "remove": "Supprimer",
+    "pointType": "De quel type d’établissement s’agit‑il ?",
+    "sendForReview": "Envoyer les modifications pour examen",
+    "moderatedEditHint": "Votre entreprise est en ligne, donc le nom sur la vitrine, le site web, les contacts et l’adresse ne changent pas immédiatement : ils sont envoyés à un modérateur, et les visiteurs continuent de voir la fiche actuelle jusqu’à l’approbation de la modification. La description et le logo sont enregistrés immédiatement.",
+    "profileSentToReview": "Enregistré. {count} modification(s) ont été envoyées à un modérateur — la vitrine conserve la fiche actuelle jusqu’à leur approbation.",
+    "pendingChanges": "En attente d’un modérateur : {count} modification(s)",
+    "pendingChangesHint": "Modifiez de nouveau et le changement en attente sera remplacé par le nouveau — une entreprise ne peut avoir qu’un changement en attente à la fois.",
+    "documentsRequiredTitle": "Documents requis",
+    "documentsRequiredHint": "La raison sociale se prouve par des documents, pas par un champ texte. Joignez les documents d’immatriculation : l’approbation de ce changement relancera la vérification.",
+    "typeHint": {
+      "SHOP": "Un magasin, un café ou tout lieu avec un comptoir",
+      "ATM": "Un distributeur crypto ou une machine d’échange",
+      "POS": "Un terminal de paiement à l’intérieur d’un autre établissement",
+      "SALES_OFFICE": "Un bureau où vous rencontrez les clients",
+      "COMPANY": "Un siège social ou un site de production",
+      "ONLINE": "Pas d’adresse — vous servez les clients en ligne"
+    },
+    "groups": {
+      "heading": "Gestion de l’activité",
+      "showcase": "Vitrine",
+      "household": "Arrière-boutique",
+      "order": "Équipe et organisation"
+    },
+    "groupHint": {
+      "showcase": "Ce que voit un client : lieux sur la carte, produits, prix, cashback et offres.",
+      "household": "Ce qu’un client ne voit pas : entrepôts, stock et commandes aux fournisseurs.",
+      "order": "Qui fait quoi : l’équipe, les tâches et le journal de tout ce qui s’est passé."
+    },
+    "tiles": {
+      "points": "Lieux",
+      "products": "Produits",
+      "pricing": "Prix et cashback",
+      "promos": "Offres",
+      "warehouses": "Entrepôts",
+      "supply": "Approvisionnement",
+      "team": "Équipe",
+      "tasks": "Tâches",
+      "journal": "Journal d’activité"
+    },
+    "tileUnit": {
+      "points": "{count} sur la carte",
+      "products": "{count} en vente",
+      "pricing": "{count} par catégorie",
+      "promos": "{count} actives",
+      "warehouses": "{count} lieux de stockage",
+      "supply": "{count} commandes ouvertes",
+      "team": "{count} personnes",
+      "tasks": "{count} ouvertes",
+      "journal": "{count} entrées"
+    },
+    "tileEmpty": "rien pour l’instant",
+    "tileBadge": {
+      "moderation": "{count} en cours d’examen"
+    }
   },
   "cabinet": {
     "kicker": "Section · Espace personnel",
@@ -3561,7 +3628,47 @@
       "category": "Votre taux de catégorie s'applique ici : {percent}%.",
       "company": "Votre taux pour tous les produits s'applique ici : {percent}%."
     },
-    "loyaltyLink": "Taux de cashback"
+    "loyaltyLink": "Taux de cashback",
+    "ladder": {
+      "heading": "Configuration de ce produit",
+      "progress": "{done} sur {total}",
+      "blocked": "Rien ne changera tant que «{step}» n’est pas terminé",
+      "missing": "Encore nécessaire : {list}",
+      "step": {
+        "passport": "Passeport — ce que c’est",
+        "offer": "Votre offre — prix et unité",
+        "where": "Lieu de vente — en rayon ou en ligne",
+        "cashback": "Cashback appliqué",
+        "promo": "Une offre pour les clients",
+        "supply": "Approvisionnement et commande automatique"
+      },
+      "doneHint": {
+        "passport": "Le passeport est rempli",
+        "offer": "Le prix est en ligne et les clients peuvent le voir",
+        "where": "Il y a du stock, et l’emplacement s’affiche sur la carte",
+        "cashback": "Un taux s’applique à ce produit",
+        "promo": "Une offre active mentionne ce produit",
+        "supply": "La commande automatique surveille le stock"
+      },
+      "todoHint": {
+        "passport": "Remplissez le passeport",
+        "offer": "Fixez un prix pour que les clients voient le produit",
+        "where": "Mettez-le en rayon ou dans un entrepôt en ligne",
+        "cashback": "Proposez du cashback — votre propre taux ou celui de l’entreprise",
+        "promo": "Parlez-en à vos abonnés",
+        "supply": "Définissez le niveau de réapprovisionnement"
+      },
+      "need": {
+        "name": "un nom",
+        "category": "une catégorie",
+        "description": "une description plus longue",
+        "photo": "une photo",
+        "gtin": "un code-barres",
+        "offer": "un prix",
+        "price": "un prix supérieur à zéro",
+        "paused": "l’offre est en pause"
+      }
+    }
   },
   "scanner": {
     "open": "Scanner",
@@ -3902,7 +4009,8 @@
       "ORDER_CANCELLED": "Bon de commande annulé",
       "ORDER_DOC_ADDED": "Document joint à un bon de commande",
       "REORDER_RULE_SAVED": "Règle de commande automatique enregistrée",
-      "REORDER_RULE_DELETED": "Règle de commande automatique supprimée"
+      "REORDER_RULE_DELETED": "Règle de commande automatique supprimée",
+      "PROFILE_CHANGES_SUBMITTED": "Modifications de la fiche envoyées pour examen"
     }
   },
   "cabinetTasks": {

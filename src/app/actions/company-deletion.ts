@@ -216,7 +216,7 @@ export async function requestOrDeletePoint(input: {
     notifyOwners(owners, userId,
       `🗑 Location "${point.name}" was deleted and is no longer on the navigator.`,
       `Location deleted: ${point.name}`,
-      `${SITE}/en/cabinet/companies/${point.companyId}#your-points`);
+      `${SITE}/en/cabinet/companies/${point.companyId}/points`);
     revalidatePath("/", "layout");
     return { ok: true, applied: true };
   }

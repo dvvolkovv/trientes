@@ -119,6 +119,8 @@ model User {
   productClaimsDecided     ProductClaim[]            @relation("ProductClaimDecider")
   productRevisions         ProductRevision[]         @relation("ProductRevisionAuthor")
   productRevisionsDecided  ProductRevision[]         @relation("ProductRevisionDecider")
+  companyRevisions         CompanyRevision[]         @relation("CompanyRevisionAuthor")
+  companyRevisionsDecided  CompanyRevision[]         @relation("CompanyRevisionDecider")
   productReports           ProductReport[]           @relation("ProductReporter")
   stockMovements           StockMovement[]           @relation("StockMovementAuthor")
   companyFollows           CompanyFollow[]           @relation("CompanyFollower")
@@ -678,6 +680,8 @@ enum AdminAction {
   UNSUSPEND_PRODUCT
   MERGE_PRODUCT
   REVERT_PRODUCT_EDIT
+  APPROVE_COMPANY_REVISION
+  REJECT_COMPANY_REVISION
 }
 
 model AdminAuditLog {
@@ -888,11 +892,46 @@ model Company {
   supplyOrders SupplyOrder[] @relation("SupplyOrderBuyer")
   reorderRules ReorderRule[] @relation("ReorderRuleCompany")
 
+  /// Правки карточки, ждущие модератора (BM). Витрина держит прежнее значение.
+  revisions CompanyRevision[]
+
   @@index([ownerUserId])
   @@index([status, createdAt])
   @@index([kybStatus])
   @@index([deletedAt])
   @@index([suspendedAt])
+}
+
+/// Правка карточки предприятия, ждущая решения модератора.
+///
+/// Витрина держит прежние значения, пока правку не одобрят — поэтому новые значения
+/// живут здесь, а не в `Company`. Объект дела — сама правка, а не предприятие: у
+/// предприятия уже есть своё дело (@@unique(subjectType, subjectId)), а правок во
+/// времени будет много, и каждой нужно своё дело (тот же разбор, что у `ProductClaim`).
+model CompanyRevision {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  /// Автор правки. SetNull, а не Restrict: уборка AU уже упиралась в RESTRICT у
+  /// AdminAuditLog.actorId, и удаление человека не должно держать строку.
+  authorId  String?
+  author    User?   @relation("CompanyRevisionAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+
+  /// [{ field, before, after }] — то же устройство, что `patch` у ревизии паспорта.
+  changes Json
+  /// Документы, присланные к правке юридического имени: [{ kind, url, label }].
+  documents Json?
+
+  status      RequestStatus @default(PENDING)
+  decidedById String?
+  decidedBy   User?         @relation("CompanyRevisionDecider", fields: [decidedById], references: [id], onDelete: SetNull)
+  decidedAt   DateTime?
+  reason      String?
+
+  createdAt DateTime @default(now())
+
+  @@index([companyId, status])
+  @@index([status, createdAt])
 }
 
 model CompanyPoint {
@@ -1586,6 +1625,7 @@ enum CaseSubjectType {
   POINT_REPORT
   PRODUCT_CLAIM
   PRODUCT_REPORT
+  COMPANY_REVISION
 }
 
 enum CaseStatus {

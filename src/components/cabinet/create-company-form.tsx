@@ -27,7 +27,7 @@ export function CreateCompanyForm({ nextCard }: { nextCard?: string }) {
             // сразу открываем форму точки с уже отмеченной монетой.
             router.push(
               nextCard
-                ? `/${locale}/cabinet/companies/${r.id}?card=${encodeURIComponent(nextCard)}#add-point`
+                ? `/${locale}/cabinet/companies/${r.id}/points?card=${encodeURIComponent(nextCard)}#add-point`
                 : `/${locale}/cabinet/companies/${r.id}`,
             );
           }

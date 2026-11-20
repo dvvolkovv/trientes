@@ -1,6 +1,7 @@
 import type { CaseSubjectType } from "@prisma/client";
 import { approveCoinCard, rejectCoinCard } from "@/app/actions/admin-coin-cards";
 import { approveCompany, rejectCompany } from "@/app/actions/admin-company";
+import { approveCompanyRevision, rejectCompanyRevision } from "@/app/actions/admin-company-revision";
 import { approvePoint, rejectPoint } from "@/app/actions/admin-points";
 import { approveExchange, rejectExchange } from "@/app/actions/admin-exchange";
 import { approveFintech, rejectFintech } from "@/app/actions/admin-fintech";
@@ -50,6 +51,15 @@ export async function applyDecision(input: {
         approve
           ? await approveCompany({ companyId: subjectId })
           : await rejectCompany({ companyId: subjectId, rejectionReason: reason, silent }),
+      );
+    case "COMPANY_REVISION":
+      // Объект дела — правка, а не предприятие: «одобрено» значит «применить
+      // изменения к карточке», «отклонено» — правка отвергнута, предприятие не
+      // тронуто и остаётся на витрине в прежнем виде.
+      return normalize(
+        approve
+          ? await approveCompanyRevision({ revisionId: subjectId })
+          : await rejectCompanyRevision({ revisionId: subjectId, reason, silent }),
       );
     case "KYB":
       return normalize(

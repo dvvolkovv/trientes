@@ -36,7 +36,7 @@ describe("ctaHref", () => {
 describe("addPointHref / newCompanyHref / manageHref", () => {
   it("opens one company's point form with the card preselected (query first, fragment last)", () => {
     expect(addPointHref("cmp1", ctx)).toBe(
-      "/ru/cabinet/companies/cmp1?card=clz1abc234def567#add-point",
+      "/ru/cabinet/companies/cmp1/points?card=clz1abc234def567#add-point",
     );
   });
 
@@ -45,7 +45,7 @@ describe("addPointHref / newCompanyHref / manageHref", () => {
   });
 
   it("points an existing merchant at that company's own points", () => {
-    expect(manageHref("cmp1", ctx)).toBe("/ru/cabinet/companies/cmp1#your-points");
+    expect(manageHref("cmp1", ctx)).toBe("/ru/cabinet/companies/cmp1/points");
   });
 });
 

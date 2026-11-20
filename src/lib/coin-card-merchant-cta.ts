@@ -47,7 +47,7 @@ export function ctaHref(
  * "#add-point?card=…", но фрагмент в URL всегда последний.
  */
 export function addPointHref(companyId: string, ctx: CtaContext): string {
-  return `/${ctx.locale}/cabinet/companies/${companyId}?card=${encodeURIComponent(ctx.cardId)}#add-point`;
+  return `/${ctx.locale}/cabinet/companies/${companyId}/points?card=${encodeURIComponent(ctx.cardId)}#add-point`;
 }
 
 /** Оформить ещё одну компанию, не потеряв монету по пути. */
@@ -57,7 +57,7 @@ export function newCompanyHref(ctx: CtaContext): string {
 
 /** Свои точки конкретной компании. */
 export function manageHref(companyId: string, ctx: CtaContext): string {
-  return `/${ctx.locale}/cabinet/companies/${companyId}#your-points`;
+  return `/${ctx.locale}/cabinet/companies/${companyId}/points`;
 }
 
 /**

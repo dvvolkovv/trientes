@@ -18,6 +18,15 @@ import { basemapStyle } from "@/lib/basemap";
 
 const PRAGUE: [number, number] = [14.4212535, 50.0874654];
 const TYPES = ["SHOP", "ATM", "POS", "SALES_OFFICE", "COMPANY", "ONLINE"] as const;
+
+const TYPE_ICONS: Record<(typeof TYPES)[number], string> = {
+  SHOP: "🛍️",
+  ATM: "🏧",
+  POS: "💳",
+  SALES_OFFICE: "🏢",
+  COMPANY: "🏭",
+  ONLINE: "🌐",
+};
 type PointType = (typeof TYPES)[number];
 
 export type PointFormCoin = { id: string; symbol: string; logoUrl: string | null };
@@ -253,13 +262,30 @@ export function PointForm({
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap gap-2">
-        {TYPES.map((tp) => (
-          <button key={tp} type="button" onClick={() => setType(tp)}
-            className={`text-[12px] px-3 py-1.5 rounded-md border ${type === tp ? "bg-foreground text-bg" : "border-hairline text-muted"}`}>
-            {t(`type.${tp}`)}
-          </button>
-        ))}
+      {/* Тип точки — плитками, а не шестью пилюлями высотой 28 px: выбор вида места
+          это первое решение формы, и в него должен попадать палец (правило AN).
+          Под каждой подписью строка-пояснение: «пост-терминал» без неё непонятен. */}
+      <div>
+        <div className="mb-2 text-[11px] uppercase tracking-wider text-muted">{t("pointType")}</div>
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
+          {TYPES.map((tp) => (
+            <button
+              key={tp}
+              type="button"
+              onClick={() => setType(tp)}
+              aria-pressed={type === tp}
+              className={`flex min-h-[72px] flex-col items-start justify-center gap-0.5 rounded-[14px] border p-3 text-left transition-colors ${
+                type === tp
+                  ? "border-accent bg-accent/10"
+                  : "border-hairline bg-card hover:border-accent/50"
+              }`}
+            >
+              <span className="text-base leading-none">{TYPE_ICONS[tp]}</span>
+              <span className="text-[12.5px] font-semibold leading-tight">{t(`type.${tp}`)}</span>
+              <span className="text-[10.5px] leading-snug text-muted">{t(`typeHint.${tp}`)}</span>
+            </button>
+          ))}
+        </div>
       </div>
 
       <input value={name} onChange={(e) => setName(e.target.value)} placeholder={t("pointName")} className={input} />

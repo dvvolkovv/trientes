@@ -31,7 +31,10 @@ export function CreateGeoAlertForm() {
       }}
       className="border border-hairline rounded-md p-3 space-y-3 bg-card-alt"
     >
-      <div className="flex gap-2 items-stretch">
+      {/* Четыре части в одной строке не влезают в 320 px ни при каких подписях —
+          поймано тестом ширины кабинета (слайс BM). Перенос, а не уменьшение
+          шрифта: подпись оповещения должна читаться. */}
+      <div className="flex flex-wrap gap-2 items-stretch">
         <input
           value={cc}
           onChange={(e) => setCc(e.target.value.toUpperCase().slice(0, 2))}

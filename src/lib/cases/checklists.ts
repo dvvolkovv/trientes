@@ -79,6 +79,15 @@ export const CHECKLISTS: Record<CaseSubjectType, CheckDef[]> = {
     { key: "noMisleadingClaims", required: true },
     { key: "availabilityPlausible", required: false },
   ],
+  // Правка карточки залистованного предприятия. Сверка реестра необязательна: она
+  // нужна только когда менялось юридическое имя, а правка телефона её не требует —
+  // механически обязательный пункт заставил бы отвечать «не применимо» каждый раз.
+  COMPANY_REVISION: [
+    { key: "changeExplained", required: true },
+    { key: "noMisleadingClaims", required: true },
+    { key: "legalNameMatchesRegistry", required: false },
+    { key: "documentsLegible", required: false },
+  ],
   POINT_REPORT: [
     { key: "reportsIndependent", required: true },
     { key: "ownerAsked", required: true },

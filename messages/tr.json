@@ -742,7 +742,8 @@
         "pointStillListed": "Nokta hâlâ haritada",
         "brandRightProven": "Marka hakkı kanıtlandı (sicil, lisans veya sözleşme)",
         "reportReproduced": "Rapor kaynaklara karşı doğrulandı",
-        "passportMatchesSource": "Pasaport üreticinin kendi verileriyle eşleşiyor"
+        "passportMatchesSource": "Pasaport üreticinin kendi verileriyle eşleşiyor",
+        "changeExplained": "Değişiklik açıklanmış ve mantıklı"
       },
       "checklist": {
         "title": "Kontroller",
@@ -847,6 +848,10 @@
         "productClaim": {
           "approve": "Üreticiyi onayla",
           "reject": "Talebi reddet"
+        },
+        "companyRevision": {
+          "approve": "Değişiklikleri karta uygula",
+          "reject": "Değişiklikleri reddet — mevcut kartı koru"
         }
       },
       "reports": {
@@ -1460,7 +1465,9 @@
       "company_required": "Şirket gerekli",
       "forbidden": "İzin yok",
       "bad_form": "Geçersiz istek",
-      "coin_not_selectable": "Bu coin kartı onaylı değil, bu yüzden seçilemez."
+      "coin_not_selectable": "Bu coin kartı onaylı değil, bu yüzden seçilemez.",
+      "documents_required": "Kayıt belgelerini ekleyin: tüzel unvan belgelerle kanıtlanır.",
+      "nothing_to_apply": "Bu değişiklikte uygulanacak bir şey kalmadı."
     },
     "websiteHint": "https://, http:// veya sadece www.example.com — hepsi geçerli",
     "addressSection": "Adres",
@@ -1557,7 +1564,9 @@
       },
       "uploadFile": "Dosya yükle",
       "uploading": "Yükleniyor…",
-      "uploadHint": "PDF / PNG / JPG — en fazla 8 MB"
+      "uploadHint": "PDF / PNG / JPG — en fazla 8 MB",
+      "startCta": "İşletmeyi doğrula",
+      "manageCta": "Doğrulama belgeleri"
     },
     "viewPublic": "Genel sayfayı aç",
     "photos": "İşyeri fotoğrafları",
@@ -1619,7 +1628,65 @@
     "journalLink": "Etkinlik günlüğü",
     "tasksLink": "Görevler",
     "promosLink": "Kampanyalar",
-    "supplyLink": "Arz"
+    "supplyLink": "Arz",
+    "notSet": "ayarlanmadı",
+    "underReview": "inceleniyor",
+    "editCard": "Kartı düzenle",
+    "backToCard": "Karta geri dön",
+    "remove": "Kaldır",
+    "pointType": "Ne tür bir yer?",
+    "sendForReview": "Değişiklikleri incelemeye gönder",
+    "moderatedEditHint": "Şirketiniz yayında, bu yüzden vitrindeki ad, web sitesi, iletişim bilgileri ve adres hemen değişmez: bunlar bir inceleyene gider ve onaylanana kadar ziyaretçiler mevcut kartı görmeye devam eder. Açıklama ve logo anında kaydedilir.",
+    "profileSentToReview": "Kaydedildi. {count} değişiklik incelemeye gitti — onaylanana kadar vitrinde mevcut kart kalır.",
+    "pendingChanges": "İnceleyen bekleniyor: {count} değişiklik",
+    "pendingChangesHint": "Tekrar düzenlerseniz bekleyen değişiklik yenisiyle değiştirilir — bir şirketin aynı anda yalnızca bir bekleyen değişikliği olur.",
+    "documentsRequiredTitle": "Gerekli belgeler",
+    "documentsRequiredHint": "Resmi ad bir metin alanıyla değil, belgelerle kanıtlanır. Kayıt belgelerini ekleyin: bu değişikliğin onaylanması doğrulamayı yeniden başlatır.",
+    "typeHint": {
+      "SHOP": "Tezgâhlı bir dükkân, kafe veya benzeri bir yer",
+      "ATM": "Kripto ATM’si veya değişim makinesi",
+      "POS": "Başkasına ait bir mekânın içindeki ödeme terminali",
+      "SALES_OFFICE": "Müşterilerle görüştüğünüz bir ofis",
+      "COMPANY": "Merkez ofis veya üretim tesisi",
+      "ONLINE": "Adres yok — müşterilere çevrimiçi hizmet veriyorsunuz"
+    },
+    "groups": {
+      "heading": "İşletmeyi yönetme",
+      "showcase": "Vitrin",
+      "household": "Arka ofis",
+      "order": "Ekip ve düzen"
+    },
+    "groupHint": {
+      "showcase": "Müşterinin gördüğü şey: haritadaki yerler, ürünler, fiyatlar, cashback ve kampanyalar.",
+      "household": "Müşterinin görmediği şey: depolar, stok ve tedarikçilere verilen siparişler.",
+      "order": "Kim ne yapar: ekip, görevler ve olan bitenin günlüğü."
+    },
+    "tiles": {
+      "points": "Yerler",
+      "products": "Ürünler",
+      "pricing": "Fiyatlar ve cashback",
+      "promos": "Kampanyalar",
+      "warehouses": "Depolar",
+      "supply": "Tedarik",
+      "team": "Ekip",
+      "tasks": "Görevler",
+      "journal": "Etkinlik günlüğü"
+    },
+    "tileUnit": {
+      "points": "{count} haritada",
+      "products": "{count} satışta",
+      "pricing": "{count} kategoriye göre",
+      "promos": "{count} yayında",
+      "warehouses": "{count} ürün saklama yeri",
+      "supply": "{count} açık sipariş",
+      "team": "{count} kişi",
+      "tasks": "{count} açık",
+      "journal": "{count} kayıt"
+    },
+    "tileEmpty": "henüz bir şey yok",
+    "tileBadge": {
+      "moderation": "{count} incelemede"
+    }
   },
   "cabinet": {
     "kicker": "Bölüm · Kabin",
@@ -3561,7 +3628,47 @@
       "category": "Kategori oranınız burada geçerlidir: {percent}%.",
       "company": "Tüm ürünler için oranınız burada geçerlidir: {percent}%."
     },
-    "loyaltyLink": "Cashback oranları"
+    "loyaltyLink": "Cashback oranları",
+    "ladder": {
+      "heading": "Bu ürünün kurulumu",
+      "progress": "{total} üzerinden {done}",
+      "blocked": "«{step}» tamamlanana kadar hiçbir şey değişmeyecek",
+      "missing": "Hâlâ gerekli: {list}",
+      "step": {
+        "passport": "Pasaport — bu nedir",
+        "offer": "Teklifiniz — fiyat ve birim",
+        "where": "Nerede satıldığı — raf veya çevrimiçi",
+        "cashback": "Bunda cashback",
+        "promo": "Müşteriler için bir teklif",
+        "supply": "Tedarik ve otomatik sipariş"
+      },
+      "doneHint": {
+        "passport": "Pasaport dolduruldu",
+        "offer": "Fiyat yayında ve müşteriler görebiliyor",
+        "where": "Stok var ve konum haritada görünüyor",
+        "cashback": "Bu ürüne bir oran uygulanıyor",
+        "promo": "Canlı bir teklif bu ürünü içeriyor",
+        "supply": "Otomatik sipariş stokları izliyor"
+      },
+      "todoHint": {
+        "passport": "Pasaportu doldurun",
+        "offer": "Müşteriler ürünü görebilsin diye bir fiyat belirleyin",
+        "where": "Bir rafa veya çevrimiçi depoya koyun",
+        "cashback": "Cashback vadedin — kendi oranınız veya şirketinki",
+        "promo": "Takipçilerinize ondan bahsedin",
+        "supply": "Yeniden sipariş seviyesi belirleyin"
+      },
+      "need": {
+        "name": "bir ad",
+        "category": "bir kategori",
+        "description": "daha uzun bir açıklama",
+        "photo": "bir fotoğraf",
+        "gtin": "bir barkod",
+        "offer": "bir fiyat",
+        "price": "sıfırın üzerinde bir fiyat",
+        "paused": "teklif duraklatıldı"
+      }
+    }
   },
   "scanner": {
     "open": "Tara",
@@ -3902,7 +4009,8 @@
       "ORDER_CANCELLED": "Satın alma siparişi iptal edildi",
       "ORDER_DOC_ADDED": "Satın alma siparişine belge eklendi",
       "REORDER_RULE_SAVED": "Otomatik sipariş kuralı kaydedildi",
-      "REORDER_RULE_DELETED": "Otomatik sipariş kuralı silindi"
+      "REORDER_RULE_DELETED": "Otomatik sipariş kuralı silindi",
+      "PROFILE_CHANGES_SUBMITTED": "Kart değişiklikleri incelemeye gönderildi"
     }
   },
   "cabinetTasks": {

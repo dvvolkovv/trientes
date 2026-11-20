@@ -742,7 +742,8 @@
         "pointStillListed": "该点仍在地图上",
         "brandRightProven": "品牌权属已证明（注册、许可或合同）",
         "reportReproduced": "经与来源核对，报告属实",
-        "passportMatchesSource": "护照与制造商自有数据一致"
+        "passportMatchesSource": "护照与制造商自有数据一致",
+        "changeExplained": "变更已有说明且合情合理"
       },
       "checklist": {
         "title": "检查",
@@ -847,6 +848,10 @@
         "productClaim": {
           "approve": "确认该制造商",
           "reject": "拒绝该认领"
+        },
+        "companyRevision": {
+          "approve": "将这些更改应用到卡片",
+          "reject": "拒绝更改 — 保留当前卡片"
         }
       },
       "reports": {
@@ -1460,7 +1465,9 @@
       "company_required": "需要公司",
       "forbidden": "不允许",
       "bad_form": "请求无效",
-      "coin_not_selectable": "该币种卡片未通过审核，无法选择。"
+      "coin_not_selectable": "该币种卡片未通过审核，无法选择。",
+      "documents_required": "请附上注册文件：法定名称需以纸质文件证明。",
+      "nothing_to_apply": "此变更已无可应用的内容。"
     },
     "websiteHint": "支持 https://、http:// 或直接 www.example.com",
     "addressSection": "地址",
@@ -1557,7 +1564,9 @@
       },
       "uploadFile": "上传文件",
       "uploading": "上传中…",
-      "uploadHint": "PDF / PNG / JPG — 最大 8 MB"
+      "uploadHint": "PDF / PNG / JPG — 最大 8 MB",
+      "startCta": "验证企业",
+      "manageCta": "验证文件"
     },
     "viewPublic": "查看公开页面",
     "photos": "店面照片",
@@ -1619,7 +1628,65 @@
     "journalLink": "活动日志",
     "tasksLink": "任务",
     "promosLink": "优惠",
-    "supplyLink": "供应"
+    "supplyLink": "供应",
+    "notSet": "未设置",
+    "underReview": "审核中",
+    "editCard": "编辑卡片",
+    "backToCard": "返回卡片",
+    "remove": "移除",
+    "pointType": "这是哪种场所？",
+    "sendForReview": "提交更改以供审核",
+    "moderatedEditHint": "您的公司已上线，因此店面名称、网站、联系方式和地址不会立即更改：它们会提交给审核员，访客在变更获批前将继续看到当前卡片。描述和徽标会立即保存。",
+    "profileSentToReview": "已保存。{count} 项更改已提交给审核员 — 在获批之前，店面将保留当前卡片。",
+    "pendingChanges": "等待审核员：{count} 项更改",
+    "pendingChangesHint": "再次编辑，待处理的更改将被新更改取代——一家公司同一时间只能有一个待处理更改。",
+    "documentsRequiredTitle": "所需文件",
+    "documentsRequiredHint": "法定名称需以纸质文件证明，而非文本字段。请附上注册文件：批准此更改将重新开始验证。",
+    "typeHint": {
+      "SHOP": "商店、咖啡馆或任何有柜台的场所",
+      "ATM": "加密货币ATM或兑换机",
+      "POS": "位于他人场所内的支付终端",
+      "SALES_OFFICE": "与客户会面的办公室",
+      "COMPANY": "总部或生产基地",
+      "ONLINE": "无地址——您在线为客户提供服务"
+    },
+    "groups": {
+      "heading": "运营业务",
+      "showcase": "店面",
+      "household": "后勤",
+      "order": "团队与协作"
+    },
+    "groupHint": {
+      "showcase": "客户所见：地图上的地点、商品、价格、返现和优惠。",
+      "household": "客户看不见的内容：仓库、库存和对供应商的订单。",
+      "order": "谁负责什么：团队、任务和所有事件的日志。"
+    },
+    "tiles": {
+      "points": "地点",
+      "products": "商品",
+      "pricing": "价格与返现",
+      "promos": "优惠",
+      "warehouses": "仓库",
+      "supply": "供应",
+      "team": "团队",
+      "tasks": "任务",
+      "journal": "活动日志"
+    },
+    "tileUnit": {
+      "points": "地图上{count}个",
+      "products": "在售{count}个",
+      "pricing": "按类别{count}项",
+      "promos": "进行中{count}个",
+      "warehouses": "存放商品的场所{count}个",
+      "supply": "未完成订单{count}个",
+      "team": "{count}人",
+      "tasks": "未完成{count}个",
+      "journal": "{count}条"
+    },
+    "tileEmpty": "尚无内容",
+    "tileBadge": {
+      "moderation": "审核中{count}个"
+    }
   },
   "cabinet": {
     "kicker": "板块 · 个人中心",
@@ -3561,7 +3628,47 @@
       "category": "你的品类比例适用于此处：{percent}%。",
       "company": "你的全商品比例适用于此处：{percent}%。"
     },
-    "loyaltyLink": "返现比例"
+    "loyaltyLink": "返现比例",
+    "ladder": {
+      "heading": "设置此产品",
+      "progress": "{done}/{total}",
+      "blocked": "在完成“{step}”之前，不会有任何变化",
+      "missing": "仍需：{list}",
+      "step": {
+        "passport": "护照 — 它是什么",
+        "offer": "你的报价 — 价格与单位",
+        "where": "在哪里销售 — 货架或线上",
+        "cashback": "其返现",
+        "promo": "给客户的优惠",
+        "supply": "供货与自动订货"
+      },
+      "doneHint": {
+        "passport": "护照已填写",
+        "offer": "价格已上线，客户可见",
+        "where": "有库存，地点在地图上显示",
+        "cashback": "此产品已应用费率",
+        "promo": "有一条在售报价包含此商品",
+        "supply": "自动订货监控库存"
+      },
+      "todoHint": {
+        "passport": "填写护照",
+        "offer": "设置价格，客户才能看到该商品",
+        "where": "把它放到货架或线上仓库",
+        "cashback": "承诺返现——使用你自己的比例或公司比例",
+        "promo": "告诉你的关注者",
+        "supply": "设定需要补货的库存水平"
+      },
+      "need": {
+        "name": "名称",
+        "category": "类别",
+        "description": "更长的描述",
+        "photo": "照片",
+        "gtin": "条形码",
+        "offer": "价格",
+        "price": "高于零的价格",
+        "paused": "报价已暂停"
+      }
+    }
   },
   "scanner": {
     "open": "扫描",
@@ -3902,7 +4009,8 @@
       "ORDER_CANCELLED": "采购订单已取消",
       "ORDER_DOC_ADDED": "已向采购订单附加文档",
       "REORDER_RULE_SAVED": "自动下单规则已保存",
-      "REORDER_RULE_DELETED": "自动下单规则已删除"
+      "REORDER_RULE_DELETED": "自动下单规则已删除",
+      "PROFILE_CHANGES_SUBMITTED": "卡片更改已提交审核"
     }
   },
   "cabinetTasks": {

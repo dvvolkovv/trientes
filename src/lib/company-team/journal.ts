@@ -10,6 +10,7 @@ import { prisma } from "@/lib/prisma";
 
 export type CompanyAction =
   | "PROFILE_SAVED"
+  | "PROFILE_CHANGES_SUBMITTED"
   | "POINT_SUBMITTED"
   | "POINT_UPDATED"
   | "POINT_CLAIMED"

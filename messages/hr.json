@@ -742,7 +742,8 @@
         "pointStillListed": "Lokacija je još uvijek na karti",
         "brandRightProven": "Pravo na robnu marku je dokazano (registar, licenca ili ugovor)",
         "reportReproduced": "Izvješće je potvrđeno u izvorima",
-        "passportMatchesSource": "Putovnica odgovara podacima proizvođača"
+        "passportMatchesSource": "Putovnica odgovara podacima proizvođača",
+        "changeExplained": "Promjena je objašnjena i ima smisla"
       },
       "checklist": {
         "title": "Provjere",
@@ -847,6 +848,10 @@
         "productClaim": {
           "approve": "Potvrditi proizvođača",
           "reject": "Odbiti zahtjev"
+        },
+        "companyRevision": {
+          "approve": "Primijeniti promjene na karticu",
+          "reject": "Odbiti promjene — zadržati trenutnu karticu"
         }
       },
       "reports": {
@@ -1460,7 +1465,9 @@
       "company_required": "Tvrtka je obavezna",
       "forbidden": "Nije dopušteno",
       "bad_form": "Nevažeći zahtjev",
-      "coin_not_selectable": "Ova kartica kovanice nije odobrena, pa je nije moguće odabrati."
+      "coin_not_selectable": "Ova kartica kovanice nije odobrena, pa je nije moguće odabrati.",
+      "documents_required": "Priložite registracijske dokumente: pravni naziv dokazuje se dokumentima.",
+      "nothing_to_apply": "Nema više ništa za primijeniti u ovoj promjeni."
     },
     "websiteHint": "https://, http:// ili samo www.example.com — sve funkcionira",
     "addressSection": "Adresa",
@@ -1557,7 +1564,9 @@
       },
       "uploadFile": "Učitajte datoteku",
       "uploading": "Učitavanje…",
-      "uploadHint": "PDF / PNG / JPG — do 8 MB"
+      "uploadHint": "PDF / PNG / JPG — do 8 MB",
+      "startCta": "Verificirajte poslovanje",
+      "manageCta": "Dokumenti za verifikaciju"
     },
     "viewPublic": "Prikažite javnu stranicu",
     "photos": "Fotografije izloga",
@@ -1619,7 +1628,65 @@
     "journalLink": "Dnevnik aktivnosti",
     "tasksLink": "Zadaci",
     "promosLink": "Ponude",
-    "supplyLink": "Opskrba"
+    "supplyLink": "Opskrba",
+    "notSet": "nije postavljeno",
+    "underReview": "u pregledu",
+    "editCard": "Uredite karticu",
+    "backToCard": "Natrag na karticu",
+    "remove": "Uklonite",
+    "pointType": "Kakva je to lokacija?",
+    "sendForReview": "Pošaljite promjene na pregled",
+    "moderatedEditHint": "Vaša je tvrtka objavljena, stoga se naziv na izlogu, web-stranica, kontakti i adresa ne mijenjaju odmah: odlaze na pregled, a posjetitelji i dalje vide trenutačnu karticu dok promjena ne bude odobrena. Opis i logo spremaju se odmah.",
+    "profileSentToReview": "Spremljeno. Na pregled je poslano {count} promjena — izlog zadržava trenutačnu karticu dok ne budu odobrene.",
+    "pendingChanges": "Čeka recenzenta: {count} promjena",
+    "pendingChangesHint": "Uredite ponovno i promjena na čekanju bit će zamijenjena novom — tvrtka u jednom trenutku može imati samo jednu promjenu na čekanju.",
+    "documentsRequiredTitle": "Potrebni dokumenti",
+    "documentsRequiredHint": "Pravni naziv dokazuje se dokumentima, a ne unosom u polje. Priložite registracijske dokumente: odobravanje ove promjene ponovno pokreće verifikaciju.",
+    "typeHint": {
+      "SHOP": "Trgovina, kafić ili bilo koje mjesto s pultom",
+      "ATM": "Kripto bankomat ili mjenjački automat",
+      "POS": "Platni terminal unutar tuđeg prostora",
+      "SALES_OFFICE": "Ured u kojem se susrećete s kupcima",
+      "COMPANY": "Sjedište ili proizvodni pogon",
+      "ONLINE": "Bez adrese — kupce opslužujete online"
+    },
+    "groups": {
+      "heading": "Vođenje poslovanja",
+      "showcase": "Izlog",
+      "household": "Pozadina poslovanja",
+      "order": "Tim i zadaci"
+    },
+    "groupHint": {
+      "showcase": "Što kupac vidi: lokacije na karti, proizvodi, cijene, povrat novca i ponude.",
+      "household": "Što kupac ne vidi: skladišta, zalihe i narudžbe dobavljačima.",
+      "order": "Tko što radi: tim, zadaci i zapis svega što se dogodilo."
+    },
+    "tiles": {
+      "points": "Lokacije",
+      "products": "Proizvodi",
+      "pricing": "Cijene i povrat novca",
+      "promos": "Ponude",
+      "warehouses": "Skladišta",
+      "supply": "Nabava",
+      "team": "Tim",
+      "tasks": "Zadaci",
+      "journal": "Dnevnik aktivnosti"
+    },
+    "tileUnit": {
+      "points": "{count} na karti",
+      "products": "{count} u prodaji",
+      "pricing": "{count} po kategoriji",
+      "promos": "{count} aktivno",
+      "warehouses": "{count} mjesta za skladištenje robe",
+      "supply": "{count} otvorenih narudžbi",
+      "team": "{count} osoba",
+      "tasks": "{count} otvorenih",
+      "journal": "{count} unosa"
+    },
+    "tileEmpty": "još ništa",
+    "tileBadge": {
+      "moderation": "{count} u pregledu"
+    }
   },
   "cabinet": {
     "kicker": "Odjeljak · Profil",
@@ -3561,7 +3628,47 @@
       "category": "Ovdje vrijedi vaša stopa za kategoriju: {percent}%.",
       "company": "Ovdje vrijedi vaša stopa za sve proizvode: {percent}%."
     },
-    "loyaltyLink": "Stope cashbacka"
+    "loyaltyLink": "Stope cashbacka",
+    "ladder": {
+      "heading": "Postavljanje ovog proizvoda",
+      "progress": "{done} od {total}",
+      "blocked": "Ništa se neće promijeniti dok se «{step}» ne dovrši",
+      "missing": "Još potrebno: {list}",
+      "step": {
+        "passport": "Putovnica — što je to",
+        "offer": "Vaša ponuda — cijena i jedinica",
+        "where": "Gdje se prodaje — polica ili online",
+        "cashback": "Cashback za proizvod",
+        "promo": "Ponuda za kupce",
+        "supply": "Zalihe i automatsko naručivanje"
+      },
+      "doneHint": {
+        "passport": "Ispunjena je putovnica",
+        "offer": "Cijena je aktivna i kupci je mogu vidjeti",
+        "where": "Ima zaliha i lokacija se prikazuje na karti",
+        "cashback": "Na ovaj proizvod primjenjuje se stopa cashbacka",
+        "promo": "Aktivna ponuda navodi ovaj proizvod",
+        "supply": "Automatsko naručivanje prati zalihe"
+      },
+      "todoHint": {
+        "passport": "Ispunite putovnicu",
+        "offer": "Postavite cijenu kako bi kupci mogli vidjeti proizvod",
+        "where": "Stavite ga na policu ili u online skladište",
+        "cashback": "Ponudite cashback — vlastitu stopu ili onu tvrtke",
+        "promo": "Obavijestite svoje pratitelje o tome",
+        "supply": "Postavite razinu za ponovno naručivanje"
+      },
+      "need": {
+        "name": "naziv",
+        "category": "kategorija",
+        "description": "duži opis",
+        "photo": "fotografija",
+        "gtin": "barkod",
+        "offer": "cijena",
+        "price": "cijena iznad nule",
+        "paused": "ponuda je pauzirana"
+      }
+    }
   },
   "scanner": {
     "open": "Skenirati",
@@ -3902,7 +4009,8 @@
       "ORDER_CANCELLED": "Narudžbenica otkazana",
       "ORDER_DOC_ADDED": "Dokument priložen uz narudžbenicu",
       "REORDER_RULE_SAVED": "Pravilo automatske narudžbe spremljeno",
-      "REORDER_RULE_DELETED": "Pravilo automatske narudžbe izbrisano"
+      "REORDER_RULE_DELETED": "Pravilo automatske narudžbe izbrisano",
+      "PROFILE_CHANGES_SUBMITTED": "Promjene kartice poslane na pregled"
     }
   },
   "cabinetTasks": {

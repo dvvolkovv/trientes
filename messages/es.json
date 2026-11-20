@@ -742,7 +742,8 @@
         "pointStillListed": "El punto sigue en el mapa",
         "brandRightProven": "Se ha comprobado el derecho sobre la marca (registro, licencia o contrato)",
         "reportReproduced": "El informe coincide con las fuentes",
-        "passportMatchesSource": "El pasaporte coincide con los datos del fabricante"
+        "passportMatchesSource": "El pasaporte coincide con los datos del fabricante",
+        "changeExplained": "El cambio está explicado y tiene sentido"
       },
       "checklist": {
         "title": "Comprobaciones",
@@ -847,6 +848,10 @@
         "productClaim": {
           "approve": "Confirmar al fabricante",
           "reject": "Rechazar la reclamación"
+        },
+        "companyRevision": {
+          "approve": "Aplicar los cambios a la tarjeta",
+          "reject": "Rechazar los cambios — mantener la tarjeta actual"
         }
       },
       "reports": {
@@ -1460,7 +1465,9 @@
       "company_required": "Empresa requerida",
       "forbidden": "No permitido",
       "bad_form": "Solicitud no válida",
-      "coin_not_selectable": "Esta ficha de moneda no está aprobada, así que no se puede seleccionar."
+      "coin_not_selectable": "Esta ficha de moneda no está aprobada, así que no se puede seleccionar.",
+      "documents_required": "Adjunta los documentos de registro: el nombre legal se acredita con documentos.",
+      "nothing_to_apply": "No queda nada que aplicar en este cambio."
     },
     "websiteHint": "Con https://, http:// o simplemente www.example.com — todo vale",
     "addressSection": "Dirección",
@@ -1557,7 +1564,9 @@
       },
       "uploadFile": "Subir archivo",
       "uploading": "Subiendo…",
-      "uploadHint": "PDF / PNG / JPG — hasta 8 MB"
+      "uploadHint": "PDF / PNG / JPG — hasta 8 MB",
+      "startCta": "Verificar la empresa",
+      "manageCta": "Documentos de verificación"
     },
     "viewPublic": "Ver página pública",
     "photos": "Fotos del local",
@@ -1619,7 +1628,65 @@
     "journalLink": "Registro de actividad",
     "tasksLink": "Tareas",
     "promosLink": "Ofertas",
-    "supplyLink": "Suministro"
+    "supplyLink": "Suministro",
+    "notSet": "no establecido",
+    "underReview": "en revisión",
+    "editCard": "Editar ficha",
+    "backToCard": "Volver a la ficha",
+    "remove": "Eliminar",
+    "pointType": "¿Qué tipo de lugar es?",
+    "sendForReview": "Enviar cambios para revisión",
+    "moderatedEditHint": "Tu empresa está publicada, así que el nombre en el escaparate, el sitio web, los contactos y la dirección no cambian de inmediato: pasan a un revisor y los visitantes siguen viendo la ficha actual hasta que se apruebe el cambio. La descripción y el logotipo se guardan de inmediato.",
+    "profileSentToReview": "Guardado. {count} cambio(s) se enviaron a revisión — el escaparate mantiene la ficha actual hasta que se aprueben.",
+    "pendingChanges": "En espera de un revisor: {count} cambio(s)",
+    "pendingChangesHint": "Edita de nuevo y el cambio pendiente se sustituye por el nuevo — una empresa solo tiene un cambio pendiente a la vez.",
+    "documentsRequiredTitle": "Documentos necesarios",
+    "documentsRequiredHint": "El nombre legal se acredita con documentos, no con un campo de texto. Adjunta los documentos de registro: aprobar este cambio reinicia la verificación.",
+    "typeHint": {
+      "SHOP": "Una tienda, café o cualquier lugar con mostrador",
+      "ATM": "Un cajero cripto o máquina de cambio",
+      "POS": "Un terminal de pago dentro del local de otra persona",
+      "SALES_OFFICE": "Una oficina donde atiendes a clientes",
+      "COMPANY": "Una sede central o sitio de producción",
+      "ONLINE": "Sin dirección: atiendes a clientes en línea"
+    },
+    "groups": {
+      "heading": "Gestión de la empresa",
+      "showcase": "Escaparate",
+      "household": "Operativa interna",
+      "order": "Equipo y orden"
+    },
+    "groupHint": {
+      "showcase": "Lo que ve un cliente: lugares en el mapa, productos, precios, cashback y ofertas.",
+      "household": "Lo que un cliente no ve: almacenes, existencias y pedidos a proveedores.",
+      "order": "Quién hace qué: el equipo, las tareas y el registro de todo lo que ocurrió."
+    },
+    "tiles": {
+      "points": "Lugares",
+      "products": "Productos",
+      "pricing": "Precios y cashback",
+      "promos": "Ofertas",
+      "warehouses": "Almacenes",
+      "supply": "Suministro",
+      "team": "Equipo",
+      "tasks": "Tareas",
+      "journal": "Registro de actividad"
+    },
+    "tileUnit": {
+      "points": "{count} en el mapa",
+      "products": "{count} en venta",
+      "pricing": "{count} por categoría",
+      "promos": "{count} activas",
+      "warehouses": "{count} lugares para almacenar mercancías",
+      "supply": "{count} órdenes abiertas",
+      "team": "{count} personas",
+      "tasks": "{count} abiertas",
+      "journal": "{count} entradas"
+    },
+    "tileEmpty": "nada todavía",
+    "tileBadge": {
+      "moderation": "{count} en revisión"
+    }
   },
   "cabinet": {
     "kicker": "Sección · Panel",
@@ -3561,7 +3628,47 @@
       "category": "Tu tarifa de categoría se aplica aquí: {percent}%.",
       "company": "Tu tarifa para todos los productos se aplica aquí: {percent}%."
     },
-    "loyaltyLink": "Tarifas de cashback"
+    "loyaltyLink": "Tarifas de cashback",
+    "ladder": {
+      "heading": "Configurar este producto",
+      "progress": "{done} de {total}",
+      "blocked": "Nada cambiará hasta que «{step}» se complete",
+      "missing": "Aún falta: {list}",
+      "step": {
+        "passport": "Pasaporte — qué es",
+        "offer": "Tu oferta — precio y unidad",
+        "where": "Dónde se vende — en un estante o en línea",
+        "cashback": "Cashback del producto",
+        "promo": "Una oferta para clientes",
+        "supply": "Suministro y pedido automático"
+      },
+      "doneHint": {
+        "passport": "El pasaporte está completo",
+        "offer": "El precio está activo y los clientes pueden verlo",
+        "where": "Hay stock y el lugar aparece en el mapa",
+        "cashback": "Se aplica una tasa a este producto",
+        "promo": "Una oferta activa menciona este producto",
+        "supply": "El pedido automático vigila el stock"
+      },
+      "todoHint": {
+        "passport": "Completa el pasaporte",
+        "offer": "Fija un precio para que los clientes vean el producto",
+        "where": "Ponlo en un estante o en un almacén en línea",
+        "cashback": "Promete cashback — tu propia tasa o la de la empresa",
+        "promo": "Cuéntaselo a tus seguidores",
+        "supply": "Establece el nivel de reposición"
+      },
+      "need": {
+        "name": "un nombre",
+        "category": "una categoría",
+        "description": "una descripción más larga",
+        "photo": "una foto",
+        "gtin": "un código de barras",
+        "offer": "un precio",
+        "price": "un precio superior a cero",
+        "paused": "la oferta está pausada"
+      }
+    }
   },
   "scanner": {
     "open": "Escanear",
@@ -3902,7 +4009,8 @@
       "ORDER_CANCELLED": "Pedido de compra cancelado",
       "ORDER_DOC_ADDED": "Documento adjunto a un pedido de compra",
       "REORDER_RULE_SAVED": "Regla de pedido automático guardada",
-      "REORDER_RULE_DELETED": "Regla de pedido automático eliminada"
+      "REORDER_RULE_DELETED": "Regla de pedido automático eliminada",
+      "PROFILE_CHANGES_SUBMITTED": "Cambios de la ficha enviados para revisión"
     }
   },
   "cabinetTasks": {

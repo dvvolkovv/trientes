@@ -742,7 +742,8 @@
         "pointStillListed": "The point is still on the map",
         "brandRightProven": "Right to the brand is proven (registry, licence or contract)",
         "reportReproduced": "The report checks out against the sources",
-        "passportMatchesSource": "Passport matches the manufacturer's own data"
+        "passportMatchesSource": "Passport matches the manufacturer's own data",
+        "changeExplained": "The change is explained and makes sense"
       },
       "checklist": {
         "title": "Checks",
@@ -847,6 +848,10 @@
         "productClaim": {
           "approve": "Confirm the manufacturer",
           "reject": "Refuse the claim"
+        },
+        "companyRevision": {
+          "approve": "Apply the changes to the card",
+          "reject": "Reject the changes — keep the current card"
         }
       },
       "reports": {
@@ -1460,7 +1465,9 @@
       "company_required": "Company required",
       "forbidden": "Not allowed",
       "bad_form": "Invalid request",
-      "coin_not_selectable": "This coin card is not approved, so it cannot be selected."
+      "coin_not_selectable": "This coin card is not approved, so it cannot be selected.",
+      "documents_required": "Attach the registration documents: the legal name is proved by paper.",
+      "nothing_to_apply": "There is nothing left to apply in this change."
     },
     "websiteHint": "https://, http://, or just www.example.com — all work",
     "addressSection": "Address",
@@ -1557,7 +1564,9 @@
       },
       "uploadFile": "Upload file",
       "uploading": "Uploading…",
-      "uploadHint": "PDF / PNG / JPG — up to 8 MB"
+      "uploadHint": "PDF / PNG / JPG — up to 8 MB",
+      "startCta": "Verify the business",
+      "manageCta": "Verification documents"
     },
     "viewPublic": "View public page",
     "photos": "Storefront photos",
@@ -1619,7 +1628,65 @@
     "journalLink": "Activity log",
     "tasksLink": "Tasks",
     "promosLink": "Offers",
-    "supplyLink": "Supply"
+    "supplyLink": "Supply",
+    "notSet": "not set",
+    "underReview": "under review",
+    "editCard": "Edit card",
+    "backToCard": "Back to the card",
+    "remove": "Remove",
+    "pointType": "What kind of place is it?",
+    "sendForReview": "Send changes for review",
+    "moderatedEditHint": "Your company is live, so the name on the storefront, the website, contacts and the address do not change straight away: they go to a reviewer, and visitors keep seeing the current card until the change is approved. The description and the logo are saved immediately.",
+    "profileSentToReview": "Saved. {count} change(s) went to a reviewer — the storefront keeps the current card until they are approved.",
+    "pendingChanges": "Waiting for a reviewer: {count} change(s)",
+    "pendingChangesHint": "Edit again and the pending change is replaced by the new one — a company has one pending change at a time.",
+    "documentsRequiredTitle": "Documents needed",
+    "documentsRequiredHint": "The legal name is proved by paper, not by a text field. Attach the registration documents: approving this change starts the verification again.",
+    "typeHint": {
+      "SHOP": "A shop, cafe or any place with a counter",
+      "ATM": "A crypto ATM or exchange machine",
+      "POS": "A payment terminal inside somebody else’s place",
+      "SALES_OFFICE": "An office where you meet customers",
+      "COMPANY": "A head office or production site",
+      "ONLINE": "No address — you serve customers online"
+    },
+    "groups": {
+      "heading": "Running the business",
+      "showcase": "Storefront",
+      "household": "Household",
+      "order": "Team and order"
+    },
+    "groupHint": {
+      "showcase": "What a customer sees: places on the map, goods, prices, cashback and offers.",
+      "household": "What a customer does not see: warehouses, stock and orders to suppliers.",
+      "order": "Who does what: the team, tasks and the log of everything that happened."
+    },
+    "tiles": {
+      "points": "Places",
+      "products": "Goods",
+      "pricing": "Prices and cashback",
+      "promos": "Offers",
+      "warehouses": "Warehouses",
+      "supply": "Supply",
+      "team": "Team",
+      "tasks": "Tasks",
+      "journal": "Activity log"
+    },
+    "tileUnit": {
+      "points": "{count} on the map",
+      "products": "{count} on sale",
+      "pricing": "{count} by category",
+      "promos": "{count} live",
+      "warehouses": "{count} places to keep goods",
+      "supply": "{count} open orders",
+      "team": "{count} people",
+      "tasks": "{count} open",
+      "journal": "{count} entries"
+    },
+    "tileEmpty": "nothing yet",
+    "tileBadge": {
+      "moderation": "{count} in review"
+    }
   },
   "cabinet": {
     "kicker": "Section · Cabinet",
@@ -3561,7 +3628,47 @@
       "category": "Your category rate applies here: {percent}%.",
       "company": "Your all-products rate applies here: {percent}%."
     },
-    "loyaltyLink": "Cashback rates"
+    "loyaltyLink": "Cashback rates",
+    "ladder": {
+      "heading": "Setting this product up",
+      "progress": "{done} of {total}",
+      "blocked": "Nothing will change until «{step}» is done",
+      "missing": "Still needed: {list}",
+      "step": {
+        "passport": "Passport — what the thing is",
+        "offer": "Your offer — price and unit",
+        "where": "Where it is sold — a shelf or online",
+        "cashback": "Cashback on it",
+        "promo": "An offer for customers",
+        "supply": "Supply and auto-ordering"
+      },
+      "doneHint": {
+        "passport": "The passport is filled in",
+        "offer": "The price is live and customers can see it",
+        "where": "There is stock, and the place shows on the map",
+        "cashback": "A rate applies to this product",
+        "promo": "A live offer mentions this product",
+        "supply": "Auto-ordering watches the stock"
+      },
+      "todoHint": {
+        "passport": "Fill in the passport",
+        "offer": "Set a price so customers can see the product",
+        "where": "Put it on a shelf or an online warehouse",
+        "cashback": "Promise cashback — your own rate or the company one",
+        "promo": "Tell your followers about it",
+        "supply": "Set the level at which to reorder"
+      },
+      "need": {
+        "name": "a name",
+        "category": "a category",
+        "description": "a longer description",
+        "photo": "a photo",
+        "gtin": "a barcode",
+        "offer": "a price",
+        "price": "a price above zero",
+        "paused": "the offer is paused"
+      }
+    }
   },
   "scanner": {
     "open": "Scan",
@@ -3902,7 +4009,8 @@
       "ORDER_CANCELLED": "Purchase order cancelled",
       "ORDER_DOC_ADDED": "Document attached to a purchase order",
       "REORDER_RULE_SAVED": "Auto-order rule saved",
-      "REORDER_RULE_DELETED": "Auto-order rule deleted"
+      "REORDER_RULE_DELETED": "Auto-order rule deleted",
+      "PROFILE_CHANGES_SUBMITTED": "Card changes sent for review"
     }
   },
   "cabinetTasks": {

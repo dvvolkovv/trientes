@@ -56,7 +56,7 @@ export function ClaimPointForm({
           start(async () => {
             const r = await claimOsmPoint(companyId, osmKey);
             if (r.ok) {
-              router.push(`/${locale}/cabinet/companies/${companyId}#your-points`);
+              router.push(`/${locale}/cabinet/companies/${companyId}/points`);
               router.refresh();
             } else {
               setError(r.reason);

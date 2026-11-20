@@ -21,7 +21,9 @@ export type QueueDef = {
 
 export const QUEUES: QueueDef[] = [
   { key: "coinCards", subjectTypes: ["COIN_CARD"], icon: "🪙" },
-  { key: "companies", subjectTypes: ["COMPANY"], icon: "🏢" },
+  // Листинг предприятия и правка его карточки — одна работа и один проверяющий,
+  // поэтому одна плитка и одно право (прецедент: `products` держит два типа дел).
+  { key: "companies", subjectTypes: ["COMPANY", "COMPANY_REVISION"], icon: "🏢" },
   { key: "points", subjectTypes: ["POINT"], icon: "📍" },
   { key: "exchanges", subjectTypes: ["EXCHANGE"], icon: "🏦" },
   { key: "fintech", subjectTypes: ["FINTECH"], icon: "💳" },

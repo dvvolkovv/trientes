@@ -24,6 +24,9 @@ export const ALL_QUEUES: QueueKey[] = QUEUES.map((q) => q.key);
 export const SUBJECT_QUEUES: Record<CaseSubjectType, QueueKey[]> = {
   COIN_CARD: ["coinCards"],
   COMPANY: ["companies"],
+  // Правка карточки ведётся тем же правом, что листинг предприятия: сотрудник,
+  // допущенный к предприятиям, допущен к их правкам, и обратное не бывает.
+  COMPANY_REVISION: ["companies"],
   POINT: ["points"],
   EXCHANGE: ["exchanges"],
   FINTECH: ["fintech"],

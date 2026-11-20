@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import type { CaseSubjectType } from "@prisma/client";
 import { independentReporters } from "@/lib/points/report-rules";
+import { parseChanges } from "@/lib/company-edit";
 
 export type SubjectField = { label: string; value: string };
 export type SubjectSummary = {
@@ -127,6 +128,30 @@ export async function loadSubject(
           { label: "symbol", value: r.symbol },
           { label: "coingeckoId", value: text(r.coingeckoId) },
           { label: "reason", value: r.reason },
+        ],
+      };
+    }
+    case "COMPANY_REVISION": {
+      const rev = await prisma.companyRevision.findUnique({
+        where: { id: subjectId },
+        include: { company: { select: { id: true, displayName: true, ownerUserId: true, kybStatus: true } } },
+      });
+      if (!rev) return null;
+      const changes = parseChanges(rev.changes);
+      const docs = Array.isArray(rev.documents) ? rev.documents : [];
+      return {
+        title: rev.company.displayName,
+        // Разговор по правке ведётся с владельцем предприятия: автором может быть
+        // сотрудник, но отвечать за карточку перед нами владелец.
+        applicantUserId: rev.company.ownerUserId,
+        href: `/en/companies/${rev.company.id}`,
+        fields: [
+          { label: "company", value: rev.company.displayName },
+          { label: "kyb", value: text(rev.company.kybStatus) },
+          // Было → стало по каждому полю: проверяющий решает именно про изменение,
+          // а не про предприятие целиком.
+          ...changes.map((c) => ({ label: c.field, value: `${c.before ?? "—"} → ${c.after ?? "—"}` })),
+          { label: "documents", value: String(docs.length) },
         ],
       };
     }

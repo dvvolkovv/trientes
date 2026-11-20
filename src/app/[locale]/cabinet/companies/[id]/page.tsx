@@ -2,280 +2,181 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
-import { getViewerCompanyById, canEditSection, canSeeSection, canManageMembers } from "@/lib/business";
-import { readTop100 } from "@/lib/snapshot";
-import { listSelfListedCards } from "@/lib/coin-card-directory";
+import { getViewerCompanyById, canEditSection, canManageMembers } from "@/lib/business";
 import { CompanyProfileForm } from "@/components/business/company-profile-form";
-import { PointForm, type PointFormInitial } from "@/components/business/point-form";
-import { PointsList, type PointListItem } from "@/components/business/points-list";
+import { CompanyCard } from "@/components/business/company-card";
 import { DeletionRequestsSection } from "@/components/business/deletion-requests-section";
 import { DeleteCompanyBlock } from "@/components/business/delete-buttons";
 import { KybSection } from "@/components/business/kyb-section";
+import { CabinetTile, TILE_GRID } from "@/components/cabinet/cabinet-tile";
+import { ADMIN_COLUMN } from "@/lib/admin-ui";
+import { parseChanges } from "@/lib/company-edit";
+import { visibleGroups, visibleTiles, GROUP_ICONS } from "@/lib/cabinet/company-nav";
 import { NOT_DELETED } from "@/lib/soft-delete";
 
 export const dynamic = "force-dynamic";
 
+/**
+ * Страница предприятия в кабинете (слайс BM): карточка «только чтение» плюс три
+ * плитки групп. Прежде здесь лежала всегда открытая форма из четырнадцати полей и
+ * лента из восьми ссылок-пилюль — владелец назвал это «очень тяжёлым».
+ *
+ * Правка открывается по `?edit=1`, документы проверки — по `?kyb=1`: своих адресов
+ * им не заводим, это состояния одной страницы, и возврат должен быть один.
+ */
 export default async function CompanyManagementPage({
   params,
   searchParams,
 }: {
   params: Promise<{ locale: string; id: string }>;
-  searchParams: Promise<{ card?: string; edit?: string }>;
+  searchParams: Promise<{ edit?: string; kyb?: string }>;
 }) {
   const { locale, id } = await params;
-  const { card: cardParam, edit: editParam } = await searchParams;
+  const { edit: editParam, kyb: kybParam } = await searchParams;
   setRequestLocale(locale);
   const t = await getTranslations("business");
-  const { userId, company, role, permissions, pointScope } = await getViewerCompanyById(id);
+  const { userId, company, role, permissions } = await getViewerCompanyById(id);
   if (!userId) redirect(`/${locale}/login`);
   if (!company) notFound();
-  // Профиль, точки и остальные разделы охраняются по отдельности (слайс BE).
   const editable = canEditSection(permissions, "card");
-  const canSeePoints = canSeeSection(permissions, "points");
-  const canEditPoints = canEditSection(permissions, "points");
-  const canManage = canManageMembers(role);
+  const isOwner = canManageMembers(role);
+  const base = `/${locale}/cabinet/companies/${company.id}`;
 
-  const [points, coins, cards] = await Promise.all([
-    prisma.companyPoint.findMany({
-      // Участок сотрудника: пусто — все точки предприятия.
-      where: {
-        companyId: company.id,
-        ...NOT_DELETED,
-        ...(pointScope.length > 0 ? { id: { in: pointScope } } : {}),
-      },
-      orderBy: { createdAt: "desc" },
-      take: 100,
-    }),
-    readTop100(),
-    // Все одобренные собственные листинги — их пока десятки, не сотни.
-    listSelfListedCards(200),
-  ]);
-  const items: PointListItem[] = points.map((p) => ({
-    id: p.id,
-    name: p.name,
-    type: p.type,
-    status: p.status,
-    rejectReason: p.rejectReason,
-  }));
-  const coinOpts = coins.map((c) => ({ id: c.id, symbol: c.symbol, logoUrl: c.logoUrl }));
-  const cardOpts = cards.map((c) => ({
-    id: c.id, symbol: c.symbol, name: c.name, logoUrl: c.logoUrl,
-  }));
-  // Префилл приходит по ссылке с карточки монеты. Непонятный id молча
-  // игнорируется — иначе кнопка «я принимаю» могла бы проставить что угодно.
-  const prefillCards = cardParam && cardOpts.some((c) => c.id === cardParam) ? [cardParam] : [];
+  const pending = await prisma.companyRevision.findFirst({
+    where: { companyId: company.id, status: "PENDING" },
+    orderBy: { createdAt: "desc" },
+  });
+  const pendingChanges = pending ? parseChanges(pending.changes) : [];
 
-  // Правка существующей точки идёт той же формой: ?edit=<id> наполняет её
-  // текущими значениями. Чужой или удалённый id молча игнорируется.
-  const editingRow = editParam ? points.find((p) => p.id === editParam) : undefined;
-  const editing: PointFormInitial | undefined = editingRow
-    ? {
-        id: editingRow.id,
-        type: editingRow.type,
-        name: editingRow.name,
-        countryCode: editingRow.countryCode ?? "",
-        city: editingRow.city ?? "",
-        street: editingRow.street ?? "",
-        houseNumber: editingRow.houseNumber ?? "",
-        postalCode: editingRow.postalCode ?? "",
-        lat: editingRow.lat,
-        lon: editingRow.lon,
-        acceptedCoinIds: editingRow.acceptedCoinIds,
-        acceptedCardIds: editingRow.acceptedCardIds,
-        photos: Array.isArray(editingRow.photos)
-          ? (editingRow.photos as { url: string; label: string | null }[])
-          : [],
-      }
-    : undefined;
+  const editing = editParam === "1" && editable;
+  const kybOpen = kybParam === "1" && isOwner;
+
+  const gate = { permissions, isOwner };
+  const groups = visibleGroups(gate);
+  const counts = groups.length > 0 ? await countsFor(company.id) : null;
 
   return (
-    <main className="max-w-[860px] mx-auto px-4 md:px-12 py-12 space-y-12">
-      <section>
-        <div className="flex items-center gap-3 mb-1 flex-wrap">
-          <h1 className="text-[36px] font-bold tracking-[-0.03em]">{company.displayName}</h1>
-          <span className={`text-xs px-2 py-1 rounded ${
-            company.status === "APPROVED" ? "bg-green-500/15 text-green-500" :
-            company.status === "REJECTED" ? "bg-red-500/15 text-red-500" :
-            "bg-yellow-500/15 text-yellow-500"
-          }`}>
-            {t(`statusBadge.${company.status}`)}
-          </span>
-          {company.status === "APPROVED" ? (
-            <a
-              href={`/${locale}/companies/${company.id}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[12px] underline text-muted hover:text-foreground"
-            >
-              {t("viewPublic")} ↗
-            </a>
-          ) : null}
+    <main className={`${ADMIN_COLUMN} overflow-x-clip py-8 space-y-8`}>
+      {company.suspendedAt && (
+        // Снятое предприятие не видно на витрине, и владелец должен узнать об
+        // этом здесь, а не по пропавшим точкам.
+        <div className="rounded-md border border-red-500/30 bg-red-500/10 p-4">
+          <div className="mb-1 text-xs uppercase tracking-wider text-red-400">{t("suspended.title")}</div>
+          <div className="text-sm text-red-300">{company.suspendReason ?? t("suspended.noReason")}</div>
+          <div className="mt-1 text-xs text-muted">{t("suspended.hint")}</div>
         </div>
-        <p className="text-muted mb-6">{t("profileIntro")}</p>
-        {company.suspendedAt && (
-          // Снятое предприятие не видно на витрине, и владелец должен узнать об
-          // этом здесь, а не по пропавшим точкам.
-          <div className="mb-6 p-4 rounded-md border border-red-500/30 bg-red-500/10">
-            <div className="text-xs uppercase tracking-wider text-red-400 mb-1">
-              {t("suspended.title")}
-            </div>
-            <div className="text-sm text-red-300">
-              {company.suspendReason ?? t("suspended.noReason")}
-            </div>
-            <div className="mt-1 text-xs text-muted">{t("suspended.hint")}</div>
-          </div>
-        )}
-        {company.status === "REJECTED" && company.rejectionReason && (
-          <div className="mb-6 p-4 rounded-md border border-red-500/30 bg-red-500/10">
-            <div className="text-xs uppercase tracking-wider text-red-400 mb-1">{t("rejectionReasonLabel")}</div>
-            <div className="text-sm text-red-300">{company.rejectionReason}</div>
-          </div>
-        )}
-        {editable ? (
-        <CompanyProfileForm
-          companyId={company.id}
-          initial={{
-            legalName: company.legalName, displayName: company.displayName,
-            description: company.description ?? "", website: company.website ?? "",
-            logoUrl: company.logoUrl ?? "", address: company.address ?? "",
-            phone: company.phone ?? "", email: company.email ?? "", country: company.country ?? "",
-            countryCode: company.countryCode ?? "", city: company.city ?? "",
-            street: company.street ?? "", houseNumber: company.houseNumber ?? "",
-            postalCode: company.postalCode ?? "",
-          }}
-        />
-        ) : null}
-      </section>
-      <section className="scroll-mt-24 mb-8 flex flex-wrap gap-2">
-        {/* Задачи видит каждый член предприятия: свои задачи есть у каждого, и
-            поручение, которого исполнитель не видит, — не поручение (слайс BF). */}
-        <Link
-          href={`/${locale}/cabinet/companies/${company.id}/tasks`}
-          className="inline-flex items-center justify-center h-12 px-4 rounded-md border border-hairline text-sm font-medium hover:border-accent"
-        >
-          {t("tasksLink")}
-        </Link>
-        {canSeeSection(permissions, "products") ? (
-          <Link
-            href={`/${locale}/cabinet/companies/${company.id}/products`}
-            className="inline-flex items-center justify-center h-12 px-4 rounded-md border border-hairline text-sm font-medium hover:border-accent"
-          >
-            {t("productsLink")}
-          </Link>
-        ) : null}
-        {canSeeSection(permissions, "warehouses") ? (
-          <Link
-            href={`/${locale}/cabinet/companies/${company.id}/warehouses`}
-            className="inline-flex items-center justify-center h-12 px-4 rounded-md border border-hairline text-sm font-medium hover:border-accent"
-          >
-            {t("warehousesLink")}
-          </Link>
-        ) : null}
-        {canSeeSection(permissions, "supply") ? (
-          <Link
-            href={`/${locale}/cabinet/companies/${company.id}/supply`}
-            className="inline-flex items-center justify-center h-12 px-4 rounded-md border border-hairline text-sm font-medium hover:border-accent"
-          >
-            {t("supplyLink")}
-          </Link>
-        ) : null}
-        {canSeeSection(permissions, "promos") ? (
-          <Link
-            href={`/${locale}/cabinet/companies/${company.id}/promos`}
-            className="inline-flex items-center justify-center h-12 px-4 rounded-md border border-hairline text-sm font-medium hover:border-accent"
-          >
-            {t("promosLink")}
-          </Link>
-        ) : null}
-        {canSeeSection(permissions, "pricing") ? (
-          <Link
-            href={`/${locale}/cabinet/companies/${company.id}/loyalty`}
-            className="inline-flex items-center justify-center h-12 px-4 rounded-md border border-hairline text-sm font-medium hover:border-accent"
-          >
-            {t("loyaltyLink")}
-          </Link>
-        ) : null}
-        {canManage ? (
-          <>
-            <Link
-              href={`/${locale}/cabinet/companies/${company.id}/team`}
-              className="inline-flex items-center justify-center h-12 px-4 rounded-md border border-hairline text-sm font-medium hover:border-accent"
-            >
-              {t("teamLink")}
-            </Link>
-            <Link
-              href={`/${locale}/cabinet/companies/${company.id}/journal`}
-              className="inline-flex items-center justify-center h-12 px-4 rounded-md border border-hairline text-sm font-medium hover:border-accent"
-            >
-              {t("journalLink")}
-            </Link>
-          </>
-        ) : null}
-      </section>
+      )}
+      {company.status === "REJECTED" && company.rejectionReason && (
+        <div className="rounded-md border border-red-500/30 bg-red-500/10 p-4">
+          <div className="mb-1 text-xs uppercase tracking-wider text-red-400">{t("rejectionReasonLabel")}</div>
+          <div className="text-sm text-red-300">{company.rejectionReason}</div>
+        </div>
+      )}
 
-      {canSeePoints ? (
-      <section id="your-points" className="scroll-mt-24">
-        <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-4">{t("yourPoints")}</h2>
-        <PointsList
-          points={items}
-          canDelete={canEditPoints}
-          canDeleteOutright={role === "OWNER"}
-          editHrefBase={canEditPoints ? `/${locale}/cabinet/companies/${company.id}` : undefined}
-        />
-      </section>
-      ) : null}
-      {canEditPoints ? (
-        <section id="add-point" className="scroll-mt-24">
-          <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-4">
-            {editing ? t("editPoint") : t("addPoint")}
-          </h2>
-          {editing ? (
-            <p className="text-[12px] text-muted mb-3">
-              {t("editPointHint")}{" "}
-              <a href={`/${locale}/cabinet/companies/${company.id}#add-point`} className="underline">
-                {t("cancelEdit")}
-              </a>
-            </p>
-          ) : null}
-          <PointForm
+      {editing ? (
+        <section className="space-y-4">
+          <h1 className="text-[24px] font-bold tracking-[-0.03em]">{t("editCard")}</h1>
+          <CompanyProfileForm
             companyId={company.id}
-            companyStatus={company.status}
-            coins={coinOpts}
-            cards={cardOpts}
-            initialCardIds={prefillCards}
-            editing={editing}
-            companyAddress={{
-              countryCode: company.countryCode ?? "",
-              city: company.city ?? "",
-              street: company.street ?? "",
-              houseNumber: company.houseNumber ?? "",
+            moderated={company.status === "APPROVED"}
+            backHref={base}
+            initial={{
+              legalName: company.legalName, displayName: company.displayName,
+              description: company.description ?? "", website: company.website ?? "",
+              logoUrl: company.logoUrl ?? "", address: company.address ?? "",
+              phone: company.phone ?? "", email: company.email ?? "", country: company.country ?? "",
+              countryCode: company.countryCode ?? "", city: company.city ?? "",
+              street: company.street ?? "", houseNumber: company.houseNumber ?? "",
               postalCode: company.postalCode ?? "",
             }}
           />
         </section>
-      ) : null}
+      ) : (
+        <>
+          <CompanyCard
+            locale={locale}
+            editable={editable}
+            isOwner={isOwner}
+            pendingChanges={pendingChanges}
+            editHref={`${base}?edit=1`}
+            kybHref={`${base}?kyb=1`}
+            company={{
+              id: company.id,
+              displayName: company.displayName,
+              status: company.status,
+              kybStatus: company.kybStatus,
+              kybRejectionReason: company.kybRejectionReason,
+              logoUrl: company.logoUrl,
+              legalName: company.legalName,
+              description: company.description,
+              website: company.website,
+              phone: company.phone,
+              email: company.email,
+              country: company.country,
+              city: company.city,
+              street: company.street,
+              houseNumber: company.houseNumber,
+              postalCode: company.postalCode,
+            }}
+          />
 
-      <DeletionRequestsSection companyId={company.id} viewerId={userId} viewerRole={role} />
+          {kybOpen ? (
+            <section className="space-y-3">
+              <Link href={base} className="text-[12px] text-muted underline">
+                ← {t("backToCard")}
+              </Link>
+              <KybSection
+                companyId={company.id}
+                status={company.kybStatus}
+                documents={company.kybDocuments}
+                rejectionReason={company.kybRejectionReason}
+                canManage={isOwner}
+              />
+            </section>
+          ) : null}
 
-      {canManage ? (
-        <DeleteCompanyBlock
-          companyId={company.id}
-          displayName={company.displayName}
-          canDeleteOutright={role === "OWNER"}
-        />
-      ) : null}
+          {groups.length > 0 && counts ? (
+            <section className="space-y-3">
+              <h2 className="text-[13px] uppercase tracking-[0.2em] text-muted">{t("groups.heading")}</h2>
+              <div className={TILE_GRID}>
+                {groups.map((group) => {
+                  const tiles = visibleTiles(group, gate);
+                  return (
+                    <CabinetTile
+                      key={group}
+                      href={`${base}/g/${group}`}
+                      icon={GROUP_ICONS[group]}
+                      label={t(`groups.${group}`)}
+                      value={null}
+                      hint={tiles.map((tile) => t(`tiles.${tile.key}`)).join(" · ")}
+                      badge={group === "showcase" && counts.pendingPoints > 0
+                        ? t("tileBadge.moderation", { count: counts.pendingPoints })
+                        : null}
+                    />
+                  );
+                })}
+              </div>
+            </section>
+          ) : null}
 
-      {/* KYB — дело владельца (спека BE, § 2). Живой прогон поймал утечку: раздел
-          показывал список поданных документов любому члену, включая кладовщика. */}
-      {canManage ? (
-        <KybSection
-          companyId={company.id}
-          status={company.kybStatus}
-          documents={company.kybDocuments}
-          rejectionReason={company.kybRejectionReason}
-          canManage={canManage}
-        />
-      ) : null}
+          <DeletionRequestsSection companyId={company.id} viewerId={userId} viewerRole={role} />
+
+          {isOwner ? (
+            <DeleteCompanyBlock
+              companyId={company.id}
+              displayName={company.displayName}
+              canDeleteOutright={role === "OWNER"}
+            />
+          ) : null}
+        </>
+      )}
     </main>
   );
+}
+
+async function countsFor(companyId: string) {
+  const pendingPoints = await prisma.companyPoint.count({
+    where: { companyId, status: "PENDING", ...NOT_DELETED },
+  });
+  return { pendingPoints };
 }

@@ -255,7 +255,14 @@ export default async function AdminCasePage({
               approve: t("case.decision.productClaim.approve"),
               reject: t("case.decision.productClaim.reject"),
             }
-          : { approve: t("case.decision.approve"), reject: t("case.decision.reject") };
+          : c.subjectType === "COMPANY_REVISION"
+            ? {
+                // «Одобрить» тут значит «применить изменения к карточке», а не
+                // «одобрить предприятие»: оно уже на витрине.
+                approve: t("case.decision.companyRevision.approve"),
+                reject: t("case.decision.companyRevision.reject"),
+              }
+            : { approve: t("case.decision.approve"), reject: t("case.decision.reject") };
 
   let sectionNo = 0;
   const nextNo = () => String(++sectionNo);

@@ -42,6 +42,17 @@ type StructuredAddress = {
   postalCode: string | null;
 };
 
+/** Выводимая строка адреса из структурных частей. Один источник на весь проект. */
+export function displayAddress(a: {
+  street: string | null; houseNumber: string | null;
+  postalCode: string | null; city: string | null; country: string | null;
+}): string | null {
+  return buildDisplayAddress(
+    { street: a.street, houseNumber: a.houseNumber, postalCode: a.postalCode, city: a.city, countryCode: null },
+    a.country,
+  );
+}
+
 function buildDisplayAddress(a: StructuredAddress, countryName: string | null): string | null {
   const line1 = [a.street, a.houseNumber].map((x) => x?.trim()).filter(Boolean).join(" ");
   const line2 = [a.postalCode, a.city].map((x) => x?.trim()).filter(Boolean).join(" ");
