@@ -26,6 +26,7 @@
 import { CEX, lookupTicker } from "./cex-registry";
 import type { SnapshotMap } from "./cex-snapshot";
 import { quoteToUsd, USD_QUOTES, type AnchorPrices } from "./quote-usd";
+import { pickReference, type LlamaPrice } from "./defillama";
 
 /** Насколько найденная цена может расходиться с опорной, оставаясь той же монетой. */
 export const PRICE_TOLERANCE = 0.25;
@@ -160,6 +161,8 @@ export type SeedCardRow = {
   id: string;
   slug: string;
   symbol: string;
+  /** Ключ монеты у CoinGecko — он же ключ запасной опоры у DefiLlama. */
+  coinId: string | null;
   coin: { snapshots: { priceUsd: unknown; fetchedAt: Date }[] } | null;
 };
 
@@ -184,11 +187,23 @@ export type MarketSeedStats = {
   cards: number;
   created: number;
   noReference: number;
+  /** Сколько карточек получили опору от DefiLlama, а не из своего снимка. */
+  fallbackReference: number;
   noPairs: number;
   /** Спор о цене монеты, а не о тикере: решает человек. */
   conflict: number;
   rejected: number;
 };
+
+/** Опора негодна: её нет вовсе или она слишком стара, чтобы защищать. */
+export function referenceStale(
+  ref: { priceUsd: number; fetchedAt: Date } | null,
+  now: Date,
+  maxAgeMs = MAX_REFERENCE_AGE_MS,
+): boolean {
+  if (!ref || !(ref.priceUsd > 0)) return true;
+  return now.getTime() - ref.fetchedAt.getTime() > maxAgeMs;
+}
 
 /** `Decimal` приходит объектом: строка — единственный безопасный путь к числу. */
 export function referenceOf(row: SeedCardRow): { priceUsd: number; fetchedAt: Date } | null {
@@ -221,6 +236,8 @@ export async function seedCardMarkets(args: {
   anchors: AnchorPrices;
   cardId?: string;
   limit?: number;
+  /** Запасная опора цены (DefiLlama). Не передана — поведение как было. */
+  fetchFallbackPrices?: (coinIds: string[]) => Promise<Map<string, LlamaPrice>>;
   /** `--dump`: посчитать и показать, в базу не писать. */
   dryRun?: boolean;
   now?: Date;
@@ -234,6 +251,7 @@ export async function seedCardMarkets(args: {
       id: true,
       slug: true,
       symbol: true,
+      coinId: true,
       coin: {
         select: {
           snapshots: {
@@ -247,13 +265,35 @@ export async function seedCardMarkets(args: {
   });
 
   const stats: MarketSeedStats = {
-    cards: 0, created: 0, noReference: 0, noPairs: 0, conflict: 0, rejected: 0,
+    cards: 0, created: 0, noReference: 0, fallbackReference: 0, noPairs: 0, conflict: 0, rejected: 0,
   };
   const plans: CardPlan[] = [];
 
+  // Запасная опора — одним запросом на весь прогон и только для тех карточек,
+  // у которых своей опоры нет или она стара. Без неё карточка молчит
+  // (`no_reference`), а доплачивать за опору вызовом к CoinGecko — тратить тот
+  // запас, который нужен главной странице (разбор в `src/lib/defillama.ts`).
+  let fallback: Map<string, LlamaPrice> = new Map();
+  if (args.fetchFallbackPrices) {
+    const need = rows
+      .filter((r) => referenceStale(referenceOf(r), now))
+      .map((r) => r.coinId)
+      .filter((id): id is string => typeof id === "string" && id.length > 0);
+    if (need.length > 0) fallback = await args.fetchFallbackPrices(need);
+  }
+
   for (const row of rows) {
     stats.cards++;
-    const reference = referenceOf(row);
+    let reference = referenceOf(row);
+    if (referenceStale(reference, now) && row.coinId) {
+      const priceUsd = pickReference(fallback.get(row.coinId), row.symbol);
+      if (priceUsd !== null) {
+        // Час опоры — наш: число пришло сейчас, и мерить его возрастом цены у
+        // службы значило бы отвергать свежую опору за чужую задержку.
+        reference = { priceUsd, fetchedAt: now };
+        stats.fallbackReference++;
+      }
+    }
     const result = discoverCardMarkets({ symbol: row.symbol, reference }, args.snapshots, args.anchors, now);
     stats.rejected += result.rejected.length;
     if (result.error === "no_reference") stats.noReference++;

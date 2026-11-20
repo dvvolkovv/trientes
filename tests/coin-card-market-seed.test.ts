@@ -192,7 +192,7 @@ describe("discoverCardMarkets", () => {
 });
 
 describe("referenceOf", () => {
-  const base: SeedCardRow = { id: "c1", slug: "celestia", symbol: "TIA", coin: null };
+  const base: SeedCardRow = { id: "c1", slug: "celestia", symbol: "TIA", coinId: "celestia", coin: null };
 
   it("берёт последний снимок монеты и переводит Decimal через строку", () => {
     const at = new Date(NOW.getTime() - 1000);
@@ -243,6 +243,7 @@ describe("seedCardMarkets", () => {
     id: "c1",
     slug: "celestia",
     symbol: "TIA",
+    coinId: "celestia",
     coin: { snapshots: [{ priceUsd: "2", fetchedAt: new Date(NOW.getTime() - 60_000) }] },
     ...over,
   });
@@ -256,7 +257,7 @@ describe("seedCardMarkets", () => {
       now: NOW,
     });
     expect(stats).toEqual({
-      cards: 1, created: 1, noReference: 0, noPairs: 0, conflict: 0, rejected: 0,
+      cards: 1, created: 1, noReference: 0, fallbackReference: 0, noPairs: 0, conflict: 0, rejected: 0,
     });
     expect(created).toEqual([
       {
@@ -298,5 +299,88 @@ describe("seedCardMarkets", () => {
     });
     expect(stats).toMatchObject({ cards: 2, created: 0, noReference: 1, noPairs: 1 });
     expect(created).toEqual([]);
+  });
+});
+
+describe("запасная опора цены", () => {
+  const NOW2 = new Date(Date.UTC(2026, 10, 20, 12, 0, 0));
+
+  function fakePrisma(rows: SeedCardRow[]) {
+    const created: unknown[] = [];
+    const prisma: PrismaLike = {
+      coinCard: { findMany: async () => rows },
+      coinCardMarket: {
+        createMany: async (args: unknown) => {
+          const data = (args as { data: unknown[] }).data;
+          created.push(...data);
+          return { count: data.length };
+        },
+      },
+    };
+    return { prisma, created };
+  }
+
+  const noSnapshot: SeedCardRow = { id: "c9", slug: "moonbeam", symbol: "GLMR", coinId: "moonbeam", coin: null };
+
+  it("спрашивается только для карточек без своей опоры", async () => {
+    const withSnapshot: SeedCardRow = {
+      id: "c1",
+      slug: "celestia",
+      symbol: "TIA",
+      coinId: "celestia",
+      coin: { snapshots: [{ priceUsd: "2", fetchedAt: new Date(NOW2.getTime() - 60_000) }] },
+    };
+    const asked: string[][] = [];
+    const { prisma } = fakePrisma([withSnapshot, noSnapshot]);
+    await seedCardMarkets({
+      prisma,
+      snapshots: new Map(),
+      anchors: {},
+      now: NOW2,
+      dryRun: true,
+      fetchFallbackPrices: async (ids) => {
+        asked.push(ids);
+        return new Map();
+      },
+    });
+    expect(asked).toEqual([["moonbeam"]]);
+  });
+
+  it("опора от службы спасает карточку, которая молчала", async () => {
+    const { prisma } = fakePrisma([noSnapshot]);
+    const { stats, plans } = await seedCardMarkets({
+      prisma,
+      snapshots: new Map(),
+      anchors: {},
+      now: NOW2,
+      dryRun: true,
+      fetchFallbackPrices: async () =>
+        new Map([["moonbeam", { priceUsd: 0.0065, symbol: "GLMR", confidence: 0.999, at: NOW2 }]]),
+    });
+    expect(stats.fallbackReference).toBe(1);
+    expect(stats.noReference).toBe(0);
+    expect(plans[0].referenceUsd).toBe(0.0065);
+  });
+
+  it("чужой тикер опорой не становится", async () => {
+    const { prisma } = fakePrisma([noSnapshot]);
+    const { stats } = await seedCardMarkets({
+      prisma,
+      snapshots: new Map(),
+      anchors: {},
+      now: NOW2,
+      dryRun: true,
+      fetchFallbackPrices: async () =>
+        new Map([["moonbeam", { priceUsd: 7, symbol: "DOT", confidence: 0.999, at: NOW2 }]]),
+    });
+    expect(stats.fallbackReference).toBe(0);
+    expect(stats.noReference).toBe(1);
+  });
+
+  it("без запасного источника поведение прежнее", async () => {
+    const { prisma } = fakePrisma([noSnapshot]);
+    const { stats } = await seedCardMarkets({ prisma, snapshots: new Map(), anchors: {}, now: NOW2, dryRun: true });
+    expect(stats.noReference).toBe(1);
+    expect(stats.fallbackReference).toBe(0);
   });
 });

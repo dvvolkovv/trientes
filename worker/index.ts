@@ -29,6 +29,7 @@ import {
 } from "../src/lib/coin-card-markets";
 import { ALL_CEX_IDS, getSnapshots } from "../src/lib/cex-snapshot";
 import { seedCardMarkets } from "../src/lib/coin-card-market-seed";
+import { fetchLlamaPrices } from "../src/lib/defillama";
 import { syncOwnDexMarkets } from "../src/lib/coin-card-dex-market";
 import { expireStaleClaims } from "../src/lib/coin-card-claim";
 import { syncChainFacts } from "../src/lib/coin-card-chain-facts";
@@ -605,11 +606,15 @@ async function runCardMarketSeedJob() {
       prisma: prisma as never,
       snapshots,
       anchors,
+      // Запасная опора у карточек без своего снимка цены — даром, одним
+      // запросом на прогон (слайс BL): прежде за неё платили вызовом к
+      // CoinGecko, то есть запасом главной страницы.
+      fetchFallbackPrices: (ids) => fetchLlamaPrices(ids),
     });
     if (stats.cards > 0) {
       console.log(
         `[worker] card-market seed ok: ${stats.cards} cards, +${stats.created} markets ` +
-          `(${stats.noReference} no reference, ${stats.noPairs} no pairs, ` +
+          `(${stats.noReference} no reference, ${stats.fallbackReference} by fallback, ${stats.noPairs} no pairs, ` +
           `${stats.conflict} price conflict, ${stats.rejected} rejected) ` +
           `in ${Date.now() - t0}ms`,
       );

@@ -6,6 +6,7 @@ import { redis } from "@/lib/redis";
 import { ALL_CEX_IDS, getSnapshots } from "@/lib/cex-snapshot";
 import { computeAnchorPrices, syncCardMarkets } from "@/lib/coin-card-markets";
 import { seedCardMarkets, type CardPlan } from "@/lib/coin-card-market-seed";
+import { fetchLlamaPrices } from "@/lib/defillama";
 
 /**
  * Посев рынков карточек, проверенных в сети (слайс X).
@@ -58,12 +59,13 @@ async function main(): Promise<void> {
     anchors,
     cardId,
     dryRun: has("--dump"),
+    fetchFallbackPrices: (ids) => fetchLlamaPrices(ids),
   });
 
   for (const plan of plans) console.log(line(plan));
   console.log(
     `\nкарточек ${stats.cards}, рынков заведено ${stats.created}, ` +
-      `без опоры ${stats.noReference}, без пар ${stats.noPairs}, ` +
+      `без опоры ${stats.noReference} (запасной опорой спасено ${stats.fallbackReference}), без пар ${stats.noPairs}, ` +
       `спор о цене ${stats.conflict}, отвергнуто ${stats.rejected}`,
   );
 
