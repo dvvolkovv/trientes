@@ -92,3 +92,21 @@ describe("счёт вызовов в дверях служб", () => {
     resetQuotaCounter();
   });
 });
+
+describe("счётчик переживает второй экземпляр модуля", () => {
+  it("установка видна через globalThis, а не через переменную модуля", async () => {
+    // Next собирает серверный код бандлами, и один модуль существует в
+    // нескольких экземплярах: 20 ноября `instrumentation.ts` поставил счётчик в
+    // своём, а маршрут графика считал в чужом — вызов в расход не попал.
+    const seen: string[] = [];
+    setQuotaCounter(async (s, scope) => {
+      seen.push(`${s}:${scope}`);
+    });
+    const slot = globalThis as unknown as { __trientesQuotaCounter?: unknown };
+    expect(typeof slot.__trientesQuotaCounter).toBe("function");
+    await countCall("coinlore", "bg");
+    expect(seen).toEqual(["coinlore:bg"]);
+    resetQuotaCounter();
+    expect(slot.__trientesQuotaCounter).toBeNull();
+  });
+});

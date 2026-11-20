@@ -12,4 +12,7 @@ export function installQuotaCounter(): void {
   setQuotaCounter(async (service, scope) => {
     await noteCall(redis, service, scope, new Date());
   });
+  // Одна строка при старте: без неё не отличить «счётчик не поставлен» от
+  // «служба молчит», а живой прогон 20 ноября показал, что это разные беды.
+  console.log("[quota] counter installed");
 }
