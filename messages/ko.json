@@ -1675,7 +1675,8 @@
       "supply": "공급",
       "team": "팀",
       "tasks": "작업",
-      "journal": "활동 기록"
+      "journal": "활동 기록",
+      "chat": "팀 채팅"
     },
     "tileUnit": {
       "points": "지도에 {count}개",
@@ -1686,7 +1687,8 @@
       "supply": "미결 주문 {count}건",
       "team": "{count}명",
       "tasks": "열림 {count}개",
-      "journal": "항목 {count}개"
+      "journal": "항목 {count}개",
+      "chat": "{count}개 메시지"
     },
     "tileEmpty": "아직 없음",
     "tileBadge": {
@@ -3375,6 +3377,12 @@
         "subject": "재고 부족 임박",
         "body": "{company}: 재고가 임계값 아래로 내려가 초안 발주서가 준비되어 있습니다. 아직 아무것도 전송되지 않았습니다 — 검토 후 직접 보내세요."
       }
+    },
+    "chat": {
+      "mention": {
+        "subject": "{author} 님이 {company} 팀 채팅에서 당신을 언급했습니다",
+        "body": "{author} 님이 {company}의 팀 채팅에서 당신에게 메시지를 보냈습니다."
+      }
     }
   },
   "captcha": {
@@ -4089,7 +4097,8 @@
       "ORDER_DOC_ADDED": "구매 발주서에 문서가 첨부됨",
       "REORDER_RULE_SAVED": "자동 주문 규칙이 저장됨",
       "REORDER_RULE_DELETED": "자동 주문 규칙이 삭제됨",
-      "PROFILE_CHANGES_SUBMITTED": "카드 변경 사항이 검토로 전송됨"
+      "PROFILE_CHANGES_SUBMITTED": "카드 변경 사항이 검토로 전송됨",
+      "CHAT_MESSAGE_DELETED": "다른 사람의 채팅 메시지를 삭제함"
     }
   },
   "cabinetTasks": {
@@ -4453,6 +4462,31 @@
       "alert_invalid": "경고 거리는 500에서 5000미터 사이여야 합니다.",
       "unauth": "먼저 로그인하세요.",
       "invalid": "저장할 수 없습니다."
+    }
+  },
+  "cabinetChat": {
+    "title": "팀 채팅",
+    "subtitle": "팀 전체를 위한 하나의 방. 팀원이라면 모두 여기서 읽고 쓰며, 팀 외부에서는 이 방을 볼 수 없습니다.",
+    "empty": "아직 메시지가 없습니다. 오늘 상점에서 무슨 일이 있는지 말해 보세요.",
+    "placeholder": "팀에 메시지를 보내세요…",
+    "send": "보내기",
+    "sending": "보내는 중…",
+    "you": "나",
+    "gone": "이전 팀원",
+    "withdraw": "회수",
+    "withdrawn": "메시지가 회수됨",
+    "mentionedYou": "당신이 언급되었습니다",
+    "mentionHint": "@login으로 팀원을 지목하면 알림이 갑니다. 그 외에는 배지만 켜집니다.",
+    "earlier": "이전 메시지",
+    "readOnly": "이 방은 읽기 전용입니다: 비즈니스가 정지되었거나 삭제되었습니다.",
+    "errors": {
+      "unauth": "먼저 로그인하세요.",
+      "forbidden": "이 방에 접근 권한이 없습니다.",
+      "company_inactive": "비즈니스가 정지되어 대화를 계속할 수 없습니다.",
+      "body_required": "먼저 내용을 입력하세요.",
+      "body_too_long": "메시지가 너무 깁니다.",
+      "daily_limit": "이 비즈니스의 오늘자 메시지 한도가 소진되었습니다.",
+      "not_found": "메시지가 사라졌습니다."
     }
   }
 }

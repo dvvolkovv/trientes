@@ -1675,7 +1675,8 @@
       "supply": "Approvisionnement",
       "team": "Équipe",
       "tasks": "Tâches",
-      "journal": "Journal d’activité"
+      "journal": "Journal d’activité",
+      "chat": "Team chat"
     },
     "tileUnit": {
       "points": "{count} sur la carte",
@@ -1686,7 +1687,8 @@
       "supply": "{count} commandes ouvertes",
       "team": "{count} personnes",
       "tasks": "{count} ouvertes",
-      "journal": "{count} entrées"
+      "journal": "{count} entrées",
+      "chat": "{count} messages"
     },
     "tileEmpty": "rien pour l’instant",
     "tileBadge": {
@@ -3375,6 +3377,12 @@
         "subject": "Le stock est bas",
         "body": "{company}: le stock est passé sous le seuil, un brouillon de bon de commande vous attend. Rien n'a été envoyé — vérifiez-le et envoyez-le vous-même."
       }
+    },
+    "chat": {
+      "mention": {
+        "subject": "{author} named you in the {company} team chat",
+        "body": "{author} wrote to you in the team chat of {company}."
+      }
     }
   },
   "captcha": {
@@ -4089,7 +4097,8 @@
       "ORDER_DOC_ADDED": "Document joint à un bon de commande",
       "REORDER_RULE_SAVED": "Règle de commande automatique enregistrée",
       "REORDER_RULE_DELETED": "Règle de commande automatique supprimée",
-      "PROFILE_CHANGES_SUBMITTED": "Modifications de la fiche envoyées pour examen"
+      "PROFILE_CHANGES_SUBMITTED": "Modifications de la fiche envoyées pour examen",
+      "CHAT_MESSAGE_DELETED": "Removed someone else’s chat message"
     }
   },
   "cabinetTasks": {
@@ -4453,6 +4462,31 @@
       "alert_invalid": "La distance d’alerte doit être comprise entre 500 et 5000 mètres.",
       "unauth": "Connectez-vous d’abord.",
       "invalid": "Impossible d'enregistrer cela."
+    }
+  },
+  "cabinetChat": {
+    "title": "Team chat",
+    "subtitle": "One room for the whole team. Everyone on the team reads and writes here; nobody outside it can see the room.",
+    "empty": "No messages yet. Say what is going on in the shop today.",
+    "placeholder": "Write to the team…",
+    "send": "Send",
+    "sending": "Sending…",
+    "you": "You",
+    "gone": "Former teammate",
+    "withdraw": "Withdraw",
+    "withdrawn": "Message withdrawn",
+    "mentionedYou": "You were named",
+    "mentionHint": "Name a teammate with @login and they get a notification. Everything else only lights up the badge.",
+    "earlier": "Earlier messages",
+    "readOnly": "The room is read-only: the business is suspended or deleted.",
+    "errors": {
+      "unauth": "Sign in first.",
+      "forbidden": "You do not have access to this room.",
+      "company_inactive": "The business is suspended, so the conversation cannot continue.",
+      "body_required": "Write something first.",
+      "body_too_long": "The message is too long.",
+      "daily_limit": "Today’s message limit for this business is used up.",
+      "not_found": "The message is gone."
     }
   }
 }

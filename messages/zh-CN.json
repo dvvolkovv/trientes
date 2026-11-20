@@ -1675,7 +1675,8 @@
       "supply": "供应",
       "team": "团队",
       "tasks": "任务",
-      "journal": "活动日志"
+      "journal": "活动日志",
+      "chat": "团队聊天"
     },
     "tileUnit": {
       "points": "地图上{count}个",
@@ -1686,7 +1687,8 @@
       "supply": "未完成订单{count}个",
       "team": "{count}人",
       "tasks": "未完成{count}个",
-      "journal": "{count}条"
+      "journal": "{count}条",
+      "chat": "{count} 条消息"
     },
     "tileEmpty": "尚无内容",
     "tileBadge": {
@@ -3375,6 +3377,12 @@
         "subject": "库存偏低",
         "body": "{company}：库存已低于阈值，因此有一张采购订单草稿在等你。尚未发送——请查看并自行发送。"
       }
+    },
+    "chat": {
+      "mention": {
+        "subject": "{author} 在 {company} 的团队聊天中提到了你",
+        "body": "{author} 在 {company} 的团队聊天中给你发了消息。"
+      }
     }
   },
   "captcha": {
@@ -4089,7 +4097,8 @@
       "ORDER_DOC_ADDED": "已向采购订单附加文档",
       "REORDER_RULE_SAVED": "自动下单规则已保存",
       "REORDER_RULE_DELETED": "自动下单规则已删除",
-      "PROFILE_CHANGES_SUBMITTED": "卡片更改已提交审核"
+      "PROFILE_CHANGES_SUBMITTED": "卡片更改已提交审核",
+      "CHAT_MESSAGE_DELETED": "删除了他人的聊天消息"
     }
   },
   "cabinetTasks": {
@@ -4453,6 +4462,31 @@
       "alert_invalid": "提醒距离必须在 500 到 5000 米之间。",
       "unauth": "请先登录。",
       "invalid": "无法保存。"
+    }
+  },
+  "cabinetChat": {
+    "title": "团队聊天",
+    "subtitle": "整个团队共用一个房间。团队中的每个人都可在此阅读和发言；团队外的人无法看到这个房间。",
+    "empty": "还没有消息。说说今天店里发生了什么。",
+    "placeholder": "给团队写点什么…",
+    "send": "发送",
+    "sending": "正在发送…",
+    "you": "你",
+    "gone": "前队友",
+    "withdraw": "撤回",
+    "withdrawn": "消息已撤回",
+    "mentionedYou": "有人提到了你",
+    "mentionHint": "使用 @login 提及队友，他们会收到通知。其他内容只会点亮徽章。",
+    "earlier": "更早的消息",
+    "readOnly": "此房间为只读：该业务已被暂停或删除。",
+    "errors": {
+      "unauth": "请先登录。",
+      "forbidden": "你无权访问此房间。",
+      "company_inactive": "该业务已被暂停，无法继续会话。",
+      "body_required": "请先写点内容。",
+      "body_too_long": "消息太长。",
+      "daily_limit": "该业务今日的消息额度已用完。",
+      "not_found": "消息已不存在。"
     }
   }
 }

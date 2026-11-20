@@ -1675,7 +1675,8 @@
       "supply": "Beschaffung",
       "team": "Team",
       "tasks": "Aufgaben",
-      "journal": "Aktivitätsprotokoll"
+      "journal": "Aktivitätsprotokoll",
+      "chat": "Team-Chat"
     },
     "tileUnit": {
       "points": "{count} auf der Karte",
@@ -1686,7 +1687,8 @@
       "supply": "{count} offene Aufträge",
       "team": "{count} Personen",
       "tasks": "{count} offen",
-      "journal": "{count} Einträge"
+      "journal": "{count} Einträge",
+      "chat": "{count} Nachrichten"
     },
     "tileEmpty": "noch nichts",
     "tileBadge": {
@@ -3375,6 +3377,12 @@
         "subject": "Bestand wird knapp",
         "body": "{company}: Der Bestand ist unter den Schwellenwert gefallen, daher wartet ein Entwurf einer Einkaufsbestellung auf Sie. Es wurde nichts gesendet — prüfen Sie sie und senden Sie sie selbst"
       }
+    },
+    "chat": {
+      "mention": {
+        "subject": "{author} hat dich im Teamchat von {company} erwähnt",
+        "body": "{author} hat dir im Teamchat von {company} geschrieben."
+      }
     }
   },
   "captcha": {
@@ -4089,7 +4097,8 @@
       "ORDER_DOC_ADDED": "Dokument an Einkaufsbestellung angehängt",
       "REORDER_RULE_SAVED": "Automatische Bestellregel gespeichert",
       "REORDER_RULE_DELETED": "Automatische Bestellregel gelöscht",
-      "PROFILE_CHANGES_SUBMITTED": "Kartenänderungen zur Prüfung gesendet"
+      "PROFILE_CHANGES_SUBMITTED": "Kartenänderungen zur Prüfung gesendet",
+      "CHAT_MESSAGE_DELETED": "Chat-Nachricht eines anderen gelöscht"
     }
   },
   "cabinetTasks": {
@@ -4453,6 +4462,31 @@
       "alert_invalid": "Die Warnentfernung muss zwischen 500 und 5000 Metern liegen.",
       "unauth": "Zuerst anmelden.",
       "invalid": "Konnte das nicht speichern."
+    }
+  },
+  "cabinetChat": {
+    "title": "Teamchat",
+    "subtitle": "Ein Raum für das ganze Team. Alle im Team lesen und schreiben hier; niemand außerhalb des Teams kann den Raum sehen.",
+    "empty": "Noch keine Nachrichten. Sag, was heute im Shop los ist.",
+    "placeholder": "Schreibe ans Team…",
+    "send": "Senden",
+    "sending": "Senden…",
+    "you": "Du",
+    "gone": "Ehemaliges Teammitglied",
+    "withdraw": "Zurückziehen",
+    "withdrawn": "Nachricht zurückgezogen",
+    "mentionedYou": "Du wurdest erwähnt",
+    "mentionHint": "Nenne ein Teammitglied mit @login, dann bekommt diese Person eine Benachrichtigung. Alles andere lässt nur das Badge aufleuchten.",
+    "earlier": "Ältere Nachrichten",
+    "readOnly": "Der Raum ist schreibgeschützt: Das Unternehmen ist ausgesetzt oder gelöscht.",
+    "errors": {
+      "unauth": "Melde dich zuerst an.",
+      "forbidden": "Du hast keinen Zugriff auf diesen Raum.",
+      "company_inactive": "Das Unternehmen ist ausgesetzt, daher kann die Unterhaltung nicht fortgesetzt werden.",
+      "body_required": "Schreib zuerst etwas.",
+      "body_too_long": "Die Nachricht ist zu lang.",
+      "daily_limit": "Das heutige Nachrichtenlimit für dieses Unternehmen ist aufgebraucht.",
+      "not_found": "Die Nachricht ist weg."
     }
   }
 }

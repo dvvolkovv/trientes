@@ -1664,7 +1664,7 @@
     "groupHint": {
       "showcase": "What a customer sees: places on the map, goods, prices, cashback and offers.",
       "household": "What a customer does not see: warehouses, stock and orders to suppliers.",
-      "order": "Who does what: the team, tasks and the log of everything that happened."
+      "order": "Who does what: the team, tasks, the team chat and the log of everything that happened."
     },
     "tiles": {
       "points": "Places",
@@ -1675,7 +1675,8 @@
       "supply": "Supply",
       "team": "Team",
       "tasks": "Tasks",
-      "journal": "Activity log"
+      "journal": "Activity log",
+      "chat": "Team chat"
     },
     "tileUnit": {
       "points": "{count} on the map",
@@ -1686,7 +1687,8 @@
       "supply": "{count} open orders",
       "team": "{count} people",
       "tasks": "{count} open",
-      "journal": "{count} entries"
+      "journal": "{count} entries",
+      "chat": "{count} messages"
     },
     "tileEmpty": "nothing yet",
     "tileBadge": {
@@ -3375,6 +3377,12 @@
         "subject": "Stock is running low",
         "body": "{company}: stock dropped below the threshold, so a draft purchase order is waiting for you. Nothing was sent — review it and send it yourself."
       }
+    },
+    "chat": {
+      "mention": {
+        "subject": "{author} named you in the {company} team chat",
+        "body": "{author} wrote to you in the team chat of {company}."
+      }
     }
   },
   "captcha": {
@@ -4089,7 +4097,8 @@
       "ORDER_DOC_ADDED": "Document attached to a purchase order",
       "REORDER_RULE_SAVED": "Auto-order rule saved",
       "REORDER_RULE_DELETED": "Auto-order rule deleted",
-      "PROFILE_CHANGES_SUBMITTED": "Card changes sent for review"
+      "PROFILE_CHANGES_SUBMITTED": "Card changes sent for review",
+      "CHAT_MESSAGE_DELETED": "Removed someone else’s chat message"
     }
   },
   "cabinetTasks": {
@@ -4453,6 +4462,31 @@
       "alert_invalid": "Warning distance must be between 500 and 5000 metres.",
       "unauth": "Sign in first.",
       "invalid": "Could not save that."
+    }
+  },
+  "cabinetChat": {
+    "title": "Team chat",
+    "subtitle": "One room for the whole team. Everyone on the team reads and writes here; nobody outside it can see the room.",
+    "empty": "No messages yet. Say what is going on in the shop today.",
+    "placeholder": "Write to the team…",
+    "send": "Send",
+    "sending": "Sending…",
+    "you": "You",
+    "gone": "Former teammate",
+    "withdraw": "Withdraw",
+    "withdrawn": "Message withdrawn",
+    "mentionedYou": "You were named",
+    "mentionHint": "Name a teammate with @login and they get a notification. Everything else only lights up the badge.",
+    "earlier": "Earlier messages",
+    "readOnly": "The room is read-only: the business is suspended or deleted.",
+    "errors": {
+      "unauth": "Sign in first.",
+      "forbidden": "You do not have access to this room.",
+      "company_inactive": "The business is suspended, so the conversation cannot continue.",
+      "body_required": "Write something first.",
+      "body_too_long": "The message is too long.",
+      "daily_limit": "Today’s message limit for this business is used up.",
+      "not_found": "The message is gone."
     }
   }
 }

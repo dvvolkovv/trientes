@@ -1675,7 +1675,8 @@
       "supply": "調達",
       "team": "チーム",
       "tasks": "タスク",
-      "journal": "アクティビティログ"
+      "journal": "アクティビティログ",
+      "chat": "チームチャット"
     },
     "tileUnit": {
       "points": "{count}件（地図上）",
@@ -1686,7 +1687,8 @@
       "supply": "{count}件の未処理発注",
       "team": "{count}人",
       "tasks": "{count}件の未処理",
-      "journal": "{count}件の記録"
+      "journal": "{count}件の記録",
+      "chat": "{count}件のメッセージ"
     },
     "tileEmpty": "まだありません",
     "tileBadge": {
@@ -3375,6 +3377,12 @@
         "subject": "在庫が少なくなっています",
         "body": "{company}: 在庫がしきい値を下回ったため、発注書の下書きが用意されています。何も送信されていません — 内容を確認し、ご自身で送信してください。"
       }
+    },
+    "chat": {
+      "mention": {
+        "subject": "{author} が{company}のチームチャットであなたをメンションしました",
+        "body": "{author} が{company}のチームチャットであなた宛にメッセージを書き込みました。"
+      }
     }
   },
   "captcha": {
@@ -4089,7 +4097,8 @@
       "ORDER_DOC_ADDED": "購買発注にドキュメントを添付しました",
       "REORDER_RULE_SAVED": "自動発注ルールを保存しました",
       "REORDER_RULE_DELETED": "自動発注ルールを削除しました",
-      "PROFILE_CHANGES_SUBMITTED": "カードの変更を審査に提出"
+      "PROFILE_CHANGES_SUBMITTED": "カードの変更を審査に提出",
+      "CHAT_MESSAGE_DELETED": "他人のチャットメッセージを削除した"
     }
   },
   "cabinetTasks": {
@@ -4453,6 +4462,31 @@
       "alert_invalid": "警告距離は500〜5000メートルの間である必要があります。",
       "unauth": "まずサインインしてください。",
       "invalid": "保存できませんでした。"
+    }
+  },
+  "cabinetChat": {
+    "title": "チームチャット",
+    "subtitle": "チーム全員のための1つのルーム。チームの全員がここで読み書きでき、外部の人には見えません。",
+    "empty": "まだメッセージはありません。今日ショップで何が起きているかを書きましょう。",
+    "placeholder": "チームに書き込む…",
+    "send": "送信",
+    "sending": "送信中…",
+    "you": "あなた",
+    "gone": "元チームメンバー",
+    "withdraw": "撤回",
+    "withdrawn": "メッセージを撤回しました",
+    "mentionedYou": "メンションされました",
+    "mentionHint": "@loginでチームメンバーを指定すると通知されます。その他はバッジが点灯するだけです。",
+    "earlier": "以前のメッセージ",
+    "readOnly": "このルームは閲覧のみです：ビジネスが停止中または削除されています。",
+    "errors": {
+      "unauth": "まずサインインしてください。",
+      "forbidden": "このルームへのアクセス権がありません。",
+      "company_inactive": "ビジネスが停止中のため、会話を続けられません。",
+      "body_required": "まず何か入力してください。",
+      "body_too_long": "メッセージが長すぎます。",
+      "daily_limit": "このビジネスの本日のメッセージ上限に達しました。",
+      "not_found": "そのメッセージはありません。"
     }
   }
 }

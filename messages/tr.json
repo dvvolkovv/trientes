@@ -1675,7 +1675,8 @@
       "supply": "Tedarik",
       "team": "Ekip",
       "tasks": "Görevler",
-      "journal": "Etkinlik günlüğü"
+      "journal": "Etkinlik günlüğü",
+      "chat": "Team chat"
     },
     "tileUnit": {
       "points": "{count} haritada",
@@ -1686,7 +1687,8 @@
       "supply": "{count} açık sipariş",
       "team": "{count} kişi",
       "tasks": "{count} açık",
-      "journal": "{count} kayıt"
+      "journal": "{count} kayıt",
+      "chat": "{count} messages"
     },
     "tileEmpty": "henüz bir şey yok",
     "tileBadge": {
@@ -3375,6 +3377,12 @@
         "subject": "Stok tükenmek üzere",
         "body": "{company}: stok eşik değerin altına düştü, bu yüzden sizi bekleyen bir taslak satın alma siparişi var. Hiçbir şey gönderilmedi — gözden geçirip kendiniz gönderin."
       }
+    },
+    "chat": {
+      "mention": {
+        "subject": "{author} named you in the {company} team chat",
+        "body": "{author} wrote to you in the team chat of {company}."
+      }
     }
   },
   "captcha": {
@@ -4089,7 +4097,8 @@
       "ORDER_DOC_ADDED": "Satın alma siparişine belge eklendi",
       "REORDER_RULE_SAVED": "Otomatik sipariş kuralı kaydedildi",
       "REORDER_RULE_DELETED": "Otomatik sipariş kuralı silindi",
-      "PROFILE_CHANGES_SUBMITTED": "Kart değişiklikleri incelemeye gönderildi"
+      "PROFILE_CHANGES_SUBMITTED": "Kart değişiklikleri incelemeye gönderildi",
+      "CHAT_MESSAGE_DELETED": "Removed someone else’s chat message"
     }
   },
   "cabinetTasks": {
@@ -4453,6 +4462,31 @@
       "alert_invalid": "Uyarı mesafesi 500 ile 5000 metre arasında olmalıdır.",
       "unauth": "Önce oturum açın.",
       "invalid": "Bunu kaydedemedik."
+    }
+  },
+  "cabinetChat": {
+    "title": "Team chat",
+    "subtitle": "One room for the whole team. Everyone on the team reads and writes here; nobody outside it can see the room.",
+    "empty": "No messages yet. Say what is going on in the shop today.",
+    "placeholder": "Write to the team…",
+    "send": "Send",
+    "sending": "Sending…",
+    "you": "You",
+    "gone": "Former teammate",
+    "withdraw": "Withdraw",
+    "withdrawn": "Message withdrawn",
+    "mentionedYou": "You were named",
+    "mentionHint": "Name a teammate with @login and they get a notification. Everything else only lights up the badge.",
+    "earlier": "Earlier messages",
+    "readOnly": "The room is read-only: the business is suspended or deleted.",
+    "errors": {
+      "unauth": "Sign in first.",
+      "forbidden": "You do not have access to this room.",
+      "company_inactive": "The business is suspended, so the conversation cannot continue.",
+      "body_required": "Write something first.",
+      "body_too_long": "The message is too long.",
+      "daily_limit": "Today’s message limit for this business is used up.",
+      "not_found": "The message is gone."
     }
   }
 }

@@ -1675,7 +1675,8 @@
       "supply": "Suministro",
       "team": "Equipo",
       "tasks": "Tareas",
-      "journal": "Registro de actividad"
+      "journal": "Registro de actividad",
+      "chat": "Chat del equipo"
     },
     "tileUnit": {
       "points": "{count} en el mapa",
@@ -1686,7 +1687,8 @@
       "supply": "{count} órdenes abiertas",
       "team": "{count} personas",
       "tasks": "{count} abiertas",
-      "journal": "{count} entradas"
+      "journal": "{count} entradas",
+      "chat": "{count} mensajes"
     },
     "tileEmpty": "nada todavía",
     "tileBadge": {
@@ -3375,6 +3377,12 @@
         "subject": "El stock se está agotando",
         "body": "{company}: el stock cayó por debajo del umbral, por lo que tienes un borrador de pedido de compra esperándote. No se envió nada — revísalo y envíalo tú mismo."
       }
+    },
+    "chat": {
+      "mention": {
+        "subject": "{author} te mencionó en el chat del equipo de {company}",
+        "body": "{author} te escribió en el chat del equipo de {company}."
+      }
     }
   },
   "captcha": {
@@ -4089,7 +4097,8 @@
       "ORDER_DOC_ADDED": "Documento adjunto a un pedido de compra",
       "REORDER_RULE_SAVED": "Regla de pedido automático guardada",
       "REORDER_RULE_DELETED": "Regla de pedido automático eliminada",
-      "PROFILE_CHANGES_SUBMITTED": "Cambios de la ficha enviados para revisión"
+      "PROFILE_CHANGES_SUBMITTED": "Cambios de la ficha enviados para revisión",
+      "CHAT_MESSAGE_DELETED": "Eliminó el mensaje de chat de otra persona"
     }
   },
   "cabinetTasks": {
@@ -4453,6 +4462,31 @@
       "alert_invalid": "La distancia de aviso debe estar entre 500 y 5000 metros.",
       "unauth": "Inicia sesión primero.",
       "invalid": "No se pudo guardar eso."
+    }
+  },
+  "cabinetChat": {
+    "title": "Chat del equipo",
+    "subtitle": "Una sala para todo el equipo. Todos en el equipo leen y escriben aquí; nadie fuera de él puede ver la sala.",
+    "empty": "Aún no hay mensajes. Cuenta qué está pasando en la tienda hoy.",
+    "placeholder": "Escribe al equipo…",
+    "send": "Enviar",
+    "sending": "Enviando…",
+    "you": "Tú",
+    "gone": "Exmiembro del equipo",
+    "withdraw": "Retirar",
+    "withdrawn": "Mensaje retirado",
+    "mentionedYou": "Te mencionaron",
+    "mentionHint": "Menciona a un miembro del equipo con @login y recibirá una notificación. Todo lo demás solo enciende la insignia.",
+    "earlier": "Mensajes anteriores",
+    "readOnly": "La sala es de solo lectura: el negocio está suspendido o eliminado.",
+    "errors": {
+      "unauth": "Inicia sesión primero.",
+      "forbidden": "No tienes acceso a esta sala.",
+      "company_inactive": "La empresa está suspendida, así que la conversación no puede continuar.",
+      "body_required": "Escribe algo primero.",
+      "body_too_long": "El mensaje es demasiado largo.",
+      "daily_limit": "El límite de mensajes de hoy para esta empresa se ha agotado.",
+      "not_found": "El mensaje ya no está."
     }
   }
 }

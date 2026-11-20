@@ -89,6 +89,7 @@ test("экраны кабинета предприятия не ездят по 
     `${base}/promos`,
     `${base}/loyalty`,
     `${base}/tasks`,
+    `${base}/chat`,
     `${base}/team`,
     `${base}/journal`,
   ];

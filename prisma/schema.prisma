@@ -69,6 +69,8 @@ model User {
   tasksAssigned            CompanyTask[]             @relation("CompanyTaskAssignee")
   tasksTaken               CompanyTask[]             @relation("CompanyTaskTaker")
   tasksClosed              CompanyTask[]             @relation("CompanyTaskCloser")
+  chatMessages             CompanyChatMessage[]       @relation("CompanyChatAuthor")
+  chatReads                CompanyChatRead[]
   taskComments             CompanyTaskComment[]      @relation("CompanyTaskCommentAuthor")
   companyInvitesCreated    CompanyInvite[]           @relation("CompanyInviteCreator")
   companyInvitesAccepted   CompanyInvite[]           @relation("CompanyInviteAcceptor")
@@ -319,6 +321,50 @@ model CompanyTaskComment {
   createdAt    DateTime    @default(now())
 
   @@index([taskId, createdAt])
+}
+
+/// Сообщение общего чата команды (BP, ТЗ 6.6). Разговор, а не поручение: у него нет ни
+/// исполнителя, ни срока — это и отличает его от задачи (`CompanyTask`, BF).
+model CompanyChatMessage {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  /// Автор снимается `SET NULL`, а не `RESTRICT`: удаление учётной записи не должно
+  /// блокировать транзакцию (уборка AU уже упиралась в это с `AdminAuditLog`). Слова
+  /// уволенного остаются в разговоре: он их сказал.
+  authorUserId String?
+  author       User?   @relation("CompanyChatAuthor", fields: [authorUserId], references: [id], onDelete: SetNull)
+
+  body String @db.Text
+
+  /// Упомянутые — ровно те, кому ушло уведомление каналами. Скалярный список, а не
+  /// таблица: соединением по нему не ходят, а имена разрешаются по членам команды.
+  mentions String[]
+
+  /// Отзыв: строка остаётся, текст на экране заменяется словами «сообщение удалено».
+  /// Правки нет — она меняет смысл сказанного под ней (журналы проекта неизменяемы).
+  deletedAt   DateTime?
+  deletedById String?
+
+  createdAt DateTime @default(now())
+
+  @@index([companyId, createdAt])
+}
+
+/// Час последнего чтения комнаты — на человека, а не на сторону. Это отход от
+/// `CaseMessage` (AO), где смена гасит «непрочитано» друг за друга: там дело ведёт
+/// смена, а здесь сообщение адресовано команде и ждёт каждого.
+model CompanyChatRead {
+  id         String   @id @default(cuid())
+  companyId  String
+  company    Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastReadAt DateTime @default(now())
+
+  @@unique([companyId, userId])
+  @@index([userId])
 }
 
 enum CompanyTaskStatus {
@@ -903,6 +949,11 @@ model Company {
 
   /// Правки карточки, ждущие модератора (BM). Витрина держит прежнее значение.
   revisions CompanyRevision[]
+
+  /// Общий чат команды (BP). Одна комната на предприятие: ТЗ 6.6 просит «общий чат
+  /// команды», а канал, в который никто не пишет, хуже его отсутствия.
+  chatMessages CompanyChatMessage[]
+  chatReads    CompanyChatRead[]
 
   @@index([ownerUserId])
   @@index([status, createdAt])

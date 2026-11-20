@@ -7,6 +7,7 @@ import { CabinetTile, TILE_GRID } from "@/components/cabinet/cabinet-tile";
 import { ADMIN_COLUMN } from "@/lib/admin-ui";
 import { groupByKey, visibleTiles, GROUP_ICONS, type CompanyTileDef } from "@/lib/cabinet/company-nav";
 import { NOT_DELETED } from "@/lib/soft-delete";
+import { readChatUnread } from "@/lib/company-chat/read";
 
 export const dynamic = "force-dynamic";
 
@@ -155,6 +156,19 @@ async function countTiles(
           prisma.companyTask.count({ where: { companyId, status: open } }),
         ]);
         out.tasks = { value: all, badge: mine > 0 ? String(mine) : null };
+      })(),
+    );
+  }
+  if (want.has("chat")) {
+    jobs.push(
+      (async () => {
+        // Число — весь разговор, значок — непрочитанное **этого** человека: оно личное,
+        // а не на смену, как в делах комплайнса (спека BP, § 2.3).
+        const [all, unread] = await Promise.all([
+          prisma.companyChatMessage.count({ where: { companyId, deletedAt: null } }),
+          readChatUnread(companyId, userId),
+        ]);
+        out.chat = { value: all, badge: unread > 0 ? String(unread) : null };
       })(),
     );
   }

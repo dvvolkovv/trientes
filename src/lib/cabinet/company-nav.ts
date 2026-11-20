@@ -50,6 +50,9 @@ export const COMPANY_TILES: CompanyTileDef[] = [
 
   { key: "team", group: "order", icon: "👥", section: "card", path: "team", ownerOnly: true },
   { key: "tasks", group: "order", icon: "✅", section: "tasks", path: "tasks", everyone: true },
+  // Чат виден каждому члену и своего раздела прав не имеет: комната принадлежит
+  // команде, а право, умеющее только замолчать человека, — управление, не доступ (BP).
+  { key: "chat", group: "order", icon: "💬", section: "card", path: "chat", everyone: true },
   { key: "journal", group: "order", icon: "🧾", section: "card", path: "journal", ownerOnly: true },
 ];
 
