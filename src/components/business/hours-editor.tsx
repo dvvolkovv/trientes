@@ -97,7 +97,10 @@ export function HoursEditor({
           return (
             <div key={day} className="rounded-[14px] border border-hairline bg-card p-2">
               <div className="flex items-center gap-2">
-                <span className="w-10 shrink-0 text-[12.5px] font-semibold">{t(`day.${day}`)}</span>
+                {/* Короткое имя дня, а не полное: живой прогон на 390 px показал
+                    «Понедельни» и «Воскре» — колонка в 40 px режет русские и
+                    хорватские названия, а строка дня должна читаться целиком. */}
+                <span className="w-9 shrink-0 text-[12.5px] font-semibold">{t(`dayShort.${day}`)}</span>
                 <div className="flex flex-1 flex-wrap gap-1">
                   {KINDS.map((kind) => (
                     <button
