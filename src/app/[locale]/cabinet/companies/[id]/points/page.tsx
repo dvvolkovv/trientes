@@ -6,6 +6,7 @@ import { getViewerCompanyById, canEditSection, canSeeSection } from "@/lib/busin
 import { readTop100 } from "@/lib/snapshot";
 import { listSelfListedCards } from "@/lib/coin-card-directory";
 import { PointForm, type PointFormInitial } from "@/components/business/point-form";
+import { parseWeekHours } from "@/lib/opening-hours";
 import { PointsList, type PointListItem } from "@/components/business/points-list";
 import { ADMIN_COLUMN } from "@/lib/admin-ui";
 import { NOT_DELETED } from "@/lib/soft-delete";
@@ -82,6 +83,9 @@ export default async function CompanyPointsPage({
         photos: Array.isArray(editingRow.photos)
           ? (editingRow.photos as { url: string; label: string | null }[])
           : [],
+        hours: parseWeekHours(editingRow.hours),
+        timezone: editingRow.timezone ?? "",
+        category: editingRow.category ?? "",
       }
     : undefined;
 

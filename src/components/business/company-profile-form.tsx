@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { saveCompanyProfile } from "@/app/actions/company";
 import { COUNTRIES } from "@/lib/countries";
 import { ADMIN_BUTTON, ADMIN_BUTTON_SECONDARY } from "@/lib/admin-ui";
+import { MERCHANT_CATEGORIES } from "@/lib/merchant-categories";
 
 type Initial = {
   legalName: string; displayName: string; description: string;
@@ -13,12 +14,15 @@ type Initial = {
   country: string; countryCode: string;
   city: string; street: string; houseNumber: string; postalCode: string;
   address: string; phone: string; email: string;
+  /** Слайс BN: вид заведения и политика возврата — свободные поля. */
+  category: string; returnPolicy: string; returnDays: string;
 };
 
 const EMPTY: Initial = {
   legalName: "", displayName: "", description: "", website: "", logoUrl: "",
   country: "", countryCode: "", city: "", street: "", houseNumber: "",
   postalCode: "", address: "", phone: "", email: "",
+  category: "", returnPolicy: "", returnDays: "",
 };
 
 type Doc = { kind: string; url: string; label: string | null };
@@ -126,6 +130,54 @@ export function CompanyProfileForm({
         {field("website", <p className="mt-1 text-[11px] text-muted">{t("websiteHint")}</p>)}
         {field("phone")}
         {field("email")}
+      </div>
+
+      {/* Вид заведения и политика возврата (слайс BN). Оба поля свободные: вид не
+          меняет ни места, ни монет, ни хозяина, а политика возврата — собственное
+          обещание продавца покупателю, и чем раньше оно на витрине, тем лучше. */}
+      <div className="space-y-3">
+        <div className="pt-1 text-[12px] uppercase tracking-wide text-muted">{t("categorySection")}</div>
+        <div className="flex flex-wrap gap-1.5">
+          {MERCHANT_CATEGORIES.map((c) => {
+            const on = f.category === c.key;
+            return (
+              <button
+                key={c.key}
+                type="button"
+                onClick={() => setF({ ...f, category: on ? "" : c.key })}
+                aria-pressed={on}
+                className={`inline-flex min-h-[36px] items-center gap-1.5 rounded-[12px] border px-2.5 text-[12px] ${
+                  on ? "border-accent bg-accent/10 text-accent" : "border-hairline bg-bg-tint text-muted hover:border-accent/50"
+                }`}
+              >
+                <span aria-hidden>{c.emoji}</span>
+                {t(`category.${c.key}`)}
+              </button>
+            );
+          })}
+        </div>
+        <div>
+          <label className={label} htmlFor="company-returnDays">{t("returnDays")}</label>
+          <input
+            id="company-returnDays"
+            className={input}
+            inputMode="numeric"
+            value={f.returnDays}
+            onChange={set("returnDays")}
+            placeholder="14"
+          />
+        </div>
+        <div>
+          <label className={label} htmlFor="company-returnPolicy">{t("returnPolicy")}</label>
+          <textarea
+            id="company-returnPolicy"
+            className={input}
+            value={f.returnPolicy}
+            onChange={set("returnPolicy")}
+            rows={4}
+          />
+          <p className="mt-1 text-[11px] text-muted">{t("returnPolicyHint")}</p>
+        </div>
       </div>
 
       <div className="space-y-3">

@@ -14,6 +14,10 @@ import {
 } from "@/lib/maplibre-attribution";
 import { tryCreateMap } from "@/lib/maplibre-map";
 import { basemapStyle } from "@/lib/basemap";
+import { HoursEditor } from "@/components/business/hours-editor";
+import { MERCHANT_CATEGORIES } from "@/lib/merchant-categories";
+import { defaultWeek, isEmptyWeek, type WeekHours } from "@/lib/opening-hours";
+import { timezoneForCountry } from "@/lib/timezones";
 
 
 const PRAGUE: [number, number] = [14.4212535, 50.0874654];
@@ -43,6 +47,9 @@ export type PointFormInitial = {
   acceptedCoinIds: string[];
   acceptedCardIds: string[];
   photos: { url: string; label: string | null }[];
+  hours: WeekHours | null;
+  timezone: string;
+  category: string;
 };
 
 type Addr = { countryCode: string; city: string; street: string; houseNumber: string; postalCode: string };
@@ -103,6 +110,11 @@ export function PointForm({
     editing ? editing.acceptedCardIds : initialCardIds,
   );
   const [photos, setPhotos] = useState<{ url: string; label: string | null }[]>(editing?.photos ?? []);
+  // Вид заведения и расписание (слайс BN). Часы заводятся только по просьбе: форма
+  // без них короче, а пустое расписание ничего не обещает.
+  const [category, setCategory] = useState(editing?.category ?? "");
+  const [hours, setHours] = useState<WeekHours | null>(editing?.hours ?? null);
+  const [timezone, setTimezone] = useState(editing?.timezone ?? "");
   const [uploading, setUploading] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [geoStatus, setGeoStatus] = useState<"idle" | "loading" | "ok" | "fail">("idle");
@@ -192,10 +204,20 @@ export function PointForm({
   }, [addr.countryCode, addr.city, addr.street, addr.houseNumber, addr.postalCode]);
 
   // If user edits address fields after toggling 'use company address', untick.
+  // Пояс подставляем по стране, если он у неё один: у Чехии он один, и спрашивать
+  // его — лишний вопрос; у США их шесть, и угадывать нельзя. Выбор человека не
+  // перебиваем.
+  function maybePrefillTimezone(countryCode: string) {
+    if (timezone) return;
+    const tz = timezoneForCountry(countryCode);
+    if (tz) setTimezone(tz);
+  }
+
   function setAddrField<K extends keyof Addr>(k: K, v: string) {
     addrTouchedRef.current = true;
     const next = { ...addr, [k]: v };
     setAddr(next);
+    if (k === "countryCode") maybePrefillTimezone(v);
     if (useCompanyAddr && !addrEqual(next, companyAddress)) setUseCompanyAddr(false);
   }
 
@@ -228,6 +250,9 @@ export function PointForm({
         type, name, ...addr, lat: pos?.[1] ?? null, lon: pos?.[0] ?? null,
         acceptedCoinIds: accepted, acceptedCardIds: acceptedCards,
         photos,
+        category: category || null,
+        hours: hours && !isEmptyWeek(hours) ? hours : null,
+        timezone: timezone || null,
       };
       if (editing) {
         const res = await updateCompanyPoint(editing.id, payload);
@@ -239,15 +264,11 @@ export function PointForm({
         }
         return;
       }
-      const res = await submitCompanyPoint(companyId, {
-        type, name, ...addr, lat: pos?.[1] ?? null, lon: pos?.[0] ?? null,
-        acceptedCoinIds: accepted, acceptedCardIds: acceptedCards,
-        photos,
-      });
+      const res = await submitCompanyPoint(companyId, payload);
       if (res.ok) {
         setMsg(t("pointSubmitted"));
         setName(""); setAddr(EMPTY_ADDR); setAccepted([]); setAcceptedCards([]);
-        setUseCompanyAddr(false); setPhotos([]);
+        setUseCompanyAddr(false); setPhotos([]); setHours(null); setCategory("");
         if (markerRef.current) { markerRef.current.remove(); markerRef.current = null; }
         updatePos(null);
         router.refresh();
@@ -290,6 +311,33 @@ export function PointForm({
 
       <input value={name} onChange={(e) => setName(e.target.value)} placeholder={t("pointName")} className={input} />
 
+      {/* Вид заведения (слайс BN). Он решает три дела: подпись на витрине, цвет
+          середины булавки и совпадение с интересом в маршруте. Не указан — точка
+          остаётся «магазином» по слою, как было до слайса. */}
+      <div>
+        <div className="mb-2 text-[11px] uppercase tracking-wider text-muted">{t("categoryTitle")}</div>
+        <div className="flex flex-wrap gap-1.5">
+          {MERCHANT_CATEGORIES.map((c) => {
+            const on = category === c.key;
+            return (
+              <button
+                key={c.key}
+                type="button"
+                onClick={() => setCategory(on ? "" : c.key)}
+                aria-pressed={on}
+                className={`inline-flex min-h-[36px] items-center gap-1.5 rounded-[12px] border px-2.5 text-[12px] ${
+                  on ? "border-accent bg-accent/10 text-accent" : "border-hairline bg-bg-tint text-muted hover:border-accent/50"
+                }`}
+              >
+                <span aria-hidden>{c.emoji}</span>
+                {t(`category.${c.key}`)}
+              </button>
+            );
+          })}
+        </div>
+        <p className="mt-1.5 text-[11px] leading-snug text-muted">{t("categoryHint")}</p>
+      </div>
+
       {companyAddrAvailable && (
         <label className="flex items-center gap-2 text-[12px] text-muted cursor-pointer select-none">
           <input type="checkbox" checked={useCompanyAddr} onChange={(e) => toggleUseCompanyAddr(e.target.checked)} />
@@ -331,6 +379,36 @@ export function PointForm({
             <div ref={containerRef} className="w-full h-[320px] rounded-md overflow-hidden border border-hairline" />
           )}
         </>
+      )}
+
+      {/* Часы работы (слайс BN). У онлайн-услуги их нет: у неё нет ни двери, ни
+          пояса, и редактор там был бы обманкой. */}
+      {type !== "ONLINE" && (
+        <div className="rounded-[16px] border border-hairline bg-bg-tint/40 p-3">
+          {hours ? (
+            <>
+              <HoursEditor value={hours} timezone={timezone} onChange={setHours} onTimezoneChange={setTimezone} />
+              <button
+                type="button"
+                onClick={() => setHours(null)}
+                className="mt-2 text-[11.5px] text-muted underline-offset-2 hover:underline"
+              >
+                {t("hours.drop")}
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                setHours(defaultWeek());
+                maybePrefillTimezone(addr.countryCode);
+              }}
+              className="min-h-[44px] w-full rounded-[12px] border border-hairline bg-card text-[12.5px] hover:border-accent/50"
+            >
+              + {t("hours.add")}
+            </button>
+          )}
+        </div>
       )}
 
       <div className="text-[12px] text-muted">{t("acceptedCoins")}:</div>

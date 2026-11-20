@@ -88,6 +88,9 @@ export default async function CompanyManagementPage({
               countryCode: company.countryCode ?? "", city: company.city ?? "",
               street: company.street ?? "", houseNumber: company.houseNumber ?? "",
               postalCode: company.postalCode ?? "",
+              category: company.category ?? "",
+              returnPolicy: company.returnPolicy ?? "",
+              returnDays: company.returnDays === null ? "" : String(company.returnDays),
             }}
           />
         </section>
@@ -117,6 +120,10 @@ export default async function CompanyManagementPage({
               street: company.street,
               houseNumber: company.houseNumber,
               postalCode: company.postalCode,
+              // Вид заведения — словами, а не ключом реестра: карточку читает человек.
+              category: company.category ? t(`category.${company.category}`) : null,
+              returnPolicy: company.returnPolicy,
+              returnDays: company.returnDays === null ? null : String(company.returnDays),
             }}
           />
 
