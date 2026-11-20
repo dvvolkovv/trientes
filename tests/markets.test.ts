@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fetchMarkets, marketFetchOrder, parseYahooChart, MARKET_INSTRUMENTS } from "@/lib/markets";
+import { fetchMarkets, marketFetchOrder, parseYahooChart, stalestQuoteAt, MARKET_INSTRUMENTS } from "@/lib/markets";
 
 /**
  * Форма тела скопирована с живого ответа Yahoo (`/v8/finance/chart/<symbol>`),
@@ -181,5 +181,40 @@ describe("fetchMarkets", () => {
     } });
     expect(asked).toHaveLength(5);
     expect(quotes.map((q) => q.symbol)).toEqual(["CL=F"]);
+  });
+});
+
+/**
+ * Самая ветхая карточка табло — это и есть здоровье источника. Мерить его
+ * временем записи снимка нельзя: с 18 ноября Yahoo отдаёт нам одну-две
+ * котировки из десяти за прогон, и прогон, которому отказали во всём, снимка
+ * не пишет вовсе — то есть «тишина» отчёта означала не замолчавший прогон, а
+ * обычную работу источника. Штамп нашего взятия у каждой карточки свой.
+ */
+describe("stalestQuoteAt", () => {
+  const q = (symbol: string, gotAt?: string) => ({ symbol, gotAt }) as never;
+
+  it("возвращает самый давний наш штамп", () => {
+    const at = stalestQuoteAt([
+      q("^DJI", "2026-11-20T14:00:00.000Z"),
+      q("GC=F", "2026-11-20T09:30:00.000Z"),
+      q("SI=F", "2026-11-20T12:00:00.000Z"),
+    ]);
+    expect(at?.toISOString()).toBe("2026-11-20T09:30:00.000Z");
+  });
+
+  it("пустое табло — возраст неизвестен, а не нулевой", () => {
+    expect(stalestQuoteAt([])).toBeNull();
+  });
+
+  it("снимок прежней формы без штампов читается как «неизвестно»", () => {
+    // Он самоизлечивается первым же прогоном после правки: слияние ставит
+    // штамп и перенесённым карточкам.
+    expect(stalestQuoteAt([q("^DJI"), q("GC=F")])).toBeNull();
+  });
+
+  it("карточка без штампа рядом со штампованными не прячет ветхую", () => {
+    const at = stalestQuoteAt([q("^DJI"), q("GC=F", "2026-11-20T09:30:00.000Z")]);
+    expect(at?.toISOString()).toBe("2026-11-20T09:30:00.000Z");
   });
 });

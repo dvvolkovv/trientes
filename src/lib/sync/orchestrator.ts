@@ -193,18 +193,41 @@ export async function syncMarkets(deps: {
   const quotes = sweep.quotes;
   // An empty result means the upstream refused us, not that the markets are gone —
   // keep the last good snapshot so the board degrades to stale instead of blank.
-  if (quotes.length === 0) return { count: 0 };
+  //
+  // «Оставить» значит перезаписать теми же значениями: снимок живёт сутки, а
+  // источник отказывал нам сутками напролёт (живой случай CNBC 17 ноября) —
+  // ключ истекал, и табло гасло вовсе. Ветхая котировка со своим штампом
+  // честнее пустого табло. Свежесть после этого мерится не временем записи, а
+  // штампом самой ветхой карточки (`stalestQuoteAt`) — иначе продление срока
+  // выглядело бы как свежий ответ службы.
+  if (quotes.length === 0) {
+    if (previous.length > 0) {
+      await deps.redis.set(KEYS.markets, JSON.stringify(previous), "EX", TTL.markets);
+    }
+    return { count: 0 };
+  }
 
   // Источник иногда теряет один символ из в остальном годного ответа (у Yahoo
   // это отдельный запрос на инструмент, и сорваться может именно он). Слияние с
   // прошлым снимком оставляет такую карточку на табло — ветхой, со своим
   // штампом, — вместо того чтобы гасить её до следующего прогона.
   const fresh = new Map(quotes.map((q) => [q.symbol, q]));
+  // Наш штамп ставится здесь, а не в разборе ответа: разбор чистый, а время
+  // взятия — факт прогона. Перенесённая карточка свой штамп сохраняет, иначе
+  // её возраст обнулялся бы чужим ответом.
+  const stampedAt = now().toISOString();
+  const carry = (p: MarketQuote): MarketQuote =>
+    // Снимок прежней формы штампов не нёс. Такой карточке ставится штамп этого
+    // прогона — перенос одноразовый, и возраст её отсчитывается с него.
+    p.gotAt ? p : { ...p, gotAt: stampedAt };
   // Previous order is the canonical instrument order, so rebuild from it and append
   // anything newly added to the instrument list.
   const merged = [
-    ...previous.map((p) => fresh.get(p.symbol) ?? p),
-    ...quotes.filter((q) => !previous.some((p) => p.symbol === q.symbol)),
+    ...previous.map((p) => {
+      const f = fresh.get(p.symbol);
+      return f ? { ...f, gotAt: stampedAt } : carry(p);
+    }),
+    ...quotes.filter((q) => !previous.some((p) => p.symbol === q.symbol)).map((q) => ({ ...q, gotAt: stampedAt })),
   ];
 
   await deps.redis.set(KEYS.markets, JSON.stringify(merged), "EX", TTL.markets);

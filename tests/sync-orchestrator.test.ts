@@ -318,6 +318,67 @@ describe("syncMarkets", () => {
     expect(result).toEqual({ count: 0 });
     expect(JSON.parse(redisStore.get(KEYS.markets)!)).toHaveLength(1);
   });
+
+  it("ставит свой штамп каждой прошедшей котировке", async () => {
+    // Штамп рынка (`date`/`time`) принадлежит рынку: у закрытого индекса он
+    // стоит на закрытии, и по нему не отличить замолчавший источник от
+    // выходного дня. Поэтому у карточки есть ещё и наш штамп — когда она у
+    // нас появилась.
+    const { redisStore, fakeRedis } = makeFakes();
+    const result = await syncMarkets({
+      fetchMarkets: async () => sweep([{ symbol: "GC=F", name: "gold", group: "metal", unit: "usd", last: 3783 }]),
+      redis: fakeRedis as never,
+      now: () => new Date("2026-11-20T15:00:00.000Z"),
+    });
+    expect(result).toEqual({ count: 1 });
+    expect(JSON.parse(redisStore.get(KEYS.markets)!)[0].gotAt).toBe("2026-11-20T15:00:00.000Z");
+  });
+
+  it("перенесённая котировка сохраняет свой прежний штамп", async () => {
+    const { redisStore, fakeRedis } = makeFakes();
+    redisStore.set(
+      KEYS.markets,
+      JSON.stringify([
+        { symbol: "^DJI", last: 1, gotAt: "2026-11-20T10:00:00.000Z" },
+        { symbol: "PA=F", last: 1025, gotAt: "2026-11-20T06:00:00.000Z" },
+      ]),
+    );
+    await syncMarkets({
+      fetchMarkets: async () => sweep([{ symbol: "^DJI", name: "Dow Jones", group: "index", unit: "pts", last: 2 }]),
+      redis: fakeRedis as never,
+      now: () => new Date("2026-11-20T15:00:00.000Z"),
+    });
+    const stored = JSON.parse(redisStore.get(KEYS.markets)!);
+    expect(stored[0].gotAt).toBe("2026-11-20T15:00:00.000Z");
+    // Палладий в этом прогоне не прошёл — его возраст не обнуляется.
+    expect(stored[1].gotAt).toBe("2026-11-20T06:00:00.000Z");
+  });
+
+  it("пустой ответ продлевает срок жизни прежнего снимка", async () => {
+    // Снимок живёт сутки, а источник отказывал нам сутками напролёт (живой
+    // случай CNBC 17 ноября): ключ истекал, и табло гасло вовсе. Ветхая
+    // котировка со своим штампом честнее пустого табло.
+    const { redisStore, fakeRedis } = makeFakes();
+    redisStore.set(KEYS.markets, JSON.stringify([{ symbol: "^DJI", last: 1, gotAt: "2026-11-20T06:00:00.000Z" }]));
+    await syncMarkets({
+      fetchMarkets: async () => sweep([], ["^DJI"]),
+      redis: fakeRedis as never,
+      now: () => new Date("2026-11-20T15:00:00.000Z"),
+    });
+    const writes = fakeRedis.set.mock.calls.filter((c: unknown[]) => c[0] === KEYS.markets);
+    expect(writes).toHaveLength(1);
+    // Значения не тронуты: продлён только срок жизни.
+    expect(JSON.parse(redisStore.get(KEYS.markets)!)).toEqual([
+      { symbol: "^DJI", last: 1, gotAt: "2026-11-20T06:00:00.000Z" },
+    ]);
+  });
+
+  it("пустой ответ без прежнего снимка не пишет пустого табло", async () => {
+    const { fakeRedis } = makeFakes();
+    await syncMarkets({ fetchMarkets: async () => sweep([], ["^DJI"]), redis: fakeRedis as never });
+    const writes = fakeRedis.set.mock.calls.filter((c: unknown[]) => c[0] === KEYS.markets);
+    expect(writes).toHaveLength(0);
+  });
 });
 
 describe("syncExchangeRates", () => {

@@ -38,6 +38,15 @@ export type MarketQuote = MarketInstrument & {
   low: number | null;
   last: number | null; // close
   changePct: number | null; // session move
+  /**
+   * Наш штамп: когда эта котировка у нас появилась (ISO, UTC). Ставит его
+   * `syncMarkets`, а не разбор ответа, — чтобы разбор остался чистым.
+   *
+   * Зачем он при живых `date`/`time`: те принадлежат **рынку**, и у закрытого
+   * индекса стоят на закрытии. По ним не отличить замолчавший источник от
+   * выходного дня, а именно это и надо знать отчёту здоровья.
+   */
+  gotAt?: string;
 };
 
 export const MARKET_INSTRUMENTS: MarketInstrument[] = [
@@ -223,6 +232,26 @@ export function marketFetchOrder(asked: MarketAskedAt): MarketInstrument[] {
     if (y === undefined) return 1;
     return x < y ? -1 : 1;
   });
+}
+
+/**
+ * Самая ветхая карточка табло — наш штамп той котировки, которую дольше всех
+ * не обновляли. Это и есть здоровье источника: он отдаёт одну-две карточки из
+ * десяти за прогон, поэтому прогон без ответов — обычная работа, а не тишина,
+ * а голодание одного инструмента видно только по нему самому.
+ *
+ * `null` означает «возраст неизвестен», а не «ноль»: так читается и пустое
+ * табло, и снимок прежней формы без штампов (он самоизлечивается первым же
+ * слиянием). Карточка без штампа рядом со штампованными ветхую не прячет.
+ */
+export function stalestQuoteAt(quotes: MarketQuote[]): Date | null {
+  let oldest: number | null = null;
+  for (const q of quotes) {
+    const at = q.gotAt ? Date.parse(q.gotAt) : NaN;
+    if (!Number.isFinite(at)) continue;
+    if (oldest === null || at < oldest) oldest = at;
+  }
+  return oldest === null ? null : new Date(oldest);
 }
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

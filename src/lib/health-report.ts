@@ -17,8 +17,16 @@ import type Redis from "ioredis";
 import { KEYS, TTL } from "@/lib/sync/keys";
 import { RUN_COINPAPRIKA, quotaBlocked, readRunState } from "@/lib/sync/run-state";
 import { OWN_DEX_NAME } from "@/lib/coin-card-dex-market";
+import { stalestQuoteAt, type MarketQuote } from "@/lib/markets";
 import { QUOTA_SERVICES, budgetVerdict, type BudgetVerdict } from "@/lib/quota/budget";
 import { readSpend } from "@/lib/quota/ledger";
+
+/**
+ * Старше этого — карточка табло считается брошенной. Полный круг обхода при
+ * живой пропускной способности источника — три-пять часов, восемь часов это
+ * два круга.
+ */
+export const MARKETS_STALE_MINUTES = 480;
 
 /** Окно, за которое считаются ответы nginx. */
 export const LOG_WINDOW_HOURS = 24;
@@ -307,6 +315,27 @@ export function renderHealthReport(f: HealthFacts): string {
   return out.join("\n");
 }
 
+/**
+ * Свежесть табло — по самой ветхой карточке, а не по времени записи снимка.
+ *
+ * Время записи мерило не то: с 18 ноября Yahoo отдаёт одну-две котировки из
+ * десяти за прогон, а прогону, которому отказали во всём, писать нечего — и
+ * «тишина 2 ч» в отчёте означала обычную работу источника, а не поломку. С
+ * продлением срока жизни снимка (пустой ответ его перезаписывает) время записи
+ * врало бы и в другую сторону: оно всегда свежее. Голодание одного инструмента
+ * и замолчавший источник видны только по штампам самих карточек.
+ */
+async function marketsStalestAt(redis: Redis): Promise<Date | null> {
+  const raw = await redis.get(KEYS.markets).catch(() => null);
+  if (!raw) return null;
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    return Array.isArray(parsed) ? stalestQuoteAt(parsed as MarketQuote[]) : null;
+  } catch {
+    return null;
+  }
+}
+
 /** Возраст записи ключа Redis: ключи ставятся с TTL, остаток TTL — её возраст. */
 async function redisWrittenAt(redis: Redis, key: string, ttlSeconds: number, now: Date): Promise<Date | null> {
   const left = await redis.ttl(key).catch(() => -2);
@@ -369,7 +398,7 @@ export async function collectHealth(deps: HealthDeps): Promise<HealthFacts> {
   const [listAt, globalAt, marketsAt, newsAt, cpRun] = await Promise.all([
     redisWrittenAt(redis, KEYS.topList, TTL.snapshot, now),
     redisWrittenAt(redis, KEYS.globalStats, TTL.globalStats, now),
-    redisWrittenAt(redis, KEYS.markets, TTL.markets, now),
+    marketsStalestAt(redis),
     redisWrittenAt(redis, KEYS.news, TTL.news, now),
     // Обход каталога бирж своего следа в базе не оставляет: строки `Exchange`
     // трогает и прогон CoinGecko. Поэтому прогон пишет факт о себе сам.
@@ -381,7 +410,9 @@ export async function collectHealth(deps: HealthDeps): Promise<HealthFacts> {
     probe("цены монет", priceAt, 40, now),
     probe("снимок списка (Redis)", listAt, 40, now),
     probe("мировые итоги", globalAt, 90, now),
-    probe("табло рынков (тикер)", marketsAt, 90, now),
+    // Норма вдвое больше полного круга обхода: служба отдаёт одну-две карточки
+    // из десяти за прогон (замер 18–20 ноября), то есть круг — три-пять часов.
+    probe("табло рынков (ветхая карточка)", marketsAt, MARKETS_STALE_MINUTES, now),
     probe("новости", newsAt, 120, now),
     probe("факты сетей", factsAt, 180, now),
     probe("выпуск монет", supplyAt, 180, now),
