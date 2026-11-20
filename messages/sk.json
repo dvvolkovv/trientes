@@ -1286,7 +1286,8 @@
         "elevator": "Použite výťah",
         "alongStreet": "Po {name}",
         "scheduled": "naplánované"
-      }
+      },
+      "stopCue": "Za {distance}: {name}, {offset} od cesty"
     },
     "pageMap": "Mapa",
     "pageCard": "Miesto",
@@ -1362,6 +1363,27 @@
         "captcha_expired": "Výzva vypršala. Zvoľte si novú.",
         "captcha_too_fast": "Bolo to príliš rýchle. Skúste to znova."
       }
+    },
+    "stops": {
+      "title": "Po ceste",
+      "subtitle": "Miesta prijímajúce krypto v koridore {corridor} okolo vašej trasy, vybrané podľa vašich záujmov.",
+      "empty": "Nič na tejto trase nezodpovedá vašim záujmom.",
+      "failed": "Nepodarilo sa prehľadať trasu.",
+      "retry": "Skúsiť znova",
+      "loading": "Prehľadávame trasu…",
+      "mark": "Označiť",
+      "marked": "Označené",
+      "along": "o {distance}",
+      "offset": "{distance} od cesty",
+      "cashback": "{percent}% cashback",
+      "cashbackUpTo": "až {percent}% cashback",
+      "more": "{count} ďalších po ceste — zúžte svoje záujmy alebo koridor.",
+      "truncated": "Príliš veľa miest na tejto trase; zoznam nie je úplný.",
+      "guestHint": "Prihláste sa, aby ste si vybrali, ktoré miesta hľadať.",
+      "prefsHint": "Záujmy a koridor sú vo vašom profile.",
+      "cryptoOnly": "Toto sú miesta, ktoré prijímajú krypto — nie každá zastávka na ceste.",
+      "markHint": "Označené miesto je pripomienka, nie obchádzka: trasa zostáva taká, aká je, a hlas vás upozorní, skôr než k nemu dorazíte.",
+      "open": "Zobraziť na mape"
     }
   },
   "markets": {
@@ -4217,5 +4239,32 @@
       "no_file": "Vyberte súbor."
     },
     "selfDrivenHint": "Tento dodávateľ nemá portál na Trientes, preto si stavy objednávky vediete sami: zapíšte si dátum, ktorý vám poskytol, a označte zásielku pri odoslaní."
+  },
+  "cabinetInterests": {
+    "title": "Záujmy a trasy",
+    "subtitle": "Čo hľadať popri trase a s akým predstihom vás má hlas upozorniť.",
+    "axis": {
+      "fuel": "Palivo a nabíjanie",
+      "food": "Jedlo a kaviarne",
+      "lodging": "Ubytovanie",
+      "shop": "Obchody a služby",
+      "cash": "Hotovosť a výmena"
+    },
+    "like": "Páči sa mi",
+    "neutral": "Bez názoru",
+    "dislike": "Nepáči sa mi",
+    "axisNote": "Značky menia zoznam pozdĺž trasy a to, čo hlas hovorí. Nikdy neskryjú značku z mapy: mapa zobrazuje, čo tam je.",
+    "corridor": "Koridor, metre",
+    "corridorHint": "Ako ďaleko od trasy sa ešte miesto počíta ako po ceste. Od 200 do 10000.",
+    "alert": "Upozorniť ma, metre vopred",
+    "alertHint": "S akým predstihom hlas spomenie označené miesto. Od 500 do 5000.",
+    "save": "Uložiť",
+    "saved": "Uložené.",
+    "errors": {
+      "corridor_invalid": "Koridor musí byť medzi 200 a 10000 metrami.",
+      "alert_invalid": "Vzdialenosť upozornenia musí byť medzi 500 a 5000 metrami.",
+      "unauth": "Najprv sa prihláste.",
+      "invalid": "Toto sa nepodarilo uložiť."
+    }
   }
 }

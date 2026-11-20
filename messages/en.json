@@ -1286,7 +1286,8 @@
         "elevator": "Take the lift",
         "alongStreet": "Along {name}",
         "scheduled": "scheduled"
-      }
+      },
+      "stopCue": "In {distance}: {name}, {offset} off the road"
     },
     "pageMap": "Map",
     "pageCard": "Place",
@@ -1362,6 +1363,27 @@
         "captcha_expired": "The challenge expired. Take a new one.",
         "captcha_too_fast": "That was too fast. Please try again."
       }
+    },
+    "stops": {
+      "title": "Along the way",
+      "subtitle": "Crypto-accepting places within {corridor} of your route, picked by your interests.",
+      "empty": "Nothing along this route matches your interests.",
+      "failed": "Could not look along the route.",
+      "retry": "Try again",
+      "loading": "Looking along the route…",
+      "mark": "Mark",
+      "marked": "Marked",
+      "along": "in {distance}",
+      "offset": "{distance} off the road",
+      "cashback": "{percent}% cashback",
+      "cashbackUpTo": "up to {percent}% cashback",
+      "more": "{count} more along the way — narrow your interests or corridor.",
+      "truncated": "Too many places along this route; the list is not complete.",
+      "guestHint": "Sign in to pick which places to look for.",
+      "prefsHint": "Interests and the corridor live in your cabinet.",
+      "cryptoOnly": "These are places that accept crypto — not every stop on the road.",
+      "markHint": "A marked place is a reminder, not a detour: the route stays as it is, and the voice tells you before you reach it.",
+      "open": "Show on map"
     }
   },
   "markets": {
@@ -4217,5 +4239,32 @@
       "no_file": "Choose a file."
     },
     "selfDrivenHint": "This supplier has no portal on Trientes, so you keep the order's statuses yourself: write down the date they gave you and mark the shipment when it leaves."
+  },
+  "cabinetInterests": {
+    "title": "Interests and routes",
+    "subtitle": "What to look for along a route, and how early the voice should warn you.",
+    "axis": {
+      "fuel": "Fuel and charging",
+      "food": "Food and cafes",
+      "lodging": "Places to stay",
+      "shop": "Shops and services",
+      "cash": "Cash and exchange"
+    },
+    "like": "Like",
+    "neutral": "No opinion",
+    "dislike": "Dislike",
+    "axisNote": "Marks change the list along a route and what the voice says. They never hide a pin from the map: the map shows what is there.",
+    "corridor": "Corridor, metres",
+    "corridorHint": "How far off the route a place still counts as along the way. From 200 to 10000.",
+    "alert": "Warn me, metres before",
+    "alertHint": "How early the voice mentions a marked place. From 500 to 5000.",
+    "save": "Save",
+    "saved": "Saved.",
+    "errors": {
+      "corridor_invalid": "Corridor must be between 200 and 10000 metres.",
+      "alert_invalid": "Warning distance must be between 500 and 5000 metres.",
+      "unauth": "Sign in first.",
+      "invalid": "Could not save that."
+    }
   }
 }

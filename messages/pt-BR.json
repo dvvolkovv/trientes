@@ -1286,7 +1286,8 @@
         "elevator": "Use o elevador",
         "alongStreet": "Ao longo de {name}",
         "scheduled": "programado"
-      }
+      },
+      "stopCue": "Em {distance}: {name}, {offset} fora da rota"
     },
     "pageMap": "Mapa",
     "pageCard": "Local",
@@ -1362,6 +1363,27 @@
         "captcha_expired": "O desafio expirou. Pegue um novo.",
         "captcha_too_fast": "Isso foi rápido demais. Tente novamente."
       }
+    },
+    "stops": {
+      "title": "Pelo caminho",
+      "subtitle": "Locais que aceitam cripto dentro de {corridor} da sua rota, escolhidos pelos seus interesses.",
+      "empty": "Nada ao longo desta rota corresponde aos seus interesses.",
+      "failed": "Não foi possível procurar ao longo da rota.",
+      "retry": "Tentar novamente",
+      "loading": "Procurando ao longo da rota…",
+      "mark": "Marcar",
+      "marked": "Marcado",
+      "along": "em {distance}",
+      "offset": "{distance} fora da rota",
+      "cashback": "{percent}% de cashback",
+      "cashbackUpTo": "até {percent}% de cashback",
+      "more": "{count} a mais pelo caminho — reduza seus interesses ou o corredor.",
+      "truncated": "Lugares demais ao longo desta rota; a lista não está completa.",
+      "guestHint": "Entre para escolher quais locais procurar.",
+      "prefsHint": "Os interesses e o corredor ficam no seu painel.",
+      "cryptoOnly": "Estes são locais que aceitam cripto — não é toda parada na rota.",
+      "markHint": "Um local marcado é um lembrete, não um desvio: a rota permanece como está, e a voz avisa antes de você chegar.",
+      "open": "Mostrar no mapa"
     }
   },
   "markets": {
@@ -4217,5 +4239,32 @@
       "no_file": "Escolha um arquivo."
     },
     "selfDrivenHint": "Este fornecedor não tem portal na Trientes, então você mantém os status do pedido por conta própria: anote a data que eles informaram e marque o envio quando ele sair."
+  },
+  "cabinetInterests": {
+    "title": "Interesses e rotas",
+    "subtitle": "O que procurar ao longo de uma rota e com que antecedência a voz deve alertar você.",
+    "axis": {
+      "fuel": "Combustível e recarga",
+      "food": "Comida e cafés",
+      "lodging": "Hospedagem",
+      "shop": "Lojas e serviços",
+      "cash": "Dinheiro e câmbio"
+    },
+    "like": "Gosto",
+    "neutral": "Sem opinião",
+    "dislike": "Não gosto",
+    "axisNote": "As marcações alteram a lista ao longo de uma rota e o que a voz diz. Elas nunca escondem um marcador do mapa: o mapa mostra o que existe.",
+    "corridor": "Corredor, metros",
+    "corridorHint": "Quão longe da rota um local ainda conta como no caminho. De 200 a 10000.",
+    "alert": "Avise-me, metros antes",
+    "alertHint": "Com quanta antecedência a voz menciona um local marcado. De 500 a 5000.",
+    "save": "Salvar",
+    "saved": "Salvo.",
+    "errors": {
+      "corridor_invalid": "O corredor deve estar entre 200 e 10000 metros.",
+      "alert_invalid": "A distância de aviso deve estar entre 500 e 5000 metros.",
+      "unauth": "Faça login primeiro.",
+      "invalid": "Não foi possível salvar isso."
+    }
   }
 }

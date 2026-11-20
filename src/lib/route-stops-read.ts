@@ -108,7 +108,7 @@ export async function findStopsAlongRoute(i: {
   const rates = await readRatesFor(points.map((p) => p.companyId));
 
   const raw: RouteStop[] = [];
-  let truncated = osm.truncated;
+  const truncated = osm.truncated;
   for (const entry of [
     ...osm.pois.map((poi) => ({ poi, companyId: null as string | null, pointId: null as string | null })),
     ...points.map((p) => ({ poi: p.poi, companyId: p.companyId, pointId: p.pointId })),

@@ -35,6 +35,7 @@ import {
   type TransitCue,
 } from "@/lib/transit-guidance";
 import { cameraFor, isMoving } from "@/lib/nav-camera";
+import { StopVoiceLog, stopCue, type MarkedStop } from "@/lib/route-stop-cue";
 import { compassTap, type CompassMode } from "@/lib/compass-mode";
 import { headingChanged, pickHeading } from "@/lib/heading";
 import { requestCompassPermission, watchCompass } from "@/lib/compass-sensor";
@@ -56,6 +57,7 @@ import {
 } from "@/components/coin-detail/route-steps-panel";
 import { TransitBanner, clockTime, transitCueText } from "@/components/coin-detail/transit-itinerary";
 import { StreetViewOverlay } from "@/components/coin-detail/street-view-overlay";
+import { RouteStopsPanel, type StopRow } from "@/components/coin-detail/route-stops-panel";
 import { MODE_ICON, PoiSheet, type SheetRoute } from "@/components/coin-detail/poi-sheet";
 import { DEFAULT_POI_PAGE, type PoiPage } from "@/lib/poi-pager";
 import { tileOffset, tilePadding } from "@/lib/poi-tile";
@@ -305,6 +307,17 @@ export default function CryptoNavigator({
   // чужую сводку как свою, поэтому сверяется ключ, а не наличие маршрута.
   const [destKey, setDestKey] = useState<string | null>(null);
   const [routePoi, setRoutePoi] = useState<Poi | null>(null);
+  /**
+   * Отмеченные точки по пути (ТЗ 4.4). Живут в браузере, а не в базе: это поездка, а
+   * не коллекция, а навигатор нарочно работает и без входа. Ключ — цель маршрута,
+   * поэтому перезагрузка страницы посреди дороги отметки не теряет.
+   */
+  const [marked, setMarked] = useState<MarkedStop[]>([]);
+  const [marksFor, setMarksFor] = useState<string | null>(null);
+  const markedRef = useRef<MarkedStop[]>([]);
+  const alertMetersRef = useRef(1500);
+  const stopLogRef = useRef(new StopVoiceLog());
+  const [stopHint, setStopHint] = useState<string | null>(null);
   // Своё положение держится и в ref (для замыканий карты), и в состоянии: от
   // него зависит, что показывает карточка точки.
   const [origin, setOriginState] = useState<[number, number] | null>(null);
@@ -1224,6 +1237,70 @@ export default function CryptoNavigator({
       features: [],
     });
   }
+  // Отметки читаются и пишутся по цели маршрута: другая цель — другая поездка.
+  const marksKey = destKey ? `cmap:stops:v1:${destKey}` : null;
+  // Смена цели — это производное состояние, и оно считается при отрисовке, а не
+  // эффектом: отметки нужны той же отрисовке, что рисует панель, и один лишний проход
+  // здесь означал бы панель с чужими отметками в первом кадре.
+  if (marksFor !== marksKey) {
+    setMarksFor(marksKey);
+    setMarked(readMarks(marksKey));
+  }
+  // Голос читает отметки из ссылки, а не из состояния: ведение считает подсказку в
+  // обработчике отсчёта GPS, которому отрисовка ничего не передаёт.
+  useEffect(() => {
+    markedRef.current = marked;
+  }, [marked]);
+  useEffect(() => {
+    // Новая цель — новые фразы: о точке прежней поездки говорить незачем.
+    stopLogRef.current = new StopVoiceLog();
+  }, [marksKey]);
+
+  const toggleMark = useCallback(
+    (stop: StopRow) => {
+      setMarked((prev) => {
+        const next = prev.some((m) => m.id === stop.poi.id)
+          ? prev.filter((m) => m.id !== stop.poi.id)
+          : [
+              ...prev,
+              {
+                id: stop.poi.id,
+                name: stop.poi.name,
+                alongMeters: stop.alongMeters,
+                offsetMeters: stop.offsetMeters,
+              },
+            ];
+        try {
+          if (marksKey) window.localStorage.setItem(marksKey, JSON.stringify(next));
+        } catch {
+          // Приватный режим браузера — отметка живёт до перезагрузки, и это лучше отказа.
+        }
+        return next;
+      });
+    },
+    [marksKey],
+  );
+
+  /**
+   * Расстояние вдоль маршрута у отмеченной точки считает сервер по той линии, которую
+   * он получил. Пересчёт на ходу эти числа обновляет: иначе «через полтора километра»
+   * относилось бы к прежней дороге.
+   */
+  const onStops = useCallback(
+    (stops: StopRow[], alertMeters: number) => {
+      alertMetersRef.current = alertMeters;
+      if (markedRef.current.length === 0) return;
+      const fresh = new Map(stops.map((s) => [s.poi.id, s]));
+      setMarked((prev) =>
+        prev.map((m) => {
+          const row = fresh.get(m.id);
+          return row ? { ...m, alongMeters: row.alongMeters, offsetMeters: row.offsetMeters } : m;
+        }),
+      );
+    },
+    [],
+  );
+
 
   // A browser without speech synthesis simply never shows the voice control.
   const voiceSupported = useSyncExternalStore(subscribeNever, hasSpeech, () => false);
@@ -1349,6 +1426,26 @@ export default function CryptoNavigator({
         log: voiceLogRef.current,
       });
       if (a) speak(phraseFor(a.step, a.distanceMeters, a.band === "now"));
+
+      // Отмеченная точка по пути: одна фраза на точку за поездку, и только о той,
+      // что впереди. Кэшбэк в голос не идёт — за рулём фраза должна быть короткой.
+      const cue = stopCue({
+        travelled,
+        stops: markedRef.current,
+        alertMeters: alertMetersRef.current,
+        speedMps: u.speedMps,
+        log: stopLogRef.current,
+      });
+      if (cue) {
+        const text = t("nav.stopCue", {
+          distance: spokenDistance(cue.distanceMeters, t),
+          name: cue.name,
+          offset: spokenDistance(cue.offsetMeters, t),
+        });
+        setStopHint(text);
+        window.setTimeout(() => setStopHint((prev) => (prev === text ? null : prev)), 20_000);
+        speak(text);
+      }
     },
     [speak, phraseFor, t],
   );
@@ -1808,7 +1905,7 @@ export default function CryptoNavigator({
                       {transitArrival ?? t("etaMin", { min: Math.max(1, Math.round(navRemaining.sec / 60)) })}
                     </div>
                     <div className="truncate text-[11px] text-muted">
-                      {navRerouting ? t("rerouting") : (status ?? navError ?? t("remaining"))}
+                      {navRerouting ? t("rerouting") : (stopHint ?? status ?? navError ?? t("remaining"))}
                     </div>
                   </>
                 ) : (
@@ -1969,6 +2066,30 @@ export default function CryptoNavigator({
         </div>
       )}
 
+      {/* Места по пути: панель принадлежит маршруту, поэтому стоит под картой рядом со
+          сводкой, а не страницей в карточке точки (слайс BK, ТЗ 4.4). */}
+      {!selected && !navActive && route && route.mode !== "transit" && route.coordinates.length > 1 && (
+        <RouteStopsPanel
+          coords={route.coordinates}
+          mode={route.mode}
+          product={productSlug}
+          destId={routePoi?.id ?? null}
+          marked={marked.map((m) => m.id)}
+          onToggleMark={toggleMark}
+          onStops={onStops}
+          onOpen={(poi) => {
+            changePoiPage(DEFAULT_POI_PAGE);
+            setMapExpanded(false);
+            setSelected(poi);
+            try {
+              mapRef.current?.easeTo({ center: [poi.lon, poi.lat] });
+            } catch {
+              // карта ещё не готова — карточка всё равно открыта
+            }
+          }}
+        />
+      )}
+
       <p className="text-[10px] text-muted/60 leading-relaxed">{t("dataNote")}</p>
 
       {street && (
@@ -1976,6 +2097,20 @@ export default function CryptoNavigator({
       )}
     </div>
   );
+}
+
+/** Отметки этой поездки из хранилища браузера; битая запись — это пусто, а не падение. */
+function readMarks(key: string | null): MarkedStop[] {
+  if (!key) return [];
+  try {
+    const raw = window.localStorage.getItem(key);
+    const rows = raw ? (JSON.parse(raw) as MarkedStop[]) : [];
+    return Array.isArray(rows)
+      ? rows.filter((r) => r && typeof r.id === "string" && Number.isFinite(r.alongMeters))
+      : [];
+  } catch {
+    return [];
+  }
 }
 
 function escapeHtml(s: string): string {

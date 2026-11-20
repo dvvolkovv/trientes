@@ -1286,7 +1286,8 @@
         "elevator": "Prenez l’ascenseur",
         "alongStreet": "Le long de {name}",
         "scheduled": "prévu"
-      }
+      },
+      "stopCue": "Dans {distance} : {name}, {offset} hors de la route"
     },
     "pageMap": "Carte",
     "pageCard": "Lieu",
@@ -1362,6 +1363,27 @@
         "captcha_expired": "Le défi a expiré. Prenez-en un nouveau.",
         "captcha_too_fast": "C'était trop rapide. Veuillez réessayer."
       }
+    },
+    "stops": {
+      "title": "En chemin",
+      "subtitle": "Lieux acceptant la crypto dans un rayon de {corridor} de votre itinéraire, sélectionnés selon vos centres d’intérêt",
+      "empty": "Rien le long de cet itinéraire ne correspond à vos centres d’intérêt",
+      "failed": "Impossible de chercher le long de l’itinéraire",
+      "retry": "Réessayer",
+      "loading": "Recherche le long de l’itinéraire…",
+      "mark": "Marquer",
+      "marked": "Marqué",
+      "along": "dans {distance}",
+      "offset": "{distance} hors de la route",
+      "cashback": "{percent}% de cashback",
+      "cashbackUpTo": "jusqu'à {percent}% de cashback",
+      "more": "{count} de plus en chemin — affinez vos centres d’intérêt ou votre corridor",
+      "truncated": "Trop de lieux le long de cet itinéraire ; la liste n’est pas complète",
+      "guestHint": "Connectez-vous pour choisir les lieux à rechercher",
+      "prefsHint": "Les centres d’intérêt et le corridor se trouvent dans votre espace",
+      "cryptoOnly": "Ce sont des lieux qui acceptent la crypto — pas tous les arrêts sur la route",
+      "markHint": "Un lieu marqué est un rappel, pas un détour : l’itinéraire reste tel quel et la voix vous prévient avant de l’atteindre",
+      "open": "Afficher sur la carte"
     }
   },
   "markets": {
@@ -3591,7 +3613,7 @@
       "m": "m",
       "m2": "m²",
       "hour": "heure",
-      "service": "service"
+      "service": "prestation"
     },
     "error": {
       "unauth": "Connectez-vous d’abord.",
@@ -4217,5 +4239,32 @@
       "no_file": "Choisissez un fichier."
     },
     "selfDrivenHint": "Ce fournisseur n'a pas de portail sur Trientes, vous gérez donc vous-même les statuts de la commande : notez la date qu'ils vous ont donnée et marquez l'expédition à son départ."
+  },
+  "cabinetInterests": {
+    "title": "Centres d’intérêt et itinéraires",
+    "subtitle": "Que rechercher le long d’un itinéraire et à quel moment la voix doit vous prévenir.",
+    "axis": {
+      "fuel": "Carburant et recharge",
+      "food": "Restauration et cafés",
+      "lodging": "Hébergements",
+      "shop": "Commerces et services",
+      "cash": "Espèces et change"
+    },
+    "like": "J’aime",
+    "neutral": "Sans avis",
+    "dislike": "Je n’aime pas",
+    "axisNote": "Les notations modifient la liste le long d’un itinéraire et ce que dit la voix. Elles ne masquent jamais une épingle sur la carte : la carte montre ce qui s’y trouve.",
+    "corridor": "Couloir, mètres",
+    "corridorHint": "Jusqu’à quelle distance de l’itinéraire un lieu est encore considéré comme étant sur le trajet. De 200 à 10000.",
+    "alert": "Avertir, mètres avant",
+    "alertHint": "Avec combien d’avance la voix mentionne un lieu marqué. De 500 à 5000.",
+    "save": "Enregistrer",
+    "saved": "Enregistré.",
+    "errors": {
+      "corridor_invalid": "Le couloir doit être compris entre 200 et 10000 mètres.",
+      "alert_invalid": "La distance d’alerte doit être comprise entre 500 et 5000 mètres.",
+      "unauth": "Connectez-vous d’abord.",
+      "invalid": "Impossible d'enregistrer cela."
+    }
   }
 }

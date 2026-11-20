@@ -16,6 +16,7 @@ import { AdminSection } from "@/components/cabinet/admin-section";
 import { MfaSection } from "@/components/cabinet/mfa-section";
 import { LoyaltySection } from "@/components/cabinet/loyalty-section";
 import { SubscriptionsSection } from "@/components/cabinet/subscriptions-section";
+import { InterestsSection } from "@/components/cabinet/interests-section";
 
 export default async function CabinetPage({
   params,
@@ -99,6 +100,9 @@ export default async function CabinetPage({
 
       {/* Подписки на магазины и отключение их рассылок (слайс BG, ТЗ 4.3). */}
       <SubscriptionsSection locale={locale} />
+
+      {/* Интересы и два числа маршрута (слайс BK, ТЗ 4.4). */}
+      <InterestsSection />
 
       {isStaffRole(user.role as ViewerRole) ? <MfaSection locale={locale} userId={user.id} /> : null}
       {isStaffRole(user.role as ViewerRole) ? <AdminSection locale={locale} /> : null}

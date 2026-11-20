@@ -1286,7 +1286,8 @@
         "elevator": "乘坐电梯",
         "alongStreet": "沿着{name}",
         "scheduled": "已排定"
-      }
+      },
+      "stopCue": "在{distance}后：{name}，离路{offset}"
     },
     "pageMap": "地图",
     "pageCard": "地点",
@@ -1362,6 +1363,27 @@
         "captcha_expired": "挑战已过期。请重新开始。",
         "captcha_too_fast": "操作过快。请重试。"
       }
+    },
+    "stops": {
+      "title": "沿途",
+      "subtitle": "根据你的偏好，在路线走廊 {corridor} 内可接受加密货币的地点。",
+      "empty": "此路线沿途没有符合你偏好的地点。",
+      "failed": "无法查看此路线沿途。",
+      "retry": "重试",
+      "loading": "正在查看沿途…",
+      "mark": "标记",
+      "marked": "已标记",
+      "along": "前方{distance}",
+      "offset": "离路{distance}",
+      "cashback": "{percent}% 返现",
+      "cashbackUpTo": "最高{percent}%返现",
+      "more": "沿途还有{count}个 — 请收窄你的偏好或走廊。",
+      "truncated": "此路线沿途地点过多；列表不完整。",
+      "guestHint": "登录以选择要查找的地点类型。",
+      "prefsHint": "偏好和走廊设置保存在你的个人中心。",
+      "cryptoOnly": "这些是接受加密货币的地点 — 并非沿途的每个站点。",
+      "markHint": "标记只是提醒，不会绕路：路线保持不变，语音会在接近前提示你。",
+      "open": "在地图上显示"
     }
   },
   "markets": {
@@ -4217,5 +4239,32 @@
       "no_file": "请选择文件。"
     },
     "selfDrivenHint": "该供应商在 Trientes 上没有门户，因此订单状态由你自行维护：记下他们提供的日期，并在发货时进行标记。"
+  },
+  "cabinetInterests": {
+    "title": "兴趣与路线",
+    "subtitle": "沿途要寻找什么，以及语音应提前多久提醒你。",
+    "axis": {
+      "fuel": "加油与充电",
+      "food": "餐饮与咖啡馆",
+      "lodging": "住宿地点",
+      "shop": "商店与服务",
+      "cash": "现金与兑换"
+    },
+    "like": "喜欢",
+    "neutral": "无意见",
+    "dislike": "不喜欢",
+    "axisNote": "标记会改变路线沿途的列表以及语音播报的内容。它们从不会把图钉从地图上隐藏：地图展示的是实际存在的地点。",
+    "corridor": "走廊，米",
+    "corridorHint": "一个地点偏离路线多远仍算沿途。200 到 10000。",
+    "alert": "提醒我，提前多少米",
+    "alertHint": "语音多早提示标记地点。500 到 5000。",
+    "save": "保存",
+    "saved": "已保存。",
+    "errors": {
+      "corridor_invalid": "走廊必须在 200 到 10000 米之间。",
+      "alert_invalid": "提醒距离必须在 500 到 5000 米之间。",
+      "unauth": "请先登录。",
+      "invalid": "无法保存。"
+    }
   }
 }

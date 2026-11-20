@@ -1286,7 +1286,8 @@
         "elevator": "Upotrijebite dizalo",
         "alongStreet": "Duž {name}",
         "scheduled": "po rasporedu"
-      }
+      },
+      "stopCue": "Za {distance}: {name}, {offset} od ceste"
     },
     "pageMap": "Karta",
     "pageCard": "Lokacija",
@@ -1362,6 +1363,27 @@
         "captcha_expired": "Zadatak je istekao. Uzmite novi.",
         "captcha_too_fast": "To je bilo prebrzo. Pokušajte ponovno."
       }
+    },
+    "stops": {
+      "title": "Usput",
+      "subtitle": "Mjesta koja prihvaćaju kripto unutar {corridor} od vaše rute, odabrana prema vašim interesima.",
+      "empty": "Ništa na ovoj ruti ne odgovara vašim interesima.",
+      "failed": "Nije bilo moguće pretražiti duž rute.",
+      "retry": "Pokušati ponovno",
+      "loading": "Pretraživanje duž rute…",
+      "mark": "Označiti",
+      "marked": "Označeno",
+      "along": "za {distance}",
+      "offset": "{distance} od ceste",
+      "cashback": "{percent}% povrat novca",
+      "cashbackUpTo": "do {percent}% povrata novca",
+      "more": "{count} još usput — suzite interese ili koridor.",
+      "truncated": "Previše mjesta na ovoj ruti; popis nije potpun.",
+      "guestHint": "Prijavite se da odaberete koja mjesta tražiti.",
+      "prefsHint": "Interesi i koridor nalaze se u vašem profilu.",
+      "cryptoOnly": "Ovo su mjesta koja prihvaćaju kripto — ne svako stajalište na cesti.",
+      "markHint": "Označeno mjesto je podsjetnik, ne i obilazak: ruta ostaje kakva jest, a glas vas obavještava prije nego što ga dosegnete.",
+      "open": "Prikazati na karti"
     }
   },
   "markets": {
@@ -4217,5 +4239,32 @@
       "no_file": "Odaberite datoteku."
     },
     "selfDrivenHint": "Ovaj dobavljač nema portal na Trientesu, stoga sami vodite statuse narudžbe: zabilježite datum koji su vam dali i označite pošiljku kada bude otpremljena."
+  },
+  "cabinetInterests": {
+    "title": "Interesi i rute",
+    "subtitle": "Što tražiti duž rute i koliko rano bi vas glas trebao upozoriti.",
+    "axis": {
+      "fuel": "Gorivo i punjenje",
+      "food": "Hrana i kafići",
+      "lodging": "Smještaj",
+      "shop": "Trgovine i usluge",
+      "cash": "Gotovina i mjenjačnice"
+    },
+    "like": "Sviđa mi se",
+    "neutral": "Bez mišljenja",
+    "dislike": "Ne sviđa mi se",
+    "axisNote": "Oznake mijenjaju popis duž rute i što glas kaže. Nikada ne skrivaju pribadaču s karte: karta prikazuje što je ondje.",
+    "corridor": "Koridor, metri",
+    "corridorHint": "Koliko daleko od rute se mjesto još uvijek smatra usputnim. Od 200 do 10000.",
+    "alert": "Upozoriti me, metara prije",
+    "alertHint": "Koliko rano glas spominje označeno mjesto. Od 500 do 5000.",
+    "save": "Spremi",
+    "saved": "Spremljeno.",
+    "errors": {
+      "corridor_invalid": "Koridor mora biti između 200 i 10000 metara.",
+      "alert_invalid": "Udaljenost upozorenja mora biti između 500 i 5000 metara.",
+      "unauth": "Najprije se prijavite.",
+      "invalid": "Nije bilo moguće to spremiti."
+    }
   }
 }

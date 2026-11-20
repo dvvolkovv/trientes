@@ -1286,7 +1286,8 @@
         "elevator": "Aufzug nehmen",
         "alongStreet": "Entlang {name}",
         "scheduled": "planmäßig"
-      }
+      },
+      "stopCue": "In {distance}: {name}, {offset} abseits der Straße"
     },
     "pageMap": "Karte",
     "pageCard": "Ort",
@@ -1362,6 +1363,27 @@
         "captcha_expired": "Die Aufgabe ist abgelaufen. Nehmen Sie eine neue.",
         "captcha_too_fast": "Das ging zu schnell. Bitte versuchen Sie es erneut."
       }
+    },
+    "stops": {
+      "title": "Unterwegs",
+      "subtitle": "Krypto-akzeptierende Orte innerhalb von {corridor} um deine Route, nach deinen Interessen ausgewählt.",
+      "empty": "Entlang dieser Route passt nichts zu deinen Interessen.",
+      "failed": "Entlang der Route konnte nicht gesucht werden.",
+      "retry": "Erneut versuchen",
+      "loading": "Suche entlang der Route…",
+      "mark": "Markieren",
+      "marked": "Markiert",
+      "along": "in {distance}",
+      "offset": "{distance} abseits der Straße",
+      "cashback": "{percent}% Cashback",
+      "cashbackUpTo": "bis zu {percent}% Cashback",
+      "more": "{count} weitere entlang der Strecke — Interessen oder Korridor eingrenzen",
+      "truncated": "Zu viele Orte entlang dieser Route; die Liste ist nicht vollständig.",
+      "guestHint": "Melde dich an, um auszuwählen, nach welchen Orten gesucht werden soll.",
+      "prefsHint": "Interessen und der Korridor sind in deinem Account.",
+      "cryptoOnly": "Dies sind Orte, die Krypto akzeptieren — nicht jeder Stopp auf der Strecke.",
+      "markHint": "Ein markierter Ort ist eine Erinnerung, kein Umweg: Die Route bleibt wie sie ist, und die Stimme informiert dich, bevor du ihn erreichst.",
+      "open": "Auf Karte anzeigen"
     }
   },
   "markets": {
@@ -2859,7 +2881,7 @@
       "section": {
         "IDENTITY": "Identität",
         "CONTRACTS": "Chains & Contracts",
-        "TOKENOMICS": "Tokenomics",
+        "TOKENOMICS": "Tokenomik",
         "MARKETS": "Märkte",
         "SECURITY": "Sicherheit & Audits",
         "TEAM": "Team & Investoren",
@@ -4217,5 +4239,32 @@
       "no_file": "Wählen Sie eine Datei."
     },
     "selfDrivenHint": "Dieser Lieferant hat kein Portal auf Trientes, daher pflegen Sie die Auftragsstatus selbst: Notieren Sie das von ihm genannte Datum und markieren Sie den Versand, sobald er erfolgt."
+  },
+  "cabinetInterests": {
+    "title": "Interessen und Routen",
+    "subtitle": "Wonach entlang einer Route gesucht werden soll und wie früh die Stimme dich warnen soll",
+    "axis": {
+      "fuel": "Tanken und Laden",
+      "food": "Essen und Cafés",
+      "lodging": "Unterkünfte",
+      "shop": "Geschäfte und Services",
+      "cash": "Bargeld und Wechselstuben"
+    },
+    "like": "Gefällt mir",
+    "neutral": "Keine Meinung",
+    "dislike": "Gefällt mir nicht",
+    "axisNote": "Markierungen ändern die Liste entlang einer Route und was die Stimme sagt. Sie verbergen niemals einen Pin auf der Karte: Die Karte zeigt, was dort ist.",
+    "corridor": "Korridor, Meter",
+    "corridorHint": "Wie weit abseits der Route ein Ort noch als „unterwegs“ gilt. Von 200 bis 10000.",
+    "alert": "Warne mich, Meter vorher",
+    "alertHint": "Wie früh die Stimme einen markierten Ort erwähnt. Von 500 bis 5000.",
+    "save": "Speichern",
+    "saved": "Gespeichert.",
+    "errors": {
+      "corridor_invalid": "Der Korridor muss zwischen 200 und 10000 Metern liegen.",
+      "alert_invalid": "Die Warnentfernung muss zwischen 500 und 5000 Metern liegen.",
+      "unauth": "Zuerst anmelden.",
+      "invalid": "Konnte das nicht speichern."
+    }
   }
 }

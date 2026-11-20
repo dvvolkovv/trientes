@@ -1286,7 +1286,8 @@
         "elevator": "Asansörü kullanın",
         "alongStreet": "{name} boyunca",
         "scheduled": "planlı"
-      }
+      },
+      "stopCue": "{distance} sonra: {name}, yoldan {offset} uzakta"
     },
     "pageMap": "Harita",
     "pageCard": "Yer",
@@ -1362,6 +1363,27 @@
         "captcha_expired": "Doğrulamanın süresi doldu. Yenisini alın.",
         "captcha_too_fast": "Bu çok hızlıydı. Lütfen tekrar deneyin."
       }
+    },
+    "stops": {
+      "title": "Yol üzerinde",
+      "subtitle": "İlgi alanlarınıza göre seçilen, rotanızın {corridor} içinde kripto kabul eden yerler.",
+      "empty": "Bu rota üzerindeki hiçbir şey ilgi alanlarınızla eşleşmiyor.",
+      "failed": "Rota boyunca arama yapılamadı.",
+      "retry": "Tekrar dene",
+      "loading": "Rota boyunca aranıyor…",
+      "mark": "İşaretle",
+      "marked": "İşaretlendi",
+      "along": "{distance} sonra",
+      "offset": "yoldan {distance} uzakta",
+      "cashback": "{percent}% geri ödeme",
+      "cashbackUpTo": "en fazla {percent}% geri ödeme",
+      "more": "Yol üzerinde {count} tane daha — ilgi alanlarını ya da koridorunu daralt",
+      "truncated": "Bu rota üzerinde çok fazla yer var; liste tam değil",
+      "guestHint": "Hangi yerleri arayacağını seçmek için giriş yap",
+      "prefsHint": "İlgi alanların ve koridorun panelinde",
+      "cryptoOnly": "Bunlar kripto kabul eden yerler — yoldaki her durak değil",
+      "markHint": "İşaretli bir yer bir hatırlatmadır, sapma değil: rota olduğu gibi kalır ve ses oraya varmadan önce sana söyler",
+      "open": "Haritada göster"
     }
   },
   "markets": {
@@ -4217,5 +4239,32 @@
       "no_file": "Bir dosya seçin."
     },
     "selfDrivenHint": "Bu tedarikçinin Trientes'te bir portalı yok, bu yüzden sipariş durumlarını kendin takip edersin: verdikleri tarihi not al ve sevkiyat yola çıktığında işaretle."
+  },
+  "cabinetInterests": {
+    "title": "İlgi alanları ve rotalar",
+    "subtitle": "Bir rota boyunca neleri arayacağınız ve sesin sizi ne kadar erken uyarması gerektiği.",
+    "axis": {
+      "fuel": "Yakıt ve şarj",
+      "food": "Yiyecek ve kafeler",
+      "lodging": "Konaklama yerleri",
+      "shop": "Mağazalar ve hizmetler",
+      "cash": "Nakit ve döviz"
+    },
+    "like": "Beğen",
+    "neutral": "Fikrim yok",
+    "dislike": "Beğenme",
+    "axisNote": "İşaretler, rota üzerindeki listeyi ve sesin ne söylediğini değiştirir. Haritadaki bir pini asla gizlemezler: harita orada ne olduğunu gösterir.",
+    "corridor": "Koridor, metre",
+    "corridorHint": "Bir yerin rotadan ne kadar uzakta olsa da yol üzerindeymiş sayılacağı mesafe. 200 ile 10000 arası.",
+    "alert": "Beni uyar, şu kadar metre kala",
+    "alertHint": "Sesin işaretli bir yeri ne kadar erken söyleyeceği. 500 ile 5000 arası.",
+    "save": "Kaydet",
+    "saved": "Kaydedildi.",
+    "errors": {
+      "corridor_invalid": "Koridor 200 ile 10000 metre arasında olmalıdır.",
+      "alert_invalid": "Uyarı mesafesi 500 ile 5000 metre arasında olmalıdır.",
+      "unauth": "Önce oturum açın.",
+      "invalid": "Bunu kaydedemedik."
+    }
   }
 }
