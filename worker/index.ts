@@ -175,6 +175,19 @@ async function runExchangesSync() {
 async function runCoinPaprikaSync() {
   const t0 = Date.now();
   try {
+    // Сколько подробностей можно сегодня — считает бюджет, а не константа.
+    // Пришпиленное число (было 10) одинаково в первый день месяца и в
+    // последний, и ничего не знает о том, сколько в этом месяце прочитали живые
+    // страницы: 19 ноября запас кончился на середине месяца именно так.
+    const plan = await planRun(redis, QUOTA_SERVICES.coinpaprika, {
+      runsPerDay: 24,
+      fixedCostPerRun: 1, // запрос списка бирж уходит всегда
+      perRunCap: 25,
+    });
+    if (!plan.allowed) {
+      console.log(`[worker] coinpaprika-sync skipped by budget: ${plan.reason}`);
+      return;
+    }
     // Read BTC/USD from the latest CoinSnapshot. Falls back to 0 (skip volume24hBtc) if absent.
     // No price:bitcoin:usd Redis key exists in this codebase, so we use Prisma directly.
     const btcRow = await prisma.coinSnapshot.findFirst({
@@ -189,15 +202,16 @@ async function runCoinPaprikaSync() {
       prisma: prisma as never,
       minVolumeUsd: 100_000,
       btcUsd,
-      // Запас месяца, а не частота: см. расписание прогона ниже.
-      detailCallBudget: 10,
+      // Бюджет считается из остатка месяца, брони живым страницам и числа
+      // прогонов до конца суток (`src/lib/quota/budget.ts`).
+      detailCallBudget: plan.calls,
     });
     // Свой след прогона: строки `Exchange` трогает и прогон CoinGecko, поэтому
     // по базе молчание CoinPaprika не видно, и ночной отчёт пять дней его не
     // замечал (уборка BH). Список прошёл, а подробности отказали по запасу —
     // это не удачный прогон: `pairsCount` и рынки не обновятся ни у кого.
     await recordRun(redis, RUN_COINPAPRIKA, result.quotaExhausted ? "quota" : "ok", new Date());
-    console.log(`[worker] coinpaprika-sync ${result.quotaExhausted ? "partial (quota exhausted on details)" : "ok"}: +${result.created} new, ~${result.enriched} enriched, ${result.skipped} skipped, ${result.detailsOk}/${result.detailsAttempted} details, ${result.marketsUpserted} markets in ${Date.now() - t0}ms`);
+    console.log(`[worker] coinpaprika-sync ${result.quotaExhausted ? "partial (quota exhausted on details)" : "ok"}: +${result.created} new, ~${result.enriched} enriched, ${result.skipped} skipped, ${result.detailsOk}/${result.detailsAttempted} details (budget ${plan.calls}), ${result.marketsUpserted} markets in ${Date.now() - t0}ms`);
   } catch (err) {
     // Исчерпанный запас месяца — состояние службы, а не сбой прогона: звонить
     // некуда до обновления запаса, и строка об этом не должна выглядеть аварией.
@@ -661,15 +675,14 @@ async function main() {
 
   // CoinPaprika exchanges — обогащение каталога и поиск новых бирж.
   //
-  // Расписание считается **от запаса месяца**, а не от частоты. У тарифа 20 000
-  // запросов в месяц, то есть около 27 в час на всё: и на прогон, и на страницы
-  // бирж, которые зовут подробности при отрисовке. Прежние два прогона в час по
-  // 26 запросов (список плюс 25 подробностей) — это 37 тысяч в месяц, вдвое
-  // больше запаса, и 19 ноября он кончился на середине месяца: служба начала
-  // отвечать 402 на всё, страница биржи стала отдаваться 50 секунд, веб падал по
-  // памяти. Теперь один прогон в час по 11 запросов — около 8 тысяч в месяц,
-  // остаток остаётся живым посетителям. Каталог в 581 бирже обходится за двое
-  // суток; данные эти меняются медленнее.
+  // Расписание — раз в час, а **размер прогона считает бюджет** (слайс BL,
+  // `src/lib/quota/budget.ts`): остаток месячного запаса минус броня живым
+  // страницам, делённый на сутки до конца месяца и на прогоны до конца суток.
+  // Прежние два прогона в час по 26 запросов — это 37 тысяч в месяц против
+  // запаса 20 000, и 19 ноября он кончился на середине месяца: служба начала
+  // отвечать 402 на всё, страница биржи стала отдаваться 50 секунд, веб падал
+  // по памяти. Пришпиленные 10 подробностей это починили, но вслепую: число не
+  // знало ни про остаток, ни про чтения страниц. Теперь знает.
   cron.schedule("25 * * * *", () => {
     void runCoinPaprikaSync();
   });
