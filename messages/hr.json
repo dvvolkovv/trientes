@@ -1467,7 +1467,12 @@
       "bad_form": "Nevažeći zahtjev",
       "coin_not_selectable": "Ova kartica kovanice nije odobrena, pa je nije moguće odabrati.",
       "documents_required": "Priložite registracijske dokumente: pravni naziv dokazuje se dokumentima.",
-      "nothing_to_apply": "Nema više ništa za primijeniti u ovoj promjeni."
+      "nothing_to_apply": "Nema više ništa za primijeniti u ovoj promjeni.",
+      "hours_invalid": "Radno vrijeme izgleda pogrešno — provjerite sate.",
+      "hours_empty": "Označite barem jedan radni dan, inače raspored ne govori ništa.",
+      "timezone_invalid": "Nepoznata vremenska zona.",
+      "category_invalid": "Nepoznata vrsta poslovanja.",
+      "return_days_invalid": "Rok za povrat mora biti cijeli broj dana, od 0 do 365."
     },
     "websiteHint": "https://, http:// ili samo www.example.com — sve funkcionira",
     "addressSection": "Adresa",
@@ -1686,6 +1691,69 @@
     "tileEmpty": "još ništa",
     "tileBadge": {
       "moderation": "{count} u pregledu"
+    },
+    "categorySection": "Vrsta poslovanja",
+    "categoryTitle": "Vrsta lokacije",
+    "categoryHint": "Postavlja oznaku na vašoj javnoj kartici, boju pribadače na karti i određuje koji će vas putnici vidjeti na svojoj ruti.",
+    "category": {
+      "grocery": "Trgovina mješovitom robom",
+      "cafe": "Kafić",
+      "restaurant": "Restoran",
+      "bar": "Bar",
+      "fuel": "Benzinska postaja",
+      "charging": "Punionica električnih vozila",
+      "hotel": "Hotel",
+      "clothing": "Odjeća",
+      "electronics": "Elektronika",
+      "pharmacy": "Ljekarna",
+      "beauty": "Ljepota",
+      "services": "Usluge",
+      "exchange": "Mjenjačnica",
+      "atm": "Bankomat",
+      "other": "Ostalo"
+    },
+    "returnPolicy": "Pravila povrata",
+    "returnPolicyHint": "Kupci to vide na vašoj javnoj kartici i uz svaku cijenu. Ostavite li prazno, to ćemo jasno navesti.",
+    "returnDays": "Rok za povrat, u danima",
+    "hours": {
+      "title": "Radno vrijeme",
+      "add": "Dodati radno vrijeme",
+      "drop": "Ukloniti radno vrijeme",
+      "from": "Od",
+      "to": "Do",
+      "addSpan": "još jedan interval",
+      "removeSpan": "Ukloniti interval",
+      "copyToWeekdays": "Kopirati {day} na sve radne dane",
+      "timezone": "Vremenska zona",
+      "timezonePick": "Odabrati vremensku zonu",
+      "timezoneHint": "Bez vremenske zone raspored se i dalje prikazuje, ali nikada ne tvrdimo “otvoreno sada”: pogrešno “zatvoreno” moglo bi nekoga poslati pokraj otvorenih vrata.",
+      "openNow": "Otvoreno sada",
+      "closedNow": "Zatvoreno",
+      "until": "do {time}",
+      "opensAt": "otvara se {day} u {time}",
+      "day": {
+        "mon": "Pon",
+        "tue": "Uto",
+        "wed": "Sri",
+        "thu": "Čet",
+        "fri": "Pet",
+        "sat": "Sub",
+        "sun": "Ned"
+      },
+      "dayShort": {
+        "mon": "Pon",
+        "tue": "Uto",
+        "wed": "Sri",
+        "thu": "Čet",
+        "fri": "Pet",
+        "sat": "Sub",
+        "sun": "Ned"
+      },
+      "kind": {
+        "open": "Radno vrijeme",
+        "allday": "24/7",
+        "closed": "Zatvoreno"
+      }
     }
   },
   "cabinet": {
@@ -2153,7 +2221,15 @@
       "SALES_OFFICE": "Prodajni ured",
       "COMPANY": "Ured",
       "ONLINE": "Online"
-    }
+    },
+    "mode": {
+      "online": "Online, 24/7",
+      "offline": "Fizičke lokacije",
+      "mixed": "Online i fizičke lokacije"
+    },
+    "returns": "Povrati",
+    "returnDays": "{days} dana",
+    "returnsUnknown": "Prodavatelj nije naveo politiku povrata."
   },
   "companiesDirectory": {
     "kicker": "Imenik",
@@ -3503,7 +3579,10 @@
         "m2": "m²",
         "hour": "sat",
         "service": "usluga"
-      }
+      },
+      "returns": "Povrat",
+      "returnDays": "{days} dana",
+      "returnsUnknown": "nije navedeno od prodavatelja"
     },
     "showcase": {
       "heading": "Proizvodi",

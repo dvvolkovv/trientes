@@ -1467,7 +1467,12 @@
       "bad_form": "请求无效",
       "coin_not_selectable": "该币种卡片未通过审核，无法选择。",
       "documents_required": "请附上注册文件：法定名称需以纸质文件证明。",
-      "nothing_to_apply": "此变更已无可应用的内容。"
+      "nothing_to_apply": "此变更已无可应用的内容。",
+      "hours_invalid": "营业时间看起来不对 — 请检查时间。",
+      "hours_empty": "请至少标记一个工作日，否则日程表将无内容。",
+      "timezone_invalid": "未知时区。",
+      "category_invalid": "未知的业务类型。",
+      "return_days_invalid": "退货期限必须是0到365之间的整数天。"
     },
     "websiteHint": "支持 https://、http:// 或直接 www.example.com",
     "addressSection": "地址",
@@ -1686,6 +1691,69 @@
     "tileEmpty": "尚无内容",
     "tileBadge": {
       "moderation": "审核中{count}个"
+    },
+    "categorySection": "业务类型",
+    "categoryTitle": "场所类型",
+    "categoryHint": "将设置你公开卡片上的标签、地图图钉的颜色，以及哪些旅客会在他们的路线中看到你。",
+    "category": {
+      "grocery": "杂货店",
+      "cafe": "咖啡馆",
+      "restaurant": "餐厅",
+      "bar": "酒吧",
+      "fuel": "加油站",
+      "charging": "电动车充电",
+      "hotel": "酒店",
+      "clothing": "服装",
+      "electronics": "电子产品",
+      "pharmacy": "药店",
+      "beauty": "美容",
+      "services": "服务",
+      "exchange": "兑换处",
+      "atm": "ATM",
+      "other": "其他"
+    },
+    "returnPolicy": "退货政策",
+    "returnPolicyHint": "买家会在你的公共卡片和每个价格旁看到此信息。留空我们会直接说明。",
+    "returnDays": "退货期限（天）",
+    "hours": {
+      "title": "营业时间",
+      "add": "添加营业时间",
+      "drop": "移除营业时间",
+      "from": "从",
+      "to": "到",
+      "addSpan": "另一个时段",
+      "removeSpan": "移除时段",
+      "copyToWeekdays": "将{day}复制到所有工作日",
+      "timezone": "时区",
+      "timezonePick": "选择一个时区",
+      "timezoneHint": "没有时区仍会显示时间表，但我们不会标注“营业中”：错误的“已打烊”可能会让人在门开着时被劝退。",
+      "openNow": "营业中",
+      "closedNow": "已打烊",
+      "until": "至{time}",
+      "opensAt": "将于{day}{time}开门",
+      "day": {
+        "mon": "周一",
+        "tue": "周二",
+        "wed": "周三",
+        "thu": "周四",
+        "fri": "周五",
+        "sat": "周六",
+        "sun": "周日"
+      },
+      "dayShort": {
+        "mon": "周一",
+        "tue": "周二",
+        "wed": "周三",
+        "thu": "周四",
+        "fri": "周五",
+        "sat": "周六",
+        "sun": "周日"
+      },
+      "kind": {
+        "open": "营业时段",
+        "allday": "24/7",
+        "closed": "已关闭"
+      }
     }
   },
   "cabinet": {
@@ -2153,7 +2221,15 @@
       "SALES_OFFICE": "销售办公室",
       "COMPANY": "办公室",
       "ONLINE": "在线"
-    }
+    },
+    "mode": {
+      "online": "在线，24/7",
+      "offline": "实体地点",
+      "mixed": "在线与实体地点"
+    },
+    "returns": "退货",
+    "returnDays": "{days} 天",
+    "returnsUnknown": "卖家未说明退货政策。"
   },
   "companiesDirectory": {
     "kicker": "目录",
@@ -3503,7 +3579,10 @@
         "m2": "平方米",
         "hour": "小时",
         "service": "项服务"
-      }
+      },
+      "returns": "退货",
+      "returnDays": "{days} 天",
+      "returnsUnknown": "卖家未说明"
     },
     "showcase": {
       "heading": "商品",
@@ -4251,7 +4330,7 @@
     "openOrders": "未完成订单: {count}",
     "linesHeading": "条目",
     "linesEmpty": "尚无条目。",
-    "lineQty": "{qty} {unit}",
+    "lineQty": "{qty}{unit}",
     "lineReceived": "已收 {qty}",
     "lineFull": "已全部收货。",
     "removeLine": "移除",

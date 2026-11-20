@@ -1467,7 +1467,12 @@
       "bad_form": "Requête invalide",
       "coin_not_selectable": "Cette fiche de monnaie n'est pas approuvée, elle ne peut pas être sélectionnée.",
       "documents_required": "Joignez les documents d’enregistrement : la raison sociale est prouvée par des documents papier",
-      "nothing_to_apply": "Il n’y a plus rien à appliquer dans cette modification"
+      "nothing_to_apply": "Il n’y a plus rien à appliquer dans cette modification",
+      "hours_invalid": "Les heures d’ouverture semblent incorrectes — vérifiez les horaires.",
+      "hours_empty": "Cochez au moins un jour ouvré, sinon l’horaire ne dira rien.",
+      "timezone_invalid": "Fuseau horaire inconnu.",
+      "category_invalid": "Type d’activité inconnu.",
+      "return_days_invalid": "Le délai de retour doit être un nombre entier de jours, de 0 à 365."
     },
     "websiteHint": "Avec https://, http:// ou juste www.example.com — tout fonctionne",
     "addressSection": "Adresse",
@@ -1686,6 +1691,69 @@
     "tileEmpty": "rien pour l’instant",
     "tileBadge": {
       "moderation": "{count} en cours d’examen"
+    },
+    "categorySection": "Type d’activité",
+    "categoryTitle": "Type de lieu",
+    "categoryHint": "Définit l’étiquette sur votre fiche publique, la couleur de l’épingle sur la carte et les voyageurs qui vous voient sur leur itinéraire.",
+    "category": {
+      "grocery": "Épicerie",
+      "cafe": "Café",
+      "restaurant": "Restaurant",
+      "bar": "Bar",
+      "fuel": "Station-service",
+      "charging": "Recharge VE",
+      "hotel": "Hôtel",
+      "clothing": "Vêtements",
+      "electronics": "Électronique",
+      "pharmacy": "Pharmacie",
+      "beauty": "Beauté",
+      "services": "Services",
+      "exchange": "Bureau de change",
+      "atm": "Distributeur de billets",
+      "other": "Autre"
+    },
+    "returnPolicy": "Politique de retour",
+    "returnPolicyHint": "Les acheteurs voient ceci sur votre fiche publique et à côté de chaque prix. Laissez vide et nous l’indiquerons clairement.",
+    "returnDays": "Délai de retour, jours",
+    "hours": {
+      "title": "Horaires d'ouverture",
+      "add": "Ajouter des horaires d'ouverture",
+      "drop": "Supprimer les horaires d'ouverture",
+      "from": "De",
+      "to": "À",
+      "addSpan": "un autre créneau",
+      "removeSpan": "Supprimer le créneau",
+      "copyToWeekdays": "Copier {day} sur tous les jours ouvrés",
+      "timezone": "Fuseau horaire",
+      "timezonePick": "Choisir un fuseau horaire",
+      "timezoneHint": "Sans fuseau horaire, l’horaire s’affiche quand même, mais nous n’indiquons jamais « ouvert actuellement » : un « fermé » erroné enverrait quelqu’un devant une porte ouverte.",
+      "openNow": "Ouvert maintenant",
+      "closedNow": "Fermé",
+      "until": "jusqu’à {time}",
+      "opensAt": "ouvre {day} à {time}",
+      "day": {
+        "mon": "Lun",
+        "tue": "Mar",
+        "wed": "Mer",
+        "thu": "Jeu",
+        "fri": "Ven",
+        "sat": "Sam",
+        "sun": "Dim"
+      },
+      "dayShort": {
+        "mon": "Lun",
+        "tue": "Mar",
+        "wed": "Mer",
+        "thu": "Jeu",
+        "fri": "Ven",
+        "sat": "Sam",
+        "sun": "Dim"
+      },
+      "kind": {
+        "open": "Horaires",
+        "allday": "24/7",
+        "closed": "Fermé"
+      }
     }
   },
   "cabinet": {
@@ -2153,7 +2221,15 @@
       "SALES_OFFICE": "Bureau de vente",
       "COMPANY": "Bureau",
       "ONLINE": "En ligne"
-    }
+    },
+    "mode": {
+      "online": "En ligne, 24/7",
+      "offline": "Sites physiques",
+      "mixed": "En ligne et sites physiques"
+    },
+    "returns": "Retours",
+    "returnDays": "{days} jours",
+    "returnsUnknown": "Le vendeur n'a pas indiqué de politique de retour."
   },
   "companiesDirectory": {
     "kicker": "Annuaire",
@@ -3503,7 +3579,10 @@
         "m2": "m²",
         "hour": "heure",
         "service": "service"
-      }
+      },
+      "returns": "Retours",
+      "returnDays": "{days} jours",
+      "returnsUnknown": "non indiqué par le vendeur"
     },
     "showcase": {
       "heading": "Produits",

@@ -1467,7 +1467,12 @@
       "bad_form": "Neplatná žiadosť",
       "coin_not_selectable": "Táto karta mince nie je schválená, preto ju nemožno vybrať.",
       "documents_required": "Priložte registračné dokumenty: právny názov sa preukazuje dokumentmi.",
-      "nothing_to_apply": "V tejto zmene už nie je čo uplatniť."
+      "nothing_to_apply": "V tejto zmene už nie je čo uplatniť.",
+      "hours_invalid": "Otváracie hodiny vyzerajú nesprávne — skontrolujte časy.",
+      "hours_empty": "Označte aspoň jeden pracovný deň, inak rozpis nič nepovie.",
+      "timezone_invalid": "Neznáme časové pásmo.",
+      "category_invalid": "Neznámy typ podniku.",
+      "return_days_invalid": "Lehota na vrátenie musí byť celé číslo dní, od 0 do 365."
     },
     "websiteHint": "https://, http://, alebo len www.example.com — všetko funguje",
     "addressSection": "Adresa",
@@ -1686,6 +1691,69 @@
     "tileEmpty": "zatiaľ nič",
     "tileBadge": {
       "moderation": "{count} v posudzovaní"
+    },
+    "categorySection": "Typ podniku",
+    "categoryTitle": "Typ miesta",
+    "categoryHint": "Určuje štítok na vašej verejnej karte, farbu špendlíka na mape a to, ktorí cestovatelia vás uvidia na svojej trase.",
+    "category": {
+      "grocery": "Potraviny",
+      "cafe": "Kaviareň",
+      "restaurant": "Reštaurácia",
+      "bar": "Bar",
+      "fuel": "Čerpacia stanica",
+      "charging": "Nabíjanie EV",
+      "hotel": "Hotel",
+      "clothing": "Oblečenie",
+      "electronics": "Elektronika",
+      "pharmacy": "Lekáreň",
+      "beauty": "Kozmetika",
+      "services": "Služby",
+      "exchange": "Zmenáreň",
+      "atm": "Bankomat",
+      "other": "Iné"
+    },
+    "returnPolicy": "Podmienky vrátenia",
+    "returnPolicyHint": "Kupujúci to uvidia na vašej verejnej karte a pri každej cene. Ak to necháte prázdne, povieme to jasne.",
+    "returnDays": "Lehota na vrátenie, dni",
+    "hours": {
+      "title": "Otváracie hodiny",
+      "add": "Pridať otváracie hodiny",
+      "drop": "Odstrániť otváracie hodiny",
+      "from": "Od",
+      "to": "Do",
+      "addSpan": "ďalší interval",
+      "removeSpan": "Odstrániť interval",
+      "copyToWeekdays": "Skopírovať {day} do všetkých pracovných dní",
+      "timezone": "Časové pásmo",
+      "timezonePick": "Vyberte časové pásmo",
+      "timezoneHint": "Bez časového pásma sa rozvrh stále zobrazí, ale nikdy netvrdíme „otvorené teraz“: nesprávne „zatvorené“ by niekoho poslalo popri otvorených dverách.",
+      "openNow": "Otvorené teraz",
+      "closedNow": "Zatvorené",
+      "until": "do {time}",
+      "opensAt": "otvorí {day} o {time}",
+      "day": {
+        "mon": "Pon",
+        "tue": "Uto",
+        "wed": "Str",
+        "thu": "Štv",
+        "fri": "Pia",
+        "sat": "Sob",
+        "sun": "Ned"
+      },
+      "dayShort": {
+        "mon": "Po",
+        "tue": "Ut",
+        "wed": "St",
+        "thu": "Št",
+        "fri": "Pi",
+        "sat": "So",
+        "sun": "Ne"
+      },
+      "kind": {
+        "open": "Otváracie hodiny",
+        "allday": "24/7",
+        "closed": "Zatvorené"
+      }
     }
   },
   "cabinet": {
@@ -2153,7 +2221,15 @@
       "SALES_OFFICE": "Predajná kancelária",
       "COMPANY": "Kancelária",
       "ONLINE": "Online"
-    }
+    },
+    "mode": {
+      "online": "Online, 24/7",
+      "offline": "Fyzické miesta",
+      "mixed": "Online a fyzické miesta"
+    },
+    "returns": "Vrátenie",
+    "returnDays": "{days} dní",
+    "returnsUnknown": "Predávajúci neuviedol zásady vrátenia."
   },
   "companiesDirectory": {
     "kicker": "Adresár",
@@ -3503,7 +3579,10 @@
         "m2": "m²",
         "hour": "hodina",
         "service": "služba"
-      }
+      },
+      "returns": "Vrátenie tovaru",
+      "returnDays": "{days} dní",
+      "returnsUnknown": "neuvedené predajcom"
     },
     "showcase": {
       "heading": "Produkty",

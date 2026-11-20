@@ -1467,7 +1467,12 @@
       "bad_form": "Requisição inválida",
       "coin_not_selectable": "Esta ficha de moeda não está aprovada, portanto não pode ser selecionada.",
       "documents_required": "Anexe os documentos de registro: a razão social é comprovada por documentos.",
-      "nothing_to_apply": "Não há mais nada para aplicar nesta alteração."
+      "nothing_to_apply": "Não há mais nada para aplicar nesta alteração.",
+      "hours_invalid": "O horário de funcionamento parece errado — verifique os horários.",
+      "hours_empty": "Marque pelo menos um dia de funcionamento; caso contrário, o horário não diz nada.",
+      "timezone_invalid": "Fuso horário desconhecido.",
+      "category_invalid": "Tipo de negócio desconhecido.",
+      "return_days_invalid": "O prazo de devolução deve ser um número inteiro de dias, de 0 a 365."
     },
     "websiteHint": "Com https://, http:// ou apenas www.example.com — tudo funciona",
     "addressSection": "Endereço",
@@ -1686,6 +1691,69 @@
     "tileEmpty": "ainda nada",
     "tileBadge": {
       "moderation": "{count} em análise"
+    },
+    "categorySection": "Tipo de negócio",
+    "categoryTitle": "Tipo de lugar",
+    "categoryHint": "Define o rótulo no seu cartão público, a cor do alfinete no mapa e quais viajantes veem você na rota deles.",
+    "category": {
+      "grocery": "Mercearia",
+      "cafe": "Café",
+      "restaurant": "Restaurante",
+      "bar": "Bar",
+      "fuel": "Posto de combustível",
+      "charging": "Carregamento de veículo elétrico",
+      "hotel": "Hotel",
+      "clothing": "Vestuário",
+      "electronics": "Eletrônicos",
+      "pharmacy": "Farmácia",
+      "beauty": "Beleza",
+      "services": "Serviços",
+      "exchange": "Casa de câmbio",
+      "atm": "Caixa eletrônico",
+      "other": "Outro"
+    },
+    "returnPolicy": "Política de devolução",
+    "returnPolicyHint": "Os compradores veem isso no seu cartão público e ao lado de cada preço. Deixe em branco e diremos isso claramente.",
+    "returnDays": "Prazo de devolução, dias",
+    "hours": {
+      "title": "Horário de funcionamento",
+      "add": "Adicionar horário de funcionamento",
+      "drop": "Remover horário de funcionamento",
+      "from": "De",
+      "to": "Até",
+      "addSpan": "outro intervalo",
+      "removeSpan": "Remover intervalo",
+      "copyToWeekdays": "Copiar {day} para todos os dias úteis",
+      "timezone": "Fuso horário",
+      "timezonePick": "Escolha um fuso horário",
+      "timezoneHint": "Sem um fuso horário, o horário ainda é exibido, mas nunca diremos “aberto agora”: um “fechado” errado pode fazer alguém passar por uma porta aberta.",
+      "openNow": "Aberto agora",
+      "closedNow": "Fechado",
+      "until": "até {time}",
+      "opensAt": "abre {day} às {time}",
+      "day": {
+        "mon": "Seg",
+        "tue": "Ter",
+        "wed": "Qua",
+        "thu": "Qui",
+        "fri": "Sex",
+        "sat": "Sáb",
+        "sun": "Dom"
+      },
+      "dayShort": {
+        "mon": "Seg",
+        "tue": "Ter",
+        "wed": "Qua",
+        "thu": "Qui",
+        "fri": "Sex",
+        "sat": "Sáb",
+        "sun": "Dom"
+      },
+      "kind": {
+        "open": "Horário",
+        "allday": "24/7",
+        "closed": "Fechado"
+      }
     }
   },
   "cabinet": {
@@ -2153,7 +2221,15 @@
       "SALES_OFFICE": "Escritório de vendas",
       "COMPANY": "Escritório",
       "ONLINE": "Online"
-    }
+    },
+    "mode": {
+      "online": "Online, 24/7",
+      "offline": "Locais físicos",
+      "mixed": "Online e locais físicos"
+    },
+    "returns": "Devoluções",
+    "returnDays": "{days} dias",
+    "returnsUnknown": "O vendedor não informou uma política de devolução."
   },
   "companiesDirectory": {
     "kicker": "Diretório",
@@ -3503,7 +3579,10 @@
         "m2": "m²",
         "hour": "hora",
         "service": "serviço"
-      }
+      },
+      "returns": "Devoluções",
+      "returnDays": "{days} dias",
+      "returnsUnknown": "não informado pelo vendedor"
     },
     "showcase": {
       "heading": "Produtos",

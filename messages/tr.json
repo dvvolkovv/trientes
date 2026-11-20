@@ -1467,7 +1467,12 @@
       "bad_form": "Geçersiz istek",
       "coin_not_selectable": "Bu coin kartı onaylı değil, bu yüzden seçilemez.",
       "documents_required": "Kayıt belgelerini ekleyin: tüzel unvan belgelerle kanıtlanır.",
-      "nothing_to_apply": "Bu değişiklikte uygulanacak bir şey kalmadı."
+      "nothing_to_apply": "Bu değişiklikte uygulanacak bir şey kalmadı.",
+      "hours_invalid": "Açılış saatleri hatalı görünüyor — saatleri kontrol edin.",
+      "hours_empty": "En az bir çalışma günü işaretleyin, aksi halde program hiçbir şey söylemez.",
+      "timezone_invalid": "Bilinmeyen saat dilimi.",
+      "category_invalid": "Bilinmeyen işletme türü.",
+      "return_days_invalid": "İade süresi gün cinsinden tam sayı olmalıdır, 0 ile 365 arasında."
     },
     "websiteHint": "https://, http:// veya sadece www.example.com — hepsi geçerli",
     "addressSection": "Adres",
@@ -1686,6 +1691,69 @@
     "tileEmpty": "henüz bir şey yok",
     "tileBadge": {
       "moderation": "{count} incelemede"
+    },
+    "categorySection": "İşletme türü",
+    "categoryTitle": "Mekan türü",
+    "categoryHint": "Genel kartınızdaki etiketi, harita iğnesinin rengini ve hangi gezginlerin rotalarında sizi göreceğini belirler.",
+    "category": {
+      "grocery": "Market",
+      "cafe": "Kafe",
+      "restaurant": "Restoran",
+      "bar": "Bar",
+      "fuel": "Benzin istasyonu",
+      "charging": "Elektrikli araç şarjı",
+      "hotel": "Otel",
+      "clothing": "Giyim",
+      "electronics": "Elektronik",
+      "pharmacy": "Eczane",
+      "beauty": "Güzellik",
+      "services": "Hizmetler",
+      "exchange": "Döviz bürosu",
+      "atm": "ATM",
+      "other": "Diğer"
+    },
+    "returnPolicy": "İade politikası",
+    "returnPolicyHint": "Alıcılar bunu herkese açık kartınızda ve her fiyatın yanında görür. Boş bırakırsanız bunu açıkça belirtiriz.",
+    "returnDays": "İade süresi, gün",
+    "hours": {
+      "title": "Çalışma saatleri",
+      "add": "Çalışma saatleri ekle",
+      "drop": "Çalışma saatlerini kaldır",
+      "from": "Başlangıç",
+      "to": "Bitiş",
+      "addSpan": "başka bir aralık",
+      "removeSpan": "Aralığı kaldır",
+      "copyToWeekdays": "{day} gününü tüm hafta içlerine kopyala",
+      "timezone": "Saat dilimi",
+      "timezonePick": "Bir saat dilimi seçin",
+      "timezoneHint": "Saat dilimi olmadan program yine gösterilir, ancak asla “şu an açık” demeyiz: yanlış bir “kapalı” ifadesi birini açık bir kapının önünden geçirebilir",
+      "openNow": "Şu an açık",
+      "closedNow": "Kapalı",
+      "until": "{time} kadar",
+      "opensAt": "{day} {time}'de açılıyor",
+      "day": {
+        "mon": "Pazartesi",
+        "tue": "Salı",
+        "wed": "Çarşamba",
+        "thu": "Perşembe",
+        "fri": "Cuma",
+        "sat": "Cumartesi",
+        "sun": "Pazar"
+      },
+      "dayShort": {
+        "mon": "Pzt",
+        "tue": "Sal",
+        "wed": "Çar",
+        "thu": "Per",
+        "fri": "Cum",
+        "sat": "Cmt",
+        "sun": "Paz"
+      },
+      "kind": {
+        "open": "Saatler",
+        "allday": "24/7",
+        "closed": "Kapalı"
+      }
     }
   },
   "cabinet": {
@@ -2153,7 +2221,15 @@
       "SALES_OFFICE": "Satış ofisi",
       "COMPANY": "Ofis",
       "ONLINE": "Çevrimiçi"
-    }
+    },
+    "mode": {
+      "online": "Çevrimiçi, 24/7",
+      "offline": "Fiziksel konumlar",
+      "mixed": "Çevrimiçi ve fiziksel konumlar"
+    },
+    "returns": "İadeler",
+    "returnDays": "{days} gün",
+    "returnsUnknown": "Satıcı bir iade politikası belirtmemiş."
   },
   "companiesDirectory": {
     "kicker": "Dizin",
@@ -3503,7 +3579,10 @@
         "m2": "m²",
         "hour": "saat",
         "service": "hizmet"
-      }
+      },
+      "returns": "İadeler",
+      "returnDays": "{days} gün",
+      "returnsUnknown": "satıcı tarafından belirtilmemiş"
     },
     "showcase": {
       "heading": "Ürünler",

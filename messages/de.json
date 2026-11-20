@@ -1467,7 +1467,12 @@
       "bad_form": "Ungültige Anfrage",
       "coin_not_selectable": "Diese Münzkarte ist nicht freigegeben und kann nicht ausgewählt werden.",
       "documents_required": "Fügen Sie die Registrierungsdokumente bei: Der rechtliche Name wird durch Dokumente nachgewiesen.",
-      "nothing_to_apply": "Für diese Änderung gibt es nichts mehr anzuwenden."
+      "nothing_to_apply": "Für diese Änderung gibt es nichts mehr anzuwenden.",
+      "hours_invalid": "Die Öffnungszeiten sehen falsch aus — prüfen Sie die Zeiten.",
+      "hours_empty": "Markieren Sie mindestens einen Werktag, sonst sagt der Zeitplan nichts aus.",
+      "timezone_invalid": "Unbekannte Zeitzone.",
+      "category_invalid": "Unbekannte Geschäftsart.",
+      "return_days_invalid": "Die Rückgabefrist muss eine ganze Anzahl von Tagen sein, 0 bis 365."
     },
     "websiteHint": "Mit https://, http:// oder einfach www.example.com — alles möglich",
     "addressSection": "Adresse",
@@ -1686,6 +1691,69 @@
     "tileEmpty": "noch nichts",
     "tileBadge": {
       "moderation": "{count} in Prüfung"
+    },
+    "categorySection": "Art des Geschäfts",
+    "categoryTitle": "Art des Ortes",
+    "categoryHint": "Legt die Beschriftung auf Ihrer öffentlichen Karte fest, die Farbe des Karten-Pins und welche Reisenden Sie auf ihrer Route sehen.",
+    "category": {
+      "grocery": "Lebensmittel",
+      "cafe": "Café",
+      "restaurant": "Restaurant",
+      "bar": "Bar",
+      "fuel": "Tankstelle",
+      "charging": "E-Ladestation",
+      "hotel": "Hotel",
+      "clothing": "Bekleidung",
+      "electronics": "Elektronik",
+      "pharmacy": "Apotheke",
+      "beauty": "Kosmetik",
+      "services": "Dienstleistungen",
+      "exchange": "Wechselstube",
+      "atm": "Geldautomat",
+      "other": "Sonstiges"
+    },
+    "returnPolicy": "Rückgabebedingungen",
+    "returnPolicyHint": "Käufer sehen dies auf Ihrer öffentlichen Karte und neben jedem Preis. Lassen Sie es leer, und wir sagen das deutlich.",
+    "returnDays": "Rückgabefrist, Tage",
+    "hours": {
+      "title": "Öffnungszeiten",
+      "add": "Öffnungszeiten hinzufügen",
+      "drop": "Öffnungszeiten entfernen",
+      "from": "Von",
+      "to": "Bis",
+      "addSpan": "weiteres Intervall",
+      "removeSpan": "Intervall entfernen",
+      "copyToWeekdays": "Kopiere {day} auf alle Wochentage",
+      "timezone": "Zeitzone",
+      "timezonePick": "Zeitzone auswählen",
+      "timezoneHint": "Ohne Zeitzone wird der Plan trotzdem angezeigt, aber wir behaupten niemals „jetzt geöffnet“: ein falsches „geschlossen“ würde jemanden an einer offenen Tür vorbeischicken.",
+      "openNow": "Jetzt geöffnet",
+      "closedNow": "Geschlossen",
+      "until": "bis {time}",
+      "opensAt": "öffnet {day} um {time}",
+      "day": {
+        "mon": "Mo",
+        "tue": "Di",
+        "wed": "Mittwoch",
+        "thu": "Donnerstag",
+        "fri": "Freitag",
+        "sat": "Samstag",
+        "sun": "Sonntag"
+      },
+      "dayShort": {
+        "mon": "Mo",
+        "tue": "Di",
+        "wed": "Mi",
+        "thu": "Do",
+        "fri": "Fr",
+        "sat": "Sa",
+        "sun": "So"
+      },
+      "kind": {
+        "open": "Öffnungszeiten",
+        "allday": "24/7",
+        "closed": "Geschlossen"
+      }
     }
   },
   "cabinet": {
@@ -2153,7 +2221,15 @@
       "SALES_OFFICE": "Verkaufsbüro",
       "COMPANY": "Büro",
       "ONLINE": "Online"
-    }
+    },
+    "mode": {
+      "online": "Online, 24/7",
+      "offline": "Physische Standorte",
+      "mixed": "Online und physische Standorte"
+    },
+    "returns": "Rückgaben",
+    "returnDays": "{days} Tage",
+    "returnsUnknown": "Der Verkäufer hat keine Rückgaberichtlinie angegeben."
   },
   "companiesDirectory": {
     "kicker": "Verzeichnis",
@@ -3503,7 +3579,10 @@
         "m2": "m²",
         "hour": "Stunde",
         "service": "Dienstleistung"
-      }
+      },
+      "returns": "Rückgaben",
+      "returnDays": "{days} Tage",
+      "returnsUnknown": "vom Verkäufer nicht angegeben"
     },
     "showcase": {
       "heading": "Produkte",

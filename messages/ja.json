@@ -1467,7 +1467,12 @@
       "bad_form": "不正なリクエスト",
       "coin_not_selectable": "このコインカードは未承認のため選択できません。",
       "documents_required": "登録書類を添付してください: 法的名称は書面で証明されます",
-      "nothing_to_apply": "この変更で適用するものは残っていません"
+      "nothing_to_apply": "この変更で適用するものは残っていません",
+      "hours_invalid": "営業時間に誤りがあるようです — 時刻を確認してください。",
+      "hours_empty": "少なくとも営業日を1日は選択してください、さもないとスケジュールは何も示しません。",
+      "timezone_invalid": "不明なタイムゾーンです。",
+      "category_invalid": "不明な業種です。",
+      "return_days_invalid": "返品期間は0〜365の整数日でなければなりません。"
     },
     "websiteHint": "https://、http://、または www.example.com の形式でOK",
     "addressSection": "住所",
@@ -1686,6 +1691,69 @@
     "tileEmpty": "まだありません",
     "tileBadge": {
       "moderation": "{count}件 審査中"
+    },
+    "categorySection": "業種",
+    "categoryTitle": "場所の種類",
+    "categoryHint": "公開カードのラベル、地図ピンの色、どの旅行者に経路上で表示されるかを設定します。",
+    "category": {
+      "grocery": "食料品店",
+      "cafe": "カフェ",
+      "restaurant": "レストラン",
+      "bar": "バー",
+      "fuel": "ガソリンスタンド",
+      "charging": "EV充電",
+      "hotel": "ホテル",
+      "clothing": "衣料品",
+      "electronics": "電子機器",
+      "pharmacy": "薬局",
+      "beauty": "美容",
+      "services": "サービス",
+      "exchange": "両替所",
+      "atm": "ATM",
+      "other": "その他"
+    },
+    "returnPolicy": "返品ポリシー",
+    "returnPolicyHint": "購入者はあなたの公開カードおよびすべての価格の横にこれを表示します。空欄のままでも、その旨をはっきり表示します。",
+    "returnDays": "返品可能日数",
+    "hours": {
+      "title": "営業時間",
+      "add": "営業時間を追加",
+      "drop": "営業時間を削除",
+      "from": "開始",
+      "to": "終了",
+      "addSpan": "別の時間帯",
+      "removeSpan": "時間帯を削除",
+      "copyToWeekdays": "{day}をすべての平日にコピー",
+      "timezone": "タイムゾーン",
+      "timezonePick": "タイムゾーンを選択",
+      "timezoneHint": "タイムゾーンがなくてもスケジュールは表示されますが、「現在営業中」とは表示しません。誤って「閉店」と出すと、開いているのに通り過ぎてしまいます。",
+      "openNow": "営業中",
+      "closedNow": "閉店",
+      "until": "{time}まで",
+      "opensAt": "{day}の{time}に開店",
+      "day": {
+        "mon": "月曜",
+        "tue": "火曜",
+        "wed": "水曜",
+        "thu": "木曜",
+        "fri": "金曜",
+        "sat": "土曜",
+        "sun": "日曜"
+      },
+      "dayShort": {
+        "mon": "月",
+        "tue": "火",
+        "wed": "水",
+        "thu": "木",
+        "fri": "金",
+        "sat": "土",
+        "sun": "日"
+      },
+      "kind": {
+        "open": "営業時間",
+        "allday": "24/7",
+        "closed": "休業"
+      }
     }
   },
   "cabinet": {
@@ -2153,7 +2221,15 @@
       "SALES_OFFICE": "セールスオフィス",
       "COMPANY": "オフィス",
       "ONLINE": "オンライン"
-    }
+    },
+    "mode": {
+      "online": "オンライン、24/7",
+      "offline": "実店舗",
+      "mixed": "オンラインと実店舗"
+    },
+    "returns": "返品",
+    "returnDays": "{days}日",
+    "returnsUnknown": "販売者は返品ポリシーを明示していません。"
   },
   "companiesDirectory": {
     "kicker": "ディレクトリ",
@@ -3503,7 +3579,10 @@
         "m2": "m²",
         "hour": "時間",
         "service": "サービス"
-      }
+      },
+      "returns": "返品",
+      "returnDays": "{days}日",
+      "returnsUnknown": "販売者による記載なし"
     },
     "showcase": {
       "heading": "商品",

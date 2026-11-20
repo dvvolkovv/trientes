@@ -1467,7 +1467,12 @@
       "bad_form": "Solicitud no válida",
       "coin_not_selectable": "Esta ficha de moneda no está aprobada, así que no se puede seleccionar.",
       "documents_required": "Adjunta los documentos de registro: el nombre legal se acredita con documentos.",
-      "nothing_to_apply": "No queda nada que aplicar en este cambio."
+      "nothing_to_apply": "No queda nada que aplicar en este cambio.",
+      "hours_invalid": "El horario de apertura parece incorrecto — verifica las horas.",
+      "hours_empty": "Marca al menos un día laborable, de lo contrario el horario no dice nada.",
+      "timezone_invalid": "Zona horaria desconocida.",
+      "category_invalid": "Tipo de negocio desconocido.",
+      "return_days_invalid": "El plazo de devolución debe ser un número entero de días, de 0 a 365."
     },
     "websiteHint": "Con https://, http:// o simplemente www.example.com — todo vale",
     "addressSection": "Dirección",
@@ -1686,6 +1691,69 @@
     "tileEmpty": "nada todavía",
     "tileBadge": {
       "moderation": "{count} en revisión"
+    },
+    "categorySection": "Tipo de negocio",
+    "categoryTitle": "Tipo de lugar",
+    "categoryHint": "Define la etiqueta de tu ficha pública, el color del pin en el mapa y qué viajeros te ven en su ruta.",
+    "category": {
+      "grocery": "Supermercado",
+      "cafe": "Café",
+      "restaurant": "Restaurante",
+      "bar": "Bar",
+      "fuel": "Gasolinera",
+      "charging": "Carga para vehículos eléctricos",
+      "hotel": "Hotel",
+      "clothing": "Ropa",
+      "electronics": "Electrónica",
+      "pharmacy": "Farmacia",
+      "beauty": "Belleza",
+      "services": "Servicios",
+      "exchange": "Casa de cambio",
+      "atm": "Cajero automático",
+      "other": "Otro"
+    },
+    "returnPolicy": "Política de devoluciones",
+    "returnPolicyHint": "Los compradores verán esto en tu ficha pública y junto a cada precio. Si lo dejas vacío, lo diremos claramente.",
+    "returnDays": "Plazo de devolución, días",
+    "hours": {
+      "title": "Horario de apertura",
+      "add": "Agregar horario de apertura",
+      "drop": "Eliminar horario de apertura",
+      "from": "Desde",
+      "to": "Hasta",
+      "addSpan": "otro intervalo",
+      "removeSpan": "Eliminar intervalo",
+      "copyToWeekdays": "Copiar {day} a todos los días laborables",
+      "timezone": "Zona horaria",
+      "timezonePick": "Elige una zona horaria",
+      "timezoneHint": "Sin una zona horaria el horario se sigue mostrando, pero nunca diremos “abierto ahora”: un “cerrado” erróneo podría hacer que alguien pase de largo ante una puerta abierta.",
+      "openNow": "Abierto ahora",
+      "closedNow": "Cerrado",
+      "until": "hasta {time}",
+      "opensAt": "abre {day} a las {time}",
+      "day": {
+        "mon": "Lun",
+        "tue": "Mar",
+        "wed": "Mié",
+        "thu": "Jue",
+        "fri": "Vie",
+        "sat": "Sáb",
+        "sun": "Dom"
+      },
+      "dayShort": {
+        "mon": "Lun",
+        "tue": "Mar",
+        "wed": "Mié",
+        "thu": "Jue",
+        "fri": "Vie",
+        "sat": "Sáb",
+        "sun": "Dom"
+      },
+      "kind": {
+        "open": "Horario",
+        "allday": "24/7",
+        "closed": "Cerrado"
+      }
     }
   },
   "cabinet": {
@@ -2153,7 +2221,15 @@
       "SALES_OFFICE": "Oficina de ventas",
       "COMPANY": "Oficina",
       "ONLINE": "En línea"
-    }
+    },
+    "mode": {
+      "online": "En línea, 24/7",
+      "offline": "Ubicaciones físicas",
+      "mixed": "En línea y ubicaciones físicas"
+    },
+    "returns": "Devoluciones",
+    "returnDays": "{days} días",
+    "returnsUnknown": "El vendedor no ha indicado una política de devoluciones."
   },
   "companiesDirectory": {
     "kicker": "Directorio",
@@ -3503,7 +3579,10 @@
         "m2": "m²",
         "hour": "hora",
         "service": "servicio"
-      }
+      },
+      "returns": "Devoluciones",
+      "returnDays": "{days} días",
+      "returnsUnknown": "no indicado por el vendedor"
     },
     "showcase": {
       "heading": "Productos",
