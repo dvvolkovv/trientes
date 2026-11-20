@@ -5,6 +5,7 @@ import { CompanyOffersBlock } from "@/components/company/offers-block";
 import { CompanyLoyaltyLine } from "@/components/company/loyalty-line";
 import { CompanyPromosBlock } from "@/components/company/promos-block";
 import { FollowButton } from "@/components/company/follow-button";
+import { MessageStoreButton } from "@/components/customer-messages/message-store-button";
 import { auth } from "@/auth";
 import { readFollow } from "@/lib/promos/read";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -88,6 +89,20 @@ export default async function PublicCompanyPage({
   const session = await auth();
   const viewerId = (session?.user as { id?: string } | undefined)?.id ?? null;
   const follow = viewerId ? await readFollow(viewerId, company.id) : null;
+  // Нитка одна на магазин (BQ § 2.2): уже начавшего разговор кнопка ведёт в него, а
+  // сотруднику этого же предприятия писать себе снаружи незачем.
+  const [ownThread, viewerMembership] = viewerId
+    ? await Promise.all([
+        prisma.customerThread.findUnique({
+          where: { companyId_customerUserId: { companyId: company.id, customerUserId: viewerId } },
+          select: { id: true },
+        }),
+        prisma.companyMember.findUnique({
+          where: { companyId_userId: { companyId: company.id, userId: viewerId } },
+          select: { userId: true },
+        }),
+      ])
+    : [null, null];
   const onlinePoints = company.points.filter((p) => p.type === "ONLINE");
   const physicalPoints = company.points.filter((p) => p.type !== "ONLINE");
 
@@ -193,12 +208,21 @@ export default async function PublicCompanyPage({
             ) : null}
           </div>
         </div>
-        <FollowButton
-          companyId={company.id}
-          locale={locale}
-          following={follow !== null}
-          signedIn={viewerId !== null}
-        />
+        <div className="flex flex-wrap items-start gap-2">
+          <FollowButton
+            companyId={company.id}
+            locale={locale}
+            following={follow !== null}
+            signedIn={viewerId !== null}
+          />
+          <MessageStoreButton
+            companyId={company.id}
+            locale={locale}
+            signedIn={viewerId !== null}
+            threadId={ownThread?.id ?? null}
+            isMember={viewerMembership !== null}
+          />
+        </div>
       </header>
 
       {about.fields.description ? (

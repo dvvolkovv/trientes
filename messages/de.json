@@ -1676,19 +1676,21 @@
       "team": "Team",
       "tasks": "Aufgaben",
       "journal": "Aktivitätsprotokoll",
-      "chat": "Team-Chat"
+      "chat": "Team-Chat",
+      "customers": "Kundenmitteilungen"
     },
     "tileUnit": {
       "points": "{count} auf der Karte",
       "products": "{count} im Verkauf",
       "pricing": "{count} nach Kategorie",
-      "promos": "{count} live",
+      "promos": "{count} aktiv",
       "warehouses": "{count} Lagerorte",
       "supply": "{count} offene Aufträge",
       "team": "{count} Personen",
       "tasks": "{count} offen",
       "journal": "{count} Einträge",
-      "chat": "{count} Nachrichten"
+      "chat": "{count} Nachrichten",
+      "customers": "Unterhaltungen: {count}"
     },
     "tileEmpty": "noch nichts",
     "tileBadge": {
@@ -3383,6 +3385,16 @@
         "subject": "{author} hat dich im Teamchat von {company} erwähnt",
         "body": "{author} hat dir im Teamchat von {company} geschrieben."
       }
+    },
+    "customerMessage": {
+      "toStore": {
+        "subject": "Ein Kunde hat an {company} geschrieben",
+        "body": "Jemand hat {company} eine Frage gestellt. Öffnen Sie die Konversation, um zu antworten."
+      },
+      "toCustomer": {
+        "subject": "{company} hat Ihnen geantwortet",
+        "body": "{company} hat auf Ihre Nachricht geantwortet."
+      }
     }
   },
   "captcha": {
@@ -3997,7 +4009,8 @@
         "pricing": "Preis und Cashback",
         "tasks": "Aufgaben",
         "promos": "Angebote und Mailings",
-        "supply": "Lieferanten und Bestellungen"
+        "supply": "Lieferanten und Bestellungen",
+        "customers": "Kundennachrichten"
       },
       "levels": {
         "NONE": "Kein Zugriff",
@@ -4098,7 +4111,11 @@
       "REORDER_RULE_SAVED": "Automatische Bestellregel gespeichert",
       "REORDER_RULE_DELETED": "Automatische Bestellregel gelöscht",
       "PROFILE_CHANGES_SUBMITTED": "Kartenänderungen zur Prüfung gesendet",
-      "CHAT_MESSAGE_DELETED": "Chat-Nachricht eines anderen gelöscht"
+      "CHAT_MESSAGE_DELETED": "Chat-Nachricht eines anderen gelöscht",
+      "CUSTOMER_REPLIED": "Hat einem Kunden geantwortet",
+      "CUSTOMER_BLOCKED": "Hat einen Kunden blockiert",
+      "CUSTOMER_UNBLOCKED": "Hat die Blockierung eines Kunden aufgehoben",
+      "CUSTOMER_MESSAGE_DELETED": "Hat eine Shop-Nachricht aus einem Kunden-Thread entfernt"
     }
   },
   "cabinetTasks": {
@@ -4487,6 +4504,52 @@
       "body_too_long": "Die Nachricht ist zu lang.",
       "daily_limit": "Das heutige Nachrichtenlimit für dieses Unternehmen ist aufgebraucht.",
       "not_found": "Die Nachricht ist weg."
+    }
+  },
+  "customerMessages": {
+    "write": "Dem Shop schreiben",
+    "openThread": "Konversation öffnen",
+    "placeholder": "Stellen Sie dem Shop eine Frage…",
+    "replyPlaceholder": "Als Shop antworten…",
+    "send": "Senden",
+    "sending": "Wird gesendet…",
+    "cancel": "Abbrechen",
+    "empty": "Noch keine Nachrichten.",
+    "store": "Shop",
+    "customer": "Kunde",
+    "withdraw": "Zurückziehen",
+    "withdrawn": "Nachricht zurückgezogen",
+    "readOnly": "Diese Unterhaltung ist schreibgeschützt.",
+    "earlier": "Frühere Nachrichten",
+    "inboxTitle": "Kunden-Nachrichten",
+    "inboxSubtitle": "Fragen, die Kunden über deine Shop-Karte senden. Der Shop antwortet mit einer Stimme: Der Kunde sieht „Shop“, nicht den Namen des Mitarbeiters in der Schicht.",
+    "inboxEmpty": "Bisher hat noch niemand geschrieben. Der Button befindet sich auf deiner Shop-Karte.",
+    "blockedBadge": "Blockiert",
+    "blockedNotice": "Dieser Kunde kann dir nicht mehr schreiben.",
+    "blockTitle": "Diesen Kunden blockieren",
+    "blockHint": "Er kann dir nicht mehr schreiben; die Unterhaltung bleibt für beide Seiten lesbar. Der Grund ist nur für dein Team sichtbar.",
+    "blockReasonPlaceholder": "Grund (optional)",
+    "block": "Blockieren",
+    "unblock": "Freigeben",
+    "unblockHint": "Dieser Kunde ist blockiert und kann dir nicht schreiben.",
+    "closedByStore": "Der Shop hat diese Unterhaltung geschlossen.",
+    "myTitle": "Nachrichten an Shops",
+    "mySubtitle": "Eine Unterhaltung pro Shop: Deine Fragen und deren Antworten.",
+    "myEmpty": "Du hast noch keinem Shop geschrieben.",
+    "myCount": "Unterhaltungen: {count}",
+    "backToCabinet": "Kabinett",
+    "errors": {
+      "body_required": "Schreibe zuerst eine Nachricht.",
+      "body_too_long": "Die Nachricht ist zu lang.",
+      "daily_limit": "Du hast heute bereits viele Nachrichten gesendet — versuche es morgen erneut.",
+      "unanswered_limit": "Warte auf die Antwort des Shops, bevor du erneut schreibst.",
+      "blocked": "Der Shop hat diese Unterhaltung geschlossen.",
+      "company_inactive": "Dieser Shop nimmt derzeit keine Nachrichten entgegen.",
+      "own_company": "Das ist dein eigener Shop — antworte aus dessen Kabinett.",
+      "reason_too_short": "Schreibe den Grund in wenigen Worten oder lasse das Feld leer.",
+      "forbidden": "Du bist nicht berechtigt, das zu tun.",
+      "not_found": "Die Unterhaltung existiert nicht mehr.",
+      "unauth": "Melde dich zuerst an."
     }
   }
 }

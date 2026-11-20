@@ -93,7 +93,7 @@
     }
   },
   "listing": {
-    "rank": "#",
+    "rank": "N°",
     "name": "Nom",
     "price": "Prix",
     "change1h": "1 h %",
@@ -1676,7 +1676,8 @@
       "team": "Équipe",
       "tasks": "Tâches",
       "journal": "Journal d’activité",
-      "chat": "Team chat"
+      "chat": "Chat d'équipe",
+      "customers": "Messages clients"
     },
     "tileUnit": {
       "points": "{count} sur la carte",
@@ -1688,7 +1689,8 @@
       "team": "{count} personnes",
       "tasks": "{count} ouvertes",
       "journal": "{count} entrées",
-      "chat": "{count} messages"
+      "chat": "{count} messages",
+      "customers": "Conversations : {count}"
     },
     "tileEmpty": "rien pour l’instant",
     "tileBadge": {
@@ -1753,7 +1755,7 @@
       },
       "kind": {
         "open": "Horaires",
-        "allday": "24/7",
+        "allday": "24h/24, 7j/7",
         "closed": "Fermé"
       }
     }
@@ -3380,8 +3382,18 @@
     },
     "chat": {
       "mention": {
-        "subject": "{author} named you in the {company} team chat",
-        "body": "{author} wrote to you in the team chat of {company}."
+        "subject": "{author} vous a mentionné dans le chat de l'équipe {company}",
+        "body": "{author} vous a écrit dans le chat d'équipe de {company}."
+      }
+    },
+    "customerMessage": {
+      "toStore": {
+        "subject": "Un client a écrit à {company}",
+        "body": "Quelqu'un a posé une question à {company}. Ouvrez la conversation pour y répondre."
+      },
+      "toCustomer": {
+        "subject": "{company} vous a répondu",
+        "body": "{company} a répondu à votre message."
       }
     }
   },
@@ -3571,7 +3583,7 @@
       "empty": "Personne ne le vend encore. Si c'est votre cas, publiez votre prix depuis votre espace professionnel.",
       "inStock": "En stock",
       "outOfStock": "En rupture de stock pour le moment",
-      "cashback": "cashback {percent}%",
+      "cashback": "cashback {percent} %",
       "toShop": "Vers la boutique",
       "whereExactly": "où exactement",
       "openMap": "Ouvrir sur la carte",
@@ -3596,7 +3608,7 @@
       "heading": "Produits",
       "inStock": "En stock",
       "outOfStock": "Rupture de stock",
-      "cashback": "cashback {percent}%"
+      "cashback": "cashback {percent} %"
     }
   },
   "cabinetProducts": {
@@ -3997,7 +4009,8 @@
         "pricing": "Prix et cashback",
         "tasks": "Tâches",
         "promos": "Offres et envois",
-        "supply": "Fournisseurs et commandes"
+        "supply": "Fournisseurs et commandes",
+        "customers": "Messages clients"
       },
       "levels": {
         "NONE": "Aucun accès",
@@ -4098,7 +4111,11 @@
       "REORDER_RULE_SAVED": "Règle de commande automatique enregistrée",
       "REORDER_RULE_DELETED": "Règle de commande automatique supprimée",
       "PROFILE_CHANGES_SUBMITTED": "Modifications de la fiche envoyées pour examen",
-      "CHAT_MESSAGE_DELETED": "Removed someone else’s chat message"
+      "CHAT_MESSAGE_DELETED": "Message de chat d'une autre personne supprimé",
+      "CUSTOMER_REPLIED": "A répondu à un client",
+      "CUSTOMER_BLOCKED": "A bloqué un client",
+      "CUSTOMER_UNBLOCKED": "A débloqué un client",
+      "CUSTOMER_MESSAGE_DELETED": "A supprimé un message de la boutique dans un fil client"
     }
   },
   "cabinetTasks": {
@@ -4465,28 +4482,74 @@
     }
   },
   "cabinetChat": {
-    "title": "Team chat",
-    "subtitle": "One room for the whole team. Everyone on the team reads and writes here; nobody outside it can see the room.",
-    "empty": "No messages yet. Say what is going on in the shop today.",
-    "placeholder": "Write to the team…",
-    "send": "Send",
-    "sending": "Sending…",
-    "you": "You",
-    "gone": "Former teammate",
-    "withdraw": "Withdraw",
-    "withdrawn": "Message withdrawn",
-    "mentionedYou": "You were named",
-    "mentionHint": "Name a teammate with @login and they get a notification. Everything else only lights up the badge.",
-    "earlier": "Earlier messages",
-    "readOnly": "The room is read-only: the business is suspended or deleted.",
+    "title": "Chat d'équipe",
+    "subtitle": "Un salon pour toute l'équipe. Tous les membres de l'équipe peuvent lire et écrire ici ; personne en dehors ne peut voir ce salon.",
+    "empty": "Aucun message pour l'instant. Dites ce qui se passe dans la boutique aujourd'hui.",
+    "placeholder": "Écrire à l'équipe…",
+    "send": "Envoyer",
+    "sending": "Envoi…",
+    "you": "Vous",
+    "gone": "Ancien coéquipier",
+    "withdraw": "Retirer",
+    "withdrawn": "Message retiré",
+    "mentionedYou": "Vous avez été mentionné",
+    "mentionHint": "Mentionnez un coéquipier avec @login et il recevra une notification. Le reste n'allume que le badge.",
+    "earlier": "Messages précédents",
+    "readOnly": "Le salon est en lecture seule : l'entreprise est suspendue ou supprimée.",
     "errors": {
-      "unauth": "Sign in first.",
-      "forbidden": "You do not have access to this room.",
-      "company_inactive": "The business is suspended, so the conversation cannot continue.",
-      "body_required": "Write something first.",
-      "body_too_long": "The message is too long.",
-      "daily_limit": "Today’s message limit for this business is used up.",
-      "not_found": "The message is gone."
+      "unauth": "Connectez-vous d'abord.",
+      "forbidden": "Vous n'avez pas accès à ce salon.",
+      "company_inactive": "L'entreprise est suspendue, la conversation ne peut donc pas continuer.",
+      "body_required": "Écrivez quelque chose d'abord.",
+      "body_too_long": "Le message est trop long.",
+      "daily_limit": "Le limite quotidienne de messages pour cette entreprise est atteinte.",
+      "not_found": "Le message a disparu."
+    }
+  },
+  "customerMessages": {
+    "write": "Contacter la boutique",
+    "openThread": "Ouvrir la conversation",
+    "placeholder": "Posez une question à la boutique…",
+    "replyPlaceholder": "Répondre en tant que boutique…",
+    "send": "Envoyer",
+    "sending": "Envoi…",
+    "cancel": "Annuler",
+    "empty": "Aucun message pour le moment.",
+    "store": "Boutique",
+    "customer": "Client",
+    "withdraw": "Rétracter",
+    "withdrawn": "Message rétracté",
+    "readOnly": "Cette conversation est en lecture seule.",
+    "earlier": "Messages précédents",
+    "inboxTitle": "Messages clients",
+    "inboxSubtitle": "Questions envoyées depuis la fiche de votre boutique. La boutique répond d'une seule voix : le client voit « Boutique », pas le nom de l'employé de garde.",
+    "inboxEmpty": "Personne n'a encore écrit. Le bouton se trouve sur la fiche de votre boutique.",
+    "blockedBadge": "Bloqué",
+    "blockedNotice": "Ce client ne peut plus vous écrire.",
+    "blockTitle": "Bloquer ce client",
+    "blockHint": "Il ne pourra plus vous écrire ; la conversation reste lisible des deux côtés. La raison n'est visible que par votre équipe.",
+    "blockReasonPlaceholder": "Raison (optionnel)",
+    "block": "Bloquer",
+    "unblock": "Débloquer",
+    "unblockHint": "Ce client est bloqué et ne peut pas vous écrire.",
+    "closedByStore": "La boutique a fermé cette conversation.",
+    "myTitle": "Messages aux boutiques",
+    "mySubtitle": "Une conversation par boutique : vos questions et leurs réponses.",
+    "myEmpty": "Vous n'avez encore écrit à aucune boutique.",
+    "myCount": "Conversations : {count}",
+    "backToCabinet": "Espace personnel",
+    "errors": {
+      "body_required": "Rédigez d'abord un message.",
+      "body_too_long": "Le message est trop long.",
+      "daily_limit": "Vous avez envoyé beaucoup de messages aujourd'hui — réessayez demain.",
+      "unanswered_limit": "Attendez que la boutique réponde avant d'écrire à nouveau.",
+      "blocked": "La boutique a fermé cette conversation.",
+      "company_inactive": "Cette boutique n'accepte pas de messages pour le moment.",
+      "own_company": "Il s'agit de votre propre boutique — répondez depuis son espace personnel.",
+      "reason_too_short": "Écrivez la raison en quelques mots, ou laissez vide.",
+      "forbidden": "Vous n'êtes pas autorisé à faire cela.",
+      "not_found": "La conversation a disparu.",
+      "unauth": "Connectez-vous d'abord."
     }
   }
 }

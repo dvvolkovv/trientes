@@ -7,6 +7,7 @@ import { CabinetTile, TILE_GRID } from "@/components/cabinet/cabinet-tile";
 import { ADMIN_COLUMN } from "@/lib/admin-ui";
 import { groupByKey, visibleTiles, GROUP_ICONS, type CompanyTileDef } from "@/lib/cabinet/company-nav";
 import { NOT_DELETED } from "@/lib/soft-delete";
+import { storeUnreadTotal } from "@/lib/customer-messages/read";
 import { readChatUnread } from "@/lib/company-chat/read";
 
 export const dynamic = "force-dynamic";
@@ -117,6 +118,19 @@ async function countTiles(
     jobs.push(
       (async () => {
         out.promos = { value: await prisma.merchantPromo.count({ where: { companyId, archivedAt: null } }) };
+      })(),
+    );
+  }
+  if (want.has("customers")) {
+    jobs.push(
+      (async () => {
+        // Число — нитки, значок — непрочитанное **магазина**: оно на сторону, а не на
+        // человека (BQ § 2.5), поэтому первый прочитавший гасит его смене.
+        const [all, unread] = await Promise.all([
+          prisma.customerThread.count({ where: { companyId } }),
+          storeUnreadTotal(companyId),
+        ]);
+        out.customers = { value: all, badge: unread > 0 ? String(unread) : null };
       })(),
     );
   }

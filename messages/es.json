@@ -1676,7 +1676,8 @@
       "team": "Equipo",
       "tasks": "Tareas",
       "journal": "Registro de actividad",
-      "chat": "Chat del equipo"
+      "chat": "Chat del equipo",
+      "customers": "Mensajes de clientes"
     },
     "tileUnit": {
       "points": "{count} en el mapa",
@@ -1688,7 +1689,8 @@
       "team": "{count} personas",
       "tasks": "{count} abiertas",
       "journal": "{count} entradas",
-      "chat": "{count} mensajes"
+      "chat": "{count} mensajes",
+      "customers": "Conversaciones: {count}"
     },
     "tileEmpty": "nada todavía",
     "tileBadge": {
@@ -3383,6 +3385,16 @@
         "subject": "{author} te mencionó en el chat del equipo de {company}",
         "body": "{author} te escribió en el chat del equipo de {company}."
       }
+    },
+    "customerMessage": {
+      "toStore": {
+        "subject": "Un cliente escribió a {company}",
+        "body": "Alguien le hizo una pregunta a {company}. Abre la conversación para responder."
+      },
+      "toCustomer": {
+        "subject": "{company} te ha respondido",
+        "body": "{company} respondió a tu mensaje."
+      }
     }
   },
   "captcha": {
@@ -3997,7 +4009,8 @@
         "pricing": "Precio y cashback",
         "tasks": "Tareas",
         "promos": "Ofertas y comunicaciones",
-        "supply": "Proveedores y pedidos"
+        "supply": "Proveedores y pedidos",
+        "customers": "Mensajes de clientes"
       },
       "levels": {
         "NONE": "Sin acceso",
@@ -4098,7 +4111,11 @@
       "REORDER_RULE_SAVED": "Regla de pedido automático guardada",
       "REORDER_RULE_DELETED": "Regla de pedido automático eliminada",
       "PROFILE_CHANGES_SUBMITTED": "Cambios de la ficha enviados para revisión",
-      "CHAT_MESSAGE_DELETED": "Eliminó el mensaje de chat de otra persona"
+      "CHAT_MESSAGE_DELETED": "Eliminó el mensaje de chat de otra persona",
+      "CUSTOMER_REPLIED": "Respondió a un cliente",
+      "CUSTOMER_BLOCKED": "Bloqueó a un cliente",
+      "CUSTOMER_UNBLOCKED": "Desbloqueó a un cliente",
+      "CUSTOMER_MESSAGE_DELETED": "Eliminó un mensaje de la tienda de un hilo de cliente"
     }
   },
   "cabinetTasks": {
@@ -4487,6 +4504,52 @@
       "body_too_long": "El mensaje es demasiado largo.",
       "daily_limit": "El límite de mensajes de hoy para esta empresa se ha agotado.",
       "not_found": "El mensaje ya no está."
+    }
+  },
+  "customerMessages": {
+    "write": "Enviar mensaje a la tienda",
+    "openThread": "Abrir la conversación",
+    "placeholder": "Haz una pregunta a la tienda…",
+    "replyPlaceholder": "Responder como la tienda…",
+    "send": "Enviar",
+    "sending": "Enviando…",
+    "cancel": "Cancelar",
+    "empty": "Aún no hay mensajes.",
+    "store": "Tienda",
+    "customer": "Cliente",
+    "withdraw": "Anular",
+    "withdrawn": "Mensaje anulado",
+    "readOnly": "Esta conversación es de solo lectura.",
+    "earlier": "Mensajes anteriores",
+    "inboxTitle": "Mensajes de clientes",
+    "inboxSubtitle": "Preguntas que la gente envía desde la tarjeta de tu tienda. La tienda responde con una sola voz: el cliente ve \"Tienda\", no el nombre del empleado de turno.",
+    "inboxEmpty": "Nadie ha escrito todavía. El botón está en la tarjeta de tu tienda.",
+    "blockedBadge": "Bloqueado",
+    "blockedNotice": "Este cliente ya no puede escribirte.",
+    "blockTitle": "Bloquear a este cliente",
+    "blockHint": "Dejarán de escribirte; la conversación seguirá siendo legible para ambas partes. El motivo solo es visible para tu equipo.",
+    "blockReasonPlaceholder": "Motivo (opcional)",
+    "block": "Bloquear",
+    "unblock": "Desbloquear",
+    "unblockHint": "Este cliente está bloqueado y no puede escribirte.",
+    "closedByStore": "La tienda ha cerrado esta conversación.",
+    "myTitle": "Mensajes a tiendas",
+    "mySubtitle": "Una conversación por tienda: tus preguntas y sus respuestas.",
+    "myEmpty": "Aún no has escrito a ninguna tienda.",
+    "myCount": "Conversaciones: {count}",
+    "backToCabinet": "Panel",
+    "errors": {
+      "body_required": "Escribe un mensaje primero.",
+      "body_too_long": "El mensaje es demasiado largo.",
+      "daily_limit": "Has enviado muchos mensajes hoy; vuelve a intentarlo mañana.",
+      "unanswered_limit": "Espera a que la tienda responda antes de volver a escribir.",
+      "blocked": "La tienda ha cerrado esta conversación.",
+      "company_inactive": "Esta tienda no acepta mensajes en este momento.",
+      "own_company": "Esta es tu propia tienda; responde desde su panel.",
+      "reason_too_short": "Escribe el motivo en pocas palabras o déjalo en blanco.",
+      "forbidden": "No tienes permiso para hacer eso.",
+      "not_found": "La conversación ha desaparecido.",
+      "unauth": "Inicia sesión primero."
     }
   }
 }

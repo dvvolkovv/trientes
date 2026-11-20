@@ -15,6 +15,10 @@
  *   npx tsx scripts/translate-messages.ts hr --force     # перевести всё заново
  *   npx tsx scripts/translate-messages.ts hr --dump      # что осталось непереведённым
  *   npx tsx scripts/translate-messages.ts hr --restyle   # привести подписи кнопок к одной форме
+ *
+ * Переводят две службы: gpt-5 (OpenAI) и, когда у него кончились деньги или
+ * ключа нет вовсе, gemini (`TRANSLATE_ENGINE`, `TRANSLATE_GEMINI_MODEL`).
+ * Переключение автоматическое — разбор см. у `completeJson`.
  */
 
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
@@ -54,6 +58,7 @@ const GLOSSARY: Record<string, string> = {
     "cashback → кэшбэк (never «кешбэк»); loyalty → лояльность; level (client tier) → уровень",
     "merchant → продавец; product passport → паспорт товара; offer → предложение",
     "rate (percentage) → ставка; shelf (sales warehouse) → полка",
+    "customer → покупатель (never «клиент»); conversation / thread → диалог",
   ].join("\n"),
   hr: [
     "Trientes — brand name, never translate.",
@@ -126,6 +131,39 @@ const RESTYLE: Record<string, { match: RegExp; instruction: string }> = {
 const BATCH = 40;
 const CONCURRENCY = 4;
 const MODEL = process.env.TRANSLATE_MODEL ?? "gpt-5";
+const GEMINI_MODEL = process.env.TRANSLATE_GEMINI_MODEL ?? "gemini-3.6-flash";
+
+/**
+ * Служб перевода две, и это не удобство, а защита от того, что уже случилось:
+ * 20 ноября на ключе OpenAI кончились деньги посреди прогона, пять языков
+ * остались английскими, и правка английского файла молча вышла на сайт на
+ * чужом языке — ровно та болезнь, от которой прогон и заведён.
+ *
+ * Поэтому отказ по деньгам — не сбой батча, а смена службы: прогон
+ * переключается на Gemini и доходит до конца. Решение одно на весь прогон
+ * (переключились — не возвращаемся): иначе каждый батч платил бы за
+ * собственный отказ. Явный выбор — `TRANSLATE_ENGINE=openai|gemini`.
+ */
+type Engine = "openai" | "gemini";
+
+function initialEngine(): Engine {
+  const forced = process.env.TRANSLATE_ENGINE;
+  if (forced === "openai" || forced === "gemini") return forced;
+  if (!process.env.OPENAI_API_KEY && process.env.GEMINI_API_KEY) return "gemini";
+  return "openai";
+}
+
+let engine: Engine = initialEngine();
+
+/** Кончившиеся деньги и исчерпанная частота — разные беды: вторую переживает повтор. */
+function isCreditExhausted(e: unknown): boolean {
+  const text = String(e);
+  return (
+    /credit_balance_exhausted|insufficient_quota|no credits remaining|billing_hard_limit/i.test(
+      text,
+    ) || /exceeded your current quota/i.test(text)
+  );
+}
 
 function flatten(node: Node, prefix: string, out: [string, string][]): void {
   if (typeof node === "string") {
@@ -157,7 +195,73 @@ function placeholders(s: string): string[] {
   return (s.match(/\{[^}]+\}/g) ?? []).sort();
 }
 
-const client = new OpenAI();
+let openai: OpenAI | null = null;
+
+function openaiClient(): OpenAI {
+  if (!openai) openai = new OpenAI();
+  return openai;
+}
+
+async function openaiJson(system: string, user: string): Promise<string> {
+  const res = await openaiClient().chat.completions.create({
+    model: MODEL,
+    messages: [
+      { role: "system", content: system },
+      { role: "user", content: user },
+    ],
+    response_format: { type: "json_object" },
+    // Перевод — не рассуждение: низкое усилие держит батч в разумных секундах,
+    // а качество решает глоссарий в системном сообщении.
+    reasoning_effort: "low",
+  });
+  return res.choices[0]?.message?.content ?? "{}";
+}
+
+async function geminiJson(system: string, user: string): Promise<string> {
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) throw new Error("GEMINI_API_KEY is not set");
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${key}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: system }] },
+        contents: [{ role: "user", parts: [{ text: user }] }],
+        generationConfig: {
+          responseMimeType: "application/json",
+          temperature: 0.2,
+          // То же решение, что `reasoning_effort: "low"` у OpenAI.
+          thinkingConfig: { thinkingLevel: "low" },
+        },
+      }),
+      // Чужая служба без срока держит прогон столько, сколько молчит.
+      signal: AbortSignal.timeout(120_000),
+    },
+  );
+  const body = (await res.json()) as {
+    candidates?: { content?: { parts?: { text?: string }[] } }[];
+    error?: { message?: string };
+  };
+  if (!res.ok) throw new Error(`gemini ${res.status}: ${body.error?.message ?? ""}`);
+  return body.candidates?.[0]?.content?.parts?.[0]?.text ?? "{}";
+}
+
+/** Единственная дверь наружу: охранники разбора и плейсхолдеров служат обеим службам. */
+async function completeJson(system: string, user: string): Promise<string> {
+  if (engine === "openai") {
+    try {
+      return await openaiJson(system, user);
+    } catch (e) {
+      if (!isCreditExhausted(e) || !process.env.GEMINI_API_KEY) throw e;
+      if (engine === "openai") {
+        console.log(`openai: кредиты кончились — дальше переводит ${GEMINI_MODEL}`);
+      }
+      engine = "gemini";
+    }
+  }
+  return geminiJson(system, user);
+}
 
 async function translateBatch(
   entries: [string, string][],
@@ -182,19 +286,7 @@ async function translateBatch(
     glossary,
   ].join("\n");
 
-  const res = await client.chat.completions.create({
-    model: MODEL,
-    messages: [
-      { role: "system", content: system },
-      { role: "user", content: JSON.stringify(payload, null, 1) },
-    ],
-    response_format: { type: "json_object" },
-    // Перевод — не рассуждение: низкое усилие держит батч в разумных секундах,
-    // а качество решает глоссарий в системном сообщении.
-    reasoning_effort: "low",
-  });
-
-  const raw = res.choices[0]?.message?.content ?? "{}";
+  const raw = await completeJson(system, JSON.stringify(payload, null, 1));
   const parsed = JSON.parse(raw) as Record<string, unknown>;
   const out = new Map<string, string>();
   for (const [k, v] of entries) {
@@ -214,16 +306,8 @@ async function restyleBatch(
 ): Promise<Map<string, string>> {
   const payload: Record<string, string> = {};
   for (const [k, v] of entries) payload[k] = v;
-  const res = await client.chat.completions.create({
-    model: MODEL,
-    messages: [
-      { role: "system", content: instruction },
-      { role: "user", content: JSON.stringify(payload, null, 1) },
-    ],
-    response_format: { type: "json_object" },
-    reasoning_effort: "low",
-  });
-  const parsed = JSON.parse(res.choices[0]?.message?.content ?? "{}") as Record<string, unknown>;
+  const raw = await completeJson(instruction, JSON.stringify(payload, null, 1));
+  const parsed = JSON.parse(raw) as Record<string, unknown>;
   const out = new Map<string, string>();
   for (const [k, v] of entries) {
     const got = parsed[k];

@@ -1676,7 +1676,8 @@
       "team": "Tim",
       "tasks": "Zadaci",
       "journal": "Dnevnik aktivnosti",
-      "chat": "Team chat"
+      "chat": "Timski chatu",
+      "customers": "Poruke kupaca"
     },
     "tileUnit": {
       "points": "{count} na karti",
@@ -1688,7 +1689,8 @@
       "team": "{count} osoba",
       "tasks": "{count} otvorenih",
       "journal": "{count} unosa",
-      "chat": "{count} messages"
+      "chat": "{count} poruka",
+      "customers": "Razgovori: {count}"
     },
     "tileEmpty": "još ništa",
     "tileBadge": {
@@ -1753,7 +1755,7 @@
       },
       "kind": {
         "open": "Radno vrijeme",
-        "allday": "24/7",
+        "allday": "0-24",
         "closed": "Zatvoreno"
       }
     }
@@ -2164,7 +2166,7 @@
       "owner": "Vlasnik"
     },
     "form": {
-      "slug": "Slug",
+      "slug": "Oznaka (slug)",
       "slugHint": "mala slova / znamenke / crtice, 2–40",
       "displayName": "Prikazno ime",
       "website": "Web-stranica",
@@ -2222,10 +2224,10 @@
       "POS": "POS",
       "SALES_OFFICE": "Prodajni ured",
       "COMPANY": "Ured",
-      "ONLINE": "Online"
+      "ONLINE": "Mrežno"
     },
     "mode": {
-      "online": "Online, 24/7",
+      "online": "Online, 0-24",
       "offline": "Fizičke lokacije",
       "mixed": "Online i fizičke lokacije"
     },
@@ -2245,7 +2247,7 @@
     "pageOf": "Stranica {page} od {pages}"
   },
   "servicesDirectory": {
-    "kicker": "Online",
+    "kicker": "Mrežno",
     "title": "Internetske usluge koje prihvaćaju kripto",
     "subtitle": "Aplikacije, tržnice i platforme koje prihvaćaju kripto kao plaćanje — fizička adresa nije potrebna.",
     "searchPlaceholder": "Pretražite po nazivu",
@@ -3380,8 +3382,18 @@
     },
     "chat": {
       "mention": {
-        "subject": "{author} named you in the {company} team chat",
-        "body": "{author} wrote to you in the team chat of {company}."
+        "subject": "{author} vas je spomenuo/la u timskom chatu tvrtke {company}",
+        "body": "{author} vam je pisao/la u timskom chatu tvrtke {company}."
+      }
+    },
+    "customerMessage": {
+      "toStore": {
+        "subject": "Kupac je pisao tvrtki {company}",
+        "body": "Neko je postavio pitanje tvrtki {company}. Otvorite razgovor za odgovor."
+      },
+      "toCustomer": {
+        "subject": "Tvrtka {company} vam je odgovorila",
+        "body": "Tvrtka {company} je odgovorila na vašu poruku."
       }
     }
   },
@@ -3626,7 +3638,7 @@
       "ingredients": "Sastav",
       "attributes": "Svojstva",
       "photos": "Fotografije",
-      "videoUrl": "Video",
+      "videoUrl": "Video URL",
       "video": "Video",
       "documents": "Dokumenti"
     },
@@ -3997,7 +4009,8 @@
         "pricing": "Cijena i povrat novca",
         "tasks": "Zadaci",
         "promos": "Ponude i slanja e-poštom",
-        "supply": "Dobavljači i narudžbe"
+        "supply": "Dobavljači i narudžbe",
+        "customers": "Poruke kupaca"
       },
       "levels": {
         "NONE": "Bez pristupa",
@@ -4098,7 +4111,11 @@
       "REORDER_RULE_SAVED": "Pravilo automatske narudžbe spremljeno",
       "REORDER_RULE_DELETED": "Pravilo automatske narudžbe izbrisano",
       "PROFILE_CHANGES_SUBMITTED": "Promjene kartice poslane na pregled",
-      "CHAT_MESSAGE_DELETED": "Removed someone else’s chat message"
+      "CHAT_MESSAGE_DELETED": "Uklonjena tuđa poruka iz chata",
+      "CUSTOMER_REPLIED": "Odgovoreno kupcu",
+      "CUSTOMER_BLOCKED": "Kupac blokiran",
+      "CUSTOMER_UNBLOCKED": "Kupac odblokiran",
+      "CUSTOMER_MESSAGE_DELETED": "Uklonjena poruka trgovine iz niza s kupcem"
     }
   },
   "cabinetTasks": {
@@ -4465,28 +4482,74 @@
     }
   },
   "cabinetChat": {
-    "title": "Team chat",
-    "subtitle": "One room for the whole team. Everyone on the team reads and writes here; nobody outside it can see the room.",
-    "empty": "No messages yet. Say what is going on in the shop today.",
-    "placeholder": "Write to the team…",
-    "send": "Send",
-    "sending": "Sending…",
-    "you": "You",
-    "gone": "Former teammate",
-    "withdraw": "Withdraw",
-    "withdrawn": "Message withdrawn",
-    "mentionedYou": "You were named",
-    "mentionHint": "Name a teammate with @login and they get a notification. Everything else only lights up the badge.",
-    "earlier": "Earlier messages",
-    "readOnly": "The room is read-only: the business is suspended or deleted.",
+    "title": "Timski chat",
+    "subtitle": "Jedna soba za cijeli tim. Svi u timu čitaju i pišu ovdje; nitko izvana ne može vidjeti sobu.",
+    "empty": "Još nema poruka. Napišite što se danas događa u trgovini.",
+    "placeholder": "Napišite timu…",
+    "send": "Pošalji",
+    "sending": "Slanje…",
+    "you": "Vi",
+    "gone": "Bivši član tima",
+    "withdraw": "Povuci",
+    "withdrawn": "Poruka je povučena",
+    "mentionedYou": "Spomenuti ste",
+    "mentionHint": "Spomenite člana tima putem @korisničkoIme i primit će obavijest. Sve ostalo samo označava značku.",
+    "earlier": "Ranije poruke",
+    "readOnly": "Soba je samo za čitanje: poslovanje je suspendirano ili izbrisano.",
     "errors": {
-      "unauth": "Sign in first.",
-      "forbidden": "You do not have access to this room.",
-      "company_inactive": "The business is suspended, so the conversation cannot continue.",
-      "body_required": "Write something first.",
-      "body_too_long": "The message is too long.",
-      "daily_limit": "Today’s message limit for this business is used up.",
-      "not_found": "The message is gone."
+      "unauth": "Prvo se prijavite.",
+      "forbidden": "Nemate pristup ovoj sobi.",
+      "company_inactive": "Poslovanje je suspendirano, stoga se razgovor ne može nastaviti.",
+      "body_required": "Prvo nešto napišite.",
+      "body_too_long": "Poruka je predugačka.",
+      "daily_limit": "Dnevni limit poruka za ovo poslovanje je iskorišten.",
+      "not_found": "Poruka više ne postoji."
+    }
+  },
+  "customerMessages": {
+    "write": "Pošaljite poruku trgovini",
+    "openThread": "Otvorite razgovor",
+    "placeholder": "Postavite pitanje trgovini…",
+    "replyPlaceholder": "Odgovorite u ime trgovine…",
+    "send": "Pošalji",
+    "sending": "Slanje…",
+    "cancel": "Odustani",
+    "empty": "Još nema poruka.",
+    "store": "Trgovina",
+    "customer": "Kupac",
+    "withdraw": "Povuci",
+    "withdrawn": "Poruka je povučena",
+    "readOnly": "Ovaj je razgovor samo za čitanje.",
+    "earlier": "Ranije poruke",
+    "inboxTitle": "Poruke kupaca",
+    "inboxSubtitle": "Pitanja koja ljudi šalju s kartice vaše trgovine. Trgovina odgovara jedinstveno: kupac vidi „Trgovina”, a ne ime zaposlenika u smjeni.",
+    "inboxEmpty": "Nitko još nije pisao. Gumb se nalazi na kartici vaše trgovine.",
+    "blockedBadge": "Blokirano",
+    "blockedNotice": "Ovaj vam kupac više ne može pisati.",
+    "blockTitle": "Blokirajte ovog kupca",
+    "blockHint": "Prestat će vam pisati; razgovor ostaje čitljiv za obje strane. Razlog je vidljiv samo vašem timu.",
+    "blockReasonPlaceholder": "Razlog (opcionalno)",
+    "block": "Blokiraj",
+    "unblock": "Odblokiraj",
+    "unblockHint": "Ovaj je kupac blokiran i ne može vam pisati.",
+    "closedByStore": "Trgovina je zatvorila ovaj razgovor.",
+    "myTitle": "Poruke trgovinama",
+    "mySubtitle": "Jedan razgovor po trgovini: vaša pitanja i njihovi odgovori.",
+    "myEmpty": "Još niste pisali nijednoj trgovini.",
+    "myCount": "Razgovori: {count}",
+    "backToCabinet": "Profil",
+    "errors": {
+      "body_required": "Prvo napišite poruku.",
+      "body_too_long": "Poruka je predugačka.",
+      "daily_limit": "Poslali ste mnogo poruka danas — pokušajte ponovno sutra.",
+      "unanswered_limit": "Pričekajte odgovor trgovine prije ponovnog pisanja.",
+      "blocked": "Trgovina je zatvorila ovaj razgovor.",
+      "company_inactive": "Ova trgovina trenutačno ne prima poruke.",
+      "own_company": "Ovo je vaša vlastita trgovina — odgovorite iz njezina profila.",
+      "reason_too_short": "Napišite razlog u nekoliko riječi ili ostavite prazno.",
+      "forbidden": "Nemate dopuštenje za tu radnju.",
+      "not_found": "Razgovor više ne postoji.",
+      "unauth": "Prvo se prijavite."
     }
   }
 }

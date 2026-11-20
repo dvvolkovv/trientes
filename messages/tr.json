@@ -1676,7 +1676,8 @@
       "team": "Ekip",
       "tasks": "Görevler",
       "journal": "Etkinlik günlüğü",
-      "chat": "Team chat"
+      "chat": "Takım sohbeti",
+      "customers": "Müşteri mesajları"
     },
     "tileUnit": {
       "points": "{count} haritada",
@@ -1688,7 +1689,8 @@
       "team": "{count} kişi",
       "tasks": "{count} açık",
       "journal": "{count} kayıt",
-      "chat": "{count} messages"
+      "chat": "{count} mesaj",
+      "customers": "Sohbetler: {count}"
     },
     "tileEmpty": "henüz bir şey yok",
     "tileBadge": {
@@ -1753,7 +1755,7 @@
       },
       "kind": {
         "open": "Saatler",
-        "allday": "24/7",
+        "allday": "7/24",
         "closed": "Kapalı"
       }
     }
@@ -3380,8 +3382,18 @@
     },
     "chat": {
       "mention": {
-        "subject": "{author} named you in the {company} team chat",
-        "body": "{author} wrote to you in the team chat of {company}."
+        "subject": "{author}, {company} ekip sohbetinde sizden bahsetti",
+        "body": "{author}, {company} ekip sohbetinde size yazdı."
+      }
+    },
+    "customerMessage": {
+      "toStore": {
+        "subject": "Bir müşteri {company} şirketine yazdı",
+        "body": "Biri {company} şirketine bir soru sordu. Yanıtlamak için sohbeti açın."
+      },
+      "toCustomer": {
+        "subject": "{company} size yanıt verdi",
+        "body": "{company} mesajınızı yanıtladı."
       }
     }
   },
@@ -3997,7 +4009,8 @@
         "pricing": "Fiyat ve cashback",
         "tasks": "Görevler",
         "promos": "Teklifler ve gönderimler",
-        "supply": "Tedarikçiler ve siparişler"
+        "supply": "Tedarikçiler ve siparişler",
+        "customers": "Müşteri mesajları"
       },
       "levels": {
         "NONE": "Erişim yok",
@@ -4098,7 +4111,11 @@
       "REORDER_RULE_SAVED": "Otomatik sipariş kuralı kaydedildi",
       "REORDER_RULE_DELETED": "Otomatik sipariş kuralı silindi",
       "PROFILE_CHANGES_SUBMITTED": "Kart değişiklikleri incelemeye gönderildi",
-      "CHAT_MESSAGE_DELETED": "Removed someone else’s chat message"
+      "CHAT_MESSAGE_DELETED": "Başka birinin sohbet mesajını sildi",
+      "CUSTOMER_REPLIED": "Bir müşteriye yanıt verildi",
+      "CUSTOMER_BLOCKED": "Bir müşteri engellendi",
+      "CUSTOMER_UNBLOCKED": "Bir müşterinin engeli kaldırıldı",
+      "CUSTOMER_MESSAGE_DELETED": "Müşteri sohbetinden bir mağaza mesajı kaldırıldı"
     }
   },
   "cabinetTasks": {
@@ -4465,28 +4482,74 @@
     }
   },
   "cabinetChat": {
-    "title": "Team chat",
-    "subtitle": "One room for the whole team. Everyone on the team reads and writes here; nobody outside it can see the room.",
-    "empty": "No messages yet. Say what is going on in the shop today.",
-    "placeholder": "Write to the team…",
-    "send": "Send",
-    "sending": "Sending…",
-    "you": "You",
-    "gone": "Former teammate",
-    "withdraw": "Withdraw",
-    "withdrawn": "Message withdrawn",
-    "mentionedYou": "You were named",
-    "mentionHint": "Name a teammate with @login and they get a notification. Everything else only lights up the badge.",
-    "earlier": "Earlier messages",
-    "readOnly": "The room is read-only: the business is suspended or deleted.",
+    "title": "Ekip sohbeti",
+    "subtitle": "Tüm ekip için tek bir oda. Ekipteki herkes burada okur ve yazar; dışarıdan kimse odayı göremez.",
+    "empty": "Henüz mesaj yok. Bugün mağazada neler olduğunu paylaşın.",
+    "placeholder": "Ekibe yazın…",
+    "send": "Gönder",
+    "sending": "Gönderiliyor…",
+    "you": "Siz",
+    "gone": "Eski ekip arkadaşı",
+    "withdraw": "Geri çek",
+    "withdrawn": "Mesaj geri çekildi",
+    "mentionedYou": "Sizden bahsedildi",
+    "mentionHint": "@kullanıcıadı ile bir ekip arkadaşınızı etiketleyin, bildirim alsın. Diğer her şey sadece rozeti ışıklandırır.",
+    "earlier": "Önceki mesajlar",
+    "readOnly": "Oda salt okunurdur: işletme askıya alındı veya silindi.",
     "errors": {
-      "unauth": "Sign in first.",
-      "forbidden": "You do not have access to this room.",
-      "company_inactive": "The business is suspended, so the conversation cannot continue.",
-      "body_required": "Write something first.",
-      "body_too_long": "The message is too long.",
-      "daily_limit": "Today’s message limit for this business is used up.",
-      "not_found": "The message is gone."
+      "unauth": "Önce giriş yapın.",
+      "forbidden": "Bu odaya erişiminiz yok.",
+      "company_inactive": "İşletme askıya alındı, bu nedenle sohbet devam edemez.",
+      "body_required": "Önce bir şeyler yazın.",
+      "body_too_long": "Mesaj çok uzun.",
+      "daily_limit": "Bu işletme için bugünün mesaj sınırı doldu.",
+      "not_found": "Mesaj kaldırılmış."
+    }
+  },
+  "customerMessages": {
+    "write": "Mağazaya mesaj gönder",
+    "openThread": "Sohbeti aç",
+    "placeholder": "Mağazaya bir soru sorun…",
+    "replyPlaceholder": "Mağaza olarak yanıtlayın…",
+    "send": "Gönder",
+    "sending": "Gönderiliyor…",
+    "cancel": "İptal",
+    "empty": "Henüz mesaj yok.",
+    "store": "Mağaza",
+    "customer": "Müşteri",
+    "withdraw": "Geri çek",
+    "withdrawn": "Mesaj geri çekildi",
+    "readOnly": "Bu sohbet salt okunurdur.",
+    "earlier": "Önceki mesajlar",
+    "inboxTitle": "Müşteri mesajları",
+    "inboxSubtitle": "Kullanıcıların mağaza kartınızdan gönderdiği sorular. Mağaza tek bir sesle yanıt verir: müşteri vardiyadaki çalışanın adını değil, “Mağaza” ifadesini görür.",
+    "inboxEmpty": "Henüz kimse yazmadı. Buton mağaza kartınızda yer alır.",
+    "blockedBadge": "Engellendi",
+    "blockedNotice": "Bu müşteri artık size yazamaz.",
+    "blockTitle": "Bu müşteriyi engelle",
+    "blockHint": "Size yazmayı bırakırlar; sohbet her iki taraf için de okunabilir kalır. Neden sadece ekibiniz tarafından görülebilir.",
+    "blockReasonPlaceholder": "Neden (isteğe bağlı)",
+    "block": "Engelle",
+    "unblock": "Engeli kaldır",
+    "unblockHint": "Bu müşteri engellendi ve size yazamaz.",
+    "closedByStore": "Mağaza bu sohbeti kapattı.",
+    "myTitle": "Mağazalara mesajlar",
+    "mySubtitle": "Mağaza başına bir sohbet: sorularınız ve verdikleri yanıtlar.",
+    "myEmpty": "Henüz hiçbir mağazaya yazmadınız.",
+    "myCount": "Sohbetler: {count}",
+    "backToCabinet": "Kullanıcı Paneli",
+    "errors": {
+      "body_required": "Önce bir mesaj yazın.",
+      "body_too_long": "Mesaj çok uzun.",
+      "daily_limit": "Bugün çok fazla mesaj gönderdiniz — yarın tekrar deneyin.",
+      "unanswered_limit": "Tekrar yazmadan önce mağazanın yanıt vermesini bekleyin.",
+      "blocked": "Mağaza bu sohbeti kapattı.",
+      "company_inactive": "Bu mağaza şu anda mesaj kabul etmiyor.",
+      "own_company": "Bu sizin kendi mağazanız — kendi panelinden yanıt verin.",
+      "reason_too_short": "Nedeni birkaç kelimeyle yazın veya boş bırakın.",
+      "forbidden": "Bunu yapmaya izniniz yok.",
+      "not_found": "Sohbet bulunamadı.",
+      "unauth": "Önce giriş yapın."
     }
   }
 }

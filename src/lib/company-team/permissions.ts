@@ -9,12 +9,18 @@
  * — в BI вместе с заказами поставщику. Почему заказ не лёг в `warehouses`: кладовщик,
  * которому поручено вести приход на полку, не должен заказывать у поставщика — заказ это
  * обещание заплатить (тот же мотив, которым BE отделил `pricing` от `warehouses`).
+ *
+ * Девятый раздел `customers` появился в BQ вместе с перепиской покупателя: ТЗ 6.6 прямо
+ * говорит «сотрудники **с нужной ролью** отвечают на сообщения покупателей». Общий чат
+ * команды (BP) раздела прав не получил — комната принадлежит команде, — а внешняя
+ * переписка не принадлежит всей команде по построению: покупатель пишет магазину, и
+ * говорить от имени магазина вправе не каждый.
  */
 
 /** Ролей на предприятие — столько, сколько читает человек в списке. */
 export const MAX_TEAM_ROLES = 20;
 
-export const TEAM_SECTIONS = ["card", "points", "products", "warehouses", "pricing", "tasks", "promos", "supply"] as const;
+export const TEAM_SECTIONS = ["card", "points", "products", "warehouses", "pricing", "tasks", "promos", "supply", "customers"] as const;
 export type TeamSection = (typeof TEAM_SECTIONS)[number];
 
 /** Уровней два; отсутствие строки — запрет по умолчанию, как очередь без гранта в AS. */
@@ -87,11 +93,12 @@ export function visibleSections(perms: TeamPermissions): TeamSection[] {
  * сохранённая роль хранит свой набор и от шаблона больше не зависит.
  */
 export const ROLE_TEMPLATES: { key: string; permissions: TeamPermissions }[] = [
-  { key: "manager", permissions: { card: "EDIT", points: "EDIT", products: "EDIT", warehouses: "EDIT", pricing: "EDIT", tasks: "EDIT", promos: "EDIT", supply: "EDIT" } },
+  { key: "manager", permissions: { card: "EDIT", points: "EDIT", products: "EDIT", warehouses: "EDIT", pricing: "EDIT", tasks: "EDIT", promos: "EDIT", supply: "EDIT", customers: "EDIT" } },
   // Кладовщик видит, что едет на его полку, но не заказывает: заказ — обещание денег.
   { key: "stock", permissions: { points: "VIEW", products: "VIEW", warehouses: "EDIT", tasks: "VIEW", supply: "VIEW" } },
-  { key: "marketing", permissions: { card: "EDIT", products: "VIEW", pricing: "EDIT", tasks: "VIEW", promos: "EDIT" } },
-  { key: "observer", permissions: { card: "VIEW", points: "VIEW", products: "VIEW", warehouses: "VIEW", pricing: "VIEW", tasks: "VIEW", promos: "VIEW", supply: "VIEW" } },
+  // Маркетолог и есть голос магазина — переписку с покупателем ведёт он.
+  { key: "marketing", permissions: { card: "EDIT", products: "VIEW", pricing: "EDIT", tasks: "VIEW", promos: "EDIT", customers: "EDIT" } },
+  { key: "observer", permissions: { card: "VIEW", points: "VIEW", products: "VIEW", warehouses: "VIEW", pricing: "VIEW", tasks: "VIEW", promos: "VIEW", supply: "VIEW", customers: "VIEW" } },
 ];
 
 /**

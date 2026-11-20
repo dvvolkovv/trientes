@@ -758,9 +758,9 @@
           "NA": "해당 없음"
         },
         "set": {
-          "OK": "OK",
+          "OK": "확인",
           "FAIL": "문제",
-          "NA": "N/A"
+          "NA": "해당 없음"
         },
         "notePlaceholder": "이유는? 문제 또는 «해당 없음»인 경우 필수",
         "checkedBy": "{name}",
@@ -1262,8 +1262,8 @@
       "continue": "계속 진행하세요",
       "onto": "{name}로 진입",
       "inDistance": "{distance} 후 {instruction}",
-      "meters": "{n} m",
-      "kilometers": "{n} km",
+      "meters": "{n}m",
+      "kilometers": "{n}km",
       "rerouting": "경로를 다시 계산하는 중",
       "transit": {
         "vehicle_walk": "도보",
@@ -1676,7 +1676,8 @@
       "team": "팀",
       "tasks": "작업",
       "journal": "활동 기록",
-      "chat": "팀 채팅"
+      "chat": "팀 채팅",
+      "customers": "고객 메시지"
     },
     "tileUnit": {
       "points": "지도에 {count}개",
@@ -1688,7 +1689,8 @@
       "team": "{count}명",
       "tasks": "열림 {count}개",
       "journal": "항목 {count}개",
-      "chat": "{count}개 메시지"
+      "chat": "{count}개 메시지",
+      "customers": "대화: {count}개"
     },
     "tileEmpty": "아직 없음",
     "tileBadge": {
@@ -1753,7 +1755,7 @@
       },
       "kind": {
         "open": "영업시간",
-        "allday": "24/7",
+        "allday": "24시간 연중무휴",
         "closed": "휴무"
       }
     }
@@ -3383,6 +3385,16 @@
         "subject": "{author} 님이 {company} 팀 채팅에서 당신을 언급했습니다",
         "body": "{author} 님이 {company}의 팀 채팅에서 당신에게 메시지를 보냈습니다."
       }
+    },
+    "customerMessage": {
+      "toStore": {
+        "subject": "고객이 {company}에 문의를 남겼습니다",
+        "body": "누군가 {company}에 질문을 남겼습니다. 대화를 열어 답변하세요."
+      },
+      "toCustomer": {
+        "subject": "{company}에서 답변을 보냈습니다",
+        "body": "{company}에서 메시지에 답변했습니다."
+      }
     }
   },
   "captcha": {
@@ -3997,7 +4009,8 @@
         "pricing": "가격 및 캐시백",
         "tasks": "작업",
         "promos": "프로모션 및 메일링",
-        "supply": "공급업체 및 주문"
+        "supply": "공급업체 및 주문",
+        "customers": "고객 메시지"
       },
       "levels": {
         "NONE": "접근 권한 없음",
@@ -4098,7 +4111,11 @@
       "REORDER_RULE_SAVED": "자동 주문 규칙이 저장됨",
       "REORDER_RULE_DELETED": "자동 주문 규칙이 삭제됨",
       "PROFILE_CHANGES_SUBMITTED": "카드 변경 사항이 검토로 전송됨",
-      "CHAT_MESSAGE_DELETED": "다른 사람의 채팅 메시지를 삭제함"
+      "CHAT_MESSAGE_DELETED": "다른 사람의 채팅 메시지를 삭제함",
+      "CUSTOMER_REPLIED": "고객에게 답변함",
+      "CUSTOMER_BLOCKED": "고객 차단함",
+      "CUSTOMER_UNBLOCKED": "고객 차단 해제함",
+      "CUSTOMER_MESSAGE_DELETED": "고객 스레드에서 상점 메시지 삭제함"
     }
   },
   "cabinetTasks": {
@@ -4487,6 +4504,52 @@
       "body_too_long": "메시지가 너무 깁니다.",
       "daily_limit": "이 비즈니스의 오늘자 메시지 한도가 소진되었습니다.",
       "not_found": "메시지가 사라졌습니다."
+    }
+  },
+  "customerMessages": {
+    "write": "상점에 메시지 보내기",
+    "openThread": "대화 열기",
+    "placeholder": "상점에 질문하기…",
+    "replyPlaceholder": "상점 이름으로 답변하기…",
+    "send": "전송",
+    "sending": "전송 중…",
+    "cancel": "취소",
+    "empty": "아직 메시지가 없습니다.",
+    "store": "상점",
+    "customer": "고객",
+    "withdraw": "철회",
+    "withdrawn": "메시지가 철회되었습니다",
+    "readOnly": "이 대화는 읽기 전용입니다.",
+    "earlier": "이전 메시지",
+    "inboxTitle": "고객 메시지",
+    "inboxSubtitle": "사용자가 상점 카드에서 보낸 문의입니다. 상점은 하나의 이름으로 답변합니다. 고객에게는 근무 중인 직원 이름 대신 “상점”으로 표시됩니다.",
+    "inboxEmpty": "아직 메시지를 보낸 사람이 없습니다. 버튼은 상점 카드에 있습니다.",
+    "blockedBadge": "차단됨",
+    "blockedNotice": "이 고객은 더 이상 메시지를 보낼 수 없습니다.",
+    "blockTitle": "이 고객 차단",
+    "blockHint": "고객의 메시지 전송이 중지되며, 대화 내용은 양측 모두 계속 읽을 수 있습니다. 사유는 팀에게만 공개됩니다.",
+    "blockReasonPlaceholder": "사유 (선택 사항)",
+    "block": "차단",
+    "unblock": "차단 해제",
+    "unblockHint": "이 고객은 차단되어 메시지를 보낼 수 없습니다.",
+    "closedByStore": "상점에서 이 대화를 종료했습니다.",
+    "myTitle": "상점 문의 메시지",
+    "mySubtitle": "상점당 하나의 대화: 문의 내용과 상점의 답변입니다.",
+    "myEmpty": "아직 상점에 메시지를 보내지 않았습니다.",
+    "myCount": "대화: {count}",
+    "backToCabinet": "캐비닛",
+    "errors": {
+      "body_required": "먼저 메시지를 작성해 주세요.",
+      "body_too_long": "메시지가 너무 깁니다.",
+      "daily_limit": "오늘 너무 많은 메시지를 보냈습니다. 내일 다시 시도해 주세요.",
+      "unanswered_limit": "다시 메시지를 보내기 전에 상점의 답변을 기다려 주세요.",
+      "blocked": "상점에서 이 대화를 종료했습니다.",
+      "company_inactive": "이 상점은 현재 메시지를 받지 않습니다.",
+      "own_company": "본인의 상점입니다. 캐비닛에서 답변해 주세요.",
+      "reason_too_short": "사유를 몇 단어로 작성하거나 비워 두세요.",
+      "forbidden": "이 작업을 수행할 권한이 없습니다.",
+      "not_found": "대화가 삭제되었습니다.",
+      "unauth": "먼저 로그인해 주세요."
     }
   }
 }

@@ -758,7 +758,7 @@
           "NA": "不适用"
         },
         "set": {
-          "OK": "OK",
+          "OK": "确定",
           "FAIL": "有问题",
           "NA": "不适用"
         },
@@ -1676,7 +1676,8 @@
       "team": "团队",
       "tasks": "任务",
       "journal": "活动日志",
-      "chat": "团队聊天"
+      "chat": "团队聊天",
+      "customers": "客户消息"
     },
     "tileUnit": {
       "points": "地图上{count}个",
@@ -1688,7 +1689,8 @@
       "team": "{count}人",
       "tasks": "未完成{count}个",
       "journal": "{count}条",
-      "chat": "{count} 条消息"
+      "chat": "{count} 条消息",
+      "customers": "对话：{count}"
     },
     "tileEmpty": "尚无内容",
     "tileBadge": {
@@ -3383,6 +3385,16 @@
         "subject": "{author} 在 {company} 的团队聊天中提到了你",
         "body": "{author} 在 {company} 的团队聊天中给你发了消息。"
       }
+    },
+    "customerMessage": {
+      "toStore": {
+        "subject": "顾客向 {company} 发送了消息",
+        "body": "有人向 {company} 提出了问题。打开对话即可回复。"
+      },
+      "toCustomer": {
+        "subject": "{company} 回复了您",
+        "body": "{company} 回复了您的消息。"
+      }
     }
   },
   "captcha": {
@@ -3997,7 +4009,8 @@
         "pricing": "价格与返现",
         "tasks": "任务",
         "promos": "优惠与群发",
-        "supply": "供应商与订单"
+        "supply": "供应商与订单",
+        "customers": "顾客消息"
       },
       "levels": {
         "NONE": "无访问权限",
@@ -4098,7 +4111,11 @@
       "REORDER_RULE_SAVED": "自动下单规则已保存",
       "REORDER_RULE_DELETED": "自动下单规则已删除",
       "PROFILE_CHANGES_SUBMITTED": "卡片更改已提交审核",
-      "CHAT_MESSAGE_DELETED": "删除了他人的聊天消息"
+      "CHAT_MESSAGE_DELETED": "删除了他人的聊天消息",
+      "CUSTOMER_REPLIED": "回复了顾客",
+      "CUSTOMER_BLOCKED": "屏蔽了顾客",
+      "CUSTOMER_UNBLOCKED": "解除了对顾客的屏蔽",
+      "CUSTOMER_MESSAGE_DELETED": "从顾客对话中删除了商店消息"
     }
   },
   "cabinetTasks": {
@@ -4487,6 +4504,52 @@
       "body_too_long": "消息太长。",
       "daily_limit": "该业务今日的消息额度已用完。",
       "not_found": "消息已不存在。"
+    }
+  },
+  "customerMessages": {
+    "write": "联系商家",
+    "openThread": "打开对话",
+    "placeholder": "向商家提问…",
+    "replyPlaceholder": "以商家身份回复…",
+    "send": "发送",
+    "sending": "发送中…",
+    "cancel": "取消",
+    "empty": "暂无消息。",
+    "store": "商家",
+    "customer": "顾客",
+    "withdraw": "撤回",
+    "withdrawn": "消息已撤回",
+    "readOnly": "此对话为只读模式。",
+    "earlier": "更早的消息",
+    "inboxTitle": "客户消息",
+    "inboxSubtitle": "用户通过您的店铺卡片发送的问题。店铺统一进行回复：客户将看到“店铺”，而非当班员工的姓名。",
+    "inboxEmpty": "暂无来信。该按钮位于您的店铺卡片上。",
+    "blockedBadge": "已封禁",
+    "blockedNotice": "该客户无法再向您发送消息。",
+    "blockTitle": "封禁此客户",
+    "blockHint": "他们将无法再向您发送消息；对话记录对双方依然可见。原因仅对您的团队可见。",
+    "blockReasonPlaceholder": "原因（选填）",
+    "block": "封禁",
+    "unblock": "解封",
+    "unblockHint": "此客户已被封禁，无法向您发送消息。",
+    "closedByStore": "店铺已关闭此对话。",
+    "myTitle": "给店铺的消息",
+    "mySubtitle": "每个店铺独立对话：包含您的提问与对方的回复。",
+    "myEmpty": "您尚未向任何店铺发送过消息。",
+    "myCount": "对话数：{count}",
+    "backToCabinet": "后台",
+    "errors": {
+      "body_required": "请先输入消息内容。",
+      "body_too_long": "消息内容过长。",
+      "daily_limit": "您今天发送的消息过多，请明天再试。",
+      "unanswered_limit": "请等待店铺回复后再发送新消息。",
+      "blocked": "店铺已关闭此对话。",
+      "company_inactive": "该店铺目前暂不接收消息。",
+      "own_company": "这是您自己的店铺 — 请从店铺后台进行回复。",
+      "reason_too_short": "请简要说明原因，或留空。",
+      "forbidden": "您无权执行此操作。",
+      "not_found": "该对话已不存在。",
+      "unauth": "请先登录。"
     }
   }
 }

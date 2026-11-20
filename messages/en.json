@@ -1676,7 +1676,8 @@
       "team": "Team",
       "tasks": "Tasks",
       "journal": "Activity log",
-      "chat": "Team chat"
+      "chat": "Team chat",
+      "customers": "Customer messages"
     },
     "tileUnit": {
       "points": "{count} on the map",
@@ -1688,7 +1689,8 @@
       "team": "{count} people",
       "tasks": "{count} open",
       "journal": "{count} entries",
-      "chat": "{count} messages"
+      "chat": "{count} messages",
+      "customers": "Conversations: {count}"
     },
     "tileEmpty": "nothing yet",
     "tileBadge": {
@@ -3383,6 +3385,16 @@
         "subject": "{author} named you in the {company} team chat",
         "body": "{author} wrote to you in the team chat of {company}."
       }
+    },
+    "customerMessage": {
+      "toStore": {
+        "subject": "A customer wrote to {company}",
+        "body": "Someone asked {company} a question. Open the conversation to answer."
+      },
+      "toCustomer": {
+        "subject": "{company} answered you",
+        "body": "{company} replied to your message."
+      }
     }
   },
   "captcha": {
@@ -3997,7 +4009,8 @@
         "pricing": "Price and cashback",
         "tasks": "Tasks",
         "promos": "Offers and mailings",
-        "supply": "Suppliers and orders"
+        "supply": "Suppliers and orders",
+        "customers": "Customer messages"
       },
       "levels": {
         "NONE": "No access",
@@ -4098,7 +4111,11 @@
       "REORDER_RULE_SAVED": "Auto-order rule saved",
       "REORDER_RULE_DELETED": "Auto-order rule deleted",
       "PROFILE_CHANGES_SUBMITTED": "Card changes sent for review",
-      "CHAT_MESSAGE_DELETED": "Removed someone else’s chat message"
+      "CHAT_MESSAGE_DELETED": "Removed someone else’s chat message",
+      "CUSTOMER_REPLIED": "Replied to a customer",
+      "CUSTOMER_BLOCKED": "Blocked a customer",
+      "CUSTOMER_UNBLOCKED": "Unblocked a customer",
+      "CUSTOMER_MESSAGE_DELETED": "Removed a shop message from a customer thread"
     }
   },
   "cabinetTasks": {
@@ -4487,6 +4504,52 @@
       "body_too_long": "The message is too long.",
       "daily_limit": "Today’s message limit for this business is used up.",
       "not_found": "The message is gone."
+    }
+  },
+  "customerMessages": {
+    "write": "Message the shop",
+    "openThread": "Open the conversation",
+    "placeholder": "Ask the shop a question…",
+    "replyPlaceholder": "Answer as the shop…",
+    "send": "Send",
+    "sending": "Sending…",
+    "cancel": "Cancel",
+    "empty": "No messages yet.",
+    "store": "Shop",
+    "customer": "Customer",
+    "withdraw": "Withdraw",
+    "withdrawn": "Message withdrawn",
+    "readOnly": "This conversation is read-only.",
+    "earlier": "Earlier messages",
+    "inboxTitle": "Customer messages",
+    "inboxSubtitle": "Questions people send from your shop card. The shop answers with one voice: the customer sees “Shop”, not the name of the employee on shift.",
+    "inboxEmpty": "Nobody has written yet. The button sits on your shop card.",
+    "blockedBadge": "Blocked",
+    "blockedNotice": "This customer cannot write to you any more.",
+    "blockTitle": "Block this customer",
+    "blockHint": "They stop writing to you; the conversation stays readable for both sides. The reason is only visible to your team.",
+    "blockReasonPlaceholder": "Reason (optional)",
+    "block": "Block",
+    "unblock": "Unblock",
+    "unblockHint": "This customer is blocked and cannot write to you.",
+    "closedByStore": "The shop has closed this conversation.",
+    "myTitle": "Messages to shops",
+    "mySubtitle": "One conversation per shop: your questions and their answers.",
+    "myEmpty": "You have not written to any shop yet.",
+    "myCount": "Conversations: {count}",
+    "backToCabinet": "Cabinet",
+    "errors": {
+      "body_required": "Write a message first.",
+      "body_too_long": "The message is too long.",
+      "daily_limit": "You have sent a lot of messages today — try again tomorrow.",
+      "unanswered_limit": "Wait for the shop to answer before writing again.",
+      "blocked": "The shop has closed this conversation.",
+      "company_inactive": "This shop is not accepting messages right now.",
+      "own_company": "This is your own shop — answer from its cabinet.",
+      "reason_too_short": "Write the reason in a few words, or leave it empty.",
+      "forbidden": "You are not allowed to do that.",
+      "not_found": "The conversation is gone.",
+      "unauth": "Sign in first."
     }
   }
 }

@@ -69,8 +69,10 @@ model User {
   tasksAssigned            CompanyTask[]             @relation("CompanyTaskAssignee")
   tasksTaken               CompanyTask[]             @relation("CompanyTaskTaker")
   tasksClosed              CompanyTask[]             @relation("CompanyTaskCloser")
-  chatMessages             CompanyChatMessage[]       @relation("CompanyChatAuthor")
+  chatMessages             CompanyChatMessage[]      @relation("CompanyChatAuthor")
   chatReads                CompanyChatRead[]
+  customerThreads          CustomerThread[]          @relation("CustomerThreadCustomer")
+  customerMessages         CustomerMessage[]         @relation("CustomerMessageAuthor")
   taskComments             CompanyTaskComment[]      @relation("CompanyTaskCommentAuthor")
   companyInvitesCreated    CompanyInvite[]           @relation("CompanyInviteCreator")
   companyInvitesAccepted   CompanyInvite[]           @relation("CompanyInviteAcceptor")
@@ -365,6 +367,71 @@ model CompanyChatRead {
 
   @@unique([companyId, userId])
   @@index([userId])
+}
+
+/// Сторона переписки с покупателем. Магазин отвечает **одним голосом**: ТЗ 6.6 просит
+/// «публикуют контент от имени магазина», и человеку снаружи незачем знать, кто в смене.
+enum CustomerSide {
+  CUSTOMER
+  STORE
+}
+
+/// Нитка переписки покупателя с магазином (слайс BQ). Одна на пару — то же решение, что
+/// `@@unique(subjectType, subjectId)` у дела комплайнса: второе обращение к тому же
+/// магазину это та же нитка, иначе ответ уходит в одну, а покупатель смотрит в другую.
+model CustomerThread {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  /// Покупатель. Вход обязателен: анонимная дверь — дверь без обратного адреса,
+  /// ответ магазина некому доставить (спека § 2.1).
+  customerUserId String
+  customer       User   @relation("CustomerThreadCustomer", fields: [customerUserId], references: [id], onDelete: Cascade)
+
+  /// Штамп прочтения **на сторону**, а не на человека: магазин отвечает одним голосом,
+  /// и первый прочитавший гасит значок смене (возврат к решению AO, отход от BP).
+  customerReadAt DateTime?
+  storeReadAt    DateTime?
+
+  /// Блокировка покупателя магазином. Причина видна только своим: блокировка — не
+  /// продолжение разговора, а его конец.
+  blockedAt   DateTime?
+  blockedById String?
+  blockReason String?
+
+  createdAt     DateTime @default(now())
+  lastMessageAt DateTime @default(now())
+
+  messages CustomerMessage[]
+
+  @@unique([companyId, customerUserId])
+  @@index([companyId, lastMessageAt])
+  @@index([customerUserId, lastMessageAt])
+}
+
+model CustomerMessage {
+  id       String         @id @default(cuid())
+  threadId String
+  thread   CustomerThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  side CustomerSide
+
+  /// Автор — ответственность внутри предприятия, а не лицо для покупателя. Снимается
+  /// `SET NULL` (уборка AU уже упиралась в `RESTRICT` у `AdminAuditLog.actorId`).
+  authorUserId String?
+  author       User?   @relation("CustomerMessageAuthor", fields: [authorUserId], references: [id], onDelete: SetNull)
+
+  body String @db.Text
+
+  /// Отзыв, а не правка: правка меняет смысл сказанного под ней (правило BP). Сообщение
+  /// покупателя магазин не отзывает — против потока у него есть блокировка.
+  deletedAt   DateTime?
+  deletedById String?
+
+  createdAt DateTime @default(now())
+
+  @@index([threadId, createdAt])
 }
 
 enum CompanyTaskStatus {
@@ -955,6 +1022,9 @@ model Company {
   chatMessages CompanyChatMessage[]
   chatReads    CompanyChatRead[]
 
+  /// Переписка с покупателями (BQ). Первая дверь снаружи внутрь кабинета.
+  customerThreads CustomerThread[]
+
   @@index([ownerUserId])
   @@index([status, createdAt])
   @@index([kybStatus])
@@ -978,7 +1048,7 @@ model CompanyRevision {
   author    User?   @relation("CompanyRevisionAuthor", fields: [authorId], references: [id], onDelete: SetNull)
 
   /// [{ field, before, after }] — то же устройство, что `patch` у ревизии паспорта.
-  changes Json
+  changes   Json
   /// Документы, присланные к правке юридического имени: [{ kind, url, label }].
   documents Json?
 

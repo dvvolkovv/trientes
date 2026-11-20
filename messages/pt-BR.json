@@ -1676,7 +1676,8 @@
       "team": "Equipe",
       "tasks": "Tarefas",
       "journal": "Registro de atividades",
-      "chat": "Team chat"
+      "chat": "Chat da equipe",
+      "customers": "Mensagens de clientes"
     },
     "tileUnit": {
       "points": "{count} no mapa",
@@ -1688,7 +1689,8 @@
       "team": "{count} pessoas",
       "tasks": "{count} em aberto",
       "journal": "{count} entradas",
-      "chat": "{count} messages"
+      "chat": "{count} mensagens",
+      "customers": "Conversas: {count}"
     },
     "tileEmpty": "ainda nada",
     "tileBadge": {
@@ -3380,8 +3382,18 @@
     },
     "chat": {
       "mention": {
-        "subject": "{author} named you in the {company} team chat",
-        "body": "{author} wrote to you in the team chat of {company}."
+        "subject": "{author} mencionou você no chat da equipe {company}",
+        "body": "{author} escreveu para você no chat da equipe da {company}."
+      }
+    },
+    "customerMessage": {
+      "toStore": {
+        "subject": "Um cliente escreveu para {company}",
+        "body": "Alguém fez uma pergunta para {company}. Abra a conversa para responder."
+      },
+      "toCustomer": {
+        "subject": "{company} respondeu a você",
+        "body": "{company} respondeu à sua mensagem."
       }
     }
   },
@@ -3571,7 +3583,7 @@
       "empty": "Ninguém vende isso ainda. Se você vende, publique seu preço no seu painel empresarial",
       "inStock": "Em estoque",
       "outOfStock": "Sem estoque no momento",
-      "cashback": "cashback {percent}%",
+      "cashback": "cashback de {percent}%",
       "toShop": "Ir à loja",
       "whereExactly": "onde exatamente",
       "openMap": "Abrir no mapa",
@@ -3596,7 +3608,7 @@
       "heading": "Produtos",
       "inStock": "Em estoque",
       "outOfStock": "Fora de estoque",
-      "cashback": "cashback {percent}%"
+      "cashback": "cashback de {percent}%"
     }
   },
   "cabinetProducts": {
@@ -3997,7 +4009,8 @@
         "pricing": "Preço e cashback",
         "tasks": "Tarefas",
         "promos": "Ofertas e envios",
-        "supply": "Fornecedores e pedidos"
+        "supply": "Fornecedores e pedidos",
+        "customers": "Mensagens de clientes"
       },
       "levels": {
         "NONE": "Sem acesso",
@@ -4098,7 +4111,11 @@
       "REORDER_RULE_SAVED": "Regra de pedido automático salva",
       "REORDER_RULE_DELETED": "Regra de pedido automático excluída",
       "PROFILE_CHANGES_SUBMITTED": "Alterações no cartão enviadas para revisão",
-      "CHAT_MESSAGE_DELETED": "Removed someone else’s chat message"
+      "CHAT_MESSAGE_DELETED": "Removeu a mensagem de chat de outra pessoa",
+      "CUSTOMER_REPLIED": "Respondeu a um cliente",
+      "CUSTOMER_BLOCKED": "Bloqueou um cliente",
+      "CUSTOMER_UNBLOCKED": "Desbloqueou um cliente",
+      "CUSTOMER_MESSAGE_DELETED": "Removeu uma mensagem da loja de uma conversa com o cliente"
     }
   },
   "cabinetTasks": {
@@ -4465,28 +4482,74 @@
     }
   },
   "cabinetChat": {
-    "title": "Team chat",
-    "subtitle": "One room for the whole team. Everyone on the team reads and writes here; nobody outside it can see the room.",
-    "empty": "No messages yet. Say what is going on in the shop today.",
-    "placeholder": "Write to the team…",
-    "send": "Send",
-    "sending": "Sending…",
-    "you": "You",
-    "gone": "Former teammate",
-    "withdraw": "Withdraw",
-    "withdrawn": "Message withdrawn",
-    "mentionedYou": "You were named",
-    "mentionHint": "Name a teammate with @login and they get a notification. Everything else only lights up the badge.",
-    "earlier": "Earlier messages",
-    "readOnly": "The room is read-only: the business is suspended or deleted.",
+    "title": "Chat da equipe",
+    "subtitle": "Uma sala para toda a equipe. Todos da equipe leem e escrevem aqui; ninguém de fora pode ver a sala.",
+    "empty": "Nenhuma mensagem ainda. Diga o que está acontecendo na loja hoje.",
+    "placeholder": "Escreva para a equipe…",
+    "send": "Enviar",
+    "sending": "Enviando…",
+    "you": "Você",
+    "gone": "Ex-membro da equipe",
+    "withdraw": "Apagar",
+    "withdrawn": "Mensagem apagada",
+    "mentionedYou": "Você foi mencionado",
+    "mentionHint": "Mencione um colega de equipe com @login e ele receberá uma notificação. Qualquer outra mensagem apenas acenderá o indicador.",
+    "earlier": "Mensagens anteriores",
+    "readOnly": "A sala é apenas para leitura: a empresa está suspensa ou foi excluída.",
     "errors": {
-      "unauth": "Sign in first.",
-      "forbidden": "You do not have access to this room.",
-      "company_inactive": "The business is suspended, so the conversation cannot continue.",
-      "body_required": "Write something first.",
-      "body_too_long": "The message is too long.",
-      "daily_limit": "Today’s message limit for this business is used up.",
-      "not_found": "The message is gone."
+      "unauth": "Faça login primeiro.",
+      "forbidden": "Você não tem acesso a esta sala.",
+      "company_inactive": "A empresa está suspensa, portanto a conversa não pode continuar.",
+      "body_required": "Escreva algo primeiro.",
+      "body_too_long": "A mensagem é muito longa.",
+      "daily_limit": "O limite diário de mensagens para esta empresa foi atingido.",
+      "not_found": "A mensagem não existe mais."
+    }
+  },
+  "customerMessages": {
+    "write": "Enviar mensagem para a loja",
+    "openThread": "Abrir conversa",
+    "placeholder": "Faça uma pergunta para a loja…",
+    "replyPlaceholder": "Responder como loja…",
+    "send": "Enviar",
+    "sending": "Enviando…",
+    "cancel": "Cancelar",
+    "empty": "Nenhuma mensagem ainda.",
+    "store": "Loja",
+    "customer": "Cliente",
+    "withdraw": "Apagar",
+    "withdrawn": "Mensagem apagada",
+    "readOnly": "Esta conversa é apenas para leitura.",
+    "earlier": "Mensagens anteriores",
+    "inboxTitle": "Mensagens de clientes",
+    "inboxSubtitle": "Perguntas enviadas pelo cartão da sua loja. A loja responde como uma só voz: o cliente vê “Loja”, não o nome do funcionário no turno.",
+    "inboxEmpty": "Ninguém escreveu ainda. O botão fica no cartão da sua loja.",
+    "blockedBadge": "Bloqueado",
+    "blockedNotice": "Este cliente não pode mais escrever para você.",
+    "blockTitle": "Bloquear este cliente",
+    "blockHint": "Eles deixam de escrever para você; a conversa continua legível para ambos os lados. O motivo só é visível para a sua equipe.",
+    "blockReasonPlaceholder": "Motivo (opcional)",
+    "block": "Bloquear",
+    "unblock": "Desbloquear",
+    "unblockHint": "Este cliente está bloqueado e não pode escrever para você.",
+    "closedByStore": "A loja fechou esta conversa.",
+    "myTitle": "Mensagens para as lojas",
+    "mySubtitle": "Uma conversa por loja: suas perguntas e as respostas delas.",
+    "myEmpty": "Você ainda não escreveu para nenhuma loja.",
+    "myCount": "Conversas: {count}",
+    "backToCabinet": "Painel",
+    "errors": {
+      "body_required": "Escreva uma mensagem primeiro.",
+      "body_too_long": "A mensagem é muito longa.",
+      "daily_limit": "Você enviou muitas mensagens hoje — tente novamente amanhã.",
+      "unanswered_limit": "Aguarde a resposta da loja antes de escrever novamente.",
+      "blocked": "A loja fechou esta conversa.",
+      "company_inactive": "Esta loja não está aceitando mensagens no momento.",
+      "own_company": "Esta é a sua própria loja — responda pelo painel dela.",
+      "reason_too_short": "Escreva o motivo em poucas palavras ou deixe em branco.",
+      "forbidden": "Você não tem permissão para fazer isso.",
+      "not_found": "A conversa não existe mais.",
+      "unauth": "Faça login primeiro."
     }
   }
 }

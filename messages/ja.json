@@ -1676,7 +1676,8 @@
       "team": "チーム",
       "tasks": "タスク",
       "journal": "アクティビティログ",
-      "chat": "チームチャット"
+      "chat": "チームチャット",
+      "customers": "カスタマーメッセージ"
     },
     "tileUnit": {
       "points": "{count}件（地図上）",
@@ -1688,7 +1689,8 @@
       "team": "{count}人",
       "tasks": "{count}件の未処理",
       "journal": "{count}件の記録",
-      "chat": "{count}件のメッセージ"
+      "chat": "{count}件のメッセージ",
+      "customers": "会話数: {count}"
     },
     "tileEmpty": "まだありません",
     "tileBadge": {
@@ -1753,7 +1755,7 @@
       },
       "kind": {
         "open": "営業時間",
-        "allday": "24/7",
+        "allday": "24時間年中無休",
         "closed": "休業"
       }
     }
@@ -3383,6 +3385,16 @@
         "subject": "{author} が{company}のチームチャットであなたをメンションしました",
         "body": "{author} が{company}のチームチャットであなた宛にメッセージを書き込みました。"
       }
+    },
+    "customerMessage": {
+      "toStore": {
+        "subject": "顧客から{company}宛てにメッセージが届きました",
+        "body": "{company}に質問が届きました。会話を開いて返答してください。"
+      },
+      "toCustomer": {
+        "subject": "{company}から返信がありました",
+        "body": "{company}があなたのメッセージに返信しました。"
+      }
     }
   },
   "captcha": {
@@ -3997,7 +4009,8 @@
         "pricing": "価格とキャッシュバック",
         "tasks": "タスク",
         "promos": "オファーと配信",
-        "supply": "仕入先と発注"
+        "supply": "仕入先と発注",
+        "customers": "顧客メッセージ"
       },
       "levels": {
         "NONE": "アクセスなし",
@@ -4098,7 +4111,11 @@
       "REORDER_RULE_SAVED": "自動発注ルールを保存しました",
       "REORDER_RULE_DELETED": "自動発注ルールを削除しました",
       "PROFILE_CHANGES_SUBMITTED": "カードの変更を審査に提出",
-      "CHAT_MESSAGE_DELETED": "他人のチャットメッセージを削除した"
+      "CHAT_MESSAGE_DELETED": "他人のチャットメッセージを削除した",
+      "CUSTOMER_REPLIED": "顧客に返信しました",
+      "CUSTOMER_BLOCKED": "顧客をブロックしました",
+      "CUSTOMER_UNBLOCKED": "顧客のブロックを解除しました",
+      "CUSTOMER_MESSAGE_DELETED": "顧客スレッドからショップのメッセージを削除しました"
     }
   },
   "cabinetTasks": {
@@ -4487,6 +4504,52 @@
       "body_too_long": "メッセージが長すぎます。",
       "daily_limit": "このビジネスの本日のメッセージ上限に達しました。",
       "not_found": "そのメッセージはありません。"
+    }
+  },
+  "customerMessages": {
+    "write": "ショップにメッセージを送信",
+    "openThread": "会話を開く",
+    "placeholder": "ショップに質問する…",
+    "replyPlaceholder": "ショップとして返信…",
+    "send": "送信",
+    "sending": "送信中…",
+    "cancel": "キャンセル",
+    "empty": "メッセージはまだありません。",
+    "store": "ショップ",
+    "customer": "顧客",
+    "withdraw": "取り消す",
+    "withdrawn": "メッセージが取り消されました",
+    "readOnly": "この会話は読み取り専用です。",
+    "earlier": "以前のメッセージ",
+    "inboxTitle": "顧客メッセージ",
+    "inboxSubtitle": "ショップカードから送信された質問です。ショップは1つのアカウントとして返信します。顧客にはシフト中の従業員名ではなく「ショップ」と表示されます。",
+    "inboxEmpty": "まだメッセージはありません。ボタンはショップカードに表示されます。",
+    "blockedBadge": "ブロック済み",
+    "blockedNotice": "この顧客はあなたにメッセージを送信できません。",
+    "blockTitle": "この顧客をブロック",
+    "blockHint": "顧客はメッセージを送信できなくなりますが、会話は双方から閲覧可能です。理由はチームにのみ表示されます。",
+    "blockReasonPlaceholder": "理由（任意）",
+    "block": "ブロック",
+    "unblock": "ブロック解除",
+    "unblockHint": "この顧客はブロックされており、あなたにメッセージを送信できません。",
+    "closedByStore": "ショップがこの会話を終了しました。",
+    "myTitle": "ショップへのメッセージ",
+    "mySubtitle": "1ショップにつき1つの会話：あなたの質問とショップからの回答。",
+    "myEmpty": "まだどのショップにもメッセージを送信していません。",
+    "myCount": "会話：{count}",
+    "backToCabinet": "キャビネット",
+    "errors": {
+      "body_required": "最初にメッセージを入力してください。",
+      "body_too_long": "メッセージが長すぎます。",
+      "daily_limit": "本日は多くのメッセージを送信しました。明日やり直してください。",
+      "unanswered_limit": "再度送信する前にショップからの返信をお待ちください。",
+      "blocked": "ショップがこの会話を終了しました。",
+      "company_inactive": "このショップは現在メッセージを受け付けていません。",
+      "own_company": "これはあなたのショップです。キャビネットから返信してください。",
+      "reason_too_short": "数文字で理由を入力するか、空欄のままにしてください。",
+      "forbidden": "その操作を行う権限がありません。",
+      "not_found": "会話は見つかりません。",
+      "unauth": "最初にサインインしてください。"
     }
   }
 }

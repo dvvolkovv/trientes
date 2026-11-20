@@ -67,7 +67,11 @@ export type CompanyAction =
   | "REORDER_RULE_DELETED"
   // Отзыв **чужого** сообщения в общем чате (BP). Своё человек убирает молча: журнал
   // про управление, а не про разговор.
-  | "CHAT_MESSAGE_DELETED";
+  | "CHAT_MESSAGE_DELETED"
+  | "CUSTOMER_REPLIED"
+  | "CUSTOMER_BLOCKED"
+  | "CUSTOMER_UNBLOCKED"
+  | "CUSTOMER_MESSAGE_DELETED";
 
 export async function logCompanyAction(input: {
   companyId: string;

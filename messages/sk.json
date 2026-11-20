@@ -1676,7 +1676,8 @@
       "team": "Tím",
       "tasks": "Úlohy",
       "journal": "Záznam aktivít",
-      "chat": "Team chat"
+      "chat": "Tímový chat",
+      "customers": "Správy od zákazníkov"
     },
     "tileUnit": {
       "points": "{count} na mape",
@@ -1688,7 +1689,8 @@
       "team": "{count} ľudí",
       "tasks": "{count} otvorených",
       "journal": "{count} záznamov",
-      "chat": "{count} messages"
+      "chat": "{count} správ",
+      "customers": "Konverzácie: {count}"
     },
     "tileEmpty": "zatiaľ nič",
     "tileBadge": {
@@ -2164,7 +2166,7 @@
       "owner": "Vlastník"
     },
     "form": {
-      "slug": "Slug",
+      "slug": "Identifikátor (slug)",
       "slugHint": "malé písmená / číslice / pomlčky, 2–40",
       "displayName": "Zobrazovaný názov",
       "website": "Web",
@@ -3380,8 +3382,18 @@
     },
     "chat": {
       "mention": {
-        "subject": "{author} named you in the {company} team chat",
-        "body": "{author} wrote to you in the team chat of {company}."
+        "subject": "{author} vás spomenul v tíme {company}",
+        "body": "{author} vám napísal v tíme {company}."
+      }
+    },
+    "customerMessage": {
+      "toStore": {
+        "subject": "Zákazník napísal spoločnosti {company}",
+        "body": "Niekto položil otázku spoločnosti {company}. Otvorte konverzáciu a odpovedzte."
+      },
+      "toCustomer": {
+        "subject": "Spoločnosť {company} vám odpovedala",
+        "body": "Spoločnosť {company} odpovedala na vašu správu."
       }
     }
   },
@@ -3997,7 +4009,8 @@
         "pricing": "Cena a cashback",
         "tasks": "Úlohy",
         "promos": "Ponuky a rozosielanie",
-        "supply": "Dodávatelia a objednávky"
+        "supply": "Dodávatelia a objednávky",
+        "customers": "Správy od zákazníkov"
       },
       "levels": {
         "NONE": "Bez prístupu",
@@ -4098,7 +4111,11 @@
       "REORDER_RULE_SAVED": "Pravidlo automatickej objednávky uložené",
       "REORDER_RULE_DELETED": "Pravidlo automatickej objednávky odstránené",
       "PROFILE_CHANGES_SUBMITTED": "Zmeny karty odoslané na kontrolu",
-      "CHAT_MESSAGE_DELETED": "Removed someone else’s chat message"
+      "CHAT_MESSAGE_DELETED": "Odstránená správa iného používateľa v chate",
+      "CUSTOMER_REPLIED": "Odpoveď zákazníkovi",
+      "CUSTOMER_BLOCKED": "Zákazník bol zablokovaný",
+      "CUSTOMER_UNBLOCKED": "Zákazník bol odblokovaný",
+      "CUSTOMER_MESSAGE_DELETED": "Správa obchodu bola odstránená z konverzácie so zákazníkom"
     }
   },
   "cabinetTasks": {
@@ -4465,28 +4482,74 @@
     }
   },
   "cabinetChat": {
-    "title": "Team chat",
-    "subtitle": "One room for the whole team. Everyone on the team reads and writes here; nobody outside it can see the room.",
-    "empty": "No messages yet. Say what is going on in the shop today.",
-    "placeholder": "Write to the team…",
-    "send": "Send",
-    "sending": "Sending…",
-    "you": "You",
-    "gone": "Former teammate",
-    "withdraw": "Withdraw",
-    "withdrawn": "Message withdrawn",
-    "mentionedYou": "You were named",
-    "mentionHint": "Name a teammate with @login and they get a notification. Everything else only lights up the badge.",
-    "earlier": "Earlier messages",
-    "readOnly": "The room is read-only: the business is suspended or deleted.",
+    "title": "Tímový chat",
+    "subtitle": "Miestnosť pre celý tím. Všetci v tíme tu môžu čítať a písať, nikto zvonku do miestnosti nevidí.",
+    "empty": "Zatiaľ žiadne správy. Napíšte, čo sa dnes v obchode deje.",
+    "placeholder": "Napíšte tímu…",
+    "send": "Odoslať",
+    "sending": "Odosiela sa…",
+    "you": "Vy",
+    "gone": "Bývalý člen tímu",
+    "withdraw": "Vziať späť",
+    "withdrawn": "Správa bola vzatá späť",
+    "mentionedYou": "Boli ste spomenutí",
+    "mentionHint": "Označte člena tímu pomocou @login a dostane upozornenie. Všetko ostatné len rozsvieti odznak.",
+    "earlier": "Staršie správy",
+    "readOnly": "Miestnosť je len na čítanie: firma je pozastavená alebo vymazaná.",
     "errors": {
-      "unauth": "Sign in first.",
-      "forbidden": "You do not have access to this room.",
-      "company_inactive": "The business is suspended, so the conversation cannot continue.",
-      "body_required": "Write something first.",
-      "body_too_long": "The message is too long.",
-      "daily_limit": "Today’s message limit for this business is used up.",
-      "not_found": "The message is gone."
+      "unauth": "Najprv sa prihláste.",
+      "forbidden": "K tejto miestnosti nemáte prístup.",
+      "company_inactive": "Firma je pozastavená, takže v konverzácii nemožno pokračovať.",
+      "body_required": "Najprv niečo napíšte.",
+      "body_too_long": "Správa je príliš dlhá.",
+      "daily_limit": "Dnešný limit správ pre túto firmu bol vyčerpaný.",
+      "not_found": "Správa už neexistuje."
+    }
+  },
+  "customerMessages": {
+    "write": "Napísať obchodu",
+    "openThread": "Otvoriť konverzáciu",
+    "placeholder": "Pýtajte sa obchodu…",
+    "replyPlaceholder": "Odpovedajte za obchod…",
+    "send": "Odoslať",
+    "sending": "Odosiela sa…",
+    "cancel": "Zrušiť",
+    "empty": "Zatiaľ žiadne správy.",
+    "store": "Obchod",
+    "customer": "Zákazník",
+    "withdraw": "Vziať späť",
+    "withdrawn": "Správa bola vzatá späť",
+    "readOnly": "Táto konverzácia je len na čítanie.",
+    "earlier": "Staršie správy",
+    "inboxTitle": "Správy od zákazníkov",
+    "inboxSubtitle": "Otázky, ktoré vám ľudia posielajú z karty vášho obchodu. Obchod odpovedá jednotne: zákazník vidí „Obchod“, nie meno zamestnanca v službe.",
+    "inboxEmpty": "Zatiaľ nikto nenapísal. Tlačidlo sa nachádza na karte vášho obchodu.",
+    "blockedBadge": "Zablokovaný",
+    "blockedNotice": "Tento zákazník vám už nemôže písať.",
+    "blockTitle": "Zablokovať tohto zákazníka",
+    "blockHint": "Prestanú vám písať; konverzácia zostane čitateľná pre obe strany. Dôvod uvidí iba váš tím.",
+    "blockReasonPlaceholder": "Dôvod (voliteľné)",
+    "block": "Zablokovať",
+    "unblock": "Odblokovať",
+    "unblockHint": "Tento zákazník je zablokovaný a nemôže vám písať.",
+    "closedByStore": "Obchod túto konverzáciu zatvoril.",
+    "myTitle": "Správy obchodom",
+    "mySubtitle": "Jedna konverzácia pre každý obchod: vaše otázky a ich odpovede.",
+    "myEmpty": "Zatiaľ ste nenapísali žiadnemu obchodu.",
+    "myCount": "Konverzácie: {count}",
+    "backToCabinet": "Profil",
+    "errors": {
+      "body_required": "Najprv napíšte správu.",
+      "body_too_long": "Správa je príliš dlhá.",
+      "daily_limit": "Dnes ste poslali veľa správ — skúste to znova zajtra.",
+      "unanswered_limit": "Pred ďalším písaním počkajte na odpoveď obchodu.",
+      "blocked": "Obchod túto konverzáciu zatvoril.",
+      "company_inactive": "Tento obchod teraz neprijíma správy.",
+      "own_company": "Toto je váš vlastný obchod — odpovedzte z jeho profilu.",
+      "reason_too_short": "Napíšte dôvod v niekoľkých slovách alebo ho nechajte prázdny.",
+      "forbidden": "Na túto akciu nemáte oprávnenie.",
+      "not_found": "Konverzácia sa nenašla.",
+      "unauth": "Najprv sa prihláste."
     }
   }
 }

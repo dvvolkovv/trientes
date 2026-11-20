@@ -44,6 +44,8 @@ export const COMPANY_TILES: CompanyTileDef[] = [
   { key: "products", group: "showcase", icon: "📦", section: "products", path: "products" },
   { key: "pricing", group: "showcase", icon: "💰", section: "pricing", path: "loyalty" },
   { key: "promos", group: "showcase", icon: "📣", section: "promos", path: "promos" },
+  // Переписка с покупателем — лицо магазина наружу, поэтому витрина, а не «порядок» (BQ).
+  { key: "customers", group: "showcase", icon: "✉️", section: "customers", path: "inbox" },
 
   { key: "warehouses", group: "household", icon: "🏬", section: "warehouses", path: "warehouses" },
   { key: "supply", group: "household", icon: "🚚", section: "supply", path: "supply" },
