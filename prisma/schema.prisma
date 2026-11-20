@@ -79,6 +79,12 @@ model User {
   /// Общий выключатель рассылок магазинов (ТЗ 4.3). Канальные выключатели старше:
   /// выключивший почту не получит почту и от магазина.
   notifyPromos             Boolean                   @default(true)
+  /// Интересы человека и два его числа (ТЗ 4.4, слайс BK). Коридор — насколько далеко
+  /// от линии маршрута место ещё считается «по пути»; подсказка — за сколько до
+  /// отмеченной точки сказать голосом.
+  routeCorridorMeters      Int                       @default(1500)
+  routeAlertMeters         Int                       @default(1500)
+  interests                UserInterest[]
   coinCardsStewarded       CoinCard[]                @relation("CoinCardSteward")
   coinCardClaims           CoinCardClaim[]           @relation("CoinCardClaimant")
   coinCardsReviewed        CoinCard[]                @relation("CoinCardReviewer")
@@ -390,6 +396,28 @@ model GeoAlert {
 
   @@unique([userId, countryCode])
   @@index([countryCode, enabled])
+}
+
+/// Отметка «нравится / не нравится» по оси интересов (`src/lib/interests.ts`).
+/// Отметок нет вовсе — показываем все пять: молчание не значит «ничего не показывать».
+/// «Не нравится» убирает интерес из списка по пути и из голоса, но **не с карты**:
+/// карта показывает действительность.
+model UserInterest {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  key     String // InterestKey: fuel | food | lodging | shop | cash
+  verdict InterestVerdict
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, key])
+}
+
+enum InterestVerdict {
+  LIKE
+  DISLIKE
 }
 
 model Account {
