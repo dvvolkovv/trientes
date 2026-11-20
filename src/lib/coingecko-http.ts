@@ -19,6 +19,8 @@
  */
 
 import { createRateGate, withRetry, type JsonFetch, type RateGate, type Sleep } from "./rate-gate";
+import { countCall } from "./quota/count";
+import type { QuotaScope } from "./quota/budget";
 
 export type { JsonFetch };
 
@@ -76,6 +78,8 @@ export type CgGetOptions = {
   jitter?: () => number;
   retryDelaysMs?: number[];
   timeoutMs?: number;
+  /** Чей это вызов: фонового прогона или живой страницы. Считается раздельно. */
+  scope?: QuotaScope;
 };
 
 /** Общий шлюз процесса: все вызовы без своего `gate` выстраиваются в него. */
@@ -95,11 +99,15 @@ export async function cgGet(
 ): Promise<unknown> {
   const fetchImpl = opts.fetchImpl ?? (globalThis.fetch as unknown as JsonFetch);
   const gate = opts.gate ?? sharedGate;
+  const scope = opts.scope ?? "bg";
   const qs = new URLSearchParams(params).toString();
   const url = qs ? `${CG_BASE}${path}?${qs}` : `${CG_BASE}${path}`;
 
   const timeoutMs = opts.timeoutMs ?? CG_TIMEOUT_MS;
   const once = async (): Promise<unknown> => {
+    // Считается каждая попытка, ушедшая в сеть: отвергнутый запрос чужая служба
+    // считает тоже. Запись не ожидается — страница не должна ждать Redis.
+    void countCall("coingecko", scope);
     const res = await fetchImpl(url, {
       headers: { accept: "application/json" },
       cache: "no-store",
@@ -132,6 +140,7 @@ export async function cgGetUi(
 ): Promise<unknown> {
   return cgGet(path, params, {
     gate: opts.gate ?? uiGate,
+    scope: opts.scope ?? "ui",
     retryDelaysMs: opts.retryDelaysMs ?? CG_UI_RETRY_DELAYS_MS,
     timeoutMs: opts.timeoutMs ?? CG_UI_TIMEOUT_MS,
     fetchImpl: opts.fetchImpl,

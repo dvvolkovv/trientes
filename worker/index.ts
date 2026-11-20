@@ -12,6 +12,9 @@ import { syncPrices, syncGlobal, syncExchangeRates, syncCoinMetadata, syncExchan
 import { fetchCoinPaprikaExchanges, fetchCoinPaprikaExchangeDetail } from "../src/lib/coinpaprika";
 import { CpHttpError, CpQuotaBlockedError } from "../src/lib/coinpaprika-http";
 import { RUN_COINPAPRIKA, recordRun } from "../src/lib/sync/run-state";
+import { installQuotaCounter } from "../src/lib/quota/install";
+import { planRun } from "../src/lib/quota/plan";
+import { QUOTA_SERVICES } from "../src/lib/quota/budget";
 import { runAlertsEval } from "../src/lib/alerts-eval";
 import { syncOsmCryptoPois } from "../src/lib/osm-poi-store";
 import { expireStaleRevisions } from "../src/lib/coin-card-expiry";
@@ -605,6 +608,11 @@ async function main() {
   if (redis.status === "wait" || redis.status === "end") await redis.connect();
   await redis.ping();
   console.log("[worker] connections ok.");
+
+  // Счёт вызовов чужих служб — до первого прогона: вызов, сделанный раньше
+  // установки счётчика, в расход не попадёт, и бюджет весь месяц будет считаться
+  // от заниженного числа.
+  installQuotaCounter();
 
   // Run once at startup so Redis has data immediately.
   await runPriceSync();

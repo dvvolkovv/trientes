@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { cpGet, isCpQuotaError } from "./coinpaprika-http";
+import type { QuotaScope } from "./quota/budget";
 
 /**
  * Normalized shape we use internally after parsing CoinPaprika's response.
@@ -186,12 +187,15 @@ export type CoinPaprikaExchangeDetail = CoinPaprikaExchange & {
  * Detail call — only used for exchanges that survive the volume filter,
  * so we can derive pairsCount from markets[].length.
  */
-export async function fetchCoinPaprikaExchangeDetail(id: string): Promise<CoinPaprikaExchangeDetail | null> {
+export async function fetchCoinPaprikaExchangeDetail(
+  id: string,
+  opts: { scope?: QuotaScope } = {},
+): Promise<CoinPaprikaExchangeDetail | null> {
   // Подробности одной биржи — не повод валить прогон: не ответили, значит у
   // этой биржи данных нет. Повтор при 402/429/5xx уже внутри `cpGet`.
   let json: { markets?: unknown[] } & Record<string, unknown>;
   try {
-    json = (await cpGet(`/exchanges/${encodeURIComponent(id)}`)) as typeof json;
+    json = (await cpGet(`/exchanges/${encodeURIComponent(id)}`, { scope: opts.scope })) as typeof json;
   } catch (err) {
     // Исчерпанный запас месяца — отказ всей службе, и проглотить его нельзя:
     // «у этой биржи данных нет» и «служба больше не отвечает никому» требуют

@@ -3,6 +3,15 @@ export async function register(): Promise<void> {
   // Edge has no filesystem. Kept as a positive check with the import inside, so
   // the edge build drops the Node-only module.
   if (process.env.NEXT_RUNTIME === "nodejs") {
+    // Счёт вызовов чужих служб: без установки счётчика двери считают молча, и
+    // расход веба (чтения посетителей) не попал бы в отчёт вовсе.
+    try {
+      const { installQuotaCounter } = await import("@/lib/quota/install");
+      installQuotaCounter();
+    } catch (error) {
+      const name = error instanceof Error ? error.name : typeof error;
+      console.error(`[instrumentation] quota counter install failed: ${name}`);
+    }
     try {
       const { checkMapLibreAssets } = await import("@/lib/maplibre-assets");
       checkMapLibreAssets();

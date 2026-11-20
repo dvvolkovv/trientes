@@ -22,6 +22,8 @@
  */
 
 import { createRateGate, withRetry, type JsonFetch, type RateGate, type Sleep } from "./rate-gate";
+import { countCall } from "./quota/count";
+import type { QuotaScope } from "./quota/budget";
 
 export const CP_BASE = "https://api.coinpaprika.com/v1";
 
@@ -120,6 +122,8 @@ export type CpGetOptions = {
   retryDelaysMs?: number[];
   now?: () => number;
   timeoutMs?: number;
+  /** Чей это вызов: фонового прогона или живой страницы. Считается раздельно. */
+  scope?: QuotaScope;
 };
 
 const sharedGate = createRateGate({ minIntervalMs: CP_MIN_INTERVAL_MS });
@@ -133,12 +137,16 @@ export async function cpGet(path: string, opts: CpGetOptions = {}): Promise<unkn
   const fetchImpl = opts.fetchImpl ?? (globalThis.fetch as unknown as JsonFetch);
   const gate = opts.gate ?? sharedGate;
   const now = opts.now ?? (() => Date.now());
+  const scope = opts.scope ?? "bg";
   const url = `${CP_BASE}${path}`;
 
   if (blockedUntil > now()) throw new CpQuotaBlockedError(path, blockedUntil);
 
   const timeoutMs = opts.timeoutMs ?? CP_TIMEOUT_MS;
   const once = async (): Promise<unknown> => {
+    // Считается каждая попытка, ушедшая в сеть: 402 и 429 чужая служба считает
+    // тоже — её счётчик 19 ноября показал 20003 из 20000.
+    void countCall("coinpaprika", scope);
     const res = await fetchImpl(url, {
       headers: { Accept: "application/json" },
       cache: "no-store",

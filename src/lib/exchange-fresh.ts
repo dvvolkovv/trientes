@@ -114,7 +114,7 @@ async function read(cpId: string, exchangeId: string): Promise<ExchangeFresh | n
     // Срок: что не успело к отрисовке, для этой страницы не существует. Сам
     // запрос продолжает жить — его ответ просто ляжет в снимок для следующего.
     detail = await Promise.race([
-      fetchCoinPaprikaExchangeDetail(cpId),
+      fetchCoinPaprikaExchangeDetail(cpId, { scope: "ui" }),
       new Promise<null>((resolve) => setTimeout(() => resolve(null), FRESH_DEADLINE_MS)),
     ]);
   } catch {
