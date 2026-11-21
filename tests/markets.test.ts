@@ -7,87 +7,23 @@ import {
   parseMetalPrice,
   parseNasdaqDate,
   parseNasdaqQuote,
-  parseYahooChart,
   stalestQuote,
   stalestQuoteAt,
   MARKET_INSTRUMENTS,
 } from "@/lib/markets";
 
 /**
- * Табло читается четырьмя открытыми источниками: по одному на то, что он
+ * Табло читается тремя открытыми источниками: по одному на то, что он
  * действительно отдаёт. Один источник на всё (Yahoo до 21 ноября 2026) означал
  * узкое место: его бюджет для нашего адреса — около одной котировки в
- * полминуты, десять инструментов обходились часами, а 21 ноября он отвечал 429
- * на всё, и самая ветхая карточка простояла 16 часов.
+ * полминуты, а 21 ноября он отвечал нашему адресу 429 **на всё**, и его три
+ * карточки простояли ветхими восемнадцать часов. Карточку, которую нечем
+ * наполнить, с табло снимают: фьючерса на S&P больше нет, нефть и газ читаются
+ * спотовыми рядами FRED.
  *
  * Разбор ответа каждой службы — чистая функция и проверяется тестом, а не
  * живым запросом: именно здесь источник данных и ломается.
  */
-
-// ——— Yahoo: остались фьючерс на S&P, нефть и газ ———
-
-function yahooBody(meta: Record<string, unknown>, quote?: Record<string, unknown>): string {
-  return JSON.stringify({
-    chart: { result: [{ meta, indicators: quote ? { quote: [quote] } : undefined }], error: null },
-  });
-}
-
-const CRUDE = {
-  symbol: "CL=F",
-  regularMarketTime: 1794994578, // 2026-11-18T09:36:18Z
-  regularMarketPrice: 82.47,
-  regularMarketChangePercent: 0.036,
-  regularMarketDayHigh: 83.25,
-  regularMarketDayLow: 80.78,
-  chartPreviousClose: 82.44,
-};
-
-describe("parseYahooChart", () => {
-  it("кладёт ответ на свой инструмент и берёт открытие из свечи", () => {
-    const q = parseYahooChart("CL=F", yahooBody(CRUDE, { open: [83.1] }));
-    expect(q).toEqual({
-      symbol: "CL=F",
-      name: "crude",
-      group: "future",
-      unit: "usd",
-      source: "yahoo",
-      sourceSymbol: "CL=F",
-      date: "2026-11-18",
-      time: "09:36:18",
-      open: 83.1,
-      high: 83.25,
-      low: 80.78,
-      last: 82.47,
-      changePct: 0.036,
-    });
-  });
-
-  it("считает ход сессии от прошлого закрытия, когда узел его не назвал", () => {
-    const { regularMarketChangePercent: _drop, ...rest } = CRUDE;
-    const q = parseYahooChart("CL=F", yahooBody(rest));
-    expect(q?.changePct).toBeCloseTo(((82.47 - 82.44) / 82.44) * 100, 6);
-  });
-
-  it("без цены котировки нет — пустая карточка хуже отсутствующей", () => {
-    const { regularMarketPrice: _drop, ...rest } = CRUDE;
-    expect(parseYahooChart("CL=F", yahooBody(rest))).toBeNull();
-  });
-
-  it("незнакомый символ не превращается в котировку", () => {
-    expect(parseYahooChart("ZZZ=F", yahooBody({ ...CRUDE, symbol: "ZZZ=F" }))).toBeNull();
-  });
-
-  it("карточку чужого источника разбор Yahoo не трогает", () => {
-    // XAU отдаёт служба металлов. Тело Yahoo на этот ключ означало бы, что
-    // инструмент читается двумя службами, — автор значения должен быть один.
-    expect(parseYahooChart("XAU", yahooBody({ ...CRUDE, symbol: "XAU" }))).toBeNull();
-  });
-
-  it("ошибка узла и мусор в теле дают null, а не бросок", () => {
-    expect(parseYahooChart("CL=F", JSON.stringify({ chart: { result: null, error: { code: "Not Found" } } }))).toBeNull();
-    expect(parseYahooChart("CL=F", "<html>Access Denied</html>")).toBeNull();
-  });
-});
 
 // ——— FRED: дневные закрытия индексов, официальный ряд ———
 
@@ -138,7 +74,7 @@ describe("parseFredCsv", () => {
   });
 
   it("ряд FRED на ключ чужого источника не кладётся", () => {
-    expect(parseFredCsv("CL=F", csv)).toBeNull();
+    expect(parseFredCsv("XAU", csv)).toBeNull();
   });
 });
 
@@ -261,38 +197,53 @@ describe("parseMetalPrice", () => {
 });
 
 describe("реестр инструментов", () => {
-  it("десять карточек, ключи свои и неповторимые", () => {
-    expect(MARKET_INSTRUMENTS).toHaveLength(10);
+  it("девять карточек, ключи свои и неповторимые", () => {
+    expect(MARKET_INSTRUMENTS).toHaveLength(9);
     const keys = MARKET_INSTRUMENTS.map((i) => i.symbol);
     expect(new Set(keys).size).toBe(keys.length);
-    // Ключ — наш, а не записи чужой службы: «^DJI» и «GC=F» были записью Yahoo,
-    // и после переезда источников они стали бы ложью внутри наших же данных.
-    for (const k of keys) expect(k.startsWith("^")).toBe(false);
+    // Ключ — наш, а не записи чужой службы: «^DJI», «GC=F» и «CL=F» были
+    // записью Yahoo, и после переезда источников они стали бы ложью внутри
+    // наших же данных.
+    for (const k of keys) {
+      expect(k.startsWith("^")).toBe(false);
+      expect(k).not.toContain("=");
+    }
   });
 
   it("у каждой карточки один источник и его название инструмента", () => {
     for (const i of MARKET_INSTRUMENTS) {
       expect(i.sourceSymbol.length).toBeGreaterThan(0);
-      expect(["yahoo", "fred", "nasdaq", "metal"]).toContain(i.source);
+      expect(["fred", "nasdaq", "metal"]).toContain(i.source);
     }
   });
 
-  it("Yahoo остался только там, где замены не нашлось", () => {
-    const yahoo = MARKET_INSTRUMENTS.filter((i) => i.source === "yahoo").map((i) => i.symbol);
-    expect(yahoo).toEqual(["ES=F", "CL=F", "NG=F"]);
+  it("враждебного источника на табло не осталось ни у одной карточки", () => {
+    // 21 ноября 2026 Yahoo отвечал нашему адресу 429 на всё, и карточка,
+    // которую нечем наполнить, на табло не держится: фьючерс на S&P снят (его
+    // цену без ключа не отдаёт никто, а сам индекс стоит своей карточкой),
+    // нефть и газ читаются спотовыми рядами FRED.
+    const sources = new Set(MARKET_INSTRUMENTS.map((i) => i.source));
+    expect([...sources].sort()).toEqual(["fred", "metal", "nasdaq"]);
+    const energy = MARKET_INSTRUMENTS.filter((i) => i.group === "energy");
+    expect(energy.map((i) => [i.symbol, i.sourceSymbol])).toEqual([
+      ["WTI", "DCOILWTICO"],
+      ["NGAS", "DHHNGSP"],
+    ]);
   });
 
   it("isMarketSymbol знает свои ключи и не знает чужих", () => {
     expect(isMarketSymbol("XAU")).toBe(true);
     // Ключи прежней формы — чужие: снимок с ними должен отсеиваться, а не
-    // оставаться на табло вторыми карточками того же металла.
+    // оставаться на табло вторыми карточками того же металла. Так же уходит
+    // снятая карточка: «ES=F» в снимке не оживает.
     expect(isMarketSymbol("GC=F")).toBe(false);
     expect(isMarketSymbol("^DJI")).toBe(false);
+    expect(isMarketSymbol("ES=F")).toBe(false);
   });
 });
 
 /**
- * Порядок обхода. Yahoo режет частоту и отказ достаётся **началу** обхода,
+ * Порядок обхода. Служба, режущая частоту, отказывает **началу** обхода,
  * поэтому очередь строится по нашему собственному факту — когда мы об
  * инструменте спрашивали, — а не по штампу котировки: штамп принадлежит рынку,
  * у закрытого рынка он не двигается, и такой инструмент навсегда оставался
@@ -303,7 +254,7 @@ describe("marketFetchOrder", () => {
 
   it("ещё не спрошенные идут первыми, в порядке списка", () => {
     const order = marketFetchOrder({ DJI: at(0), XAU: at(0) });
-    expect(order.map((i) => i.symbol).slice(0, 3)).toEqual(["IXIC", "GSPC", "ES=F"]);
+    expect(order.map((i) => i.symbol).slice(0, 3)).toEqual(["IXIC", "GSPC", "WTI"]);
     expect(order).toHaveLength(MARKET_INSTRUMENTS.length);
   });
 
@@ -320,7 +271,7 @@ describe("marketFetchOrder", () => {
     expect(head).toEqual(["DJI", "IXIC"]);
     for (const symbol of head) asked[symbol] = at(0);
     const next = marketFetchOrder(asked);
-    expect(next.slice(0, 2).map((i) => i.symbol)).toEqual(["GSPC", "ES=F"]);
+    expect(next.slice(0, 2).map((i) => i.symbol)).toEqual(["GSPC", "WTI"]);
     expect(next.slice(-2).map((i) => i.symbol)).toEqual(head);
   });
 
@@ -334,24 +285,15 @@ describe("marketFetchOrder", () => {
 });
 
 /**
- * Бюджет Yahoo замерен 18 ноября: около одной котировки в полминуты, и от
- * паузы между запросами он не зависит. Значит обход этого источника должен
- * прекращаться — но только его: у трёх остальных служб свой бюджет, и отказ
- * Yahoo не повод оставить табло без металлов.
+ * Отказ по частоте — свойство окна одной службы, поэтому обход прекращается
+ * только у неё: у двух остальных свой бюджет, и отказ FRED не повод оставить
+ * табло без металлов. (Замер 18 ноября на Yahoo: около одной котировки в
+ * полминуты, и от паузы между запросами это не зависело.)
  */
 describe("fetchMarkets", () => {
   const throttled = () => new Response("Too Many Requests", { status: 429 });
   const answer = (url: string): Response => {
     const u = String(url);
-    if (u.includes("finance.yahoo.com")) {
-      const symbol = decodeURIComponent(u.split("/chart/")[1].split("?")[0]);
-      return new Response(
-        JSON.stringify({
-          chart: { result: [{ meta: { symbol, regularMarketTime: 1795000825, regularMarketPrice: 1 } }], error: null },
-        }),
-        { status: 200 },
-      );
-    }
     if (u.includes("fredgraph.csv")) {
       const id = u.split("id=")[1];
       return new Response(`observation_date,${id}\n2026-11-19,2\n2026-11-20,3\n`, { status: 200 });
@@ -369,27 +311,28 @@ describe("fetchMarkets", () => {
     );
   };
 
-  it("берёт всё табло, когда все четыре службы отвечают", async () => {
+  it("берёт всё табло, когда все три службы отвечают", async () => {
     const { quotes, asked } = await fetchMarkets(MARKET_INSTRUMENTS, { gapMs: 0, fetchImpl: async (u) => answer(u as string) });
-    expect(quotes).toHaveLength(10);
-    expect(asked).toHaveLength(10);
+    expect(quotes).toHaveLength(9);
+    expect(asked).toHaveLength(9);
   });
 
-  it("отказ Yahoo по частоте не лишает табло чужих карточек", async () => {
-    // Главное решение слайса: счёт отказов — по источнику, а не на всё табло.
-    // Один счёт означал бы, что три 429 Yahoo гасят металлы и индексы, за
-    // которыми стоят совсем другие службы.
+  it("отказ одной службы по частоте не лишает табло чужих карточек", async () => {
+    // Главное решение: счёт отказов — по источнику, а не на всё табло. Один
+    // счёт означал бы, что три 429 от FRED гасят металлы и Nasdaq, за которыми
+    // стоят совсем другие службы.
     const { quotes } = await fetchMarkets(MARKET_INSTRUMENTS, {
       gapMs: 0,
-      fetchImpl: async (u) => (String(u).includes("finance.yahoo.com") ? throttled() : answer(u as string)),
+      fetchImpl: async (u) => (String(u).includes("fredgraph.csv") ? throttled() : answer(u as string)),
     });
-    expect(quotes.map((q) => q.symbol).sort()).toEqual(["DJI", "GSPC", "IXIC", "XAG", "XAU", "XPD", "XPT"]);
+    expect(quotes.map((q) => q.symbol).sort()).toEqual(["IXIC", "XAG", "XAU", "XPD", "XPT"]);
   });
 
   it("прекращает обход источника после трёх отказов по частоте подряд", async () => {
     const seen: string[] = [];
-    const yahooFirst = [...MARKET_INSTRUMENTS].filter((i) => i.source === "yahoo");
-    const { quotes, asked } = await fetchMarkets(yahooFirst, {
+    const fredOnly = [...MARKET_INSTRUMENTS].filter((i) => i.source === "fred");
+    expect(fredOnly).toHaveLength(4);
+    const { quotes, asked } = await fetchMarkets(fredOnly, {
       gapMs: 0,
       fetchImpl: async (u) => {
         seen.push(String(u));
@@ -397,7 +340,7 @@ describe("fetchMarkets", () => {
       },
     });
     expect(quotes).toEqual([]);
-    expect(asked).toEqual(["ES=F", "CL=F", "NG=F"]);
+    expect(asked).toEqual(["DJI", "GSPC", "WTI"]);
     expect(seen).toHaveLength(3);
   });
 
@@ -417,8 +360,9 @@ describe("fetchMarkets", () => {
   it("сообщает, о чём спросил: отказ по частоте — тоже спрос", async () => {
     const { quotes, asked } = await fetchMarkets(MARKET_INSTRUMENTS, { gapMs: 0, fetchImpl: async () => throttled() });
     expect(quotes).toEqual([]);
-    // По три спроса на каждую из четырёх служб: дальше — заведомые отказы.
-    expect(asked).toEqual(["DJI", "IXIC", "GSPC", "ES=F", "CL=F", "NG=F", "XAU", "XAG", "XPT"]);
+    // По три спроса на каждую службу: дальше — заведомые отказы. У Nasdaq
+    // карточка одна, поэтому до трёх ей дойти нечем.
+    expect(asked).toEqual(["DJI", "IXIC", "GSPC", "WTI", "XAU", "XAG", "XPT"]);
   });
 
   it("отказ не по частоте обход не прекращает — он про инструмент, а не про бюджет", async () => {
@@ -426,9 +370,9 @@ describe("fetchMarkets", () => {
       gapMs: 0,
       fetchImpl: async (u) => (String(u).includes("XAU") ? new Response("Not Found", { status: 404 }) : answer(u as string)),
     });
-    expect(asked).toHaveLength(10);
+    expect(asked).toHaveLength(9);
     expect(quotes.map((q) => q.symbol)).not.toContain("XAU");
-    expect(quotes).toHaveLength(9);
+    expect(quotes).toHaveLength(8);
   });
 });
 
@@ -436,7 +380,7 @@ describe("fetchMarkets", () => {
  * Самая ветхая карточка табло — это и есть здоровье источников. Мерить его
  * временем записи снимка нельзя: пустой ответ его перезаписывает, то есть
  * время записи всегда свежее. Штамп нашего взятия у каждой карточки свой, и
- * ветхая карточка называет свой источник — отчёт говорит, какая из четырёх
+ * ветхая карточка называет свой источник — отчёт говорит, какая из трёх
  * служб замолчала.
  */
 describe("stalestQuote", () => {

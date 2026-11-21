@@ -86,9 +86,62 @@ export function cpTypeToExchangeType(type: string[]): "CEX" | "DEX" | "HYBRID" |
 /**
  * Known cases where CoinGecko and CoinPaprika use different slugs for the same exchange.
  * Add new entries here as overlap is discovered (CG list is the canonical id space).
+ *
+ * Карта стояла с одной записью, и расхождения никто не искал — в базе выросли
+ * **41 пара двойников** на 581 строку каталога: `gate` и `gateio`, `mxc` и
+ * `mexc`, `okex` и `okx`, `huobi` и `htx`. Все сорок одна найдены сравнением
+ * имён по живой базе 21 ноября 2026 (правило — `exchangeDedupeKey` в
+ * `exchange-dedupe.ts`, разовое слияние — `scripts/merge-exchange-dupes.ts`) и
+ * вписаны руками: ключи служб друг из друга не выводятся, а догадка слила бы
+ * разные биржи под похожим именем.
+ *
+ * Слева — ключ CoinPaprika, справа — наш (он же ключ CoinGecko): по нему строку
+ * каждый час находит основной прогон каталога, поэтому главной остаётся она,
+ * даже когда её ключ некрасивее.
  */
 export const CP_TO_CG_ALIAS: Record<string, string> = {
-  coinbase: "gdax",
+  "coinbase":                 "gdax",
+  "ascendex":                 "bitmax",
+  "balancer-v2":              "balancer",
+  "balancer-v2-polygon":      "balancer_polygon",
+  "binance-us":               "binance_us",
+  "bitcointry":               "bitcointry_exchange",
+  "btc-markets":              "btcmarkets",
+  "bullish":                  "bullish_com",
+  "bvox":                     "bitvenus_spot",
+  "cexio":                    "cex",
+  "changelly-pro":            "changelly",
+  "coinmetro":                "coin_metro",
+  "cryptocom-exchange":       "crypto_com",
+  "dex-trade":                "dextrade",
+  "fluid-ethereum":           "fluid",
+  "fmfwio":                   "bitcoin_com",
+  "gateio":                   "gate",
+  "htx":                      "huobi",
+  "hyperliquid":              "hyperliquid-spot",
+  "independent-reserve":      "independent_reserve",
+  "koinbx":                   "koinbazar",
+  "lynex":                    "lynex-linea",
+  "mercado-bitcoin":          "mercado_bitcoin",
+  "mexc":                     "mxc",
+  "namiexchange":             "nami_exchange",
+  "nonkycio":                 "nonkyc_io",
+  "okx":                      "okex",
+  "p2b":                      "p2pb2b",
+  "quickswap-v3":             "quickswap_v3",
+  "safetrade":                "safe_trade",
+  "stonfi":                   "ston_fi",
+  "trader-joe-v21-avalanche": "traderjoe-v2-1-avalanche",
+  "trader-joe-v22-avalanche": "traderjoe-v2-2-avalanche",
+  "uniswap-arbitrum":         "uniswap_v3_arbitrum",
+  "uniswap-optimism":         "uniswap_v3_optimism",
+  "uniswap-polygon-network":  "uniswap_v3_polygon_pos",
+  "uniswap-v2":               "uniswap_v2",
+  "uniswap-v3":               "uniswap_v3",
+  "uniswap-v3-bsc":           "uniswap-bsc",
+  "uniswap-v3-celo":          "uniswap_v3_celo",
+  "vvs-finance":              "vvs",
+  "vvs-v3-cronos":            "vvs-v3",
 };
 
 export function resolveCpId(cpId: string): string {

@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import type { MarketQuote, MarketGroup, MarketUnit } from "@/lib/markets";
 
-// Metal/energy names are translated; index + E-mini names are proper nouns shown as-is.
+// Metal/energy names are translated; index names are proper nouns shown as-is.
 const I18N_NAMES = new Set(["gold", "silver", "platinum", "palladium", "crude", "natgas"]);
 
 function fmt(n: number | null, unit: MarketUnit): string {
@@ -10,10 +10,10 @@ function fmt(n: number | null, unit: MarketUnit): string {
   return unit === "usd" ? `$${s}` : s;
 }
 
-const GROUP_ORDER: MarketGroup[] = ["index", "future", "metal"];
+const GROUP_ORDER: MarketGroup[] = ["index", "energy", "metal"];
 const GROUP_KEY: Record<MarketGroup, string> = {
   index: "indices",
-  future: "futures",
+  energy: "energy",
   metal: "metals",
 };
 
@@ -28,6 +28,12 @@ export async function MarketsBoard({ quotes }: { quotes: MarketQuote[] }) {
   }
 
   const asOf = quotes.map((q) => `${q.date ?? ""} ${q.time ?? ""}`.trim()).sort().pop() ?? "";
+  // Подпись «As of» под табло называет самую свежую карточку, а карточки у нас
+  // разного возраста: металлы свежие на минуту, ряды FRED отстают на день
+  // (индексы) и на несколько дней (нефть и газ — спот публикуется с
+  // задержкой). Поэтому отставшая карточка носит свою дату: один штамп на
+  // всё табло выдавал бы цену прошлой недели за сегодняшнюю.
+  const asOfDate = asOf.slice(0, 10);
   const label = (q: MarketQuote) => (I18N_NAMES.has(q.name) ? t(q.name) : q.name);
 
   return (
@@ -52,9 +58,17 @@ export async function MarketsBoard({ quotes }: { quotes: MarketQuote[] }) {
                           {q.changePct.toFixed(2)}%
                         </span>
                       )}
-                      <span className="num text-muted">
-                        {fmt(q.low, q.unit)} – {fmt(q.high, q.unit)}
-                      </span>
+                      {(q.low !== null || q.high !== null) && (
+                        // Размах дня есть только у Nasdaq: ряды FRED его не
+                        // содержат, служба металлов отдаёт одну цену. «— – —»
+                        // в карточке — не «размах неизвестен», а мусор.
+                        <span className="num text-muted">
+                          {fmt(q.low, q.unit)} – {fmt(q.high, q.unit)}
+                        </span>
+                      )}
+                      {q.date && q.date !== asOfDate && (
+                        <span className="num text-muted/60">{q.date}</span>
+                      )}
                     </div>
                   </div>
                 );

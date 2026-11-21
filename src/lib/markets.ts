@@ -26,9 +26,25 @@
 //   карточка остаётся без процента, а не с нашим вычислением под видом факта.
 //   Названия карточек табло всегда были «золото», «серебро», — то есть металл,
 //   а не ближний контракт COMEX, и спот им отвечает честнее.
-// • Yahoo — остаётся при трёх инструментах, которым бесплатной замены не
-//   нашлось: фьючерс на S&P, нефть и газ. Пять освобождённых слотов очереди
-//   означают, что круг обхода короче втрое.
+// • FRED же отдаёт энергоносители: `DCOILWTICO` (нефть WTI, Кушинг) и
+//   `DHHNGSP` (газ, Henry Hub). Это спотовая цена сырья с задержкой в
+//   несколько дней, а не ближний контракт NYMEX, — ровно тот же выбор, что у
+//   металлов: карточка табло называется «нефть», то есть сырьё, и дата ряда у
+//   неё на виду.
+//
+// Почему Yahoo больше нет ни у одного инструмента. 21 ноября 2026 он отвечал
+// нашему адресу 429 **на всё** — на график одного символа, на многосимвольные
+// виды, на оба входа (query1, query2), с cookie `A3` от fc.yahoo.com и без
+// неё. Это не бюджет окна, а отказ адресу: его три карточки простояли ветхими
+// 18 часов, и ночной отчёт жаловался на них каждую ночь. Карточка, которую
+// нечем наполнить, с табло снимается (то же правило, что у посева карточек
+// монет), а не живёт вечно ветхой.
+//
+// Поэтому **карточки фьючерса на S&P больше нет**: это контракт CME, его цену
+// без ключа не отдаёт никто (ни FRED, ни Nasdaq, ни CBOE — у последнего
+// `cdn.cboe.com` отвечает нашему адресу 403 Cloudflare), а сам индекс S&P 500
+// на табло и так стоит своей карточкой от FRED. Девять карточек, которые мы
+// умеем наполнить, честнее десяти, из которых одна всегда вчерашняя.
 //
 // Почему не CNBC (источник до 18 ноября): с 16 ноября 2026, 23:08,
 // quote.cnbc.com отвечает нашему адресу 403 на любой запрос — с браузерным UA,
@@ -40,11 +56,11 @@
 // надо заводить руками на почту владельца, а перечисленные выше источники
 // закрывают ту же нужду без неё (то же решение, что в слайсе BL).
 
-export type MarketGroup = "index" | "future" | "metal";
+export type MarketGroup = "index" | "energy" | "metal";
 export type MarketUnit = "usd" | "pts";
 
 /** Кто отдаёт карточку. Один инструмент — один источник, второго автора нет. */
-export type MarketSource = "yahoo" | "fred" | "nasdaq" | "metal";
+export type MarketSource = "fred" | "nasdaq" | "metal";
 
 export type MarketInstrument = {
   /**
@@ -85,9 +101,8 @@ export const MARKET_INSTRUMENTS: MarketInstrument[] = [
   { symbol: "DJI", name: "Dow Jones", group: "index", unit: "pts", source: "fred", sourceSymbol: "DJIA" },
   { symbol: "IXIC", name: "Nasdaq Composite", group: "index", unit: "pts", source: "nasdaq", sourceSymbol: "COMP" },
   { symbol: "GSPC", name: "S&P 500", group: "index", unit: "pts", source: "fred", sourceSymbol: "SP500" },
-  { symbol: "ES=F", name: "S&P 500 Futures", group: "future", unit: "pts", source: "yahoo", sourceSymbol: "ES=F" },
-  { symbol: "CL=F", name: "crude", group: "future", unit: "usd", source: "yahoo", sourceSymbol: "CL=F" },
-  { symbol: "NG=F", name: "natgas", group: "future", unit: "usd", source: "yahoo", sourceSymbol: "NG=F" },
+  { symbol: "WTI", name: "crude", group: "energy", unit: "usd", source: "fred", sourceSymbol: "DCOILWTICO" },
+  { symbol: "NGAS", name: "natgas", group: "energy", unit: "usd", source: "fred", sourceSymbol: "DHHNGSP" },
   { symbol: "XAU", name: "gold", group: "metal", unit: "usd", source: "metal", sourceSymbol: "XAU" },
   { symbol: "XAG", name: "silver", group: "metal", unit: "usd", source: "metal", sourceSymbol: "XAG" },
   { symbol: "XPT", name: "platinum", group: "metal", unit: "usd", source: "metal", sourceSymbol: "XPT" },
@@ -110,79 +125,10 @@ function num(raw: unknown): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
-/** Секунды эпохи → дата и время по UTC: табло подписывает штамп как UTC. */
-function stamp(seconds: unknown): { date: string | null; time: string | null } {
-  if (typeof seconds !== "number" || !Number.isFinite(seconds)) {
-    return { date: null, time: null };
-  }
-  const iso = new Date(seconds * 1000).toISOString();
-  return { date: iso.slice(0, 10), time: iso.slice(11, 19) };
-}
-
 /** Ход за день от прошлого закрытия. Оба числа — одного источника. */
 function movePct(last: number, prevClose: number | null): number | null {
   if (prevClose === null || !(prevClose > 0)) return null;
   return ((last - prevClose) / prevClose) * 100;
-}
-
-type YahooMeta = {
-  symbol?: unknown;
-  regularMarketTime?: unknown;
-  regularMarketPrice?: unknown;
-  regularMarketChangePercent?: unknown;
-  regularMarketDayHigh?: unknown;
-  regularMarketDayLow?: unknown;
-  chartPreviousClose?: unknown;
-};
-
-/**
- * Тело ответа Yahoo по одному символу → котировка нашего инструмента.
- *
- * Чистая функция: разбор ответа — то место, где ломается источник данных, и
- * проверяться он должен тестом, а не живым запросом к чужой службе.
- *
- * `null` возвращается во всех сомнительных случаях (ошибка узла, незнакомый
- * символ, нет цены): карточка без цены на табло хуже отсутствующей, а прошлый
- * снимок за неё подставит `syncMarkets`.
- */
-export function parseYahooChart(symbol: string, body: string): MarketQuote | null {
-  const inst = BY_SYMBOL.get(symbol);
-  if (!inst || inst.source !== "yahoo") return null;
-
-  let raw: unknown;
-  try {
-    raw = JSON.parse(body);
-  } catch {
-    return null;
-  }
-  const chart = (raw as { chart?: { result?: unknown; error?: unknown } })?.chart;
-  if (!chart || chart.error) return null;
-  const result = Array.isArray(chart.result) ? chart.result[0] : null;
-  if (!result) return null;
-
-  const meta = (result as { meta?: YahooMeta })?.meta;
-  if (!meta) return null;
-  // Узел обязан подтвердить, что отвечает про тот символ, о котором спросили:
-  // иначе опечатка в реестре тихо повесила бы цену чужого инструмента.
-  if (typeof meta.symbol === "string" && meta.symbol !== inst.sourceSymbol) return null;
-
-  const last = num(meta.regularMarketPrice);
-  if (last === null) return null;
-
-  // Открытие сессии лежит не в `meta`, а в свече дневного ряда.
-  const candle = (result as { indicators?: { quote?: Array<{ open?: unknown }> } })?.indicators
-    ?.quote?.[0];
-  const open = num(Array.isArray(candle?.open) ? candle?.open[0] : candle?.open);
-
-  return {
-    ...inst,
-    ...stamp(meta.regularMarketTime),
-    open,
-    high: num(meta.regularMarketDayHigh),
-    low: num(meta.regularMarketDayLow),
-    last,
-    changePct: num(meta.regularMarketChangePercent) ?? movePct(last, num(meta.chartPreviousClose)),
-  };
 }
 
 /**
@@ -344,8 +290,6 @@ export function parseMetalPrice(symbol: string, body: string): MarketQuote | nul
 
 /** Адреса источников. Ключ сети переопределять незачем: все четыре открытые. */
 const SOURCE_URL: Record<MarketSource, (inst: MarketInstrument) => string> = {
-  yahoo: (i) =>
-    `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(i.sourceSymbol)}?range=1d&interval=1d`,
   fred: (i) => `https://fred.stlouisfed.org/graph/fredgraph.csv?id=${encodeURIComponent(i.sourceSymbol)}`,
   nasdaq: (i) =>
     `https://api.nasdaq.com/api/quote/${encodeURIComponent(i.sourceSymbol)}/info?assetclass=index`,
@@ -353,13 +297,12 @@ const SOURCE_URL: Record<MarketSource, (inst: MarketInstrument) => string> = {
 };
 
 const SOURCE_PARSE: Record<MarketSource, (symbol: string, body: string) => MarketQuote | null> = {
-  yahoo: parseYahooChart,
   fred: parseFredCsv,
   nasdaq: parseNasdaqQuote,
   metal: parseMetalPrice,
 };
 
-// Yahoo и api.nasdaq.com голому клиенту отказывают — им нужен браузерный UA.
+// api.nasdaq.com голому клиенту отказывает — ему нужен браузерный UA.
 const BROWSER_UA =
   "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
 /**
@@ -373,17 +316,16 @@ const BROWSER_UA =
 const SELF_UA = "trientes.org/1.0 (+https://trientes.org)";
 
 const SOURCE_HEADERS: Record<MarketSource, Record<string, string>> = {
-  yahoo: { accept: "application/json", "user-agent": BROWSER_UA },
   nasdaq: { accept: "application/json", "user-agent": BROWSER_UA },
   fred: { accept: "text/csv", "user-agent": SELF_UA },
   metal: { accept: "application/json", "user-agent": SELF_UA },
 };
 /**
- * Пауза перед следующим запросом к **тому же** источнику. У Yahoo порог
- * частоты не публикуется, 1,2 с — осторожно; у остальных трёх живой прогон
- * отказов по частоте не дал ни одного, и держать их за хвост незачем.
+ * Пауза перед следующим запросом к **тому же** источнику. Живой прогон отказов
+ * по частоте не дал ни у одного из трёх, и держать их за хвост незачем, —
+ * но ноль означал бы обход всех девяти карточек одним залпом.
  */
-const SOURCE_GAP_MS: Record<MarketSource, number> = { yahoo: 1200, fred: 300, nasdaq: 300, metal: 300 };
+const SOURCE_GAP_MS: Record<MarketSource, number> = { fred: 300, nasdaq: 300, metal: 300 };
 /** Столько отказов по частоте подряд означает «бюджет окна этого источника исчерпан». */
 const THROTTLE_GIVE_UP = 3;
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
@@ -15,7 +15,7 @@ import { ExchangeCardCoins } from "@/components/exchange-card/coins";
 import { ExchangeCardNewPairs } from "@/components/exchange-card/new-pairs";
 import { fetchWikipediaSummary } from "@/lib/wikipedia";
 import { getFreshExchangeDetail } from "@/lib/exchange-fresh";
-import { resolveCpId } from "@/lib/coinpaprika";
+import { resolveCpId, CP_TO_CG_ALIAS } from "@/lib/coinpaprika";
 import { connectorForDirectory } from "@/lib/cex-registry";
 import { serializeJsonLd } from "@/lib/json-ld";
 import type { Exchange } from "@/lib/coingecko";
@@ -53,7 +53,15 @@ export default async function ExchangeDetailPage({
 }) {
   const { locale, id } = await params;
   const row = await prisma.exchange.findUnique({ where: { id } });
-  if (!row) notFound();
+  // Ключ, слитый в главную строку каталога, ведёт на неё, а не в 404: по этим
+  // адресам биржа была на сайте, они разошлись ссылками и попали в выдачу.
+  // Карта та же, по которой прогон CoinPaprika пишет в главную строку, —
+  // второго списка соответствий не заводим (прецедент: один список локалей).
+  if (!row) {
+    const canonical = CP_TO_CG_ALIAS[id];
+    if (canonical && canonical !== id) permanentRedirect(`/${locale}/exchanges/${canonical}`);
+    notFound();
+  }
 
   const t = await getTranslations("exchangeCard");
 
