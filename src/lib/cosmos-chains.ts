@@ -175,7 +175,13 @@ export const COSMOS_CHAINS: readonly CosmosChain[] = [
   {
     key: "kava",
     label: "Kava",
-    defaultRestUrl: "https://api.data.kava.io",
+    // `api.data.kava.io` с 20 ноября 2026 отвечает 503 на любой путь (живой
+    // замер: шесть запросов подряд, все 503 от их nginx) — карточка стояла с
+    // `rpc_unreachable` и по фактам сети, и по выпуску. Polkachu отдаёт тот же
+    // `chain_id`, и это проверено: уборка AU уже ловила узел, который под
+    // именем Stride отдавал сеть Agoric, поэтому идентичность сверяется, а не
+    // предполагается.
+    defaultRestUrl: "https://kava-api.polkachu.com",
     chainId: "kava_2222-10",
     denom: "ukava",
     exponent: 6,

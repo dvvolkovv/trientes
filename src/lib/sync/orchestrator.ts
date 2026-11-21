@@ -1,7 +1,7 @@
 import type { MarketRow, GlobalSnap, ExchangeRates, CoinDetail, Exchange } from "@/lib/coingecko";
 import type { NewsItem } from "@/lib/news";
 import type { FearGreed } from "@/lib/fear-greed";
-import { marketFetchOrder, type MarketAskedAt, type MarketInstrument, type MarketQuote, type MarketSweep } from "@/lib/markets";
+import { isMarketSymbol, marketFetchOrder, type MarketAskedAt, type MarketInstrument, type MarketQuote, type MarketSweep } from "@/lib/markets";
 import { KEYS, TTL } from "./keys";
 import { mergeCuratedExchanges } from "@/lib/curated-exchanges";
 import { cpTypeToExchangeType, resolveCpId, type CoinPaprikaExchange, type CoinPaprikaExchangeDetail, type CoinPaprikaMarket } from "@/lib/coinpaprika";
@@ -172,7 +172,15 @@ export async function syncMarkets(deps: {
   try {
     const cached = await deps.redis.get(KEYS.markets);
     const parsed = cached ? JSON.parse(cached) : null;
-    if (Array.isArray(parsed)) previous = parsed as MarketQuote[];
+    // Карточка, которой в реестре больше нет, из снимка выбрасывается: иначе
+    // инструмент, снятый с табло (или переехавший на другой источник под новым
+    // ключом), остался бы в снимке навсегда — слияние переносит прежние
+    // карточки, а не только обновляет их. Ключ снимка при переезде ключей
+    // инструментов всё равно поднимается, но правило должно работать и без
+    // этого: снятие инструмента не повод чистить Redis руками.
+    if (Array.isArray(parsed)) {
+      previous = (parsed as MarketQuote[]).filter((q) => q && isMarketSymbol(q.symbol));
+    }
   } catch {
     previous = [];
   }

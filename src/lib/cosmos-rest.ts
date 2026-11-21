@@ -10,6 +10,7 @@
  */
 
 import { RpcError } from "./json-rpc";
+import { withRpcRetry, type RetryPolicy } from "./rpc-retry";
 
 export type HttpFetch = (
   input: string,
@@ -19,9 +20,7 @@ export type HttpFetch = (
 export type HttpOptions = {
   fetchImpl?: HttpFetch;
   timeoutMs?: number;
-  /** Одна повторная попытка по умолчанию: публичный узел любит отдавать 429. */
-  retries?: number;
-};
+} & RetryPolicy;
 
 async function once(url: string, fetchImpl: HttpFetch, timeoutMs: number): Promise<unknown> {
   let res: { ok: boolean; status: number; json(): Promise<unknown> };
@@ -55,21 +54,16 @@ async function once(url: string, fetchImpl: HttpFetch, timeoutMs: number): Promi
   return body;
 }
 
+/**
+ * Повторы — по общему правилу `withRpcRetry` (уборка BR): публичный REST
+ * Cosmos отказывает и 429, и HTML-страницей балансировщика, и то и другое
+ * приходит мгновенно, то есть пережидается окном времени, а не одной
+ * немедленной попыткой.
+ */
 export async function httpGetJson(url: string, opts: HttpOptions = {}): Promise<unknown> {
   const fetchImpl = opts.fetchImpl ?? (globalThis.fetch as unknown as HttpFetch);
   const timeoutMs = opts.timeoutMs ?? 8_000;
-  const retries = opts.retries ?? 1;
-
-  let last: unknown;
-  for (let attempt = 0; attempt <= retries; attempt++) {
-    try {
-      return await once(url, fetchImpl, timeoutMs);
-    } catch (e) {
-      last = e;
-      if (!(e instanceof RpcError) || e.code !== "rpc_unreachable") throw e;
-    }
-  }
-  throw last instanceof Error ? last : new RpcError("rpc_unreachable");
+  return withRpcRetry(() => once(url, fetchImpl, timeoutMs), opts);
 }
 
 /* ─── блок ────────────────────────────────────────────────────────────────── */

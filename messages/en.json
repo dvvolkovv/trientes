@@ -1399,7 +1399,7 @@
     "futures": "CME futures",
     "metals": "Precious metals",
     "asOf": "As of",
-    "dataNote": "Delayed, indicative data via CNBC — not for trading.",
+    "dataNote": "Delayed, indicative data — not for trading. Sources: FRED (St. Louis Fed), Nasdaq, Yahoo Finance, gold-api.",
     "empty": "Market data is not available right now.",
     "gold": "Gold",
     "silver": "Silver",

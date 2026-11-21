@@ -1399,7 +1399,7 @@
     "futures": "CME vadeli işlemleri",
     "metals": "Değerli metaller",
     "asOf": "İtibarıyla",
-    "dataNote": "CNBC üzerinden gecikmeli, gösterge niteliğinde veriler — alım satım için değildir.",
+    "dataNote": "Gecikmeli, gösterge niteliğinde veriler — alım satım için değildir. Kaynaklar: FRED (St. Louis Fed), Nasdaq, Yahoo Finance, gold-api.",
     "empty": "Piyasa verileri şu anda mevcut değil.",
     "gold": "Altın",
     "silver": "Gümüş",

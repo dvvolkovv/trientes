@@ -22,6 +22,7 @@
 
 import { type BitcoinChain } from "./bitcoin-chains";
 import { RpcError } from "./json-rpc";
+import { withRpcRetry } from "./rpc-retry";
 
 export type TextFetch = (
   input: string,
@@ -53,11 +54,8 @@ export type BitcoinHttpOptions = {
   backoffMs?: number;
 };
 
-/**
- * Больше этого числа попыток по одному запросу не делается ни при каком окне:
- * отказ бывает мгновенным, и без потолка цикл бился бы о узел тысячи раз.
- */
-export const MAX_ATTEMPTS = 15;
+/** Потолок попыток — общий для всех семей, см. `rpc-retry`. */
+export { MAX_ATTEMPTS } from "./rpc-retry";
 
 async function once(url: string, fetchImpl: TextFetch, timeoutMs: number): Promise<string> {
   let res: { ok: boolean; status: number; text(): Promise<string> };
@@ -86,8 +84,6 @@ async function once(url: string, fetchImpl: TextFetch, timeoutMs: number): Promi
   return body;
 }
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 /**
  * Текстовый ответ: высота головы и хэш блока приходят без JSON.
  *
@@ -101,24 +97,16 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export async function httpGetText(url: string, opts: BitcoinHttpOptions = {}): Promise<string> {
   const fetchImpl = opts.fetchImpl ?? (globalThis.fetch as unknown as TextFetch);
   const timeoutMs = opts.timeoutMs ?? 8_000;
-  const backoffMs = opts.backoffMs ?? 600;
-  const statusBudgetMs = opts.statusBudgetMs ?? 8_000;
-  const startedAt = Date.now();
-  let slowLeft = opts.retries ?? 1;
-
-  for (let attempt = 1; ; attempt++) {
-    try {
-      return await once(url, fetchImpl, timeoutMs);
-    } catch (e) {
-      if (!(e instanceof RpcError) || e.code !== "rpc_unreachable") throw e;
-      // Отказ со статусом ответа — быстрый, его пережидают; обрыв и таймаут —
-      // медленный, каждая попытка стоит таймаут, и их число считается.
-      const fromStatus = e.detail?.startsWith("http ") ?? false;
-      const mayRetry = fromStatus ? Date.now() - startedAt < statusBudgetMs : slowLeft-- > 0;
-      if (!mayRetry || attempt >= MAX_ATTEMPTS) throw e;
-      if (backoffMs > 0) await sleep(backoffMs);
-    }
-  }
+  // Само правило повторов живёт в `rpc-retry` и служит всем четырём семьям:
+  // оно родилось здесь (пачки 525 у Litecoin), а в уборке BR понадобилось
+  // Substrate и Cosmos — публичные узлы срезают по частоте так же.
+  return withRpcRetry(() => once(url, fetchImpl, timeoutMs), {
+    // Окно шире общего: пачки 520/525 у публичного узла Litecoin тянулись по
+    // одиннадцать отказов подряд — это замер, а не осторожность.
+    statusBudgetMs: 8_000,
+    backoffMs: 600,
+    ...opts,
+  });
 }
 
 export async function httpGetJson(url: string, opts: BitcoinHttpOptions = {}): Promise<unknown> {

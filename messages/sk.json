@@ -1399,7 +1399,7 @@
     "futures": "Futures na CME",
     "metals": "Drahé kovy",
     "asOf": "Stav k",
-    "dataNote": "Oneskorené, indikatívne údaje cez CNBC — nie na obchodovanie.",
+    "dataNote": "Oneskorené, indikatívne údaje — nie na obchodovanie. Zdroje: FRED (St. Louis Fed), Nasdaq, Yahoo Finance, gold-api.",
     "empty": "Trhové údaje momentálne nie sú k dispozícii.",
     "gold": "Zlato",
     "silver": "Striebro",

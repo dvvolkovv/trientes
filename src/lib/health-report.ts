@@ -17,7 +17,7 @@ import type Redis from "ioredis";
 import { KEYS, TTL } from "@/lib/sync/keys";
 import { RUN_COINPAPRIKA, quotaBlocked, readRunState } from "@/lib/sync/run-state";
 import { OWN_DEX_NAME } from "@/lib/coin-card-dex-market";
-import { stalestQuoteAt, type MarketQuote } from "@/lib/markets";
+import { stalestQuote, type MarketQuote } from "@/lib/markets";
 import { QUOTA_SERVICES, budgetVerdict, type BudgetVerdict } from "@/lib/quota/budget";
 import { readSpend } from "@/lib/quota/ledger";
 
@@ -325,14 +325,26 @@ export function renderHealthReport(f: HealthFacts): string {
  * врало бы и в другую сторону: оно всегда свежее. Голодание одного инструмента
  * и замолчавший источник видны только по штампам самих карточек.
  */
-async function marketsStalestAt(redis: Redis): Promise<Date | null> {
+async function marketsStalest(
+  redis: Redis,
+): Promise<{ at: Date | null; label: string }> {
+  const plain = { at: null, label: "табло рынков (ветхая карточка)" };
   const raw = await redis.get(KEYS.markets).catch(() => null);
-  if (!raw) return null;
+  if (!raw) return plain;
   try {
     const parsed: unknown = JSON.parse(raw);
-    return Array.isArray(parsed) ? stalestQuoteAt(parsed as MarketQuote[]) : null;
+    if (!Array.isArray(parsed)) return plain;
+    const stalest = stalestQuote(parsed as MarketQuote[]);
+    if (!stalest) return plain;
+    // Инструмент и его источник названы в самой строке: с 21 ноября табло
+    // читается четырьмя службами, и «ветхая карточка» без имени не говорит,
+    // какая из них замолчала.
+    return {
+      at: stalest.at,
+      label: `табло рынков (ветхая карточка ${stalest.quote.symbol}, ${stalest.quote.source})`,
+    };
   } catch {
-    return null;
+    return plain;
   }
 }
 
@@ -398,7 +410,7 @@ export async function collectHealth(deps: HealthDeps): Promise<HealthFacts> {
   const [listAt, globalAt, marketsAt, newsAt, cpRun] = await Promise.all([
     redisWrittenAt(redis, KEYS.topList, TTL.snapshot, now),
     redisWrittenAt(redis, KEYS.globalStats, TTL.globalStats, now),
-    marketsStalestAt(redis),
+    marketsStalest(redis),
     redisWrittenAt(redis, KEYS.news, TTL.news, now),
     // Обход каталога бирж своего следа в базе не оставляет: строки `Exchange`
     // трогает и прогон CoinGecko. Поэтому прогон пишет факт о себе сам.
@@ -412,7 +424,7 @@ export async function collectHealth(deps: HealthDeps): Promise<HealthFacts> {
     probe("мировые итоги", globalAt, 90, now),
     // Норма вдвое больше полного круга обхода: служба отдаёт одну-две карточки
     // из десяти за прогон (замер 18–20 ноября), то есть круг — три-пять часов.
-    probe("табло рынков (ветхая карточка)", marketsAt, MARKETS_STALE_MINUTES, now),
+    probe(marketsAt.label, marketsAt.at, MARKETS_STALE_MINUTES, now),
     probe("новости", newsAt, 120, now),
     probe("факты сетей", factsAt, 180, now),
     probe("выпуск монет", supplyAt, 180, now),

@@ -8,6 +8,8 @@
  * поддерживать одну и ту же классификацию сбоев.
  */
 
+import { withRpcRetry, type RetryPolicy } from "./rpc-retry";
+
 export type FetchLike = (
   input: string,
   init?: { method: string; headers: Record<string, string>; body: string; signal?: AbortSignal },
@@ -34,9 +36,7 @@ export class RpcError extends Error {
 export type RpcOptions = {
   fetchImpl?: FetchLike;
   timeoutMs?: number;
-  /** Одна повторная попытка по умолчанию: публичный узел любит отдавать 429. */
-  retries?: number;
-};
+} & RetryPolicy;
 
 async function once(
   url: string,
@@ -72,6 +72,13 @@ async function once(
   return payload.result;
 }
 
+/**
+ * Повторы — по общему правилу `withRpcRetry`: быстрый отказ (у публичного узла
+ * это 429 или 5xx от балансировщика) пережидается окном времени с паузой,
+ * медленный получает одну попытку. До уборки BR повтор был один и немедленный,
+ * и живой прогон 21 ноября записал Moonriver как `rpc_unreachable` при узле,
+ * который тем же методом отвечает за 0,3 с.
+ */
 export async function jsonRpc(
   url: string,
   method: string,
@@ -80,17 +87,5 @@ export async function jsonRpc(
 ): Promise<unknown> {
   const fetchImpl = opts.fetchImpl ?? (globalThis.fetch as unknown as FetchLike);
   const timeoutMs = opts.timeoutMs ?? 8_000;
-  const retries = opts.retries ?? 1;
-
-  let last: unknown;
-  for (let attempt = 0; attempt <= retries; attempt++) {
-    try {
-      return await once(url, method, params, fetchImpl, timeoutMs);
-    } catch (err) {
-      last = err;
-      // Повторять смысл есть только при обрыве связи: rpc_error воспроизведётся.
-      if (!(err instanceof RpcError) || err.code !== "rpc_unreachable") throw err;
-    }
-  }
-  throw last instanceof Error ? last : new RpcError("rpc_unreachable");
+  return withRpcRetry(() => once(url, method, params, fetchImpl, timeoutMs), opts);
 }
