@@ -15,6 +15,11 @@ async function main() {
   const userIds = users.map((u) => u.id);
   const productIds = products.map((p) => p.id);
   const warehouses = await prisma.warehouse.findMany({ where: { companyId: { in: companyIds } }, select: { id: true } });
+  // Дело правки карточки заведено на id самой правки, а не предприятия: убери
+  // только по companyId — и в очереди останется дело без объекта (живой прогон
+  // 22 ноября так и оставил одно).
+  const revisions = await prisma.companyRevision.findMany({ where: { companyId: { in: companyIds } }, select: { id: true } });
+  const revisionIds = revisions.map((r) => r.id);
   const warehouseIds = warehouses.map((w) => w.id);
 
   await prisma.$transaction([
@@ -31,7 +36,8 @@ async function main() {
     prisma.companyTeamRole.deleteMany({ where: { companyId: { in: companyIds } } }),
     prisma.companyFollow.deleteMany({ where: { companyId: { in: companyIds } } }),
     prisma.companyRevision.deleteMany({ where: { companyId: { in: companyIds } } }),
-    prisma.complianceCase.deleteMany({ where: { subjectId: { in: [...companyIds, ...productIds] } } }),
+    prisma.caseEvent.deleteMany({ where: { case: { subjectId: { in: [...companyIds, ...productIds, ...revisionIds] } } } }),
+    prisma.complianceCase.deleteMany({ where: { subjectId: { in: [...companyIds, ...productIds, ...revisionIds] } } }),
     prisma.company.deleteMany({ where: { id: { in: companyIds } } }),
     prisma.session.deleteMany({ where: { userId: { in: userIds } } }),
     prisma.account.deleteMany({ where: { userId: { in: userIds } } }),
