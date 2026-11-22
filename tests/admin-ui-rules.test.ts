@@ -5,6 +5,9 @@ import {
   ADMIN_BUTTON_SECONDARY,
   ADMIN_COLUMN,
   ADMIN_TILE,
+  ADMIN_FILTER_GRID,
+  ADMIN_FILTER_TILE,
+  ADMIN_TAB_STRIP,
 } from "@/lib/admin-ui";
 
 describe("правила вида админки", () => {
@@ -23,5 +26,19 @@ describe("правила вида админки", () => {
 
   it("плитка квадратная", () => {
     expect(ADMIN_TILE).toContain("aspect-square");
+  });
+
+  // Просьба владельца 22.11: внутри раздела листать только вниз. Полоса
+  // разделов — единственное место, где прокрутка вбок остаётся.
+  it("фильтры внутри раздела вбок не листаются", () => {
+    expect(ADMIN_FILTER_GRID).toContain("grid");
+    expect(ADMIN_FILTER_GRID).not.toContain("overflow-x");
+    expect(ADMIN_FILTER_TILE).not.toContain("overflow-x");
+    expect(ADMIN_TAB_STRIP).toContain("overflow-x-auto");
+  });
+
+  it("плитка фильтра не ниже пальца и не квадратная", () => {
+    expect(ADMIN_FILTER_TILE).toContain("min-h-[72px]");
+    expect(ADMIN_FILTER_TILE).not.toContain("aspect-square");
   });
 });

@@ -11,7 +11,7 @@ import {
   STATUS_FILTER_COLORS,
   statusFilterHex,
 } from "../src/lib/admin-sections";
-import { adminTabLook } from "../src/lib/admin-ui";
+import { adminChoiceLook } from "../src/lib/admin-ui";
 import { ADMIN_TABS } from "../src/lib/admin-tabs";
 import { QUEUES } from "../src/lib/cases/queues";
 
@@ -108,8 +108,8 @@ describe("цвет состояния заявки", () => {
 describe("яркость контура у нажатой кнопки", () => {
   it("цветная: нажатая несёт полный цвет и второй контур, ненажатая — вполсилы", () => {
     const hex = SECTION_COLORS.red;
-    const on = adminTabLook(hex, true);
-    const off = adminTabLook(hex, false);
+    const on = adminChoiceLook(hex, true);
+    const off = adminChoiceLook(hex, false);
     expect(on.style?.borderColor).toBe(hex);
     expect(String(on.style?.boxShadow)).toContain(hex);
     expect(off.style?.borderColor).toBe(`${hex}8c`);
@@ -117,14 +117,14 @@ describe("яркость контура у нажатой кнопки", () => {
   });
 
   it("без цвета: нажатая тоже получает второй контур", () => {
-    expect(adminTabLook(null, true).className).toContain("shadow-[0_0_0_1px");
-    expect(adminTabLook(null, false).className).not.toContain("shadow-");
+    expect(adminChoiceLook(null, true).className).toContain("shadow-[0_0_0_1px");
+    expect(adminChoiceLook(null, false).className).not.toContain("shadow-");
   });
 
   it("толщина рамки у обоих состояний одна — строка не дёргается", () => {
     for (const hex of [null, SECTION_COLORS.teal]) {
       for (const active of [true, false]) {
-        expect(adminTabLook(hex, active).className).not.toContain("border-2");
+        expect(adminChoiceLook(hex, active).className).not.toContain("border-2");
       }
     }
   });

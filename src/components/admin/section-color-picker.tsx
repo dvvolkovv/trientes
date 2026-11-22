@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { SECTION_COLORS, SECTION_COLOR_KEYS, type SectionColorKey } from "@/lib/admin-sections";
 import { setSectionColor } from "@/app/actions/admin-appearance";
-import { ADMIN_TAB, adminTabLook } from "@/lib/admin-ui";
+import { ADMIN_TAB, adminChoiceLook } from "@/lib/admin-ui";
 
 /**
  * Образец кнопки и палитра для одного раздела. Образец меняется сразу — иначе
@@ -25,7 +25,7 @@ export function SectionColorPicker({
   const [color, setColor] = useState<SectionColorKey | null>(initial);
   const [pending, startTransition] = useTransition();
   const hex = color ? SECTION_COLORS[color] : null;
-  const look = adminTabLook(hex, true);
+  const look = adminChoiceLook(hex, true);
 
   function pick(next: SectionColorKey | null) {
     setColor(next);

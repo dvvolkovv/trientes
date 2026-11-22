@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { AdminNav } from "@/components/admin/nav";
 import { RequestRow, type RequestRowData } from "@/components/admin/request-row";
 import { QueueMoved } from "@/components/admin/queue-moved";
-import { AdminFilterTabs } from "@/components/admin/filter-tabs";
+import { AdminFilterTiles } from "@/components/admin/filter-tiles";
 import { statusFilterHex } from "@/lib/admin-sections";
 
 export const dynamic = "force-dynamic";
@@ -37,6 +37,10 @@ export default async function AdminRequestsPage({
     include: { user: { select: { email: true } } },
   });
 
+  // Число на плитке — та же информативная часть, что у плиток очередей.
+  const counts = await prisma.coinRequest.groupBy({ by: ["status"], _count: { _all: true } });
+  const countOf = (s: string) => counts.find((c) => c.status === s)?._count._all ?? 0;
+
   const rows: RequestRowData[] = requests.map((r) => ({
     id: r.id,
     createdAt: r.createdAt.toISOString(),
@@ -61,13 +65,14 @@ export default async function AdminRequestsPage({
         </h1>
         <p className="text-muted">{t("requests.subtitle")}</p>
       </header>
-      <AdminFilterTabs
+      <AdminFilterTiles
         groups={[
           (["pending", "approved", "rejected"] as const).map((s) => ({
             key: s,
             href: s === "pending" ? "?" : `?tab=${s}`,
             label: t(`status.${s.toUpperCase() as "PENDING" | "APPROVED" | "REJECTED"}`),
             active: statusFilter === s.toUpperCase(),
+            count: countOf(s.toUpperCase()),
             colorHex: statusFilterHex(s),
           })),
         ]}

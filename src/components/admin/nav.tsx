@@ -5,7 +5,7 @@ import { loadViewerAccess } from "@/lib/authz/guard";
 import { canAny, canOwnerOnly } from "@/lib/authz/policy";
 import { readViewerSectionColors } from "@/lib/admin-appearance";
 import { sectionColorHex } from "@/lib/admin-sections";
-import { ADMIN_TAB, ADMIN_TAB_STRIP, adminTabLook } from "@/lib/admin-ui";
+import { ADMIN_TAB, ADMIN_TAB_STRIP, adminChoiceLook } from "@/lib/admin-ui";
 import { ADMIN_TABS } from "@/lib/admin-tabs";
 
 
@@ -25,7 +25,7 @@ export async function AdminNav({ locale, active }: { locale: string; active: str
       <div className={ADMIN_TAB_STRIP}>
         {tabs.map((tab) => {
           const isActive = active === tab.key;
-          const look = adminTabLook(sectionColorHex(colors, tab.key), isActive);
+          const look = adminChoiceLook(sectionColorHex(colors, tab.key), isActive);
           return (
             <Link
               key={tab.key}
@@ -43,7 +43,7 @@ export async function AdminNav({ locale, active }: { locale: string; active: str
           title={t("appearance.title")}
           aria-label={t("appearance.title")}
           aria-current={active === "appearance" ? "page" : undefined}
-          className={`${ADMIN_TAB} ${adminTabLook(null, active === "appearance").className}`}
+          className={`${ADMIN_TAB} ${adminChoiceLook(null, active === "appearance").className}`}
         >
           🎨
         </Link>

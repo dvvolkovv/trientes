@@ -3,7 +3,7 @@ import { requireOwner } from "@/lib/authz/guard";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { AdminNav } from "@/components/admin/nav";
-import { AdminFilterTabs } from "@/components/admin/filter-tabs";
+import { AdminFilterTiles } from "@/components/admin/filter-tiles";
 
 export const dynamic = "force-dynamic";
 
@@ -98,8 +98,8 @@ export default async function AdminAnalyticsPage({
         <p className="text-muted">{t("subtitle")}</p>
       </header>
 
-      {/* Окно наблюдения смысла цвета не несёт — цвет остаётся за состоянием. */}
-      <AdminFilterTabs
+      {/* Окно наблюдения — не количество и не состояние: ни числа, ни цвета. */}
+      <AdminFilterTiles
         groups={[
           (["24h", "7d", "30d"] as const).map((opt) => ({
             key: opt,
@@ -120,7 +120,10 @@ export default async function AdminAnalyticsPage({
         {dailyRows.length === 0 ? (
           <p className="text-muted text-sm">{t("empty")}</p>
         ) : (
-          <div className="flex items-end gap-[2px] h-32">
+          // Столбиков бывает 168 (неделя по часам), и при зазоре 2 px они не
+          // влезали в телефон — страница получала боковую прокрутку, которой на
+          // этом экране быть не должно (поймано живым прогоном на 390 px).
+          <div className="flex items-end gap-px h-32 sm:gap-[2px]">
             {dailyRows.map((r, i) => {
               const n = Number(r.n);
               const h = Math.max(2, Math.round((n / maxBucket) * 128));
@@ -129,7 +132,7 @@ export default async function AdminAnalyticsPage({
                   key={i}
                   title={`${r.bucket.toISOString().slice(0, 16)}: ${n}`}
                   style={{ height: `${h}px` }}
-                  className="flex-1 min-w-[2px] bg-accent/70 rounded-sm"
+                  className="flex-1 min-w-px sm:min-w-[2px] bg-accent/70 rounded-sm"
                 />
               );
             })}
@@ -159,7 +162,10 @@ function StatCard({ label, value }: { label: string; value: string }) {
 function ListCard({ title, rows }: { title: string; rows: { label: string; n: number }[] }) {
   const total = rows.reduce((s, r) => s + r.n, 0) || 1;
   return (
-    <div className="bg-card border border-hairline rounded-[16px] p-4">
+    // `min-w-0` обязателен: ячейка сетки по умолчанию не уже своего содержимого,
+    // и длинный адрес страницы растягивал карточку шире телефона, а `truncate`
+    // внутри при этом не срабатывал вовсе.
+    <div className="bg-card border border-hairline rounded-[16px] p-4 min-w-0">
       <h2 className="text-sm font-semibold uppercase tracking-wider text-muted mb-3">{title}</h2>
       {rows.length === 0 ? (
         <p className="text-muted text-sm">—</p>
@@ -167,8 +173,8 @@ function ListCard({ title, rows }: { title: string; rows: { label: string; n: nu
         <ul className="space-y-1.5">
           {rows.map((r, i) => (
             <li key={i} className="relative">
-              <div className="flex items-center justify-between text-sm gap-3">
-                <span className="truncate">{r.label}</span>
+              <div className="flex items-center justify-between text-sm gap-3 min-w-0">
+                <span className="truncate min-w-0">{r.label}</span>
                 <span className="num text-muted shrink-0">{fmtInt(r.n)}</span>
               </div>
               <div

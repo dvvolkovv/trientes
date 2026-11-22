@@ -3,7 +3,7 @@ import { requireAnyQueue } from "@/lib/authz/guard";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { AdminNav } from "@/components/admin/nav";
-import { AdminFilterTabs } from "@/components/admin/filter-tabs";
+import { AdminFilterTiles } from "@/components/admin/filter-tiles";
 import { statusFilterHex } from "@/lib/admin-sections";
 import { PointRow, type PointRowData } from "@/components/admin/point-row";
 import { CompanyRow, type CompanyRowData } from "@/components/admin/company-row";
@@ -40,25 +40,46 @@ export default async function AdminBusinessPage({
   const status =
     tab === "approved" ? "APPROVED" : tab === "rejected" ? "REJECTED" : "PENDING";
 
+  // Числа на плитках считаются одним заходом: область показывает, сколько в ней
+  // записей текущего состояния, состояние — сколько их в текущей области.
+  const [companyCounts, pointCounts, kybCounts, deletedCompanies, deletedPoints] =
+    await Promise.all([
+      prisma.company.groupBy({ by: ["status"], where: NOT_DELETED, _count: { _all: true } }),
+      prisma.companyPoint.groupBy({ by: ["status"], where: LIVE_POINT, _count: { _all: true } }),
+      prisma.company.groupBy({ by: ["kybStatus"], where: NOT_DELETED, _count: { _all: true } }),
+      prisma.company.count({ where: { deletedAt: { not: null } } }),
+      prisma.companyPoint.count({ where: { deletedAt: { not: null } } }),
+    ]);
+  const countIn = (s: Scope, st: string): number => {
+    if (s === "deleted") return deletedCompanies + deletedPoints;
+    if (s === "points") return pointCounts.find((c) => c.status === st)?._count._all ?? 0;
+    if (s === "kyb") return kybCounts.find((c) => c.kybStatus === st)?._count._all ?? 0;
+    return companyCounts.find((c) => c.status === st)?._count._all ?? 0;
+  };
+
   const tabsRow = (
-    <AdminFilterTabs
+    <AdminFilterTiles
       groups={[
         (["companies", "points", "kyb", "deleted"] as const).map((s) => ({
           key: s,
           href: s === "companies" ? "?" : `?scope=${s}`,
           label: t(`business.scope.${s}`),
           active: scope === s,
+          count: countIn(s, status),
         })),
-        // Состояние заявки красится смыслом: янтарный / зелёный / красный.
-        (["pending", "approved", "rejected"] as const).map((s) => {
+        // У удалённых записей состояния нет — страница его и не читает; три
+        // плитки с одним и тем же числом говорили бы неправду.
+        scope === "deleted" ? [] : (["pending", "approved", "rejected"] as const).map((s) => {
           const params = new URLSearchParams();
           if (scope === "points") params.set("scope", "points");
+          if (scope === "kyb") params.set("scope", "kyb");
           if (s !== "pending") params.set("tab", s);
           return {
             key: s,
             href: params.toString() ? `?${params.toString()}` : "?",
             label: t(`status.${s.toUpperCase() as "PENDING" | "APPROVED" | "REJECTED"}`),
             active: status === s.toUpperCase(),
+            count: countIn(scope, s.toUpperCase()),
             colorHex: statusFilterHex(s),
           };
         }),

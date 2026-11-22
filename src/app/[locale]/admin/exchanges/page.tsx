@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { AdminNav } from "@/components/admin/nav";
 import { ExchangeRow, type ExchangeRowData } from "@/components/admin/exchange-row";
 import { QueueMoved } from "@/components/admin/queue-moved";
-import { AdminFilterTabs } from "@/components/admin/filter-tabs";
+import { AdminFilterTiles } from "@/components/admin/filter-tiles";
 import { statusFilterHex } from "@/lib/admin-sections";
 
 export const dynamic = "force-dynamic";
@@ -36,6 +36,9 @@ export default async function AdminExchangesPage({
     include: { owner: { select: { username: true } } },
   });
 
+  const counts = await prisma.registeredExchange.groupBy({ by: ["status"], _count: { _all: true } });
+  const countOf = (s: string) => counts.find((c) => c.status === s)?._count._all ?? 0;
+
   const rows: ExchangeRowData[] = exchanges.map((x) => ({
     id: x.id,
     displayName: x.displayName,
@@ -62,13 +65,14 @@ export default async function AdminExchangesPage({
         </h1>
         <p className="text-muted">{t("exchanges.subtitle")}</p>
       </header>
-      <AdminFilterTabs
+      <AdminFilterTiles
         groups={[
           (["pending", "approved", "rejected"] as const).map((s) => ({
             key: s,
             href: s === "pending" ? "?" : `?tab=${s}`,
             label: t(`status.${s.toUpperCase() as "PENDING" | "APPROVED" | "REJECTED"}`),
             active: status === s.toUpperCase(),
+            count: countOf(s.toUpperCase()),
             colorHex: statusFilterHex(s),
           })),
         ]}

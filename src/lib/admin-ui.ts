@@ -57,7 +57,7 @@ export const ADMIN_TAB_STRIP =
   "md:flex-wrap md:overflow-visible md:px-0 md:[touch-action:auto]";
 
 /**
- * Вид кнопки раздела или фильтра одним правилом — его читают полоса админки,
+ * Вид выбора — кнопки раздела в шапке и плитки фильтра — одним правилом — его читают полоса админки,
  * ряды фильтров и образец на странице «Вид разделов». Своя копия правил вида в
  * проекте уже однажды расходилась, поэтому правило одно.
  *
@@ -66,7 +66,7 @@ export const ADMIN_TAB_STRIP =
  * `border-2`: толщина рамки меняет внутренний размер кнопки, и строка дёргалась
  * бы при переключении — ровно та болезнь, от которой полосу уже лечили.
  */
-export function adminTabLook(
+export function adminChoiceLook(
   hex: string | null | undefined,
   active: boolean,
 ): { style?: CSSProperties; className: string } {
@@ -86,3 +86,17 @@ export function adminTabLook(
     className: active ? "text-foreground" : "text-muted hover:text-foreground",
   };
 }
+
+
+/**
+ * Плитка фильтра внутри раздела. Не кнопка полосы: полосу листают вбок, а
+ * просьба владельца прямо об этом — «на телефоне не очень, лучше снизу вверх».
+ * Сетка переносит плитки вниз, и боковой прокрутки на экране не остаётся вовсе.
+ *
+ * Высота минимальная, а не квадрат как у плиток очередей: квадрат на телефоне
+ * съедает пол-экрана ещё до первой строки списка.
+ */
+export const ADMIN_FILTER_TILE =
+  "flex min-h-[72px] flex-col justify-center gap-1.5 rounded-[18px] border bg-card px-4 py-3 transition-colors";
+
+export const ADMIN_FILTER_GRID = "grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4";
