@@ -16,11 +16,18 @@ export function PoiHours({
   hours,
   timezone,
   fallbackText,
+  note,
 }: {
   hours?: WeekHours | null;
   timezone?: string | null;
   /** Текст точки зеркала BTC Map: синтаксис OSM мы не разбираем. */
   fallbackText?: string | null;
+  /**
+   * Чьё это расписание (слайс BX). У точки без своих часов показываются часы
+   * конторы, а это не часы торговли — и сказать об этом надо словами, иначе
+   * покупатель поедет к закрытой двери, уверенный, что мы обещали открытую.
+   */
+  note?: string | null;
 }) {
   const t = useTranslations("business.hours");
   const week = hours && !isEmptyWeek(hours) ? hours : null;
@@ -49,6 +56,7 @@ export function PoiHours({
               : ""}
           </div>
         ) : null}
+        {note ? <div className="text-[11px] text-muted">{note}</div> : null}
         <div className="space-y-0.5">
           {WEEK_DAYS.map((day) => {
             const d = week[day] ?? { kind: "closed" as const };

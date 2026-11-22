@@ -1319,8 +1319,7 @@
     "acceptedAny": "Crypto accepted",
     "ownListing": "Own listing",
     "showcasePhotos": "Photos",
-    "aboutCompany": "About the company",
-    "openCompany": "Company profile",
+    "openCompany": "Open company page",
     "claimTitle": "This place has not claimed itself on Trientes yet.",
     "claimCta": "This is my business",
     "routeOnMap": "Show on the map",
@@ -1408,7 +1407,14 @@
       "markHint": "A marked place is a reminder, not a detour: the route stays as it is, and the voice tells you before you reach it.",
       "open": "Show on map",
       "atStart": "at the start"
-    }
+    },
+    "hoursFromCompany": "Company office hours",
+    "returnsTitle": "Returns",
+    "returnsDays": "{days} days",
+    "requisitesTitle": "Company details",
+    "registrationNumber": "Registration number",
+    "taxNumber": "Tax number",
+    "productsTitle": "On sale here"
   },
   "markets": {
     "title": "Markets",
@@ -2456,7 +2462,8 @@
     "returnsUnknown": "The seller has not stated a return policy.",
     "officeHoursTitle": "Office hours",
     "officeHoursHint": "When the phone, email and staff answer. Trading hours are listed with each point of sale.",
-    "documentsTitle": "Documents"
+    "documentsTitle": "Documents",
+    "hoursFromCompany": "Company office hours — trading hours are not set for this point."
   },
   "companiesDirectory": {
     "kicker": "Directory",

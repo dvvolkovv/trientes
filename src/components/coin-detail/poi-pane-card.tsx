@@ -9,6 +9,7 @@ import { PoiReportDialog } from "@/components/coin-detail/poi-report-dialog";
 import { reportablePointId, TILE_PAD_CLASS, TILE_SHELL } from "@/lib/poi-tile";
 import { safeHttpUrl } from "@/lib/safe-url";
 import { PoiHours } from "@/components/coin-detail/poi-hours";
+import { useTranslations } from "next-intl";
 
 /**
  * Страница «Карточка»: только то, что проверили мы — адрес из OSM, монеты из
@@ -38,6 +39,7 @@ export function PoiPaneCard({
   onStreetView: () => void;
   t: StepTranslator;
 }) {
+  const tc = useTranslations("common");
   const website = safeHttpUrl(poi.website);
   const photo = usePoiPhoto(poi, website);
   const hasAccepted = poi.acceptedCoins.length > 0 || poi.acceptedGeneric || poi.lightning;
@@ -117,17 +119,61 @@ export function PoiPaneCard({
               <span className="flex-1 truncate text-left">{poi.promo.title}</span>
             </a>
           )}
-          {poi.description && <p className="text-[13px] leading-relaxed text-muted">{poi.description}</p>}
+          {poi.description && (
+            <p className="text-[13px] leading-relaxed text-muted">
+              {poi.description}
+              {/* Перевод — производный текст, а не само заявление продавца: знак
+                  стоит там же, где на витрине (решение BB и карточки монеты). */}
+              {poi.descriptionTranslated ? (
+                <span className="ml-2 rounded border border-hairline px-1.5 py-0.5 text-[10px] uppercase tracking-[0.12em] align-middle">
+                  {tc("machineTranslated")}
+                </span>
+              ) : null}
+            </p>
+          )}
 
           {/* Часы: у своей точки расписание со состоянием «открыто сейчас» (BN), у
               точки зеркала BTC Map — прежний текст из тегов OSM как есть. */}
-          <PoiHours hours={poi.hours} timezone={poi.timezone} fallbackText={poi.openingHours} />
+          <PoiHours
+            hours={poi.hours}
+            timezone={poi.timezone}
+            fallbackText={poi.openingHours}
+            note={poi.hoursFrom === "company" ? t("hoursFromCompany") : null}
+          />
           {poi.address && (
             <div className="flex gap-2 text-[13px] leading-snug">
               <span aria-hidden className="w-5 shrink-0 text-center text-muted">
                 📍
               </span>
               <span className="flex-1">{poi.address}</span>
+            </div>
+          )}
+
+          {/* Что тут продают (слайс BX). Строки, а не плитки: карточка точки
+              отвечает на «что тут есть», а витрина товара — на «кто продаёт». */}
+          {poi.offers && poi.offers.length > 0 && (
+            <div className="space-y-1.5">
+              <h3 className="text-[11px] uppercase tracking-[0.16em] text-muted">{t("productsTitle")}</h3>
+              {poi.offers.map((o) => (
+                <a key={o.slug} href={`/${locale}/product/${o.slug}`} className={ROW_BTN}>
+                  <span aria-hidden>📦</span>
+                  <span className="flex-1 truncate text-left">{o.name}</span>
+                  {o.price && <span className="num shrink-0 text-[12px] text-muted">{o.price}</span>}
+                </a>
+              ))}
+            </div>
+          )}
+
+          {/* Политика возврата (BW): показывается там же, где названа цена, —
+              то есть рядом с товаром, а не в конце карточки. */}
+          {(poi.returnPolicy || poi.returnDays) && (
+            <div className="flex gap-2 text-[13px] leading-snug">
+              <span aria-hidden className="w-5 shrink-0 text-center text-muted">↩️</span>
+              <span className="flex-1 text-muted">
+                <span className="text-foreground">{t("returnsTitle")}</span>
+                {poi.returnDays ? ` · ${t("returnsDays", { days: poi.returnDays })}` : ""}
+                {poi.returnPolicy ? ` · ${poi.returnPolicy}` : ""}
+              </span>
             </div>
           )}
 

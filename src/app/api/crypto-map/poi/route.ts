@@ -20,6 +20,10 @@ export async function GET(req: Request) {
   const selector = parseCoinSelector(url.searchParams.get("coin"));
   const symbol = url.searchParams.get("symbol") ?? "btc";
   const productSlug = url.searchParams.get("product");
+  // Язык страницы: описание предприятия отдаётся переведённым, если перевод уже
+  // лежит в кеше. Карта — один фид на все двенадцать языков, и без этого
+  // параметра карточка показывала бы немецкий текст на русской странице.
+  const locale = url.searchParams.get("locale") ?? undefined;
 
   const bbox = parseBbox(bboxParam);
   if (!bbox) return NextResponse.json({ error: "invalid bbox" }, { status: 400 });
@@ -36,7 +40,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ pois: [] });
     }
     try {
-      const points = await fetchApprovedPointsInBbox(bbox, selector, pointIds);
+      const points = await fetchApprovedPointsInBbox(bbox, selector, pointIds, locale);
       return NextResponse.json({ pois: points });
     } catch {
       return NextResponse.json({ pois: [] });
@@ -79,7 +83,7 @@ export async function GET(req: Request) {
 
   let company: Poi[] = [];
   try {
-    company = await fetchApprovedPointsInBbox(bbox, selector);
+    company = await fetchApprovedPointsInBbox(bbox, selector, undefined, locale);
   } catch {
     // DB hiccup — degrade to OSM only.
   }

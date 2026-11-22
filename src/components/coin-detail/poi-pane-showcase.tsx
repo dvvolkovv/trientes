@@ -65,11 +65,14 @@ export function PoiPaneShowcase({
 
       {poi.description && <p className="text-[14px] leading-relaxed">{poi.description}</p>}
 
-      {own && (
-        <section className="space-y-1.5">
-          <h3 className="text-[11px] uppercase tracking-[0.16em] text-muted">{t("aboutCompany")}</h3>
-          <p className="text-[13px] leading-relaxed text-muted">{poi.category}</p>
-        </section>
+      {/* Ссылка на саму витрину предприятия: до слайса BX её не было вовсе, и
+          человек, открывший точку с карты, не мог дойти до того, кто за ней стоит. */}
+      {own && poi.companyId && (
+        <a href={`/${locale}/companies/${poi.companyId}`} className={ROW_BTN}>
+          <span aria-hidden>🏢</span>
+          {t("openCompany")}
+          <span className="ml-auto text-muted">→</span>
+        </a>
       )}
 
       <section className="space-y-2">
@@ -102,6 +105,25 @@ export function PoiPaneShowcase({
           </a>
         )}
       </section>
+
+      {/* Реквизиты — те же, что на витрине (слайс BV): публичные реквизиты,
+          которые видны в одном месте и не видны в другом, — это два разных
+          предприятия в глазах покупателя. */}
+      {own && poi.requisites && (poi.requisites.registrationNumber || poi.requisites.taxNumber) && (
+        <section className="space-y-1">
+          <h3 className="text-[11px] uppercase tracking-[0.16em] text-muted">{t("requisitesTitle")}</h3>
+          {poi.requisites.registrationNumber && (
+            <p className="text-[12px] text-muted">
+              {t("registrationNumber")}: <span className="num text-foreground">{poi.requisites.registrationNumber}</span>
+            </p>
+          )}
+          {poi.requisites.taxNumber && (
+            <p className="text-[12px] text-muted">
+              {t("taxNumber")}: <span className="num text-foreground">{poi.requisites.taxNumber}</span>
+            </p>
+          )}
+        </section>
+      )}
 
       {poi.socials.length > 0 && (
         <div className="flex flex-wrap gap-2">

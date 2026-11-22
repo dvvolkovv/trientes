@@ -199,6 +199,8 @@ export type Poi = {
   /** Логотип заведения для шапки карточки; у точки зеркала BTC Map его нет. */
   logoUrl: string | null;
   description: string | null;
+  /** Описание показано в переводе (слайс BX) — рядом стоит знак «машинный перевод». */
+  descriptionTranslated?: boolean;
   /** Жалоб набралось достаточно: точка на карте, но с пометкой «проверяется». */
   underReview?: boolean;
   /**

@@ -13,6 +13,7 @@ import { prisma } from "@/lib/prisma";
 import { NOT_DELETED } from "@/lib/soft-delete";
 import { HoursTable, OpenBadge } from "@/components/business/hours-view";
 import { parseWeekHours } from "@/lib/opening-hours";
+import { inheritedHours } from "@/lib/company-inherit";
 import { companyMode } from "@/lib/company-mode";
 import { effectiveCategory, merchantCategory } from "@/lib/merchant-categories";
 import { industry as industryOf } from "@/lib/industries";
@@ -142,6 +143,10 @@ export default async function PublicCompanyPage({
     hasPhysicalPoints: physicalPoints.some((p) => !p.suspendedAt),
   });
   const officeHours = parseWeekHours(company.hours);
+  // Часы точки: своё сильнее, пустое означает «как у предприятия» (слайс BX).
+  // Та же функция, что читает фид карты, — иначе витрина и карта разошлись бы.
+  const pointHours = (p: { hours: unknown; timezone: string | null }) =>
+    inheritedHours({ hours: p.hours, timezone: p.timezone }, { hours: company.hours, timezone: company.timezone });
   const publicDocs = company.documents.filter((d) => isCompanyDocKind(d.kind));
   // Группы документов: ключ один на витрину и кабинет, название своей рубрики —
   // слово продавца, название реестровой — наш перевод.
@@ -431,7 +436,7 @@ export default async function PublicCompanyPage({
                       const cat = merchantCategory(effectiveCategory(p.category, company.category));
                       return cat ? <span>{cat.emoji} {tb(`category.${cat.key}`)}</span> : null;
                     })()}
-                    <OpenBadge hours={parseWeekHours(p.hours)} timezone={p.timezone} />
+                    <OpenBadge hours={pointHours(p).hours} timezone={pointHours(p).timezone} />
                     {/* В навигатор и прямо на эту точку: `?point=<id>` открывает
                         карту на ней с раскрытой карточкой. Прежде ссылка вела на
                         `/coin/bitcoin` — страницу монеты, где карта лишь один из
@@ -445,10 +450,13 @@ export default async function PublicCompanyPage({
                   </div>
                   <div className="mt-1.5">
                     <HoursTable
-                      hours={parseWeekHours(p.hours)}
-                      timezone={p.timezone}
+                      hours={pointHours(p).hours}
+                      timezone={pointHours(p).timezone}
                       fallbackText={p.openingHours}
                     />
+                    {pointHours(p).from === "company" ? (
+                      <p className="mt-1 text-[11px] text-muted">{t("hoursFromCompany")}</p>
+                    ) : null}
                   </div>
                   {photos.length > 0 ? (
                     <div className="mt-2 flex gap-1.5 overflow-x-auto">

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { PUBLIC_COMPANY } from "@/lib/company-visibility";
 import { readPointPromos } from "@/lib/promos/read";
 import { readPointOffers } from "@/lib/products/offers-read";
+import { localizedProse } from "@/lib/localized-prose";
 import type { AcceptedCoin, Bbox, CoinSelector, Poi, PoiLayer, Social } from "@/lib/crypto-map";
 import { effectiveCategory } from "@/lib/merchant-categories";
 import { inheritedCoins, inheritedHours } from "@/lib/company-inherit";
@@ -303,6 +304,8 @@ export async function fetchApprovedPointsInBbox(
    * не «все точки», а «ни одной»: товара нет нигде, и карта обязана быть пустой.
    */
   onlyPointIds?: readonly string[],
+  /** Язык страницы: описание берётся переведённым, если перевод уже в кеше. */
+  locale?: string,
 ): Promise<Poi[]> {
   if (onlyPointIds && onlyPointIds.length === 0) return [];
   const rows = await prisma.companyPoint.findMany({
@@ -379,6 +382,38 @@ export async function fetchApprovedPointsInBbox(
     ),
   };
   const pois = rows.map((r) => companyPointToPoi(r, selector, registry));
+  // Описание на языке страницы (слайс BX). Прежде карточка с карты показывала
+  // немецкий текст там, где витрина того же предприятия показывала русский: один
+  // текст не может быть переведён в одном месте и не переведён в другом. Берём
+  // **только из кеша** — промах отдаёт оригинал и модель не зовёт: в кадре бывает
+  // двести точек, и мягкий дедлайн на каждую остановил бы карту (правило
+  // `localizedProse`, то же, что у списков).
+  if (locale) {
+    await Promise.all(
+      pois.map(async (poi, i) => {
+        if (!poi.description) return;
+        const row = rows[i];
+        // Чей это текст — того и ключ кеша: описание точки и описание
+        // предприятия переводятся порознь и под своими именами.
+        const own = row.description !== null && row.description !== undefined;
+        try {
+          const res = await localizedProse({
+            ns: own ? "companyPoint" : "company",
+            id: own ? row.id : row.companyId,
+            locale,
+            sourceLocale: null,
+            fields: { description: poi.description },
+            cacheOnly: true,
+          });
+          if (res.fields.description) poi.description = res.fields.description;
+          poi.descriptionTranslated = res.translated;
+        } catch {
+          // Перевод — добавка: сбой оставляет оригинал, а не пустую карточку.
+        }
+      }),
+    );
+  }
+
   // Товары на полках этих точек (слайс BX) — одним запросом на кадр. Сбой чтения
   // оставляет карточку без списка товаров, но не без точки: товар — добавка.
   try {

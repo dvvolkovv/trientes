@@ -548,7 +548,7 @@ export default function CryptoNavigator({
     poiAbortRef.current = controller;
     setLoading(true);
     const productQuery = productSlug ? `&product=${encodeURIComponent(productSlug)}` : "";
-    fetch(`/api/crypto-map/poi?bbox=${bbox}&coin=${encodeURIComponent(coinId)}&symbol=${encodeURIComponent(symbol)}${productQuery}`, {
+    fetch(`/api/crypto-map/poi?bbox=${bbox}&coin=${encodeURIComponent(coinId)}&symbol=${encodeURIComponent(symbol)}&locale=${encodeURIComponent(locale)}${productQuery}`, {
       signal: controller.signal,
     })
       .then((r) => r.json())
