@@ -5,9 +5,17 @@ import { readUserFollows } from "@/lib/promos/read";
 import { SubscriptionsControls } from "@/components/cabinet/subscriptions-controls";
 
 /**
- * «Подписки» в кабинете покупателя (ТЗ 4.3): список магазинов, «не писать мне» по
- * каждому и общий выключатель рассылок. Отключение — право человека, поэтому оно живёт
- * там, где он его искать будет, а не в карточке магазина.
+ * «Подписки» в кабинете покупателя (ТЗ 4.3): магазины, на которые человек подписан,
+ * «не писать мне» по каждому и общий выключатель рассылок. Отключение — право
+ * человека, поэтому оно живёт там, где он его искать будет, а не в карточке магазина.
+ *
+ * Слайс BX. Предприятие рисуется **той же плиткой**, какой его видит собственный
+ * владелец (`companies-section.tsx`): знак, витринное имя, юридическое лицо. Человек
+ * узнаёт магазин в лицо, а не читает подчёркнутую ссылку, — и это та же вещь на
+ * экране, что и в кабинете владельца, а не вторая её запись.
+ *
+ * Своего заголовка секция не печатает: его печатает `CabinetSectionShell`, и две
+ * «Подписки» подряд — ровно то, что владелец увидел глазом.
  */
 export async function SubscriptionsSection({ locale }: { locale: string }) {
   const session = await auth();
@@ -22,14 +30,17 @@ export async function SubscriptionsSection({ locale }: { locale: string }) {
 
   return (
     <section id="subscriptions">
-      <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-1">{t("title")}</h2>
-      <p className="text-sm text-muted mb-4">{t("subtitle")}</p>
+      <p className="mb-4 text-sm text-muted">{t("subtitle")}</p>
       <SubscriptionsControls
         locale={locale}
         promosOn={user?.notifyPromos ?? true}
         rows={follows.map((f) => ({
           companyId: f.companyId,
           name: f.company.displayName,
+          legalName: f.company.legalName,
+          logoUrl: f.company.logoUrl,
+          logoShape: f.company.logoShape,
+          logoFit: f.company.logoFit,
           muted: f.muted,
           // Снятое надзором или нелистованное предприятие в списке остаётся: человек
           // подписывался сам и должен видеть, на что подписан, даже когда витрины нет.

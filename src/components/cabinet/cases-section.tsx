@@ -25,7 +25,7 @@ export async function CasesSection({ locale, userId }: { locale: string; userId:
 
   return (
     <section id="cases" className="space-y-6">
-      <h2 className="text-[24px] font-bold tracking-[-0.02em]">{t("title")}</h2>
+      {/* Заголовок печатает оболочка раздела — см. `subscriptions-section`. */}
       <p className="text-muted">{t("subtitle")}</p>
       <ul className="flex flex-col gap-3">
         {cases.map((c) => {

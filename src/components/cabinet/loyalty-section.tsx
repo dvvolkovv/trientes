@@ -22,7 +22,7 @@ export async function LoyaltySection() {
 
   return (
     <section id="loyalty">
-      <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-1">{t("title")}</h2>
+      {/* Заголовок печатает оболочка раздела — см. `subscriptions-section`. */}
       <p className="text-sm text-muted mb-4">{t("subtitle")}</p>
 
       <p className="text-sm mb-4">

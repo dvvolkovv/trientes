@@ -197,7 +197,12 @@ export async function readUserFollows(userId: string) {
       companyId: true,
       muted: true,
       company: {
-        select: { id: true, displayName: true, logoUrl: true, status: true, suspendedAt: true, deletedAt: true },
+        // Знак и юридическое лицо — для плитки подписки (слайс BX): она та же,
+        // что в кабинете владельца, и поля ей нужны те же.
+        select: {
+          id: true, displayName: true, legalName: true, logoUrl: true,
+          logoShape: true, logoFit: true, status: true, suspendedAt: true, deletedAt: true,
+        },
       },
     },
   });

@@ -45,10 +45,10 @@ export async function AlertsSection({
 
   return (
     <section id="alerts" className="scroll-mt-24 space-y-6">
-      <div>
-        <h2 className="text-[20px] md:text-[24px] font-bold tracking-[-0.02em] mb-1">{t("title")}</h2>
-        <p className="text-sm text-muted">{t("subtitle")}</p>
-      </div>
+      {/* Заголовок печатает оболочка раздела (`CabinetSectionShell`). Своего
+          здесь нет: две одинаковые строки подряд — то, что владелец увидел глазом
+          в «Подписках», и болезнь была общей для всех разделов (слайс BX). */}
+      <p className="text-sm text-muted">{t("subtitle")}</p>
 
       <NotifyChannelsForm
         notifyTelegram={notifyTelegram}

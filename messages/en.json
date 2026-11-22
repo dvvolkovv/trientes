@@ -4481,7 +4481,9 @@
       "notLive": "not on the showcase right now",
       "mute": "Mute",
       "unmute": "Unmute",
-      "unfollow": "Unfollow"
+      "unfollow": "Unfollow",
+      "switchOn": "on",
+      "switchOff": "off"
     }
   },
   "cabinetPromos": {

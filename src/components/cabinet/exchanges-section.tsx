@@ -14,7 +14,7 @@ export async function ExchangesSection({ locale }: { locale: string }) {
   const t = await getTranslations("cabinet.exchanges");
   return (
     <section id="exchanges" className="space-y-6">
-      <h2 className="text-[24px] font-bold tracking-[-0.02em]">{t("title")}</h2>
+      {/* Заголовок печатает оболочка раздела — см. `subscriptions-section`. */}
       {exchanges.length === 0 ? (
         <p className="text-muted">{t("empty")}</p>
       ) : (

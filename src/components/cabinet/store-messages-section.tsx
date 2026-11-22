@@ -23,7 +23,7 @@ export async function StoreMessagesSection({ locale }: { locale: string }) {
 
   return (
     <section id="store-messages">
-      <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-1">{t("myTitle")}</h2>
+      {/* Заголовок печатает оболочка раздела — см. `subscriptions-section`. */}
       <p className="text-sm text-muted mb-4">{t("mySubtitle")}</p>
       <Link
         href={`/${locale}/cabinet/messages`}
