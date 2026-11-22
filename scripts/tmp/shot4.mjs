@@ -1,0 +1,15 @@
+import { chromium, devices } from "@playwright/test";
+const TOKEN = process.argv[2];
+const b = await chromium.launch();
+const ctx = await b.newContext({ ...devices["iPhone 13 Pro"], viewport: { width: 393, height: 852 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, locale: "ru-RU" });
+await ctx.addCookies([{ name: "__Secure-authjs.session-token", value: TOKEN, domain: "trientes.org", path: "/", httpOnly: true, secure: true, sameSite: "Lax" }]);
+const p = await ctx.newPage();
+await p.goto("https://trientes.org/ru/cabinet/subscriptions", { waitUntil: "networkidle" });
+await p.waitForTimeout(1500);
+await p.screenshot({ path: "/home/dv/trientes-artifacts/screens/subs-390.png", fullPage: true });
+console.log("scroll", await p.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]));
+await p.goto("https://trientes.org/ru/companies/cmwm2jtfr0009d7fcink72rv7", { waitUntil: "networkidle" });
+await p.waitForTimeout(1500);
+await p.screenshot({ path: "/home/dv/trientes-artifacts/screens/arcon-logged-390.png", fullPage: true });
+console.log("scroll2", await p.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]));
+await b.close();

@@ -28,6 +28,17 @@ export const PUBLIC_FIELD_KEYS = [
   "documents",
   "description",
   "returnPolicy",
+  // Слайс BX: модули, которые видно и на витрине, и в карточке с карты. Прежде
+  // набор читала только витрина, а фид навигатора не читал ни одного выключателя —
+  // телефон и описание уходили на карту независимо от того, что продавец выключил.
+  // Выключенный модуль **вырезается из ответа фида**, а не прячется в браузере:
+  // фид публичный, и «скрыть в вёрстке» значит отдать наружу то, что велели не отдавать.
+  "photos",
+  "coins",
+  "socials",
+  "website",
+  "products",
+  "promos",
 ] as const;
 
 export type PublicFieldKey = (typeof PUBLIC_FIELD_KEYS)[number];
@@ -53,6 +64,12 @@ export function defaultPublicFields(ctx: PublicFieldsContext): PublicFields {
     documents: true,
     description: true,
     returnPolicy: true,
+    photos: true,
+    coins: true,
+    socials: true,
+    website: true,
+    products: true,
+    promos: true,
   };
 }
 

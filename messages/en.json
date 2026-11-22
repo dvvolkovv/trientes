@@ -1886,7 +1886,7 @@
     },
     "publicFields": {
       "title": "What customers see",
-      "subtitle": "Switch off what you would rather not publish. Everything is shown by default.",
+      "subtitle": "Switch off what you would rather not publish. This governs both your public page and the card people open from the map. Everything is shown by default.",
       "shown": "shown",
       "hidden": "hidden",
       "field": {
@@ -1896,7 +1896,13 @@
         "hours": "Office hours",
         "documents": "Public documents",
         "description": "About the company",
-        "returnPolicy": "Return policy"
+        "returnPolicy": "Return policy",
+        "photos": "Photos",
+        "coins": "Accepted coins",
+        "socials": "Social links",
+        "website": "Website",
+        "products": "Products on sale",
+        "promos": "Current offers"
       },
       "alwaysPublic": "Always public: display name, legal name, country and city, kind of business and industry, and the addresses of your points — they stand on the map.",
       "err": "Could not save. Try again."
