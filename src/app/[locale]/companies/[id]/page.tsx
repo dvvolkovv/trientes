@@ -432,8 +432,13 @@ export default async function PublicCompanyPage({
                       return cat ? <span>{cat.emoji} {tb(`category.${cat.key}`)}</span> : null;
                     })()}
                     <OpenBadge hours={parseWeekHours(p.hours)} timezone={p.timezone} />
+                    {/* В навигатор и прямо на эту точку: `?point=<id>` открывает
+                        карту на ней с раскрытой карточкой. Прежде ссылка вела на
+                        `/coin/bitcoin` — страницу монеты, где карта лишь один из
+                        разделов: человек нажимал «открыть на карте» и попадал в
+                        биткойн, а не к своему магазину. */}
                     {p.lat !== null && p.lon !== null ? (
-                      <Link href={`/${locale}/coin/bitcoin`} className="text-accent underline">
+                      <Link href={`/${locale}/crypto-map?point=${p.id}`} className="text-accent underline">
                         {t("openOnMap")} →
                       </Link>
                     ) : null}

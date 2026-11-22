@@ -24,6 +24,7 @@ import {
   RevisionsSection,
   type RevisionItem,
 } from "@/components/coin-card-manage/revisions-section";
+import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
 
@@ -85,6 +86,7 @@ export default async function CoinCardManagePage({
 
   return (
     <main className="max-w-[860px] mx-auto px-4 md:px-12 py-12 space-y-12">
+      <CabinetBackButton locale={locale} />
       <header>
         <div className="flex items-center gap-3 mb-1 flex-wrap">
           <h1 className="text-[36px] font-bold tracking-[-0.03em]">{card.name}</h1>

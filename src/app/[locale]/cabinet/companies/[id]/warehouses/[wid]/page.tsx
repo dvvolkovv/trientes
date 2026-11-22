@@ -11,7 +11,7 @@ import {
 } from "@/lib/warehouse/read";
 import { MovementForm } from "@/components/warehouse/movement-form";
 import { ArchiveWarehouseButton } from "@/components/warehouse/archive-button";
-import { CabinetBackButton } from "@/components/cabinet/company-back";
+import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
 

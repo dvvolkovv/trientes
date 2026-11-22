@@ -7,7 +7,7 @@ import { can } from "@/lib/company-team/permissions";
 import { readThread } from "@/lib/customer-messages/read";
 import { ThreadView } from "@/components/customer-messages/thread-view";
 import { BlockCustomerForm } from "@/components/customer-messages/block-customer-form";
-import { CabinetBackButton } from "@/components/cabinet/company-back";
+import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
 

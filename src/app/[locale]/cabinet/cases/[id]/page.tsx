@@ -7,6 +7,7 @@ import { CaseComposer } from "@/components/cases/case-composer";
 import { CaseReadMarker } from "@/components/cases/case-read-marker";
 import { parseAttachments } from "@/lib/cases/attachments";
 import { unreadCount } from "@/lib/cases/messages";
+import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
 
@@ -40,6 +41,9 @@ export default async function CabinetCasePage({
 
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-6 px-6 py-10 md:py-16">
+      <div className="mb-4">
+        <CabinetBackButton locale={locale} />
+      </div>
       {unread > 0 ? <CaseReadMarker caseId={c.id} /> : null}
       <header>
         <div className="num mb-2 text-[11px] uppercase tracking-[0.3em] text-muted">{t("title")}</div>

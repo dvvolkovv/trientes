@@ -3,16 +3,21 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 /**
- * У каждого раздела кабинета предприятия сверху есть возврат в кабинет.
+ * У каждой страницы, открытой из кабинета, сверху есть возврат в кабинет.
  *
  * Просьба владельца дословно: «мне нужно, чтобы в каждом разделе, когда я туда
- * попадаю, была такая кнопочка сверху». Разделов восемнадцать, и забытый в
- * девятнадцатом она заметна только тому, кто туда зайдёт, — поэтому граница
- * здесь, а не в глазах. Тот же приём, что `tests/outbound-timeouts.test.ts`:
- * читаем исходники и называем файл, в котором кнопки нет.
+ * попадаю, была такая кнопочка сверху… где-то есть, где-то нет». Страниц под
+ * `/cabinet` три десятка, и забытая в новой заметна только тому, кто туда
+ * зайдёт, — поэтому граница здесь, а не в глазах. Тот же приём, что
+ * `tests/outbound-timeouts.test.ts`: читаем исходники и называем файл.
+ *
+ * Кнопку даёт либо оболочка разделов личного кабинета (`CabinetSectionShell`),
+ * либо сам компонент. Исключения ровно два и оба честные: хаб кабинета — он и
+ * есть то место, куда ведёт кнопка, и страница-перенаправление, у которой нет
+ * своего вида вовсе.
  */
 
-const ROOT = join(process.cwd(), "src/app/[locale]/cabinet/companies/[id]");
+const ROOT = join(process.cwd(), "src/app/[locale]/cabinet");
 
 function pages(dir: string): string[] {
   const out: string[] = [];
@@ -24,18 +29,29 @@ function pages(dir: string): string[] {
   return out;
 }
 
+const HUB = join(ROOT, "page.tsx");
+
+/** Страница, которая только перенаправляет, своего верха не имеет. */
+function isRedirectOnly(src: string): boolean {
+  return /\b(permanentRedirect|redirect)\(/.test(src) && !src.includes("<main");
+}
+
 describe("возврат в кабинет", () => {
-  it("стоит на каждой странице кабинета предприятия", () => {
-    const files = pages(ROOT);
-    expect(files.length).toBeGreaterThan(10);
+  it("стоит на каждой странице кабинета", () => {
+    const files = pages(ROOT).filter((f) => f !== HUB);
+    expect(files.length).toBeGreaterThan(25);
     const without = files
-      .filter((f) => !readFileSync(f, "utf-8").includes("<CabinetBackButton"))
+      .filter((f) => {
+        const src = readFileSync(f, "utf-8");
+        if (isRedirectOnly(src)) return false;
+        return !src.includes("<CabinetBackButton") && !src.includes("CabinetSectionShell");
+      })
       .map((f) => f.slice(process.cwd().length + 1));
     expect(without).toEqual([]);
   });
 
   it("ведёт в кабинет, а не на шаг назад: шаг назад — это хлебные крошки", () => {
-    const src = readFileSync(join(process.cwd(), "src/components/cabinet/company-back.tsx"), "utf-8");
+    const src = readFileSync(join(process.cwd(), "src/components/cabinet/back-button.tsx"), "utf-8");
     expect(src).toContain("/cabinet`");
   });
 });

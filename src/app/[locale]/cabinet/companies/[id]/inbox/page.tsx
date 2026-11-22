@@ -5,7 +5,7 @@ import { getViewerCompanyById } from "@/lib/business";
 import { ADMIN_COLUMN, ADMIN_TILE } from "@/lib/admin-ui";
 import { can } from "@/lib/company-team/permissions";
 import { readStoreThreads } from "@/lib/customer-messages/read";
-import { CabinetBackButton } from "@/components/cabinet/company-back";
+import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
 

@@ -4,6 +4,7 @@ import { setRequestLocale, getTranslations, getFormatter } from "next-intl/serve
 import { auth } from "@/auth";
 import { ADMIN_COLUMN, ADMIN_TILE } from "@/lib/admin-ui";
 import { readCustomerThreads } from "@/lib/customer-messages/read";
+import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
 
@@ -25,10 +26,8 @@ export default async function CustomerMessagesPage({
 
   return (
     <main className={`${ADMIN_COLUMN} overflow-x-clip py-8 space-y-5`}>
+      <CabinetBackButton locale={locale} />
       <div>
-        <Link href={`/${locale}/cabinet`} className="text-[12px] text-muted underline">
-          ← {t("backToCabinet")}
-        </Link>
         <h1 className="mt-2 text-[26px] font-bold tracking-[-0.03em]">✉️ {t("myTitle")}</h1>
         <p className="mt-1 text-sm text-muted">{t("mySubtitle")}</p>
       </div>

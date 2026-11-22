@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { setRequestLocale, getTranslations, getFormatter } from "next-intl/server";
 import { getViewerCompanyById, canManageMembers } from "@/lib/business";
 import { JOURNAL_PAGE, readJournal } from "@/lib/company-team/journal";
-import { CabinetBackButton } from "@/components/cabinet/company-back";
+import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
 

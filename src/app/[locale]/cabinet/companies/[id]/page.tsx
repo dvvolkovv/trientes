@@ -20,7 +20,7 @@ import { PublicFieldsForm } from "@/components/business/public-fields-form";
 import { parsePublicFields } from "@/lib/company-public-fields";
 import { parseWeekHours } from "@/lib/opening-hours";
 import { industry as industryOf } from "@/lib/industries";
-import { CabinetBackButton } from "@/components/cabinet/company-back";
+import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
 

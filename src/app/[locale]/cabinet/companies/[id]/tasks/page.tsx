@@ -5,7 +5,7 @@ import { getViewerCompanyById } from "@/lib/business";
 import { readTaskReports, readTaskTargets, readTasks, type TaskRow } from "@/lib/company-tasks/read";
 import { boardColumns, isOverdue, isTaskStatus, taskRightsFor } from "@/lib/company-tasks/rules";
 import { TaskCreateForm } from "@/components/tasks/task-create-form";
-import { CabinetBackButton } from "@/components/cabinet/company-back";
+import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
 

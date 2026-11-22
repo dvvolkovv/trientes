@@ -7,6 +7,7 @@ import { ADMIN_COLUMN } from "@/lib/admin-ui";
 import { companyAcceptsMessages } from "@/lib/customer-messages/rules";
 import { readThread } from "@/lib/customer-messages/read";
 import { ThreadView } from "@/components/customer-messages/thread-view";
+import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
 
@@ -51,6 +52,7 @@ export default async function CustomerThreadPage({
 
   return (
     <main className={`${ADMIN_COLUMN} overflow-x-clip py-8 space-y-5`}>
+      <CabinetBackButton locale={locale} />
       <div>
         <Link href={`/${locale}/cabinet/messages`} className="text-[12px] text-muted underline">
           ← {t("myTitle")}

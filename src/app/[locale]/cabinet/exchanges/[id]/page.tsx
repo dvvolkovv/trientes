@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getViewerExchangeById } from "@/lib/registered-exchange";
 import { ExchangeProfileForm } from "@/components/business/exchange-profile-form";
+import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +26,7 @@ export default async function ExchangeManagementPage({
 
   return (
     <main className="max-w-[860px] mx-auto px-4 md:px-12 py-12 space-y-8">
+      <CabinetBackButton locale={locale} />
       <header className="flex items-center justify-between gap-4">
         <h1 className="text-[36px] font-bold tracking-[-0.03em]">{exchange.displayName}</h1>
         <span className={`text-xs px-3 py-1 rounded ${STATUS_CLASS[exchange.status] ?? ""}`}>

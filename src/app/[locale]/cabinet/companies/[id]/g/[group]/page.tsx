@@ -9,7 +9,7 @@ import { groupByKey, visibleTiles, GROUP_ICONS, type CompanyTileDef } from "@/li
 import { NOT_DELETED } from "@/lib/soft-delete";
 import { storeUnreadTotal } from "@/lib/customer-messages/read";
 import { readChatUnread } from "@/lib/company-chat/read";
-import { CabinetBackButton } from "@/components/cabinet/company-back";
+import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
 

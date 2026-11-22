@@ -9,7 +9,7 @@ import { PROMO_RECEIVES_PER_DAY, PROMO_SENDS_PER_DAY } from "@/lib/promos/antisp
 import { promoWindow } from "@/lib/promos/rules";
 import { PromoList } from "@/components/promos/promo-list";
 import { PromoForm } from "@/components/promos/promo-form";
-import { CabinetBackButton } from "@/components/cabinet/company-back";
+import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
 

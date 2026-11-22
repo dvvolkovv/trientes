@@ -6,7 +6,7 @@ import { ADMIN_COLUMN } from "@/lib/admin-ui";
 import { chatRightsFor, isMentionable } from "@/lib/company-chat/rules";
 import { readChatMembers, readChatPage } from "@/lib/company-chat/read";
 import { ChatRoom } from "@/components/chat/chat-room";
-import { CabinetBackButton } from "@/components/cabinet/company-back";
+import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
 

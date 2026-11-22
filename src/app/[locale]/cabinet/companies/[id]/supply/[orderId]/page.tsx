@@ -7,7 +7,7 @@ import { readMovableProducts } from "@/lib/warehouse/read";
 import { readOrder } from "@/lib/supply/read";
 import { orderTotal } from "@/lib/supply/rules";
 import { OrderBoard } from "@/components/supply/order-board";
-import { CabinetBackButton } from "@/components/cabinet/company-back";
+import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
 

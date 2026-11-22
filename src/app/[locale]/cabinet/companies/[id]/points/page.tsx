@@ -10,7 +10,7 @@ import { parseWeekHours } from "@/lib/opening-hours";
 import { PointsList, type PointListItem } from "@/components/business/points-list";
 import { ADMIN_COLUMN } from "@/lib/admin-ui";
 import { NOT_DELETED } from "@/lib/soft-delete";
-import { CabinetBackButton } from "@/components/cabinet/company-back";
+import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
 

@@ -5,7 +5,7 @@ import { getViewerCompanyById, canEditSection, canSeeSection } from "@/lib/busin
 import { countOffersByCategory, readCompanyRates } from "@/lib/loyalty/read";
 import { cashbackSummary } from "@/lib/loyalty/rates";
 import { CashbackRatesForm } from "@/components/loyalty/rates-form";
-import { CabinetBackButton } from "@/components/cabinet/company-back";
+import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
 

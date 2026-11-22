@@ -14,7 +14,7 @@ import {
 import { SupplierSection } from "@/components/supply/supplier-form";
 import { OrderCreateForm } from "@/components/supply/order-create-form";
 import { ReorderRules } from "@/components/supply/reorder-rules";
-import { CabinetBackButton } from "@/components/cabinet/company-back";
+import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
 

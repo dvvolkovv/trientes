@@ -5,7 +5,7 @@ import { getViewerCompanyById, canEditSection, canSeeSection } from "@/lib/busin
 import { readMovements, readShelfPoints, readWarehouses } from "@/lib/warehouse/read";
 import { WarehouseCreateForm } from "@/components/warehouse/warehouse-create-form";
 import { TransitList } from "@/components/warehouse/transit-list";
-import { CabinetBackButton } from "@/components/cabinet/company-back";
+import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
 

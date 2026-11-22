@@ -6,7 +6,7 @@ import { readTask, readTaskTargets } from "@/lib/company-tasks/read";
 import { TASK_STATUSES, canTransition, isOverdue, taskRightsFor, type TaskStatus } from "@/lib/company-tasks/rules";
 import { TaskActions } from "@/components/tasks/task-actions";
 import { TaskThread } from "@/components/tasks/task-thread";
-import { CabinetBackButton } from "@/components/cabinet/company-back";
+import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
 

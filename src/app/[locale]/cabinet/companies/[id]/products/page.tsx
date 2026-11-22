@@ -4,7 +4,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getViewerCompanyById, canEditSection, canSeeSection } from "@/lib/business";
 import { readCompanyProducts } from "@/lib/products/read";
 import { prisma } from "@/lib/prisma";
-import { CabinetBackButton } from "@/components/cabinet/company-back";
+import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
 

@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getViewerCompanyById, canManageMembers } from "@/lib/business";
 import { MembersSection } from "@/components/business/members-section";
 import { TeamRoles, type TeamRoleItem } from "@/components/business/team-roles";
-import { CabinetBackButton } from "@/components/cabinet/company-back";
+import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
 

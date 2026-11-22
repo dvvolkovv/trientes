@@ -16,7 +16,7 @@ import { readCompanyRates } from "@/lib/loyalty/read";
 import { effectiveCashback } from "@/lib/loyalty/rates";
 import { productLadder, ladderProgress } from "@/lib/products/ladder";
 import { ProductLadder } from "@/components/cabinet/product-ladder";
-import { CabinetBackButton } from "@/components/cabinet/company-back";
+import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
 
