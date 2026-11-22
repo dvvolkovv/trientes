@@ -2433,6 +2433,10 @@
   },
   "companyPublic": {
     "verified": "Doğrulandı",
+    "aboutTitle": "Hakkında",
+    "contactsTitle": "İletişim",
+    "call": "Ara",
+    "showcaseAction": "Ürünler",
     "requisitesTitle": "Şirket bilgileri",
     "legalName": "Yasal ad",
     "registrationNumber": "Kayıt numarası",

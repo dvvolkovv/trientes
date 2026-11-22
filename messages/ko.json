@@ -2433,6 +2433,10 @@
   },
   "companyPublic": {
     "verified": "인증됨",
+    "aboutTitle": "소개",
+    "contactsTitle": "연락처",
+    "call": "전화",
+    "showcaseAction": "제품",
     "requisitesTitle": "회사 정보",
     "legalName": "법적 명칭",
     "registrationNumber": "등록번호",

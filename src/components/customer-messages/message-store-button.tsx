@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { messageStore } from "@/app/actions/customer-messages";
 import { CUSTOMER_BODY_CHARS } from "@/lib/customer-messages/rules";
+import { CARD_ACTION, CARD_ACTION_PRIMARY } from "@/lib/company-card-ui";
 
 /**
  * «Написать магазину» — первая дверь снаружи внутрь кабинета мерчанта (слайс BQ).
@@ -35,7 +36,9 @@ export function MessageStoreButton({
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
 
-  const cls = "h-12 px-4 rounded-md border border-hairline text-sm hover:border-accent disabled:opacity-50";
+  // Переписка — главное действие карточки предприятия, поэтому заливка accent, а
+  // остальные кнопки ряда (позвонить, витрина, карта) остаются обведёнными.
+  const cls = CARD_ACTION_PRIMARY;
 
   if (isMember) return null;
 
@@ -77,14 +80,14 @@ export function MessageStoreButton({
   }
 
   return (
-    <div className="w-full space-y-2 rounded-[14px] border border-hairline bg-card p-3 sm:max-w-[420px]">
+    <div className="w-full space-y-2 rounded-[14px] border border-hairline bg-card-alt p-3 sm:col-span-2">
       <p className="text-sm font-semibold">{t("write")}</p>
       <textarea
         value={body}
         onChange={(event) => setBody(event.target.value.slice(0, CUSTOMER_BODY_CHARS))}
         rows={3}
         placeholder={t("placeholder")}
-        className="w-full rounded-md border border-hairline bg-card-alt px-3 py-2 text-sm"
+        className="w-full rounded-md border border-hairline bg-card px-3 py-2 text-sm"
       />
       {error ? <p className="text-[12px] text-down">{t(`errors.${error}`)}</p> : null}
       <div className="flex gap-2">
@@ -96,7 +99,7 @@ export function MessageStoreButton({
         >
           {pending ? t("sending") : t("send")}
         </button>
-        <button type="button" onClick={() => setOpen(false)} className={cls}>
+        <button type="button" onClick={() => setOpen(false)} className={`${CARD_ACTION} flex-1`}>
           {t("cancel")}
         </button>
       </div>

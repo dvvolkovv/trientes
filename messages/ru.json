@@ -2433,6 +2433,10 @@
   },
   "companyPublic": {
     "verified": "Проверено",
+    "aboutTitle": "О компании",
+    "contactsTitle": "Контакты",
+    "call": "Позвонить",
+    "showcaseAction": "Товары",
     "requisitesTitle": "Реквизиты компании",
     "legalName": "Юридическое наименование",
     "registrationNumber": "Регистрационный номер",

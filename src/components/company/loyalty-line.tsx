@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { readCashbackSummary } from "@/lib/loyalty/read";
+import { CARD_HEADING, CARD_PANEL } from "@/lib/company-card-ui";
 
 /**
  * Строка лояльности на карточке магазина: что продавец обещает вообще. Ставки сами по
@@ -14,8 +15,8 @@ export async function CompanyLoyaltyLine({ companyId }: { companyId: string }) {
   const { base, max } = summary;
 
   return (
-    <section className="mt-10">
-      <h2 className="text-xs uppercase tracking-[0.2em] text-muted mb-3">{t("heading")}</h2>
+    <section className={CARD_PANEL}>
+      <h2 className={CARD_HEADING}>{t("heading")}</h2>
       <p className="text-sm">
         {base !== null && max !== null
           ? t("rateBoth", { base, max })

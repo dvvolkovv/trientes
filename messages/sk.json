@@ -2433,6 +2433,10 @@
   },
   "companyPublic": {
     "verified": "Overené",
+    "aboutTitle": "O nás",
+    "contactsTitle": "Kontakty",
+    "call": "Zavolať",
+    "showcaseAction": "Produkty",
     "requisitesTitle": "Údaje o spoločnosti",
     "legalName": "Právny názov",
     "registrationNumber": "Registračné číslo",

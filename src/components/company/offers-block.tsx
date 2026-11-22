@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getFormatter, getTranslations } from "next-intl/server";
 import { readCompanyOffers } from "@/lib/products/offers-read";
+import { CARD_HEADING, CARD_PANEL } from "@/lib/company-card-ui";
 
 /**
  * Витрина товаров предприятия — «витрина товаров и услуг» из ТЗ 3.1. Отдельной страницы
@@ -27,8 +28,10 @@ export async function CompanyOffersBlock({ companyId, locale }: { companyId: str
   };
 
   return (
-    <section className="mt-10">
-      <h2 className="text-xs uppercase tracking-[0.2em] text-muted mb-3">{t("heading")}</h2>
+    // `id` — цель кнопки «витрина» в шапке карточки предприятия: человек
+    // нажимает её и попадает в товары, а не ищет их прокруткой.
+    <section id="products" className={CARD_PANEL}>
+      <h2 className={CARD_HEADING}>{t("heading")}</h2>
       <ul className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {rows.map((r) => (
           <li key={r.productId} className="border border-hairline rounded-lg overflow-hidden">

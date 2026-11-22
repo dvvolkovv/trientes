@@ -2433,6 +2433,10 @@
   },
   "companyPublic": {
     "verified": "Provjereno",
+    "aboutTitle": "O nama",
+    "contactsTitle": "Kontakti",
+    "call": "Nazvati",
+    "showcaseAction": "Proizvodi",
     "requisitesTitle": "Podaci o tvrtki",
     "legalName": "Pravni naziv",
     "registrationNumber": "Registracijski broj",

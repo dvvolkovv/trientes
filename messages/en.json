@@ -2433,6 +2433,10 @@
   },
   "companyPublic": {
     "verified": "Verified",
+    "aboutTitle": "About",
+    "contactsTitle": "Contacts",
+    "call": "Call",
+    "showcaseAction": "Products",
     "requisitesTitle": "Company details",
     "legalName": "Legal name",
     "registrationNumber": "Registration number",

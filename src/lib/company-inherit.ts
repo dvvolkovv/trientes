@@ -45,6 +45,23 @@ export function inheritedHours(
   return { hours: null, timezone: null, from: null };
 }
 
+/**
+ * Печатать ли у точки её неделю целиком.
+ *
+ * Унаследованные часы — это **те же самые** семь строк, что уже стоят разделом
+ * «Часы работы» выше: на витрине они выходили дважды подряд, и владелец увидел
+ * это глазом («два раза показывает время работы, одно и то же»). Вместо второй
+ * таблицы остаётся строка о наследовании — она говорит то же самое и короче.
+ * Свои часы точки печатаются всегда: это другое расписание, и молчание о нём
+ * было бы потерей, а не уборкой.
+ */
+export function showsPointHoursTable(
+  from: InheritedHours["from"],
+  companyHoursShown: boolean,
+): boolean {
+  return !(from === "company" && companyHoursShown);
+}
+
 export type CoinSets = { coins: string[]; cards: string[] };
 export type InheritedCoins = CoinSets & { from: "point" | "company" | null };
 

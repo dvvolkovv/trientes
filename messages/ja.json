@@ -2433,6 +2433,10 @@
   },
   "companyPublic": {
     "verified": "認証済み",
+    "aboutTitle": "概要",
+    "contactsTitle": "連絡先",
+    "call": "電話",
+    "showcaseAction": "製品",
     "requisitesTitle": "会社情報",
     "legalName": "登記名",
     "registrationNumber": "登録番号",

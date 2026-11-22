@@ -13,7 +13,7 @@ import { prisma } from "@/lib/prisma";
 import { NOT_DELETED } from "@/lib/soft-delete";
 import { HoursTable, OpenBadge } from "@/components/business/hours-view";
 import { parseWeekHours } from "@/lib/opening-hours";
-import { inheritedHours } from "@/lib/company-inherit";
+import { inheritedHours, showsPointHoursTable } from "@/lib/company-inherit";
 import { companyMode } from "@/lib/company-mode";
 import { effectiveCategory, merchantCategory } from "@/lib/merchant-categories";
 import { industry as industryOf } from "@/lib/industries";
@@ -24,6 +24,8 @@ import { PUBLIC_COMPANY } from "@/lib/company-visibility";
 import { localizedProse } from "@/lib/localized-prose";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { TranslatedBadge } from "@/components/coin-card/translated-badge";
+import { VISIBLE_PRODUCT } from "@/lib/products/read";
+import { CARD_ACTION, CARD_HEADING, CARD_PANEL } from "@/lib/company-card-ui";
 
 export const dynamic = "force-dynamic";
 
@@ -193,8 +195,27 @@ export default async function PublicCompanyPage({
     original: orig === "1",
   });
 
+  // Куда ведёт «на карте»: живая точка с координатами. Карта без точки открылась
+  // бы неизвестно где, а снятая надзором точка на ней всё равно не стоит.
+  const mapPoint =
+    physicalPoints.find((p) => p.lat !== null && p.lon !== null && !p.suspendedAt) ?? null;
+  // «Позвонить» — то же действие, что набрать номер руками, поэтому номер идёт в
+  // ссылку как есть, без пробелов и скобок: их `tel:` не понимает.
+  const telHref = company.phone ? `tel:${company.phone.replace(/[^\d+]/g, "")}` : null;
+  // Кнопка «витрина» показывается только когда витрине есть что показать: кнопка,
+  // ведущая в пустой раздел, — обманка, а обманка хуже отказа (правило BI).
+  const offerCount = show.products
+    ? await prisma.productOffer.count({
+        where: { companyId: company.id, status: "ACTIVE", product: { ...VISIBLE_PRODUCT } },
+      })
+    : 0;
+  // Часы предприятия стоят своим разделом выше. Значит у точки, которая их
+  // наследует, второй такой же таблицы быть не должно: именно её владелец и
+  // увидел глазом — «два раза показывает время работы, одно и то же».
+  const officeHoursShown = Boolean(officeHours && show.hours);
+
   return (
-    <main className="max-w-[860px] mx-auto px-4 md:px-12 py-12 space-y-10">
+    <main className="mx-auto w-full max-w-[760px] space-y-4 px-4 py-8 md:px-6 md:py-12">
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
@@ -207,36 +228,40 @@ export default async function PublicCompanyPage({
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(orgLd) }}
         />
       ) : null}
-      <header className="flex items-start gap-4 flex-wrap">
-        {/* Форма, вписывание и центровка — из того же модуля, что в кабинете
-            (слайс BU): предприятие выбрало круг — круг и на витрине. */}
-        <div className={`${logoBoxClass(company.logoShape)} h-16 w-16 shrink-0`}>
-          {company.logoUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={company.logoUrl} alt="" className={logoImageClass(company.logoFit)} />
-          ) : null}
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-3 flex-wrap mb-1">
-            <h1 className="text-[32px] md:text-[40px] font-bold tracking-[-0.03em]">
-              {company.displayName}
-            </h1>
-            {company.kybStatus === "APPROVED" ? (
-              <span
-                title={tk("status.APPROVED")}
-                className="inline-flex items-center gap-1 text-[12px] font-medium px-2.5 py-1 rounded-full bg-green-500/15 text-green-500"
-              >
-                ✓ {t("verified")}
-              </span>
-            ) : null}
+
+      {/* Шапка карточки: знак, имя, лицо, место, виды — всё колонкой по центру
+          (просьба владельца 22.11). Прежде знак стоял слева, кнопки справа, и на
+          телефоне ряд переносился так, что имя оказывалось между ними. */}
+      <article className="overflow-hidden rounded-[22px] border border-hairline bg-card">
+        <header className="flex flex-col items-center gap-2 border-b border-hairline bg-card-alt/30 px-5 py-8 text-center">
+          {/* Форма, вписывание и центровка — из того же модуля, что в кабинете
+              (слайс BU): предприятие выбрало круг — круг и на витрине. */}
+          <div className={`${logoBoxClass(company.logoShape)} h-20 w-20 shrink-0`}>
+            {company.logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={company.logoUrl} alt="" className={logoImageClass(company.logoFit)} />
+            ) : (
+              <span className="text-2xl" aria-hidden>🏢</span>
+            )}
           </div>
-          <p className="text-muted">{company.legalName}</p>
+          <h1 className="mt-1 text-[26px] font-bold leading-tight tracking-[-0.02em] md:text-[32px]">
+            {company.displayName}
+          </h1>
+          {company.kybStatus === "APPROVED" ? (
+            <span
+              title={tk("status.APPROVED")}
+              className="inline-flex items-center gap-1 rounded-full bg-green-500/15 px-2.5 py-1 text-[12px] font-medium text-green-500"
+            >
+              ✓ {t("verified")}
+            </span>
+          ) : null}
+          {company.legalName ? <p className="text-sm text-muted">{company.legalName}</p> : null}
           {company.country || company.city ? (
-            <p className="text-sm text-muted mt-1">
+            <p className="text-sm text-muted">
               {[company.city, company.country].filter(Boolean).join(", ")}
             </p>
           ) : null}
-          <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[12px]">
+          <div className="mt-1 flex flex-wrap items-center justify-center gap-2 text-[12px]">
             {companyCategory ? (
               <span className="inline-flex items-center gap-1 rounded-full border border-hairline bg-bg-tint px-2 py-0.5">
                 <span aria-hidden>{companyCategory.emoji}</span>
@@ -259,15 +284,15 @@ export default async function PublicCompanyPage({
                 {t(`mode.${mode}`)}
               </span>
             ) : null}
+            {officeHoursShown ? <OpenBadge hours={officeHours} timezone={company.timezone} /> : null}
           </div>
-        </div>
-        <div className="flex flex-wrap items-start gap-2">
-          <FollowButton
-            companyId={company.id}
-            locale={locale}
-            following={follow !== null}
-            signedIn={viewerId !== null}
-          />
+        </header>
+
+        {/* Действия: всё, что человек может сделать с этим предприятием, одним
+            рядом и сразу под шапкой. Выключатель продавца сильнее кнопки: скрытый
+            телефон кнопки «позвонить» не даёт — иначе выключатель обходился бы
+            набором номера из `tel:`. */}
+        <div className="grid gap-2 px-5 py-5 sm:grid-cols-2">
           <MessageStoreButton
             companyId={company.id}
             locale={locale}
@@ -275,68 +300,56 @@ export default async function PublicCompanyPage({
             threadId={ownThread?.id ?? null}
             isMember={viewerMembership !== null}
           />
-        </div>
-      </header>
-
-      {about.fields.description && show.description ? (
-        <section>
-          <p className="whitespace-pre-wrap text-sm md:text-base">{about.fields.description}</p>
-          {about.translated ? (
-            <p className="mt-1">
-              <TranslatedBadge originalHref={`/${locale}/companies/${id}?orig=1`} />
-            </p>
-          ) : null}
-        </section>
-      ) : null}
-
-      <section className="grid sm:grid-cols-2 gap-3 text-sm">
-        {company.website && show.website ? (
-          <Field label={t("website")}>
-            <a href={company.website} target="_blank" rel="noopener noreferrer nofollow" className="text-accent underline">
-              {company.website.replace(/^https?:\/\//, "")}
+          {telHref && show.phone ? (
+            <a href={telHref} className={CARD_ACTION}>
+              <span aria-hidden>📞</span>
+              {t("call")}
             </a>
-          </Field>
-        ) : null}
-        {company.email && show.email ? (
-          <Field label={t("email")}>
-            <a href={`mailto:${company.email}`} className="text-accent underline">{company.email}</a>
-          </Field>
-        ) : null}
-        {company.phone && show.phone ? <Field label={t("phone")}><span>{company.phone}</span></Field> : null}
-        {/* Точный адрес выключается, город и страна — нет: по ним предприятие
-            находят, и прятать их значило бы убрать его из каталога. */}
-        {company.address && show.preciseAddress ? (
-          <Field label={t("address")}><span>{company.address}</span></Field>
-        ) : null}
-        {/* Политика возврата: ТЗ § 3.1 требует её показывать, и не указана — мы
-            говорим это словами, а не прячем строку. Но выключатель продавца
-            сильнее (решение владельца 22 ноября): выключено — строки нет вовсе. */}
-        {show.returnPolicy ? (
-          <Field label={t("returns")}>
-            {company.returnPolicy || company.returnDays !== null ? (
-              <span className="whitespace-pre-wrap">
-                {company.returnDays !== null ? (
-                  <span className="num">{t("returnDays", { days: company.returnDays })}</span>
-                ) : null}
-                {company.returnDays !== null && company.returnPolicy ? " · " : null}
-                {company.returnPolicy}
-              </span>
-            ) : (
-              <span className="text-muted">{t("returnsUnknown")}</span>
-            )}
-          </Field>
-        ) : null}
-      </section>
+          ) : null}
+          {offerCount > 0 ? (
+            <a href="#products" className={CARD_ACTION}>
+              <span aria-hidden>🛍</span>
+              {t("showcaseAction")}
+            </a>
+          ) : null}
+          {mapPoint ? (
+            <Link href={`/${locale}/crypto-map?point=${mapPoint.id}`} className={CARD_ACTION}>
+              <span aria-hidden>📍</span>
+              {t("openOnMap")}
+            </Link>
+          ) : null}
+          {company.website && show.website ? (
+            <a
+              href={company.website}
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className={CARD_ACTION}
+            >
+              <span aria-hidden>🔗</span>
+              {t("website")}
+            </a>
+          ) : null}
+          <FollowButton
+            companyId={company.id}
+            locale={locale}
+            following={follow !== null}
+            signedIn={viewerId !== null}
+          />
+        </div>
+      </article>
 
-      {company.registrationNumber || company.taxNumber ? (
-        // Публичные реквизиты (слайс BV). Выключателя у них нет: публичные
-        // реквизиты, которые не публичны, — противоречие в названии, а кто не хочет
-        // их показывать, просто не заполняет поле. Моноширинным: номер сверяют знак
-        // в знак с записью реестра.
-        <section>
-          <h2 className="mb-2 text-[20px] font-semibold">{t("requisitesTitle")}</h2>
+      {/* Реквизиты сразу под шапкой — просьба владельца: «снизу, получается, его
+          реквизиты, как обычно мы с тобой моделировали карточку». Выключателя у
+          них нет (решение BV): публичные реквизиты, которые не публичны, —
+          противоречие в названии. Моноширинным: номер сверяют знак в знак с
+          записью реестра. */}
+      {company.legalName || company.registrationNumber || company.taxNumber ? (
+        <section className={CARD_PANEL}>
+          <h2 className={CARD_HEADING}>{t("requisitesTitle")}</h2>
           <div className="grid gap-3 text-sm sm:grid-cols-2">
-            <Field label={t("legalName")}><span>{company.legalName}</span></Field>
+            {company.legalName ? (
+              <Field label={t("legalName")}><span>{company.legalName}</span></Field>
+            ) : null}
             {company.registrationNumber ? (
               <Field label={t("registrationNumber")}>
                 <span className="font-mono text-[13px]">{company.registrationNumber}</span>
@@ -351,16 +364,80 @@ export default async function PublicCompanyPage({
         </section>
       ) : null}
 
-      {officeHours && show.hours ? (
+      {about.fields.description && show.description ? (
+        <section className={CARD_PANEL}>
+          <h2 className={CARD_HEADING}>{t("aboutTitle")}</h2>
+          <p className="whitespace-pre-wrap text-sm md:text-base">{about.fields.description}</p>
+          {about.translated ? (
+            <p className="mt-1">
+              <TranslatedBadge originalHref={`/${locale}/companies/${id}?orig=1`} />
+            </p>
+          ) : null}
+        </section>
+      ) : null}
+
+      {(company.website && show.website) ||
+      (company.email && show.email) ||
+      (company.phone && show.phone) ||
+      (company.address && show.preciseAddress) ||
+      show.returnPolicy ? (
+        <section className={CARD_PANEL}>
+          <h2 className={CARD_HEADING}>{t("contactsTitle")}</h2>
+          <div className="grid gap-3 text-sm sm:grid-cols-2">
+            {company.website && show.website ? (
+              <Field label={t("website")}>
+                <a href={company.website} target="_blank" rel="noopener noreferrer nofollow" className="text-accent underline">
+                  {company.website.replace(/^https?:\/\//, "")}
+                </a>
+              </Field>
+            ) : null}
+            {company.email && show.email ? (
+              <Field label={t("email")}>
+                <a href={`mailto:${company.email}`} className="text-accent underline">{company.email}</a>
+              </Field>
+            ) : null}
+            {company.phone && show.phone ? (
+              <Field label={t("phone")}>
+                <a href={telHref ?? "#"} className="text-accent underline">{company.phone}</a>
+              </Field>
+            ) : null}
+            {/* Точный адрес выключается, город и страна — нет: по ним предприятие
+                находят, и прятать их значило бы убрать его из каталога. */}
+            {company.address && show.preciseAddress ? (
+              <Field label={t("address")}><span>{company.address}</span></Field>
+            ) : null}
+            {/* Политика возврата: ТЗ § 3.1 требует её показывать, и не указана — мы
+                говорим это словами, а не прячем строку. Но выключатель продавца
+                сильнее (решение владельца 22 ноября): выключено — строки нет вовсе. */}
+            {show.returnPolicy ? (
+              <Field label={t("returns")}>
+                {company.returnPolicy || company.returnDays !== null ? (
+                  <span className="whitespace-pre-wrap">
+                    {company.returnDays !== null ? (
+                      <span className="num">{t("returnDays", { days: company.returnDays })}</span>
+                    ) : null}
+                    {company.returnDays !== null && company.returnPolicy ? " · " : null}
+                    {company.returnPolicy}
+                  </span>
+                ) : (
+                  <span className="text-muted">{t("returnsUnknown")}</span>
+                )}
+              </Field>
+            ) : null}
+          </div>
+        </section>
+      ) : null}
+
+      {officeHoursShown ? (
         // Часы конторы (слайс BU): когда отвечает телефон, почта и человек. Часы
         // торговли стоят у точек ниже — расписание принадлежит месту (BN).
-        <section>
-          <div className="mb-2 flex flex-wrap items-center gap-2">
-            <h2 className="text-[20px] font-semibold">{t("officeHoursTitle")}</h2>
+        <section className={CARD_PANEL}>
+          <div className="mb-3 flex flex-wrap items-center gap-2">
+            <h2 className={`${CARD_HEADING} mb-0`}>{t("officeHoursTitle")}</h2>
             <OpenBadge hours={officeHours} timezone={company.timezone} />
           </div>
           <HoursTable hours={officeHours} timezone={company.timezone} />
-          <p className="mt-1 text-[12px] text-muted">{t("officeHoursHint")}</p>
+          <p className="mt-2 text-[12px] text-muted">{t("officeHoursHint")}</p>
         </section>
       ) : null}
 
@@ -368,8 +445,8 @@ export default async function PublicCompanyPage({
         // Публичные документы (слайсы BU и BV): политика возврата полностью,
         // гарантия, лицензия. Это бумаги для покупателя, а не для проверяющего, и
         // стоят они рубриками — своими в том числе.
-        <section>
-          <h2 className="mb-2 text-[20px] font-semibold">{t("documentsTitle")}</h2>
+        <section className={CARD_PANEL}>
+          <h2 className={CARD_HEADING}>{t("documentsTitle")}</h2>
           <div className="space-y-3">
             {docGroups.map((g) => (
               <div key={g.key}>
@@ -426,13 +503,17 @@ export default async function PublicCompanyPage({
       {show.products ? <CompanyOffersBlock companyId={company.id} locale={locale} /> : null}
 
       {physicalPoints.length > 0 ? (
-        <section>
-          <h2 className="text-[20px] font-semibold mb-3">{t("placesTitle")}</h2>
+        <section className={CARD_PANEL}>
+          <h2 className={CARD_HEADING}>{t("placesTitle")}</h2>
           <ul className="space-y-2">
             {physicalPoints.map((p) => {
               const photos = Array.isArray(p.photos) ? (p.photos as { url?: unknown }[]).filter((x) => typeof x?.url === "string") : [];
+              const ph = pointHours(p);
+              // Своих часов у точки нет и выше уже стоит та же неделя предприятия
+              // — печатаем одну строку о наследовании, а не вторую таблицу.
+              const ownTable = showsPointHoursTable(ph.from, officeHoursShown);
               return (
-                <li key={p.id} className="border border-hairline rounded-md px-3 py-2.5">
+                <li key={p.id} className="rounded-[14px] border border-hairline bg-bg-tint px-3 py-2.5">
                   <div className="font-medium">{p.name}</div>
                   <div className="text-xs text-muted">{p.address ?? "—"}</div>
                   <div className="text-[11px] text-muted mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -441,9 +522,7 @@ export default async function PublicCompanyPage({
                       const cat = merchantCategory(effectiveCategory(p.category, company.category));
                       return cat ? <span>{cat.emoji} {tb(`category.${cat.key}`)}</span> : null;
                     })()}
-                    {show.hours ? (
-                      <OpenBadge hours={pointHours(p).hours} timezone={pointHours(p).timezone} />
-                    ) : null}
+                    {show.hours ? <OpenBadge hours={ph.hours} timezone={ph.timezone} /> : null}
                     {/* В навигатор и прямо на эту точку: `?point=<id>` открывает
                         карту на ней с раскрытой карточкой. Прежде ссылка вела на
                         `/coin/bitcoin` — страницу монеты, где карта лишь один из
@@ -457,21 +536,22 @@ export default async function PublicCompanyPage({
                   </div>
                   {show.hours ? (
                     <div className="mt-1.5">
-                      <HoursTable
-                        hours={pointHours(p).hours}
-                        timezone={pointHours(p).timezone}
-                        fallbackText={p.openingHours}
-                      />
-                      {pointHours(p).from === "company" ? (
-                        <p className="mt-1 text-[11px] text-muted">{t("hoursFromCompany")}</p>
-                      ) : null}
+                      {ownTable ? (
+                        <HoursTable
+                          hours={ph.hours}
+                          timezone={ph.timezone}
+                          fallbackText={p.openingHours}
+                        />
+                      ) : (
+                        <p className="text-[11px] text-muted">{t("hoursFromCompany")}</p>
+                      )}
                     </div>
                   ) : null}
                   {photos.length > 0 && show.photos ? (
                     <div className="mt-2 flex gap-1.5 overflow-x-auto">
-                      {photos.map((ph, i) => (
+                      {photos.map((ph2, i) => (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img key={i} src={String((ph as { url: string }).url)} alt=""
+                        <img key={i} src={String((ph2 as { url: string }).url)} alt=""
                           className="h-20 w-20 rounded-md object-cover flex-shrink-0 border border-hairline" />
                       ))}
                     </div>
@@ -484,11 +564,11 @@ export default async function PublicCompanyPage({
       ) : null}
 
       {onlinePoints.length > 0 ? (
-        <section>
-          <h2 className="text-[20px] font-semibold mb-3">{t("onlineTitle")}</h2>
+        <section className={CARD_PANEL}>
+          <h2 className={CARD_HEADING}>{t("onlineTitle")}</h2>
           <ul className="space-y-2">
             {onlinePoints.map((p) => (
-              <li key={p.id} className="border border-hairline rounded-md px-3 py-2.5">
+              <li key={p.id} className="rounded-[14px] border border-hairline bg-bg-tint px-3 py-2.5">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-medium">{p.name}</span>
                   {/* Часы онлайна (слайс BU): в данных они были с BN, но редактор

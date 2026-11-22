@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { inheritedCoins, inheritedHours } from "@/lib/company-inherit";
+import { inheritedCoins, inheritedHours, showsPointHoursTable } from "@/lib/company-inherit";
 
 const WORKWEEK = {
   mon: { kind: "open", spans: [["09:00", "18:00"]] },
@@ -91,5 +91,26 @@ describe("монеты: точка наследует предприятие", (
 
   it("мусор в списке выбрасывается, а не доезжает до карточки", () => {
     expect(inheritedCoins({ coins: ["", "bitcoin"] }, {}).coins).toEqual(["bitcoin"]);
+  });
+});
+
+describe("неделя точки не печатается дважды", () => {
+  it("унаследованные часы при показанных часах предприятия — только строка о наследовании", () => {
+    expect(showsPointHoursTable("company", true)).toBe(false);
+  });
+
+  it("унаследованные часы, когда раздела часов предприятия на странице нет, печатаются", () => {
+    // Выключатель `hours` снят или неделя предприятия пуста — тогда строка о
+    // наследовании была бы ссылкой на несуществующий раздел.
+    expect(showsPointHoursTable("company", false)).toBe(true);
+  });
+
+  it("свои часы точки печатаются всегда: это другое расписание", () => {
+    expect(showsPointHoursTable("point", true)).toBe(true);
+    expect(showsPointHoursTable("point", false)).toBe(true);
+  });
+
+  it("часов нет ни у кого — решать нечего, таблица сама по себе пуста", () => {
+    expect(showsPointHoursTable(null, true)).toBe(true);
   });
 });

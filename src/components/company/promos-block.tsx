@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getFormatter, getTranslations } from "next-intl/server";
 import { readStorefrontPromos } from "@/lib/promos/read";
+import { CARD_HEADING, CARD_PANEL } from "@/lib/company-card-ui";
 
 /**
  * Акции магазина на витрине. Текст идёт как написан продавцом — это его утверждение, и
@@ -18,11 +19,11 @@ export async function CompanyPromosBlock({ companyId, locale }: { companyId: str
   if (promos.length === 0) return null;
 
   return (
-    <section>
-      <h2 className="text-[20px] font-semibold mb-3">{t("storefrontTitle")}</h2>
+    <section className={CARD_PANEL}>
+      <h2 className={CARD_HEADING}>{t("storefrontTitle")}</h2>
       <ul className="space-y-2">
         {promos.map((p) => (
-          <li key={p.id} className="border border-hairline rounded-md px-3 py-2.5">
+          <li key={p.id} className="rounded-[14px] border border-hairline bg-bg-tint px-3 py-2.5">
             <div className="font-medium">{p.title}</div>
             <p className="text-sm whitespace-pre-wrap mt-0.5">{p.body}</p>
             <div className="text-[11px] text-muted mt-1 flex flex-wrap gap-x-3">

@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { followCompany, unfollowCompany } from "@/app/actions/company-follow";
+import { CARD_ACTION, CARD_ACTION_ON } from "@/lib/company-card-ui";
 
 /**
  * «Следить за магазином» — оно же согласие на рассылку (ТЗ 4.2): без этого нажатия
@@ -28,7 +29,10 @@ export function FollowButton({
   const [on, setOn] = useState(following);
   const [pending, start] = useTransition();
 
-  const cls = "h-12 px-4 rounded-md border border-hairline text-sm hover:border-accent disabled:opacity-50";
+  // Вид — общий с остальными действиями карточки (`company-card-ui`): кнопки
+  // стоят одним рядом, и своя высота у каждой ломала бы ряд. Нажатое состояние
+  // отличается заливкой, а не только словом: «Вы следите» читается взглядом.
+  const cls = CARD_ACTION;
 
   if (!signedIn) {
     const next = encodeURIComponent(`/${locale}/companies/${companyId}`);
@@ -42,7 +46,7 @@ export function FollowButton({
   return (
     <button
       type="button"
-      className={cls}
+      className={on ? CARD_ACTION_ON : cls}
       disabled={pending}
       onClick={() =>
         start(async () => {

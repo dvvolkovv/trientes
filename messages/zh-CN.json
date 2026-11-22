@@ -2433,6 +2433,10 @@
   },
   "companyPublic": {
     "verified": "已认证",
+    "aboutTitle": "关于",
+    "contactsTitle": "联系方式",
+    "call": "拨打",
+    "showcaseAction": "产品",
     "requisitesTitle": "公司信息",
     "legalName": "法定名称",
     "registrationNumber": "注册号",
