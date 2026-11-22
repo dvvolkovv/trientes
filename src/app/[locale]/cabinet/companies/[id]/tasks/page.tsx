@@ -5,6 +5,7 @@ import { getViewerCompanyById } from "@/lib/business";
 import { readTaskReports, readTaskTargets, readTasks, type TaskRow } from "@/lib/company-tasks/read";
 import { boardColumns, isOverdue, isTaskStatus, taskRightsFor } from "@/lib/company-tasks/rules";
 import { TaskCreateForm } from "@/components/tasks/task-create-form";
+import { CabinetBackButton } from "@/components/cabinet/company-back";
 
 export const dynamic = "force-dynamic";
 
@@ -91,6 +92,9 @@ export default async function CompanyTasksPage({
 
   return (
     <main className="max-w-[1100px] mx-auto px-4 md:px-12 py-10">
+      <div className="mb-4">
+        <CabinetBackButton locale={locale} />
+      </div>
       <nav className="text-xs text-muted mb-6">
         <Link href={`/${locale}/cabinet/companies/${company.id}`} className="hover:text-foreground">
           {company.displayName}

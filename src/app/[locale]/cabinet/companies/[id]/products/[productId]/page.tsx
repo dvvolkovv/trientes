@@ -16,6 +16,7 @@ import { readCompanyRates } from "@/lib/loyalty/read";
 import { effectiveCashback } from "@/lib/loyalty/rates";
 import { productLadder, ladderProgress } from "@/lib/products/ladder";
 import { ProductLadder } from "@/components/cabinet/product-ladder";
+import { CabinetBackButton } from "@/components/cabinet/company-back";
 
 export const dynamic = "force-dynamic";
 
@@ -124,6 +125,9 @@ export default async function CompanyProductEditor({
 
   return (
     <main className="max-w-[900px] mx-auto px-4 md:px-12 py-10">
+      <div className="mb-4">
+        <CabinetBackButton locale={locale} />
+      </div>
       <nav className="text-xs text-muted mb-6">
         <Link href={`/${locale}/cabinet/companies/${company.id}/products`} className="hover:text-foreground">
           {t("title")}

@@ -4,6 +4,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getViewerCompanyById, canEditSection, canSeeSection } from "@/lib/business";
 import { readCompanyProducts } from "@/lib/products/read";
 import { prisma } from "@/lib/prisma";
+import { CabinetBackButton } from "@/components/cabinet/company-back";
 
 export const dynamic = "force-dynamic";
 
@@ -32,6 +33,9 @@ export default async function CompanyProductsPage({
 
   return (
     <main className="max-w-[900px] mx-auto px-4 md:px-12 py-10">
+      <div className="mb-4">
+        <CabinetBackButton locale={locale} />
+      </div>
       <nav className="text-xs text-muted mb-6">
         <Link href={`/${locale}/cabinet/companies/${company.id}`} className="hover:text-foreground">
           {company.displayName}

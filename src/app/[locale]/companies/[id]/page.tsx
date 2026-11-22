@@ -303,21 +303,24 @@ export default async function PublicCompanyPage({
         {company.address && show.preciseAddress ? (
           <Field label={t("address")}><span>{company.address}</span></Field>
         ) : null}
-        {/* Политика возврата: ТЗ § 3.1 требует её показывать. Не указана — говорим
-            это словами, а не прячем раздел. */}
-        <Field label={t("returns")}>
-          {company.returnPolicy || company.returnDays !== null ? (
-            <span className="whitespace-pre-wrap">
-              {company.returnDays !== null ? (
-                <span className="num">{t("returnDays", { days: company.returnDays })}</span>
-              ) : null}
-              {company.returnDays !== null && company.returnPolicy ? " · " : null}
-              {company.returnPolicy}
-            </span>
-          ) : (
-            <span className="text-muted">{t("returnsUnknown")}</span>
-          )}
-        </Field>
+        {/* Политика возврата: ТЗ § 3.1 требует её показывать, и не указана — мы
+            говорим это словами, а не прячем строку. Но выключатель продавца
+            сильнее (решение владельца 22 ноября): выключено — строки нет вовсе. */}
+        {show.returnPolicy ? (
+          <Field label={t("returns")}>
+            {company.returnPolicy || company.returnDays !== null ? (
+              <span className="whitespace-pre-wrap">
+                {company.returnDays !== null ? (
+                  <span className="num">{t("returnDays", { days: company.returnDays })}</span>
+                ) : null}
+                {company.returnDays !== null && company.returnPolicy ? " · " : null}
+                {company.returnPolicy}
+              </span>
+            ) : (
+              <span className="text-muted">{t("returnsUnknown")}</span>
+            )}
+          </Field>
+        ) : null}
       </section>
 
       {company.registrationNumber || company.taxNumber ? (

@@ -9,6 +9,7 @@ import { groupByKey, visibleTiles, GROUP_ICONS, type CompanyTileDef } from "@/li
 import { NOT_DELETED } from "@/lib/soft-delete";
 import { storeUnreadTotal } from "@/lib/customer-messages/read";
 import { readChatUnread } from "@/lib/company-chat/read";
+import { CabinetBackButton } from "@/components/cabinet/company-back";
 
 export const dynamic = "force-dynamic";
 
@@ -46,6 +47,7 @@ export default async function CompanyGroupPage({
 
   return (
     <main className={`${ADMIN_COLUMN} overflow-x-clip py-8 space-y-6`}>
+      <CabinetBackButton locale={locale} />
       <div>
         <Link href={base} className="text-[12px] text-muted underline">
           ← {company.displayName}

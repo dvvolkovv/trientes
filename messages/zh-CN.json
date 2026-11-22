@@ -1895,9 +1895,10 @@
         "preciseAddress": "街道与门牌号",
         "hours": "办公时间",
         "documents": "公开文档",
-        "description": "公司简介"
+        "description": "公司简介",
+        "returnPolicy": "退货政策"
       },
-      "alwaysPublic": "始终公开：显示名称、法定名称、国家和城市、业务类型和行业、退货政策，以及各网点地址 — 这些会显示在地图上。",
+      "alwaysPublic": "始终公开：显示名称、法定名称、国家和城市、业务类型和行业，以及网点地址——它们会显示在地图上。",
       "err": "无法保存。请重试。"
     },
     "attention": {

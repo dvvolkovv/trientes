@@ -1895,9 +1895,10 @@
         "preciseAddress": "거리와 건물 번호",
         "hours": "영업시간",
         "documents": "공개 문서",
-        "description": "회사 소개"
+        "description": "회사 소개",
+        "returnPolicy": "반품 정책"
       },
-      "alwaysPublic": "항상 공개: 표시 이름, 법적 명칭, 국가와 도시, 사업 종류와 업종, 반품 정책, 그리고 지점의 주소 — 지도에 표시됩니다.",
+      "alwaysPublic": "항상 공개: 표시 이름, 법적 명칭, 국가와 도시, 업종과 산업, 그리고 지점 주소 — 지도에 표시됩니다.",
       "err": "저장할 수 없습니다. 다시 시도하세요."
     },
     "attention": {

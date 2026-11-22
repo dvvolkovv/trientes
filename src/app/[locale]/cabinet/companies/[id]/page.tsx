@@ -20,6 +20,7 @@ import { PublicFieldsForm } from "@/components/business/public-fields-form";
 import { parsePublicFields } from "@/lib/company-public-fields";
 import { parseWeekHours } from "@/lib/opening-hours";
 import { industry as industryOf } from "@/lib/industries";
+import { CabinetBackButton } from "@/components/cabinet/company-back";
 
 export const dynamic = "force-dynamic";
 
@@ -85,6 +86,7 @@ export default async function CompanyManagementPage({
 
   return (
     <main className={`${ADMIN_COLUMN} overflow-x-clip py-8 space-y-8`}>
+      <CabinetBackButton locale={locale} />
       {company.suspendedAt && (
         // Снятое предприятие не видно на витрине, и владелец должен узнать об
         // этом здесь, а не по пропавшим точкам.

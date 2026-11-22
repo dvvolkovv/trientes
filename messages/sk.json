@@ -1895,9 +1895,10 @@
         "preciseAddress": "Ulica a číslo domu",
         "hours": "Úradné hodiny",
         "documents": "Verejné dokumenty",
-        "description": "O spoločnosti"
+        "description": "O spoločnosti",
+        "returnPolicy": "Podmienky vrátenia"
       },
-      "alwaysPublic": "Vždy verejné: zobrazované meno, právny názov, krajina a mesto, druh podnikania a odvetvie, zásady vrátenia a adresy vašich miest — sú na mape.",
+      "alwaysPublic": "Vždy verejné: zobrazované meno, právny názov, krajina a mesto, typ podnikania a odvetvie a adresy vašich miest — sú na mape.",
       "err": "Nepodarilo sa uložiť. Skúste znova."
     },
     "attention": {

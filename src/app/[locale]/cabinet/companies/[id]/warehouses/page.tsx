@@ -5,6 +5,7 @@ import { getViewerCompanyById, canEditSection, canSeeSection } from "@/lib/busin
 import { readMovements, readShelfPoints, readWarehouses } from "@/lib/warehouse/read";
 import { WarehouseCreateForm } from "@/components/warehouse/warehouse-create-form";
 import { TransitList } from "@/components/warehouse/transit-list";
+import { CabinetBackButton } from "@/components/cabinet/company-back";
 
 export const dynamic = "force-dynamic";
 
@@ -32,6 +33,9 @@ export default async function CompanyWarehousesPage({
 
   return (
     <main className="max-w-[900px] mx-auto px-4 md:px-12 py-10">
+      <div className="mb-4">
+        <CabinetBackButton locale={locale} />
+      </div>
       <nav className="text-xs text-muted mb-6">
         <Link href={`/${locale}/cabinet/companies/${company.id}`} className="hover:text-foreground">
           {company.displayName}

@@ -7,6 +7,7 @@ import { readMovableProducts } from "@/lib/warehouse/read";
 import { readOrder } from "@/lib/supply/read";
 import { orderTotal } from "@/lib/supply/rules";
 import { OrderBoard } from "@/components/supply/order-board";
+import { CabinetBackButton } from "@/components/cabinet/company-back";
 
 export const dynamic = "force-dynamic";
 
@@ -46,6 +47,9 @@ export default async function SupplyOrderPage({
 
   return (
     <main className="max-w-[900px] mx-auto px-4 md:px-12 py-10">
+      <div className="mb-4">
+        <CabinetBackButton locale={locale} />
+      </div>
       <nav className="text-xs text-muted mb-6">
         <Link href={`/${locale}/cabinet/companies/${company.id}`} className="hover:text-foreground">
           {company.displayName}

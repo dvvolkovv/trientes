@@ -1895,9 +1895,10 @@
         "preciseAddress": "Ulica i kućni broj",
         "hours": "Radno vrijeme ureda",
         "documents": "Javni dokumenti",
-        "description": "O tvrtki"
+        "description": "O tvrtki",
+        "returnPolicy": "Politika povrata"
       },
-      "alwaysPublic": "Uvijek javno: prikazano ime, pravni naziv, država i grad, vrsta poslovanja i industrija, politika povrata te adrese vaših lokacija — one su prikazane na karti.",
+      "alwaysPublic": "Uvijek javno: prikazani naziv, pravni naziv, država i grad, vrsta poslovanja i industrija, te adrese vaših lokacija — one se prikazuju na karti.",
       "err": "Nije moguće spremiti. Pokušajte ponovno."
     },
     "attention": {

@@ -12,6 +12,7 @@ import { firstPhotoUrl, VISIBLE_PRODUCT } from "@/lib/products/read";
 import { availabilityOf, offerVisible } from "@/lib/products/offers-rules";
 import { readCategoryRates, readCompanyRates } from "@/lib/loyalty/read";
 import { effectiveCashback, type CashbackSource } from "@/lib/loyalty/rates";
+import { publicFieldOn } from "@/lib/company-public-fields";
 
 /** Полка, на которой товар лежит: место, куда покупатель может прийти. */
 export type SellerPlace = {
@@ -45,6 +46,13 @@ export type SellerOffer = {
    */
   returnPolicy: string | null;
   returnDays: number | null;
+  /**
+   * Показывает ли продавец политику возврата вовсе (выключатель BU, решение
+   * владельца 22 ноября). Выключено — строки нет ни на витрине, ни здесь: один
+   * выключатель на оба места, иначе продавец спрятал бы строку у себя и нашёл её
+   * на паспорте товара.
+   */
+  showReturns: boolean;
   /** Хоть где-то на полке есть. */
   inStock: boolean;
   places: SellerPlace[];
@@ -110,6 +118,7 @@ export async function readProductOffers(productId: string): Promise<WhereToBuy> 
           cashbackBasePercent: true,
           returnPolicy: true,
           returnDays: true,
+          publicFields: true,
           warehouses: {
             where: LIVE_SHELF,
             select: {
@@ -176,6 +185,7 @@ export async function readProductOffers(productId: string): Promise<WhereToBuy> 
         onlineUrl: o.onlineUrl,
         returnPolicy: o.company.returnPolicy,
         returnDays: o.company.returnDays,
+        showReturns: publicFieldOn(o.company.publicFields, "returnPolicy"),
         inStock: places.some((p) => p.inStock),
         places: places.filter((p) => p.inStock),
       };

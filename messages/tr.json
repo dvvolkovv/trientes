@@ -1895,9 +1895,10 @@
         "preciseAddress": "Sokak ve bina numarası",
         "hours": "Çalışma saatleri",
         "documents": "Herkese açık belgeler",
-        "description": "Şirket hakkında"
+        "description": "Şirket hakkında",
+        "returnPolicy": "İade politikası"
       },
-      "alwaysPublic": "Her zaman herkese açık: görünen ad, resmî ad, ülke ve şehir, işletme türü ve sektör, iade politikası ve noktalarınızın adresleri — haritada görünürler.",
+      "alwaysPublic": "Her zaman herkese açık: görünen ad, resmî ad, ülke ve şehir, işletme türü ve sektör, ayrıca noktalarınızın adresleri — haritada gösterilir.",
       "err": "Kaydedilemedi. Tekrar deneyin."
     },
     "attention": {

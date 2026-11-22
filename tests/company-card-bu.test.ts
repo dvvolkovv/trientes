@@ -10,7 +10,12 @@ import {
   logoShapeOf,
 } from "@/lib/company-logo";
 import { companyDocExtension, companyDocFilePath, isCompanyDocKind } from "@/lib/company-docs";
-import { defaultPublicFields, parsePublicFields, toPublicFieldsJson } from "@/lib/company-public-fields";
+import {
+  defaultPublicFields,
+  parsePublicFields,
+  publicFieldOn,
+  toPublicFieldsJson,
+} from "@/lib/company-public-fields";
 import { validateCompanyProfile, validateCompanyPoint } from "@/lib/company";
 import { companyFieldLabelKey } from "@/lib/company-edit";
 
@@ -100,10 +105,25 @@ describe("что показывать на витрине", () => {
   it("набор для записи содержит все ключи — умолчание потом не переедет само", () => {
     const json = toPublicFieldsJson({ phone: false }, { hasPhysicalPoints: true });
     expect(Object.keys(json).sort()).toEqual(
-      ["description", "documents", "email", "hours", "phone", "preciseAddress"],
+      ["description", "documents", "email", "hours", "phone", "preciseAddress", "returnPolicy"],
     );
     expect(json.phone).toBe(false);
     expect(json.email).toBe(true);
+  });
+
+  // Решение владельца 22 ноября: политика возврата выключается, как телефон и
+  // почта. Умолчание — показывать, поэтому у нынешних предприятий не меняется
+  // ничего, а строку «продавец не указал» можно убрать.
+  it("политика возврата показывается по умолчанию и выключается", () => {
+    const ctx = { hasPhysicalPoints: true };
+    expect(defaultPublicFields(ctx).returnPolicy).toBe(true);
+    expect(parsePublicFields({ returnPolicy: false }, ctx).returnPolicy).toBe(false);
+    expect(publicFieldOn(null, "returnPolicy")).toBe(true);
+    expect(publicFieldOn({ returnPolicy: false }, "returnPolicy")).toBe(false);
+    // Негодная запись — умолчание, а не исключение: иначе одно поле ронало бы
+    // паспорт товара, где этот выключатель читается в одиночку.
+    expect(publicFieldOn({ returnPolicy: "no" }, "returnPolicy")).toBe(true);
+    expect(publicFieldOn("broken", "returnPolicy")).toBe(true);
   });
 });
 

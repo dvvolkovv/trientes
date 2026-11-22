@@ -1895,9 +1895,10 @@
         "preciseAddress": "Rue et numéro",
         "hours": "Heures d’ouverture",
         "documents": "Documents publics",
-        "description": "À propos de l’entreprise"
+        "description": "À propos de l’entreprise",
+        "returnPolicy": "Politique de retour"
       },
-      "alwaysPublic": "Toujours publics : nom d'affichage, raison sociale, pays et ville, type d'entreprise et secteur, politique de retour, ainsi que les adresses de vos points — ils apparaissent sur la carte",
+      "alwaysPublic": "Toujours publics : nom d’affichage, raison sociale, pays et ville, type d’entreprise et secteur, ainsi que les adresses de vos points — ils apparaissent sur la carte.",
       "err": "Enregistrement impossible. Réessayez."
     },
     "attention": {

@@ -1895,9 +1895,10 @@
         "preciseAddress": "Straße und Hausnummer",
         "hours": "Bürozeiten",
         "documents": "Öffentliche Dokumente",
-        "description": "Über das Unternehmen"
+        "description": "Über das Unternehmen",
+        "returnPolicy": "Rückgaberichtlinie"
       },
-      "alwaysPublic": "Immer öffentlich: Anzeigename, Rechtsname, Land und Stadt, Geschäftsart und Branche, Rückgabebedingungen sowie die Adressen Ihrer Standorte — sie stehen auf der Karte.",
+      "alwaysPublic": "Immer öffentlich: Anzeigename, rechtlicher Name, Land und Stadt, Art des Geschäfts und Branche sowie die Adressen deiner Standorte — sie werden auf der Karte angezeigt.",
       "err": "Konnte nicht gespeichert werden. Versuchen Sie es erneut."
     },
     "attention": {

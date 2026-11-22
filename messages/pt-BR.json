@@ -1895,9 +1895,10 @@
         "preciseAddress": "Rua e número",
         "hours": "Horário de atendimento",
         "documents": "Documentos públicos",
-        "description": "Sobre a empresa"
+        "description": "Sobre a empresa",
+        "returnPolicy": "Política de devolução"
       },
-      "alwaysPublic": "Sempre público: nome de exibição, razão social, país e cidade, tipo de negócio e setor, política de devolução e os endereços dos seus pontos — eles aparecem no mapa.",
+      "alwaysPublic": "Sempre público: nome exibido, razão social, país e cidade, tipo de negócio e setor, e os endereços dos seus pontos — eles aparecem no mapa.",
       "err": "Não foi possível salvar. Tente novamente."
     },
     "attention": {

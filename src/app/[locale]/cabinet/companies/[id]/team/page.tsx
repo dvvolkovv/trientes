@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getViewerCompanyById, canManageMembers } from "@/lib/business";
 import { MembersSection } from "@/components/business/members-section";
 import { TeamRoles, type TeamRoleItem } from "@/components/business/team-roles";
+import { CabinetBackButton } from "@/components/cabinet/company-back";
 
 export const dynamic = "force-dynamic";
 
@@ -51,6 +52,9 @@ export default async function CompanyTeamPage({
 
   return (
     <main className="max-w-[860px] mx-auto px-4 md:px-12 py-10">
+      <div className="mb-4">
+        <CabinetBackButton locale={locale} />
+      </div>
       <nav className="text-xs text-muted mb-6">
         <Link href={`/${locale}/cabinet/companies/${company.id}`} className="hover:text-foreground">
           {company.displayName}

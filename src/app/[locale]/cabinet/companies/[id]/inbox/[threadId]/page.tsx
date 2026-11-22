@@ -7,6 +7,7 @@ import { can } from "@/lib/company-team/permissions";
 import { readThread } from "@/lib/customer-messages/read";
 import { ThreadView } from "@/components/customer-messages/thread-view";
 import { BlockCustomerForm } from "@/components/customer-messages/block-customer-form";
+import { CabinetBackButton } from "@/components/cabinet/company-back";
 
 export const dynamic = "force-dynamic";
 
@@ -39,6 +40,7 @@ export default async function CompanyThreadPage({
 
   return (
     <main className={`${ADMIN_COLUMN} overflow-x-clip py-8 space-y-5`}>
+      <CabinetBackButton locale={locale} />
       <div>
         <Link href={`${base}/inbox`} className="text-[12px] text-muted underline">
           ← {t("inboxTitle")}

@@ -11,6 +11,7 @@ import {
 } from "@/lib/warehouse/read";
 import { MovementForm } from "@/components/warehouse/movement-form";
 import { ArchiveWarehouseButton } from "@/components/warehouse/archive-button";
+import { CabinetBackButton } from "@/components/cabinet/company-back";
 
 export const dynamic = "force-dynamic";
 
@@ -44,6 +45,9 @@ export default async function WarehousePage({
 
   return (
     <main className="max-w-[900px] mx-auto px-4 md:px-12 py-10">
+      <div className="mb-4">
+        <CabinetBackButton locale={locale} />
+      </div>
       <nav className="text-xs text-muted mb-6">
         <Link href={`/${locale}/cabinet/companies/${company.id}/warehouses`} className="hover:text-foreground">
           {t("title")}

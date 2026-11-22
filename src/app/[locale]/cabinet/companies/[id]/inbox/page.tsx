@@ -5,6 +5,7 @@ import { getViewerCompanyById } from "@/lib/business";
 import { ADMIN_COLUMN, ADMIN_TILE } from "@/lib/admin-ui";
 import { can } from "@/lib/company-team/permissions";
 import { readStoreThreads } from "@/lib/customer-messages/read";
+import { CabinetBackButton } from "@/components/cabinet/company-back";
 
 export const dynamic = "force-dynamic";
 
@@ -31,6 +32,7 @@ export default async function CompanyInboxPage({
 
   return (
     <main className={`${ADMIN_COLUMN} overflow-x-clip py-8 space-y-5`}>
+      <CabinetBackButton locale={locale} />
       <div>
         <Link href={`${base}/g/showcase`} className="text-[12px] text-muted underline">
           ← {company.displayName}

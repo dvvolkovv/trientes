@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { ADMIN_COLUMN } from "@/lib/admin-ui";
+import { CabinetBackLink } from "@/components/cabinet/back-link";
 
 /**
  * Оболочка раздела личного кабинета: та же колонка и тот же порядок частей, что
@@ -24,12 +24,9 @@ export function CabinetSectionShell({
 }) {
   return (
     <div className={`${ADMIN_COLUMN} py-10 md:py-14`}>
-      <Link
-        href={backHref ?? `/${locale}/cabinet`}
-        className="mb-6 inline-flex h-11 items-center rounded-full border border-hairline px-4 text-[13px] font-semibold uppercase tracking-wider text-muted transition-colors hover:border-accent/60 hover:text-foreground"
-      >
-        ← {backLabel}
-      </Link>
+      <div className="mb-6">
+        <CabinetBackLink href={backHref ?? `/${locale}/cabinet`} label={backLabel} />
+      </div>
       <header className="mb-6">
         <div className="num mb-2 text-[11px] uppercase tracking-[0.3em] text-muted">{kicker}</div>
         <h1 className="text-[28px] font-bold tracking-[-0.03em] sm:text-[36px]">{title}</h1>

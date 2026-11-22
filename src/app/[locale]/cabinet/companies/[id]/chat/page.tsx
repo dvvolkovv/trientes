@@ -6,6 +6,7 @@ import { ADMIN_COLUMN } from "@/lib/admin-ui";
 import { chatRightsFor, isMentionable } from "@/lib/company-chat/rules";
 import { readChatMembers, readChatPage } from "@/lib/company-chat/read";
 import { ChatRoom } from "@/components/chat/chat-room";
+import { CabinetBackButton } from "@/components/cabinet/company-back";
 
 export const dynamic = "force-dynamic";
 
@@ -42,6 +43,7 @@ export default async function CompanyChatPage({
 
   return (
     <main className={`${ADMIN_COLUMN} overflow-x-clip py-8 space-y-5`}>
+      <CabinetBackButton locale={locale} />
       <div>
         <Link href={`${base}/g/order`} className="text-[12px] text-muted underline">
           ← {company.displayName}
