@@ -7,6 +7,7 @@ import { isIndustry, INDUSTRY_CUSTOM_MAX } from "@/lib/industries";
 import { isLogoFit, isLogoShape } from "@/lib/company-logo";
 import { hasLink } from "@/lib/promos/rules";
 import { normalizeRequisite } from "@/lib/company-requisites";
+import { splitIdList } from "@/lib/id-list";
 
 const POINT_TYPES = ["SHOP", "ATM", "POS", "SALES_OFFICE", "COMPANY", "ONLINE"] as const;
 export type PointTypeStr = (typeof POINT_TYPES)[number];
@@ -129,6 +130,9 @@ export type CompanyProfileInput = {
   /** Слайс BV: публичные реквизиты. Класс правки — документальный. */
   registrationNumber?: string | null;
   taxNumber?: string | null;
+  /** Слайс BX: набор монет предприятия, который наследуют его точки. */
+  acceptedCoinIds?: string[] | null;
+  acceptedCardIds?: string[] | null;
 };
 export type ValidatedProfile = {
   legalName: string; displayName: string; description: string | null;
@@ -140,6 +144,8 @@ export type ValidatedProfile = {
   logoShape: string | null; logoFit: string | null;
   hours: WeekHours | null; timezone: string | null;
   registrationNumber: string | null; taxNumber: string | null;
+  /** Слайс BX: набор монет предприятия, который наследуют его точки. */
+  acceptedCoinIds: string[]; acceptedCardIds: string[];
 };
 export type ProfileResult =
   | { ok: true; data: ValidatedProfile }
@@ -235,6 +241,10 @@ export function validateCompanyProfile(input: CompanyProfileInput): ProfileResul
       category, returnPolicy, returnDays,
       industry, industryCustom, logoShape, logoFit, hours, timezone,
       registrationNumber: reg.value, taxNumber: tax.value,
+      // Набор монет предприятия (слайс BX). Ключи чистим тем же правилом, что в
+      // правке: пустые строки и повторы до базы доезжать не должны.
+      acceptedCoinIds: [...new Set(splitIdList(input.acceptedCoinIds))],
+      acceptedCardIds: [...new Set(splitIdList(input.acceptedCardIds))],
     },
   };
 }

@@ -58,7 +58,14 @@ export default async function CompanyPointsPage({
     status: p.status,
     rejectReason: p.rejectReason,
   }));
-  const coinOpts = coins.map((c) => ({ id: c.id, symbol: c.symbol, logoUrl: c.logoUrl }));
+  const coinOpts = coins.map((c) => ({ id: c.id, symbol: c.symbol, name: c.name, logoUrl: c.logoUrl }));
+  // Что точка унаследует, если своих монет не выберет (слайс BX). Тикерами, а не
+  // ключами: ключ `binancecoin` человеку ничего не говорит.
+  const inheritedSymbols = [
+    ...coins.filter((c) => company.acceptedCoinIds.includes(c.id)).map((c) => c.symbol.toUpperCase()),
+    ...cards.filter((c) => company.acceptedCardIds.includes(c.id)).map((c) => c.symbol.toUpperCase()),
+  ];
+  const inheritedLabel = inheritedSymbols.length > 0 ? inheritedSymbols.join(", ") : undefined;
   const cardOpts = cards.map((c) => ({ id: c.id, symbol: c.symbol, name: c.name, logoUrl: c.logoUrl }));
   // Префилл приходит по ссылке с карточки монеты. Непонятный id молча
   // игнорируется — иначе кнопка «я принимаю» могла бы проставить что угодно.
@@ -128,6 +135,7 @@ export default async function CompanyPointsPage({
             companyId={company.id}
             companyStatus={company.status}
             coins={coinOpts}
+            inheritedLabel={inheritedLabel}
             cards={cardOpts}
             initialCardIds={prefillCards}
             editing={editing}

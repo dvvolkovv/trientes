@@ -12,6 +12,7 @@ import { LOGO_FITS, LOGO_SHAPES, logoBoxClass, logoImageClass } from "@/lib/comp
 import { HoursEditor } from "@/components/business/hours-editor";
 import { defaultWeek, isEmptyWeek, type WeekHours } from "@/lib/opening-hours";
 import { timezoneForCountry } from "@/lib/timezones";
+import { CoinPicker, type PickerCoin } from "@/components/business/coin-picker";
 
 type Initial = {
   legalName: string; displayName: string; description: string;
@@ -48,6 +49,10 @@ export function CompanyProfileForm({
   backHref,
   initialHours,
   initialTimezone,
+  coins,
+  cards,
+  initialCoinIds,
+  initialCardIds,
 }: {
   companyId: string;
   initial?: Partial<Initial>;
@@ -56,6 +61,11 @@ export function CompanyProfileForm({
   /** Часы конторы (слайс BU). Расписание строкой не правится, поэтому своё поле. */
   initialHours?: WeekHours | null;
   initialTimezone?: string | null;
+  /** Монеты каталога и одобренные собственные листинги (слайс BX). */
+  coins: PickerCoin[];
+  cards: PickerCoin[];
+  initialCoinIds?: string[];
+  initialCardIds?: string[];
 }) {
   const t = useTranslations("business");
   const tk = useTranslations("business.kyb");
@@ -67,6 +77,10 @@ export function CompanyProfileForm({
   const [docs, setDocs] = useState<Doc[]>([]);
   const [uploading, setUploading] = useState(false);
   const [logoUploading, setLogoUploading] = useState(false);
+  // Монеты предприятия (слайс BX): их наследуют точки без своего набора. Поле
+  // модерируемое — поэтому уходит тем же путём, что витринное имя.
+  const [pickedCoins, setPickedCoins] = useState<string[]>(initialCoinIds ?? []);
+  const [pickedCards, setPickedCards] = useState<string[]>(initialCardIds ?? []);
   const [hours, setHours] = useState<WeekHours | null>(initialHours ?? null);
   const [timezone, setTimezone] = useState(initialTimezone ?? "");
   // Обновление от предыдущего состояния, а не от замыкания: два изменения в одном
@@ -137,6 +151,8 @@ export function CompanyProfileForm({
           // Пустое расписание — это «часов нет», а не семь закрытых дней.
           hours: hours && !isEmptyWeek(hours) ? hours : null,
           timezone: timezone || null,
+          acceptedCoinIds: pickedCoins,
+          acceptedCardIds: pickedCards,
         },
         docs,
       );
@@ -178,6 +194,39 @@ export function CompanyProfileForm({
           <label className={label} htmlFor="company-description">{t("description")}</label>
           <textarea id="company-description" className={input} value={f.description} onChange={set("description")} rows={4} />
         </div>
+        {/* Монеты предприятия (слайс BX). Прежде выбор монет жил только в форме
+            точки, и владелец, правя карточку, его не находил вовсе. Набор
+            наследуют точки без своего — поэтому он здесь, а не только там. */}
+        <div className="space-y-2">
+          <span className={label}>{t("acceptedCoins")}</span>
+          <p className="text-[11px] text-muted">{t("companyCoinsHint")}</p>
+          <CoinPicker
+            coins={coins}
+            selected={pickedCoins}
+            onToggle={(id) =>
+              setPickedCoins((a) => (a.includes(id) ? a.filter((x) => x !== id) : [...a, id]))
+            }
+            searchLabel={t("coinSearch")}
+            emptyLabel={t("coinSearchEmpty")}
+            disabled={pending}
+          />
+          {cards.length > 0 ? (
+            <>
+              <span className={label}>{t("ownListing")}</span>
+              <CoinPicker
+                coins={cards}
+                selected={pickedCards}
+                onToggle={(id) =>
+                  setPickedCards((a) => (a.includes(id) ? a.filter((x) => x !== id) : [...a, id]))
+                }
+                searchLabel={t("coinSearch")}
+                emptyLabel={t("coinSearchEmpty")}
+                disabled={pending}
+              />
+            </>
+          ) : null}
+        </div>
+
         {/* Логотип: файлом или ссылкой, и сразу видно, как он встанет в окно
             (слайс BU). Прежде поле было одно — адрес, — и у заведения без своего
             сайта окно логотипа оставалось пустым навсегда. */}

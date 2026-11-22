@@ -1910,7 +1910,11 @@
     "attention": {
       "title": "Needs your attention",
       "customers": "Customer messages"
-    }
+    },
+    "coinSearch": "Search coins",
+    "coinSearchEmpty": "Nothing found. Try the ticker.",
+    "companyCoinsHint": "Points without their own selection inherit these coins. Changing the set goes to a moderator.",
+    "coinsInherited": "Nothing selected — this point shows the company set: {coins}"
   },
   "cabinet": {
     "kicker": "Section · Cabinet",

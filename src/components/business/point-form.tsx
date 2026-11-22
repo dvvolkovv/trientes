@@ -18,6 +18,7 @@ import { HoursEditor } from "@/components/business/hours-editor";
 import { MERCHANT_CATEGORIES } from "@/lib/merchant-categories";
 import { defaultWeek, isEmptyWeek, type WeekHours } from "@/lib/opening-hours";
 import { timezoneForCountry } from "@/lib/timezones";
+import { CoinPicker } from "@/components/business/coin-picker";
 
 
 const PRAGUE: [number, number] = [14.4212535, 50.0874654];
@@ -79,6 +80,7 @@ export function PointForm({
   editing,
   companyHours,
   companyTimezone,
+  inheritedLabel,
 }: {
   companyId: string;
   companyStatus: "PENDING" | "APPROVED" | "REJECTED";
@@ -90,6 +92,8 @@ export function PointForm({
   /** Часы конторы (слайс BU): их можно **скопировать** в точку, но не наследовать. */
   companyHours?: WeekHours | null;
   companyTimezone?: string | null;
+  /** Монеты предприятия словами: их точка унаследует, пока не выбрала своих. */
+  inheritedLabel?: string;
 }) {
   const t = useTranslations("business");
   const containerRef = useRef<HTMLDivElement>(null);
@@ -435,41 +439,30 @@ export function PointForm({
       </div>
 
       <div className="text-[12px] text-muted">{t("acceptedCoins")}:</div>
-      <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">
-        {coins.map((c) => {
-          const on = accepted.includes(c.id);
-          return (
-            <button key={c.id} type="button"
-              onClick={() => setAccepted((a) => on ? a.filter((x) => x !== c.id) : [...a, c.id])}
-              className={`inline-flex items-center gap-1.5 text-[11px] px-2 py-1 rounded-md border ${on ? "bg-accent/15 text-accent border-accent/40" : "border-hairline text-muted"}`}>
-              {c.logoUrl && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={c.logoUrl} alt="" width={14} height={14} className="rounded-full" />
-              )}
-              {c.symbol.toUpperCase()}
-            </button>
-          );
-        })}
-      </div>
+      {/* Монеты предприятия: пустой выбор точки означает «как у предприятия»
+          (слайс BX), и человек должен видеть, что именно он унаследует. */}
+      {accepted.length === 0 && acceptedCards.length === 0 && inheritedLabel ? (
+        <p className="text-[12px] text-muted">{t("coinsInherited", { coins: inheritedLabel })}</p>
+      ) : null}
+      <CoinPicker
+        coins={coins}
+        selected={accepted}
+        onToggle={(id) => setAccepted((a) => (a.includes(id) ? a.filter((x) => x !== id) : [...a, id]))}
+        searchLabel={t("coinSearch")}
+        emptyLabel={t("coinSearchEmpty")}
+      />
       {cards.length > 0 && (
         <>
           <div className="text-[12px] text-muted">{t("ownListing")}:</div>
-          <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">
-            {cards.map((c) => {
-              const on = acceptedCards.includes(c.id);
-              return (
-                <button key={c.id} type="button" title={c.name}
-                  onClick={() => setAcceptedCards((a) => on ? a.filter((x) => x !== c.id) : [...a, c.id])}
-                  className={`inline-flex items-center gap-1.5 text-[11px] px-2 py-1 rounded-md border ${on ? "bg-accent/15 text-accent border-accent/40" : "border-hairline text-muted"}`}>
-                  {c.logoUrl && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={c.logoUrl} alt="" width={14} height={14} className="rounded-full" />
-                  )}
-                  {c.symbol.toUpperCase()}
-                </button>
-              );
-            })}
-          </div>
+          <CoinPicker
+            coins={cards}
+            selected={acceptedCards}
+            onToggle={(id) =>
+              setAcceptedCards((a) => (a.includes(id) ? a.filter((x) => x !== id) : [...a, id]))
+            }
+            searchLabel={t("coinSearch")}
+            emptyLabel={t("coinSearchEmpty")}
+          />
         </>
       )}
       <div className="text-[12px] text-muted">{t("photos")} <span className="opacity-60">({photos.length}/5)</span></div>

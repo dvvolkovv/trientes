@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
+import { readTop100 } from "@/lib/snapshot";
+import { listSelfListedCards } from "@/lib/coin-card-directory";
 import { getViewerCompanyById, canEditSection, canManageMembers } from "@/lib/business";
 import { CompanyProfileForm } from "@/components/business/company-profile-form";
 import { CompanyCard } from "@/components/business/company-card";
@@ -72,6 +74,12 @@ export default async function CompanyManagementPage({
   // Публичные документы и умолчание точного адреса (слайс BU). Умолчание зависит
   // от того, есть ли у предприятия физические точки: у онлайн-предприятия адрес
   // часто домашний.
+  // Монеты для выбора нужны только на экране правки: на карточке их не выбирают,
+  // а каталог — сотня строк, и читать его при каждом показе карточки незачем.
+  const [coinOpts, cardOpts] = editing
+    ? await Promise.all([readTop100(), listSelfListedCards(200)])
+    : [[], []];
+
   const [docs, physicalPoints] = editable
     ? await Promise.all([
         prisma.companyDocument.findMany({
@@ -114,6 +122,10 @@ export default async function CompanyManagementPage({
             backHref={base}
             initialHours={officeHours}
             initialTimezone={company.timezone}
+            coins={coinOpts.map((c) => ({ id: c.id, symbol: c.symbol, name: c.name, logoUrl: c.logoUrl }))}
+            cards={cardOpts.map((c) => ({ id: c.id, symbol: c.symbol, name: c.name, logoUrl: c.logoUrl }))}
+            initialCoinIds={company.acceptedCoinIds}
+            initialCardIds={company.acceptedCardIds}
             initial={{
               legalName: company.legalName, displayName: company.displayName,
               description: company.description ?? "", website: company.website ?? "",

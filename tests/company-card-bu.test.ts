@@ -11,6 +11,7 @@ import {
 } from "@/lib/company-logo";
 import { companyDocExtension, companyDocFilePath, isCompanyDocKind } from "@/lib/company-docs";
 import {
+  PUBLIC_FIELD_KEYS,
   defaultPublicFields,
   parsePublicFields,
   publicFieldOn,
@@ -104,9 +105,9 @@ describe("что показывать на витрине", () => {
 
   it("набор для записи содержит все ключи — умолчание потом не переедет само", () => {
     const json = toPublicFieldsJson({ phone: false }, { hasPhysicalPoints: true });
-    expect(Object.keys(json).sort()).toEqual(
-      ["description", "documents", "email", "hours", "phone", "preciseAddress", "returnPolicy"],
-    );
+    // Список берётся из реестра, а не переписывается руками: слайс BX добавил
+    // модули карточки, и вторая копия списка в тесте отстала бы от первой.
+    expect(Object.keys(json).sort()).toEqual([...PUBLIC_FIELD_KEYS].sort());
     expect(json.phone).toBe(false);
     expect(json.email).toBe(true);
   });
