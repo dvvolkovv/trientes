@@ -51,15 +51,28 @@ describe("карта личного кабинета", () => {
 
   it("служебные плитки видит только сотрудник", () => {
     const guest = visibleCabinetTiles(false).map((t) => t.key);
-    expect(guest).not.toContain("mfa");
     expect(guest).not.toContain("admin");
     expect(visibleCabinetTiles(true).map((t) => t.key)).toContain("admin");
   });
 
+  // Слайс BT: язык, валюта, тема, пароль, фактор и сеансы — это всё «я», и
+  // живут они в профиле. Своя плитка вернула бы вторую дверь к одному предмету.
+  it("у настроек и второго фактора своих плиток нет", () => {
+    const keys = CABINET_TILES.map((t) => t.key);
+    expect(keys).not.toContain("settings");
+    expect(keys).not.toContain("mfa");
+  });
+
+  it("прежние якоря настроек и фактора ведут в профиль, к своему месту", () => {
+    expect(CABINET_HASH_ALIASES.settings).toBe("profile#settings");
+    expect(CABINET_HASH_ALIASES.mfa).toBe("profile#security");
+  });
+
   it("старый якорь ведёт на существующую плитку или на профиль", () => {
-    for (const [hash, path] of Object.entries(CABINET_HASH_ALIASES)) {
+    for (const [hash, target] of Object.entries(CABINET_HASH_ALIASES)) {
+      const path = target.split("#")[0];
       const known = path === "profile" || CABINET_TILES.some((t) => t.path === path);
-      expect(known, `#${hash} → ${path}`).toBe(true);
+      expect(known, `#${hash} → ${target}`).toBe(true);
     }
   });
 });
@@ -76,13 +89,13 @@ describe("ключи цвета кабинета", () => {
   });
 
   it("известны проверке на запись", () => {
-    expect(isSectionKey(cabinetColorKey("settings"))).toBe(true);
+    expect(isSectionKey(cabinetColorKey("alerts"))).toBe(true);
     expect(isSectionKey("cab:nosuch")).toBe(false);
   });
 
   it("чужой ключ из базы читается как отсутствующий", () => {
-    expect(readSectionColors({ "cab:settings": "red", "cab:nosuch": "red", queues: "teal" })).toEqual(
-      { "cab:settings": "red", queues: "teal" },
+    expect(readSectionColors({ "cab:alerts": "red", "cab:nosuch": "red", queues: "teal" })).toEqual(
+      { "cab:alerts": "red", queues: "teal" },
     );
   });
 });

@@ -66,7 +66,8 @@
       "blue": "青",
       "violet": "バイオレット",
       "pink": "ピンク"
-    }
+    },
+    "save": "保存"
   },
   "home": {
     "title": "ようこそ",
@@ -1815,7 +1816,8 @@
         "invalid_credentials": "現在のパスワードが正しくありません。",
         "password_too_short": "パスワードは8文字以上必要です。",
         "password_too_long": "パスワードが長すぎます。",
-        "password_already_set": "すでにパスワードが設定されています。"
+        "password_already_set": "すでにパスワードが設定されています。",
+        "verify_first": "まず認証アプリのコードを入力してください."
       },
       "emailVerify": {
         "verified": "メール確認済み",
@@ -1830,6 +1832,24 @@
           "send_failed": "送信に失敗しました。",
           "expired": "リンクが期限切れです。",
           "invalid": "リンクが無効です。"
+        }
+      },
+      "dataTitle": "あなたの情報",
+      "noEmail": "メール未登録",
+      "noPhone": "電話番号未登録",
+      "privateNote": "あなたのメールと電話番号は私たちだけが確認します — 他の人に見えるのは @username のみです.",
+      "avatar": {
+        "add": "写真を追加",
+        "change": "写真を変更",
+        "remove": "削除",
+        "uploading": "アップロード中…",
+        "errors": {
+          "too_large": "ファイルが大きすぎます — 最大 4 MB まで.",
+          "bad_type": "PNG、JPEG、または WebP のみ.",
+          "no_file": "先にファイルを選択してください.",
+          "verify_first": "最初に認証アプリのコードを入力してください",
+          "unauth": "サインインしていません",
+          "upload_failed": "アップロードできませんでした — もう一度お試しください"
         }
       }
     },
@@ -1965,24 +1985,13 @@
         "CLOSED": "クローズ"
       }
     },
-    "mfa": {
-      "title": "サインインとセキュリティ",
-      "subtitle": "スタッフアカウントは認証アプリのコードで管理画面を開きます。",
-      "on": "{date} から二要素認証を有効化。",
-      "off": "二要素認証はまだ設定されていません。",
-      "codesLeft": "リカバリーコードは残り {count} 件。",
-      "enable": "二要素認証を設定",
-      "rotate": "別の端末に移行"
-    },
     "hub": {
       "back": "キャビネットに戻る",
       "editProfile": "プロフィールを編集",
       "noEmail": "メール未登録",
       "hint": {
-        "settings": "言語、通貨、テーマ",
         "interests": "ルート沿いに表示する内容",
         "loyalty": "あなたのレベルとキャッシュバック",
-        "mfa": "スタッフのサインイン用第2要素",
         "admin": "キューと案件",
         "appearance": "各タイルの枠線の色"
       }
@@ -1991,6 +2000,39 @@
       "title": "セクションの色",
       "subtitle": "各タイルに自分が識別しやすい枠線の色を設定しましょう。選択はあなた次第です。",
       "reset": "すべての色をリセット"
+    },
+    "security": {
+      "title": "セキュリティ",
+      "passwordTitle": "パスワードを変更",
+      "passwordSetTitle": "パスワードを設定",
+      "passwordNone": "Google、GitHub、またはTelegramでサインインしています。パスワードを設定すると別のログイン手段が得られます",
+      "mfa": {
+        "title": "二要素認証",
+        "note": "パスワードに加えて認証アプリのコードが必要になります。有効化すると、キャビネットを開くたびにコードを求められます",
+        "staffNote": "スタッフアカウントは第二要素を有効のままにする必要があります。管理画面へのサインインごとにコードが求められます",
+        "on": "{date}から有効",
+        "off": "未設定",
+        "codesLeft": "復旧コードの残り: {count}",
+        "enable": "二要素認証を設定",
+        "rotate": "別の端末へ移行",
+        "disable": "無効化",
+        "disableSure": "もう一度タップで無効化",
+        "ownerOnly": "スタッフアカウントの要素を無効化できるのはオーナーのみです",
+        "errors": {
+          "verify_first": "最初に認証アプリのコードを入力してください",
+          "staff_owner_only": "スタッフアカウントでこれを無効化できるのはオーナーのみです",
+          "no_access": "サインインしていません",
+          "not_enrolled": "第二要素が設定されていません。"
+        }
+      },
+      "sessions": {
+        "title": "デバイスとセッション",
+        "note": "サインインごとに個別のセッションが保持されます。どこからサインインしたかは保存していないため、表示できるのは稼働中の数のみです",
+        "count": "稼働中のセッション: {count}",
+        "signOutOthers": "他の端末からサインアウト",
+        "aloneHere": "これは唯一のセッションです",
+        "closed": "終了: {count}"
+      }
     }
   },
   "register": {
@@ -3473,7 +3515,7 @@
   "mfa": {
     "kicker": "第2要素",
     "setupTitle": "第2要素を設定",
-    "setupSubtitle": "スタッフアカウントは、パスワードだけではなく、認証アプリのコードで管理画面を開きます。",
+    "setupSubtitle": "パスワードに加えて認証アプリのコードを使用します。スタッフアカウントは必須です。誰でも有効化できます。",
     "verifyTitle": "コードを入力",
     "verifySubtitle": "認証アプリに現在表示されている6桁のコード。",
     "step1": "任意の認証アプリを開いてください — Google Authenticator、1Password、Aegis、Authy。",

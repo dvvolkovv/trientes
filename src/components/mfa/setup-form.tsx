@@ -20,7 +20,7 @@ function grouped(secret: string): string {
   return secret.replace(/(.{4})/g, "$1 ").trim();
 }
 
-export function MfaSetupForm({ locale }: { locale: string }) {
+export function MfaSetupForm({ locale, next }: { locale: string; next?: string }) {
   const t = useTranslations("mfa");
   const router = useRouter();
   const [enroll, setEnroll] = useState<{ secretB32: string; uri: string } | null>(null);
@@ -59,7 +59,7 @@ export function MfaSetupForm({ locale }: { locale: string }) {
           type="button"
           className={ADMIN_BUTTON}
           onClick={() => {
-            router.push(`/${locale}/admin`);
+            router.push(next ?? `/${locale}/admin`);
             router.refresh();
           }}
         >

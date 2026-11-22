@@ -66,7 +66,8 @@
       "blue": "Bleu",
       "violet": "Violet",
       "pink": "Rose"
-    }
+    },
+    "save": "Enregistrer"
   },
   "home": {
     "title": "Bienvenue",
@@ -1815,7 +1816,8 @@
         "invalid_credentials": "Mot de passe actuel incorrect.",
         "password_too_short": "Le mot de passe doit faire au moins 8 caractères.",
         "password_too_long": "Le mot de passe est trop long.",
-        "password_already_set": "Vous avez déjà un mot de passe."
+        "password_already_set": "Vous avez déjà un mot de passe.",
+        "verify_first": "Saisissez d’abord le code de votre application d’authentification."
       },
       "emailVerify": {
         "verified": "Email vérifié",
@@ -1830,6 +1832,24 @@
           "send_failed": "Échec de l'envoi.",
           "expired": "Lien expiré.",
           "invalid": "Lien invalide."
+        }
+      },
+      "dataTitle": "Vos informations",
+      "noEmail": "Pas encore d’e-mail",
+      "noPhone": "Pas encore de téléphone",
+      "privateNote": "Votre e‑mail et votre téléphone restent entre nous — les autres ne voient que votre @username.",
+      "avatar": {
+        "add": "Ajouter une photo",
+        "change": "Modifier la photo",
+        "remove": "Supprimer",
+        "uploading": "Envoi…",
+        "errors": {
+          "too_large": "Fichier trop volumineux — jusqu’à 4 Mo.",
+          "bad_type": "PNG, JPEG ou WebP uniquement.",
+          "no_file": "Choisissez d’abord un fichier.",
+          "verify_first": "Saisissez d’abord le code de votre application d’authentification.",
+          "unauth": "Vous n’êtes pas connecté.",
+          "upload_failed": "Téléversement impossible — réessayez."
         }
       }
     },
@@ -1965,24 +1985,13 @@
         "CLOSED": "fermé"
       }
     },
-    "mfa": {
-      "title": "Connexion et sécurité",
-      "subtitle": "Les comptes du personnel ouvrent la zone d'administration avec un code d'une application d'authentification.",
-      "on": "Second facteur activé depuis {date}.",
-      "off": "Le second facteur n'est pas encore configuré.",
-      "codesLeft": "{count} codes de récupération restants.",
-      "enable": "Configurer le second facteur",
-      "rotate": "Le transférer vers un autre téléphone"
-    },
     "hub": {
       "back": "Retour au cabinet",
       "editProfile": "Modifier le profil",
       "noEmail": "Pas encore d’e-mail",
       "hint": {
-        "settings": "Langue, devise, thème",
         "interests": "Ce qu'afficher le long d'un itinéraire",
         "loyalty": "Votre niveau et votre cashback",
-        "mfa": "Deuxième facteur pour la connexion du personnel",
         "admin": "Files d'attente et dossiers",
         "appearance": "Couleur du contour de chaque tuile"
       }
@@ -1991,6 +2000,39 @@
       "title": "Couleurs des sections",
       "subtitle": "Attribuez à chaque tuile une couleur de contour que vous reconnaîtrez. Le choix vous appartient.",
       "reset": "Réinitialiser toutes les couleurs"
+    },
+    "security": {
+      "title": "Sécurité",
+      "passwordTitle": "Changer le mot de passe",
+      "passwordSetTitle": "Définir un mot de passe",
+      "passwordNone": "Vous vous connectez via Google, GitHub ou Telegram. Un mot de passe vous offre un second moyen d’accès.",
+      "mfa": {
+        "title": "Authentification à deux facteurs",
+        "note": "Un code d’une application d’authentification en plus de votre mot de passe. Une fois activée, la saisie du code est demandée chaque fois que vous ouvrez votre espace.",
+        "staffNote": "Les comptes du personnel doivent garder le second facteur activé : le code est demandé à chaque connexion à la zone d’administration.",
+        "on": "Activée depuis {date}.",
+        "off": "Pas encore configurée.",
+        "codesLeft": "Il reste {count} codes de récupération.",
+        "enable": "Configurer l’authentification à deux facteurs",
+        "rotate": "Le transférer sur un autre téléphone",
+        "disable": "Désactiver",
+        "disableSure": "Appuyez de nouveau pour désactiver",
+        "ownerOnly": "Seul le propriétaire peut désactiver le facteur pour un compte du personnel.",
+        "errors": {
+          "verify_first": "Saisissez d’abord le code de votre application d’authentification.",
+          "staff_owner_only": "Seul le propriétaire peut désactiver ceci pour un compte du personnel.",
+          "no_access": "Vous n’êtes pas connecté.",
+          "not_enrolled": "Le second facteur n’est pas configuré."
+        }
+      },
+      "sessions": {
+        "title": "Appareils et sessions",
+        "note": "Chaque connexion conserve sa propre session. Nous n’enregistrons pas l’endroit d’où vous vous êtes connecté, il n’y a donc rien à afficher au‑delà du nombre de sessions actives.",
+        "count": "Sessions actives : {count}",
+        "signOutOthers": "Se déconnecter partout ailleurs",
+        "aloneHere": "C’est votre seule session.",
+        "closed": "Fermées : {count}"
+      }
     }
   },
   "register": {
@@ -3473,7 +3515,7 @@
   "mfa": {
     "kicker": "Deuxième facteur",
     "setupTitle": "Configurez votre deuxième facteur",
-    "setupSubtitle": "Les comptes du personnel ouvrent l’espace d’administration avec un code d’une application d’authentification, pas avec le mot de passe seul.",
+    "setupSubtitle": "Un code provenant d'une application d'authentification en plus de votre mot de passe. Les comptes du personnel doivent l'utiliser ; tout le monde peut l'activer.",
     "verifyTitle": "Saisissez le code",
     "verifySubtitle": "Les six chiffres que votre application d’authentification affiche en ce moment.",
     "step1": "Ouvrez n’importe quelle application d’authentification — Google Authenticator, 1Password, Aegis, Authy.",
@@ -3633,7 +3675,7 @@
         "m": "m",
         "m2": "m²",
         "hour": "heure",
-        "service": "service"
+        "service": "prestation"
       },
       "returns": "Retours",
       "returnDays": "{days} jours",

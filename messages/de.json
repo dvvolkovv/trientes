@@ -66,7 +66,8 @@
       "blue": "Blau",
       "violet": "Violett",
       "pink": "Pink"
-    }
+    },
+    "save": "Speichern"
   },
   "home": {
     "title": "Willkommen",
@@ -1815,7 +1816,8 @@
         "invalid_credentials": "Aktuelles Passwort ist falsch.",
         "password_too_short": "Passwort muss mindestens 8 Zeichen lang sein.",
         "password_too_long": "Passwort ist zu lang.",
-        "password_already_set": "Sie haben bereits ein Passwort."
+        "password_already_set": "Sie haben bereits ein Passwort.",
+        "verify_first": "Gib zuerst den Code aus deiner Authenticator‑App ein."
       },
       "emailVerify": {
         "verified": "E-Mail bestätigt",
@@ -1830,6 +1832,24 @@
           "send_failed": "Senden fehlgeschlagen.",
           "expired": "Link abgelaufen.",
           "invalid": "Ungültiger Link."
+        }
+      },
+      "dataTitle": "Deine Angaben",
+      "noEmail": "Noch keine E‑Mail",
+      "noPhone": "Noch keine Telefonnummer",
+      "privateNote": "Deine E‑Mail und Telefonnummer bleiben unter uns — andere sehen nur deinen @Benutzernamen.",
+      "avatar": {
+        "add": "Foto hinzufügen",
+        "change": "Foto ändern",
+        "remove": "Entfernen",
+        "uploading": "Wird hochgeladen…",
+        "errors": {
+          "too_large": "Die Datei ist zu groß — maximal 4 MB.",
+          "bad_type": "Nur PNG, JPEG oder WebP.",
+          "no_file": "Wähle zuerst eine Datei aus.",
+          "verify_first": "Gib zuerst den Code aus deiner Authenticator‑App ein.",
+          "unauth": "Du bist nicht angemeldet.",
+          "upload_failed": "Hochladen fehlgeschlagen — versuch es noch einmal."
         }
       }
     },
@@ -1965,24 +1985,13 @@
         "CLOSED": "geschlossen"
       }
     },
-    "mfa": {
-      "title": "Anmeldung und Sicherheit",
-      "subtitle": "Mitarbeiterkonten öffnen den Adminbereich mit einem Code aus einer Authentifikator-App.",
-      "on": "Zweiter Faktor seit {date} aktiv.",
-      "off": "Zweiter Faktor ist noch nicht eingerichtet.",
-      "codesLeft": "Noch {count} Wiederherstellungscodes übrig.",
-      "enable": "Zweiten Faktor einrichten",
-      "rotate": "Auf ein anderes Telefon übertragen"
-    },
     "hub": {
       "back": "Zurück zum Cabinet",
       "editProfile": "Profil bearbeiten",
       "noEmail": "Noch keine E-Mail",
       "hint": {
-        "settings": "Sprache, Währung, Thema",
         "interests": "Was entlang einer Route angezeigt wird",
         "loyalty": "Ihr Level und Cashback",
-        "mfa": "Zweiter Faktor für Mitarbeiter-Login",
         "admin": "Warteschlangen und Fälle",
         "appearance": "Konturfarbe jeder Kachel"
       }
@@ -1991,6 +2000,39 @@
       "title": "Bereichsfarben",
       "subtitle": "Geben Sie jeder Kachel eine Konturfarbe, die Sie wiedererkennen. Die Wahl liegt ganz bei Ihnen.",
       "reset": "Alle Farben zurücksetzen"
+    },
+    "security": {
+      "title": "Sicherheit",
+      "passwordTitle": "Passwort ändern",
+      "passwordSetTitle": "Passwort festlegen",
+      "passwordNone": "Du meldest dich über Google, GitHub oder Telegram an. Ein Passwort gibt dir eine zweite Anmeldemöglichkeit.",
+      "mfa": {
+        "title": "Zwei-Faktor-Authentifizierung",
+        "note": "Zusätzlich zu deinem Passwort ein Code aus einer Authenticator‑App. Sobald sie aktiviert ist, wird der Code jedes Mal abgefragt, wenn du deinen Bereich öffnest.",
+        "staffNote": "Mitarbeiterkonten müssen den zweiten Faktor aktiviert lassen: Der Code wird bei jeder Anmeldung im Admin‑Bereich abgefragt.",
+        "on": "Aktiv seit {date}.",
+        "off": "Noch nicht eingerichtet.",
+        "codesLeft": "Noch {count} Wiederherstellungscodes.",
+        "enable": "Zwei‑Faktor einrichten",
+        "rotate": "Auf ein anderes Telefon übertragen",
+        "disable": "Deaktivieren",
+        "disableSure": "Zum Deaktivieren erneut tippen",
+        "ownerOnly": "Nur der Eigentümer kann den Faktor für ein Mitarbeiterkonto deaktivieren.",
+        "errors": {
+          "verify_first": "Gib zuerst den Code aus deiner Authenticator‑App ein.",
+          "staff_owner_only": "Nur der Eigentümer kann dies für ein Mitarbeiterkonto deaktivieren.",
+          "no_access": "Sie sind nicht angemeldet.",
+          "not_enrolled": "Der zweite Faktor ist nicht eingerichtet."
+        }
+      },
+      "sessions": {
+        "title": "Geräte und Sitzungen",
+        "note": "Jede Anmeldung hat ihre eigene Sitzung. Wir speichern nicht, von wo Sie sich angemeldet haben, daher gibt es außer der Anzahl aktiver Sitzungen nichts anzuzeigen.",
+        "count": "Aktive Sitzungen: {count}",
+        "signOutOthers": "Auf allen anderen Geräten abmelden",
+        "aloneHere": "Dies ist Ihre einzige Sitzung.",
+        "closed": "Beendet: {count}"
+      }
     }
   },
   "register": {
@@ -2444,7 +2486,7 @@
       "reddit": "Reddit",
       "blog": "Blog",
       "youtube": "YouTube",
-      "explorer": "Explorer"
+      "explorer": "Block-Explorer"
     },
     "provenance": {
       "SELF_REPORTED": "Vom Projekt selbst angegeben",
@@ -2548,7 +2590,7 @@
         "reddit": "Reddit",
         "blog": "Blog",
         "youtube": "YouTube",
-        "explorer": "Explorer"
+        "explorer": "Block-Explorer"
       },
       "next": "Weiter",
       "finish": "Zur Prüfung einreichen",
@@ -3473,7 +3515,7 @@
   "mfa": {
     "kicker": "Zweiter Faktor",
     "setupTitle": "Richte deinen zweiten Faktor ein",
-    "setupSubtitle": "Mitarbeiterkonten öffnen den Admin‑Bereich mit einem Code aus einer Authenticator‑App, nicht nur mit dem Passwort.",
+    "setupSubtitle": "Ein Code aus einer Authentifikator-App zusätzlich zu deinem Passwort. Mitarbeiterkonten müssen es verwenden; jeder kann es einschalten.",
     "verifyTitle": "Code eingeben",
     "verifySubtitle": "Die sechs Ziffern, die deine Authenticator‑App gerade anzeigt.",
     "step1": "Öffne eine beliebige Authenticator‑App — Google Authenticator, 1Password, Aegis, Authy.",

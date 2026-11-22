@@ -6,5 +6,5 @@ export default async function SettingsRedirect({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  redirect(`/${locale}/cabinet/settings`);
+  redirect(`/${locale}/cabinet/profile#settings`);
 }

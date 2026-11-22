@@ -66,7 +66,8 @@
       "blue": "Plava",
       "violet": "Ljubičasta",
       "pink": "Ružičasta"
-    }
+    },
+    "save": "Spremi"
   },
   "home": {
     "title": "Dobrodošli",
@@ -1815,7 +1816,8 @@
         "invalid_credentials": "Trenutna lozinka je netočna.",
         "password_too_short": "Lozinka mora imati najmanje 8 znakova.",
         "password_too_long": "Lozinka je preduga.",
-        "password_already_set": "Već imate lozinku."
+        "password_already_set": "Već imate lozinku.",
+        "verify_first": "Najprije unesite kod iz aplikacije za autentifikaciju."
       },
       "emailVerify": {
         "verified": "Email potvrđen",
@@ -1830,6 +1832,24 @@
           "send_failed": "Slanje nije uspjelo — provjerite postavke emaila.",
           "expired": "Poveznica je istekla — zatražite novu.",
           "invalid": "Nevažeća poveznica."
+        }
+      },
+      "dataTitle": "Vaši podaci",
+      "noEmail": "Još nema adrese e-pošte",
+      "noPhone": "Još nema broja telefona",
+      "privateNote": "Vaša adresa e-pošte i broj telefona ostaju između nas — drugi korisnici vide samo vaš @username.",
+      "avatar": {
+        "add": "Dodati fotografiju",
+        "change": "Promijeniti fotografiju",
+        "remove": "Ukloniti",
+        "uploading": "Učitavanje…",
+        "errors": {
+          "too_large": "Datoteka je prevelika — do 4 MB.",
+          "bad_type": "Samo PNG, JPEG ili WebP.",
+          "no_file": "Najprije odabrati datoteku.",
+          "verify_first": "Najprije unesite kod iz aplikacije za autentifikaciju.",
+          "unauth": "Niste prijavljeni.",
+          "upload_failed": "Nije moguće učitati — pokušajte ponovno."
         }
       }
     },
@@ -1965,24 +1985,13 @@
         "CLOSED": "zatvoreno"
       }
     },
-    "mfa": {
-      "title": "Prijava i sigurnost",
-      "subtitle": "Računi osoblja otvaraju administratorsko područje kodom iz aplikacije za autentifikaciju.",
-      "on": "Drugi faktor uključen od {date}.",
-      "off": "Drugi faktor još nije postavljen.",
-      "codesLeft": "{count} preostalih kodova za oporavak.",
-      "enable": "Postaviti drugi faktor",
-      "rotate": "Premjestiti ga na drugi telefon"
-    },
     "hub": {
       "back": "Natrag na profil",
       "editProfile": "Uredite profil",
       "noEmail": "Još nema e-pošte",
       "hint": {
-        "settings": "Jezik, valuta, tema",
         "interests": "Što prikazivati duž rute",
         "loyalty": "Vaša razina i povrat novca",
-        "mfa": "Drugi faktor za prijavu osoblja",
         "admin": "Redovi i slučajevi",
         "appearance": "Boja obruba svake pločice"
       }
@@ -1991,6 +2000,39 @@
       "title": "Boje odjeljaka",
       "subtitle": "Dodijelite svakoj pločici boju obruba koju ćete prepoznati. Izbor je samo vaš.",
       "reset": "Poništiti sve boje"
+    },
+    "security": {
+      "title": "Sigurnost",
+      "passwordTitle": "Promjena lozinke",
+      "passwordSetTitle": "Postavljanje lozinke",
+      "passwordNone": "Prijavljujete se putem Googlea, GitHuba ili Telegrama. Lozinka pruža drugi način prijave.",
+      "mfa": {
+        "title": "Dvofaktorska autentikacija",
+        "note": "Kod iz aplikacije za autentifikaciju uz vašu lozinku. Kada je uključena, kod se traži svaki put kad otvorite svoj profil.",
+        "staffNote": "Računi osoblja moraju imati drugi faktor uključen: kod se traži pri svakoj prijavi u administratorsko područje.",
+        "on": "Uključeno od {date}.",
+        "off": "Još nije postavljeno.",
+        "codesLeft": "Preostalo {count} kodova za oporavak.",
+        "enable": "Postaviti dvofaktorsku autentikaciju",
+        "rotate": "Premjestiti na drugi telefon",
+        "disable": "Isključiti",
+        "disableSure": "Dodirnuti ponovno za isključivanje",
+        "ownerOnly": "Samo vlasnik može isključiti faktor za račun osoblja.",
+        "errors": {
+          "verify_first": "Najprije unesite kod iz aplikacije za autentifikaciju.",
+          "staff_owner_only": "Samo vlasnik može ovo isključiti za račun osoblja.",
+          "no_access": "Niste prijavljeni.",
+          "not_enrolled": "Drugi faktor nije postavljen."
+        }
+      },
+      "sessions": {
+        "title": "Uređaji i sesije",
+        "note": "Svaka prijava ima vlastitu sesiju. Ne pohranjujemo odakle ste se prijavili, pa osim broja aktivnih nemamo što prikazati.",
+        "count": "Aktivne sesije: {count}",
+        "signOutOthers": "Odjavite se posvuda",
+        "aloneHere": "Ovo je vaša jedina sesija.",
+        "closed": "Zatvoreno: {count}"
+      }
     }
   },
   "register": {
@@ -3473,7 +3515,7 @@
   "mfa": {
     "kicker": "Drugi faktor",
     "setupTitle": "Postavite drugi faktor",
-    "setupSubtitle": "Računi osoblja otvaraju administratorsko područje kodom iz aplikacije za autentifikaciju, ne samo lozinkom.",
+    "setupSubtitle": "Kod iz aplikacije za autentikaciju uz lozinku. Računi osoblja moraju ga koristiti; svatko ga može uključiti.",
     "verifyTitle": "Unesite kod",
     "verifySubtitle": "Šest znamenki koje aplikacija za autentifikaciju trenutno prikazuje.",
     "step1": "Otvorite bilo koju aplikaciju za autentifikaciju — Google Authenticator, 1Password, Aegis, Authy.",

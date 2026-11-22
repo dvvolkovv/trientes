@@ -66,7 +66,8 @@
       "blue": "蓝色",
       "violet": "紫色",
       "pink": "粉色"
-    }
+    },
+    "save": "保存"
   },
   "home": {
     "title": "欢迎",
@@ -1815,7 +1816,8 @@
         "invalid_credentials": "当前密码不正确。",
         "password_too_short": "密码至少需要 8 个字符。",
         "password_too_long": "密码过长。",
-        "password_already_set": "您已设置过密码。"
+        "password_already_set": "您已设置过密码。",
+        "verify_first": "请先输入您身份验证器应用中的代码。"
       },
       "emailVerify": {
         "verified": "邮箱已验证",
@@ -1830,6 +1832,24 @@
           "send_failed": "发送失败。",
           "expired": "链接已过期。",
           "invalid": "链接无效。"
+        }
+      },
+      "dataTitle": "您的详细信息",
+      "noEmail": "暂无邮箱",
+      "noPhone": "暂无手机号",
+      "privateNote": "您的邮箱和手机号仅您与我们可见——其他人只能看到您的@用户名。",
+      "avatar": {
+        "add": "添加照片",
+        "change": "更换照片",
+        "remove": "移除",
+        "uploading": "正在上传…",
+        "errors": {
+          "too_large": "文件过大——最大 4 MB。",
+          "bad_type": "仅支持 PNG、JPEG 或 WebP。",
+          "no_file": "请先选择文件。",
+          "verify_first": "请先输入您身份验证器应用中的代码。",
+          "unauth": "您尚未登录。",
+          "upload_failed": "无法上传——请重试。"
         }
       }
     },
@@ -1965,24 +1985,13 @@
         "CLOSED": "已关闭"
       }
     },
-    "mfa": {
-      "title": "登录与安全",
-      "subtitle": "员工账户使用验证器应用的验证码进入管理区。",
-      "on": "第二要素自{date}起已启用。",
-      "off": "尚未设置第二要素。",
-      "codesLeft": "剩余{count}个恢复代码。",
-      "enable": "设置第二要素",
-      "rotate": "迁移到另一部手机"
-    },
     "hub": {
       "back": "返回个人中心",
       "editProfile": "编辑资料",
       "noEmail": "尚无邮箱",
       "hint": {
-        "settings": "语言、货币、主题",
         "interests": "沿途显示什么",
         "loyalty": "您的等级和返现",
-        "mfa": "员工登录的第二因素",
         "admin": "队列和案件",
         "appearance": "每个卡片的描边颜色"
       }
@@ -1991,6 +2000,39 @@
       "title": "分区颜色",
       "subtitle": "为每个卡片设置便于你识别的描边颜色。选择权全由你决定。",
       "reset": "重置所有颜色"
+    },
+    "security": {
+      "title": "安全",
+      "passwordTitle": "更改密码",
+      "passwordSetTitle": "设置密码",
+      "passwordNone": "您通过 Google、GitHub 或 Telegram 登录。设置密码可作为第二种登录方式。",
+      "mfa": {
+        "title": "双重验证",
+        "note": "来自身份验证器应用的验证码，叠加在密码之上。开启后，每次进入您的账户都会要求输入该验证码。",
+        "staffNote": "员工账号必须保持第二重验证开启：每次登录管理区域都需要输入该验证码。",
+        "on": "自 {date} 起已开启。",
+        "off": "尚未设置。",
+        "codesLeft": "剩余 {count} 个恢复码。",
+        "enable": "设置双重验证",
+        "rotate": "迁移到另一部手机",
+        "disable": "关闭",
+        "disableSure": "再点一次以关闭",
+        "ownerOnly": "仅所有者可以为员工账号关闭该验证。",
+        "errors": {
+          "verify_first": "请先输入身份验证器应用中的验证码。",
+          "staff_owner_only": "仅所有者可以为员工账号关闭此项。",
+          "no_access": "您尚未登录。",
+          "not_enrolled": "未设置第二因素。"
+        }
+      },
+      "sessions": {
+        "title": "设备与会话",
+        "note": "每次登录都会保留各自的会话。我们不存储您的登录来源，因此除当前活跃会话数量外无其他可显示。",
+        "count": "活跃会话：{count}",
+        "signOutOthers": "在其他所有位置退出登录",
+        "aloneHere": "这是您唯一的会话。",
+        "closed": "已关闭：{count}"
+      }
     }
   },
   "register": {
@@ -3473,7 +3515,7 @@
   "mfa": {
     "kicker": "第二因素",
     "setupTitle": "设置你的第二因素",
-    "setupSubtitle": "员工账户通过验证器应用提供的验证码进入管理区域，而不是仅用密码。",
+    "setupSubtitle": "在密码之外，使用身份验证器应用生成的验证码。员工账户必须使用；任何人都可以开启。",
     "verifyTitle": "输入验证码",
     "verifySubtitle": "你身份验证器应用此刻显示的六位数字。",
     "step1": "打开任意身份验证器应用——Google Authenticator、1Password、Aegis、Authy。",

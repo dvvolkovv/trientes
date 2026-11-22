@@ -89,12 +89,14 @@ export function SettingsForm(props: {
           ))}
         </select>
       </div>
+      {/* Слово на кнопке было вписано по-английски и выходило «SAVE» на всех
+          двенадцати языках — та же дыра, что чинила уборка AU. */}
       <button
         type="submit"
         disabled={pending}
-        className="w-full sm:w-auto bg-accent text-accent-foreground glow-accent rounded-md px-5 py-2.5 text-sm font-semibold uppercase tracking-wider hover:brightness-110 disabled:opacity-50 transition-all sm:self-start"
+        className="flex h-12 w-full items-center justify-center rounded-[14px] bg-accent px-6 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-40 sm:w-fit sm:self-start"
       >
-        Save
+        {t("save")}
       </button>
     </form>
   );

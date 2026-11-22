@@ -13,7 +13,7 @@ import { prisma } from "@/lib/prisma";
 import { loadMfaGate, requireOwner } from "@/lib/authz/guard";
 import { logAdminAction } from "@/lib/admin/audit";
 import { authSessionCookieName } from "@/lib/session";
-import { enrollmentAllowedFor, mfaRequiredForRole } from "@/lib/mfa/policy";
+import { enrollmentAllowedFor, mfaRequiredForRole, selfDisableAllowed } from "@/lib/mfa/policy";
 import { checkMfaRateLimit, recordMfaAttempt } from "@/lib/rate-limit";
 import {
   beginEnrollment,
@@ -32,6 +32,10 @@ type Viewer = { id: string; role: string; account: string };
  * Кто перед нами. Фактор заводит себе сам человек, поэтому здесь не
  * `requireStaff()` (он сам требует фактора и отправил бы нас по кругу), а
  * прямое чтение роли из базы.
+ *
+ * Роль больше не калитка: с слайса BT фактор доступен каждому — сотруднику он
+ * обязателен, посетителю добровольный, а работа с ключом у них одна и та же.
+ * Отозванный сотрудник остаётся отрезанным: у него доступа нет вовсе.
  */
 async function viewer(): Promise<Viewer | null> {
   const session = await auth();
@@ -42,7 +46,6 @@ async function viewer(): Promise<Viewer | null> {
     select: { id: true, role: true, username: true, email: true, staffMember: { select: { revokedAt: true } } },
   });
   if (!row || row.staffMember?.revokedAt) return null;
-  if (!mfaRequiredForRole(row.role)) return null;
   return { id: row.id, role: row.role, account: row.username ?? row.email ?? row.id };
 }
 
@@ -103,13 +106,19 @@ export async function confirmMfaEnrollment(code: string): Promise<MfaActionResul
 
   const token = await currentSessionToken();
   if (token) await stampSession(token);
-  await logAdminAction({
-    actorId: me.id,
-    action: "STAFF_MFA_ENABLED",
-    targetType: "User",
-    targetId: me.id,
-    details: { kind: "TOTP" },
-  });
+  // В журнал админки пишем только сотрудника: это журнал действий над проектом,
+  // а посетитель, включивший себе фактор, в нём ничего не делал. Заодно его
+  // строка держала бы учётную запись от удаления (`actorId` — RESTRICT, цена
+  // этого уже всплывала в уборке AU).
+  if (mfaRequiredForRole(me.role)) {
+    await logAdminAction({
+      actorId: me.id,
+      action: "STAFF_MFA_ENABLED",
+      targetType: "User",
+      targetId: me.id,
+      details: { kind: "TOTP" },
+    });
+  }
   revalidatePath("/");
   return { ok: true, recoveryCodes: r.recoveryCodes };
 }
@@ -178,6 +187,50 @@ export async function disableStaffMfa(input: {
     targetId: input.userId,
     details: { reason },
   });
+  revalidatePath("/");
+  return { ok: true };
+}
+
+/**
+ * Снять фактор себе. Только посетителю и только когда код в этом сеансе
+ * показан; сотруднику — нельзя, у него это право владельца.
+ *
+ * Свой сеанс остаётся жить, остальные гасятся: нажавший не должен выбрасывать
+ * сам себя, а чужой сеанс с показанным фактором после снятия считался бы
+ * «подтверждённым» навсегда.
+ */
+export async function disableOwnMfa(): Promise<{ ok: true } | { ok: false; reason: string }> {
+  const me = await viewer();
+  if (!me) return { ok: false, reason: "no_access" };
+  const gate = await loadMfaGate();
+  if (!selfDisableAllowed({ role: me.role, gate })) {
+    return { ok: false, reason: mfaRequiredForRole(me.role) ? "staff_owner_only" : "verify_first" };
+  }
+  // Фактора нет вовсе — честный отказ, а не падение: у посетителя без фактора
+  // калитка тоже отвечает «ok», и прямой вызов иначе дал бы 500.
+  const row = await prisma.staffMfa.findUnique({
+    where: { userId: me.id },
+    select: { confirmedAt: true, disabledAt: true },
+  });
+  if (!row || row.disabledAt || !row.confirmedAt) return { ok: false, reason: "not_enrolled" };
+
+  const token = await currentSessionToken();
+  await prisma.$transaction([
+    prisma.staffMfa.update({
+      where: { userId: me.id },
+      data: {
+        disabledAt: new Date(),
+        disabledById: me.id,
+        disabledReason: "self",
+        confirmedAt: null,
+        lastStep: null,
+      },
+    }),
+    prisma.staffMfaRecoveryCode.deleteMany({ where: { userId: me.id } }),
+    prisma.session.deleteMany({
+      where: { userId: me.id, ...(token ? { NOT: { sessionToken: token } } : {}) },
+    }),
+  ]);
   revalidatePath("/");
   return { ok: true };
 }

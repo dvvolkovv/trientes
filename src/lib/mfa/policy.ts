@@ -22,12 +22,32 @@ export function mfaGate(input: {
   mfa: MfaState;
   sessionMfaAt: Date | null;
 }): MfaGate {
-  if (!mfaRequiredForRole(input.role)) return "ok";
   // Начатое, но не подтверждённое заведение фактором не считается: по такому
   // ключу человек ни разу не показал код, то есть приложение может быть не
   // заведено вовсе.
-  if (!input.mfa || input.mfa.disabledAt || !input.mfa.confirmedAt) return "setup";
-  return input.sessionMfaAt ? "ok" : "verify";
+  const enrolled = Boolean(input.mfa && !input.mfa.disabledAt && input.mfa.confirmedAt);
+  // Заведённый фактор спрашивается у всех — и у посетителя, который завёл его
+  // себе сам (слайс BT). Иначе добровольный фактор был бы украшением: ключ в
+  // базе есть, а код никто не спрашивает.
+  if (enrolled) return input.sessionMfaAt ? "ok" : "verify";
+  // Не заведён: сотрудника отправляем заводить, посетителя не принуждаем —
+  // навязанный фактор запер бы живые учётные записи, а первый потерянный
+  // телефон стоил бы владельцу разбора.
+  return mfaRequiredForRole(input.role) ? "setup" : "ok";
+}
+
+/**
+ * Может ли человек снять фактор себе сам.
+ *
+ * У сотрудника — нет: это право владельца (слайс BA), иначе выманенный пароль
+ * снимал бы и фактор. У посетителя владельца нет вовсе, и запрет означал бы,
+ * что добровольный фактор нельзя отключить никогда.
+ */
+export function selfDisableAllowed(input: { role: string; gate: MfaGate }): boolean {
+  if (mfaRequiredForRole(input.role)) return false;
+  // Снятие — то же условие, что перевод на другой телефон: код в этом сеансе
+  // показан. Украденного пароля для снятия фактора не хватает.
+  return input.gate === "ok";
 }
 
 /**

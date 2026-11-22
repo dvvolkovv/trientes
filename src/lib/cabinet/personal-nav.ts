@@ -6,9 +6,13 @@
  * есть подпись в переводах и своя страница на диске). Своя копия такого списка
  * в проекте уже однажды отставала — список локалей, уборка AU.
  *
- * Порядок — порядок пользовательского пути: сперва то, что настраивают (язык,
- * оповещения, интересы), потом то, что ведут (заявки, предприятия, карточки,
+ * Порядок — порядок пользовательского пути: сперва то, что настраивают
+ * (оповещения, интересы), потом то, что ведут (заявки, предприятия, карточки,
  * биржи), потом разговор и деньги, и в конце служебное.
+ *
+ * Своих плиток у настроек и второго фактора нет с слайса BT: язык, валюта, тема,
+ * пароль, фактор и чужие сеансы живут в профиле — это всё «я», а не шесть
+ * разных предметов. Прежние адреса отвечают 30x на профиль с якорем.
  */
 
 export type CabinetTileDef = {
@@ -39,13 +43,6 @@ export type CabinetCounter =
   | "alerts";
 
 export const CABINET_TILES: CabinetTileDef[] = [
-  {
-    key: "settings",
-    path: "settings",
-    icon: "⚙️",
-    labelKey: "cabinet.settings.title",
-    hintKey: "cabinet.hub.hint.settings",
-  },
   {
     key: "alerts",
     path: "alerts",
@@ -98,14 +95,6 @@ export const CABINET_TILES: CabinetTileDef[] = [
     hintKey: "cabinet.hub.hint.loyalty",
   },
   {
-    key: "mfa",
-    path: "mfa",
-    icon: "🔐",
-    labelKey: "cabinet.mfa.title",
-    hintKey: "cabinet.hub.hint.mfa",
-    staffOnly: true,
-  },
-  {
     key: "admin",
     path: "admin/queues",
     icon: "🛡️",
@@ -141,10 +130,13 @@ export function cabinetTileByPath(path: string): CabinetTileDef | null {
 /**
  * Старые якоря (`/cabinet#settings`) разбросаны по письмам и чужим закладкам.
  * Сервер хеша не видит — перевод делает браузер встроенным разбором на хабе.
+ *
+ * Значение — путь, и у переехавшего раздела со своим якорем внутри профиля:
+ * `#mfa` ведёт не в начало профиля, а в «Безопасность» (слайс BT).
  */
 export const CABINET_HASH_ALIASES: Record<string, string> = {
   profile: "profile",
-  settings: "settings",
+  settings: "profile#settings",
   alerts: "alerts",
   cases: "cases",
   companies: "companies",
@@ -153,5 +145,5 @@ export const CABINET_HASH_ALIASES: Record<string, string> = {
   loyalty: "loyalty",
   subscriptions: "subscriptions",
   interests: "interests",
-  mfa: "mfa",
+  mfa: "profile#security",
 };

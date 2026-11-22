@@ -66,7 +66,8 @@
       "blue": "Azul",
       "violet": "Violeta",
       "pink": "Rosa"
-    }
+    },
+    "save": "Salvar"
   },
   "home": {
     "title": "Bem-vindo",
@@ -1815,7 +1816,8 @@
         "invalid_credentials": "Senha atual incorreta.",
         "password_too_short": "A senha deve ter ao menos 8 caracteres.",
         "password_too_long": "A senha é muito longa.",
-        "password_already_set": "Você já tem uma senha definida."
+        "password_already_set": "Você já tem uma senha definida.",
+        "verify_first": "Insira primeiro o código do seu aplicativo autenticador."
       },
       "emailVerify": {
         "verified": "Email verificado",
@@ -1830,6 +1832,24 @@
           "send_failed": "Falha ao enviar.",
           "expired": "Link expirado.",
           "invalid": "Link inválido."
+        }
+      },
+      "dataTitle": "Seus dados",
+      "noEmail": "Sem e-mail ainda",
+      "noPhone": "Sem telefone ainda",
+      "privateNote": "Seu e-mail e telefone ficam só entre nós — outras pessoas só veem seu @username.",
+      "avatar": {
+        "add": "Adicionar foto",
+        "change": "Alterar foto",
+        "remove": "Remover",
+        "uploading": "Enviando…",
+        "errors": {
+          "too_large": "Arquivo muito grande — até 4 MB.",
+          "bad_type": "Somente PNG, JPEG ou WebP.",
+          "no_file": "Selecione um arquivo primeiro.",
+          "verify_first": "Insira primeiro o código do seu aplicativo autenticador.",
+          "unauth": "Você não está conectado.",
+          "upload_failed": "Não foi possível enviar — tente novamente."
         }
       }
     },
@@ -1965,24 +1985,13 @@
         "CLOSED": "encerrado"
       }
     },
-    "mfa": {
-      "title": "Login e segurança",
-      "subtitle": "Contas da equipe abrem a área de administração com um código de um app autenticador.",
-      "on": "Segundo fator ativado desde {date}.",
-      "off": "O segundo fator ainda não foi configurado.",
-      "codesLeft": "{count} códigos de recuperação restantes.",
-      "enable": "Configurar o segundo fator",
-      "rotate": "Mover para outro telefone"
-    },
     "hub": {
       "back": "Voltar ao painel",
       "editProfile": "Editar perfil",
       "noEmail": "Ainda sem e-mail",
       "hint": {
-        "settings": "Idioma, moeda, tema",
         "interests": "O que mostrar ao longo de uma rota",
         "loyalty": "Seu nível e cashback",
-        "mfa": "Segundo fator para login da equipe",
         "admin": "Filas e casos",
         "appearance": "Cor do contorno de cada bloco"
       }
@@ -1991,6 +2000,39 @@
       "title": "Cores das seções",
       "subtitle": "Dê a cada bloco uma cor de contorno que você reconheça. A escolha é só sua",
       "reset": "Redefinir todas as cores"
+    },
+    "security": {
+      "title": "Segurança",
+      "passwordTitle": "Alterar senha",
+      "passwordSetTitle": "Definir uma senha",
+      "passwordNone": "Você entra pelo Google, GitHub ou Telegram. Uma senha dá uma segunda forma de acesso.",
+      "mfa": {
+        "title": "Autenticação de dois fatores",
+        "note": "Um código de um aplicativo autenticador além da sua senha. Depois de ativada, o código será solicitado sempre que você abrir seu painel.",
+        "staffNote": "Contas de equipe devem manter o segundo fator ativado: o código é solicitado a cada acesso à área de administração.",
+        "on": "Ativado desde {date}.",
+        "off": "Ainda não configurado.",
+        "codesLeft": "{count} códigos de recuperação restantes.",
+        "enable": "Configurar dois fatores",
+        "rotate": "Mover para outro celular",
+        "disable": "Desativar",
+        "disableSure": "Toque novamente para desativar",
+        "ownerOnly": "Apenas o proprietário pode desativar o fator para uma conta de equipe.",
+        "errors": {
+          "verify_first": "Insira primeiro o código do seu aplicativo autenticador.",
+          "staff_owner_only": "Apenas o proprietário pode desativar isso para uma conta de equipe.",
+          "no_access": "Você não está conectado.",
+          "not_enrolled": "O segundo fator não está configurado."
+        }
+      },
+      "sessions": {
+        "title": "Dispositivos e sessões",
+        "note": "Cada acesso mantém sua própria sessão. Não armazenamos de onde você acessou, então não há nada para mostrar além de quantas estão ativas.",
+        "count": "Sessões ativas: {count}",
+        "signOutOthers": "Encerrar sessões em outros dispositivos",
+        "aloneHere": "Esta é sua única sessão.",
+        "closed": "Encerradas: {count}"
+      }
     }
   },
   "register": {
@@ -3473,7 +3515,7 @@
   "mfa": {
     "kicker": "Segundo fator",
     "setupTitle": "Configure seu segundo fator",
-    "setupSubtitle": "Contas da equipe abrem a área de administração com um código de um app autenticador, não apenas com a senha.",
+    "setupSubtitle": "Um código de um app autenticador além da sua senha. Contas da equipe devem usá-lo; qualquer pessoa pode ativá-lo.",
     "verifyTitle": "Digite o código",
     "verifySubtitle": "Os seis dígitos que seu app autenticador mostra agora.",
     "step1": "Abra qualquer app autenticador — Google Authenticator, 1Password, Aegis, Authy.",

@@ -66,7 +66,8 @@
       "blue": "Blue",
       "violet": "Violet",
       "pink": "Pink"
-    }
+    },
+    "save": "Save"
   },
   "home": {
     "title": "Welcome",
@@ -1815,7 +1816,8 @@
         "invalid_credentials": "Current password is incorrect.",
         "password_too_short": "Password must be at least 8 characters.",
         "password_too_long": "Password is too long.",
-        "password_already_set": "You already have a password."
+        "password_already_set": "You already have a password.",
+        "verify_first": "Enter the code from your authenticator app first."
       },
       "emailVerify": {
         "verified": "Email verified",
@@ -1830,6 +1832,24 @@
           "send_failed": "Could not send — check email setup.",
           "expired": "Link expired — request a new one.",
           "invalid": "Invalid link."
+        }
+      },
+      "dataTitle": "Your details",
+      "noEmail": "No email yet",
+      "noPhone": "No phone yet",
+      "privateNote": "Your email and phone stay between us — other people only ever see your @username.",
+      "avatar": {
+        "add": "Add a photo",
+        "change": "Change photo",
+        "remove": "Remove",
+        "uploading": "Uploading…",
+        "errors": {
+          "too_large": "The file is too large — up to 4 MB.",
+          "bad_type": "PNG, JPEG or WebP only.",
+          "no_file": "Pick a file first.",
+          "verify_first": "Enter the code from your authenticator app first.",
+          "unauth": "You are not signed in.",
+          "upload_failed": "Could not upload — try again."
         }
       }
     },
@@ -1965,24 +1985,13 @@
         "CLOSED": "closed"
       }
     },
-    "mfa": {
-      "title": "Sign-in and security",
-      "subtitle": "Staff accounts open the admin area with a code from an authenticator app.",
-      "on": "Second factor on since {date}.",
-      "off": "Second factor is not set up yet.",
-      "codesLeft": "{count} recovery codes left.",
-      "enable": "Set up the second factor",
-      "rotate": "Move it to another phone"
-    },
     "hub": {
       "back": "Back to cabinet",
       "editProfile": "Edit profile",
       "noEmail": "No email yet",
       "hint": {
-        "settings": "Language, currency, theme",
         "interests": "What to show along a route",
         "loyalty": "Your level and cashback",
-        "mfa": "Second factor for staff sign-in",
         "admin": "Queues and cases",
         "appearance": "Outline colour of each tile"
       }
@@ -1991,6 +2000,39 @@
       "title": "Section colours",
       "subtitle": "Give each tile an outline colour you will recognise. The choice is yours alone.",
       "reset": "Reset all colours"
+    },
+    "security": {
+      "title": "Security",
+      "passwordTitle": "Change password",
+      "passwordSetTitle": "Set a password",
+      "passwordNone": "You sign in through Google, GitHub or Telegram. A password gives you a second way in.",
+      "mfa": {
+        "title": "Two-factor authentication",
+        "note": "A code from an authenticator app on top of your password. Once it is on, the code is asked whenever you open your cabinet.",
+        "staffNote": "Staff accounts must keep the second factor on: the code is asked on every sign-in to the admin area.",
+        "on": "On since {date}.",
+        "off": "Not set up yet.",
+        "codesLeft": "{count} recovery codes left.",
+        "enable": "Set up two-factor",
+        "rotate": "Move it to another phone",
+        "disable": "Turn it off",
+        "disableSure": "Tap again to turn it off",
+        "ownerOnly": "Only the owner can turn the factor off for a staff account.",
+        "errors": {
+          "verify_first": "Enter the code from your authenticator app first.",
+          "staff_owner_only": "Only the owner can turn this off for a staff account.",
+          "no_access": "You are not signed in.",
+          "not_enrolled": "The second factor is not set up."
+        }
+      },
+      "sessions": {
+        "title": "Devices and sessions",
+        "note": "Every sign-in keeps its own session. We don't store where you signed in from, so there is nothing to show beyond how many are live.",
+        "count": "Live sessions: {count}",
+        "signOutOthers": "Sign out everywhere else",
+        "aloneHere": "This is your only session.",
+        "closed": "Closed: {count}"
+      }
     }
   },
   "register": {
@@ -3473,7 +3515,7 @@
   "mfa": {
     "kicker": "Second factor",
     "setupTitle": "Set up your second factor",
-    "setupSubtitle": "Staff accounts open the admin area with a code from an authenticator app, not with the password alone.",
+    "setupSubtitle": "A code from an authenticator app on top of your password. Staff accounts must use it; anyone can switch it on.",
     "verifyTitle": "Enter the code",
     "verifySubtitle": "The six digits your authenticator app shows right now.",
     "step1": "Open any authenticator app — Google Authenticator, 1Password, Aegis, Authy.",

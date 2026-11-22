@@ -66,7 +66,8 @@
       "blue": "Mavi",
       "violet": "Mor",
       "pink": "Pembe"
-    }
+    },
+    "save": "Kaydet"
   },
   "home": {
     "title": "Hoş geldiniz",
@@ -1815,7 +1816,8 @@
         "invalid_credentials": "Mevcut parola hatalı.",
         "password_too_short": "Parola en az 8 karakter olmalı.",
         "password_too_long": "Parola çok uzun.",
-        "password_already_set": "Zaten bir parolanız var."
+        "password_already_set": "Zaten bir parolanız var.",
+        "verify_first": "Önce kimlik doğrulayıcı uygulamanızdaki kodu girin."
       },
       "emailVerify": {
         "verified": "E-posta doğrulandı",
@@ -1830,6 +1832,24 @@
           "send_failed": "Gönderilemedi.",
           "expired": "Bağlantı süresi doldu.",
           "invalid": "Geçersiz bağlantı."
+        }
+      },
+      "dataTitle": "Bilgileriniz",
+      "noEmail": "Henüz e-posta yok",
+      "noPhone": "Henüz telefon numarası yok",
+      "privateNote": "E-postanız ve telefonunuz aramızda kalır — diğer kişiler yalnızca @kullanıcıadınızı görür.",
+      "avatar": {
+        "add": "Fotoğraf ekle",
+        "change": "Fotoğrafı değiştir",
+        "remove": "Kaldır",
+        "uploading": "Yükleniyor…",
+        "errors": {
+          "too_large": "Dosya çok büyük — en fazla 4 MB.",
+          "bad_type": "Yalnızca PNG, JPEG veya WebP.",
+          "no_file": "Önce bir dosya seçin.",
+          "verify_first": "Önce doğrulayıcı uygulamanızdaki kodu girin.",
+          "unauth": "Oturum açmadınız.",
+          "upload_failed": "Yüklenemedi — tekrar deneyin."
         }
       }
     },
@@ -1965,24 +1985,13 @@
         "CLOSED": "kapalı"
       }
     },
-    "mfa": {
-      "title": "Giriş ve güvenlik",
-      "subtitle": "Personel hesapları yönetim alanını bir doğrulayıcı uygulamasından alınan bir kodla açar.",
-      "on": "İkinci faktör {date} tarihinden beri açık.",
-      "off": "İkinci faktör henüz kurulmadı.",
-      "codesLeft": "{count} kurtarma kodu kaldı.",
-      "enable": "İkinci faktörü kur",
-      "rotate": "Başka bir telefona taşı"
-    },
     "hub": {
       "back": "Panele geri dön",
       "editProfile": "Profili düzenle",
       "noEmail": "Henüz e-posta yok",
       "hint": {
-        "settings": "Dil, para birimi, tema",
         "interests": "Rota boyunca ne gösterilsin",
         "loyalty": "Seviyeniz ve nakit iade",
-        "mfa": "Personel girişi için ikinci faktör",
         "admin": "Kuyruklar ve vakalar",
         "appearance": "Her kutucuğun kenarlık rengi"
       }
@@ -1991,6 +2000,39 @@
       "title": "Bölüm renkleri",
       "subtitle": "Her kutucuğa tanıyacağınız bir kenarlık rengi verin. Seçim yalnızca size aittir.",
       "reset": "Tüm renkleri sıfırla"
+    },
+    "security": {
+      "title": "Güvenlik",
+      "passwordTitle": "Parolayı değiştir",
+      "passwordSetTitle": "Parola ayarla",
+      "passwordNone": "Google, GitHub veya Telegram ile oturum açıyorsunuz. Bir parola ikinci bir giriş yolu sağlar.",
+      "mfa": {
+        "title": "İki faktörlü kimlik doğrulama",
+        "note": "Parolanıza ek olarak bir doğrulayıcı uygulamasından alınan kod. Etkinleştirildiğinde, hesap panelinizi her açtığınızda kod istenir.",
+        "staffNote": "Personel hesapları ikinci faktörü açık tutmalıdır: yönetim alanına her oturum açmada kod istenir.",
+        "on": "{date} tarihinden beri açık.",
+        "off": "Henüz kurulmadı.",
+        "codesLeft": "{count} kurtarma kodu kaldı.",
+        "enable": "İki faktörlü doğrulamayı ayarla",
+        "rotate": "Başka bir telefona taşı",
+        "disable": "Kapat",
+        "disableSure": "Kapatmak için tekrar dokunun",
+        "ownerOnly": "Bir personel hesabı için faktörü yalnızca hesap sahibi kapatabilir.",
+        "errors": {
+          "verify_first": "Önce doğrulayıcı uygulamanızdaki kodu girin.",
+          "staff_owner_only": "Bir personel hesabı için bunu yalnızca hesap sahibi kapatabilir.",
+          "no_access": "Oturum açmadınız.",
+          "not_enrolled": "İkinci faktör kurulmadı."
+        }
+      },
+      "sessions": {
+        "title": "Cihazlar ve oturumlar",
+        "note": "Her oturum açma kendi oturumunu tutar. Nereden oturum açtığınızı saklamıyoruz; bu yüzden canlı sayısından fazlasını gösteremiyoruz.",
+        "count": "Canlı oturumlar: {count}",
+        "signOutOthers": "Diğer tüm yerlerde oturumu kapat",
+        "aloneHere": "Bu sizin tek oturumunuz.",
+        "closed": "Kapatılan: {count}"
+      }
     }
   },
   "register": {
@@ -3473,7 +3515,7 @@
   "mfa": {
     "kicker": "İkinci faktör",
     "setupTitle": "İkinci faktörünüzü ayarlayın",
-    "setupSubtitle": "Personel hesapları yönetici alanını yalnızca parola ile değil, bir kimlik doğrulama uygulamasındaki kodla açar.",
+    "setupSubtitle": "Şifrenize ek olarak kimlik doğrulama uygulamasından bir kod. Personel hesapları bunu kullanmak zorundadır; herkes etkinleştirebilir.",
     "verifyTitle": "Kodu girin",
     "verifySubtitle": "Kimlik doğrulama uygulamanızın şu anda gösterdiği altı hane.",
     "step1": "Herhangi bir kimlik doğrulama uygulamasını açın — Google Authenticator, 1Password, Aegis, Authy.",

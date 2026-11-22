@@ -1,32 +1,15 @@
-import { setRequestLocale, getTranslations } from "next-intl/server";
-import { requireCabinetUser } from "@/lib/cabinet/viewer";
-import { CabinetSectionShell } from "@/components/cabinet/section-shell";
-import { SettingsSection } from "@/components/cabinet/settings-section";
+import { permanentRedirect } from "next/navigation";
 
-export const dynamic = "force-dynamic";
-
-export default async function CabinetSectionPage({
+/**
+ * Настройки переехали в профиль (слайс BT). Адрес остаётся живым: ссылки на него
+ * разбросаны по письмам и чужим закладкам — тот же приём, которым `/settings`
+ * продолжает работать с слайса 4а.
+ */
+export default async function CabinetSettingsPage({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  setRequestLocale(locale);
-  const user = await requireCabinetUser(locale, "/cabinet/settings");
-  const t = await getTranslations();
-
-  return (
-    <CabinetSectionShell
-      locale={locale}
-      kicker={t("cabinet.kicker")}
-      title={t("cabinet.settings.title")}
-      backLabel={t("cabinet.hub.back")}
-    >
-      <SettingsSection
-        initialLocale={user.preferredLocale}
-        initialCurrency={user.preferredCurrency}
-        initialTheme={user.preferredTheme}
-      />
-    </CabinetSectionShell>
-  );
+  permanentRedirect(`/${locale}/cabinet/profile#settings`);
 }

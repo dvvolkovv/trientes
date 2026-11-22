@@ -66,7 +66,8 @@
       "blue": "Modrá",
       "violet": "Fialová",
       "pink": "Ružová"
-    }
+    },
+    "save": "Uložiť"
   },
   "home": {
     "title": "Vitajte",
@@ -1815,7 +1816,8 @@
         "invalid_credentials": "Aktuálne heslo je nesprávne.",
         "password_too_short": "Heslo musí mať aspoň 8 znakov.",
         "password_too_long": "Heslo je príliš dlhé.",
-        "password_already_set": "Heslo už máte."
+        "password_already_set": "Heslo už máte.",
+        "verify_first": "Najprv zadajte kód z vašej autentifikačnej aplikácie."
       },
       "emailVerify": {
         "verified": "E-mail overený",
@@ -1830,6 +1832,24 @@
           "send_failed": "Nepodarilo sa odoslať — skontrolujte nastavenie e-mailu.",
           "expired": "Odkaz vypršal — vyžiadajte si nový.",
           "invalid": "Neplatný odkaz."
+        }
+      },
+      "dataTitle": "Vaše údaje",
+      "noEmail": "Zatiaľ žiadny e‑mail",
+      "noPhone": "Zatiaľ žiadne telefónne číslo",
+      "privateNote": "Váš e‑mail a telefónne číslo zostanú medzi nami — ostatní uvidia len vaše @username.",
+      "avatar": {
+        "add": "Pridať fotku",
+        "change": "Zmeniť fotku",
+        "remove": "Odstrániť",
+        "uploading": "Nahráva sa…",
+        "errors": {
+          "too_large": "Súbor je príliš veľký — maximálne 4 MB.",
+          "bad_type": "Iba PNG, JPEG alebo WebP.",
+          "no_file": "Najprv vyberte súbor.",
+          "verify_first": "Najprv zadajte kód z vašej autentifikačnej aplikácie.",
+          "unauth": "Nie ste prihlásení.",
+          "upload_failed": "Nepodarilo sa nahrať — skúste znova."
         }
       }
     },
@@ -1965,24 +1985,13 @@
         "CLOSED": "uzavreté"
       }
     },
-    "mfa": {
-      "title": "Prihlásenie a zabezpečenie",
-      "subtitle": "Zamestnanecké účty otvárajú administráciu kódom z autentifikačnej aplikácie.",
-      "on": "Druhý faktor zapnutý od {date}.",
-      "off": "Druhý faktor ešte nie je nastavený.",
-      "codesLeft": "{count} záložných kódov zostáva.",
-      "enable": "Nastaviť druhý faktor",
-      "rotate": "Presunúť ho do iného telefónu"
-    },
     "hub": {
       "back": "Späť do profilu",
       "editProfile": "Upraviť profil",
       "noEmail": "Zatiaľ žiadny e-mail",
       "hint": {
-        "settings": "Jazyk, mena, motív",
         "interests": "Čo zobrazovať pozdĺž trasy",
         "loyalty": "Vaša úroveň a cashback",
-        "mfa": "Druhý faktor pre prihlásenie personálu",
         "admin": "Fronty a prípady",
         "appearance": "Farba obrysu každej dlaždice"
       }
@@ -1991,6 +2000,39 @@
       "title": "Farby sekcií",
       "subtitle": "Každej dlaždici priraďte farbu obrysu, ktorú ľahko rozpoznáte. Voľba je len na vás",
       "reset": "Obnoviť všetky farby"
+    },
+    "security": {
+      "title": "Zabezpečenie",
+      "passwordTitle": "Zmeniť heslo",
+      "passwordSetTitle": "Nastaviť heslo",
+      "passwordNone": "Prihlasujete sa cez Google, GitHub alebo Telegram. Heslo vám poskytne druhý spôsob prihlásenia.",
+      "mfa": {
+        "title": "Dvojfaktorové overenie",
+        "note": "Kód z autentifikačnej aplikácie nad rámec vášho hesla. Po zapnutí sa kód vyžaduje pri každom otvorení vášho profilu.",
+        "staffNote": "Zamestnanecké účty musia mať druhý faktor zapnutý: kód sa vyžaduje pri každom prihlásení do admin zóny.",
+        "on": "Zapnuté od {date}.",
+        "off": "Zatiaľ nenastavené.",
+        "codesLeft": "Zostáva {count} obnovovacích kódov.",
+        "enable": "Nastaviť dvojfaktor",
+        "rotate": "Presunúť na iný telefón",
+        "disable": "Vypnúť",
+        "disableSure": "Ťuknite znova na vypnutie",
+        "ownerOnly": "Iba vlastník môže vypnúť faktor pre zamestnanecký účet",
+        "errors": {
+          "verify_first": "Najprv zadajte kód z vašej overovacej aplikácie",
+          "staff_owner_only": "Iba vlastník môže toto vypnúť pre zamestnanecký účet",
+          "no_access": "Nie ste prihlásení",
+          "not_enrolled": "Druhý faktor nie je nastavený"
+        }
+      },
+      "sessions": {
+        "title": "Zariadenia a relácie",
+        "note": "Každé prihlásenie má vlastnú reláciu. Neuchovávame, odkiaľ ste sa prihlásili, takže okrem počtu aktívnych relácií nemáme čo zobraziť",
+        "count": "Aktívne relácie: {count}",
+        "signOutOthers": "Odhlásiť sa všade inde",
+        "aloneHere": "Toto je vaša jediná relácia",
+        "closed": "Ukončené: {count}"
+      }
     }
   },
   "register": {
@@ -3473,7 +3515,7 @@
   "mfa": {
     "kicker": "Druhý faktor",
     "setupTitle": "Nastavte si druhý faktor",
-    "setupSubtitle": "Zamestnanecké účty otvárajú administráciu kódom z autentifikačnej aplikácie, nie len heslom.",
+    "setupSubtitle": "Kód z autentifikačnej aplikácie nad rámec vášho hesla. Účty zamestnancov ho musia používať; ktokoľvek si ho môže zapnúť",
     "verifyTitle": "Zadajte kód",
     "verifySubtitle": "Šesť číslic, ktoré vám práve zobrazuje autentifikačná aplikácia.",
     "step1": "Otvorte ľubovoľnú autentifikačnú aplikáciu — Google Authenticator, 1Password, Aegis, Authy.",

@@ -78,21 +78,42 @@ export default async function CabinetPage({ params }: { params: Promise<{ locale
 
         {/* Единственное, что стоит в шапке, — «кто я». Всё прочее ушло в плитки. */}
         <div className="rounded-[22px] border border-hairline bg-card p-4 sm:p-5">
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span className="text-[20px] font-bold tracking-[-0.02em]">
-              {[user.firstName, user.lastName].filter(Boolean).join(" ") || user.username}
-            </span>
-            <span className="num text-[13px] text-muted">@{user.username}</span>
-          </div>
-          <div className="mt-1 text-[13px] text-muted">
-            {user.email ? (
-              <>
-                {user.email}
-                {user.emailVerified ? " ✓" : ""}
-              </>
-            ) : (
-              t("cabinet.hub.noEmail")
-            )}
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full border border-hairline bg-card-alt">
+              {user.image ? (
+                // Снимок бывает и с чужого хоста (Google, GitHub) — обычный <img>.
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={user.image} alt="" className="h-full w-full object-cover" />
+              ) : (
+                <span className="flex h-full w-full items-center justify-center text-[18px] font-bold text-muted">
+                  {(
+                    [user.firstName, user.lastName].filter(Boolean).join(" ") ||
+                    user.username ||
+                    "?"
+                  )
+                    .trim()[0]
+                    ?.toUpperCase()}
+                </span>
+              )}
+            </div>
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <span className="text-[20px] font-bold tracking-[-0.02em]">
+                  {[user.firstName, user.lastName].filter(Boolean).join(" ") || user.username}
+                </span>
+                <span className="num text-[13px] text-muted">@{user.username}</span>
+              </div>
+              <div className="mt-1 truncate text-[13px] text-muted">
+                {user.email ? (
+                  <>
+                    {user.email}
+                    {user.emailVerified ? " ✓" : ""}
+                  </>
+                ) : (
+                  t("cabinet.hub.noEmail")
+                )}
+              </div>
+            </div>
           </div>
           <Link
             href={`/${locale}/cabinet/profile`}

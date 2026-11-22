@@ -66,7 +66,8 @@
       "blue": "파랑",
       "violet": "보라",
       "pink": "분홍"
-    }
+    },
+    "save": "저장"
   },
   "home": {
     "title": "환영합니다",
@@ -1815,7 +1816,8 @@
         "invalid_credentials": "현재 비밀번호가 올바르지 않습니다.",
         "password_too_short": "비밀번호는 최소 8자 이상이어야 합니다.",
         "password_too_long": "비밀번호가 너무 깁니다.",
-        "password_already_set": "이미 비밀번호가 설정되어 있습니다."
+        "password_already_set": "이미 비밀번호가 설정되어 있습니다.",
+        "verify_first": "먼저 인증 앱의 코드를 입력하세요."
       },
       "emailVerify": {
         "verified": "이메일 인증됨",
@@ -1830,6 +1832,24 @@
           "send_failed": "전송에 실패했습니다.",
           "expired": "링크가 만료되었습니다.",
           "invalid": "잘못된 링크입니다."
+        }
+      },
+      "dataTitle": "내 정보",
+      "noEmail": "아직 이메일 없음",
+      "noPhone": "아직 전화번호 없음",
+      "privateNote": "이메일과 전화번호는 비공개로 유지됩니다 — 다른 사람에게는 @username만 표시됩니다.",
+      "avatar": {
+        "add": "사진 추가",
+        "change": "사진 변경",
+        "remove": "삭제",
+        "uploading": "업로드 중…",
+        "errors": {
+          "too_large": "파일이 너무 큽니다 — 최대 4 MB.",
+          "bad_type": "PNG, JPEG 또는 WebP만 가능합니다.",
+          "no_file": "먼저 파일을 선택하세요.",
+          "verify_first": "먼저 인증 앱의 코드를 입력하세요.",
+          "unauth": "로그인되어 있지 않습니다.",
+          "upload_failed": "업로드할 수 없습니다 — 다시 시도하세요."
         }
       }
     },
@@ -1965,24 +1985,13 @@
         "CLOSED": "종료됨"
       }
     },
-    "mfa": {
-      "title": "로그인 및 보안",
-      "subtitle": "직원 계정은 인증 앱의 코드를 사용해 관리자 영역을 엽니다.",
-      "on": "2단계 인증이 {date}부터 사용 중입니다.",
-      "off": "2단계 인증이 아직 설정되지 않았습니다.",
-      "codesLeft": "{count}개의 복구 코드가 남았습니다.",
-      "enable": "2단계 인증 설정",
-      "rotate": "다른 휴대전화로 옮기기"
-    },
     "hub": {
       "back": "캐비닛으로 돌아가기",
       "editProfile": "프로필 편집",
       "noEmail": "아직 이메일 없음",
       "hint": {
-        "settings": "언어, 통화, 테마",
         "interests": "경로를 따라 무엇을 보여줄지",
         "loyalty": "내 등급과 캐시백",
-        "mfa": "직원 로그인용 2차 인증",
         "admin": "대기열과 케이스",
         "appearance": "각 타일의 테두리 색상"
       }
@@ -1991,6 +2000,39 @@
       "title": "섹션 색상",
       "subtitle": "각 타일에 알아보기 쉬운 테두리 색상을 지정하세요. 선택은 전적으로 당신의 몫입니다.",
       "reset": "모든 색상 초기화"
+    },
+    "security": {
+      "title": "보안",
+      "passwordTitle": "비밀번호 변경",
+      "passwordSetTitle": "비밀번호 설정",
+      "passwordNone": "Google, GitHub 또는 Telegram으로 로그인합니다. 비밀번호를 설정하면 두 번째 로그인 방법이 생깁니다.",
+      "mfa": {
+        "title": "2단계 인증",
+        "note": "비밀번호에 더해 인증 앱의 코드를 사용합니다. 켜두면 캐비닛을 열 때마다 코드를 요구합니다.",
+        "staffNote": "스태프 계정은 두 번째 요소를 반드시 켜둬야 합니다: 관리자 영역에 로그인할 때마다 코드가 요구됩니다.",
+        "on": "{date}부터 켜짐.",
+        "off": "아직 설정되지 않음.",
+        "codesLeft": "복구 코드가 {count}개 남았습니다.",
+        "enable": "2단계 인증 설정",
+        "rotate": "다른 휴대폰으로 옮기기",
+        "disable": "끄기",
+        "disableSure": "한 번 더 탭하면 꺼집니다",
+        "ownerOnly": "스태프 계정의 요소는 소유자만 끌 수 있습니다.",
+        "errors": {
+          "verify_first": "먼저 인증 앱의 코드를 입력하세요.",
+          "staff_owner_only": "스태프 계정에서는 소유자만 이것을 끌 수 있습니다.",
+          "no_access": "로그인되어 있지 않습니다.",
+          "not_enrolled": "2차 인증이 설정되지 않았습니다."
+        }
+      },
+      "sessions": {
+        "title": "기기 및 세션",
+        "note": "각 로그인은 자체 세션을 가집니다. 어디에서 로그인했는지는 저장하지 않으므로, 활성 세션 수 외에는 표시할 정보가 없습니다.",
+        "count": "활성 세션: {count}",
+        "signOutOthers": "다른 모든 곳에서 로그아웃",
+        "aloneHere": "이것이 유일한 세션입니다.",
+        "closed": "종료됨: {count}"
+      }
     }
   },
   "register": {
@@ -3473,7 +3515,7 @@
   "mfa": {
     "kicker": "2차 인증",
     "setupTitle": "2차 인증 설정",
-    "setupSubtitle": "직원 계정은 비밀번호만으로가 아니라 인증 앱의 코드로 관리자 영역을 엽니다.",
+    "setupSubtitle": "비밀번호 외에 인증자 앱의 코드가 필요합니다. 스태프 계정은 반드시 사용해야 하며, 누구나 활성화할 수 있습니다.",
     "verifyTitle": "코드 입력",
     "verifySubtitle": "지금 인증 앱에 표시되는 6자리 숫자.",
     "step1": "아무 인증 앱이나 여세요 — Google Authenticator, 1Password, Aegis, Authy.",
