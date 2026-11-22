@@ -77,6 +77,8 @@ export function PointForm({
   initialCardIds = [],
   companyAddress,
   editing,
+  companyHours,
+  companyTimezone,
 }: {
   companyId: string;
   companyStatus: "PENDING" | "APPROVED" | "REJECTED";
@@ -85,6 +87,9 @@ export function PointForm({
   initialCardIds?: string[];
   companyAddress: Addr;
   editing?: PointFormInitial;
+  /** Часы конторы (слайс BU): их можно **скопировать** в точку, но не наследовать. */
+  companyHours?: WeekHours | null;
+  companyTimezone?: string | null;
 }) {
   const t = useTranslations("business");
   const containerRef = useRef<HTMLDivElement>(null);
@@ -381,22 +386,25 @@ export function PointForm({
         </>
       )}
 
-      {/* Часы работы (слайс BN). У онлайн-услуги их нет: у неё нет ни двери, ни
-          пояса, и редактор там был бы обманкой. */}
-      {type !== "ONLINE" && (
-        <div className="rounded-[16px] border border-hairline bg-bg-tint/40 p-3">
-          {hours ? (
-            <>
-              <HoursEditor value={hours} timezone={timezone} onChange={setHours} onTimezoneChange={setTimezone} />
-              <button
-                type="button"
-                onClick={() => setHours(null)}
-                className="mt-2 text-[11.5px] text-muted underline-offset-2 hover:underline"
-              >
-                {t("hours.drop")}
-              </button>
-            </>
-          ) : (
+      {/* Часы работы (слайс BN, расширено в BU).
+          Онлайн-точка расписание получила: «работаем круглосуточно» — это
+          утверждение, а не умолчание, и сказать его должен продавец. Пояс у
+          онлайна нужен ровно затем же, зачем у двери: без него «открыто сейчас»
+          считалось бы по часам сервера. */}
+      <div className="rounded-[16px] border border-hairline bg-bg-tint/40 p-3">
+        {hours ? (
+          <>
+            <HoursEditor value={hours} timezone={timezone} onChange={setHours} onTimezoneChange={setTimezone} />
+            <button
+              type="button"
+              onClick={() => setHours(null)}
+              className="mt-2 text-[11.5px] text-muted underline-offset-2 hover:underline"
+            >
+              {t("hours.drop")}
+            </button>
+          </>
+        ) : (
+          <div className="space-y-2">
             <button
               type="button"
               onClick={() => {
@@ -407,9 +415,24 @@ export function PointForm({
             >
               + {t("hours.add")}
             </button>
-          )}
-        </div>
-      )}
+            {/* Копия, а не ссылка: копия — собственное заявление точки, а
+                наследование означало бы, что у десяти магазинов сети одни часы. */}
+            {companyHours && !isEmptyWeek(companyHours) ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setHours(companyHours);
+                  if (!timezone && companyTimezone) setTimezone(companyTimezone);
+                  else maybePrefillTimezone(addr.countryCode);
+                }}
+                className="min-h-[44px] w-full rounded-[12px] border border-hairline bg-card text-[12.5px] hover:border-accent/50"
+              >
+                {t("hours.copyFromCompany")}
+              </button>
+            ) : null}
+          </div>
+        )}
+      </div>
 
       <div className="text-[12px] text-muted">{t("acceptedCoins")}:</div>
       <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">

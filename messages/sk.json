@@ -1490,7 +1490,9 @@
       "hours_empty": "Označte aspoň jeden pracovný deň, inak rozpis nič nepovie.",
       "timezone_invalid": "Neznáme časové pásmo.",
       "category_invalid": "Neznámy typ podniku.",
-      "return_days_invalid": "Lehota na vrátenie musí byť celé číslo dní, od 0 do 365."
+      "return_days_invalid": "Lehota na vrátenie musí byť celé číslo dní, od 0 do 365.",
+      "industry_invalid": "Vyberte odvetvie zo zoznamu.",
+      "industry_custom_has_link": "Odstráňte odkaz z vášho vlastného štítku — za odkazy na našich stránkach zodpovedáme my."
     },
     "websiteHint": "https://, http://, alebo len www.example.com — všetko funguje",
     "addressSection": "Adresa",
@@ -1589,7 +1591,8 @@
       "uploading": "Nahráva sa…",
       "uploadHint": "PDF / PNG / JPG — do 8 MB",
       "startCta": "Overiť firmu",
-      "manageCta": "Overovacie dokumenty"
+      "manageCta": "Overovacie dokumenty",
+      "whatIsIt": "Kontrola právnickej osoby podľa vašich registračných dokumentov. Po jej schválení bude mať vaša verejná stránka a výsledky vyhľadávania značku ✓."
     },
     "viewPublic": "Zobraziť verejnú stránku",
     "photos": "Fotky prevádzky",
@@ -1775,7 +1778,111 @@
         "open": "Otváracie hodiny",
         "allday": "24/7",
         "closed": "Zatvorené"
+      },
+      "copyFromCompany": "Rovnaké ako hodiny kancelárie"
+    },
+    "categoryLabel": "Typ prevádzky",
+    "industryLabel": "Odvetvie",
+    "industryCustom": "Vlastný štítok",
+    "industryCustomHint": "Max. 40 znakov, bez odkazov. Zobrazí sa vedľa odvetvia; nie je to filter katalógu.",
+    "industrySection": "Odvetvie",
+    "industryKind": {
+      "retail": "Maloobchod",
+      "wholesale": "Veľkoobchod",
+      "food": "Stravovacie služby",
+      "hospitality": "Hotely a turizmus",
+      "construction": "Stavebníctvo",
+      "realEstate": "Nehnuteľnosti",
+      "oilGas": "Ropa, plyn a rafinácia",
+      "energy": "Energetika",
+      "mining": "Ťažba a kovy",
+      "chemicals": "Chemický priemysel",
+      "manufacturing": "Výroba a stroje",
+      "agriculture": "Poľnohospodárstvo",
+      "foodProduction": "Potravinárska výroba",
+      "transport": "Doprava a logistika",
+      "automotive": "Automobilový priemysel",
+      "it": "IT a softvér",
+      "telecom": "Telekomunikácie",
+      "finance": "Financie a poisťovníctvo",
+      "crypto": "Krypto služby",
+      "legal": "Právo a poradenstvo",
+      "education": "Vzdelávanie",
+      "health": "Zdravotníctvo",
+      "media": "Médiá a reklama",
+      "other": "Iné"
+    },
+    "logoSection": "Logo",
+    "logoFileHint": "PNG, JPEG alebo WebP, do 4 MB. Súbor sa uloží okamžite.",
+    "logoShape": {
+      "square": "Štvorcové",
+      "rounded": "Zaoblené",
+      "circle": "Kruhové"
+    },
+    "logoFit": {
+      "contain": "Zobraziť celé",
+      "cover": "Vyplniť a orezať"
+    },
+    "logoCenterHint": "Logo je v rámčeku vždy vystredené — nemusíte ho zarovnávať.",
+    "officeHours": "Otváracie hodiny",
+    "officeHoursSection": "Otváracie hodiny",
+    "officeHoursHint": "Kedy odpovedá váš telefón, e‑mail a personál. Predajné hodiny patria ku každému miestu a nastavujú sa tam.",
+    "docs": {
+      "title": "Verejné dokumenty",
+      "subtitle": "Reklamačný poriadok, záruka, licencia — dokumenty, ktoré si váš zákazník môže chcieť prečítať.",
+      "empty": "Zatiaľ žiadne dokumenty.",
+      "publicWarning": "Tieto súbory si môže otvoriť ktokoľvek na internete. Registračné dokumenty a doklady totožnosti patria do overovacieho formulára vyššie, nie sem.",
+      "kindLabel": "Typ dokumentu",
+      "titleLabel": "Názov (voliteľné)",
+      "fileLabel": "Nahrať súbor",
+      "fileHint": "PDF, PNG, JPEG alebo WebP, do 10 MB.",
+      "urlLabel": "Alebo odkaz na váš web",
+      "addUrl": "Pridať odkaz",
+      "publish": "Zverejniť",
+      "unpublish": "Zrušiť zverejnenie",
+      "published": "Zverejnené",
+      "draft": "Koncept",
+      "kind": {
+        "returnPolicy": "Reklamačný poriadok",
+        "privacy": "Zásady ochrany súkromia",
+        "terms": "Obchodné podmienky",
+        "warranty": "Záruka",
+        "delivery": "Doručenie",
+        "license": "Licencia alebo povolenie",
+        "certificate": "Certifikát",
+        "other": "Iné"
+      },
+      "err": {
+        "generic": "Nepodarilo sa uložiť. Skúste znova.",
+        "unauth": "Prosím, prihláste sa.",
+        "not_found": "Nie je k dispozícii.",
+        "kind_invalid": "Zvoľte typ dokumentu.",
+        "url_invalid": "Nahrajte súbor alebo zadajte odkaz začínajúci na https://",
+        "docs_limit": "Limit je 20 dokumentov — najprv jeden odstráňte.",
+        "unpublish_first": "Najprv zrušte zverejnenie: váš zákazník sa mohol spoliehať na tento prísľub.",
+        "too_large": "Súbor je príliš veľký (max. 10 MB).",
+        "bad_type": "Len PDF, PNG, JPEG alebo WebP.",
+        "no_file": "Vyberte súbor.",
+        "forbidden": "Túto kartu spoločnosti nemôžete upraviť.",
+        "bad_form": "Nepodarilo sa prečítať nahratý súbor.",
+        "company_required": "Chýba spoločnosť."
       }
+    },
+    "publicFields": {
+      "title": "Čo vidia zákazníci",
+      "subtitle": "Vypnite to, čo nechcete zverejniť. Predvolene sa zobrazuje všetko.",
+      "shown": "zobrazené",
+      "hidden": "skryté",
+      "field": {
+        "phone": "Telefón",
+        "email": "Email",
+        "preciseAddress": "Ulica a číslo domu",
+        "hours": "Úradné hodiny",
+        "documents": "Verejné dokumenty",
+        "description": "O spoločnosti"
+      },
+      "alwaysPublic": "Vždy verejné: zobrazované meno, právny názov, krajina a mesto, druh podnikania a odvetvie, zásady vrátenia a adresy vašich miest — sú na mape.",
+      "err": "Nepodarilo sa uložiť. Skúste znova."
     }
   },
   "cabinet": {
@@ -1913,7 +2020,8 @@
         "PENDING": "Spracúva sa",
         "APPROVED": "Schválené",
         "REJECTED": "Zamietnuté"
-      }
+      },
+      "tileCounts": "miesta: {points} · produkty: {offers}"
     },
     "exchanges": {
       "title": "Moje burzy",
@@ -2310,7 +2418,10 @@
     },
     "returns": "Vrátenie",
     "returnDays": "{days} dní",
-    "returnsUnknown": "Predávajúci neuviedol zásady vrátenia."
+    "returnsUnknown": "Predávajúci neuviedol zásady vrátenia.",
+    "officeHoursTitle": "Úradné hodiny",
+    "officeHoursHint": "Čas, keď odpovedá telefón, email a personál. Obchodné hodiny sú uvedené pri každom predajnom mieste.",
+    "documentsTitle": "Dokumenty"
   },
   "companiesDirectory": {
     "kicker": "Adresár",
@@ -4192,7 +4303,12 @@
       "CUSTOMER_REPLIED": "Odpoveď zákazníkovi",
       "CUSTOMER_BLOCKED": "Zákazník bol zablokovaný",
       "CUSTOMER_UNBLOCKED": "Zákazník bol odblokovaný",
-      "CUSTOMER_MESSAGE_DELETED": "Správa obchodu bola odstránená z konverzácie so zákazníkom"
+      "CUSTOMER_MESSAGE_DELETED": "Správa obchodu bola odstránená z konverzácie so zákazníkom",
+      "DOCUMENT_ADDED": "Pridaný verejný dokument",
+      "DOCUMENT_PUBLISHED": "Dokument zverejnený na verejnej stránke",
+      "DOCUMENT_UNPUBLISHED": "Dokument odstránený z verejnej stránky",
+      "DOCUMENT_DELETED": "Verejný dokument vymazaný",
+      "PUBLIC_FIELDS_SET": "Zmenené to, čo vidia zákazníci"
     }
   },
   "cabinetTasks": {

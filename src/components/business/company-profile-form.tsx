@@ -7,6 +7,11 @@ import { saveCompanyProfile } from "@/app/actions/company";
 import { COUNTRIES } from "@/lib/countries";
 import { ADMIN_BUTTON, ADMIN_BUTTON_SECONDARY } from "@/lib/admin-ui";
 import { MERCHANT_CATEGORIES } from "@/lib/merchant-categories";
+import { INDUSTRIES, INDUSTRY_CUSTOM_MAX } from "@/lib/industries";
+import { LOGO_FITS, LOGO_SHAPES, logoBoxClass, logoImageClass } from "@/lib/company-logo";
+import { HoursEditor } from "@/components/business/hours-editor";
+import { defaultWeek, isEmptyWeek, type WeekHours } from "@/lib/opening-hours";
+import { timezoneForCountry } from "@/lib/timezones";
 
 type Initial = {
   legalName: string; displayName: string; description: string;
@@ -16,6 +21,8 @@ type Initial = {
   address: string; phone: string; email: string;
   /** Слайс BN: вид заведения и политика возврата — свободные поля. */
   category: string; returnPolicy: string; returnDays: string;
+  /** Слайс BU: отрасль, своя рубрика, вид логотипа. */
+  industry: string; industryCustom: string; logoShape: string; logoFit: string;
 };
 
 const EMPTY: Initial = {
@@ -23,6 +30,7 @@ const EMPTY: Initial = {
   country: "", countryCode: "", city: "", street: "", houseNumber: "",
   postalCode: "", address: "", phone: "", email: "",
   category: "", returnPolicy: "", returnDays: "",
+  industry: "", industryCustom: "", logoShape: "", logoFit: "",
 };
 
 type Doc = { kind: string; url: string; label: string | null };
@@ -35,11 +43,16 @@ export function CompanyProfileForm({
   /** Залистованное предприятие: модерируемые поля уходят правкой, а не в карточку. */
   moderated,
   backHref,
+  initialHours,
+  initialTimezone,
 }: {
   companyId: string;
   initial?: Partial<Initial>;
   moderated: boolean;
   backHref?: string;
+  /** Часы конторы (слайс BU). Расписание строкой не правится, поэтому своё поле. */
+  initialHours?: WeekHours | null;
+  initialTimezone?: string | null;
 }) {
   const t = useTranslations("business");
   const tk = useTranslations("business.kyb");
@@ -50,9 +63,17 @@ export function CompanyProfileForm({
   const [f, setF] = useState<Initial>({ ...EMPTY, ...initial });
   const [docs, setDocs] = useState<Doc[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [logoUploading, setLogoUploading] = useState(false);
+  const [hours, setHours] = useState<WeekHours | null>(initialHours ?? null);
+  const [timezone, setTimezone] = useState(initialTimezone ?? "");
+  // Обновление от предыдущего состояния, а не от замыкания: два изменения в одном
+  // кадре иначе затирают друг друга (поймано живым прогоном BU — нажатие формы
+  // логотипа и отрасли подряд теряло форму).
   const set = <K extends keyof Initial>(k: K) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
-      setF({ ...f, [k]: e.target.value });
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+      const value = e.target.value;
+      setF((prev) => ({ ...prev, [k]: value }));
+    };
 
   // Юридическое имя подтверждается бумагой. Блок загрузки показывается ровно тогда,
   // когда имя действительно поменяли: форма с полем, которое ни на что не влияет,
@@ -79,6 +100,26 @@ export function CompanyProfileForm({
     }
   }
 
+  async function uploadLogo(file: File) {
+    setLogoUploading(true);
+    setErr(null);
+    try {
+      const fd = new FormData();
+      fd.append("companyId", companyId);
+      fd.append("file", file);
+      const res = await fetch("/api/business/logo", { method: "POST", body: fd });
+      const j = (await res.json()) as { url?: string; error?: string };
+      // Маршрут уже записал адрес в предприятие — поле обновляем, чтобы человек
+      // видел то же, что в базе, и не затёр его следующим сохранением.
+      if (res.ok && j.url) setF((prev) => ({ ...prev, logoUrl: j.url! }));
+      else setErr(t(`err.${j.error ?? "generic"}`));
+    } catch {
+      setErr(t("err.generic"));
+    } finally {
+      setLogoUploading(false);
+    }
+  }
+
   function save() {
     setMsg(null);
     setErr(null);
@@ -89,6 +130,9 @@ export function CompanyProfileForm({
           ...f,
           // Country name auto-derived from selected code if user only picked from list.
           country: f.country || (COUNTRIES.find((c) => c.code === f.countryCode)?.name ?? ""),
+          // Пустое расписание — это «часов нет», а не семь закрытых дней.
+          hours: hours && !isEmptyWeek(hours) ? hours : null,
+          timezone: timezone || null,
         },
         docs,
       );
@@ -126,7 +170,74 @@ export function CompanyProfileForm({
           <label className={label} htmlFor="company-description">{t("description")}</label>
           <textarea id="company-description" className={input} value={f.description} onChange={set("description")} rows={4} />
         </div>
-        {field("logoUrl")}
+        {/* Логотип: файлом или ссылкой, и сразу видно, как он встанет в окно
+            (слайс BU). Прежде поле было одно — адрес, — и у заведения без своего
+            сайта окно логотипа оставалось пустым навсегда. */}
+        <div className="space-y-2">
+          <span className={label}>{t("logoSection")}</span>
+          <div className="flex items-center gap-3">
+            <div className={`${logoBoxClass(f.logoShape)} h-16 w-16 shrink-0`}>
+              {f.logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={f.logoUrl} alt="" className={logoImageClass(f.logoFit)} />
+              ) : (
+                <span className="text-xl" aria-hidden>🏢</span>
+              )}
+            </div>
+            <div className="min-w-0 flex-1">
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                disabled={logoUploading || pending}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) void uploadLogo(file);
+                  e.target.value = "";
+                }}
+                className="text-[12px]"
+              />
+              <p className="mt-1 text-[11px] text-muted">{t("logoFileHint")}</p>
+            </div>
+          </div>
+          {field("logoUrl")}
+          <div className="flex flex-wrap gap-1.5">
+            {LOGO_SHAPES.map((shape) => {
+              const on = (f.logoShape || "rounded") === shape;
+              return (
+                <button
+                  key={shape}
+                  type="button"
+                  onClick={() => setF((prev) => ({ ...prev, logoShape: shape }))}
+                  aria-pressed={on}
+                  className={`inline-flex min-h-[36px] items-center gap-1.5 rounded-[12px] border px-2.5 text-[12px] ${
+                    on ? "border-accent bg-accent/10 text-accent" : "border-hairline bg-bg-tint text-muted hover:border-accent/50"
+                  }`}
+                >
+                  {t(`logoShape.${shape}`)}
+                </button>
+              );
+            })}
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {LOGO_FITS.map((fit) => {
+              const on = (f.logoFit || "contain") === fit;
+              return (
+                <button
+                  key={fit}
+                  type="button"
+                  onClick={() => setF((prev) => ({ ...prev, logoFit: fit }))}
+                  aria-pressed={on}
+                  className={`inline-flex min-h-[36px] items-center gap-1.5 rounded-[12px] border px-2.5 text-[12px] ${
+                    on ? "border-accent bg-accent/10 text-accent" : "border-hairline bg-bg-tint text-muted hover:border-accent/50"
+                  }`}
+                >
+                  {t(`logoFit.${fit}`)}
+                </button>
+              );
+            })}
+          </div>
+          <p className="text-[11px] text-muted">{t("logoCenterHint")}</p>
+        </div>
         {field("website", <p className="mt-1 text-[11px] text-muted">{t("websiteHint")}</p>)}
         {field("phone")}
         {field("email")}
@@ -144,7 +255,7 @@ export function CompanyProfileForm({
               <button
                 key={c.key}
                 type="button"
-                onClick={() => setF({ ...f, category: on ? "" : c.key })}
+                onClick={() => setF((prev) => ({ ...prev, category: on ? "" : c.key }))}
                 aria-pressed={on}
                 className={`inline-flex min-h-[36px] items-center gap-1.5 rounded-[12px] border px-2.5 text-[12px] ${
                   on ? "border-accent bg-accent/10 text-accent" : "border-hairline bg-bg-tint text-muted hover:border-accent/50"
@@ -156,6 +267,43 @@ export function CompanyProfileForm({
             );
           })}
         </div>
+        {/* Отрасль — вторая ось (слайс BU): вид заведения красит булавку и
+            отвечает интересу маршрута, а отрасль говорит, чем предприятие
+            занимается. Поэтому «строительство» не в том списке, а в этом. */}
+        <div className="space-y-2">
+          <span className={label}>{t("industrySection")}</span>
+          <div className="flex flex-wrap gap-1.5">
+            {INDUSTRIES.map((i) => {
+              const on = f.industry === i.key;
+              return (
+                <button
+                  key={i.key}
+                  type="button"
+                  onClick={() => setF((prev) => ({ ...prev, industry: on ? "" : i.key }))}
+                  aria-pressed={on}
+                  className={`inline-flex min-h-[36px] items-center gap-1.5 rounded-[12px] border px-2.5 text-[12px] ${
+                    on ? "border-accent bg-accent/10 text-accent" : "border-hairline bg-bg-tint text-muted hover:border-accent/50"
+                  }`}
+                >
+                  <span aria-hidden>{i.emoji}</span>
+                  {t(`industryKind.${i.key}`)}
+                </button>
+              );
+            })}
+          </div>
+          <div>
+            <label className={label} htmlFor="company-industryCustom">{t("industryCustom")}</label>
+            <input
+              id="company-industryCustom"
+              className={input}
+              value={f.industryCustom}
+              maxLength={INDUSTRY_CUSTOM_MAX}
+              onChange={set("industryCustom")}
+            />
+            <p className="mt-1 text-[11px] text-muted">{t("industryCustomHint")}</p>
+          </div>
+        </div>
+
         <div>
           <label className={label} htmlFor="company-returnDays">{t("returnDays")}</label>
           <input
@@ -199,6 +347,42 @@ export function CompanyProfileForm({
           {field("street")}
           {field("houseNumber")}
         </div>
+      </div>
+
+      {/* Часы конторы (слайс BU): когда отвечает телефон, почта и человек.
+          Часы торговли принадлежат точке и точкам отсюда не наследуются — у сети
+          из десяти магазинов общих часов не бывает (правило BN). */}
+      <div className="space-y-3">
+        <div className="pt-1 text-[12px] uppercase tracking-wide text-muted">{t("officeHoursSection")}</div>
+        <p className="text-[11px] text-muted">{t("officeHoursHint")}</p>
+        {hours ? (
+          <div className="space-y-2">
+            <HoursEditor value={hours} timezone={timezone} onChange={setHours} onTimezoneChange={setTimezone} />
+            <button
+              type="button"
+              onClick={() => setHours(null)}
+              className="text-[12px] text-muted underline"
+            >
+              {t("hours.drop")}
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => {
+              setHours(defaultWeek());
+              // Пояс подставляем по стране, и только у однопоясной: без пояса
+              // расписание видно, а «открыто сейчас» не показывается (правило BN).
+              if (!timezone) {
+                const tz = timezoneForCountry(f.countryCode);
+                if (tz) setTimezone(tz);
+              }
+            }}
+            className="inline-flex min-h-[40px] items-center rounded-[12px] border border-hairline bg-bg-tint px-3 text-[12px] hover:border-accent/50"
+          >
+            + {t("hours.add")}
+          </button>
+        )}
       </div>
 
       {legalNameChanged ? (

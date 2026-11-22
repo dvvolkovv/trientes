@@ -1490,7 +1490,9 @@
       "hours_empty": "Marca al menos un día laborable, de lo contrario el horario no dice nada.",
       "timezone_invalid": "Zona horaria desconocida.",
       "category_invalid": "Tipo de negocio desconocido.",
-      "return_days_invalid": "El plazo de devolución debe ser un número entero de días, de 0 a 365."
+      "return_days_invalid": "El plazo de devolución debe ser un número entero de días, de 0 a 365.",
+      "industry_invalid": "Elige un sector de la lista.",
+      "industry_custom_has_link": "Elimina el enlace de tu etiqueta propia — respondemos por los enlaces en nuestras páginas."
     },
     "websiteHint": "Con https://, http:// o simplemente www.example.com — todo vale",
     "addressSection": "Dirección",
@@ -1589,7 +1591,8 @@
       "uploading": "Subiendo…",
       "uploadHint": "PDF / PNG / JPG — hasta 8 MB",
       "startCta": "Verificar la empresa",
-      "manageCta": "Documentos de verificación"
+      "manageCta": "Documentos de verificación",
+      "whatIsIt": "Verificación de la entidad jurídica con tus documentos de registro. Una vez aprobada, tu página pública y los resultados de búsqueda mostrarán una marca ✓."
     },
     "viewPublic": "Ver página pública",
     "photos": "Fotos del local",
@@ -1775,7 +1778,111 @@
         "open": "Horario",
         "allday": "24/7",
         "closed": "Cerrado"
+      },
+      "copyFromCompany": "Igual que el horario de oficina"
+    },
+    "categoryLabel": "Tipo de negocio",
+    "industryLabel": "Industria",
+    "industryCustom": "Tu propia etiqueta",
+    "industryCustomHint": "Hasta 40 caracteres, sin enlaces. Se muestra junto a la industria; no es un filtro del catálogo.",
+    "industrySection": "Industria",
+    "industryKind": {
+      "retail": "Comercio minorista",
+      "wholesale": "Comercio mayorista",
+      "food": "Restauración",
+      "hospitality": "Hoteles y turismo",
+      "construction": "Construcción",
+      "realEstate": "Bienes raíces",
+      "oilGas": "Petróleo, gas y refinación",
+      "energy": "Energía",
+      "mining": "Minería y metales",
+      "chemicals": "Productos químicos",
+      "manufacturing": "Fabricación y maquinaria",
+      "agriculture": "Agricultura",
+      "foodProduction": "Producción de alimentos",
+      "transport": "Transporte y logística",
+      "automotive": "Automotriz",
+      "it": "TI y software",
+      "telecom": "Telecomunicaciones",
+      "finance": "Finanzas y seguros",
+      "crypto": "Servicios cripto",
+      "legal": "Legal y consultoría",
+      "education": "Educación",
+      "health": "Salud",
+      "media": "Medios y publicidad",
+      "other": "Otro"
+    },
+    "logoSection": "Logotipo",
+    "logoFileHint": "PNG, JPEG o WebP, hasta 4 MB. El archivo se guarda de inmediato.",
+    "logoShape": {
+      "square": "Cuadrado",
+      "rounded": "Redondeado",
+      "circle": "Círculo"
+    },
+    "logoFit": {
+      "contain": "Encajar todo",
+      "cover": "Rellenar y recortar"
+    },
+    "logoCenterHint": "El logotipo siempre está centrado en su cuadro; no necesitas alinearlo tú.",
+    "officeHours": "Horario de oficina",
+    "officeHoursSection": "Horario de oficina",
+    "officeHoursHint": "Cuando responden tu teléfono, correo y personal. El horario de operación corresponde a cada punto de venta y se configura allí.",
+    "docs": {
+      "title": "Documentos públicos",
+      "subtitle": "Política de devoluciones, garantía, licencia: los documentos que tu cliente puede querer leer.",
+      "empty": "No hay documentos aún.",
+      "publicWarning": "Cualquiera en internet puede abrir estos archivos. Los documentos de registro y las identificaciones van en el formulario de verificación de arriba, no aquí.",
+      "kindLabel": "Tipo de documento",
+      "titleLabel": "Título (opcional)",
+      "fileLabel": "Subir un archivo",
+      "fileHint": "PDF, PNG, JPEG o WebP, hasta 10 MB.",
+      "urlLabel": "O un enlace a tu propio sitio",
+      "addUrl": "Añadir enlace",
+      "publish": "Publicar",
+      "unpublish": "Anular publicación",
+      "published": "Publicado",
+      "draft": "Borrador",
+      "kind": {
+        "returnPolicy": "Política de devoluciones",
+        "privacy": "Aviso de privacidad",
+        "terms": "Términos de venta",
+        "warranty": "Garantía",
+        "delivery": "Entrega",
+        "license": "Licencia o permiso",
+        "certificate": "Certificado",
+        "other": "Otro"
+      },
+      "err": {
+        "generic": "No se pudo guardar. Inténtalo de nuevo.",
+        "unauth": "Por favor, inicia sesión.",
+        "not_found": "No disponible.",
+        "kind_invalid": "Elige un tipo de documento.",
+        "url_invalid": "Sube un archivo o da un enlace que empiece con https://",
+        "docs_limit": "El límite es 20 documentos: elimina uno primero.",
+        "unpublish_first": "Anula su publicación primero: tu cliente puede haberse basado en esta promesa.",
+        "too_large": "El archivo es demasiado grande (10 MB máx.).",
+        "bad_type": "Solo PDF, PNG, JPEG o WebP.",
+        "no_file": "Elige un archivo.",
+        "forbidden": "No puedes editar esta ficha de empresa.",
+        "bad_form": "No se pudo leer la carga.",
+        "company_required": "Falta la empresa."
       }
+    },
+    "publicFields": {
+      "title": "Lo que ven los clientes",
+      "subtitle": "Desactiva lo que prefieras no publicar. Todo se muestra de forma predeterminada.",
+      "shown": "visible",
+      "hidden": "oculto",
+      "field": {
+        "phone": "Teléfono",
+        "email": "Correo electrónico",
+        "preciseAddress": "Calle y número",
+        "hours": "Horario de oficina",
+        "documents": "Documentos públicos",
+        "description": "Sobre la empresa"
+      },
+      "alwaysPublic": "Siempre públicos: nombre visible, razón social, país y ciudad, tipo de negocio e industria, política de devoluciones y las direcciones de tus puntos — aparecen en el mapa.",
+      "err": "No se pudo guardar. Inténtalo de nuevo."
     }
   },
   "cabinet": {
@@ -1913,7 +2020,8 @@
         "PENDING": "Procesando",
         "APPROVED": "Aceptada",
         "REJECTED": "Rechazada"
-      }
+      },
+      "tileCounts": "puntos: {points} · productos: {offers}"
     },
     "exchanges": {
       "title": "Mis exchanges",
@@ -2310,7 +2418,10 @@
     },
     "returns": "Devoluciones",
     "returnDays": "{days} días",
-    "returnsUnknown": "El vendedor no ha indicado una política de devoluciones."
+    "returnsUnknown": "El vendedor no ha indicado una política de devoluciones.",
+    "officeHoursTitle": "Horario de oficina",
+    "officeHoursHint": "Cuando responden el teléfono, el correo electrónico y el personal. El horario de atención comercial se indica en cada punto de venta.",
+    "documentsTitle": "Documentos"
   },
   "companiesDirectory": {
     "kicker": "Directorio",
@@ -4192,7 +4303,12 @@
       "CUSTOMER_REPLIED": "Respondió a un cliente",
       "CUSTOMER_BLOCKED": "Bloqueó a un cliente",
       "CUSTOMER_UNBLOCKED": "Desbloqueó a un cliente",
-      "CUSTOMER_MESSAGE_DELETED": "Eliminó un mensaje de la tienda de un hilo de cliente"
+      "CUSTOMER_MESSAGE_DELETED": "Eliminó un mensaje de la tienda de un hilo de cliente",
+      "DOCUMENT_ADDED": "Documento público agregado",
+      "DOCUMENT_PUBLISHED": "Documento publicado en la página pública",
+      "DOCUMENT_UNPUBLISHED": "Documento retirado de la página pública",
+      "DOCUMENT_DELETED": "Documento público eliminado",
+      "PUBLIC_FIELDS_SET": "Se cambió lo que ven los clientes"
     }
   },
   "cabinetTasks": {

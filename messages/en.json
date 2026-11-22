@@ -1487,10 +1487,12 @@
       "documents_required": "Attach the registration documents: the legal name is proved by paper.",
       "nothing_to_apply": "There is nothing left to apply in this change.",
       "hours_invalid": "Opening hours look wrong — check the times.",
-      "hours_empty": "Mark at least one working day, otherwise the schedule says nothing.",
-      "timezone_invalid": "Unknown time zone.",
+      "hours_empty": "Seven closed days say nothing. Set the days you are open, or drop the schedule.",
+      "timezone_invalid": "Pick a time zone from the list.",
       "category_invalid": "Unknown kind of business.",
-      "return_days_invalid": "Return window must be a whole number of days, 0 to 365."
+      "return_days_invalid": "Return window must be a whole number of days, 0 to 365.",
+      "industry_invalid": "Pick an industry from the list.",
+      "industry_custom_has_link": "Remove the link from your own tag — we answer for links on our pages."
     },
     "websiteHint": "https://, http://, or just www.example.com — all work",
     "addressSection": "Address",
@@ -1589,7 +1591,8 @@
       "uploading": "Uploading…",
       "uploadHint": "PDF / PNG / JPG — up to 8 MB",
       "startCta": "Verify the business",
-      "manageCta": "Verification documents"
+      "manageCta": "Verification documents",
+      "whatIsIt": "Legal-entity check against your registration documents. Once it passes, your public page and search results carry a ✓ mark."
     },
     "viewPublic": "View public page",
     "photos": "Storefront photos",
@@ -1775,7 +1778,111 @@
         "open": "Hours",
         "allday": "24/7",
         "closed": "Closed"
+      },
+      "copyFromCompany": "Same as office hours"
+    },
+    "categoryLabel": "Kind of business",
+    "industryLabel": "Industry",
+    "industryCustom": "Your own tag",
+    "industryCustomHint": "Up to 40 characters, no links. Shown next to the industry; it is not a catalogue filter.",
+    "industrySection": "Industry",
+    "industryKind": {
+      "retail": "Retail",
+      "wholesale": "Wholesale",
+      "food": "Food service",
+      "hospitality": "Hotels and tourism",
+      "construction": "Construction",
+      "realEstate": "Real estate",
+      "oilGas": "Oil, gas and refining",
+      "energy": "Energy",
+      "mining": "Mining and metals",
+      "chemicals": "Chemicals",
+      "manufacturing": "Manufacturing and machinery",
+      "agriculture": "Agriculture",
+      "foodProduction": "Food production",
+      "transport": "Transport and logistics",
+      "automotive": "Automotive",
+      "it": "IT and software",
+      "telecom": "Telecom",
+      "finance": "Finance and insurance",
+      "crypto": "Crypto services",
+      "legal": "Legal and consulting",
+      "education": "Education",
+      "health": "Healthcare",
+      "media": "Media and advertising",
+      "other": "Other"
+    },
+    "logoSection": "Logo",
+    "logoFileHint": "PNG, JPEG or WebP, up to 4 MB. The file is saved right away.",
+    "logoShape": {
+      "square": "Square",
+      "rounded": "Rounded",
+      "circle": "Circle"
+    },
+    "logoFit": {
+      "contain": "Fit whole",
+      "cover": "Fill and crop"
+    },
+    "logoCenterHint": "The logo is always centred in its box — you do not have to align it yourself.",
+    "officeHours": "Office hours",
+    "officeHoursSection": "Office hours",
+    "officeHoursHint": "When your phone, email and staff answer. Trading hours belong to each point of sale and are set there.",
+    "docs": {
+      "title": "Public documents",
+      "subtitle": "Return policy, warranty, licence — the papers your customer may want to read.",
+      "empty": "No documents yet.",
+      "publicWarning": "Anyone on the internet can open these files. Registration documents and IDs belong in the verification form above, not here.",
+      "kindLabel": "Document type",
+      "titleLabel": "Title (optional)",
+      "fileLabel": "Upload a file",
+      "fileHint": "PDF, PNG, JPEG or WebP, up to 10 MB.",
+      "urlLabel": "Or a link to your own site",
+      "addUrl": "Add link",
+      "publish": "Publish",
+      "unpublish": "Unpublish",
+      "published": "Published",
+      "draft": "Draft",
+      "kind": {
+        "returnPolicy": "Return policy",
+        "privacy": "Privacy notice",
+        "terms": "Terms of sale",
+        "warranty": "Warranty",
+        "delivery": "Delivery",
+        "license": "Licence or permit",
+        "certificate": "Certificate",
+        "other": "Other"
+      },
+      "err": {
+        "generic": "Could not save. Try again.",
+        "unauth": "Please sign in.",
+        "not_found": "Not available.",
+        "kind_invalid": "Pick a document type.",
+        "url_invalid": "Upload a file or give a link starting with https://",
+        "docs_limit": "20 documents is the limit — remove one first.",
+        "unpublish_first": "Unpublish it first: your customer may have relied on this promise.",
+        "too_large": "The file is too large (10 MB max).",
+        "bad_type": "Only PDF, PNG, JPEG or WebP.",
+        "no_file": "Pick a file.",
+        "forbidden": "You cannot edit this company card.",
+        "bad_form": "Could not read the upload.",
+        "company_required": "Company is missing."
       }
+    },
+    "publicFields": {
+      "title": "What customers see",
+      "subtitle": "Switch off what you would rather not publish. Everything is shown by default.",
+      "shown": "shown",
+      "hidden": "hidden",
+      "field": {
+        "phone": "Phone",
+        "email": "Email",
+        "preciseAddress": "Street and house number",
+        "hours": "Office hours",
+        "documents": "Public documents",
+        "description": "About the company"
+      },
+      "alwaysPublic": "Always public: display name, legal name, country and city, kind of business and industry, return policy, and the addresses of your points — they stand on the map.",
+      "err": "Could not save. Try again."
     }
   },
   "cabinet": {
@@ -1913,7 +2020,8 @@
         "PENDING": "Processing",
         "APPROVED": "Approved",
         "REJECTED": "Rejected"
-      }
+      },
+      "tileCounts": "points: {points} · products: {offers}"
     },
     "exchanges": {
       "title": "My exchanges",
@@ -2310,7 +2418,10 @@
     },
     "returns": "Returns",
     "returnDays": "{days} days",
-    "returnsUnknown": "The seller has not stated a return policy."
+    "returnsUnknown": "The seller has not stated a return policy.",
+    "officeHoursTitle": "Office hours",
+    "officeHoursHint": "When the phone, email and staff answer. Trading hours are listed with each point of sale.",
+    "documentsTitle": "Documents"
   },
   "companiesDirectory": {
     "kicker": "Directory",
@@ -4192,7 +4303,12 @@
       "CUSTOMER_REPLIED": "Replied to a customer",
       "CUSTOMER_BLOCKED": "Blocked a customer",
       "CUSTOMER_UNBLOCKED": "Unblocked a customer",
-      "CUSTOMER_MESSAGE_DELETED": "Removed a shop message from a customer thread"
+      "CUSTOMER_MESSAGE_DELETED": "Removed a shop message from a customer thread",
+      "DOCUMENT_ADDED": "Public document added",
+      "DOCUMENT_PUBLISHED": "Document published on the public page",
+      "DOCUMENT_UNPUBLISHED": "Document removed from the public page",
+      "DOCUMENT_DELETED": "Public document deleted",
+      "PUBLIC_FIELDS_SET": "Changed what customers see"
     }
   },
   "cabinetTasks": {

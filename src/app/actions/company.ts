@@ -105,8 +105,15 @@ export async function saveCompanyProfile(
   const v = validateCompanyProfile(input);
   if (!v.ok) return { ok: false as const, reason: v.reason };
 
+  // Часы конторы — колонка JSONB, и `null` в ней требует `DbNull`: строкой "null"
+  // тут была бы запись слова вместо очистки поля (та же оговорка, что у точки).
+  const hoursPatch = { hours: (v.data.hours ?? Prisma.DbNull) as Prisma.InputJsonValue };
+
   if (company.status !== "APPROVED") {
-    await prisma.company.update({ where: { id: company.id }, data: v.data });
+    await prisma.company.update({
+      where: { id: company.id },
+      data: { ...v.data, ...hoursPatch },
+    });
     await logCompanyAction({ companyId, actorUserId: userId, action: "PROFILE_SAVED", subject: v.data.displayName });
     revalidatePath("/", "layout");
     return { ok: true as const, moderated: 0 };
@@ -115,8 +122,15 @@ export async function saveCompanyProfile(
   const split = splitCompanyEdit(company, v.data);
   // Выводимая строка адреса следует за структурными частями, а они ждут модератора:
   // записать её сразу значило бы показать на витрине новый адрес до решения.
-  if (Object.keys(split.free).length > 0) {
-    await prisma.company.update({ where: { id: company.id }, data: toCompanyPatch(split.free) });
+  // Часы конторы идут в свободные поля всегда: сравнение расписаний «было →
+  // стало» строкой не ведётся, а режим работы никого не вводит в заблуждение
+  // насчёт того, с кем он имеет дело (разбор свободных полей в BM).
+  const hoursChanged = JSON.stringify(company.hours ?? null) !== JSON.stringify(v.data.hours ?? null);
+  if (Object.keys(split.free).length > 0 || hoursChanged) {
+    await prisma.company.update({
+      where: { id: company.id },
+      data: { ...toCompanyPatch(split.free), ...(hoursChanged ? hoursPatch : {}) },
+    });
     await logCompanyAction({ companyId, actorUserId: userId, action: "PROFILE_SAVED", subject: company.displayName });
   }
   if (split.pending.length === 0) {

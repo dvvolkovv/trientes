@@ -12,7 +12,12 @@ import { CabinetTile, TILE_GRID } from "@/components/cabinet/cabinet-tile";
 import { ADMIN_COLUMN } from "@/lib/admin-ui";
 import { parseChanges } from "@/lib/company-edit";
 import { visibleGroups, visibleTiles, GROUP_ICONS } from "@/lib/cabinet/company-nav";
-import { NOT_DELETED } from "@/lib/soft-delete";
+import { NOT_DELETED, LIVE_POINT } from "@/lib/soft-delete";
+import { CompanyDocsSection } from "@/components/business/company-docs-section";
+import { PublicFieldsForm } from "@/components/business/public-fields-form";
+import { parsePublicFields } from "@/lib/company-public-fields";
+import { parseWeekHours } from "@/lib/opening-hours";
+import { industry as industryOf } from "@/lib/industries";
 
 export const dynamic = "force-dynamic";
 
@@ -51,9 +56,26 @@ export default async function CompanyManagementPage({
   const editing = editParam === "1" && editable;
   const kybOpen = kybParam === "1" && isOwner;
 
+  const officeHours = parseWeekHours(company.hours);
+
   const gate = { permissions, isOwner };
   const groups = visibleGroups(gate);
   const counts = groups.length > 0 ? await countsFor(company.id) : null;
+
+  // Публичные документы и умолчание точного адреса (слайс BU). Умолчание зависит
+  // от того, есть ли у предприятия физические точки: у онлайн-предприятия адрес
+  // часто домашний.
+  const [docs, physicalPoints] = editable
+    ? await Promise.all([
+        prisma.companyDocument.findMany({
+          where: { companyId: company.id },
+          orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+        }),
+        prisma.companyPoint.count({
+          where: { companyId: company.id, type: { not: "ONLINE" }, status: "APPROVED", ...LIVE_POINT },
+        }),
+      ])
+    : [[], 0];
 
   return (
     <main className={`${ADMIN_COLUMN} overflow-x-clip py-8 space-y-8`}>
@@ -80,6 +102,8 @@ export default async function CompanyManagementPage({
             companyId={company.id}
             moderated={company.status === "APPROVED"}
             backHref={base}
+            initialHours={officeHours}
+            initialTimezone={company.timezone}
             initial={{
               legalName: company.legalName, displayName: company.displayName,
               description: company.description ?? "", website: company.website ?? "",
@@ -91,6 +115,10 @@ export default async function CompanyManagementPage({
               category: company.category ?? "",
               returnPolicy: company.returnPolicy ?? "",
               returnDays: company.returnDays === null ? "" : String(company.returnDays),
+              industry: company.industry ?? "",
+              industryCustom: company.industryCustom ?? "",
+              logoShape: company.logoShape ?? "",
+              logoFit: company.logoFit ?? "",
             }}
           />
         </section>
@@ -110,6 +138,10 @@ export default async function CompanyManagementPage({
               kybStatus: company.kybStatus,
               kybRejectionReason: company.kybRejectionReason,
               logoUrl: company.logoUrl,
+              logoShape: company.logoShape,
+              logoFit: company.logoFit,
+              hours: officeHours,
+              timezone: company.timezone,
               legalName: company.legalName,
               description: company.description,
               website: company.website,
@@ -122,10 +154,33 @@ export default async function CompanyManagementPage({
               postalCode: company.postalCode,
               // Вид заведения — словами, а не ключом реестра: карточку читает человек.
               category: company.category ? t(`category.${company.category}`) : null,
+              // Отрасль — словами, как и вид: ключ реестра читает код, а не человек.
+              industry: industryOf(company.industry) ? t(`industryKind.${company.industry}`) : null,
+              industryCustom: company.industryCustom,
               returnPolicy: company.returnPolicy,
               returnDays: company.returnDays === null ? null : String(company.returnDays),
             }}
           />
+
+          {editable ? (
+            <>
+              <CompanyDocsSection
+                companyId={company.id}
+                canEdit={editable}
+                docs={docs.map((d) => ({
+                  id: d.id,
+                  kind: d.kind,
+                  title: d.title,
+                  url: d.url,
+                  published: d.publishedAt !== null,
+                }))}
+              />
+              <PublicFieldsForm
+                companyId={company.id}
+                initial={parsePublicFields(company.publicFields, { hasPhysicalPoints: physicalPoints > 0 })}
+              />
+            </>
+          ) : null}
 
           {kybOpen ? (
             <section className="space-y-3">

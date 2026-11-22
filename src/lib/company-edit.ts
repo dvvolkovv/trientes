@@ -24,6 +24,15 @@ export const COMPANY_FREE_FIELDS = [
   "category",
   "returnPolicy",
   "returnDays",
+  // Слайс BU. Отрасль и своя рубрика — тот же разбор, что вид заведения: они не
+  // меняют ни места, ни принимаемых монет, ни хозяина, а очередь за уточнение
+  // отрасли означала бы, что отрасль никто не уточнит. Форма логотипа и часы
+  // конторы — и вовсе вид и режим, а не утверждение о себе.
+  "industry",
+  "industryCustom",
+  "logoShape",
+  "logoFit",
+  "timezone",
 ] as const;
 
 /**
@@ -69,7 +78,8 @@ export type CompanyEditField = CompanyFreeField | CompanyModeratedField | Compan
 /**
  * Все поля карточки в том порядке, в каком их читает человек. Логотипа в списке
  * нет намеренно: он виден самой картинкой в шапке, и строка «URL логотипа: не
- * задано» повторяла бы глазами то, что и так видно.
+ * задано» повторяла бы глазами то, что и так видно. Там же нет формы логотипа и
+ * часового пояса (слайс BU): форма видна самим логотипом, пояс — расписанием.
  */
 export const COMPANY_CARD_FIELDS: CompanyEditField[] = [
   "legalName",
@@ -84,6 +94,8 @@ export const COMPANY_CARD_FIELDS: CompanyEditField[] = [
   "houseNumber",
   "postalCode",
   "category",
+  "industry",
+  "industryCustom",
   "returnDays",
   "returnPolicy",
 ];
@@ -181,4 +193,18 @@ export function parseChanges(raw: unknown): FieldChange[] {
     });
   }
   return out;
+}
+
+/**
+ * Ключ строки перевода для подписи поля карточки.
+ *
+ * Обычно он совпадает с именем поля, но у вида заведения и отрасли под тем же
+ * именем лежат **названия значений** (`business.category.grocery`), и `t("category")`
+ * метил бы в объект — на экране вместо подписи стоял бы путь ключа. Своя подпись,
+ * а не переименование реестра: названия видов читают кабинет, витрина и навигатор.
+ */
+export function companyFieldLabelKey(field: CompanyEditField): string {
+  if (field === "category") return "categoryLabel";
+  if (field === "industry") return "industryLabel";
+  return field;
 }

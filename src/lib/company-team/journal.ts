@@ -71,7 +71,13 @@ export type CompanyAction =
   | "CUSTOMER_REPLIED"
   | "CUSTOMER_BLOCKED"
   | "CUSTOMER_UNBLOCKED"
-  | "CUSTOMER_MESSAGE_DELETED";
+  | "CUSTOMER_MESSAGE_DELETED"
+  // Слайс BU: публичные документы и настройка публичности карточки.
+  | "DOCUMENT_ADDED"
+  | "DOCUMENT_PUBLISHED"
+  | "DOCUMENT_UNPUBLISHED"
+  | "DOCUMENT_DELETED"
+  | "PUBLIC_FIELDS_SET";
 
 export async function logCompanyAction(input: {
   companyId: string;

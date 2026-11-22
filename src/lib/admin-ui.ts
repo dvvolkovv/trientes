@@ -25,6 +25,14 @@ export const ADMIN_COLUMN = "mx-auto w-full max-w-[1100px] px-4 md:px-6";
 export const ADMIN_TILE =
   "relative flex aspect-square flex-col justify-between overflow-hidden rounded-[22px] border border-hairline bg-card p-4";
 
+/**
+ * Та же плитка, но содержимое собрано по центру (слайс BU): у плитки
+ * предприятия сверху логотип, под ним имя и числа, и `justify-between`
+ * растаскивал бы их по углам.
+ */
+export const ADMIN_TILE_CENTERED =
+  "relative flex aspect-square flex-col items-center justify-center overflow-hidden rounded-[22px] border border-hairline bg-card p-4";
+
 /** Цвет точки срока. */
 export const SLA_DOT: Record<"ok" | "warn" | "late" | "paused", string> = {
   ok: "bg-up",

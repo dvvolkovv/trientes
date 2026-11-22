@@ -1490,7 +1490,9 @@
       "hours_empty": "En az bir çalışma günü işaretleyin, aksi halde program hiçbir şey söylemez.",
       "timezone_invalid": "Bilinmeyen saat dilimi.",
       "category_invalid": "Bilinmeyen işletme türü.",
-      "return_days_invalid": "İade süresi gün cinsinden tam sayı olmalıdır, 0 ile 365 arasında."
+      "return_days_invalid": "İade süresi gün cinsinden tam sayı olmalıdır, 0 ile 365 arasında.",
+      "industry_invalid": "Listeden bir sektör seçin.",
+      "industry_custom_has_link": "Kendi etiketinizden bağlantıyı kaldırın — sayfalarımızdaki bağlantılardan biz sorumluyuz."
     },
     "websiteHint": "https://, http:// veya sadece www.example.com — hepsi geçerli",
     "addressSection": "Adres",
@@ -1589,7 +1591,8 @@
       "uploading": "Yükleniyor…",
       "uploadHint": "PDF / PNG / JPG — en fazla 8 MB",
       "startCta": "İşletmeyi doğrula",
-      "manageCta": "Doğrulama belgeleri"
+      "manageCta": "Doğrulama belgeleri",
+      "whatIsIt": "Kayıt belgelerinize göre tüzel kişi kontrolü. Onaylandığında, herkese açık sayfanızda ve arama sonuçlarında ✓ işareti görünür."
     },
     "viewPublic": "Genel sayfayı aç",
     "photos": "İşyeri fotoğrafları",
@@ -1775,7 +1778,111 @@
         "open": "Saatler",
         "allday": "7/24",
         "closed": "Kapalı"
+      },
+      "copyFromCompany": "Ofis saatleriyle aynı"
+    },
+    "categoryLabel": "İşletme türü",
+    "industryLabel": "Sektör",
+    "industryCustom": "Kendi etiketiniz",
+    "industryCustomHint": "En fazla 40 karakter, bağlantı yok. Sektörün yanında gösterilir; katalog filtresi değildir.",
+    "industrySection": "Sektör",
+    "industryKind": {
+      "retail": "Perakende",
+      "wholesale": "Toptan",
+      "food": "Yiyecek hizmetleri",
+      "hospitality": "Oteller ve turizm",
+      "construction": "İnşaat",
+      "realEstate": "Gayrimenkul",
+      "oilGas": "Petrol, gaz ve rafinaj",
+      "energy": "Enerji",
+      "mining": "Madencilik ve metaller",
+      "chemicals": "Kimya",
+      "manufacturing": "İmalat ve makine",
+      "agriculture": "Tarım",
+      "foodProduction": "Gıda üretimi",
+      "transport": "Ulaşım ve lojistik",
+      "automotive": "Otomotiv",
+      "it": "BT ve yazılım",
+      "telecom": "Telekom",
+      "finance": "Finans ve sigorta",
+      "crypto": "Kripto hizmetleri",
+      "legal": "Hukuk ve danışmanlık",
+      "education": "Eğitim",
+      "health": "Sağlık hizmetleri",
+      "media": "Medya ve reklamcılık",
+      "other": "Diğer"
+    },
+    "logoSection": "Logo",
+    "logoFileHint": "PNG, JPEG veya WebP, en fazla 4 MB. Dosya hemen kaydedilir.",
+    "logoShape": {
+      "square": "Kare",
+      "rounded": "Yuvarlatılmış",
+      "circle": "Daire"
+    },
+    "logoFit": {
+      "contain": "Tam sığdır",
+      "cover": "Doldur ve kırp"
+    },
+    "logoCenterHint": "Logo, kutusu içinde her zaman ortalanır — kendiniz hizalamanıza gerek yok.",
+    "officeHours": "Ofis saatleri",
+    "officeHoursSection": "Ofis saatleri",
+    "officeHoursHint": "Telefon, e‑posta ve ekibinizin yanıt verdiği saatler. Satış saatleri her satış noktasına özeldir ve orada ayarlanır.",
+    "docs": {
+      "title": "Herkese açık belgeler",
+      "subtitle": "İade politikası, garanti, lisans — müşterinizin okumak isteyebileceği belgeler.",
+      "empty": "Henüz belge yok.",
+      "publicWarning": "İnternetteki herkes bu dosyaları açabilir. Kayıt belgeleri ve kimlikler yukarıdaki doğrulama formuna aittir, buraya değil.",
+      "kindLabel": "Belge türü",
+      "titleLabel": "Başlık (isteğe bağlı)",
+      "fileLabel": "Dosya yükle",
+      "fileHint": "PDF, PNG, JPEG veya WebP, en fazla 10 MB.",
+      "urlLabel": "Ya da kendi sitenize bir bağlantı",
+      "addUrl": "Bağlantı ekle",
+      "publish": "Yayınla",
+      "unpublish": "Yayından kaldır",
+      "published": "Yayında",
+      "draft": "Taslak",
+      "kind": {
+        "returnPolicy": "İade politikası",
+        "privacy": "Gizlilik bildirimi",
+        "terms": "Satış koşulları",
+        "warranty": "Garanti",
+        "delivery": "Teslimat",
+        "license": "Lisans veya izin",
+        "certificate": "Sertifika",
+        "other": "Diğer"
+      },
+      "err": {
+        "generic": "Kaydedilemedi. Tekrar deneyin.",
+        "unauth": "Lütfen giriş yapın.",
+        "not_found": "Kullanılamıyor.",
+        "kind_invalid": "Bir belge türü seçin.",
+        "url_invalid": "Bir dosya yükleyin veya https:// ile başlayan bir bağlantı verin",
+        "docs_limit": "En fazla 20 belge — önce birini kaldırın.",
+        "unpublish_first": "Önce yayından kaldırın: müşteriniz bu vaade güvenmiş olabilir.",
+        "too_large": "Dosya çok büyük (en fazla 10 MB).",
+        "bad_type": "Yalnızca PDF, PNG, JPEG veya WebP.",
+        "no_file": "Bir dosya seçin.",
+        "forbidden": "Bu şirket kartını düzenleyemezsiniz.",
+        "bad_form": "Yükleme okunamadı.",
+        "company_required": "Şirket eksik."
       }
+    },
+    "publicFields": {
+      "title": "Müşterilerin gördüğü",
+      "subtitle": "Yayınlamak istemediklerinizi kapatın. Varsayılan olarak her şey gösterilir.",
+      "shown": "gösteriliyor",
+      "hidden": "gizli",
+      "field": {
+        "phone": "Telefon",
+        "email": "E-posta",
+        "preciseAddress": "Sokak ve bina numarası",
+        "hours": "Çalışma saatleri",
+        "documents": "Herkese açık belgeler",
+        "description": "Şirket hakkında"
+      },
+      "alwaysPublic": "Her zaman herkese açık: görünen ad, resmî ad, ülke ve şehir, işletme türü ve sektör, iade politikası ve noktalarınızın adresleri — haritada görünürler.",
+      "err": "Kaydedilemedi. Tekrar deneyin."
     }
   },
   "cabinet": {
@@ -1913,7 +2020,8 @@
         "PENDING": "İşleniyor",
         "APPROVED": "Onaylandı",
         "REJECTED": "Reddedildi"
-      }
+      },
+      "tileCounts": "noktalar: {points} · ürünler: {offers}"
     },
     "exchanges": {
       "title": "Borsalarım",
@@ -2310,7 +2418,10 @@
     },
     "returns": "İadeler",
     "returnDays": "{days} gün",
-    "returnsUnknown": "Satıcı bir iade politikası belirtmemiş."
+    "returnsUnknown": "Satıcı bir iade politikası belirtmemiş.",
+    "officeHoursTitle": "Mesai saatleri",
+    "officeHoursHint": "Telefonun, e-postaın ve personelin yanıt verdiği zamanlar. Ticaret saatleri her satış noktasıyla birlikte listelenir.",
+    "documentsTitle": "Belgeler"
   },
   "companiesDirectory": {
     "kicker": "Dizin",
@@ -4192,7 +4303,12 @@
       "CUSTOMER_REPLIED": "Bir müşteriye yanıt verildi",
       "CUSTOMER_BLOCKED": "Bir müşteri engellendi",
       "CUSTOMER_UNBLOCKED": "Bir müşterinin engeli kaldırıldı",
-      "CUSTOMER_MESSAGE_DELETED": "Müşteri sohbetinden bir mağaza mesajı kaldırıldı"
+      "CUSTOMER_MESSAGE_DELETED": "Müşteri sohbetinden bir mağaza mesajı kaldırıldı",
+      "DOCUMENT_ADDED": "Herkese açık belge eklendi",
+      "DOCUMENT_PUBLISHED": "Belge herkese açık sayfada yayımlandı",
+      "DOCUMENT_UNPUBLISHED": "Belge herkese açık sayfadan kaldırıldı",
+      "DOCUMENT_DELETED": "Herkese açık belge silindi",
+      "PUBLIC_FIELDS_SET": "Müşterilerin gördükleri değiştirildi"
     }
   },
   "cabinetTasks": {

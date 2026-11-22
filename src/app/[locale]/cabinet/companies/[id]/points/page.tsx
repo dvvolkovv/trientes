@@ -129,6 +129,8 @@ export default async function CompanyPointsPage({
             cards={cardOpts}
             initialCardIds={prefillCards}
             editing={editing}
+            companyHours={parseWeekHours(company.hours)}
+            companyTimezone={company.timezone}
             companyAddress={{
               countryCode: company.countryCode ?? "",
               city: company.city ?? "",

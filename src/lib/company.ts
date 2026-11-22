@@ -3,6 +3,9 @@
 import { isEmptyWeek, parseWeekHours, type WeekHours } from "@/lib/opening-hours";
 import { isKnownTimezone } from "@/lib/timezones";
 import { isMerchantCategory } from "@/lib/merchant-categories";
+import { isIndustry, INDUSTRY_CUSTOM_MAX } from "@/lib/industries";
+import { isLogoFit, isLogoShape } from "@/lib/company-logo";
+import { hasLink } from "@/lib/promos/rules";
 
 const POINT_TYPES = ["SHOP", "ATM", "POS", "SALES_OFFICE", "COMPANY", "ONLINE"] as const;
 export type PointTypeStr = (typeof POINT_TYPES)[number];
@@ -36,6 +39,29 @@ function normalizeUrl(raw: string | null | undefined): string | null | "invalid"
   } catch {
     return "invalid";
   }
+}
+
+/**
+ * Адрес логотипа: наш собственный файл или чужая ссылка.
+ *
+ * Поймано живым прогоном BU: загрузка логотипа пишет в поле **наш** путь
+ * (`/uploads/companies/…`), а `normalizeUrl` требует схему или домен — и
+ * сохранение карточки сразу после загрузки отвергалось как «некорректный URL
+ * логотипа». То есть загрузить логотип было можно, а сохранить карточку после
+ * этого — нельзя.
+ *
+ * Принимаем только **наши** публичные корни и только безопасное имя: `/uploads/`
+ * из ввода человека — это путь на нашем домене, и чужую строку туда пускать
+ * незачем.
+ */
+function normalizeOwnOrRemoteUrl(raw: string | null | undefined): string | null | "invalid" {
+  const s = (raw ?? "").trim();
+  if (s.startsWith("/uploads/")) {
+    return /^\/uploads\/[a-z0-9-]+\/[A-Za-z0-9_-]+\/[0-9a-f]{24}\.(png|jpg|jpeg|webp)$/.test(s)
+      ? s
+      : "invalid";
+  }
+  return normalizeUrl(s);
 }
 
 type StructuredAddress = {
@@ -92,6 +118,13 @@ export type CompanyProfileInput = {
   /** Политика возврата: обязательна к показу (ТЗ § 3.1), но не к заполнению. */
   returnPolicy?: string | null;
   returnDays?: string | number | null;
+  /** Слайс BU: отрасль, своя рубрика, вид логотипа, часы конторы. */
+  industry?: string | null;
+  industryCustom?: string | null;
+  logoShape?: string | null;
+  logoFit?: string | null;
+  hours?: unknown;
+  timezone?: string | null;
 };
 export type ValidatedProfile = {
   legalName: string; displayName: string; description: string | null;
@@ -99,6 +132,9 @@ export type ValidatedProfile = {
   city: string | null; street: string | null; houseNumber: string | null; postalCode: string | null;
   address: string | null; phone: string | null; email: string | null; website: string | null; logoUrl: string | null;
   category: string | null; returnPolicy: string | null; returnDays: number | null;
+  industry: string | null; industryCustom: string | null;
+  logoShape: string | null; logoFit: string | null;
+  hours: WeekHours | null; timezone: string | null;
 };
 export type ProfileResult =
   | { ok: true; data: ValidatedProfile }
@@ -110,7 +146,11 @@ export type ProfileResult =
         | "website_invalid"
         | "logo_invalid"
         | "category_invalid"
-        | "return_days_invalid";
+        | "return_days_invalid"
+        | "industry_invalid"
+        | "industry_custom_has_link"
+        | "hours_empty"
+        | "timezone_invalid";
     };
 
 /** Предел текста политики возврата: это условия, а не договор на сто страниц. */
@@ -123,7 +163,7 @@ export function validateCompanyProfile(input: CompanyProfileInput): ProfileResul
   if (!displayName) return { ok: false, reason: "display_name_required" };
   const website = normalizeUrl(input.website);
   if (website === "invalid") return { ok: false, reason: "website_invalid" };
-  const logoUrl = normalizeUrl(input.logoUrl);
+  const logoUrl = normalizeOwnOrRemoteUrl(input.logoUrl);
   if (logoUrl === "invalid") return { ok: false, reason: "logo_invalid" };
   const structured: StructuredAddress = {
     countryCode: normalizeCountryCode(input.countryCode),
@@ -150,6 +190,28 @@ export function validateCompanyProfile(input: CompanyProfileInput): ProfileResul
 
   const returnPolicy = t(input.returnPolicy)?.slice(0, RETURN_POLICY_MAX) ?? null;
 
+  // Отрасль — ключ закрытого реестра: выдуманный попал бы в фильтр каталога и
+  // показался бы покупателю как наша рубрика (тот же разбор, что `category`).
+  const industry = t(input.industry);
+  if (industry !== null && !isIndustry(industry)) return { ok: false, reason: "industry_invalid" };
+
+  // Своя рубрика — слово продавца о себе, но ссылок в ней нет: текст выходит с
+  // нашего домена, значит за ссылку в нём отвечаем мы (правило BG).
+  const industryCustom = t(input.industryCustom)?.slice(0, INDUSTRY_CUSTOM_MAX) ?? null;
+  if (industryCustom !== null && hasLink(industryCustom)) {
+    return { ok: false, reason: "industry_custom_has_link" };
+  }
+
+  const logoShape = isLogoShape(input.logoShape) ? input.logoShape : null;
+  const logoFit = isLogoFit(input.logoFit) ? input.logoFit : null;
+
+  // Часы конторы. Семь закрытых дней — не «закрыто навсегда», а расписание, из
+  // которого ничего не следует (правило BN): отвергаем вслух.
+  const hours = parseWeekHours(input.hours);
+  if (hours !== null && isEmptyWeek(hours)) return { ok: false, reason: "hours_empty" };
+  const timezone = t(input.timezone);
+  if (timezone !== null && !isKnownTimezone(timezone)) return { ok: false, reason: "timezone_invalid" };
+
   return {
     ok: true,
     data: {
@@ -157,6 +219,7 @@ export function validateCompanyProfile(input: CompanyProfileInput): ProfileResul
       country: t(input.country), ...structured, address,
       phone: t(input.phone), email: t(input.email), website, logoUrl,
       category, returnPolicy, returnDays,
+      industry, industryCustom, logoShape, logoFit, hours, timezone,
     },
   };
 }
@@ -264,7 +327,7 @@ export function validateCompanyPoint(input: CompanyPointInput): PointResult {
 
   const website = normalizeUrl(input.website);
   if (website === "invalid") return { ok: false, reason: "website_invalid" };
-  const logoUrl = normalizeUrl(input.logoUrl);
+  const logoUrl = normalizeOwnOrRemoteUrl(input.logoUrl);
   if (logoUrl === "invalid") return { ok: false, reason: "logo_invalid" };
   const acceptedCoinIds = Array.from(
     new Set((input.acceptedCoinIds ?? []).map((c) => c.trim().toLowerCase()).filter(Boolean)),
@@ -288,8 +351,12 @@ export function validateCompanyPoint(input: CompanyPointInput): PointResult {
     return { ok: false, reason: "category_invalid" };
   }
 
-  // Часы у онлайн-услуги смысла не имеют: у неё нет ни двери, ни пояса.
-  const rawHours = type === "ONLINE" ? null : input.hours;
+  // Часы есть и у онлайн-услуги (слайс BU): «работаем круглосуточно» — это
+  // утверждение продавца, а не умолчание, и сказать его должен он. Пояс нужен
+  // затем же, зачем у двери: без него «открыто сейчас» считалось бы по часам
+  // сервера. Прежде оба поля у `ONLINE` молча обнулялись — и редактор, который
+  // слайс BU показал, сохранял бы в пустоту.
+  const rawHours = input.hours;
   let hours: WeekHours | null = null;
   const hoursGiven =
     rawHours !== null &&
@@ -304,7 +371,7 @@ export function validateCompanyPoint(input: CompanyPointInput): PointResult {
     if (isEmptyWeek(hours)) return { ok: false, reason: "hours_empty" };
   }
 
-  const timezone = type === "ONLINE" ? null : t(input.timezone);
+  const timezone = t(input.timezone);
   if (timezone !== null && !isKnownTimezone(timezone)) {
     return { ok: false, reason: "timezone_invalid" };
   }

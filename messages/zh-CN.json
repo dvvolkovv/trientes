@@ -1490,7 +1490,9 @@
       "hours_empty": "请至少标记一个工作日，否则日程表将无内容。",
       "timezone_invalid": "未知时区。",
       "category_invalid": "未知的业务类型。",
-      "return_days_invalid": "退货期限必须是0到365之间的整数天。"
+      "return_days_invalid": "退货期限必须是0到365之间的整数天。",
+      "industry_invalid": "请从列表中选择一个行业。",
+      "industry_custom_has_link": "请从你的自定义标签中移除链接—我们只对自己页面上的链接负责。"
     },
     "websiteHint": "支持 https://、http:// 或直接 www.example.com",
     "addressSection": "地址",
@@ -1589,7 +1591,8 @@
       "uploading": "上传中…",
       "uploadHint": "PDF / PNG / JPG — 最大 8 MB",
       "startCta": "验证企业",
-      "manageCta": "验证文件"
+      "manageCta": "验证文件",
+      "whatIsIt": "根据你的注册文件对法人主体进行核验。通过后，你的公开页面和搜索结果将带有✓标记。"
     },
     "viewPublic": "查看公开页面",
     "photos": "店面照片",
@@ -1775,7 +1778,111 @@
         "open": "营业时段",
         "allday": "24/7",
         "closed": "已关闭"
+      },
+      "copyFromCompany": "与办公时间相同"
+    },
+    "categoryLabel": "业务类型",
+    "industryLabel": "行业",
+    "industryCustom": "自定义标签",
+    "industryCustomHint": "最多40个字符，不含链接。显示在行业旁边；它不是目录筛选条件。",
+    "industrySection": "行业",
+    "industryKind": {
+      "retail": "零售",
+      "wholesale": "批发",
+      "food": "餐饮服务",
+      "hospitality": "酒店与旅游",
+      "construction": "建筑业",
+      "realEstate": "房地产",
+      "oilGas": "石油、天然气与炼化",
+      "energy": "能源",
+      "mining": "采矿与金属",
+      "chemicals": "化工",
+      "manufacturing": "制造与机械",
+      "agriculture": "农业",
+      "foodProduction": "食品生产",
+      "transport": "交通与物流",
+      "automotive": "汽车",
+      "it": "IT 与软件",
+      "telecom": "电信",
+      "finance": "金融与保险",
+      "crypto": "加密服务",
+      "legal": "法律与咨询",
+      "education": "教育",
+      "health": "医疗保健",
+      "media": "媒体与广告",
+      "other": "其他"
+    },
+    "logoSection": "徽标",
+    "logoFileHint": "PNG、JPEG 或 WebP，最大 4 MB。文件会立即保存。",
+    "logoShape": {
+      "square": "方形",
+      "rounded": "圆角",
+      "circle": "圆形"
+    },
+    "logoFit": {
+      "contain": "完整显示",
+      "cover": "填充并裁剪"
+    },
+    "logoCenterHint": "徽标始终在其框内居中——你无需自行对齐。",
+    "officeHours": "办公时间",
+    "officeHoursSection": "办公时间",
+    "officeHoursHint": "你的电话、邮箱和员工提供响应的时间。交易时间属于各销售点，在相应处设置。",
+    "docs": {
+      "title": "公开文件",
+      "subtitle": "退货政策、保修、许可证——客户可能想阅读的文件。",
+      "empty": "尚无文件。",
+      "publicWarning": "互联网上的任何人都可打开这些文件。注册文件和身份证件应填写在上方的验证表单中，而不是放在这里。",
+      "kindLabel": "文件类型",
+      "titleLabel": "标题（可选）",
+      "fileLabel": "上传文件",
+      "fileHint": "PDF、PNG、JPEG 或 WebP，最大 10 MB。",
+      "urlLabel": "或链接到你自己的网站",
+      "addUrl": "添加链接",
+      "publish": "发布",
+      "unpublish": "取消发布",
+      "published": "已发布",
+      "draft": "草稿",
+      "kind": {
+        "returnPolicy": "退货政策",
+        "privacy": "隐私声明",
+        "terms": "销售条款",
+        "warranty": "保修",
+        "delivery": "配送",
+        "license": "许可证或执照",
+        "certificate": "证书",
+        "other": "其他"
+      },
+      "err": {
+        "generic": "无法保存。请重试。",
+        "unauth": "请登录。",
+        "not_found": "不可用。",
+        "kind_invalid": "请选择文档类型。",
+        "url_invalid": "上传文件或提供以 https:// 开头的链接",
+        "docs_limit": "最多可有 20 份文档 — 请先删除一份。",
+        "unpublish_first": "请先取消发布：您的客户可能依赖了此承诺。",
+        "too_large": "文件过大（最大 10 MB）。",
+        "bad_type": "仅支持 PDF、PNG、JPEG 或 WebP。",
+        "no_file": "请选择文件。",
+        "forbidden": "您无法编辑此公司资料卡。",
+        "bad_form": "无法读取上传内容。",
+        "company_required": "缺少公司信息。"
       }
+    },
+    "publicFields": {
+      "title": "客户可见内容",
+      "subtitle": "不想公开的内容可关闭。默认全部显示。",
+      "shown": "显示",
+      "hidden": "隐藏",
+      "field": {
+        "phone": "电话",
+        "email": "邮箱",
+        "preciseAddress": "街道与门牌号",
+        "hours": "办公时间",
+        "documents": "公开文档",
+        "description": "公司简介"
+      },
+      "alwaysPublic": "始终公开：显示名称、法定名称、国家和城市、业务类型和行业、退货政策，以及各网点地址 — 这些会显示在地图上。",
+      "err": "无法保存。请重试。"
     }
   },
   "cabinet": {
@@ -1913,7 +2020,8 @@
         "PENDING": "处理中",
         "APPROVED": "已接受",
         "REJECTED": "已拒绝"
-      }
+      },
+      "tileCounts": "网点: {points} · 商品: {offers}"
     },
     "exchanges": {
       "title": "我的交易所",
@@ -2310,7 +2418,10 @@
     },
     "returns": "退货",
     "returnDays": "{days} 天",
-    "returnsUnknown": "卖家未说明退货政策。"
+    "returnsUnknown": "卖家未说明退货政策。",
+    "officeHoursTitle": "办公时间",
+    "officeHoursHint": "电话、电子邮件和工作人员的响应时间。每个销售点都会列出交易时间。",
+    "documentsTitle": "文件"
   },
   "companiesDirectory": {
     "kicker": "目录",
@@ -4192,7 +4303,12 @@
       "CUSTOMER_REPLIED": "回复了顾客",
       "CUSTOMER_BLOCKED": "屏蔽了顾客",
       "CUSTOMER_UNBLOCKED": "解除了对顾客的屏蔽",
-      "CUSTOMER_MESSAGE_DELETED": "从顾客对话中删除了商店消息"
+      "CUSTOMER_MESSAGE_DELETED": "从顾客对话中删除了商店消息",
+      "DOCUMENT_ADDED": "已添加公共文档",
+      "DOCUMENT_PUBLISHED": "文档已发布到公共页面",
+      "DOCUMENT_UNPUBLISHED": "文档已从公共页面移除",
+      "DOCUMENT_DELETED": "已删除公共文档",
+      "PUBLIC_FIELDS_SET": "已更改客户可见内容"
     }
   },
   "cabinetTasks": {

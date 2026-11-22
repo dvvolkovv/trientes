@@ -1490,7 +1490,9 @@
       "hours_empty": "少なくとも営業日を1日は選択してください、さもないとスケジュールは何も示しません。",
       "timezone_invalid": "不明なタイムゾーンです。",
       "category_invalid": "不明な業種です。",
-      "return_days_invalid": "返品期間は0〜365の整数日でなければなりません。"
+      "return_days_invalid": "返品期間は0〜365の整数日でなければなりません。",
+      "industry_invalid": "リストから業種を選択してください.",
+      "industry_custom_has_link": "独自タグからリンクを削除してください—当サイト上のリンクについては当方が責任を負います."
     },
     "websiteHint": "https://、http://、または www.example.com の形式でOK",
     "addressSection": "住所",
@@ -1589,7 +1591,8 @@
       "uploading": "アップロード中…",
       "uploadHint": "PDF / PNG / JPG — 最大 8 MB",
       "startCta": "ビジネスを確認",
-      "manageCta": "確認書類"
+      "manageCta": "確認書類",
+      "whatIsIt": "登録書類に基づく法人確認。承認されると、公開ページと検索結果に✓マークが付きます."
     },
     "viewPublic": "公開ページを見る",
     "photos": "店舗写真",
@@ -1775,7 +1778,111 @@
         "open": "営業時間",
         "allday": "24時間年中無休",
         "closed": "休業"
+      },
+      "copyFromCompany": "営業時間と同じ"
+    },
+    "categoryLabel": "事業の種類",
+    "industryLabel": "業種",
+    "industryCustom": "独自タグ",
+    "industryCustomHint": "最大40文字、リンク不可。業種の横に表示されますが、カタログのフィルターではありません.",
+    "industrySection": "業種",
+    "industryKind": {
+      "retail": "小売",
+      "wholesale": "卸売",
+      "food": "フードサービス",
+      "hospitality": "ホテル・観光",
+      "construction": "建設",
+      "realEstate": "不動産",
+      "oilGas": "石油・ガス・精製",
+      "energy": "エネルギー",
+      "mining": "鉱業・金属",
+      "chemicals": "化学",
+      "manufacturing": "製造・機械",
+      "agriculture": "農業",
+      "foodProduction": "食品製造",
+      "transport": "運輸・物流",
+      "automotive": "自動車",
+      "it": "IT・ソフトウェア",
+      "telecom": "通信",
+      "finance": "金融・保険",
+      "crypto": "暗号資産サービス",
+      "legal": "法務・コンサルティング",
+      "education": "教育",
+      "health": "ヘルスケア",
+      "media": "メディア・広告",
+      "other": "その他"
+    },
+    "logoSection": "ロゴ",
+    "logoFileHint": "PNG、JPEG、またはWebP、最大4MB。ファイルは直ちに保存されます。",
+    "logoShape": {
+      "square": "正方形",
+      "rounded": "角丸",
+      "circle": "円形"
+    },
+    "logoFit": {
+      "contain": "全体に収める",
+      "cover": "拡大して切り抜き"
+    },
+    "logoCenterHint": "ロゴは常にボックスの中央に配置されます—手動で位置合わせする必要はありません。",
+    "officeHours": "受付時間",
+    "officeHoursSection": "受付時間",
+    "officeHoursHint": "電話・メール・スタッフが対応する時間です。取引時間は各販売拠点ごとに設定します。",
+    "docs": {
+      "title": "公開文書",
+      "subtitle": "返品ポリシー、保証、ライセンス—顧客が読みたい文書です。",
+      "empty": "まだ文書がありません。",
+      "publicWarning": "インターネット上の誰でもこれらのファイルを開けます。登録書類や身分証明書は上の確認フォームにアップロードし、ここには置かないでください。",
+      "kindLabel": "文書の種類",
+      "titleLabel": "タイトル（任意）",
+      "fileLabel": "ファイルをアップロード",
+      "fileHint": "PDF、PNG、JPEG、またはWebP、最大10MB.",
+      "urlLabel": "または自社サイトへのリンク",
+      "addUrl": "リンクを追加",
+      "publish": "公開",
+      "unpublish": "非公開にする",
+      "published": "公開中",
+      "draft": "下書き",
+      "kind": {
+        "returnPolicy": "返品方針",
+        "privacy": "プライバシー通知",
+        "terms": "販売条件",
+        "warranty": "保証",
+        "delivery": "配送",
+        "license": "免許または許可",
+        "certificate": "証明書",
+        "other": "その他"
+      },
+      "err": {
+        "generic": "保存できませんでした。もう一度お試しください。",
+        "unauth": "サインインしてください。",
+        "not_found": "利用できません。",
+        "kind_invalid": "文書の種類を選択してください。",
+        "url_invalid": "ファイルをアップロードするか、https:// で始まるリンクを指定してください",
+        "docs_limit": "上限は20件の文書です — 先に1件削除してください。",
+        "unpublish_first": "まず非公開にしてください: この約束に顧客が依拠している可能性があります。",
+        "too_large": "ファイルが大きすぎます（最大10 MB）。",
+        "bad_type": "PDF、PNG、JPEG、または WebP のみ。",
+        "no_file": "ファイルを選択してください。",
+        "forbidden": "この会社カードは編集できません。",
+        "bad_form": "アップロードを読み取れませんでした。",
+        "company_required": "会社情報がありません。"
       }
+    },
+    "publicFields": {
+      "title": "顧客に表示される内容",
+      "subtitle": "公開したくない項目はオフにしてください。既定ではすべて表示されます。",
+      "shown": "表示",
+      "hidden": "非表示",
+      "field": {
+        "phone": "電話",
+        "email": "メール",
+        "preciseAddress": "通りと番地",
+        "hours": "営業時間",
+        "documents": "公開文書",
+        "description": "会社概要"
+      },
+      "alwaysPublic": "常に公開: 表示名、法的名称、国と市区町村、事業形態と業種、返品方針、拠点の住所 — 地図上に表示されます。",
+      "err": "保存できませんでした。もう一度お試しください。"
     }
   },
   "cabinet": {
@@ -1913,7 +2020,8 @@
         "PENDING": "処理中",
         "APPROVED": "承認済み",
         "REJECTED": "却下"
-      }
+      },
+      "tileCounts": "拠点: {points} · 商品: {offers}"
     },
     "exchanges": {
       "title": "マイ取引所",
@@ -2310,7 +2418,10 @@
     },
     "returns": "返品",
     "returnDays": "{days}日",
-    "returnsUnknown": "販売者は返品ポリシーを明示していません。"
+    "returnsUnknown": "販売者は返品ポリシーを明示していません。",
+    "officeHoursTitle": "営業時間",
+    "officeHoursHint": "電話、メール、スタッフが対応する時間です。取引時間は各販売拠点に記載されています。",
+    "documentsTitle": "書類"
   },
   "companiesDirectory": {
     "kicker": "ディレクトリ",
@@ -4192,7 +4303,12 @@
       "CUSTOMER_REPLIED": "顧客に返信しました",
       "CUSTOMER_BLOCKED": "顧客をブロックしました",
       "CUSTOMER_UNBLOCKED": "顧客のブロックを解除しました",
-      "CUSTOMER_MESSAGE_DELETED": "顧客スレッドからショップのメッセージを削除しました"
+      "CUSTOMER_MESSAGE_DELETED": "顧客スレッドからショップのメッセージを削除しました",
+      "DOCUMENT_ADDED": "公開ドキュメントを追加",
+      "DOCUMENT_PUBLISHED": "公開ページでドキュメントを公開",
+      "DOCUMENT_UNPUBLISHED": "公開ページからドキュメントを削除",
+      "DOCUMENT_DELETED": "公開ドキュメントを削除",
+      "PUBLIC_FIELDS_SET": "顧客に表示される内容を変更"
     }
   },
   "cabinetTasks": {

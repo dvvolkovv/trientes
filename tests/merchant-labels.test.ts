@@ -5,6 +5,9 @@ import type { CompanyAction } from "@/lib/company-team/journal";
 import { COMPANY_TILES, COMPANY_GROUPS } from "@/lib/cabinet/company-nav";
 import { MERCHANT_CATEGORIES } from "@/lib/merchant-categories";
 import { WEEK_DAYS } from "@/lib/opening-hours";
+import { INDUSTRIES, INDUSTRY_KEYS } from "@/lib/industries";
+import { COMPANY_DOC_KINDS } from "@/lib/company-docs";
+import { PUBLIC_FIELD_KEYS } from "@/lib/company-public-fields";
 
 /**
  * Код без слов выходит на экран кодом. Живой прогон BF поймал ровно это:
@@ -33,6 +36,8 @@ const ACTIONS: CompanyAction[] = [
   "REORDER_RULE_SAVED", "REORDER_RULE_DELETED",
   "CHAT_MESSAGE_DELETED",
   "CUSTOMER_REPLIED", "CUSTOMER_BLOCKED", "CUSTOMER_UNBLOCKED", "CUSTOMER_MESSAGE_DELETED",
+  "DOCUMENT_ADDED", "DOCUMENT_PUBLISHED", "DOCUMENT_UNPUBLISHED", "DOCUMENT_DELETED",
+  "PUBLIC_FIELDS_SET",
 ];
 
 describe("подписи разделов и журнала", () => {
@@ -76,6 +81,26 @@ describe("подписи разделов и журнала", () => {
     for (const kind of ["open", "allday", "closed"]) {
       expect(hours.kind[kind], `kind.${kind}`).toBeTruthy();
     }
+  });
+
+  // Слайс BU: отрасль и вид документа видны покупателю, а ключ без слов вышел бы
+  // на экран ключом — та же граница, что у видов заведения выше.
+  it("у каждой отрасли есть название в переводах", () => {
+    const labels = (en as Record<string, any>).business.industryKind as Record<string, string>;
+    for (const i of INDUSTRIES) expect(labels[i.key], i.key).toBeTruthy();
+    expect(Object.keys(labels).filter((k) => !INDUSTRY_KEYS.includes(k))).toEqual([]);
+  });
+
+  it("у каждого вида публичного документа есть название", () => {
+    const labels = (en as Record<string, any>).business.docs.kind as Record<string, string>;
+    for (const kind of COMPANY_DOC_KINDS) expect(labels[kind], kind).toBeTruthy();
+    expect(Object.keys(labels).filter((k) => !COMPANY_DOC_KINDS.includes(k as never))).toEqual([]);
+  });
+
+  it("у каждого выключателя публичности есть подпись", () => {
+    const labels = (en as Record<string, any>).business.publicFields.field as Record<string, string>;
+    for (const key of PUBLIC_FIELD_KEYS) expect(labels[key], key).toBeTruthy();
+    expect(Object.keys(labels).filter((k) => !PUBLIC_FIELD_KEYS.includes(k as never))).toEqual([]);
   });
 
   it("у каждой группы есть название и пояснение", () => {

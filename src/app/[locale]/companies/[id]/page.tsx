@@ -15,6 +15,10 @@ import { HoursTable, OpenBadge } from "@/components/business/hours-view";
 import { parseWeekHours } from "@/lib/opening-hours";
 import { companyMode } from "@/lib/company-mode";
 import { effectiveCategory, merchantCategory } from "@/lib/merchant-categories";
+import { industry as industryOf } from "@/lib/industries";
+import { logoBoxClass, logoImageClass } from "@/lib/company-logo";
+import { parsePublicFields } from "@/lib/company-public-fields";
+import { isCompanyDocKind } from "@/lib/company-docs";
 import { PUBLIC_COMPANY } from "@/lib/company-visibility";
 import { localizedProse } from "@/lib/localized-prose";
 import { serializeJsonLd } from "@/lib/json-ld";
@@ -63,6 +67,13 @@ export default async function PublicCompanyPage({
   const company = await prisma.company.findFirst({
     where: { id, ...NOT_DELETED },
     include: {
+      // Публичные документы (слайс BU): на витрину идут только опубликованные —
+      // черновик виден лишь в кабинете.
+      documents: {
+        where: { publishedAt: { not: null } },
+        orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+        select: { id: true, kind: true, title: true, url: true },
+      },
       points: {
         where: { status: "APPROVED", ...NOT_DELETED },
         orderBy: { createdAt: "desc" },
@@ -123,6 +134,15 @@ export default async function PublicCompanyPage({
     onlineStockShelves,
   });
   const companyCategory = merchantCategory(company.category);
+  const companyIndustry = industryOf(company.industry);
+  // Что показывать (слайс BU). Умолчание точного адреса зависит от того, есть ли
+  // живые физические точки: предприятие без них торгует онлайн, и его адрес часто
+  // домашний.
+  const show = parsePublicFields(company.publicFields, {
+    hasPhysicalPoints: physicalPoints.some((p) => !p.suspendedAt),
+  });
+  const officeHours = parseWeekHours(company.hours);
+  const publicDocs = company.documents.filter((d) => isCompanyDocKind(d.kind));
 
   const breadcrumbLd = {
     "@context": "https://schema.org",
@@ -168,12 +188,14 @@ export default async function PublicCompanyPage({
         />
       ) : null}
       <header className="flex items-start gap-4 flex-wrap">
-        {company.logoUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={company.logoUrl} alt="" className="h-16 w-16 rounded-xl object-cover" />
-        ) : (
-          <div className="h-16 w-16 rounded-xl bg-bg-tint" />
-        )}
+        {/* Форма, вписывание и центровка — из того же модуля, что в кабинете
+            (слайс BU): предприятие выбрало круг — круг и на витрине. */}
+        <div className={`${logoBoxClass(company.logoShape)} h-16 w-16 shrink-0`}>
+          {company.logoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={company.logoUrl} alt="" className={logoImageClass(company.logoFit)} />
+          ) : null}
+        </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-3 flex-wrap mb-1">
             <h1 className="text-[32px] md:text-[40px] font-bold tracking-[-0.03em]">
@@ -201,6 +223,17 @@ export default async function PublicCompanyPage({
                 {tb(`category.${companyCategory.key}`)}
               </span>
             ) : null}
+            {companyIndustry ? (
+              <span className="inline-flex items-center gap-1 rounded-full border border-hairline bg-bg-tint px-2 py-0.5">
+                <span aria-hidden>{companyIndustry.emoji}</span>
+                {tb(`industryKind.${companyIndustry.key}`)}
+              </span>
+            ) : null}
+            {company.industryCustom ? (
+              <span className="inline-flex items-center rounded-full border border-hairline bg-bg-tint px-2 py-0.5">
+                {company.industryCustom}
+              </span>
+            ) : null}
             {mode !== "none" ? (
               <span className="inline-flex items-center rounded-full border border-hairline bg-bg-tint px-2 py-0.5">
                 {t(`mode.${mode}`)}
@@ -225,7 +258,7 @@ export default async function PublicCompanyPage({
         </div>
       </header>
 
-      {about.fields.description ? (
+      {about.fields.description && show.description ? (
         <section>
           <p className="whitespace-pre-wrap text-sm md:text-base">{about.fields.description}</p>
           {about.translated ? (
@@ -244,13 +277,17 @@ export default async function PublicCompanyPage({
             </a>
           </Field>
         ) : null}
-        {company.email ? (
+        {company.email && show.email ? (
           <Field label={t("email")}>
             <a href={`mailto:${company.email}`} className="text-accent underline">{company.email}</a>
           </Field>
         ) : null}
-        {company.phone ? <Field label={t("phone")}><span>{company.phone}</span></Field> : null}
-        {company.address ? <Field label={t("address")}><span>{company.address}</span></Field> : null}
+        {company.phone && show.phone ? <Field label={t("phone")}><span>{company.phone}</span></Field> : null}
+        {/* Точный адрес выключается, город и страна — нет: по ним предприятие
+            находят, и прятать их значило бы убрать его из каталога. */}
+        {company.address && show.preciseAddress ? (
+          <Field label={t("address")}><span>{company.address}</span></Field>
+        ) : null}
         {/* Политика возврата: ТЗ § 3.1 требует её показывать. Не указана — говорим
             это словами, а не прячем раздел. */}
         <Field label={t("returns")}>
@@ -267,6 +304,46 @@ export default async function PublicCompanyPage({
           )}
         </Field>
       </section>
+
+      {officeHours && show.hours ? (
+        // Часы конторы (слайс BU): когда отвечает телефон, почта и человек. Часы
+        // торговли стоят у точек ниже — расписание принадлежит месту (BN).
+        <section>
+          <div className="mb-2 flex flex-wrap items-center gap-2">
+            <h2 className="text-[20px] font-semibold">{t("officeHoursTitle")}</h2>
+            <OpenBadge hours={officeHours} timezone={company.timezone} />
+          </div>
+          <HoursTable hours={officeHours} timezone={company.timezone} />
+          <p className="mt-1 text-[12px] text-muted">{t("officeHoursHint")}</p>
+        </section>
+      ) : null}
+
+      {publicDocs.length > 0 && show.documents ? (
+        // Публичные документы (слайс BU): политика возврата полностью, гарантия,
+        // лицензия. Это бумаги для покупателя, а не для проверяющего.
+        <section>
+          <h2 className="mb-2 text-[20px] font-semibold">{t("documentsTitle")}</h2>
+          <ul className="space-y-1.5">
+            {publicDocs.map((d) => (
+              <li key={d.id}>
+                <a
+                  href={d.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-accent underline"
+                >
+                  {d.title ?? tb(`docs.kind.${d.kind}`)}
+                </a>
+                {d.title ? (
+                  <span className="ml-2 text-[11px] uppercase tracking-wider text-muted">
+                    {tb(`docs.kind.${d.kind}`)}
+                  </span>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       {/* Что продавец обещает вообще (слайс BD): ставка «на всё» и лучшая категория. */}
       <CompanyLoyaltyLine companyId={company.id} />
@@ -329,12 +406,20 @@ export default async function PublicCompanyPage({
           <ul className="space-y-2">
             {onlinePoints.map((p) => (
               <li key={p.id} className="border border-hairline rounded-md px-3 py-2.5">
-                <div className="font-medium">{p.name}</div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-medium">{p.name}</span>
+                  {/* Часы онлайна (слайс BU): в данных они были с BN, но редактор
+                      их не показывал — у онлайн-точки расписания не бывало. */}
+                  <OpenBadge hours={parseWeekHours(p.hours)} timezone={p.timezone} />
+                </div>
                 {p.website ? (
                   <a href={p.website} target="_blank" rel="noopener noreferrer nofollow" className="text-xs text-accent underline">
                     {p.website.replace(/^https?:\/\//, "")}
                   </a>
                 ) : null}
+                <div className="mt-1.5">
+                  <HoursTable hours={parseWeekHours(p.hours)} timezone={p.timezone} />
+                </div>
               </li>
             ))}
           </ul>

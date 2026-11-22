@@ -129,6 +129,7 @@ model User {
   productRevisionsDecided  ProductRevision[]         @relation("ProductRevisionDecider")
   companyRevisions         CompanyRevision[]         @relation("CompanyRevisionAuthor")
   companyRevisionsDecided  CompanyRevision[]         @relation("CompanyRevisionDecider")
+  companyDocuments         CompanyDocument[]         @relation("CompanyDocumentUploader")
   productReports           ProductReport[]           @relation("ProductReporter")
   stockMovements           StockMovement[]           @relation("StockMovementAuthor")
   companyFollows           CompanyFollow[]           @relation("CompanyFollower")
@@ -938,11 +939,31 @@ model Company {
   legalName       String
   displayName     String
   logoUrl         String?
+  /// Как показывать логотип (слайс BU): `square` | `rounded` | `circle` и
+  /// `contain` | `cover`. Правило вида одно на кабинет, витрину и каталог —
+  /// `src/lib/company-logo.ts`; пусто значит умолчание реестра.
+  logoShape       String?
+  logoFit         String?
   description     String?         @db.Text
   /// Вид заведения из реестра `src/lib/merchant-categories.ts` (слайс BN). Уточнение
   /// у точки сильнее: `effectiveCategory`. Свободное поле — вид не меняет ни места,
   /// ни принимаемых монет, ни хозяина.
   category        String?
+  /// Отрасль (слайс BU) — ключ реестра `src/lib/industries.ts`. Вторая ось, а не
+  /// расширение видов заведения: у вида висит интерес маршрута (BK) и цвет
+  /// булавки (AY), и «нефтепереработка» как интерес не значит ничего.
+  industry        String?
+  /// Своя рубрика словами. Фильтром не является: фильтр по свободному тексту —
+  /// это тысяча рубрик по одной штуке.
+  industryCustom  String?
+  /// Часы **конторы**: когда отвечает телефон, почта и человек. Это не часы
+  /// торговли — те принадлежат точке (правило BN) и точкам не наследуются.
+  hours           Json?
+  timezone        String?
+  /// Что показывать на витрине: { phone, email, preciseAddress, hours, documents,
+  /// description }. Пусто читается как умолчание реестра, поэтому у нынешних
+  /// предприятий не меняется ничего.
+  publicFields    Json?
   /// Политика возврата. ТЗ § 3.1 требует показывать её покупателю; не указана —
   /// так и пишем, промолчать значит создать впечатление, которого мы не вправе
   /// создавать.
@@ -1005,6 +1026,8 @@ model Company {
   cashbackBasePercent Decimal?       @db.Decimal(5, 2)
   cashbackRules       CashbackRule[]
 
+  documents CompanyDocument[]
+
   teamRoles CompanyTeamRole[]
   actionLog CompanyActionLog[]
   tasks     CompanyTask[]
@@ -1066,6 +1089,36 @@ model CompanyRevision {
 
   @@index([companyId, status])
   @@index([status, createdAt])
+}
+
+/// Публичный документ предприятия (слайс BU): политика возврата, гарантия,
+/// лицензия, сертификат. Прямая противоположность KYB: тот приватен (уставы и
+/// паспорта), а эти бумаги **должны** светиться на витрине — поэтому корень
+/// публичный, и форма говорит это вслух.
+model CompanyDocument {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  /// Вид из реестра `src/lib/company-docs.ts`.
+  kind  String
+  /// Своё название; пусто — показываем название вида.
+  title String?
+  /// Наш файл (`/uploads/company-docs/…`) или ссылка на свой сайт.
+  url   String
+
+  /// Пусто — черновик: в кабинете виден, на витрине нет. Владелец просил
+  /// «настраиваемые, публиковать или не публиковать».
+  publishedAt  DateTime?
+  sortOrder    Int       @default(0)
+  /// SetNull: удаление человека не должно держать строку (урок AU про RESTRICT).
+  uploadedById String?
+  uploadedBy   User?     @relation("CompanyDocumentUploader", fields: [uploadedById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId, publishedAt])
 }
 
 model CompanyPoint {

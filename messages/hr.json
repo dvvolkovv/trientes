@@ -1078,7 +1078,7 @@
       "openPassport": "Otvoriti putovnicu"
     },
     "appearance": {
-      "kicker": "Admin",
+      "kicker": "Administrator",
       "title": "Boje odjeljaka",
       "subtitle": "Dodijelite svakom odjeljku boju obruba koju ćete prepoznati. Izbor je samo vaš — ostalo osoblje zadržava svoje.",
       "reset": "Resetirajte sve boje"
@@ -1490,7 +1490,9 @@
       "hours_empty": "Označite barem jedan radni dan, inače raspored ne govori ništa.",
       "timezone_invalid": "Nepoznata vremenska zona.",
       "category_invalid": "Nepoznata vrsta poslovanja.",
-      "return_days_invalid": "Rok za povrat mora biti cijeli broj dana, od 0 do 365."
+      "return_days_invalid": "Rok za povrat mora biti cijeli broj dana, od 0 do 365.",
+      "industry_invalid": "Odaberite industriju s popisa.",
+      "industry_custom_has_link": "Uklonite poveznicu iz vlastite oznake — odgovaramo za poveznice na našim stranicama."
     },
     "websiteHint": "https://, http:// ili samo www.example.com — sve funkcionira",
     "addressSection": "Adresa",
@@ -1589,7 +1591,8 @@
       "uploading": "Učitavanje…",
       "uploadHint": "PDF / PNG / JPG — do 8 MB",
       "startCta": "Verificirajte poslovanje",
-      "manageCta": "Dokumenti za verifikaciju"
+      "manageCta": "Dokumenti za verifikaciju",
+      "whatIsIt": "Provjera pravne osobe prema vašim registracijskim dokumentima. Nakon prolaska, vaša javna stranica i rezultati pretraživanja nose oznaku ✓."
     },
     "viewPublic": "Prikažite javnu stranicu",
     "photos": "Fotografije izloga",
@@ -1775,7 +1778,111 @@
         "open": "Radno vrijeme",
         "allday": "0-24",
         "closed": "Zatvoreno"
+      },
+      "copyFromCompany": "Isto kao radno vrijeme ureda"
+    },
+    "categoryLabel": "Vrsta poslovanja",
+    "industryLabel": "Industrija",
+    "industryCustom": "Vlastita oznaka",
+    "industryCustomHint": "Do 40 znakova, bez poveznica. Prikazuje se uz industriju; nije filtar kataloga.",
+    "industrySection": "Industrija",
+    "industryKind": {
+      "retail": "Maloprodaja",
+      "wholesale": "Veleprodaja",
+      "food": "Posluživanje hrane",
+      "hospitality": "Hoteli i turizam",
+      "construction": "Građevinarstvo",
+      "realEstate": "Nekretnine",
+      "oilGas": "Nafta, plin i rafiniranje",
+      "energy": "Energetika",
+      "mining": "Rudarstvo i metali",
+      "chemicals": "Kemijska industrija",
+      "manufacturing": "Proizvodnja i strojarstvo",
+      "agriculture": "Poljoprivreda",
+      "foodProduction": "Prehrambena proizvodnja",
+      "transport": "Transport i logistika",
+      "automotive": "Automobilska industrija",
+      "it": "IT i softver",
+      "telecom": "Telekomunikacije",
+      "finance": "Financije i osiguranje",
+      "crypto": "Kripto usluge",
+      "legal": "Pravo i savjetovanje",
+      "education": "Obrazovanje",
+      "health": "Zdravstvo",
+      "media": "Mediji i oglašavanje",
+      "other": "Ostalo"
+    },
+    "logoSection": "Logo",
+    "logoFileHint": "PNG, JPEG ili WebP, do 4 MB. Datoteka se sprema odmah.",
+    "logoShape": {
+      "square": "Kvadrat",
+      "rounded": "Zaobljeno",
+      "circle": "Krug"
+    },
+    "logoFit": {
+      "contain": "Uklopiti",
+      "cover": "Ispuniti i obrezati"
+    },
+    "logoCenterHint": "Logo je uvijek centriran unutar okvira — ne trebate ga sami poravnavati.",
+    "officeHours": "Radno vrijeme",
+    "officeHoursSection": "Radno vrijeme",
+    "officeHoursHint": "Vrijeme kada su dostupni vaš telefon, e‑pošta i osoblje. Radno vrijeme trgovanja odnosi se na svaku lokaciju i postavlja se tamo.",
+    "docs": {
+      "title": "Javni dokumenti",
+      "subtitle": "Pravila povrata, jamstvo, licenca — dokumenti koje vaš kupac možda želi pročitati.",
+      "empty": "Još nema dokumenata.",
+      "publicWarning": "Svatko na internetu može otvoriti ove datoteke. Dokumenti za registraciju i osobne isprave pripadaju u obrazac za provjeru iznad, ne ovdje.",
+      "kindLabel": "Vrsta dokumenta",
+      "titleLabel": "Naslov (neobavezno)",
+      "fileLabel": "Prenijeti datoteku",
+      "fileHint": "PDF, PNG, JPEG ili WebP, do 10 MB.",
+      "urlLabel": "Ili poveznica na vašu web-stranicu",
+      "addUrl": "Dodati poveznicu",
+      "publish": "Objaviti",
+      "unpublish": "Poništiti objavu",
+      "published": "Objavljeno",
+      "draft": "Nacrt",
+      "kind": {
+        "returnPolicy": "Pravila povrata",
+        "privacy": "Obavijest o privatnosti",
+        "terms": "Uvjeti prodaje",
+        "warranty": "Jamstvo",
+        "delivery": "Dostava",
+        "license": "Licenca ili dozvola",
+        "certificate": "Certifikat",
+        "other": "Ostalo"
+      },
+      "err": {
+        "generic": "Nije moguće spremiti. Pokušajte ponovno.",
+        "unauth": "Prijavite se.",
+        "not_found": "Nije dostupno.",
+        "kind_invalid": "Odaberite vrstu dokumenta.",
+        "url_invalid": "Prenesite datoteku ili navedite poveznicu koja počinje s https://",
+        "docs_limit": "Ograničenje je 20 dokumenata — najprije uklonite jedan.",
+        "unpublish_first": "Najprije poništite objavu: vaš se kupac možda oslanjao na ovo obećanje.",
+        "too_large": "Datoteka je prevelika (najviše 10 MB).",
+        "bad_type": "Samo PDF, PNG, JPEG ili WebP.",
+        "no_file": "Odaberite datoteku.",
+        "forbidden": "Ne možete uređivati ovu karticu tvrtke.",
+        "bad_form": "Nije moguće pročitati učitanu datoteku.",
+        "company_required": "Nedostaje tvrtka."
       }
+    },
+    "publicFields": {
+      "title": "Što kupci vide",
+      "subtitle": "Isključite što ne želite objaviti. Sve je zadano prikazano.",
+      "shown": "prikazano",
+      "hidden": "skriveno",
+      "field": {
+        "phone": "Telefon",
+        "email": "E-pošta",
+        "preciseAddress": "Ulica i kućni broj",
+        "hours": "Radno vrijeme ureda",
+        "documents": "Javni dokumenti",
+        "description": "O tvrtki"
+      },
+      "alwaysPublic": "Uvijek javno: prikazano ime, pravni naziv, država i grad, vrsta poslovanja i industrija, politika povrata te adrese vaših lokacija — one su prikazane na karti.",
+      "err": "Nije moguće spremiti. Pokušajte ponovno."
     }
   },
   "cabinet": {
@@ -1913,7 +2020,8 @@
         "PENDING": "U obradi",
         "APPROVED": "Odobreno",
         "REJECTED": "Odbijeno"
-      }
+      },
+      "tileCounts": "lokacije: {points} · proizvodi: {offers}"
     },
     "exchanges": {
       "title": "Moje burze",
@@ -2310,7 +2418,10 @@
     },
     "returns": "Povrati",
     "returnDays": "{days} dana",
-    "returnsUnknown": "Prodavatelj nije naveo politiku povrata."
+    "returnsUnknown": "Prodavatelj nije naveo politiku povrata.",
+    "officeHoursTitle": "Radno vrijeme ureda",
+    "officeHoursHint": "Vrijeme kada se odgovara na telefon i e-poštu te kada je osoblje dostupno. Radno vrijeme prodaje je navedeno uz svako prodajno mjesto.",
+    "documentsTitle": "Dokumenti"
   },
   "companiesDirectory": {
     "kicker": "Imenik",
@@ -4192,7 +4303,12 @@
       "CUSTOMER_REPLIED": "Odgovoreno kupcu",
       "CUSTOMER_BLOCKED": "Kupac blokiran",
       "CUSTOMER_UNBLOCKED": "Kupac odblokiran",
-      "CUSTOMER_MESSAGE_DELETED": "Uklonjena poruka trgovine iz niza s kupcem"
+      "CUSTOMER_MESSAGE_DELETED": "Uklonjena poruka trgovine iz niza s kupcem",
+      "DOCUMENT_ADDED": "Javni dokument dodan",
+      "DOCUMENT_PUBLISHED": "Dokument objavljen na javnoj stranici",
+      "DOCUMENT_UNPUBLISHED": "Dokument uklonjen s javne stranice",
+      "DOCUMENT_DELETED": "Javni dokument izbrisan",
+      "PUBLIC_FIELDS_SET": "Promijenjeno što kupci vide"
     }
   },
   "cabinetTasks": {
