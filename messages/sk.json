@@ -1433,6 +1433,9 @@
     "saveProfile": "Uložiť profil",
     "profileSaved": "Uložené",
     "legalName": "Právny názov",
+    "registrationNumber": "Registračné číslo spoločnosti",
+    "taxNumber": "Daňové číslo",
+    "requisitesHint": "Verejné údaje: zobrazujú sa na vašej výkladnej stránke, aby si vás kupujúci vedel vyhľadať v oficiálnom registri. Zmeny vyžadujú dokument, napríklad pri právnom názve.",
     "displayName": "Zobrazovaný názov",
     "description": "O spoločnosti",
     "logoUrl": "URL loga",
@@ -1484,7 +1487,7 @@
       "forbidden": "Nepovolené",
       "bad_form": "Neplatná žiadosť",
       "coin_not_selectable": "Táto karta mince nie je schválená, preto ju nemožno vybrať.",
-      "documents_required": "Priložte registračné dokumenty: právny názov sa preukazuje dokumentmi.",
+      "documents_required": "Priložte registračné dokumenty: právny názov a údaje o spoločnosti sa preukazujú dokumentmi.",
       "nothing_to_apply": "V tejto zmene už nie je čo uplatniť.",
       "hours_invalid": "Otváracie hodiny vyzerajú nesprávne — skontrolujte časy.",
       "hours_empty": "Označte aspoň jeden pracovný deň, inak rozpis nič nepovie.",
@@ -1492,7 +1495,9 @@
       "category_invalid": "Neznámy typ podniku.",
       "return_days_invalid": "Lehota na vrátenie musí byť celé číslo dní, od 0 do 365.",
       "industry_invalid": "Vyberte odvetvie zo zoznamu.",
-      "industry_custom_has_link": "Odstráňte odkaz z vášho vlastného štítku — za odkazy na našich stránkach zodpovedáme my."
+      "industry_custom_has_link": "Odstráňte odkaz z vášho vlastného štítku — za odkazy na našich stránkach zodpovedáme my.",
+      "registration_number_invalid": "Skontrolujte registračné číslo: 2 až 40 znakov, bez odkazov.",
+      "tax_number_invalid": "Skontrolujte daňové číslo: 2 až 40 znakov, bez odkazov."
     },
     "websiteHint": "https://, http://, alebo len www.example.com — všetko funguje",
     "addressSection": "Adresa",
@@ -1667,7 +1672,7 @@
     "pendingChanges": "Čaká na posudzovateľa: {count} zmien",
     "pendingChangesHint": "Upravte znova a čakajúca zmena sa nahradí novou — spoločnosť môže mať naraz len jednu čakajúcu zmenu.",
     "documentsRequiredTitle": "Potrebné dokumenty",
-    "documentsRequiredHint": "Právny názov sa preukazuje dokumentmi, nie textovým poľom. Priložte registračné dokumenty: schválením tejto zmeny sa overenie začne znova.",
+    "documentsRequiredHint": "Právnická osoba sa preukazuje dokumentmi, nie textovým poľom — rovnako jej názov, registračné číslo aj daňové číslo. Priložte registračné dokumenty: schválením tejto zmeny sa overenie spustí znova.",
     "typeHint": {
       "SHOP": "Obchod, kaviareň alebo akékoľvek miesto s pultom",
       "ATM": "Krypto bankomat alebo zmenárenský automat",
@@ -1865,8 +1870,19 @@
         "no_file": "Vyberte súbor.",
         "forbidden": "Túto kartu spoločnosti nemôžete upraviť.",
         "bad_form": "Nepodarilo sa prečítať nahratý súbor.",
-        "company_required": "Chýba spoločnosť."
-      }
+        "company_required": "Chýba spoločnosť.",
+        "link_invalid": "Overovací odkaz musí začínať na https://",
+        "url_required": "Pridajte súbor alebo aspoň jeden odkaz.",
+        "rubric_too_long": "Názov sekcie je príliš dlhý.",
+        "rubric_has_link": "Žiadne odkazy v názve sekcie, prosím."
+      },
+      "linkLabel": "Odkaz na overenie tohto dokumentu (voliteľné)",
+      "linkHint": "Stránka v oficiálnom registri, kde si každý môže overiť túto licenciu alebo povolenie.",
+      "verifyLink": "Overiť v registri",
+      "ownRubric": "Vlastná sekcia",
+      "ownRubricPlaceholder": "napr. licencia centrálnej banky",
+      "ownRubricHint": "Váš vlastný názov pre túto sekciu. Dokumenty s rovnakým názvom sa zoskupujú.",
+      "addHint": "Nahrajte súbor alebo vložte odkaz — jedno z toho stačí."
     },
     "publicFields": {
       "title": "Čo vidia zákazníci",
@@ -1883,6 +1899,10 @@
       },
       "alwaysPublic": "Vždy verejné: zobrazované meno, právny názov, krajina a mesto, druh podnikania a odvetvie, zásady vrátenia a adresy vašich miest — sú na mape.",
       "err": "Nepodarilo sa uložiť. Skúste znova."
+    },
+    "attention": {
+      "title": "Vyžaduje vašu pozornosť",
+      "customers": "Správy od zákazníkov"
     }
   },
   "cabinet": {
@@ -2396,6 +2416,10 @@
   },
   "companyPublic": {
     "verified": "Overené",
+    "requisitesTitle": "Údaje o spoločnosti",
+    "legalName": "Právny názov",
+    "registrationNumber": "Registračné číslo",
+    "taxNumber": "Daňové identifikačné číslo",
     "website": "Web",
     "email": "E-mail",
     "phone": "Telefón",
@@ -4305,6 +4329,7 @@
       "CUSTOMER_UNBLOCKED": "Zákazník bol odblokovaný",
       "CUSTOMER_MESSAGE_DELETED": "Správa obchodu bola odstránená z konverzácie so zákazníkom",
       "DOCUMENT_ADDED": "Pridaný verejný dokument",
+      "DOCUMENT_UPDATED": "Verejný dokument upravený",
       "DOCUMENT_PUBLISHED": "Dokument zverejnený na verejnej stránke",
       "DOCUMENT_UNPUBLISHED": "Dokument odstránený z verejnej stránky",
       "DOCUMENT_DELETED": "Verejný dokument vymazaný",

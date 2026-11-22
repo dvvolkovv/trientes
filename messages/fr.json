@@ -1433,6 +1433,9 @@
     "saveProfile": "Enregistrer le profil",
     "profileSaved": "Enregistré",
     "legalName": "Raison sociale",
+    "registrationNumber": "Numéro d’immatriculation de l’entreprise",
+    "taxNumber": "Numéro fiscal",
+    "requisitesHint": "Informations publiques : affichées sur votre vitrine pour qu’un acheteur puisse vous retrouver dans le registre officiel. Leur modification nécessite un document, comme pour le nom légal.",
     "displayName": "Nom d'affichage",
     "description": "À propos de l'entreprise",
     "logoUrl": "URL du logo",
@@ -1484,7 +1487,7 @@
       "forbidden": "Interdit",
       "bad_form": "Requête invalide",
       "coin_not_selectable": "Cette fiche de monnaie n'est pas approuvée, elle ne peut pas être sélectionnée.",
-      "documents_required": "Joignez les documents d’enregistrement : la raison sociale est prouvée par des documents papier",
+      "documents_required": "Joignez les documents d’enregistrement : la raison sociale et les informations de l’entreprise sont prouvées par des documents papier.",
       "nothing_to_apply": "Il n’y a plus rien à appliquer dans cette modification",
       "hours_invalid": "Les heures d’ouverture semblent incorrectes — vérifiez les horaires.",
       "hours_empty": "Cochez au moins un jour ouvré, sinon l’horaire ne dira rien.",
@@ -1492,7 +1495,9 @@
       "category_invalid": "Type d’activité inconnu.",
       "return_days_invalid": "Le délai de retour doit être un nombre entier de jours, de 0 à 365.",
       "industry_invalid": "Choisissez un secteur dans la liste.",
-      "industry_custom_has_link": "Retirez le lien de votre propre étiquette — nous répondons des liens présents sur nos pages."
+      "industry_custom_has_link": "Retirez le lien de votre propre étiquette — nous répondons des liens présents sur nos pages.",
+      "registration_number_invalid": "Vérifiez le numéro d’immatriculation : 2 à 40 caractères, aucun lien.",
+      "tax_number_invalid": "Vérifiez le numéro fiscal : 2 à 40 caractères, aucun lien."
     },
     "websiteHint": "Avec https://, http:// ou juste www.example.com — tout fonctionne",
     "addressSection": "Adresse",
@@ -1667,7 +1672,7 @@
     "pendingChanges": "En attente d’un modérateur : {count} modification(s)",
     "pendingChangesHint": "Modifiez de nouveau et le changement en attente sera remplacé par le nouveau — une entreprise ne peut avoir qu’un changement en attente à la fois.",
     "documentsRequiredTitle": "Documents requis",
-    "documentsRequiredHint": "La raison sociale se prouve par des documents, pas par un champ texte. Joignez les documents d’immatriculation : l’approbation de ce changement relancera la vérification.",
+    "documentsRequiredHint": "L’entité juridique est prouvée par des documents papier, pas par un champ texte — son nom, son numéro d’immatriculation et son numéro fiscal également. Joignez les documents d’enregistrement : l’approbation de cette modification relance la vérification.",
     "typeHint": {
       "SHOP": "Un magasin, un café ou tout lieu avec un comptoir",
       "ATM": "Un distributeur crypto ou une machine d’échange",
@@ -1865,8 +1870,19 @@
         "no_file": "Choisissez un fichier.",
         "forbidden": "Vous ne pouvez pas modifier cette fiche d’entreprise.",
         "bad_form": "Impossible de lire le fichier importé.",
-        "company_required": "L’entreprise est manquante."
-      }
+        "company_required": "L’entreprise est manquante.",
+        "link_invalid": "Le lien de vérification doit commencer par https://",
+        "url_required": "Ajoutez un fichier ou au moins un lien.",
+        "rubric_too_long": "Le nom de la section est trop long.",
+        "rubric_has_link": "Pas de liens dans le nom de la section, s'il vous plaît."
+      },
+      "linkLabel": "Lien pour vérifier ce document (facultatif)",
+      "linkHint": "Page du registre officiel où chacun peut vérifier cette licence ou cette autorisation.",
+      "verifyLink": "Vérifier dans le registre",
+      "ownRubric": "Section personnalisée",
+      "ownRubricPlaceholder": "p. ex. licence de banque centrale",
+      "ownRubricHint": "Votre propre nom pour cette section. Les documents portant le même nom sont regroupés.",
+      "addHint": "Téléversez un fichier ou collez un lien — l'un des deux suffit."
     },
     "publicFields": {
       "title": "Ce que voient les clients",
@@ -1883,6 +1899,10 @@
       },
       "alwaysPublic": "Toujours publics : nom d'affichage, raison sociale, pays et ville, type d'entreprise et secteur, politique de retour, ainsi que les adresses de vos points — ils apparaissent sur la carte",
       "err": "Enregistrement impossible. Réessayez."
+    },
+    "attention": {
+      "title": "Nécessite votre attention",
+      "customers": "Messages des clients"
     }
   },
   "cabinet": {
@@ -2396,6 +2416,10 @@
   },
   "companyPublic": {
     "verified": "Vérifié",
+    "requisitesTitle": "Informations sur l'entreprise",
+    "legalName": "Raison sociale",
+    "registrationNumber": "Numéro d'immatriculation",
+    "taxNumber": "Numéro fiscal",
     "website": "Site",
     "email": "E-mail",
     "phone": "Téléphone",
@@ -4305,6 +4329,7 @@
       "CUSTOMER_UNBLOCKED": "A débloqué un client",
       "CUSTOMER_MESSAGE_DELETED": "A supprimé un message de la boutique dans un fil client",
       "DOCUMENT_ADDED": "Document public ajouté",
+      "DOCUMENT_UPDATED": "Document public modifié",
       "DOCUMENT_PUBLISHED": "Document publié sur la page publique",
       "DOCUMENT_UNPUBLISHED": "Document retiré de la page publique",
       "DOCUMENT_DELETED": "Document public supprimé",

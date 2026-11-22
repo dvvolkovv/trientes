@@ -11,18 +11,21 @@ export function CabinetSectionShell({
   kicker,
   title,
   backLabel,
+  backHref,
   children,
 }: {
   locale: string;
   kicker: string;
   title: string;
   backLabel: string;
+  /** Куда ведёт возврат. Пусто — хаб кабинета: он и есть умолчание раздела. */
+  backHref?: string;
   children: React.ReactNode;
 }) {
   return (
     <div className={`${ADMIN_COLUMN} py-10 md:py-14`}>
       <Link
-        href={`/${locale}/cabinet`}
+        href={backHref ?? `/${locale}/cabinet`}
         className="mb-6 inline-flex h-11 items-center rounded-full border border-hairline px-4 text-[13px] font-semibold uppercase tracking-wider text-muted transition-colors hover:border-accent/60 hover:text-foreground"
       >
         ← {backLabel}

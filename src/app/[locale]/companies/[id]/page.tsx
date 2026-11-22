@@ -18,7 +18,7 @@ import { effectiveCategory, merchantCategory } from "@/lib/merchant-categories";
 import { industry as industryOf } from "@/lib/industries";
 import { logoBoxClass, logoImageClass } from "@/lib/company-logo";
 import { parsePublicFields } from "@/lib/company-public-fields";
-import { isCompanyDocKind } from "@/lib/company-docs";
+import { docRubricKey, isCompanyDocKind } from "@/lib/company-docs";
 import { PUBLIC_COMPANY } from "@/lib/company-visibility";
 import { localizedProse } from "@/lib/localized-prose";
 import { serializeJsonLd } from "@/lib/json-ld";
@@ -72,7 +72,7 @@ export default async function PublicCompanyPage({
       documents: {
         where: { publishedAt: { not: null } },
         orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-        select: { id: true, kind: true, title: true, url: true },
+        select: { id: true, kind: true, kindCustom: true, title: true, url: true, linkUrl: true },
       },
       points: {
         where: { status: "APPROVED", ...NOT_DELETED },
@@ -143,6 +143,21 @@ export default async function PublicCompanyPage({
   });
   const officeHours = parseWeekHours(company.hours);
   const publicDocs = company.documents.filter((d) => isCompanyDocKind(d.kind));
+  // Группы документов: ключ один на витрину и кабинет, название своей рубрики —
+  // слово продавца, название реестровой — наш перевод.
+  const docGroups: {
+    key: string;
+    label: string;
+    rows: { id: string; title: string | null; url: string | null; linkUrl: string | null }[];
+  }[] = [];
+  for (const d of publicDocs) {
+    const key = docRubricKey(d.kind, d.kindCustom);
+    const label = d.kind === "other" && d.kindCustom ? d.kindCustom : tb(`docs.kind.${d.kind}`);
+    const found = docGroups.find((g) => g.key === key);
+    const row = { id: d.id, title: d.title, url: d.url, linkUrl: d.linkUrl };
+    if (found) found.rows.push(row);
+    else docGroups.push({ key, label, rows: [row] });
+  }
 
   const breadcrumbLd = {
     "@context": "https://schema.org",
@@ -305,6 +320,29 @@ export default async function PublicCompanyPage({
         </Field>
       </section>
 
+      {company.registrationNumber || company.taxNumber ? (
+        // Публичные реквизиты (слайс BV). Выключателя у них нет: публичные
+        // реквизиты, которые не публичны, — противоречие в названии, а кто не хочет
+        // их показывать, просто не заполняет поле. Моноширинным: номер сверяют знак
+        // в знак с записью реестра.
+        <section>
+          <h2 className="mb-2 text-[20px] font-semibold">{t("requisitesTitle")}</h2>
+          <div className="grid gap-3 text-sm sm:grid-cols-2">
+            <Field label={t("legalName")}><span>{company.legalName}</span></Field>
+            {company.registrationNumber ? (
+              <Field label={t("registrationNumber")}>
+                <span className="font-mono text-[13px]">{company.registrationNumber}</span>
+              </Field>
+            ) : null}
+            {company.taxNumber ? (
+              <Field label={t("taxNumber")}>
+                <span className="font-mono text-[13px]">{company.taxNumber}</span>
+              </Field>
+            ) : null}
+          </div>
+        </section>
+      ) : null}
+
       {officeHours && show.hours ? (
         // Часы конторы (слайс BU): когда отвечает телефон, почта и человек. Часы
         // торговли стоят у точек ниже — расписание принадлежит месту (BN).
@@ -318,30 +356,50 @@ export default async function PublicCompanyPage({
         </section>
       ) : null}
 
-      {publicDocs.length > 0 && show.documents ? (
-        // Публичные документы (слайс BU): политика возврата полностью, гарантия,
-        // лицензия. Это бумаги для покупателя, а не для проверяющего.
+      {docGroups.length > 0 && show.documents ? (
+        // Публичные документы (слайсы BU и BV): политика возврата полностью,
+        // гарантия, лицензия. Это бумаги для покупателя, а не для проверяющего, и
+        // стоят они рубриками — своими в том числе.
         <section>
           <h2 className="mb-2 text-[20px] font-semibold">{t("documentsTitle")}</h2>
-          <ul className="space-y-1.5">
-            {publicDocs.map((d) => (
-              <li key={d.id}>
-                <a
-                  href={d.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-accent underline"
-                >
-                  {d.title ?? tb(`docs.kind.${d.kind}`)}
-                </a>
-                {d.title ? (
-                  <span className="ml-2 text-[11px] uppercase tracking-wider text-muted">
-                    {tb(`docs.kind.${d.kind}`)}
-                  </span>
-                ) : null}
-              </li>
+          <div className="space-y-3">
+            {docGroups.map((g) => (
+              <div key={g.key}>
+                <div className="mb-1 text-[11px] uppercase tracking-wider text-muted">{g.label}</div>
+                <ul className="space-y-1.5">
+                  {g.rows.map((d) => (
+                    <li key={d.id}>
+                      {d.url ? (
+                        <a
+                          href={d.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-accent underline"
+                        >
+                          {d.title ?? g.label}
+                        </a>
+                      ) : (
+                        <span className="text-sm">{d.title ?? g.label}</span>
+                      )}
+                      {/* Ссылка под документом (слайс BV): где бумагу проверить.
+                          Отдельной строкой и своими словами — наш файл
+                          подтверждает только то, что продавец его загрузил. */}
+                      {d.linkUrl ? (
+                        <a
+                          href={d.linkUrl}
+                          target="_blank"
+                          rel="noopener noreferrer nofollow"
+                          className="mt-0.5 block text-[12px] text-muted underline"
+                        >
+                          {tb("docs.verifyLink")} ↗
+                        </a>
+                      ) : null}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
-          </ul>
+          </div>
         </section>
       ) : null}
 

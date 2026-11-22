@@ -78,6 +78,7 @@ test("экраны кабинета предприятия не ездят по 
   const paths = [
     "/ru/cabinet",
     "/ru/cabinet/companies",
+    "/ru/cabinet/companies/new",
     base,
     `${base}?edit=1`,
     `${base}/g/showcase`,

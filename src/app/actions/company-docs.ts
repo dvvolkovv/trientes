@@ -10,8 +10,10 @@ import {
   COMPANY_DOCS_MAX,
   COMPANY_DOC_TITLE_MAX,
   companyDocFilePath,
-  isCompanyDocKind,
+  isDocLink,
+  normalizeDocRubric,
 } from "@/lib/company-docs";
+import { hasLink } from "@/lib/promos/rules";
 import {
   PUBLIC_FIELD_KEYS,
   toPublicFieldsJson,
@@ -40,32 +42,39 @@ async function gateFor(companyId: string) {
 
 export async function addCompanyDocument(
   companyId: string,
-  input: { kind: string; title?: string | null; url: string; publish?: boolean },
+  input: {
+    kind: string;
+    /** Своя рубрика словами при `kind = "other"` (слайс BV). */
+    kindCustom?: string | null;
+    title?: string | null;
+    url?: string | null;
+    /** Где бумагу можно проверить: страница реестра лицензиара (слайс BV). */
+    linkUrl?: string | null;
+    publish?: boolean;
+  },
 ) {
   const gate = await gateFor(companyId);
   if (!gate.ok) return { ok: false as const, reason: gate.userId ? ("not_found" as const) : ("unauth" as const) };
-  if (!isCompanyDocKind(input.kind)) return { ok: false as const, reason: "kind_invalid" as const };
 
-  const url = String(input.url ?? "").trim();
-  // Наш файл или чужая ссылка — но только http(s): у половины заведений политика
-  // уже лежит на своём сайте, и заставлять их перезагружать pdf незачем.
-  const ours = url.startsWith("/uploads/company-docs/");
-  if (!ours && !/^https?:\/\//i.test(url)) return { ok: false as const, reason: "url_invalid" as const };
+  const rubric = normalizeDocRubric(input.kind, input.kindCustom, hasLink);
+  if (!rubric.ok) return { ok: false as const, reason: rubric.reason };
+
+  const parsed = parseDocLocation(input.url, input.linkUrl);
+  if (!parsed.ok) return { ok: false as const, reason: parsed.reason };
 
   const count = await prisma.companyDocument.count({ where: { companyId } });
   if (count >= COMPANY_DOCS_MAX) return { ok: false as const, reason: "docs_limit" as const };
 
   const title = (input.title ?? "").trim().slice(0, COMPANY_DOC_TITLE_MAX) || null;
-  // Подпись в журнале — словами, а не ключом реестра: журнал неизменяем, и строка
-  // `returnPolicy` через год не расскажет, что произошло (тот же дефект, что cuid
-  // заказа в живом прогоне BI). Служебный текст по-английски, как в `notifyUser`.
-  const subject = title ?? (await rawMessage("en", `business.docs.kind.${input.kind}`, {}, input.kind));
+  const subject = await docSubject(title, rubric.kind, rubric.kindCustom);
   const doc = await prisma.companyDocument.create({
     data: {
       companyId,
-      kind: input.kind,
+      kind: rubric.kind,
+      kindCustom: rubric.kindCustom,
       title,
-      url,
+      url: parsed.url,
+      linkUrl: parsed.linkUrl,
       uploadedById: gate.userId,
       sortOrder: count,
       // Публикуем сразу, если так попросили: иначе каждый документ требовал бы
@@ -83,15 +92,93 @@ export async function addCompanyDocument(
   return { ok: true as const, id: doc.id };
 }
 
-export async function setCompanyDocumentPublished(documentId: string, published: boolean) {
+/**
+ * Правка документа (слайс BV): название, рубрика и ссылка. Сам файл правкой **не
+ * заменяется** — это другой документ: заведи новый и сними прежний, иначе ссылка,
+ * которую покупатель уже сохранил, однажды покажет не ту бумагу.
+ */
+export async function updateCompanyDocument(
+  documentId: string,
+  input: { kind: string; kindCustom?: string | null; title?: string | null; linkUrl?: string | null },
+) {
   const doc = await prisma.companyDocument.findUnique({
     where: { id: documentId },
-    select: { id: true, companyId: true, kind: true, title: true },
+    select: { id: true, companyId: true, url: true },
   });
   if (!doc) return { ok: false as const, reason: "not_found" as const };
   const gate = await gateFor(doc.companyId);
   if (!gate.ok) return { ok: false as const, reason: gate.userId ? ("not_found" as const) : ("unauth" as const) };
-  const subject = doc.title ?? (await rawMessage("en", `business.docs.kind.${doc.kind}`, {}, doc.kind));
+
+  const rubric = normalizeDocRubric(input.kind, input.kindCustom, hasLink);
+  if (!rubric.ok) return { ok: false as const, reason: rubric.reason };
+  // Файл остаётся прежним, поэтому «хотя бы одно из двух» считается вместе с ним:
+  // снять ссылку у документа с файлом можно, у документа без файла — нет.
+  const parsed = parseDocLocation(doc.url, input.linkUrl);
+  if (!parsed.ok) return { ok: false as const, reason: parsed.reason };
+
+  const title = (input.title ?? "").trim().slice(0, COMPANY_DOC_TITLE_MAX) || null;
+  const subject = await docSubject(title, rubric.kind, rubric.kindCustom);
+  await prisma.companyDocument.update({
+    where: { id: doc.id },
+    data: { kind: rubric.kind, kindCustom: rubric.kindCustom, title, linkUrl: parsed.linkUrl },
+  });
+  await logCompanyAction({
+    companyId: doc.companyId,
+    actorUserId: gate.userId,
+    action: "DOCUMENT_UPDATED",
+    subject,
+  });
+  revalidatePath("/", "layout");
+  return { ok: true as const };
+}
+
+/**
+ * Где лежит документ: наш файл, чужой адрес — и отдельно адрес, по которому бумагу
+ * **проверяют**. Хотя бы одно из двух обязано быть: документ без файла и без ссылки
+ * — строка ни о чём.
+ */
+function parseDocLocation(
+  rawUrl: string | null | undefined,
+  rawLink: string | null | undefined,
+):
+  | { ok: true; url: string | null; linkUrl: string | null }
+  | { ok: false; reason: "url_invalid" | "link_invalid" | "url_required" } {
+  const url = String(rawUrl ?? "").trim();
+  const link = String(rawLink ?? "").trim();
+  // Наш файл или чужая ссылка — но только http(s): у половины заведений политика
+  // уже лежит на своём сайте, и заставлять их перезагружать pdf незачем.
+  if (url !== "" && !url.startsWith("/uploads/company-docs/") && !isDocLink(url)) {
+    return { ok: false, reason: "url_invalid" };
+  }
+  if (link !== "" && !isDocLink(link)) return { ok: false, reason: "link_invalid" };
+  if (url === "" && link === "") return { ok: false, reason: "url_required" };
+  return { ok: true, url: url || null, linkUrl: link || null };
+}
+
+/**
+ * Подпись в журнале — словами, а не ключом реестра: журнал неизменяем, и строка
+ * `returnPolicy` через год не расскажет, что произошло (тот же дефект, что cuid
+ * заказа в живом прогоне BI). Служебный текст по-английски, как в `notifyUser`.
+ */
+async function docSubject(
+  title: string | null,
+  kind: string,
+  kindCustom: string | null,
+): Promise<string> {
+  if (title) return title;
+  if (kindCustom) return kindCustom;
+  return rawMessage("en", `business.docs.kind.${kind}`, {}, kind);
+}
+
+export async function setCompanyDocumentPublished(documentId: string, published: boolean) {
+  const doc = await prisma.companyDocument.findUnique({
+    where: { id: documentId },
+    select: { id: true, companyId: true, kind: true, kindCustom: true, title: true },
+  });
+  if (!doc) return { ok: false as const, reason: "not_found" as const };
+  const gate = await gateFor(doc.companyId);
+  if (!gate.ok) return { ok: false as const, reason: gate.userId ? ("not_found" as const) : ("unauth" as const) };
+  const subject = await docSubject(doc.title, doc.kind, doc.kindCustom);
 
   await prisma.companyDocument.update({
     where: { id: doc.id },
@@ -115,13 +202,13 @@ export async function setCompanyDocumentPublished(documentId: string, published:
 export async function deleteCompanyDocument(documentId: string) {
   const doc = await prisma.companyDocument.findUnique({
     where: { id: documentId },
-    select: { id: true, companyId: true, kind: true, title: true, url: true, publishedAt: true },
+    select: { id: true, companyId: true, kind: true, kindCustom: true, title: true, url: true, publishedAt: true },
   });
   if (!doc) return { ok: false as const, reason: "not_found" as const };
   const gate = await gateFor(doc.companyId);
   if (!gate.ok) return { ok: false as const, reason: gate.userId ? ("not_found" as const) : ("unauth" as const) };
   if (doc.publishedAt) return { ok: false as const, reason: "unpublish_first" as const };
-  const subject = doc.title ?? (await rawMessage("en", `business.docs.kind.${doc.kind}`, {}, doc.kind));
+  const subject = await docSubject(doc.title, doc.kind, doc.kindCustom);
 
   await prisma.companyDocument.delete({ where: { id: doc.id } });
   // Файл стираем только под нашим корнем: по чужой ссылке стирать нечего.

@@ -16,7 +16,7 @@ export function CreateCompanyForm({ nextCard }: { nextCard?: string }) {
 
   return (
     <form
-      className="space-y-3"
+      className="space-y-3 rounded-[22px] border border-hairline bg-card p-4 md:p-6"
       onSubmit={(e) => {
         e.preventDefault();
         setError(null);
@@ -35,7 +35,6 @@ export function CreateCompanyForm({ nextCard }: { nextCard?: string }) {
         });
       }}
     >
-      <h3 className="text-sm font-semibold uppercase tracking-wider text-muted">{t("add")}</h3>
       <input
         value={legalName}
         onChange={(e) => setLegalName(e.target.value)}
@@ -52,7 +51,7 @@ export function CreateCompanyForm({ nextCard }: { nextCard?: string }) {
       <button
         type="submit"
         disabled={pending}
-        className="px-4 py-2 rounded-md bg-blue text-blue-foreground font-medium disabled:opacity-50"
+        className="min-h-[48px] w-full rounded-[14px] bg-blue px-4 text-[14px] font-medium text-blue-foreground disabled:opacity-50"
       >
         {pending ? t("submitting") : t("submit")}
       </button>

@@ -1433,6 +1433,9 @@
     "saveProfile": "Salvar perfil",
     "profileSaved": "Salvo",
     "legalName": "Razão social",
+    "registrationNumber": "Número de registro da empresa",
+    "taxNumber": "Número de identificação fiscal",
+    "requisitesHint": "Dados públicos: exibidos na sua vitrine para que um comprador possa consultar você no registro oficial. Alterá-los exige um documento, como o nome jurídico.",
     "displayName": "Nome de exibição",
     "description": "Sobre a empresa",
     "logoUrl": "URL do logo",
@@ -1484,7 +1487,7 @@
       "forbidden": "Não permitido",
       "bad_form": "Requisição inválida",
       "coin_not_selectable": "Esta ficha de moeda não está aprovada, portanto não pode ser selecionada.",
-      "documents_required": "Anexe os documentos de registro: a razão social é comprovada por documentos.",
+      "documents_required": "Anexe os documentos de registro: o nome jurídico e os dados da empresa são comprovados por documentos.",
       "nothing_to_apply": "Não há mais nada para aplicar nesta alteração.",
       "hours_invalid": "O horário de funcionamento parece errado — verifique os horários.",
       "hours_empty": "Marque pelo menos um dia de funcionamento; caso contrário, o horário não diz nada.",
@@ -1492,7 +1495,9 @@
       "category_invalid": "Tipo de negócio desconhecido.",
       "return_days_invalid": "O prazo de devolução deve ser um número inteiro de dias, de 0 a 365.",
       "industry_invalid": "Selecione um setor da lista.",
-      "industry_custom_has_link": "Remova o link da sua própria tag — somos responsáveis pelos links nas nossas páginas."
+      "industry_custom_has_link": "Remova o link da sua própria tag — somos responsáveis pelos links nas nossas páginas.",
+      "registration_number_invalid": "Verifique o número de registro: de 2 a 40 caracteres, sem links.",
+      "tax_number_invalid": "Verifique o número fiscal: de 2 a 40 caracteres, sem links."
     },
     "websiteHint": "Com https://, http:// ou apenas www.example.com — tudo funciona",
     "addressSection": "Endereço",
@@ -1667,7 +1672,7 @@
     "pendingChanges": "Aguardando um revisor: {count} alteração(ões)",
     "pendingChangesHint": "Edite novamente e a alteração pendente será substituída pela nova — uma empresa tem uma alteração pendente por vez.",
     "documentsRequiredTitle": "Documentos necessários",
-    "documentsRequiredHint": "A razão social é comprovada por documentos, não por um campo de texto. Anexe os documentos de registro: aprovar essa alteração reinicia a verificação.",
+    "documentsRequiredHint": "A pessoa jurídica é comprovada por documentos, não por um campo de texto — seu nome, seu número de registro e seu número fiscal igualmente. Anexe os documentos de registro: aprovar essa alteração reinicia a verificação.",
     "typeHint": {
       "SHOP": "Uma loja, café ou qualquer lugar com balcão",
       "ATM": "Um caixa eletrônico de cripto ou máquina de câmbio",
@@ -1865,8 +1870,19 @@
         "no_file": "Escolha um arquivo.",
         "forbidden": "Você não pode editar este cartão da empresa.",
         "bad_form": "Não foi possível ler o envio.",
-        "company_required": "Empresa não informada."
-      }
+        "company_required": "Empresa não informada.",
+        "link_invalid": "O link de verificação deve começar com https://",
+        "url_required": "Adicione um arquivo ou pelo menos um link.",
+        "rubric_too_long": "O nome da seção é muito longo.",
+        "rubric_has_link": "Sem links no nome da seção, por favor."
+      },
+      "linkLabel": "Link para verificar este documento (opcional)",
+      "linkHint": "Página no registro oficial onde qualquer pessoa pode verificar esta licença ou alvará.",
+      "verifyLink": "Verificar no registro",
+      "ownRubric": "Seção própria",
+      "ownRubricPlaceholder": "ex.: licença do banco central",
+      "ownRubricHint": "Seu próprio nome para esta seção. Documentos com o mesmo nome são agrupados.",
+      "addHint": "Envie um arquivo ou cole um link — um dos dois é suficiente."
     },
     "publicFields": {
       "title": "O que os clientes veem",
@@ -1883,6 +1899,10 @@
       },
       "alwaysPublic": "Sempre público: nome de exibição, razão social, país e cidade, tipo de negócio e setor, política de devolução e os endereços dos seus pontos — eles aparecem no mapa.",
       "err": "Não foi possível salvar. Tente novamente."
+    },
+    "attention": {
+      "title": "Requer sua atenção",
+      "customers": "Mensagens de clientes"
     }
   },
   "cabinet": {
@@ -2396,6 +2416,10 @@
   },
   "companyPublic": {
     "verified": "Verificado",
+    "requisitesTitle": "Dados da empresa",
+    "legalName": "Razão social",
+    "registrationNumber": "Número de registro",
+    "taxNumber": "Número fiscal",
     "website": "Site",
     "email": "E-mail",
     "phone": "Telefone",
@@ -4305,6 +4329,7 @@
       "CUSTOMER_UNBLOCKED": "Desbloqueou um cliente",
       "CUSTOMER_MESSAGE_DELETED": "Removeu uma mensagem da loja de uma conversa com o cliente",
       "DOCUMENT_ADDED": "Documento público adicionado",
+      "DOCUMENT_UPDATED": "Documento público editado",
       "DOCUMENT_PUBLISHED": "Documento publicado na página pública",
       "DOCUMENT_UNPUBLISHED": "Documento removido da página pública",
       "DOCUMENT_DELETED": "Documento público excluído",

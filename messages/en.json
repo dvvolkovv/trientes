@@ -1433,6 +1433,9 @@
     "saveProfile": "Save profile",
     "profileSaved": "Saved",
     "legalName": "Legal name",
+    "registrationNumber": "Company registration number",
+    "taxNumber": "Tax number",
+    "requisitesHint": "Public details: shown on your storefront so a buyer can look you up in the official register. Changing them needs a document, like the legal name.",
     "displayName": "Display name",
     "description": "About the company",
     "logoUrl": "Logo URL",
@@ -1484,7 +1487,7 @@
       "forbidden": "Not allowed",
       "bad_form": "Invalid request",
       "coin_not_selectable": "This coin card is not approved, so it cannot be selected.",
-      "documents_required": "Attach the registration documents: the legal name is proved by paper.",
+      "documents_required": "Attach the registration documents: the legal name and the company details are proved by paper.",
       "nothing_to_apply": "There is nothing left to apply in this change.",
       "hours_invalid": "Opening hours look wrong — check the times.",
       "hours_empty": "Seven closed days say nothing. Set the days you are open, or drop the schedule.",
@@ -1492,7 +1495,9 @@
       "category_invalid": "Unknown kind of business.",
       "return_days_invalid": "Return window must be a whole number of days, 0 to 365.",
       "industry_invalid": "Pick an industry from the list.",
-      "industry_custom_has_link": "Remove the link from your own tag — we answer for links on our pages."
+      "industry_custom_has_link": "Remove the link from your own tag — we answer for links on our pages.",
+      "registration_number_invalid": "Check the registration number: 2 to 40 characters, no links.",
+      "tax_number_invalid": "Check the tax number: 2 to 40 characters, no links."
     },
     "websiteHint": "https://, http://, or just www.example.com — all work",
     "addressSection": "Address",
@@ -1667,7 +1672,7 @@
     "pendingChanges": "Waiting for a reviewer: {count} change(s)",
     "pendingChangesHint": "Edit again and the pending change is replaced by the new one — a company has one pending change at a time.",
     "documentsRequiredTitle": "Documents needed",
-    "documentsRequiredHint": "The legal name is proved by paper, not by a text field. Attach the registration documents: approving this change starts the verification again.",
+    "documentsRequiredHint": "The legal entity is proved by paper, not by a text field — its name, its registration number and its tax number alike. Attach the registration documents: approving this change starts the verification again.",
     "typeHint": {
       "SHOP": "A shop, cafe or any place with a counter",
       "ATM": "A crypto ATM or exchange machine",
@@ -1865,8 +1870,19 @@
         "no_file": "Pick a file.",
         "forbidden": "You cannot edit this company card.",
         "bad_form": "Could not read the upload.",
-        "company_required": "Company is missing."
-      }
+        "company_required": "Company is missing.",
+        "link_invalid": "The verification link must start with https://",
+        "url_required": "Add a file or at least one link.",
+        "rubric_too_long": "The section name is too long.",
+        "rubric_has_link": "No links in the section name, please."
+      },
+      "linkLabel": "Link to verify this document (optional)",
+      "linkHint": "Page in the official register where anyone can check this licence or permit.",
+      "verifyLink": "Check in the register",
+      "ownRubric": "Own section",
+      "ownRubricPlaceholder": "e.g. Central bank licence",
+      "ownRubricHint": "Your own name for this section. Documents with the same name are grouped together.",
+      "addHint": "Upload a file or paste a link — one of the two is enough."
     },
     "publicFields": {
       "title": "What customers see",
@@ -1883,6 +1899,10 @@
       },
       "alwaysPublic": "Always public: display name, legal name, country and city, kind of business and industry, return policy, and the addresses of your points — they stand on the map.",
       "err": "Could not save. Try again."
+    },
+    "attention": {
+      "title": "Needs your attention",
+      "customers": "Customer messages"
     }
   },
   "cabinet": {
@@ -2396,6 +2416,10 @@
   },
   "companyPublic": {
     "verified": "Verified",
+    "requisitesTitle": "Company details",
+    "legalName": "Legal name",
+    "registrationNumber": "Registration number",
+    "taxNumber": "Tax number",
     "website": "Website",
     "email": "Email",
     "phone": "Phone",
@@ -4305,6 +4329,7 @@
       "CUSTOMER_UNBLOCKED": "Unblocked a customer",
       "CUSTOMER_MESSAGE_DELETED": "Removed a shop message from a customer thread",
       "DOCUMENT_ADDED": "Public document added",
+      "DOCUMENT_UPDATED": "Public document edited",
       "DOCUMENT_PUBLISHED": "Document published on the public page",
       "DOCUMENT_UNPUBLISHED": "Document removed from the public page",
       "DOCUMENT_DELETED": "Public document deleted",

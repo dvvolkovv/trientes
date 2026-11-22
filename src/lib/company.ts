@@ -6,6 +6,7 @@ import { isMerchantCategory } from "@/lib/merchant-categories";
 import { isIndustry, INDUSTRY_CUSTOM_MAX } from "@/lib/industries";
 import { isLogoFit, isLogoShape } from "@/lib/company-logo";
 import { hasLink } from "@/lib/promos/rules";
+import { normalizeRequisite } from "@/lib/company-requisites";
 
 const POINT_TYPES = ["SHOP", "ATM", "POS", "SALES_OFFICE", "COMPANY", "ONLINE"] as const;
 export type PointTypeStr = (typeof POINT_TYPES)[number];
@@ -125,6 +126,9 @@ export type CompanyProfileInput = {
   logoFit?: string | null;
   hours?: unknown;
   timezone?: string | null;
+  /** Слайс BV: публичные реквизиты. Класс правки — документальный. */
+  registrationNumber?: string | null;
+  taxNumber?: string | null;
 };
 export type ValidatedProfile = {
   legalName: string; displayName: string; description: string | null;
@@ -135,6 +139,7 @@ export type ValidatedProfile = {
   industry: string | null; industryCustom: string | null;
   logoShape: string | null; logoFit: string | null;
   hours: WeekHours | null; timezone: string | null;
+  registrationNumber: string | null; taxNumber: string | null;
 };
 export type ProfileResult =
   | { ok: true; data: ValidatedProfile }
@@ -150,7 +155,9 @@ export type ProfileResult =
         | "industry_invalid"
         | "industry_custom_has_link"
         | "hours_empty"
-        | "timezone_invalid";
+        | "timezone_invalid"
+        | "registration_number_invalid"
+        | "tax_number_invalid";
     };
 
 /** Предел текста политики возврата: это условия, а не договор на сто страниц. */
@@ -212,6 +219,13 @@ export function validateCompanyProfile(input: CompanyProfileInput): ProfileResul
   const timezone = t(input.timezone);
   if (timezone !== null && !isKnownTimezone(timezone)) return { ok: false, reason: "timezone_invalid" };
 
+  // Реквизиты (слайс BV). Формат по странам не проверяем — проверяем длину, ссылку и
+  // управляющие знаки; разбор один на оба номера, чтобы правила не разошлись.
+  const reg = normalizeRequisite(input.registrationNumber);
+  if (!reg.ok) return { ok: false, reason: "registration_number_invalid" };
+  const tax = normalizeRequisite(input.taxNumber);
+  if (!tax.ok) return { ok: false, reason: "tax_number_invalid" };
+
   return {
     ok: true,
     data: {
@@ -220,6 +234,7 @@ export function validateCompanyProfile(input: CompanyProfileInput): ProfileResul
       phone: t(input.phone), email: t(input.email), website, logoUrl,
       category, returnPolicy, returnDays,
       industry, industryCustom, logoShape, logoFit, hours, timezone,
+      registrationNumber: reg.value, taxNumber: tax.value,
     },
   };
 }

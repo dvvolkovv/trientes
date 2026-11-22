@@ -1433,6 +1433,9 @@
     "saveProfile": "Profili kaydet",
     "profileSaved": "Kaydedildi",
     "legalName": "Resmi unvan",
+    "registrationNumber": "Şirket kayıt numarası",
+    "taxNumber": "Vergi numarası",
+    "requisitesHint": "Genel bilgiler: Alıcının sizi resmî sicilde bulabilmesi için mağaza vitrininizde gösterilir. Bunları değiştirmek, tıpkı resmî unvan gibi, bir belge gerektirir.",
     "displayName": "Görünen ad",
     "description": "Şirket hakkında",
     "logoUrl": "Logo URL'si",
@@ -1484,7 +1487,7 @@
       "forbidden": "İzin yok",
       "bad_form": "Geçersiz istek",
       "coin_not_selectable": "Bu coin kartı onaylı değil, bu yüzden seçilemez.",
-      "documents_required": "Kayıt belgelerini ekleyin: tüzel unvan belgelerle kanıtlanır.",
+      "documents_required": "Kayıt belgelerini ekleyin: yasal ad ve şirket bilgileri belgelerle kanıtlanır.",
       "nothing_to_apply": "Bu değişiklikte uygulanacak bir şey kalmadı.",
       "hours_invalid": "Açılış saatleri hatalı görünüyor — saatleri kontrol edin.",
       "hours_empty": "En az bir çalışma günü işaretleyin, aksi halde program hiçbir şey söylemez.",
@@ -1492,7 +1495,9 @@
       "category_invalid": "Bilinmeyen işletme türü.",
       "return_days_invalid": "İade süresi gün cinsinden tam sayı olmalıdır, 0 ile 365 arasında.",
       "industry_invalid": "Listeden bir sektör seçin.",
-      "industry_custom_has_link": "Kendi etiketinizden bağlantıyı kaldırın — sayfalarımızdaki bağlantılardan biz sorumluyuz."
+      "industry_custom_has_link": "Kendi etiketinizden bağlantıyı kaldırın — sayfalarımızdaki bağlantılardan biz sorumluyuz.",
+      "registration_number_invalid": "Kayıt numarasını kontrol edin: 2–40 karakter, bağlantı yok.",
+      "tax_number_invalid": "Vergi numarasını kontrol edin: 2–40 karakter, bağlantı yok."
     },
     "websiteHint": "https://, http:// veya sadece www.example.com — hepsi geçerli",
     "addressSection": "Adres",
@@ -1667,7 +1672,7 @@
     "pendingChanges": "İnceleyen bekleniyor: {count} değişiklik",
     "pendingChangesHint": "Tekrar düzenlerseniz bekleyen değişiklik yenisiyle değiştirilir — bir şirketin aynı anda yalnızca bir bekleyen değişikliği olur.",
     "documentsRequiredTitle": "Gerekli belgeler",
-    "documentsRequiredHint": "Resmi ad bir metin alanıyla değil, belgelerle kanıtlanır. Kayıt belgelerini ekleyin: bu değişikliğin onaylanması doğrulamayı yeniden başlatır.",
+    "documentsRequiredHint": "Tüzel kişilik bir metin alanıyla değil, belgelerle kanıtlanır — adı, tescil numarası ve vergi numarası da aynı şekilde. Kayıt belgelerini ekleyin: bu değişikliğin onaylanması doğrulamayı yeniden başlatır.",
     "typeHint": {
       "SHOP": "Tezgâhlı bir dükkân, kafe veya benzeri bir yer",
       "ATM": "Kripto ATM’si veya değişim makinesi",
@@ -1865,8 +1870,19 @@
         "no_file": "Bir dosya seçin.",
         "forbidden": "Bu şirket kartını düzenleyemezsiniz.",
         "bad_form": "Yükleme okunamadı.",
-        "company_required": "Şirket eksik."
-      }
+        "company_required": "Şirket eksik.",
+        "link_invalid": "Doğrulama bağlantısı https:// ile başlamalı",
+        "url_required": "Bir dosya veya en az bir bağlantı ekleyin.",
+        "rubric_too_long": "Bölüm adı çok uzun.",
+        "rubric_has_link": "Bölüm adında bağlantı olmasın lütfen."
+      },
+      "linkLabel": "Bu belgeyi doğrulayan bağlantı (isteğe bağlı)",
+      "linkHint": "Herkesin bu lisans veya izni kontrol edebileceği resmi kayıttaki sayfa.",
+      "verifyLink": "Kaydı kontrol et",
+      "ownRubric": "Özel bölüm",
+      "ownRubricPlaceholder": "örn. Merkez bankası lisansı",
+      "ownRubricHint": "Bu bölüm için kendi adınız. Aynı ada sahip belgeler birlikte gruplanır.",
+      "addHint": "Bir dosya yükleyin veya bir bağlantı yapıştırın — ikisinden biri yeterli."
     },
     "publicFields": {
       "title": "Müşterilerin gördüğü",
@@ -1883,6 +1899,10 @@
       },
       "alwaysPublic": "Her zaman herkese açık: görünen ad, resmî ad, ülke ve şehir, işletme türü ve sektör, iade politikası ve noktalarınızın adresleri — haritada görünürler.",
       "err": "Kaydedilemedi. Tekrar deneyin."
+    },
+    "attention": {
+      "title": "Dikkatinizi gerektiriyor",
+      "customers": "Müşteri mesajları"
     }
   },
   "cabinet": {
@@ -2396,6 +2416,10 @@
   },
   "companyPublic": {
     "verified": "Doğrulandı",
+    "requisitesTitle": "Şirket bilgileri",
+    "legalName": "Yasal ad",
+    "registrationNumber": "Kayıt numarası",
+    "taxNumber": "Vergi numarası",
     "website": "Site",
     "email": "E-posta",
     "phone": "Telefon",
@@ -4305,6 +4329,7 @@
       "CUSTOMER_UNBLOCKED": "Bir müşterinin engeli kaldırıldı",
       "CUSTOMER_MESSAGE_DELETED": "Müşteri sohbetinden bir mağaza mesajı kaldırıldı",
       "DOCUMENT_ADDED": "Herkese açık belge eklendi",
+      "DOCUMENT_UPDATED": "Herkese açık belge düzenlendi",
       "DOCUMENT_PUBLISHED": "Belge herkese açık sayfada yayımlandı",
       "DOCUMENT_UNPUBLISHED": "Belge herkese açık sayfadan kaldırıldı",
       "DOCUMENT_DELETED": "Herkese açık belge silindi",

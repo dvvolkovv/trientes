@@ -36,6 +36,52 @@ export const COMPANY_DOCS_MAX = 20;
 
 export const COMPANY_DOC_TITLE_MAX = 80;
 
+/** Длина своей рубрики — как у своей отрасли: это название, а не описание. */
+export const COMPANY_DOC_RUBRIC_MAX = 40;
+
+export type DocRubricResult =
+  | { ok: true; kind: CompanyDocKind; kindCustom: string | null }
+  | { ok: false; reason: "kind_invalid" | "rubric_required" | "rubric_too_long" | "rubric_has_link" };
+
+/**
+ * Рубрика документа (слайс BV): ключ закрытого реестра — или своё слово при `other`.
+ *
+ * Дословно приём отрасли (`industry` / `industryCustom`, BU): закрытый реестр для того,
+ * что мы понимаем кодом, свободное слово для всего прочего. Выдуманный ключ отвергаем
+ * — он попал бы на витрину как наша рубрика; ссылку в своём названии тоже (правило BG:
+ * текст выходит с нашего домена, значит за ссылку в нём отвечаем мы).
+ *
+ * Пустое своё название при `other` законно: это и есть рубрика «прочее».
+ */
+export function normalizeDocRubric(
+  kind: string | null | undefined,
+  kindCustom: string | null | undefined,
+  hasLink: (text: string) => boolean,
+): DocRubricResult {
+  if (!isCompanyDocKind(kind)) return { ok: false, reason: "kind_invalid" };
+  if (kind !== "other") return { ok: true, kind, kindCustom: null };
+  const custom = (kindCustom ?? "").trim().replace(/\s+/g, " ");
+  if (custom === "") return { ok: true, kind, kindCustom: null };
+  if (custom.length > COMPANY_DOC_RUBRIC_MAX) return { ok: false, reason: "rubric_too_long" };
+  if (hasLink(custom)) return { ok: false, reason: "rubric_has_link" };
+  return { ok: true, kind, kindCustom: custom };
+}
+
+/**
+ * Ключ группировки на витрине и в кабинете. Своя рубрика группируется по **своему
+ * названию без учёта регистра и пробелов**: «Лицензия НБУ» и «лицензия нбу» — одна
+ * рубрика, иначе опечатка в регистре делит бумаги предприятия надвое.
+ */
+export function docRubricKey(kind: string, kindCustom: string | null | undefined): string {
+  if (kind === "other" && kindCustom) return `custom:${kindCustom.trim().toLowerCase()}`;
+  return `kind:${kind}`;
+}
+
+/** Ссылка под документом — только http(s): наш домен за неё отвечает. */
+export function isDocLink(url: string): boolean {
+  return /^https?:\/\//i.test(url);
+}
+
 /** Устав в pdf толще картинки, поэтому предел больше логотипного. */
 export const COMPANY_DOC_MAX_BYTES = 10 * 1024 * 1024;
 

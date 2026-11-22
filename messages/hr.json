@@ -178,7 +178,7 @@
     "high": "Najviše",
     "low": "Najniže",
     "live": "Uživo",
-    "jumpNavigator": "Navigator",
+    "jumpNavigator": "navigator",
     "jumpExchanges": "Top burze",
     "jumpNews": "Vijesti",
     "rankBadge": "Rang {rank}",
@@ -1187,7 +1187,7 @@
     }
   },
   "cryptoMap": {
-    "eyebrow": "Navigator",
+    "eyebrow": "navigator",
     "title": "Kripto navigator",
     "intro": "Pronađite trgovce, bankomate i financijske usluge koje posluju u kriptu u vašoj blizini — prebacite se na satelit ili 3D teren i odredite rutu od svoje lokacije ili bilo koje adrese.",
     "streets": "Ulice",
@@ -1433,6 +1433,9 @@
     "saveProfile": "Spremite profil",
     "profileSaved": "Spremljeno",
     "legalName": "Pravni naziv",
+    "registrationNumber": "Registracijski broj tvrtke",
+    "taxNumber": "Porezni broj",
+    "requisitesHint": "Javni podaci: prikazuju se na vašoj izlog-stranici kako bi vas kupac mogao pronaći u službenom registru. Za izmjenu je potreban dokument, kao i za pravni naziv",
     "displayName": "Prikazani naziv",
     "description": "O tvrtki",
     "logoUrl": "URL logotipa",
@@ -1484,7 +1487,7 @@
       "forbidden": "Nije dopušteno",
       "bad_form": "Nevažeći zahtjev",
       "coin_not_selectable": "Ova kartica kovanice nije odobrena, pa je nije moguće odabrati.",
-      "documents_required": "Priložite registracijske dokumente: pravni naziv dokazuje se dokumentima.",
+      "documents_required": "Priložite registracijsku dokumentaciju: pravni naziv i podaci o tvrtki potvrđuju se dokumentima.",
       "nothing_to_apply": "Nema više ništa za primijeniti u ovoj promjeni.",
       "hours_invalid": "Radno vrijeme izgleda pogrešno — provjerite sate.",
       "hours_empty": "Označite barem jedan radni dan, inače raspored ne govori ništa.",
@@ -1492,7 +1495,9 @@
       "category_invalid": "Nepoznata vrsta poslovanja.",
       "return_days_invalid": "Rok za povrat mora biti cijeli broj dana, od 0 do 365.",
       "industry_invalid": "Odaberite industriju s popisa.",
-      "industry_custom_has_link": "Uklonite poveznicu iz vlastite oznake — odgovaramo za poveznice na našim stranicama."
+      "industry_custom_has_link": "Uklonite poveznicu iz vlastite oznake — odgovaramo za poveznice na našim stranicama.",
+      "registration_number_invalid": "Provjerite registracijski broj: 2 do 40 znakova, bez poveznica",
+      "tax_number_invalid": "Provjerite porezni broj: 2 do 40 znakova, bez poveznica"
     },
     "websiteHint": "https://, http:// ili samo www.example.com — sve funkcionira",
     "addressSection": "Adresa",
@@ -1667,7 +1672,7 @@
     "pendingChanges": "Čeka recenzenta: {count} promjena",
     "pendingChangesHint": "Uredite ponovno i promjena na čekanju bit će zamijenjena novom — tvrtka u jednom trenutku može imati samo jednu promjenu na čekanju.",
     "documentsRequiredTitle": "Potrebni dokumenti",
-    "documentsRequiredHint": "Pravni naziv dokazuje se dokumentima, a ne unosom u polje. Priložite registracijske dokumente: odobravanje ove promjene ponovno pokreće verifikaciju.",
+    "documentsRequiredHint": "Pravna osoba potvrđuje se dokumentima, ne tekstualnim poljem — kao i njezin naziv, registracijski broj i porezni broj. Priložite registracijsku dokumentaciju: odobrenjem ove promjene postupak provjere započinje ispočetka.",
     "typeHint": {
       "SHOP": "Trgovina, kafić ili bilo koje mjesto s pultom",
       "ATM": "Kripto bankomat ili mjenjački automat",
@@ -1865,8 +1870,19 @@
         "no_file": "Odaberite datoteku.",
         "forbidden": "Ne možete uređivati ovu karticu tvrtke.",
         "bad_form": "Nije moguće pročitati učitanu datoteku.",
-        "company_required": "Nedostaje tvrtka."
-      }
+        "company_required": "Nedostaje tvrtka.",
+        "link_invalid": "Poveznica za provjeru mora počinjati s https://",
+        "url_required": "Dodajte datoteku ili barem jednu poveznicu",
+        "rubric_too_long": "Naziv odjeljka je predugačak",
+        "rubric_has_link": "Molimo bez poveznica u nazivu odjeljka"
+      },
+      "linkLabel": "Poveznica za provjeru ovog dokumenta (neobvezno)",
+      "linkHint": "Stranica u službenom registru na kojoj svatko može provjeriti ovu licencu ili dozvolu",
+      "verifyLink": "Provjeriti u registru",
+      "ownRubric": "Vlastiti odjeljak",
+      "ownRubricPlaceholder": "npr. Licenca središnje banke",
+      "ownRubricHint": "Vaš vlastiti naziv za ovaj odjeljak. Dokumenti s istim nazivom grupiraju se zajedno",
+      "addHint": "Prenesite datoteku ili zalijepite poveznicu — jedno od to dvoje je dovoljno"
     },
     "publicFields": {
       "title": "Što kupci vide",
@@ -1883,6 +1899,10 @@
       },
       "alwaysPublic": "Uvijek javno: prikazano ime, pravni naziv, država i grad, vrsta poslovanja i industrija, politika povrata te adrese vaših lokacija — one su prikazane na karti.",
       "err": "Nije moguće spremiti. Pokušajte ponovno."
+    },
+    "attention": {
+      "title": "Zahtijeva vašu pozornost",
+      "customers": "Poruke kupaca"
     }
   },
   "cabinet": {
@@ -2396,6 +2416,10 @@
   },
   "companyPublic": {
     "verified": "Provjereno",
+    "requisitesTitle": "Podaci o tvrtki",
+    "legalName": "Pravni naziv",
+    "registrationNumber": "Registracijski broj",
+    "taxNumber": "Porezni broj",
     "website": "Web-stranica",
     "email": "E-mail",
     "phone": "Telefon",
@@ -4305,6 +4329,7 @@
       "CUSTOMER_UNBLOCKED": "Kupac odblokiran",
       "CUSTOMER_MESSAGE_DELETED": "Uklonjena poruka trgovine iz niza s kupcem",
       "DOCUMENT_ADDED": "Javni dokument dodan",
+      "DOCUMENT_UPDATED": "Javni dokument uređen",
       "DOCUMENT_PUBLISHED": "Dokument objavljen na javnoj stranici",
       "DOCUMENT_UNPUBLISHED": "Dokument uklonjen s javne stranice",
       "DOCUMENT_DELETED": "Javni dokument izbrisan",

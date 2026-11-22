@@ -1433,6 +1433,9 @@
     "saveProfile": "保存资料",
     "profileSaved": "已保存",
     "legalName": "公司全称",
+    "registrationNumber": "公司注册号",
+    "taxNumber": "税号",
+    "requisitesHint": "公开信息：会显示在你的店面页面上，方便买家在官方登记处查询你。更改这些信息需要提供文件，例如法定名称。",
     "displayName": "显示名称",
     "description": "公司介绍",
     "logoUrl": "Logo 链接",
@@ -1484,7 +1487,7 @@
       "forbidden": "不允许",
       "bad_form": "请求无效",
       "coin_not_selectable": "该币种卡片未通过审核，无法选择。",
-      "documents_required": "请附上注册文件：法定名称需以纸质文件证明。",
+      "documents_required": "请附上注册文件：法定名称和公司详情需以纸质文件证明。",
       "nothing_to_apply": "此变更已无可应用的内容。",
       "hours_invalid": "营业时间看起来不对 — 请检查时间。",
       "hours_empty": "请至少标记一个工作日，否则日程表将无内容。",
@@ -1492,7 +1495,9 @@
       "category_invalid": "未知的业务类型。",
       "return_days_invalid": "退货期限必须是0到365之间的整数天。",
       "industry_invalid": "请从列表中选择一个行业。",
-      "industry_custom_has_link": "请从你的自定义标签中移除链接—我们只对自己页面上的链接负责。"
+      "industry_custom_has_link": "请从你的自定义标签中移除链接—我们只对自己页面上的链接负责。",
+      "registration_number_invalid": "请检查注册号：2 到 40 个字符，不含链接。",
+      "tax_number_invalid": "请检查税号：2 到 40 个字符，不含链接。"
     },
     "websiteHint": "支持 https://、http:// 或直接 www.example.com",
     "addressSection": "地址",
@@ -1667,7 +1672,7 @@
     "pendingChanges": "等待审核员：{count} 项更改",
     "pendingChangesHint": "再次编辑，待处理的更改将被新更改取代——一家公司同一时间只能有一个待处理更改。",
     "documentsRequiredTitle": "所需文件",
-    "documentsRequiredHint": "法定名称需以纸质文件证明，而非文本字段。请附上注册文件：批准此更改将重新开始验证。",
+    "documentsRequiredHint": "法人资格需以纸质文件证明，而非文本字段 — 其名称、注册号和税号均如此。请附上注册文件：批准此更改将重新开始验证。",
     "typeHint": {
       "SHOP": "商店、咖啡馆或任何有柜台的场所",
       "ATM": "加密货币ATM或兑换机",
@@ -1865,8 +1870,19 @@
         "no_file": "请选择文件。",
         "forbidden": "您无法编辑此公司资料卡。",
         "bad_form": "无法读取上传内容。",
-        "company_required": "缺少公司信息。"
-      }
+        "company_required": "缺少公司信息。",
+        "link_invalid": "验证链接必须以 https:// 开头",
+        "url_required": "请添加文件或至少一个链接。",
+        "rubric_too_long": "分区名称过长。",
+        "rubric_has_link": "分区名称中请不要包含链接。"
+      },
+      "linkLabel": "用于验证此文件的链接（可选）",
+      "linkHint": "官方登记处中任何人都可核验该许可证或执照的页面。",
+      "verifyLink": "在登记处核验",
+      "ownRubric": "自定义分区",
+      "ownRubricPlaceholder": "例如：央行许可证",
+      "ownRubricHint": "该分区的自定义名称。名称相同的文件会归为一组。",
+      "addHint": "上传文件或粘贴链接——两者任选其一即可。"
     },
     "publicFields": {
       "title": "客户可见内容",
@@ -1883,6 +1899,10 @@
       },
       "alwaysPublic": "始终公开：显示名称、法定名称、国家和城市、业务类型和行业、退货政策，以及各网点地址 — 这些会显示在地图上。",
       "err": "无法保存。请重试。"
+    },
+    "attention": {
+      "title": "需要您的关注",
+      "customers": "客户消息"
     }
   },
   "cabinet": {
@@ -2396,6 +2416,10 @@
   },
   "companyPublic": {
     "verified": "已认证",
+    "requisitesTitle": "公司信息",
+    "legalName": "法定名称",
+    "registrationNumber": "注册号",
+    "taxNumber": "税号",
     "website": "网站",
     "email": "邮箱",
     "phone": "电话",
@@ -4305,6 +4329,7 @@
       "CUSTOMER_UNBLOCKED": "解除了对顾客的屏蔽",
       "CUSTOMER_MESSAGE_DELETED": "从顾客对话中删除了商店消息",
       "DOCUMENT_ADDED": "已添加公共文档",
+      "DOCUMENT_UPDATED": "已编辑公共文档",
       "DOCUMENT_PUBLISHED": "文档已发布到公共页面",
       "DOCUMENT_UNPUBLISHED": "文档已从公共页面移除",
       "DOCUMENT_DELETED": "已删除公共文档",

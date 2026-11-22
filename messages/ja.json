@@ -1433,6 +1433,9 @@
     "saveProfile": "プロフィールを保存",
     "profileSaved": "保存しました",
     "legalName": "法人名",
+    "registrationNumber": "会社登録番号",
+    "taxNumber": "税番号",
+    "requisitesHint": "公開情報: 購入者が公式登録簿であなたを照会できるよう、ストアフロントに表示されます。これらを変更するには、商号のように、裏付けとなる文書が必要です。",
     "displayName": "表示名",
     "description": "会社について",
     "logoUrl": "ロゴURL",
@@ -1484,7 +1487,7 @@
       "forbidden": "許可されていません",
       "bad_form": "不正なリクエスト",
       "coin_not_selectable": "このコインカードは未承認のため選択できません。",
-      "documents_required": "登録書類を添付してください: 法的名称は書面で証明されます",
+      "documents_required": "登録書類を添付してください: 会社の正式名称と会社詳細は書面で証明されます。",
       "nothing_to_apply": "この変更で適用するものは残っていません",
       "hours_invalid": "営業時間に誤りがあるようです — 時刻を確認してください。",
       "hours_empty": "少なくとも営業日を1日は選択してください、さもないとスケジュールは何も示しません。",
@@ -1492,7 +1495,9 @@
       "category_invalid": "不明な業種です。",
       "return_days_invalid": "返品期間は0〜365の整数日でなければなりません。",
       "industry_invalid": "リストから業種を選択してください.",
-      "industry_custom_has_link": "独自タグからリンクを削除してください—当サイト上のリンクについては当方が責任を負います."
+      "industry_custom_has_link": "独自タグからリンクを削除してください—当サイト上のリンクについては当方が責任を負います.",
+      "registration_number_invalid": "登録番号を確認してください: 2〜40文字、リンク不可。",
+      "tax_number_invalid": "税番号を確認してください: 2〜40文字、リンク不可。"
     },
     "websiteHint": "https://、http://、または www.example.com の形式でOK",
     "addressSection": "住所",
@@ -1667,7 +1672,7 @@
     "pendingChanges": "審査待ち: {count} 件の変更",
     "pendingChangesHint": "再度編集すると、保留中の変更は新しい内容で置き換えられます—保留中の変更は企業ごとに常に1件までです。",
     "documentsRequiredTitle": "必要書類",
-    "documentsRequiredHint": "正式名称はテキスト入力ではなく書類で証明します。登録書類を添付してください。この変更を承認すると、確認手続きが再開されます。",
+    "documentsRequiredHint": "法人はテキスト入力ではなく書類で証明されます — 名称、登録番号、税番号も同様です。登録書類を添付してください: この変更を承認すると、審査が再度開始されます。",
     "typeHint": {
       "SHOP": "店舗、カフェ、カウンターのある場所",
       "ATM": "暗号資産ATMまたは両替機",
@@ -1865,8 +1870,19 @@
         "no_file": "ファイルを選択してください。",
         "forbidden": "この会社カードは編集できません。",
         "bad_form": "アップロードを読み取れませんでした。",
-        "company_required": "会社情報がありません。"
-      }
+        "company_required": "会社情報がありません。",
+        "link_invalid": "検証用リンクはhttps://で始まっている必要があります",
+        "url_required": "ファイル、または少なくとも1件のリンクを追加してください。",
+        "rubric_too_long": "セクション名が長すぎます。",
+        "rubric_has_link": "セクション名にリンクを含めないでください。"
+      },
+      "linkLabel": "この書類を確認するためのリンク（任意）",
+      "linkHint": "誰でもこの許認可を確認できる公式登録簿のページ。",
+      "verifyLink": "登録簿で確認",
+      "ownRubric": "独自セクション",
+      "ownRubricPlaceholder": "例: 中央銀行のライセンス",
+      "ownRubricHint": "このセクションの任意の名称です。同じ名称の書類はグループ化されます。",
+      "addHint": "ファイルをアップロードするかリンクを貼り付けてください—どちらか一方で十分です。"
     },
     "publicFields": {
       "title": "顧客に表示される内容",
@@ -1883,6 +1899,10 @@
       },
       "alwaysPublic": "常に公開: 表示名、法的名称、国と市区町村、事業形態と業種、返品方針、拠点の住所 — 地図上に表示されます。",
       "err": "保存できませんでした。もう一度お試しください。"
+    },
+    "attention": {
+      "title": "対応が必要",
+      "customers": "顧客からのメッセージ"
     }
   },
   "cabinet": {
@@ -2396,6 +2416,10 @@
   },
   "companyPublic": {
     "verified": "認証済み",
+    "requisitesTitle": "会社情報",
+    "legalName": "登記名",
+    "registrationNumber": "登録番号",
+    "taxNumber": "税番号",
     "website": "サイト",
     "email": "メール",
     "phone": "電話",
@@ -4305,6 +4329,7 @@
       "CUSTOMER_UNBLOCKED": "顧客のブロックを解除しました",
       "CUSTOMER_MESSAGE_DELETED": "顧客スレッドからショップのメッセージを削除しました",
       "DOCUMENT_ADDED": "公開ドキュメントを追加",
+      "DOCUMENT_UPDATED": "公開ドキュメントを編集",
       "DOCUMENT_PUBLISHED": "公開ページでドキュメントを公開",
       "DOCUMENT_UNPUBLISHED": "公開ページからドキュメントを削除",
       "DOCUMENT_DELETED": "公開ドキュメントを削除",

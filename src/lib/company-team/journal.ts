@@ -74,6 +74,8 @@ export type CompanyAction =
   | "CUSTOMER_MESSAGE_DELETED"
   // Слайс BU: публичные документы и настройка публичности карточки.
   | "DOCUMENT_ADDED"
+  // Слайс BV: правка названия, рубрики и ссылки документа.
+  | "DOCUMENT_UPDATED"
   | "DOCUMENT_PUBLISHED"
   | "DOCUMENT_UNPUBLISHED"
   | "DOCUMENT_DELETED"

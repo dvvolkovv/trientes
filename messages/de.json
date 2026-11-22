@@ -1433,6 +1433,9 @@
     "saveProfile": "Profil speichern",
     "profileSaved": "Gespeichert",
     "legalName": "Firmenname (rechtlich)",
+    "registrationNumber": "Registrierungsnummer des Unternehmens",
+    "taxNumber": "Steuernummer",
+    "requisitesHint": "Öffentliche Angaben: werden auf deinem Schaufenster angezeigt, damit dich ein Käufer im offiziellen Register finden kann. Änderungen erfordern ein Dokument, wie den rechtlichen Namen.",
     "displayName": "Anzeigename",
     "description": "Über das Unternehmen",
     "logoUrl": "Logo-URL",
@@ -1484,7 +1487,7 @@
       "forbidden": "Nicht erlaubt",
       "bad_form": "Ungültige Anfrage",
       "coin_not_selectable": "Diese Münzkarte ist nicht freigegeben und kann nicht ausgewählt werden.",
-      "documents_required": "Fügen Sie die Registrierungsdokumente bei: Der rechtliche Name wird durch Dokumente nachgewiesen.",
+      "documents_required": "Fügen Sie die Registrierungsunterlagen bei: Der offizielle Name und die Firmendaten werden durch Dokumente belegt.",
       "nothing_to_apply": "Für diese Änderung gibt es nichts mehr anzuwenden.",
       "hours_invalid": "Die Öffnungszeiten sehen falsch aus — prüfen Sie die Zeiten.",
       "hours_empty": "Markieren Sie mindestens einen Werktag, sonst sagt der Zeitplan nichts aus.",
@@ -1492,7 +1495,9 @@
       "category_invalid": "Unbekannte Geschäftsart.",
       "return_days_invalid": "Die Rückgabefrist muss eine ganze Anzahl von Tagen sein, 0 bis 365.",
       "industry_invalid": "Wähle eine Branche aus der Liste",
-      "industry_custom_has_link": "Entferne den Link aus deinem eigenen Tag — für Links auf unseren Seiten sind wir verantwortlich"
+      "industry_custom_has_link": "Entferne den Link aus deinem eigenen Tag — für Links auf unseren Seiten sind wir verantwortlich",
+      "registration_number_invalid": "Registrierungsnummer prüfen: 2 bis 40 Zeichen, keine Links.",
+      "tax_number_invalid": "Steuernummer prüfen: 2 bis 40 Zeichen, keine Links."
     },
     "websiteHint": "Mit https://, http:// oder einfach www.example.com — alles möglich",
     "addressSection": "Adresse",
@@ -1667,7 +1672,7 @@
     "pendingChanges": "Warten auf Prüfung: {count} Änderung(en)",
     "pendingChangesHint": "Erneut bearbeiten, dann wird die ausstehende Änderung durch die neue ersetzt — ein Unternehmen kann jeweils nur eine ausstehende Änderung haben.",
     "documentsRequiredTitle": "Erforderliche Dokumente",
-    "documentsRequiredHint": "Der juristische Name wird durch Unterlagen belegt, nicht durch ein Textfeld. Fügen Sie die Registrierungsdokumente bei: Die Genehmigung dieser Änderung startet die Verifizierung erneut.",
+    "documentsRequiredHint": "Die juristische Person wird durch Dokumente belegt, nicht durch ein Textfeld — sowohl Name, Registernummer als auch Steuernummer. Fügen Sie die Registrierungsunterlagen bei: Die Genehmigung dieser Änderung startet die Verifizierung erneut.",
     "typeHint": {
       "SHOP": "Ein Laden, Café oder jeder Ort mit Theke",
       "ATM": "Ein Krypto-Geldautomat oder Wechselautomat",
@@ -1865,8 +1870,19 @@
         "no_file": "Wähle eine Datei.",
         "forbidden": "Sie können diese Unternehmenskarte nicht bearbeiten.",
         "bad_form": "Der Upload konnte nicht gelesen werden.",
-        "company_required": "Unternehmen fehlt."
-      }
+        "company_required": "Unternehmen fehlt.",
+        "link_invalid": "Der Bestätigungslink muss mit https:// beginnen",
+        "url_required": "Fügen Sie eine Datei oder mindestens einen Link hinzu.",
+        "rubric_too_long": "Der Abschnittsname ist zu lang.",
+        "rubric_has_link": "Bitte keine Links im Abschnittsnamen."
+      },
+      "linkLabel": "Link zur Verifizierung dieses Dokuments (optional)",
+      "linkHint": "Seite im offiziellen Register, auf der jeder diese Lizenz oder Genehmigung prüfen kann.",
+      "verifyLink": "Im Register prüfen",
+      "ownRubric": "Eigener Abschnitt",
+      "ownRubricPlaceholder": "z. B. Lizenz der Zentralbank",
+      "ownRubricHint": "Ihr eigener Name für diesen Abschnitt. Dokumente mit demselben Namen werden zusammengefasst.",
+      "addHint": "Laden Sie eine Datei hoch oder fügen Sie einen Link ein — eines von beidem reicht aus."
     },
     "publicFields": {
       "title": "Was Kunden sehen",
@@ -1883,6 +1899,10 @@
       },
       "alwaysPublic": "Immer öffentlich: Anzeigename, Rechtsname, Land und Stadt, Geschäftsart und Branche, Rückgabebedingungen sowie die Adressen Ihrer Standorte — sie stehen auf der Karte.",
       "err": "Konnte nicht gespeichert werden. Versuchen Sie es erneut."
+    },
+    "attention": {
+      "title": "Erfordert Ihre Aufmerksamkeit",
+      "customers": "Kundennachrichten"
     }
   },
   "cabinet": {
@@ -2396,6 +2416,10 @@
   },
   "companyPublic": {
     "verified": "Verifiziert",
+    "requisitesTitle": "Unternehmensdaten",
+    "legalName": "Rechtlicher Name",
+    "registrationNumber": "Registrierungsnummer",
+    "taxNumber": "Steuernummer",
     "website": "Website",
     "email": "E-Mail",
     "phone": "Telefon",
@@ -4305,6 +4329,7 @@
       "CUSTOMER_UNBLOCKED": "Hat die Blockierung eines Kunden aufgehoben",
       "CUSTOMER_MESSAGE_DELETED": "Hat eine Shop-Nachricht aus einem Kunden-Thread entfernt",
       "DOCUMENT_ADDED": "Öffentliches Dokument hinzugefügt",
+      "DOCUMENT_UPDATED": "Öffentliches Dokument bearbeitet",
       "DOCUMENT_PUBLISHED": "Dokument auf der öffentlichen Seite veröffentlicht",
       "DOCUMENT_UNPUBLISHED": "Dokument von der öffentlichen Seite entfernt",
       "DOCUMENT_DELETED": "Öffentliches Dokument gelöscht",

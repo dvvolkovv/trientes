@@ -14,6 +14,8 @@ import { parseChanges } from "@/lib/company-edit";
 import { visibleGroups, visibleTiles, GROUP_ICONS } from "@/lib/cabinet/company-nav";
 import { NOT_DELETED, LIVE_POINT } from "@/lib/soft-delete";
 import { CompanyDocsSection } from "@/components/business/company-docs-section";
+import { AttentionBlock } from "@/components/business/attention-block";
+import { companyAttention } from "@/lib/cabinet/company-attention";
 import { PublicFieldsForm } from "@/components/business/public-fields-form";
 import { parsePublicFields } from "@/lib/company-public-fields";
 import { parseWeekHours } from "@/lib/opening-hours";
@@ -52,6 +54,10 @@ export default async function CompanyManagementPage({
     orderBy: { createdAt: "desc" },
   });
   const pendingChanges = pending ? parseChanges(pending.changes) : [];
+
+  // Что в предприятии ждёт человека (слайс BV): непрочитанное покупателей — тому,
+  // у кого есть право на переписку, непрочитанное комплайнса — заявителю дела.
+  const attention = await companyAttention(company.id, { userId, permissions });
 
   const editing = editParam === "1" && editable;
   const kybOpen = kybParam === "1" && isOwner;
@@ -95,6 +101,8 @@ export default async function CompanyManagementPage({
         </div>
       )}
 
+      <AttentionBlock locale={locale} companyId={company.id} attention={attention} />
+
       {editing ? (
         <section className="space-y-4">
           <h1 className="text-[24px] font-bold tracking-[-0.03em]">{t("editCard")}</h1>
@@ -119,6 +127,8 @@ export default async function CompanyManagementPage({
               industryCustom: company.industryCustom ?? "",
               logoShape: company.logoShape ?? "",
               logoFit: company.logoFit ?? "",
+              registrationNumber: company.registrationNumber ?? "",
+              taxNumber: company.taxNumber ?? "",
             }}
           />
         </section>
@@ -143,6 +153,8 @@ export default async function CompanyManagementPage({
               hours: officeHours,
               timezone: company.timezone,
               legalName: company.legalName,
+              registrationNumber: company.registrationNumber,
+              taxNumber: company.taxNumber,
               description: company.description,
               website: company.website,
               phone: company.phone,
@@ -170,8 +182,10 @@ export default async function CompanyManagementPage({
                 docs={docs.map((d) => ({
                   id: d.id,
                   kind: d.kind,
+                  kindCustom: d.kindCustom,
                   title: d.title,
                   url: d.url,
+                  linkUrl: d.linkUrl,
                   published: d.publishedAt !== null,
                 }))}
               />

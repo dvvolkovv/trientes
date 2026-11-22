@@ -23,6 +23,8 @@ type Initial = {
   category: string; returnPolicy: string; returnDays: string;
   /** Слайс BU: отрасль, своя рубрика, вид логотипа. */
   industry: string; industryCustom: string; logoShape: string; logoFit: string;
+  /** Слайс BV: публичные реквизиты. Правка требует бумаги, как юридическое имя. */
+  registrationNumber: string; taxNumber: string;
 };
 
 const EMPTY: Initial = {
@@ -31,6 +33,7 @@ const EMPTY: Initial = {
   postalCode: "", address: "", phone: "", email: "",
   category: "", returnPolicy: "", returnDays: "",
   industry: "", industryCustom: "", logoShape: "", logoFit: "",
+  registrationNumber: "", taxNumber: "",
 };
 
 type Doc = { kind: string; url: string; label: string | null };
@@ -75,11 +78,12 @@ export function CompanyProfileForm({
       setF((prev) => ({ ...prev, [k]: value }));
     };
 
-  // Юридическое имя подтверждается бумагой. Блок загрузки показывается ровно тогда,
-  // когда имя действительно поменяли: форма с полем, которое ни на что не влияет,
-  // хуже, чем её отсутствие.
+  // Юридическое лицо подтверждается бумагой — и имя, и реквизиты (слайс BV). Блок
+  // загрузки показывается ровно тогда, когда документальное поле действительно
+  // поменяли: форма с полем, которое ни на что не влияет, хуже, чем её отсутствие.
+  const changed = (k: keyof Initial) => f[k].trim() !== (initial?.[k] ?? "").trim();
   const legalNameChanged =
-    moderated && f.legalName.trim() !== (initial?.legalName ?? "").trim();
+    moderated && (changed("legalName") || changed("registrationNumber") || changed("taxNumber"));
 
   async function upload(file: File) {
     setUploading(true);
@@ -165,6 +169,10 @@ export function CompanyProfileForm({
 
       <div className="space-y-3">
         {field("legalName")}
+        {/* Реквизиты стоят рядом с юридическим именем, а не в конце формы: это
+            одно и то же лицо, названное тремя способами, и правятся они вместе. */}
+        {field("registrationNumber")}
+        {field("taxNumber", <p className="mt-1 text-[11px] text-muted">{t("requisitesHint")}</p>)}
         {field("displayName")}
         <div>
           <label className={label} htmlFor="company-description">{t("description")}</label>

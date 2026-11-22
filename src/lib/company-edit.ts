@@ -64,11 +64,14 @@ export const COMPANY_MODERATED_FIELDS = [
 ] as const;
 
 /**
- * Требуют документов. Только юридическое имя: смена телефона перепроверки лица не
- * требует, и заставлять за неё присылать устав значило бы, что телефон никто не
- * поправит.
+ * Требуют документов: юридическое имя и реквизиты (слайс BV). Смена телефона
+ * перепроверки лица не требует, и заставлять за неё присылать устав значило бы, что
+ * телефон никто не поправит, — а номер регистрации это имя лица на языке реестра, и
+ * правка его словом заявителя означала бы, что одобренную проверку можно переписать
+ * на другое лицо. Налоговый номер там же: по нему предприятие сверяют в налоговом
+ * реестре страны, и подменённый номер уводит проверку на чужое лицо.
  */
-export const COMPANY_DOCUMENT_FIELDS = ["legalName"] as const;
+export const COMPANY_DOCUMENT_FIELDS = ["legalName", "registrationNumber", "taxNumber"] as const;
 
 export type CompanyFreeField = (typeof COMPANY_FREE_FIELDS)[number];
 export type CompanyModeratedField = (typeof COMPANY_MODERATED_FIELDS)[number];
@@ -83,6 +86,8 @@ export type CompanyEditField = CompanyFreeField | CompanyModeratedField | Compan
  */
 export const COMPANY_CARD_FIELDS: CompanyEditField[] = [
   "legalName",
+  "registrationNumber",
+  "taxNumber",
   "displayName",
   "description",
   "website",
