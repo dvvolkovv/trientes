@@ -1319,7 +1319,6 @@
     "acceptedAny": "接受加密货币",
     "ownListing": "已认领",
     "showcasePhotos": "照片",
-    "aboutCompany": "关于公司",
     "openCompany": "公司资料",
     "claimTitle": "此地点尚未在 Trientes 上认领。",
     "claimCta": "这是我的商家",
@@ -1408,7 +1407,14 @@
       "markHint": "标记只是提醒，不会绕路：路线保持不变，语音会在接近前提示你。",
       "open": "在地图上显示",
       "atStart": "在起点"
-    }
+    },
+    "hoursFromCompany": "公司营业时间",
+    "returnsTitle": "退货",
+    "returnsDays": "{days} 天",
+    "requisitesTitle": "公司信息",
+    "registrationNumber": "注册号",
+    "taxNumber": "税号",
+    "productsTitle": "在此出售"
   },
   "markets": {
     "title": "市场",
@@ -1896,7 +1902,13 @@
         "hours": "办公时间",
         "documents": "公开文档",
         "description": "公司简介",
-        "returnPolicy": "退货政策"
+        "returnPolicy": "退货政策",
+        "photos": "照片",
+        "coins": "可接受币种",
+        "socials": "社交链接",
+        "website": "网站",
+        "products": "在售商品",
+        "promos": "当前优惠"
       },
       "alwaysPublic": "始终公开：显示名称、法定名称、国家和城市、业务类型和行业，以及网点地址——它们会显示在地图上。",
       "err": "无法保存。请重试。"
@@ -1904,7 +1916,11 @@
     "attention": {
       "title": "需要您的关注",
       "customers": "客户消息"
-    }
+    },
+    "coinSearch": "搜索币种",
+    "coinSearchEmpty": "未找到。试试使用代号",
+    "companyCoinsHint": "未单独选择的网点将继承这些币种。更改该集合将提交给审核员",
+    "coinsInherited": "未选择任何项 — 此网点显示公司集合：{coins}"
   },
   "cabinet": {
     "kicker": "板块 · 个人中心",
@@ -2446,7 +2462,8 @@
     "returnsUnknown": "卖家未说明退货政策。",
     "officeHoursTitle": "办公时间",
     "officeHoursHint": "电话、电子邮件和工作人员的响应时间。每个销售点都会列出交易时间。",
-    "documentsTitle": "文件"
+    "documentsTitle": "文件",
+    "hoursFromCompany": "公司办公时间 — 此网点未设置交易时间."
   },
   "companiesDirectory": {
     "kicker": "目录",
@@ -4464,7 +4481,9 @@
       "notLive": "当前不在展示台",
       "mute": "静音",
       "unmute": "取消静音",
-      "unfollow": "取消关注"
+      "unfollow": "取消关注",
+      "switchOn": "开",
+      "switchOff": "关"
     }
   },
   "cabinetPromos": {

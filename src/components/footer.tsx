@@ -8,7 +8,9 @@ export async function Footer() {
 
   return (
     <footer className="mt-20 bg-bg-tint border-t border-hairline">
-      <div className="max-w-[1600px] mx-auto px-6 md:px-12 xl:px-20 py-10 md:py-16">
+      {/* Поля 16 px на самом узком экране: при 280 px сорок восемь пикселей полей
+          не оставляли подвалу ширины, и страница ехала вбок (слайс BX). */}
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-12 xl:px-20 py-10 md:py-16">
         <div className="grid grid-cols-12 gap-x-6 gap-y-8 md:gap-8 [&>div]:min-w-0">
           {/* Brand + tagline */}
           <div className="col-span-12 md:col-span-5">
@@ -20,7 +22,13 @@ export async function Footer() {
                 .org
               </span>
             </div>
-            <p className="text-[14px] leading-[1.6] max-w-[420px] text-muted">
+            {/* `break-words`: на 280 px (iPhone 15 с текстовым увеличением
+                Safari) адрес `trientes.com` одним словом распирал колонку, и вся
+                страница уезжала вбок — та самая жалоба «одно на другое наезжает». */}
+            {/* `overflow-wrap: anywhere`, а не `break-words`: второй разрешает
+                перенос внутри слова, но **минимальную** ширину блока не уменьшает,
+                и адрес `trientes.com` одним словом всё равно распирал колонку. */}
+            <p className="text-[14px] leading-[1.6] max-w-[420px] text-muted [overflow-wrap:anywhere]">
               {t("tagline")} A sibling of{" "}
               <Link
                 href="https://trientes.com"

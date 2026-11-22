@@ -1319,7 +1319,6 @@
     "acceptedAny": "Krypto akceptované",
     "ownListing": "Vlastné zaradenie",
     "showcasePhotos": "Fotky",
-    "aboutCompany": "O spoločnosti",
     "openCompany": "Profil spoločnosti",
     "claimTitle": "Toto miesto si na Trientes ešte nikto nenárokoval",
     "claimCta": "Toto je môj podnik",
@@ -1408,7 +1407,14 @@
       "markHint": "Označené miesto je pripomienka, nie obchádzka: trasa zostáva taká, aká je, a hlas vás upozorní, skôr než k nemu dorazíte.",
       "open": "Zobraziť na mape",
       "atStart": "na začiatku"
-    }
+    },
+    "hoursFromCompany": "Otváracie hodiny spoločnosti",
+    "returnsTitle": "Vrátenia",
+    "returnsDays": "{days} dní",
+    "requisitesTitle": "Údaje o spoločnosti",
+    "registrationNumber": "Registračné číslo",
+    "taxNumber": "Daňové číslo",
+    "productsTitle": "Tu v predaji"
   },
   "markets": {
     "title": "Trhy",
@@ -1896,7 +1902,13 @@
         "hours": "Úradné hodiny",
         "documents": "Verejné dokumenty",
         "description": "O spoločnosti",
-        "returnPolicy": "Podmienky vrátenia"
+        "returnPolicy": "Podmienky vrátenia",
+        "photos": "Fotky",
+        "coins": "Akceptované mince",
+        "socials": "Odkazy na sociálne siete",
+        "website": "Web",
+        "products": "Predávané produkty",
+        "promos": "Aktuálne ponuky"
       },
       "alwaysPublic": "Vždy verejné: zobrazované meno, právny názov, krajina a mesto, typ podnikania a odvetvie a adresy vašich miest — sú na mape.",
       "err": "Nepodarilo sa uložiť. Skúste znova."
@@ -1904,7 +1916,11 @@
     "attention": {
       "title": "Vyžaduje vašu pozornosť",
       "customers": "Správy od zákazníkov"
-    }
+    },
+    "coinSearch": "Hľadať mince",
+    "coinSearchEmpty": "Nenašlo sa nič. Skúste ticker.",
+    "companyCoinsHint": "Miesta bez vlastného výberu zdedia tieto mince. Zmena sady ide moderátorovi.",
+    "coinsInherited": "Nič nie je vybrané — toto miesto zobrazuje sadu spoločnosti: {coins}"
   },
   "cabinet": {
     "kicker": "Sekcia · Profil",
@@ -2446,7 +2462,8 @@
     "returnsUnknown": "Predávajúci neuviedol zásady vrátenia.",
     "officeHoursTitle": "Úradné hodiny",
     "officeHoursHint": "Čas, keď odpovedá telefón, email a personál. Obchodné hodiny sú uvedené pri každom predajnom mieste.",
-    "documentsTitle": "Dokumenty"
+    "documentsTitle": "Dokumenty",
+    "hoursFromCompany": "Otváracie hodiny spoločnosti — obchodné hodiny pre toto miesto nie sú nastavené"
   },
   "companiesDirectory": {
     "kicker": "Adresár",
@@ -4464,7 +4481,9 @@
       "notLive": "teraz nie je na výklade",
       "mute": "Stlmiť",
       "unmute": "Zrušiť stlmenie",
-      "unfollow": "Prestať sledovať"
+      "unfollow": "Prestať sledovať",
+      "switchOn": "zapnuté",
+      "switchOff": "vypnuté"
     }
   },
   "cabinetPromos": {

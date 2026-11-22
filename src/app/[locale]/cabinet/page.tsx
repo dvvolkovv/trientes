@@ -98,7 +98,10 @@ export default async function CabinetPage({ params }: { params: Promise<{ locale
             </div>
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                <span className="text-[20px] font-bold tracking-[-0.02em]">
+                {/* Имя входа — одно длинное слово без пробелов, и на 280 px оно
+                    распирало шапку кабинета. `anywhere` уменьшает и минимальную
+                    ширину блока, чего `break-words` не делает. */}
+                <span className="min-w-0 text-[20px] font-bold tracking-[-0.02em] [overflow-wrap:anywhere]">
                   {[user.firstName, user.lastName].filter(Boolean).join(" ") || user.username}
                 </span>
                 <span className="num text-[13px] text-muted">@{user.username}</span>

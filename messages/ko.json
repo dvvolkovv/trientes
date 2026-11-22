@@ -1319,7 +1319,6 @@
     "acceptedAny": "암호화폐 결제 가능",
     "ownListing": "내 등록",
     "showcasePhotos": "사진",
-    "aboutCompany": "회사 소개",
     "openCompany": "회사 프로필",
     "claimTitle": "이 장소는 아직 Trientes에서 본인 등록이 되지 않았습니다.",
     "claimCta": "내 사업장입니다",
@@ -1408,7 +1407,14 @@
       "markHint": "표시한 장소는 우회가 아니라 알림입니다: 경로는 그대로 유지되고, 도착 전에 음성으로 알려줍니다.",
       "open": "지도에서 보기",
       "atStart": "시작 시"
-    }
+    },
+    "hoursFromCompany": "회사 업무 시간",
+    "returnsTitle": "반품",
+    "returnsDays": "{days}일",
+    "requisitesTitle": "회사 정보",
+    "registrationNumber": "등록 번호",
+    "taxNumber": "세금 번호",
+    "productsTitle": "여기에서 판매 중"
   },
   "markets": {
     "title": "시장",
@@ -1896,7 +1902,13 @@
         "hours": "영업시간",
         "documents": "공개 문서",
         "description": "회사 소개",
-        "returnPolicy": "반품 정책"
+        "returnPolicy": "반품 정책",
+        "photos": "사진",
+        "coins": "결제 가능 코인",
+        "socials": "소셜 링크",
+        "website": "웹사이트",
+        "products": "판매 중인 상품",
+        "promos": "현재 프로모션"
       },
       "alwaysPublic": "항상 공개: 표시 이름, 법적 명칭, 국가와 도시, 업종과 산업, 그리고 지점 주소 — 지도에 표시됩니다.",
       "err": "저장할 수 없습니다. 다시 시도하세요."
@@ -1904,7 +1916,11 @@
     "attention": {
       "title": "주의가 필요합니다",
       "customers": "고객 메시지"
-    }
+    },
+    "coinSearch": "코인 검색",
+    "coinSearchEmpty": "찾은 항목이 없습니다. 티커로 시도해 보세요.",
+    "companyCoinsHint": "개별 선택이 없는 지점은 이 코인들을 따릅니다. 세트 변경은 모더레이터에게 전달됩니다.",
+    "coinsInherited": "선택된 항목이 없음 — 이 지점은 회사 세트를 표시합니다: {coins}"
   },
   "cabinet": {
     "kicker": "섹션 · 캐비닛",
@@ -2446,7 +2462,8 @@
     "returnsUnknown": "판매자가 반품 정책을 명시하지 않았습니다.",
     "officeHoursTitle": "업무 시간",
     "officeHoursHint": "전화, 이메일, 직원 응대 시간입니다. 거래 가능 시간은 각 판매 지점에 표기되어 있습니다.",
-    "documentsTitle": "문서"
+    "documentsTitle": "문서",
+    "hoursFromCompany": "회사 영업시간 — 이 지점에는 거래 시간이 설정되어 있지 않습니다."
   },
   "companiesDirectory": {
     "kicker": "디렉터리",
@@ -4464,7 +4481,9 @@
       "notLive": "지금 쇼케이스에 없음",
       "mute": "음소거",
       "unmute": "음소거 해제",
-      "unfollow": "언팔로우"
+      "unfollow": "언팔로우",
+      "switchOn": "켜짐",
+      "switchOff": "꺼짐"
     }
   },
   "cabinetPromos": {

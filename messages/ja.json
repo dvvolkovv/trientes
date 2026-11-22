@@ -1319,7 +1319,6 @@
     "acceptedAny": "暗号資産利用可",
     "ownListing": "自分の掲載",
     "showcasePhotos": "写真",
-    "aboutCompany": "会社概要",
     "openCompany": "企業プロフィール",
     "claimTitle": "この場所はまだTrientesで申請されていません",
     "claimCta": "これは私のビジネスです",
@@ -1408,7 +1407,14 @@
       "markHint": "マークした場所はリマインダーであって寄り道ではありません—ルートはそのままで、到着前に音声が知らせます",
       "open": "地図で表示",
       "atStart": "開始地点で"
-    }
+    },
+    "hoursFromCompany": "会社の営業時間",
+    "returnsTitle": "返品",
+    "returnsDays": "{days}日",
+    "requisitesTitle": "会社情報",
+    "registrationNumber": "登録番号",
+    "taxNumber": "税番号",
+    "productsTitle": "販売中の商品"
   },
   "markets": {
     "title": "市場",
@@ -1896,7 +1902,13 @@
         "hours": "営業時間",
         "documents": "公開文書",
         "description": "会社概要",
-        "returnPolicy": "返品ポリシー"
+        "returnPolicy": "返品ポリシー",
+        "photos": "写真",
+        "coins": "対応コイン",
+        "socials": "SNSリンク",
+        "website": "ウェブサイト",
+        "products": "販売中の商品",
+        "promos": "現在のオファー"
       },
       "alwaysPublic": "常に公開: 表示名、法人名、国と都市、事業の種類と業種、および拠点の住所 — それらは地図上に表示されます。",
       "err": "保存できませんでした。もう一度お試しください。"
@@ -1904,7 +1916,11 @@
     "attention": {
       "title": "対応が必要",
       "customers": "顧客からのメッセージ"
-    }
+    },
+    "coinSearch": "コインを検索",
+    "coinSearchEmpty": "見つかりませんでした。ティッカーで試してください",
+    "companyCoinsHint": "独自の選択がない拠点はこれらのコインを継承します。セットの変更はモデレーターに送られます",
+    "coinsInherited": "何も選択されていません — この拠点は会社のセットを表示します: {coins}"
   },
   "cabinet": {
     "kicker": "セクション · キャビネット",
@@ -2446,7 +2462,8 @@
     "returnsUnknown": "販売者は返品ポリシーを明示していません。",
     "officeHoursTitle": "営業時間",
     "officeHoursHint": "電話、メール、スタッフが対応する時間です。取引時間は各販売拠点に記載されています。",
-    "documentsTitle": "書類"
+    "documentsTitle": "書類",
+    "hoursFromCompany": "会社のオフィス営業時間 — この拠点には取引時間が設定されていません"
   },
   "companiesDirectory": {
     "kicker": "ディレクトリ",
@@ -4464,7 +4481,9 @@
       "notLive": "現在ショーケースに表示されていません",
       "mute": "ミュート",
       "unmute": "ミュート解除",
-      "unfollow": "フォロー解除"
+      "unfollow": "フォロー解除",
+      "switchOn": "オン",
+      "switchOff": "オフ"
     }
   },
   "cabinetPromos": {

@@ -27,7 +27,10 @@ export async function Navbar() {
 
   return (
     <header className="sticky top-0 z-30 backdrop-blur-md bg-[rgba(22,22,22,0.85)] border-b border-hairline">
-      <div className="max-w-[1600px] mx-auto px-6 md:px-6 xl:px-6 h-16 flex items-center gap-2 xl:gap-4">
+      {/* Поля шапки на самом узком экране — 12 px, а не 24: при 280 px (iPhone 15
+          с текстовым увеличением Safari) сорок восемь пикселей полей выталкивали
+          знак за край, и страница ехала вбок. Поле ничего не сообщает, знак — да. */}
+      <div className="max-w-[1600px] mx-auto px-3 sm:px-6 h-16 flex items-center gap-2 xl:gap-4">
         <MobileNav>
           <nav className="flex flex-col mt-2 mb-6">
             <Link
@@ -159,7 +162,9 @@ export async function Navbar() {
 
         <Link
           href={`/${locale}`}
-          className="flex items-center gap-2 shrink-0 whitespace-nowrap"
+          // `min-w-0` + перенос: знак с подписью «.ORG» не обязан помещаться в
+          // одну строку на 280 px — он обязан не выталкивать страницу вбок.
+          className="flex min-w-0 shrink items-center gap-2"
           aria-label={t("appName")}
         >
           <Image
@@ -170,7 +175,9 @@ export async function Navbar() {
             priority
             className="block"
           />
-          <span className="text-[20px] font-bold tracking-[-0.02em] text-foreground">
+          {/* `min-w-0` обязателен: без него элемент флекса не сжимается ниже
+              своего содержимого, и `truncate` не срабатывает вовсе. */}
+          <span className="min-w-0 truncate text-[20px] font-bold tracking-[-0.02em] text-foreground">
             trientes
           </span>
           <span className="num text-[10px] font-medium uppercase tracking-[0.25em] px-1.5 py-0.5 rounded-sm text-accent border border-accent/40">

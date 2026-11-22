@@ -1319,7 +1319,6 @@
     "acceptedAny": "Kripto kabul edilir",
     "ownListing": "Kendi kaydı",
     "showcasePhotos": "Fotoğraflar",
-    "aboutCompany": "Şirket hakkında",
     "openCompany": "Şirket profili",
     "claimTitle": "Bu yer henüz Trientes'te kendini talep etmedi.",
     "claimCta": "Bu benim işletmem",
@@ -1408,7 +1407,14 @@
       "markHint": "İşaretli bir yer bir hatırlatmadır, sapma değil: rota olduğu gibi kalır ve ses oraya varmadan önce sana söyler",
       "open": "Haritada göster",
       "atStart": "başlangıçta"
-    }
+    },
+    "hoursFromCompany": "Şirket ofis saatleri",
+    "returnsTitle": "İadeler",
+    "returnsDays": "{days} gün",
+    "requisitesTitle": "Şirket bilgileri",
+    "registrationNumber": "Kayıt numarası",
+    "taxNumber": "Vergi numarası",
+    "productsTitle": "Burada satılanlar"
   },
   "markets": {
     "title": "Piyasalar",
@@ -1896,7 +1902,13 @@
         "hours": "Çalışma saatleri",
         "documents": "Herkese açık belgeler",
         "description": "Şirket hakkında",
-        "returnPolicy": "İade politikası"
+        "returnPolicy": "İade politikası",
+        "photos": "Fotoğraflar",
+        "coins": "Kabul edilen coinler",
+        "socials": "Sosyal bağlantılar",
+        "website": "Web sitesi",
+        "products": "Satıştaki ürünler",
+        "promos": "Güncel promosyonlar"
       },
       "alwaysPublic": "Her zaman herkese açık: görünen ad, resmî ad, ülke ve şehir, işletme türü ve sektör, ayrıca noktalarınızın adresleri — haritada gösterilir.",
       "err": "Kaydedilemedi. Tekrar deneyin."
@@ -1904,7 +1916,11 @@
     "attention": {
       "title": "Dikkatinizi gerektiriyor",
       "customers": "Müşteri mesajları"
-    }
+    },
+    "coinSearch": "Coinleri ara",
+    "coinSearchEmpty": "Hiçbir şey bulunamadı. Ticker'ı deneyin.",
+    "companyCoinsHint": "Kendi seçimi olmayan noktalar bu coinleri devralır. Seti değiştirmek moderatöre gider.",
+    "coinsInherited": "Hiçbir şey seçilmedi — bu nokta şirket setini gösterir: {coins}"
   },
   "cabinet": {
     "kicker": "Bölüm · Kabin",
@@ -2446,7 +2462,8 @@
     "returnsUnknown": "Satıcı bir iade politikası belirtmemiş.",
     "officeHoursTitle": "Mesai saatleri",
     "officeHoursHint": "Telefonun, e-postaın ve personelin yanıt verdiği zamanlar. Ticaret saatleri her satış noktasıyla birlikte listelenir.",
-    "documentsTitle": "Belgeler"
+    "documentsTitle": "Belgeler",
+    "hoursFromCompany": "Şirket çalışma saatleri — bu nokta için işlem saatleri ayarlanmadı."
   },
   "companiesDirectory": {
     "kicker": "Dizin",
@@ -4464,7 +4481,9 @@
       "notLive": "şu anda vitrinde değil",
       "mute": "Sustur",
       "unmute": "Susturmayı kaldır",
-      "unfollow": "Takibi bırak"
+      "unfollow": "Takibi bırak",
+      "switchOn": "açık",
+      "switchOff": "kapalı"
     }
   },
   "cabinetPromos": {

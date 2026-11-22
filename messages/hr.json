@@ -1299,7 +1299,7 @@
         "boardTrack": "Peron {track}",
         "waitHere": "Pričekajte ovdje svoje vozilo",
         "ride": "{vehicle} {line} — izađite na {stop}",
-        "rideFromTo": "{from} → {to}",
+        "rideFromTo": "Vožnja od {from} do {to}",
         "towards": "Prema {headsign}",
         "stopsCount": "Stajališta: {count}",
         "alightNext": "Sljedeće stajalište je vaše — {stop}. Pripremite se za izlazak",
@@ -1319,7 +1319,6 @@
     "acceptedAny": "Prihvaća kripto",
     "ownListing": "Vlastito uvrštenje",
     "showcasePhotos": "Fotografije",
-    "aboutCompany": "O tvrtki",
     "openCompany": "Profil tvrtke",
     "claimTitle": "Ova lokacija još nije preuzeta na Trientes.",
     "claimCta": "Ovo je moja tvrtka",
@@ -1408,7 +1407,14 @@
       "markHint": "Označeno mjesto je podsjetnik, ne i obilazak: ruta ostaje kakva jest, a glas vas obavještava prije nego što ga dosegnete.",
       "open": "Prikazati na karti",
       "atStart": "na početku"
-    }
+    },
+    "hoursFromCompany": "Radno vrijeme tvrtke",
+    "returnsTitle": "Povrati",
+    "returnsDays": "{days} dana",
+    "requisitesTitle": "Podaci o tvrtki",
+    "registrationNumber": "Registracijski broj",
+    "taxNumber": "Porezni broj",
+    "productsTitle": "Prodaje se ovdje"
   },
   "markets": {
     "title": "Tržišta",
@@ -1896,7 +1902,13 @@
         "hours": "Radno vrijeme ureda",
         "documents": "Javni dokumenti",
         "description": "O tvrtki",
-        "returnPolicy": "Politika povrata"
+        "returnPolicy": "Politika povrata",
+        "photos": "Fotografije",
+        "coins": "Prihvaćene kovanice",
+        "socials": "Poveznice na društvene mreže",
+        "website": "Web-stranica",
+        "products": "Proizvodi na prodaju",
+        "promos": "Trenutne ponude"
       },
       "alwaysPublic": "Uvijek javno: prikazani naziv, pravni naziv, država i grad, vrsta poslovanja i industrija, te adrese vaših lokacija — one se prikazuju na karti.",
       "err": "Nije moguće spremiti. Pokušajte ponovno."
@@ -1904,7 +1916,11 @@
     "attention": {
       "title": "Zahtijeva vašu pozornost",
       "customers": "Poruke kupaca"
-    }
+    },
+    "coinSearch": "Pretražiti kovanice",
+    "coinSearchEmpty": "Ništa nije pronađeno. Pokušajte s tickerom.",
+    "companyCoinsHint": "Lokacije bez vlastitog odabira nasljeđuju ove kovanice. Promjena skupa ide moderatoru.",
+    "coinsInherited": "Ništa nije odabrano — ova lokacija prikazuje skup tvrtke: {coins}"
   },
   "cabinet": {
     "kicker": "Odjeljak · Profil",
@@ -2446,7 +2462,8 @@
     "returnsUnknown": "Prodavatelj nije naveo politiku povrata.",
     "officeHoursTitle": "Radno vrijeme ureda",
     "officeHoursHint": "Vrijeme kada se odgovara na telefon i e-poštu te kada je osoblje dostupno. Radno vrijeme prodaje je navedeno uz svako prodajno mjesto.",
-    "documentsTitle": "Dokumenti"
+    "documentsTitle": "Dokumenti",
+    "hoursFromCompany": "Radno vrijeme tvrtke — radno vrijeme ove lokacije nije postavljeno."
   },
   "companiesDirectory": {
     "kicker": "Imenik",
@@ -4464,7 +4481,9 @@
       "notLive": "trenutačno nije na izlogu",
       "mute": "Utišati",
       "unmute": "Poništiti utišavanje",
-      "unfollow": "Prestati pratiti"
+      "unfollow": "Prestati pratiti",
+      "switchOn": "uključeno",
+      "switchOff": "isključeno"
     }
   },
   "cabinetPromos": {

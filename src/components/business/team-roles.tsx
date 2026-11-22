@@ -166,14 +166,16 @@ export function TeamRoles({ companyId, roles }: { companyId: string; roles: Team
 
         <div className="space-y-2 mb-5">
           {TEAM_SECTIONS.map((section) => (
-            <div key={section} className="flex items-center justify-between gap-3">
-              <span className="text-sm">{t(`sections.${section}`)}</span>
+            // `flex-wrap` + `min-w-0`: на 280 px название раздела и выбор уровня
+            // в одну строку не влезали, и страница ехала вбок (слайс BX).
+            <div key={section} className="flex flex-wrap items-center justify-between gap-2">
+              <span className="min-w-0 text-sm">{t(`sections.${section}`)}</span>
               <select
                 value={draft.permissions[section] ?? "NONE"}
                 disabled={pending}
                 onChange={(e) => setLevel(section, e.target.value)}
                 aria-label={t(`sections.${section}`)}
-                className="text-sm h-10 px-2 rounded-md border border-hairline bg-bg-tint disabled:opacity-50"
+                className="text-sm h-10 min-w-0 max-w-full px-2 rounded-md border border-hairline bg-bg-tint disabled:opacity-50"
               >
                 <option value="NONE">{t("levels.NONE")}</option>
                 <option value="VIEW">{t("levels.VIEW")}</option>

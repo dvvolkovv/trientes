@@ -1319,7 +1319,6 @@
     "acceptedAny": "Krypto akzeptiert",
     "ownListing": "Eigener Eintrag",
     "showcasePhotos": "Fotos",
-    "aboutCompany": "Über das Unternehmen",
     "openCompany": "Unternehmensprofil",
     "claimTitle": "Dieser Ort wurde auf Trientes noch nicht beansprucht.",
     "claimCta": "Das ist mein Unternehmen",
@@ -1408,7 +1407,14 @@
       "markHint": "Ein markierter Ort ist eine Erinnerung, kein Umweg: Die Route bleibt wie sie ist, und die Stimme informiert dich, bevor du ihn erreichst.",
       "open": "Auf Karte anzeigen",
       "atStart": "am Anfang"
-    }
+    },
+    "hoursFromCompany": "Öffnungszeiten des Unternehmens",
+    "returnsTitle": "Rückgaben",
+    "returnsDays": "{days} Tage",
+    "requisitesTitle": "Unternehmensangaben",
+    "registrationNumber": "Registrierungsnummer",
+    "taxNumber": "Steuernummer",
+    "productsTitle": "Hier erhältlich"
   },
   "markets": {
     "title": "Märkte",
@@ -1896,7 +1902,13 @@
         "hours": "Bürozeiten",
         "documents": "Öffentliche Dokumente",
         "description": "Über das Unternehmen",
-        "returnPolicy": "Rückgaberichtlinie"
+        "returnPolicy": "Rückgaberichtlinie",
+        "photos": "Fotos",
+        "coins": "Akzeptierte Coins",
+        "socials": "Social-Links",
+        "website": "Website",
+        "products": "Produkte zum Verkauf",
+        "promos": "Aktuelle Angebote"
       },
       "alwaysPublic": "Immer öffentlich: Anzeigename, rechtlicher Name, Land und Stadt, Art des Geschäfts und Branche sowie die Adressen deiner Standorte — sie werden auf der Karte angezeigt.",
       "err": "Konnte nicht gespeichert werden. Versuchen Sie es erneut."
@@ -1904,7 +1916,11 @@
     "attention": {
       "title": "Erfordert Ihre Aufmerksamkeit",
       "customers": "Kundennachrichten"
-    }
+    },
+    "coinSearch": "Coins suchen",
+    "coinSearchEmpty": "Nichts gefunden. Versuche den Ticker",
+    "companyCoinsHint": "Punkte ohne eigene Auswahl erben diese Coins. Eine Änderung des Sets geht an einen Moderator",
+    "coinsInherited": "Nichts ausgewählt — dieser Punkt zeigt das Unternehmens-Set: {coins}"
   },
   "cabinet": {
     "kicker": "Bereich · Kabinett",
@@ -2446,7 +2462,8 @@
     "returnsUnknown": "Der Verkäufer hat keine Rückgaberichtlinie angegeben.",
     "officeHoursTitle": "Bürozeiten",
     "officeHoursHint": "Wenn Telefon, E-Mail und Personal erreichbar sind. Handelszeiten sind bei jedem Verkaufsort aufgeführt.",
-    "documentsTitle": "Dokumente"
+    "documentsTitle": "Dokumente",
+    "hoursFromCompany": "Bürozeiten des Unternehmens — Handelszeiten sind für diesen Standort nicht festgelegt."
   },
   "companiesDirectory": {
     "kicker": "Verzeichnis",
@@ -4464,7 +4481,9 @@
       "notLive": "derzeit nicht im Schaufenster",
       "mute": "Stummschalten",
       "unmute": "Stummschaltung aufheben",
-      "unfollow": "Entfolgen"
+      "unfollow": "Entfolgen",
+      "switchOn": "ein",
+      "switchOff": "aus"
     }
   },
   "cabinetPromos": {

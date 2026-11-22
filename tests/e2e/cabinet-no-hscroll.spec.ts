@@ -29,7 +29,12 @@ function dbUrl(): string {
 
 const prisma = new PrismaClient({ datasources: { db: { url: dbUrl() } } });
 
-const WIDTHS = [320, 390];
+/**
+ * 280 px — не выдуманный узкий случай, а живой экран: iPhone 15 с текстовым
+ * увеличением Safari («Aa») сужает эффективную ширину примерно до 262–280 px.
+ * Ровно там владелец и увидел, как «одно на другое наезжает» (слайс BX).
+ */
+const WIDTHS = [280, 320, 390];
 
 let userId = "";
 let companyId = "";
@@ -73,10 +78,18 @@ test.afterAll(async () => {
   await prisma.$disconnect();
 });
 
-test("экраны кабинета предприятия не ездят по горизонтали на 320 и 390 px", async ({ page, context, baseURL }) => {
+test("экраны кабинета предприятия не ездят по горизонтали на 280, 320 и 390 px", async ({ page, context, baseURL }) => {
+  // Двадцать адресов на три ширины — шестьдесят переходов: общий тридцатисекундный
+  // срок набора для этого прогона мал, и падение по сроку выглядело бы как
+  // переполнение, которого нет.
+  test.setTimeout(240_000);
   const base = `/ru/cabinet/companies/${companyId}`;
   const paths = [
     "/ru/cabinet",
+    // Публичная витрина предприятия: её открывают из подписок, и жалоба
+    // владельца была именно про неё (слайс BX).
+    `/ru/companies/${companyId}`,
+    "/ru/cabinet/subscriptions",
     "/ru/cabinet/companies",
     "/ru/cabinet/companies/new",
     base,
