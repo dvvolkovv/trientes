@@ -1064,6 +1064,23 @@
     },
     "products": {
       "openPassport": "Otvoriti putovnicu"
+    },
+    "appearance": {
+      "kicker": "Admin",
+      "title": "Boje odjeljaka",
+      "subtitle": "Dodijelite svakom odjeljku boju obruba koju ćete prepoznati. Izbor je samo vaš — ostalo osoblje zadržava svoje.",
+      "none": "Bez boje",
+      "reset": "Resetirajte sve boje",
+      "colors": {
+        "red": "Crvena",
+        "orange": "Narančasta",
+        "amber": "Jantarna",
+        "green": "Zelena",
+        "teal": "Modrozelena",
+        "blue": "Plava",
+        "violet": "Ljubičasta",
+        "pink": "Ružičasta"
+      }
     }
   },
   "exchanges": {

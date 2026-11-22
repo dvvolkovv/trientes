@@ -1064,6 +1064,23 @@
     },
     "products": {
       "openPassport": "Open the passport"
+    },
+    "appearance": {
+      "kicker": "Admin",
+      "title": "Section colours",
+      "subtitle": "Give each section an outline colour you will recognise. The choice is yours alone — other staff keep their own.",
+      "none": "No colour",
+      "reset": "Reset all colours",
+      "colors": {
+        "red": "Red",
+        "orange": "Orange",
+        "amber": "Amber",
+        "green": "Green",
+        "teal": "Teal",
+        "blue": "Blue",
+        "violet": "Violet",
+        "pink": "Pink"
+      }
     }
   },
   "exchanges": {

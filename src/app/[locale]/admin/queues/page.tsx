@@ -8,6 +8,8 @@ import { buildTiles, queueOfSubject, type CaseRow } from "@/lib/cases/queues";
 import { slaState } from "@/lib/cases/sla";
 import { OPEN_STATUSES } from "@/lib/cases/types";
 import { ADMIN_COLUMN } from "@/lib/admin-ui";
+import { readViewerSectionColors } from "@/lib/admin-appearance";
+import { sectionColorHex } from "@/lib/admin-sections";
 
 export const dynamic = "force-dynamic";
 
@@ -44,6 +46,7 @@ export default async function AdminQueuesPage({ params }: { params: Promise<{ lo
   // Плитки — только выданные очереди: число непрочитанного по чужой очереди
   // выдавало бы её содержимое.
   const access = await loadViewerAccess();
+  const colors = await readViewerSectionColors();
   const allowed = new Set(access ? visibleQueues(access, now) : []);
   const tiles = buildTiles(rows, now, unreadByCase).filter((tile) => allowed.has(tile.key));
   const totalOpen = tiles.reduce((sum, x) => sum + x.open, 0);
@@ -107,6 +110,7 @@ export default async function AdminQueuesPage({ params }: { params: Promise<{ lo
               }
               emptyLabel={t("queues.empty")}
               unreadLabel={tile.unread > 0 ? t("queues.unread", { count: tile.unread }) : null}
+              colorHex={sectionColorHex(colors, tile.key)}
             />
           );
         })}

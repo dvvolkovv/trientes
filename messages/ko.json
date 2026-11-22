@@ -1064,6 +1064,23 @@
     },
     "products": {
       "openPassport": "패스포트 열기"
+    },
+    "appearance": {
+      "kicker": "관리자",
+      "title": "섹션 색상",
+      "subtitle": "각 섹션에 본인이 알아볼 수 있는 외곽선 색상을 지정하세요. 선택은 오로지 본인만의 것이며 — 다른 직원들은 각자 자신의 것을 유지합니다.",
+      "none": "색상 없음",
+      "reset": "모든 색상 재설정",
+      "colors": {
+        "red": "빨강",
+        "orange": "주황",
+        "amber": "호박",
+        "green": "초록",
+        "teal": "청록",
+        "blue": "파랑",
+        "violet": "보라",
+        "pink": "분홍"
+      }
     }
   },
   "exchanges": {

@@ -1064,6 +1064,23 @@
     },
     "products": {
       "openPassport": "Pasaportu aç"
+    },
+    "appearance": {
+      "kicker": "Yönetici",
+      "title": "Bölüm renkleri",
+      "subtitle": "Her bölüme tanıyacağınız bir kenarlık rengi verin. Seçim yalnızca size ait — diğer personel kendi seçimini korur.",
+      "none": "Renk yok",
+      "reset": "Tüm renkleri sıfırla",
+      "colors": {
+        "red": "Kırmızı",
+        "orange": "Turuncu",
+        "amber": "Kehribar",
+        "green": "Yeşil",
+        "teal": "Camgöbeği",
+        "blue": "Mavi",
+        "violet": "Mor",
+        "pink": "Pembe"
+      }
     }
   },
   "exchanges": {

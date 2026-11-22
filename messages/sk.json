@@ -1064,6 +1064,23 @@
     },
     "products": {
       "openPassport": "Otvoriť pas"
+    },
+    "appearance": {
+      "kicker": "Admin",
+      "title": "Farby sekcií",
+      "subtitle": "Každej sekcii priraďte obrysovú farbu, ktorú ľahko rozpoznáte. Voľba je len na vás — ostatní členovia tímu majú vlastné.",
+      "none": "Bez farby",
+      "reset": "Resetovať všetky farby",
+      "colors": {
+        "red": "Červená",
+        "orange": "Oranžová",
+        "amber": "Jantárová",
+        "green": "Zelená",
+        "teal": "Tyrkysová",
+        "blue": "Modrá",
+        "violet": "Fialová",
+        "pink": "Ružová"
+      }
     }
   },
   "exchanges": {

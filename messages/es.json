@@ -1064,6 +1064,23 @@
     },
     "products": {
       "openPassport": "Abrir el pasaporte"
+    },
+    "appearance": {
+      "kicker": "Admin",
+      "title": "Colores de las secciones",
+      "subtitle": "Asigna a cada sección un color de contorno que reconocerás. La elección es solo tuya — el resto del personal mantiene la suya.",
+      "none": "Sin color",
+      "reset": "Restablecer todos los colores",
+      "colors": {
+        "red": "Rojo",
+        "orange": "Naranja",
+        "amber": "Ámbar",
+        "green": "Verde",
+        "teal": "Verde azulado",
+        "blue": "Azul",
+        "violet": "Violeta",
+        "pink": "Rosa"
+      }
     }
   },
   "exchanges": {

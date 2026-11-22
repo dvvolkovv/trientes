@@ -1064,6 +1064,23 @@
     },
     "products": {
       "openPassport": "Pass öffnen"
+    },
+    "appearance": {
+      "kicker": "Admin",
+      "title": "Abschnittsfarben",
+      "subtitle": "Gib jedem Abschnitt eine Rahmenfarbe, die du wiedererkennst. Die Wahl liegt nur bei dir — andere Mitarbeitende behalten ihre eigene.",
+      "none": "Keine Farbe",
+      "reset": "Alle Farben zurücksetzen",
+      "colors": {
+        "red": "Rot",
+        "orange": "Orange",
+        "amber": "Bernstein",
+        "green": "Grün",
+        "teal": "Türkis",
+        "blue": "Blau",
+        "violet": "Violett",
+        "pink": "Pink"
+      }
     }
   },
   "exchanges": {

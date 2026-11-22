@@ -10,6 +10,7 @@ export function QueueTileCard({
   slaLabel,
   emptyLabel,
   unreadLabel,
+  colorHex,
 }: {
   tile: Tile;
   label: string;
@@ -18,11 +19,16 @@ export function QueueTileCard({
   slaLabel: string | null;
   emptyLabel: string;
   unreadLabel: string | null;
+  colorHex?: string | null;
 }) {
   const hot = tile.worst === "late" || tile.worst === "warn";
+  // Срок важнее личного цвета: горящая очередь красит контур сама, а цвет
+  // оператора виден, пока в очереди спокойно.
+  const tint = !hot && colorHex ? colorHex : null;
   return (
     <Link
       href={href}
+      style={tint ? { borderColor: tint } : undefined}
       className={`${ADMIN_TILE} ${hot ? "border-accent/45" : ""} transition-colors hover:border-accent/60`}
     >
       {tile.unread > 0 && unreadLabel ? (
@@ -33,7 +39,10 @@ export function QueueTileCard({
           🔔 {tile.unread}
         </span>
       ) : null}
-      <div className="flex h-9 w-9 items-center justify-center rounded-[11px] bg-card-alt text-base">
+      <div
+        style={tint ? { backgroundColor: `${tint}26` } : undefined}
+        className="flex h-9 w-9 items-center justify-center rounded-[11px] bg-card-alt text-base"
+      >
         {tile.icon}
       </div>
       <div>

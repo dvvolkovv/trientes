@@ -1064,6 +1064,23 @@
     },
     "products": {
       "openPassport": "Ouvrir le passeport"
+    },
+    "appearance": {
+      "kicker": "Admin",
+      "title": "Couleurs des sections",
+      "subtitle": "Donnez à chaque section une couleur de contour que vous reconnaîtrez. Le choix vous appartient — les autres membres du personnel conservent les leurs.",
+      "none": "Aucune couleur",
+      "reset": "Réinitialiser toutes les couleurs",
+      "colors": {
+        "red": "Rouge",
+        "orange": "Orange",
+        "amber": "Ambre",
+        "green": "Vert",
+        "teal": "Sarcelle",
+        "blue": "Bleu",
+        "violet": "Violet",
+        "pink": "Rose"
+      }
     }
   },
   "exchanges": {

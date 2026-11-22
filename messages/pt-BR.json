@@ -1064,6 +1064,23 @@
     },
     "products": {
       "openPassport": "Abrir o passaporte"
+    },
+    "appearance": {
+      "kicker": "Admin",
+      "title": "Cores das seções",
+      "subtitle": "Dê a cada seção uma cor de borda que você reconheça. A escolha é só sua — os outros membros da equipe mantêm as deles.",
+      "none": "Sem cor",
+      "reset": "Redefinir todas as cores",
+      "colors": {
+        "red": "Vermelho",
+        "orange": "Laranja",
+        "amber": "Âmbar",
+        "green": "Verde",
+        "teal": "Verde-azulado",
+        "blue": "Azul",
+        "violet": "Violeta",
+        "pink": "Rosa"
+      }
     }
   },
   "exchanges": {

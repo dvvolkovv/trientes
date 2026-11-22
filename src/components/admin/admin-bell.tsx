@@ -20,7 +20,7 @@ export async function AdminBell({ locale }: { locale: string }) {
     <Link
       href={`/${locale}/admin/notifications`}
       title={t("title")}
-      className="ml-auto flex h-11 shrink-0 items-center gap-1.5 self-center rounded-full border border-hairline px-3 text-[13px] font-semibold transition-colors hover:border-accent/60"
+      className="flex h-11 shrink-0 items-center gap-1.5 rounded-full border border-hairline px-3 text-[13px] font-semibold transition-colors hover:border-accent/60"
     >
       🔔
       {count > 0 ? (

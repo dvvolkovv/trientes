@@ -30,3 +30,26 @@ export const SLA_DOT: Record<"ok" | "warn" | "late" | "paused", string> = {
   late: "bg-down",
   paused: "bg-muted",
 };
+
+/**
+ * Кнопка полосы разделов. Высота одна у всех (44 px — порог пальца), активная
+ * отличается заливкой, а не высотой: подчёркивание снизу (`-mb-px`) и делало
+ * содержимое полосы выше её самой, отчего полоса получала свою вертикальную
+ * прокрутку и болталась пальцем.
+ */
+export const ADMIN_TAB =
+  "flex h-11 shrink-0 items-center rounded-full border px-4 text-[13px] font-semibold uppercase tracking-wider transition-colors";
+
+/**
+ * Полоса разделов. `overflow-y: hidden` прямо — иначе `overflow-x: auto` делает
+ * вторую ось прокручиваемой само собой; `touch-action: pan-x` — чтобы жест
+ * пальцем по полосе не отдавался вертикали (тот же приём, что `pan-y` на корне
+ * карточки точки навигатора).
+ */
+export const ADMIN_TAB_STRIP =
+  "flex gap-2 overflow-x-auto overflow-y-hidden px-4 py-1 [touch-action:pan-x] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden " +
+  // На широком экране прокрутка вбок прячет последние кнопки (живой прогон:
+  // «Analytics» и настройка вида уходили за край), а места хватает на перенос.
+  // `overflow-visible` обязателен целиком: с `overflow-y: hidden` вторая ось не
+  // бывает `visible`, и вторая строка кнопок была бы обрезана.
+  "md:flex-wrap md:overflow-visible md:px-0 md:[touch-action:auto]";
