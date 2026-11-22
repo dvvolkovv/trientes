@@ -14,7 +14,7 @@ import {
   type Poi,
 } from "@/lib/crypto-map";
 import { PUBLIC_COMPANY } from "@/lib/company-visibility";
-import { companyPointToPoi } from "@/lib/company-points";
+import { companyPointToPoi, POI_COMPANY_SELECT } from "@/lib/company-points";
 import { fetchApprovedFintechHqInBbox } from "@/lib/fintech-pois";
 import { interestOf, type InterestKey } from "@/lib/interests";
 import {
@@ -189,8 +189,7 @@ async function readCompanyStops(
     include: {
       company: {
         select: {
-          displayName: true, logoUrl: true, website: true, socials: true,
-          description: true, email: true, phone: true, category: true,
+          ...POI_COMPANY_SELECT,
         },
       },
     },

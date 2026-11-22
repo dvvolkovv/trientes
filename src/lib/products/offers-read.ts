@@ -330,3 +330,73 @@ export async function pointIdsWithProduct(slug: string): Promise<string[]> {
   });
   return [...new Set(rows.map((r) => r.warehouse.pointId).filter((id): id is string => Boolean(id)))];
 }
+
+/**
+ * Что предприятие продаёт **на этих точках** — для карточки с карты (слайс BX).
+ *
+ * Идём от полки, а не от товара: «где взять» на паспорте отвечает на вопрос «кто
+ * продаёт эту вещь», а карточка точки — на обратный «что тут есть». Правило
+ * видимости то же самое (`offerVisible`), второго не заводим.
+ *
+ * Один запрос на кадр, как справочник монет и акции: в кадре бывает двести точек.
+ */
+export async function readPointOffers(
+  pointIds: readonly string[],
+  perPoint = 3,
+): Promise<Map<string, { slug: string; name: string; price: string | null }[]>> {
+  const out = new Map<string, { slug: string; name: string; price: string | null }[]>();
+  if (pointIds.length === 0) return out;
+  const shelves = await prisma.warehouse.findMany({
+    where: { pointId: { in: [...pointIds] }, ...LIVE_SHELF },
+    select: {
+      pointId: true,
+      companyId: true,
+      balances: { where: { qty: { gt: 0 } }, select: { productId: true }, take: 50 },
+    },
+  });
+  if (shelves.length === 0) return out;
+
+  const productIds = Array.from(new Set(shelves.flatMap((w) => w.balances.map((b) => b.productId))));
+  if (productIds.length === 0) return out;
+  const companyIds = Array.from(new Set(shelves.map((w) => w.companyId)));
+  const offers = await prisma.productOffer.findMany({
+    where: { companyId: { in: companyIds }, productId: { in: productIds } },
+    select: {
+      companyId: true,
+      productId: true,
+      price: true,
+      currency: true,
+      unit: true,
+      status: true,
+      product: {
+        select: { slug: true, name: true, suspendedAt: true, deletedAt: true, mergedIntoId: true },
+      },
+      company: {
+        select: { status: true, suspendedAt: true, deletedAt: true, publicFields: true },
+      },
+    },
+  });
+  const byKey = new Map(offers.map((o) => [`${o.companyId}:${o.productId}`, o]));
+
+  for (const w of shelves) {
+    if (!w.pointId) continue;
+    const rows = out.get(w.pointId) ?? [];
+    for (const b of w.balances) {
+      if (rows.length >= perPoint) break;
+      const offer = byKey.get(`${w.companyId}:${b.productId}`);
+      if (!offer) continue;
+      // Выключатель «товары» читается здесь: фид публичный, и спрятать список
+      // вёрсткой значит всё равно отдать его наружу (правило слайса BX).
+      if (!publicFieldOn(offer.company.publicFields, "products")) continue;
+      if (!offerVisible(offer, offer.company, offer.product)) continue;
+      if (rows.some((r) => r.slug === offer.product.slug)) continue;
+      rows.push({
+        slug: offer.product.slug,
+        name: offer.product.name,
+        price: `${Number(offer.price)} ${offer.currency}${offer.unit ? ` / ${offer.unit}` : ""}`,
+      });
+    }
+    if (rows.length > 0) out.set(w.pointId, rows);
+  }
+  return out;
+}

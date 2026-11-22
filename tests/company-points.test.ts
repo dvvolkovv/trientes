@@ -137,3 +137,99 @@ describe("companyPointToPoi — что здесь принимают", () => {
     expect(companyPointToPoi(point(), BTC).acceptedCoins).toEqual([]);
   });
 });
+
+/**
+ * Слайс BX. Фид обязан читать выключатели предприятия сам: он публичный, и
+ * «спрятать в браузере» значит всё равно отдать наружу. И он обязан понимать
+ * наследование: пустые часы точки — это «как у предприятия», а не «часов нет».
+ */
+describe("карточка с карты: выключатели и наследование (BX)", () => {
+  const WORKWEEK = { mon: { kind: "open", spans: [["09:00", "18:00"]] } };
+  const arcon = {
+    ...row,
+    type: "SHOP",
+    phone: null,
+    hours: null,
+    timezone: null,
+    photos: [{ url: "/uploads/points/p/a.jpg" }],
+    acceptedCoinIds: [],
+    acceptedCardIds: [],
+    companyId: "cmp1",
+    company: {
+      displayName: "Arcon",
+      logoUrl: "https://x/c.png",
+      website: "https://arcon.ch",
+      socials: null,
+      description: "Строим",
+      email: "a@arcon.ch",
+      phone: "+41 79",
+      category: null,
+      hours: WORKWEEK,
+      timezone: "Europe/Zurich",
+      publicFields: null,
+      acceptedCoinIds: ["bitcoin"],
+      acceptedCardIds: [],
+      returnPolicy: "14 дней",
+      returnDays: 14,
+      registrationNumber: "CHE-108.021.845",
+      taxNumber: null,
+    },
+  };
+
+  it("пустые часы точки показывают часы предприятия и его пояс", () => {
+    const p = companyPointToPoi(arcon as never, ETH);
+    expect(p.hours?.mon).toEqual({ kind: "open", spans: [["09:00", "18:00"]] });
+    expect(p.timezone).toBe("Europe/Zurich");
+    // Чьё расписание — сказано прямо: часы конторы это не часы торговли.
+    expect(p.hoursFrom).toBe("company");
+  });
+
+  it("пустой набор монет точки показывает монеты предприятия", () => {
+    expect(companyPointToPoi(arcon as never, BTC).coinSpecific).toBe(true);
+    expect(companyPointToPoi(arcon as never, ETH).coinSpecific).toBe(false);
+  });
+
+  it("выключенный модуль не приходит в ответе вовсе", () => {
+    const off = {
+      ...arcon,
+      company: {
+        ...arcon.company,
+        publicFields: {
+          phone: false, email: false, hours: false, coins: false,
+          photos: false, socials: false, website: false,
+          description: false, returnPolicy: false,
+        },
+      },
+    };
+    const p = companyPointToPoi(off as never, BTC);
+    expect(p.phone).toBeNull();
+    expect(p.email).toBeNull();
+    expect(p.website).toBeNull();
+    expect(p.description).toBeNull();
+    expect(p.hours).toBeNull();
+    expect(p.photos).toEqual([]);
+    expect(p.socials).toEqual([]);
+    expect(p.acceptedCoins).toEqual([]);
+    expect(p.returnPolicy).toBeNull();
+    // Выключенные монеты гасят и признак «принимает выбранную»: иначе булавка
+    // обещала бы приём, которого в карточке не видно.
+    expect(p.coinSpecific).toBe(false);
+  });
+
+  it("включённые модули приходят, а реквизиты выключателя не имеют (решение BV)", () => {
+    const p = companyPointToPoi(arcon as never, BTC);
+    expect(p.phone).toBe("+41 79");
+    expect(p.returnPolicy).toBe("14 дней");
+    expect(p.returnDays).toBe(14);
+    expect(p.requisites?.registrationNumber).toBe("CHE-108.021.845");
+    expect(p.companyId).toBe("cmp1");
+  });
+
+  it("выключенные фотографии не подставляются и в превью булавки", () => {
+    const off = { ...arcon, company: { ...arcon.company, publicFields: { photos: false } } };
+    const p = companyPointToPoi(off as never, BTC);
+    expect(p.photos).toEqual([]);
+    // Остаётся логотип: знак заведения — не фотография витрины.
+    expect(p.image).toBe("https://x/y.png");
+  });
+});

@@ -45,9 +45,30 @@ export function inheritedHours(
   return { hours: null, timezone: null, from: null };
 }
 
-/** Набор монет: непустой у точки сильнее, пустой означает «как у предприятия». */
-export function inheritedCoins(point: readonly string[] | null | undefined, company: readonly string[] | null | undefined): string[] {
-  const own = (point ?? []).filter((id) => typeof id === "string" && id.length > 0);
-  if (own.length > 0) return [...own];
-  return [...(company ?? []).filter((id) => typeof id === "string" && id.length > 0)];
+export type CoinSets = { coins: string[]; cards: string[] };
+export type InheritedCoins = CoinSets & { from: "point" | "company" | null };
+
+function clean(list: readonly string[] | null | undefined): string[] {
+  return (list ?? []).filter((id) => typeof id === "string" && id.length > 0);
+}
+
+/**
+ * Набор монет точки. Наследование — **всё или ничего**, а не по списку в
+ * отдельности: точка, назвавшая хоть одну монету, говорит за себя целиком.
+ * Иначе заведение, выбравшее у точки только свой листинг, молча получило бы к
+ * нему ещё и биткойн с эфиром предприятия — то есть заявление о приёме, которого
+ * никто не делал.
+ */
+export function inheritedCoins(point: Partial<CoinSets>, company: Partial<CoinSets>): InheritedCoins {
+  const ownCoins = clean(point.coins);
+  const ownCards = clean(point.cards);
+  if (ownCoins.length > 0 || ownCards.length > 0) {
+    return { coins: ownCoins, cards: ownCards, from: "point" };
+  }
+  const theirCoins = clean(company.coins);
+  const theirCards = clean(company.cards);
+  if (theirCoins.length > 0 || theirCards.length > 0) {
+    return { coins: theirCoins, cards: theirCards, from: "company" };
+  }
+  return { coins: [], cards: [], from: null };
 }

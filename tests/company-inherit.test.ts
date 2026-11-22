@@ -69,18 +69,27 @@ describe("часы: точка наследует предприятие", () =>
 
 describe("монеты: точка наследует предприятие", () => {
   it("свой набор точки сильнее", () => {
-    expect(inheritedCoins(["bitcoin"], ["ethereum", "solana"])).toEqual(["bitcoin"]);
+    const r = inheritedCoins({ coins: ["bitcoin"] }, { coins: ["ethereum", "solana"] });
+    expect(r).toEqual({ coins: ["bitcoin"], cards: [], from: "point" });
   });
 
   it("пустой набор точки означает «как у предприятия»", () => {
-    expect(inheritedCoins([], ["ethereum", "solana"])).toEqual(["ethereum", "solana"]);
+    const r = inheritedCoins({}, { coins: ["ethereum"], cards: ["card1"] });
+    expect(r).toEqual({ coins: ["ethereum"], cards: ["card1"], from: "company" });
+  });
+
+  it("наследование — всё или ничего, а не по списку в отдельности", () => {
+    // Точка назвала только свой листинг. Биткойн предприятия к нему не приклеивается:
+    // это было бы заявление о приёме, которого никто не делал.
+    const r = inheritedCoins({ cards: ["tal"] }, { coins: ["bitcoin"], cards: [] });
+    expect(r).toEqual({ coins: [], cards: ["tal"], from: "point" });
   });
 
   it("пусто у обоих — пусто", () => {
-    expect(inheritedCoins(null, undefined)).toEqual([]);
+    expect(inheritedCoins({}, {})).toEqual({ coins: [], cards: [], from: null });
   });
 
   it("мусор в списке выбрасывается, а не доезжает до карточки", () => {
-    expect(inheritedCoins(["", "bitcoin"], [])).toEqual(["bitcoin"]);
+    expect(inheritedCoins({ coins: ["", "bitcoin"] }, {}).coins).toEqual(["bitcoin"]);
   });
 });

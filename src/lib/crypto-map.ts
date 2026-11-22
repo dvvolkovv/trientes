@@ -170,8 +170,15 @@ export type Poi = {
    * У точки зеркала BTC Map ключа нет — там род занятия приходит словами.
    */
   categoryKey?: string | null;
+  /** Предприятие, которому точка принадлежит (слайс BX): ссылка «открыть карточку». */
+  companyId?: string | null;
   /** Расписание по дням (слайс BN) — только у своей точки; `null` у зеркала. */
   hours?: WeekHours | null;
+  /**
+   * Чьё это расписание (слайс BX). Часы конторы у точки без своих — не то же
+   * самое, что часы торговли, и выдавать одно за другое молча нельзя.
+   */
+  hoursFrom?: "point" | "company" | null;
   /** Пояс заведения; без него состояние «открыто сейчас» не считается. */
   timezone?: string | null;
   address: string | null;
@@ -199,6 +206,13 @@ export type Poi = {
    * вид булавки она не меняет: цвет каёмки занят источником, середина — категорией.
    */
   promo?: { id: string; title: string };
+  /** Политика возврата предприятия (BW): выключателем `returnPolicy`. */
+  returnPolicy?: string | null;
+  returnDays?: number | null;
+  /** Публичные реквизиты (BV). Выключателя у них нет по решению того же слайса. */
+  requisites?: { registrationNumber: string | null; taxNumber: string | null } | null;
+  /** До трёх предложений предприятия на этой точке (слайс BX), модуль `products`. */
+  offers?: { slug: string; name: string; price: string | null }[];
   // Optional in-app deep-link slug. Set only for fintech HQs (→ /{locale}/fintech/{slug}).
   slug?: string;
 };

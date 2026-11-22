@@ -2,9 +2,11 @@ import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { PUBLIC_COMPANY } from "@/lib/company-visibility";
 import { readPointPromos } from "@/lib/promos/read";
+import { readPointOffers } from "@/lib/products/offers-read";
 import type { AcceptedCoin, Bbox, CoinSelector, Poi, PoiLayer, Social } from "@/lib/crypto-map";
 import { effectiveCategory } from "@/lib/merchant-categories";
-import { parseWeekHours } from "@/lib/opening-hours";
+import { inheritedCoins, inheritedHours } from "@/lib/company-inherit";
+import { parsePublicFields, type PublicFields } from "@/lib/company-public-fields";
 
 // Shape returned by the prisma query in fetchApprovedPointsInBbox (point + its company).
 export type PointWithCompany = Prisma.CompanyPointGetPayload<{
@@ -13,10 +15,28 @@ export type PointWithCompany = Prisma.CompanyPointGetPayload<{
       select: {
         displayName: true; logoUrl: true; website: true; socials: true;
         description: true; email: true; phone: true; category: true;
+        hours: true; timezone: true; publicFields: true;
+        acceptedCoinIds: true; acceptedCardIds: true;
+        returnPolicy: true; returnDays: true;
+        registrationNumber: true; taxNumber: true;
       };
     };
   };
 }>;
+
+/**
+ * Что из предприятия выбирает фид (слайс BX). Один список на оба места, где он
+ * нужен, — иначе запрос кадра и запрос одной точки разошлись бы по полям, и
+ * карточка, открытая по ссылке, отличалась бы от открытой с карты.
+ */
+export const POI_COMPANY_SELECT = {
+  displayName: true, logoUrl: true, website: true, socials: true,
+  description: true, email: true, phone: true, category: true,
+  hours: true, timezone: true, publicFields: true,
+  acceptedCoinIds: true, acceptedCardIds: true,
+  returnPolicy: true, returnDays: true,
+  registrationNumber: true, taxNumber: true,
+} as const;
 
 /** Пометка «проверяется» — отдельное поле, а не статус: точка остаётся одобренной. */
 export function pointUnderReview(p: { underReviewAt: Date | null }): boolean {
@@ -80,9 +100,9 @@ function asPhotos(raw: unknown): string[] {
  * Монеты, которые компания заявила у этой точки. Монета, которой нет в
  * справочнике, выпадает молча: чипс без тикера и логотипа ничего не сообщает.
  */
-function acceptedCoinsFor(p: PointWithCompany, registry: CoinRegistry): AcceptedCoin[] {
+function acceptedCoinsFor(sets: { coins: string[]; cards: string[] }, registry: CoinRegistry): AcceptedCoin[] {
   const out: AcceptedCoin[] = [];
-  for (const id of p.acceptedCoinIds ?? []) {
+  for (const id of sets.coins) {
     const row = registry.coins.get(id);
     if (!row) continue;
     out.push({
@@ -94,7 +114,7 @@ function acceptedCoinsFor(p: PointWithCompany, registry: CoinRegistry): Accepted
       own: false,
     });
   }
-  for (const id of p.acceptedCardIds ?? []) {
+  for (const id of sets.cards) {
     const row = registry.cards.get(id);
     if (!row) continue;
     out.push({
@@ -109,23 +129,52 @@ function acceptedCoinsFor(p: PointWithCompany, registry: CoinRegistry): Accepted
   return out;
 }
 
-// Convert a company-submitted point into the same Poi shape OSM points use, so the
-// existing navigator card/markers render it unchanged. Company-level fields are the
-// fallback when the point omits its own (point description first, then company about).
+/**
+ * Точка предприятия в том же виде `Poi`, что и точка зеркала BTC Map, — чтобы
+ * карточка и булавки рисовали её без единой развилки.
+ *
+ * Слайс BX добавил сюда два правила, и оба про **одно предприятие, одну витрину**:
+ *
+ * 1. **Выключатели читаются здесь, а не в браузере.** Фид публичный, и спрятать
+ *    телефон вёрсткой значит всё равно отдать его наружу. Выключенный модуль
+ *    просто не приходит.
+ * 2. **Пустота у точки означает «как у предприятия».** Часы и монеты точка
+ *    наследует (`company-inherit.ts`): правило BN «часы принадлежат месту» цело —
+ *    своё у точки по-прежнему сильнее, — но молчание больше не означает «нет».
+ */
 export function companyPointToPoi(
   p: PointWithCompany,
   selector: CoinSelector,
   registry: CoinRegistry = EMPTY_COIN_REGISTRY,
 ): Poi {
+  const show: PublicFields = parsePublicFields(p.company.publicFields, {
+    // У точки на карте адрес и так виден, поэтому контекст «точки есть»: иначе
+    // умолчание точного адреса считалось бы как у онлайн-предприятия.
+    hasPhysicalPoints: true,
+  });
   const pointSocials = asSocials(p.socials);
   // Caller (fetchApprovedPointsInBbox) already filters by lat/lon bounds, which
   // implicitly excludes ONLINE-type points (their coords are null). The non-null
   // assertion here is documented by that invariant.
-  const firstPhoto = Array.isArray(p.photos)
-    ? (p.photos.find((ph) => ph && typeof ph === "object" && typeof (ph as { url?: unknown }).url === "string") as { url?: string } | undefined)
-    : undefined;
+  const photos = show.photos ? asPhotos(p.photos) : [];
+  const firstPhoto = photos[0];
+  const hours = show.hours
+    ? inheritedHours(
+        { hours: p.hours, timezone: p.timezone },
+        { hours: p.company.hours, timezone: p.company.timezone },
+      )
+    : ({ hours: null, timezone: null, from: null } as ReturnType<typeof inheritedHours>);
+  const coins = show.coins
+    ? inheritedCoins(
+        { coins: p.acceptedCoinIds ?? [], cards: p.acceptedCardIds ?? [] },
+        { coins: p.company.acceptedCoinIds ?? [], cards: p.company.acceptedCardIds ?? [] },
+      )
+    : ({ coins: [], cards: [], from: null } as ReturnType<typeof inheritedCoins>);
+  const website = show.website ? (p.website ?? p.company.website ?? null) : null;
+  const description = show.description ? (p.description ?? p.company.description ?? null) : null;
   return {
     id: `company/${p.id}`,
+    companyId: p.companyId,
     lat: p.lat!,
     lon: p.lon!,
     name: p.name,
@@ -134,32 +183,44 @@ export function companyPointToPoi(
     // Вид заведения: уточнение точки сильнее категории предприятия. Текстовую
     // подпись не подменяем — она про то, с кем человек имеет дело.
     categoryKey: effectiveCategory(p.category, p.company.category),
-    hours: parseWeekHours(p.hours),
-    timezone: p.timezone,
+    hours: hours.hours,
+    timezone: hours.timezone,
+    // Чьё это расписание — говорим прямо: часы конторы у точки без своих это не
+    // то же самое, что часы торговли, и выдавать одно за другое молча нельзя.
+    hoursFrom: hours.from,
     address: p.address,
     lightning: false,
     // Своя карточка и монета CoinGecko живут в разных пространствах id, поэтому
     // сверяются с разными массивами и никогда не путаются между собой.
     coinSpecific:
       selector.kind === "card"
-        ? (p.acceptedCardIds ?? []).includes(selector.cardId)
-        : (p.acceptedCoinIds ?? []).includes(selector.coinId.toLowerCase()),
-    acceptedCoins: acceptedCoinsFor(p, registry),
+        ? coins.cards.includes(selector.cardId)
+        : coins.coins.includes(selector.coinId.toLowerCase()),
+    acceptedCoins: acceptedCoinsFor(coins, registry),
     // Своя точка называет монеты по именам, поэтому «какая-то крипта» ей не нужна.
     acceptedGeneric: false,
-    photos: asPhotos(p.photos),
-    website: p.website ?? p.company.website ?? null,
-    openingHours: p.openingHours,
-    phone: p.phone ?? p.company.phone ?? null,
-    email: p.company.email ?? null,
-    socials: pointSocials.length ? pointSocials : asSocials(p.company.socials),
+    photos,
+    website,
+    openingHours: show.hours ? p.openingHours : null,
+    phone: show.phone ? (p.phone ?? p.company.phone ?? null) : null,
+    email: show.email ? (p.company.email ?? null) : null,
+    socials: show.socials ? (pointSocials.length ? pointSocials : asSocials(p.company.socials)) : [],
     // Storefront photo wins over generic logo for navigator-popup imagery.
-    image: firstPhoto?.url ?? p.logoUrl ?? p.company.logoUrl ?? null,
+    image: firstPhoto ?? p.logoUrl ?? p.company.logoUrl ?? null,
     // А в шапке карточки стоит именно знак заведения: логотип точки, иначе
     // логотип компании. Фотография витрины сюда не годится.
     logoUrl: p.logoUrl ?? p.company.logoUrl ?? null,
     underReview: pointUnderReview(p),
-    description: p.description ?? p.company.description ?? null,
+    description,
+    // Политика возврата и реквизиты — то же, что на витрине, и теми же
+    // выключателями (BW и BV). Реквизиты выключателя не имеют по решению BV:
+    // публичные реквизиты, которые не публичны, — противоречие в названии.
+    returnPolicy: show.returnPolicy ? (p.company.returnPolicy ?? null) : null,
+    returnDays: show.returnPolicy ? (p.company.returnDays ?? null) : null,
+    requisites:
+      p.company.registrationNumber || p.company.taxNumber
+        ? { registrationNumber: p.company.registrationNumber, taxNumber: p.company.taxNumber }
+        : null,
   };
 }
 
@@ -256,24 +317,45 @@ export async function fetchApprovedPointsInBbox(
       ...(onlyPointIds ? { id: { in: [...onlyPointIds] } } : {}),
       // Монета при фильтре по товару не применяется: человек ищет товар, а чем за него
       // заплатить — отдельный вопрос, и ответ на него стоит в карточке точки.
+      //
+      // Слайс BX: точка **без своего набора** принимает то, что заявило предприятие,
+      // — и отбор обязан это учитывать, иначе унаследованная монета видна в
+      // карточке, но точка не попадает в выборку «показывать только с этой монетой».
       ...(selector.kind === "card" && !onlyPointIds
-        ? { acceptedCardIds: { has: selector.cardId } }
+        ? {
+            OR: [
+              { acceptedCardIds: { has: selector.cardId } },
+              {
+                acceptedCardIds: { isEmpty: true },
+                acceptedCoinIds: { isEmpty: true },
+                company: { acceptedCardIds: { has: selector.cardId } },
+              },
+            ],
+          }
         : {}),
     },
     take: 500,
     include: {
       company: {
         select: {
-          displayName: true, logoUrl: true, website: true, socials: true,
-          description: true, email: true, phone: true, category: true,
+          ...POI_COMPANY_SELECT,
         },
       },
     },
   });
   // Один запрос на весь кадр, а не на точку: в кадре бывает двести точек, и
   // справочник на каждую превратил бы фид в двести запросов.
-  const coinIds = Array.from(new Set(rows.flatMap((r) => r.acceptedCoinIds ?? [])));
-  const cardIds = Array.from(new Set(rows.flatMap((r) => r.acceptedCardIds ?? [])));
+  // Справочник собирается по **унаследованному** набору: монета предприятия,
+  // которой нет ни у одной точки своим списком, иначе выпала бы из справочника и
+  // чипс в карточке не нарисовался бы вовсе.
+  const sets = rows.map((r) =>
+    inheritedCoins(
+      { coins: r.acceptedCoinIds ?? [], cards: r.acceptedCardIds ?? [] },
+      { coins: r.company.acceptedCoinIds ?? [], cards: r.company.acceptedCardIds ?? [] },
+    ),
+  );
+  const coinIds = Array.from(new Set(sets.flatMap((s) => s.coins)));
+  const cardIds = Array.from(new Set(sets.flatMap((s) => s.cards)));
   const [coinRows, cardRows] = await Promise.all([
     coinIds.length
       ? prisma.coin.findMany({
@@ -297,14 +379,34 @@ export async function fetchApprovedPointsInBbox(
     ),
   };
   const pois = rows.map((r) => companyPointToPoi(r, selector, registry));
+  // Товары на полках этих точек (слайс BX) — одним запросом на кадр. Сбой чтения
+  // оставляет карточку без списка товаров, но не без точки: товар — добавка.
+  try {
+    const offers = await readPointOffers(rows.map((r) => r.id));
+    if (offers.size > 0) {
+      for (const poi of pois) {
+        const rowsForPoint = offers.get(poi.id.slice("company/".length));
+        if (rowsForPoint && rowsForPoint.length > 0) poi.offers = rowsForPoint;
+      }
+    }
+  } catch (error) {
+    console.error("point_offers_failed", error);
+  }
   // Акции точек — одним запросом на кадр, как справочник монет выше. Сбой чтения
   // оставляет карту без строки акции, но не без точек: акция — добавка, а не точка.
   try {
     const promos = await readPointPromos(rows.map((r) => r.id));
     if (promos.length > 0) {
       const byPoint = new Map(promos.map((p) => [p.pointId as string, p]));
+      const promoShown = new Map(
+        rows.map((r) => [r.id, parsePublicFields(r.company.publicFields, { hasPhysicalPoints: true }).promos]),
+      );
       for (const poi of pois) {
-        const promo = byPoint.get(poi.id.slice("company/".length));
+        const pointId = poi.id.slice("company/".length);
+        // Выключатель «акции» читается здесь же, где выключены остальные модули:
+        // строка акции приходит отдельным запросом и мимо маппера.
+        if (promoShown.get(pointId) === false) continue;
+        const promo = byPoint.get(pointId);
         if (promo) poi.promo = { id: promo.id, title: promo.title };
       }
     }
