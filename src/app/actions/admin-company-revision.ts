@@ -6,7 +6,7 @@ import { requireQueue } from "@/lib/authz/guard";
 import { logAdminAction } from "@/lib/admin/audit";
 import { notifyUser } from "@/lib/notify";
 import { NOT_DELETED } from "@/lib/soft-delete";
-import { changesToPatch, parseChanges } from "@/lib/company-edit";
+import { changesToPatch, parseChanges, toCompanyPatch } from "@/lib/company-edit";
 import { displayAddress } from "@/lib/company";
 import { ensureCase } from "@/lib/cases/ensure";
 
@@ -33,6 +33,10 @@ export async function approveCompanyRevision(input: { revisionId: string }): Pro
   const changes = parseChanges(rev.changes);
   if (changes.length === 0) return { ok: false, reason: "nothing_to_apply" };
   const patch = changesToPatch(changes);
+  // В предприятие пишем через `toCompanyPatch`: набор монет (слайс BX) в базе
+  // массив, а в наборе изменений он лежит строкой — её читает человек. Строка
+  // `patch` остаётся для пересчёта выводимого адреса, он тоже строковый.
+  const dataPatch = toCompanyPatch(patch);
   const docs = Array.isArray(rev.documents) ? rev.documents : [];
   // Правка юридического имени — повторная проверка лица: присланные бумаги
   // дописываются к пакету, статус проверки возвращается в «на проверке», и дело KYB
@@ -63,7 +67,7 @@ export async function approveCompanyRevision(input: { revisionId: string }): Pro
     await tx.company.update({
       where: { id: rev.companyId },
       data: {
-        ...patch,
+        ...dataPatch,
         ...(addressPatch ? { address: addressPatch } : {}),
         ...(reverifies
           ? {

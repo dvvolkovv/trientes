@@ -9,6 +9,8 @@
  * полем означала бы, что одобренную проверку можно переписать на другое лицо.
  */
 
+import { joinIdList, sameIdList, splitIdList } from "@/lib/id-list";
+
 /**
  * Применяются сразу: заявление о себе, за которое отвечает сам продавец.
  *
@@ -36,6 +38,14 @@ export const COMPANY_FREE_FIELDS = [
 ] as const;
 
 /**
+ * Поля, которые в базе **списки ключей** (слайс BX). Набор изменений ведётся
+ * строками — их читает человек в кабинете и модератор в деле, — а в предприятие
+ * надо записать массив. Второй путь записи (одобренная правка) идёт через тот же
+ * `toCompanyPatch`, поэтому правило живёт в одном месте.
+ */
+export const COMPANY_LIST_FIELDS = ["acceptedCoinIds", "acceptedCardIds"] as const;
+
+/**
  * Поля, которые в базе целые числа. Набор изменений и сравнение «было → стало»
  * ведутся строками (их читает человек), а в предприятие нужно записать число —
  * иначе Postgres откажет на `"14"` в колонке `integer`.
@@ -52,6 +62,12 @@ export const COMPANY_INT_FIELDS = ["returnDays"] as const;
  */
 export const COMPANY_MODERATED_FIELDS = [
   "displayName",
+  // Слайс BX. Набор монет предприятия наследуют его точки, а смена монет у точки
+  // возвращает её в очередь (`POINT_MODERATED_FIELDS`). Дай менять наследуемый
+  // набор молча — и один и тот же покупательский смысл («здесь принимают X») шёл
+  // бы то через модератора, то мимо него. Это и есть обход правила.
+  "acceptedCoinIds",
+  "acceptedCardIds",
   "website",
   "phone",
   "email",
@@ -106,7 +122,7 @@ export const COMPANY_CARD_FIELDS: CompanyEditField[] = [
 ];
 
 export type CompanyEditState = Partial<
-  Record<CompanyEditField, string | number | null | undefined>
+  Record<CompanyEditField, string | number | string[] | null | undefined>
 >;
 
 /**
@@ -116,9 +132,13 @@ export type CompanyEditState = Partial<
  */
 export function toCompanyPatch(
   values: Partial<Record<CompanyEditField, string | null>>,
-): Record<string, string | number | null> {
-  const out: Record<string, string | number | null> = {};
+): Record<string, string | number | string[] | null> {
+  const out: Record<string, string | number | string[] | null> = {};
   for (const [field, value] of Object.entries(values)) {
+    if ((COMPANY_LIST_FIELDS as readonly string[]).includes(field)) {
+      out[field] = splitIdList(value);
+      continue;
+    }
     if ((COMPANY_INT_FIELDS as readonly string[]).includes(field)) {
       out[field] = value === null || value === undefined || value === "" ? null : Number(value);
       continue;
@@ -139,8 +159,12 @@ export type CompanyEditSplit = {
   needsDocuments: boolean;
 };
 
-function norm(v: string | number | null | undefined): string | null {
+function norm(v: string | number | string[] | null | undefined): string | null {
   if (v === null || v === undefined) return null;
+  // Список ключей приходит и массивом (строка предприятия из базы), и строкой
+  // (значение формы). Приводим к одному виду здесь, чтобы сравнение «было →
+  // стало» не зависело от того, с какой стороны пришло значение.
+  if (Array.isArray(v)) return joinIdList(v);
   const s = String(v).trim();
   return s === "" ? null : s;
 }
@@ -163,6 +187,12 @@ export function splitCompanyEdit(before: CompanyEditState, after: CompanyEditSta
   for (const field of [...COMPANY_DOCUMENT_FIELDS, ...COMPANY_MODERATED_FIELDS]) {
     const b = norm(before[field]);
     const a = norm(after[field]);
+    // У списка ключей перестановка изменением не является (правило `sameIdList`).
+    if ((COMPANY_LIST_FIELDS as readonly string[]).includes(field)) {
+      if (sameIdList(b, a)) continue;
+      pending.push({ field, before: b, after: a });
+      continue;
+    }
     if (b === a) continue;
     pending.push({ field, before: b, after: a });
     if ((COMPANY_DOCUMENT_FIELDS as readonly string[]).includes(field)) needsDocuments = true;

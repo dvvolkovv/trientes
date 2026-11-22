@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { splitCompanyEdit, changesToPatch, parseChanges } from "@/lib/company-edit";
+import { splitCompanyEdit, changesToPatch, parseChanges, toCompanyPatch } from "@/lib/company-edit";
 
 describe("правка карточки предприятия", () => {
   const base = {
@@ -56,5 +56,40 @@ describe("правка карточки предприятия", () => {
     expect(parseChanges([{ field: "nope", after: "x" }, { field: "city", before: null, after: "Brno" }, 7])).toEqual([
       { field: "city", before: null, after: "Brno" },
     ]);
+  });
+});
+
+describe("монеты предприятия — поле модерируемое (слайс BX)", () => {
+  it("смена набора монет ждёт модератора, а не ложится на витрину", () => {
+    const split = splitCompanyEdit(
+      { acceptedCoinIds: ["bitcoin", "ethereum"] },
+      { acceptedCoinIds: "bitcoin,ethereum,solana" },
+    );
+    expect(split.free).toEqual({});
+    expect(split.pending).toEqual([
+      { field: "acceptedCoinIds", before: "bitcoin,ethereum", after: "bitcoin,ethereum,solana" },
+    ]);
+    // Бумага за монеты не требуется: лицо подтверждают документы, а монеты — модератор.
+    expect(split.needsDocuments).toBe(false);
+  });
+
+  it("перестановка того же набора изменением не считается", () => {
+    const split = splitCompanyEdit(
+      { acceptedCoinIds: ["bitcoin", "ethereum"] },
+      { acceptedCoinIds: "ethereum,bitcoin" },
+    );
+    expect(split.pending).toEqual([]);
+  });
+
+  it("одобренная правка кладётся в предприятие массивом, а не строкой", () => {
+    const patch = toCompanyPatch({ acceptedCoinIds: "bitcoin,ethereum" });
+    expect(patch.acceptedCoinIds).toEqual(["bitcoin", "ethereum"]);
+    // Снятие всех монет — пустой массив, а не null: колонка не nullable.
+    expect(toCompanyPatch({ acceptedCardIds: null }).acceptedCardIds).toEqual([]);
+  });
+
+  it("набор монет переживает запись и чтение набора изменений", () => {
+    const changes = splitCompanyEdit({ acceptedCardIds: [] }, { acceptedCardIds: "card1" }).pending;
+    expect(parseChanges(JSON.parse(JSON.stringify(changes)))).toEqual(changes);
   });
 });
