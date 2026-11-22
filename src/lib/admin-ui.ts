@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 /**
  * Правила вида админки в одном месте, а не россыпью по экранам.
  *
@@ -53,3 +55,34 @@ export const ADMIN_TAB_STRIP =
   // `overflow-visible` обязателен целиком: с `overflow-y: hidden` вторая ось не
   // бывает `visible`, и вторая строка кнопок была бы обрезана.
   "md:flex-wrap md:overflow-visible md:px-0 md:[touch-action:auto]";
+
+/**
+ * Вид кнопки раздела или фильтра одним правилом — его читают полоса админки,
+ * ряды фильтров и образец на странице «Вид разделов». Своя копия правил вида в
+ * проекте уже однажды расходилась, поэтому правило одно.
+ *
+ * Нажатая отличается **яркостью контура**: цвет в полную силу плюс второй контур
+ * тенью (линия вдвое толще), ненажатая несёт тот же цвет вполсилы. Тенью, а не
+ * `border-2`: толщина рамки меняет внутренний размер кнопки, и строка дёргалась
+ * бы при переключении — ровно та болезнь, от которой полосу уже лечили.
+ */
+export function adminTabLook(
+  hex: string | null | undefined,
+  active: boolean,
+): { style?: CSSProperties; className: string } {
+  if (!hex) {
+    return {
+      className: active
+        ? "border-accent bg-accent/15 text-foreground shadow-[0_0_0_1px_var(--color-accent)]"
+        : "border-hairline text-muted hover:border-accent/60 hover:text-foreground",
+    };
+  }
+  return {
+    // Цвет из закрытой палитры, не из ввода человека, поэтому он идёт стилем:
+    // Tailwind не умеет классов, которых нет при сборке.
+    style: active
+      ? { borderColor: hex, backgroundColor: `${hex}26`, boxShadow: `0 0 0 1px ${hex}` }
+      : { borderColor: `${hex}8c` },
+    className: active ? "text-foreground" : "text-muted hover:text-foreground",
+  };
+}

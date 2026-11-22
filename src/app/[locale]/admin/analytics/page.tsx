@@ -3,6 +3,7 @@ import { requireOwner } from "@/lib/authz/guard";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { AdminNav } from "@/components/admin/nav";
+import { AdminFilterTabs } from "@/components/admin/filter-tabs";
 
 export const dynamic = "force-dynamic";
 
@@ -97,21 +98,17 @@ export default async function AdminAnalyticsPage({
         <p className="text-muted">{t("subtitle")}</p>
       </header>
 
-      <div className="flex items-center gap-2 mb-6">
-        {(["24h", "7d", "30d"] as const).map((opt) => (
-          <a
-            key={opt}
-            href={opt === "24h" ? "?" : `?w=${opt}`}
-            className={
-              win === opt
-                ? "text-xs uppercase tracking-wider px-3 py-1.5 rounded-md bg-foreground text-bg"
-                : "text-xs uppercase tracking-wider px-3 py-1.5 rounded-md bg-card text-muted hover:text-foreground border border-hairline"
-            }
-          >
-            {opt}
-          </a>
-        ))}
-      </div>
+      {/* Окно наблюдения смысла цвета не несёт — цвет остаётся за состоянием. */}
+      <AdminFilterTabs
+        groups={[
+          (["24h", "7d", "30d"] as const).map((opt) => ({
+            key: opt,
+            href: opt === "24h" ? "?" : `?w=${opt}`,
+            label: opt,
+            active: win === opt,
+          })),
+        ]}
+      />
 
       <div className="grid grid-cols-2 gap-4 mb-8">
         <StatCard label={t("totalViews")} value={fmtInt(totalViews)} />

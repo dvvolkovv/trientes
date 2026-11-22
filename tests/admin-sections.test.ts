@@ -8,7 +8,10 @@ import {
   sectionColorHex,
   isAdminSectionKey,
   isSectionColorKey,
+  STATUS_FILTER_COLORS,
+  statusFilterHex,
 } from "../src/lib/admin-sections";
+import { adminTabLook } from "../src/lib/admin-ui";
 import { ADMIN_TABS } from "../src/lib/admin-tabs";
 import { QUEUES } from "../src/lib/cases/queues";
 
@@ -81,5 +84,48 @@ describe("чтение словаря", () => {
     expect(isAdminSectionKey("nosuch")).toBe(false);
     expect(isSectionColorKey("red")).toBe(true);
     expect(isSectionColorKey("#ff0000")).toBe(false);
+  });
+});
+
+describe("цвет состояния заявки", () => {
+  it("каждое состояние красится цветом из палитры", () => {
+    for (const [status, color] of Object.entries(STATUS_FILTER_COLORS)) {
+      expect(SECTION_COLOR_KEYS, status).toContain(color);
+      expect(statusFilterHex(status)).toBe(SECTION_COLORS[color]);
+    }
+  });
+
+  it("отклонённое — красное, одобренное — зелёное", () => {
+    expect(statusFilterHex("rejected")).toBe(SECTION_COLORS.red);
+    expect(statusFilterHex("approved")).toBe(SECTION_COLORS.green);
+  });
+
+  it("состоянию вне списка цвета нет", () => {
+    expect(statusFilterHex("deleted")).toBeNull();
+  });
+});
+
+describe("яркость контура у нажатой кнопки", () => {
+  it("цветная: нажатая несёт полный цвет и второй контур, ненажатая — вполсилы", () => {
+    const hex = SECTION_COLORS.red;
+    const on = adminTabLook(hex, true);
+    const off = adminTabLook(hex, false);
+    expect(on.style?.borderColor).toBe(hex);
+    expect(String(on.style?.boxShadow)).toContain(hex);
+    expect(off.style?.borderColor).toBe(`${hex}8c`);
+    expect(off.style?.boxShadow).toBeUndefined();
+  });
+
+  it("без цвета: нажатая тоже получает второй контур", () => {
+    expect(adminTabLook(null, true).className).toContain("shadow-[0_0_0_1px");
+    expect(adminTabLook(null, false).className).not.toContain("shadow-");
+  });
+
+  it("толщина рамки у обоих состояний одна — строка не дёргается", () => {
+    for (const hex of [null, SECTION_COLORS.teal]) {
+      for (const active of [true, false]) {
+        expect(adminTabLook(hex, active).className).not.toContain("border-2");
+      }
+    }
   });
 });

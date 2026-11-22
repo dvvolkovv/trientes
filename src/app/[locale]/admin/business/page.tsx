@@ -3,6 +3,8 @@ import { requireAnyQueue } from "@/lib/authz/guard";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { AdminNav } from "@/components/admin/nav";
+import { AdminFilterTabs } from "@/components/admin/filter-tabs";
+import { statusFilterHex } from "@/lib/admin-sections";
 import { PointRow, type PointRowData } from "@/components/admin/point-row";
 import { CompanyRow, type CompanyRowData } from "@/components/admin/company-row";
 import { KybRow } from "@/components/admin/kyb-row";
@@ -39,43 +41,29 @@ export default async function AdminBusinessPage({
     tab === "approved" ? "APPROVED" : tab === "rejected" ? "REJECTED" : "PENDING";
 
   const tabsRow = (
-    <div className="flex flex-wrap items-center gap-2 mb-6">
-      <div className="flex gap-2">
-        {(["companies", "points", "kyb", "deleted"] as const).map((s) => {
-          const active = scope === s;
-          const href = s === "companies" ? "?" : `?scope=${s}`;
-          return (
-            <a key={s} href={href}
-              className={
-                active
-                  ? "text-xs uppercase tracking-wider px-3 py-1.5 rounded-md bg-accent/15 text-accent"
-                  : "text-xs uppercase tracking-wider px-3 py-1.5 rounded-md bg-card text-muted hover:text-foreground border border-hairline"
-              }>
-              {t(`business.scope.${s}`)}
-            </a>
-          );
-        })}
-      </div>
-      <div className="ml-auto flex gap-2">
-        {(["pending", "approved", "rejected"] as const).map((s) => {
-          const active = status.toLowerCase() === s;
+    <AdminFilterTabs
+      groups={[
+        (["companies", "points", "kyb", "deleted"] as const).map((s) => ({
+          key: s,
+          href: s === "companies" ? "?" : `?scope=${s}`,
+          label: t(`business.scope.${s}`),
+          active: scope === s,
+        })),
+        // Состояние заявки красится смыслом: янтарный / зелёный / красный.
+        (["pending", "approved", "rejected"] as const).map((s) => {
           const params = new URLSearchParams();
           if (scope === "points") params.set("scope", "points");
           if (s !== "pending") params.set("tab", s);
-          const href = params.toString() ? `?${params.toString()}` : "?";
-          return (
-            <a key={s} href={href}
-              className={
-                active
-                  ? "text-xs uppercase tracking-wider px-3 py-1.5 rounded-md bg-foreground text-bg"
-                  : "text-xs uppercase tracking-wider px-3 py-1.5 rounded-md bg-card text-muted hover:text-foreground border border-hairline"
-              }>
-              {t(`status.${s.toUpperCase() as "PENDING" | "APPROVED" | "REJECTED"}`)}
-            </a>
-          );
-        })}
-      </div>
-    </div>
+          return {
+            key: s,
+            href: params.toString() ? `?${params.toString()}` : "?",
+            label: t(`status.${s.toUpperCase() as "PENDING" | "APPROVED" | "REJECTED"}`),
+            active: status === s.toUpperCase(),
+            colorHex: statusFilterHex(s),
+          };
+        }),
+      ]}
+    />
   );
 
   if (scope === "deleted") {

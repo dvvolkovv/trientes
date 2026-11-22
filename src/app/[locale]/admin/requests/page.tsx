@@ -5,6 +5,8 @@ import { prisma } from "@/lib/prisma";
 import { AdminNav } from "@/components/admin/nav";
 import { RequestRow, type RequestRowData } from "@/components/admin/request-row";
 import { QueueMoved } from "@/components/admin/queue-moved";
+import { AdminFilterTabs } from "@/components/admin/filter-tabs";
+import { statusFilterHex } from "@/lib/admin-sections";
 
 export const dynamic = "force-dynamic";
 
@@ -59,28 +61,17 @@ export default async function AdminRequestsPage({
         </h1>
         <p className="text-muted">{t("requests.subtitle")}</p>
       </header>
-      <div className="flex gap-2 mb-6">
-        {(["pending", "approved", "rejected"] as const).map((s) => {
-          const active =
-            (statusFilter === "PENDING" && s === "pending") ||
-            (statusFilter === "APPROVED" && s === "approved") ||
-            (statusFilter === "REJECTED" && s === "rejected");
-          const href = s === "pending" ? "?" : `?tab=${s}`;
-          return (
-            <a
-              key={s}
-              href={href}
-              className={
-                active
-                  ? "text-xs uppercase tracking-wider px-3 py-1.5 rounded-md bg-foreground text-bg"
-                  : "text-xs uppercase tracking-wider px-3 py-1.5 rounded-md bg-card text-muted hover:text-foreground border border-hairline"
-              }
-            >
-              {t(`status.${s.toUpperCase() as "PENDING" | "APPROVED" | "REJECTED"}`)}
-            </a>
-          );
-        })}
-      </div>
+      <AdminFilterTabs
+        groups={[
+          (["pending", "approved", "rejected"] as const).map((s) => ({
+            key: s,
+            href: s === "pending" ? "?" : `?tab=${s}`,
+            label: t(`status.${s.toUpperCase() as "PENDING" | "APPROVED" | "REJECTED"}`),
+            active: statusFilter === s.toUpperCase(),
+            colorHex: statusFilterHex(s),
+          })),
+        ]}
+      />
       {statusFilter === "PENDING" ? <QueueMoved locale={locale} queue="coinRequests" /> : null}
       {statusFilter === "PENDING" ? null : rows.length === 0 ? (
         <div className="bg-card border border-hairline rounded-[20px] p-8 text-center text-muted">

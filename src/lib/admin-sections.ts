@@ -86,3 +86,20 @@ export function sectionColorHex(colors: SectionColorMap, key: string): string | 
   const color = colors[key];
   return color ? SECTION_COLORS[color] : null;
 }
+
+/**
+ * Цвет фильтра по состоянию заявки. Это не личная настройка: «одобрено» значит
+ * одно и то же у любого сотрудника, и возможность назвать «отклонено» зелёным
+ * была бы ловушкой для сменщика. Прецедент — точка срока `SLA_DOT`: она тоже
+ * красится смыслом, а не вкусом.
+ */
+export const STATUS_FILTER_COLORS = {
+  PENDING: "amber",
+  APPROVED: "green",
+  REJECTED: "red",
+} as const satisfies Record<string, SectionColorKey>;
+
+export function statusFilterHex(status: string): string | null {
+  const key = STATUS_FILTER_COLORS[status.toUpperCase() as keyof typeof STATUS_FILTER_COLORS];
+  return key ? SECTION_COLORS[key] : null;
+}

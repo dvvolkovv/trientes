@@ -5,6 +5,8 @@ import { prisma } from "@/lib/prisma";
 import { AdminNav } from "@/components/admin/nav";
 import { ExchangeRow, type ExchangeRowData } from "@/components/admin/exchange-row";
 import { QueueMoved } from "@/components/admin/queue-moved";
+import { AdminFilterTabs } from "@/components/admin/filter-tabs";
+import { statusFilterHex } from "@/lib/admin-sections";
 
 export const dynamic = "force-dynamic";
 
@@ -60,27 +62,17 @@ export default async function AdminExchangesPage({
         </h1>
         <p className="text-muted">{t("exchanges.subtitle")}</p>
       </header>
-      <div className="flex gap-2 mb-6">
-        {(["pending", "approved", "rejected"] as const).map((s) => {
-          const active = status.toLowerCase() === s;
-          const href = s === "pending" ? "?" : `?tab=${s}`;
-          return (
-            <a
-              key={s}
-              href={href}
-              className={
-                active
-                  ? "text-xs uppercase tracking-wider px-3 py-1.5 rounded-md bg-foreground text-bg"
-                  : "text-xs uppercase tracking-wider px-3 py-1.5 rounded-md bg-card text-muted hover:text-foreground border border-hairline"
-              }
-            >
-              {t(
-                `status.${s.toUpperCase() as "PENDING" | "APPROVED" | "REJECTED"}`,
-              )}
-            </a>
-          );
-        })}
-      </div>
+      <AdminFilterTabs
+        groups={[
+          (["pending", "approved", "rejected"] as const).map((s) => ({
+            key: s,
+            href: s === "pending" ? "?" : `?tab=${s}`,
+            label: t(`status.${s.toUpperCase() as "PENDING" | "APPROVED" | "REJECTED"}`),
+            active: status === s.toUpperCase(),
+            colorHex: statusFilterHex(s),
+          })),
+        ]}
+      />
       {status === "PENDING" ? <QueueMoved locale={locale} queue="exchanges" /> : null}
       {status === "PENDING" ? null : rows.length === 0 ? (
         <div className="bg-card border border-hairline rounded-[20px] p-8 text-center text-muted">

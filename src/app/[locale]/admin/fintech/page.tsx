@@ -5,6 +5,8 @@ import { prisma } from "@/lib/prisma";
 import { AdminNav } from "@/components/admin/nav";
 import { AdminFintechRow, type AdminFintechRowData } from "@/components/fintech/admin-fintech-row";
 import { QueueMoved } from "@/components/admin/queue-moved";
+import { AdminFilterTabs } from "@/components/admin/filter-tabs";
+import { statusFilterHex } from "@/lib/admin-sections";
 
 export const dynamic = "force-dynamic";
 
@@ -55,24 +57,17 @@ export default async function AdminFintechPage({
         <p className="text-muted">{t("fintech.admin.subtitle")}</p>
       </header>
 
-      <div className="flex flex-wrap items-center gap-2 mb-6">
-        <div className="ml-auto flex gap-2">
-          {(["pending", "approved", "rejected"] as const).map((s) => {
-            const active = status.toLowerCase() === s;
-            const href = s === "pending" ? "?" : `?tab=${s}`;
-            return (
-              <a key={s} href={href}
-                className={
-                  active
-                    ? "text-xs uppercase tracking-wider px-3 py-1.5 rounded-md bg-foreground text-bg"
-                    : "text-xs uppercase tracking-wider px-3 py-1.5 rounded-md bg-card text-muted hover:text-foreground border border-hairline"
-                }>
-                {t(`admin.status.${s.toUpperCase() as "PENDING" | "APPROVED" | "REJECTED"}`)}
-              </a>
-            );
-          })}
-        </div>
-      </div>
+      <AdminFilterTabs
+        groups={[
+          (["pending", "approved", "rejected"] as const).map((s) => ({
+            key: s,
+            href: s === "pending" ? "?" : `?tab=${s}`,
+            label: t(`admin.status.${s.toUpperCase() as "PENDING" | "APPROVED" | "REJECTED"}`),
+            active: status === s.toUpperCase(),
+            colorHex: statusFilterHex(s),
+          })),
+        ]}
+      />
 
       {status === "PENDING" ? <QueueMoved locale={locale} queue="fintech" /> : null}
       {status === "PENDING" ? null : data.length === 0 ? (

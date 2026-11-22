@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { SECTION_COLORS, SECTION_COLOR_KEYS, type SectionColorKey } from "@/lib/admin-sections";
 import { setSectionColor } from "@/app/actions/admin-appearance";
-import { ADMIN_TAB } from "@/lib/admin-ui";
+import { ADMIN_TAB, adminTabLook } from "@/lib/admin-ui";
 
 /**
  * Образец кнопки и палитра для одного раздела. Образец меняется сразу — иначе
@@ -25,6 +25,7 @@ export function SectionColorPicker({
   const [color, setColor] = useState<SectionColorKey | null>(initial);
   const [pending, startTransition] = useTransition();
   const hex = color ? SECTION_COLORS[color] : null;
+  const look = adminTabLook(hex, true);
 
   function pick(next: SectionColorKey | null) {
     setColor(next);
@@ -36,10 +37,10 @@ export function SectionColorPicker({
   return (
     <div className="rounded-[18px] border border-hairline bg-card p-4">
       <div
-        style={hex ? { borderColor: hex, backgroundColor: `${hex}26` } : undefined}
-        className={`${ADMIN_TAB} ${hex ? "text-foreground" : "border-hairline text-muted"} ${
-          pending ? "opacity-60" : ""
-        } w-fit max-w-full`}
+        // Образец показан нажатым: цвет надо выбирать по тому виду, в котором
+        // кнопка ярче всего, а не по приглушённому.
+        style={look.style}
+        className={`${ADMIN_TAB} ${look.className} ${pending ? "opacity-60" : ""} w-fit max-w-full`}
       >
         <span className="truncate">{label}</span>
       </div>
