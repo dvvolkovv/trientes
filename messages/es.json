@@ -55,7 +55,18 @@
       "description": "Precios en tiempo real, exchanges, directorio fintech y un navegador cripto sobre el terreno en {count} idiomas.",
       "pageDescription": "Trientes — precios de criptomonedas en tiempo real, exchanges, un directorio de fintech y un navegador sobre el terreno."
     },
-    "products": "Productos"
+    "products": "Productos",
+    "colors": {
+      "none": "Sin color",
+      "red": "Rojo",
+      "orange": "Naranja",
+      "amber": "Ámbar",
+      "green": "Verde",
+      "teal": "Verde azulado",
+      "blue": "Azul",
+      "violet": "Violeta",
+      "pink": "Rosa"
+    }
   },
   "home": {
     "title": "Bienvenido",
@@ -1069,18 +1080,7 @@
       "kicker": "Admin",
       "title": "Colores de las secciones",
       "subtitle": "Asigna a cada sección un color de contorno que reconocerás. La elección es solo tuya — el resto del personal mantiene la suya.",
-      "none": "Sin color",
-      "reset": "Restablecer todos los colores",
-      "colors": {
-        "red": "Rojo",
-        "orange": "Naranja",
-        "amber": "Ámbar",
-        "green": "Verde",
-        "teal": "Verde azulado",
-        "blue": "Azul",
-        "violet": "Violeta",
-        "pink": "Rosa"
-      }
+      "reset": "Restablecer todos los colores"
     }
   },
   "exchanges": {
@@ -1973,6 +1973,24 @@
       "codesLeft": "Quedan {count} códigos de recuperación.",
       "enable": "Configurar el segundo factor",
       "rotate": "Moverlo a otro teléfono"
+    },
+    "hub": {
+      "back": "Volver al panel",
+      "editProfile": "Editar perfil",
+      "noEmail": "Aún no hay email",
+      "hint": {
+        "settings": "Idioma, moneda, tema",
+        "interests": "Qué mostrar a lo largo de una ruta",
+        "loyalty": "Tu nivel y cashback",
+        "mfa": "Segundo factor para el acceso del personal",
+        "admin": "Colas y casos",
+        "appearance": "Color de contorno de cada tarjeta"
+      }
+    },
+    "appearance": {
+      "title": "Colores de sección",
+      "subtitle": "Asigna a cada tarjeta un color de contorno que reconozcas. La elección es solo tuya",
+      "reset": "Restablecer todos los colores"
     }
   },
   "register": {

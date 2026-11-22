@@ -238,7 +238,7 @@ function MerchantActions({
           {t("orNewCompany")}
         </a>
         {cta.hasMore && (
-          <a href={`/${ctx.locale}/cabinet#companies`} className="underline text-muted hover:text-foreground">
+          <a href={`/${ctx.locale}/cabinet/companies`} className="underline text-muted hover:text-foreground">
             {t("moreCompanies")}
           </a>
         )}

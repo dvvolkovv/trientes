@@ -4,7 +4,7 @@ import { AdminBell } from "./admin-bell";
 import { loadViewerAccess } from "@/lib/authz/guard";
 import { canAny, canOwnerOnly } from "@/lib/authz/policy";
 import { readViewerSectionColors } from "@/lib/admin-appearance";
-import { sectionColorHex } from "@/lib/admin-sections";
+import { sectionColorHex } from "@/lib/section-colors";
 import { ADMIN_TAB, ADMIN_TAB_STRIP, adminChoiceLook } from "@/lib/admin-ui";
 import { ADMIN_TABS } from "@/lib/admin-tabs";
 

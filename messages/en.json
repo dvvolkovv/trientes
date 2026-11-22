@@ -55,7 +55,18 @@
       "description": "Live prices, exchanges, fintech directory and an on-the-ground crypto navigator in {count} languages.",
       "pageDescription": "Trientes — live crypto prices, exchanges, a fintech directory and an on-the-ground navigator."
     },
-    "products": "Products"
+    "products": "Products",
+    "colors": {
+      "none": "No colour",
+      "red": "Red",
+      "orange": "Orange",
+      "amber": "Amber",
+      "green": "Green",
+      "teal": "Teal",
+      "blue": "Blue",
+      "violet": "Violet",
+      "pink": "Pink"
+    }
   },
   "home": {
     "title": "Welcome",
@@ -1069,18 +1080,7 @@
       "kicker": "Admin",
       "title": "Section colours",
       "subtitle": "Give each section an outline colour you will recognise. The choice is yours alone — other staff keep their own.",
-      "none": "No colour",
-      "reset": "Reset all colours",
-      "colors": {
-        "red": "Red",
-        "orange": "Orange",
-        "amber": "Amber",
-        "green": "Green",
-        "teal": "Teal",
-        "blue": "Blue",
-        "violet": "Violet",
-        "pink": "Pink"
-      }
+      "reset": "Reset all colours"
     }
   },
   "exchanges": {
@@ -1973,6 +1973,24 @@
       "codesLeft": "{count} recovery codes left.",
       "enable": "Set up the second factor",
       "rotate": "Move it to another phone"
+    },
+    "hub": {
+      "back": "Back to cabinet",
+      "editProfile": "Edit profile",
+      "noEmail": "No email yet",
+      "hint": {
+        "settings": "Language, currency, theme",
+        "interests": "What to show along a route",
+        "loyalty": "Your level and cashback",
+        "mfa": "Second factor for staff sign-in",
+        "admin": "Queues and cases",
+        "appearance": "Outline colour of each tile"
+      }
+    },
+    "appearance": {
+      "title": "Section colours",
+      "subtitle": "Give each tile an outline colour you will recognise. The choice is yours alone.",
+      "reset": "Reset all colours"
     }
   },
   "register": {

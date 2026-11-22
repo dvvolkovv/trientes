@@ -103,7 +103,7 @@ export default async function ClaimPointPage({
         <div className="bg-card border border-hairline rounded-[20px] p-6 space-y-4">
           <p className="text-sm text-muted">{t("noCompany")}</p>
           <Link
-            href={`/${locale}/cabinet#companies`}
+            href={`/${locale}/cabinet/companies`}
             className="inline-block px-4 py-2 rounded-md bg-accent text-accent-foreground text-sm font-medium"
           >
             {t("createCompany")}

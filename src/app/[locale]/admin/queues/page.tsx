@@ -9,7 +9,7 @@ import { slaState } from "@/lib/cases/sla";
 import { OPEN_STATUSES } from "@/lib/cases/types";
 import { ADMIN_COLUMN } from "@/lib/admin-ui";
 import { readViewerSectionColors } from "@/lib/admin-appearance";
-import { sectionColorHex } from "@/lib/admin-sections";
+import { sectionColorHex } from "@/lib/section-colors";
 
 export const dynamic = "force-dynamic";
 

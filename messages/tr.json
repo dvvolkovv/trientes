@@ -55,7 +55,18 @@
       "description": "Canlı fiyatlar, borsalar, fintech dizini ve sahada kripto rehberi; {count} dilde.",
       "pageDescription": "Trientes — canlı kripto fiyatları, borsalar, bir fintech dizini ve yerinde navigasyon."
     },
-    "products": "Ürünler"
+    "products": "Ürünler",
+    "colors": {
+      "none": "Renk yok",
+      "red": "Kırmızı",
+      "orange": "Turuncu",
+      "amber": "Kehribar",
+      "green": "Yeşil",
+      "teal": "Camgöbeği",
+      "blue": "Mavi",
+      "violet": "Mor",
+      "pink": "Pembe"
+    }
   },
   "home": {
     "title": "Hoş geldiniz",
@@ -1069,18 +1080,7 @@
       "kicker": "Yönetici",
       "title": "Bölüm renkleri",
       "subtitle": "Her bölüme tanıyacağınız bir kenarlık rengi verin. Seçim yalnızca size ait — diğer personel kendi seçimini korur.",
-      "none": "Renk yok",
-      "reset": "Tüm renkleri sıfırla",
-      "colors": {
-        "red": "Kırmızı",
-        "orange": "Turuncu",
-        "amber": "Kehribar",
-        "green": "Yeşil",
-        "teal": "Camgöbeği",
-        "blue": "Mavi",
-        "violet": "Mor",
-        "pink": "Pembe"
-      }
+      "reset": "Tüm renkleri sıfırla"
     }
   },
   "exchanges": {
@@ -1973,6 +1973,24 @@
       "codesLeft": "{count} kurtarma kodu kaldı.",
       "enable": "İkinci faktörü kur",
       "rotate": "Başka bir telefona taşı"
+    },
+    "hub": {
+      "back": "Panele geri dön",
+      "editProfile": "Profili düzenle",
+      "noEmail": "Henüz e-posta yok",
+      "hint": {
+        "settings": "Dil, para birimi, tema",
+        "interests": "Rota boyunca ne gösterilsin",
+        "loyalty": "Seviyeniz ve nakit iade",
+        "mfa": "Personel girişi için ikinci faktör",
+        "admin": "Kuyruklar ve vakalar",
+        "appearance": "Her kutucuğun kenarlık rengi"
+      }
+    },
+    "appearance": {
+      "title": "Bölüm renkleri",
+      "subtitle": "Her kutucuğa tanıyacağınız bir kenarlık rengi verin. Seçim yalnızca size aittir.",
+      "reset": "Tüm renkleri sıfırla"
     }
   },
   "register": {

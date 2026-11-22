@@ -268,7 +268,7 @@ async function promoMessage(
   const [header, openLine, unsubscribe] = await Promise.all([
     rawMessage(locale, "notify.promo.from", { shop: promo.shop }),
     rawMessage(locale, "notify.promo.open", { url }),
-    rawMessage(locale, "notify.promo.unsubscribe", { url: `${site}/${locale}/cabinet#subscriptions` }),
+    rawMessage(locale, "notify.promo.unsubscribe", { url: `${site}/${locale}/cabinet/subscriptions` }),
   ]);
   return {
     url,

@@ -6,7 +6,7 @@ import { AdminNav } from "@/components/admin/nav";
 import { AdminFintechRow, type AdminFintechRowData } from "@/components/fintech/admin-fintech-row";
 import { QueueMoved } from "@/components/admin/queue-moved";
 import { AdminFilterTiles } from "@/components/admin/filter-tiles";
-import { statusFilterHex } from "@/lib/admin-sections";
+import { statusFilterHex } from "@/lib/section-colors";
 
 export const dynamic = "force-dynamic";
 

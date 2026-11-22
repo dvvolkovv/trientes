@@ -55,7 +55,18 @@
       "description": "实时价格、交易所、金融科技名录，以及提供{count}种语言的实地加密导航。",
       "pageDescription": "Trientes — 实时加密货币价格、交易所、金融科技目录以及实地导航器。"
     },
-    "products": "产品"
+    "products": "产品",
+    "colors": {
+      "none": "无颜色",
+      "red": "红色",
+      "orange": "橙色",
+      "amber": "琥珀色",
+      "green": "绿色",
+      "teal": "蓝绿色",
+      "blue": "蓝色",
+      "violet": "紫色",
+      "pink": "粉色"
+    }
   },
   "home": {
     "title": "欢迎",
@@ -1069,18 +1080,7 @@
       "kicker": "管理",
       "title": "版块颜色",
       "subtitle": "为每个部分指定一个你能识别的描边颜色。选择仅对你生效——其他员工保留各自的设置。",
-      "none": "无颜色",
-      "reset": "重置所有颜色",
-      "colors": {
-        "red": "红色",
-        "orange": "橙色",
-        "amber": "琥珀色",
-        "green": "绿色",
-        "teal": "蓝绿色",
-        "blue": "蓝色",
-        "violet": "紫色",
-        "pink": "粉色"
-      }
+      "reset": "重置所有颜色"
     }
   },
   "exchanges": {
@@ -1973,6 +1973,24 @@
       "codesLeft": "剩余{count}个恢复代码。",
       "enable": "设置第二要素",
       "rotate": "迁移到另一部手机"
+    },
+    "hub": {
+      "back": "返回个人中心",
+      "editProfile": "编辑资料",
+      "noEmail": "尚无邮箱",
+      "hint": {
+        "settings": "语言、货币、主题",
+        "interests": "沿途显示什么",
+        "loyalty": "您的等级和返现",
+        "mfa": "员工登录的第二因素",
+        "admin": "队列和案件",
+        "appearance": "每个卡片的描边颜色"
+      }
+    },
+    "appearance": {
+      "title": "分区颜色",
+      "subtitle": "为每个卡片设置便于你识别的描边颜色。选择权全由你决定。",
+      "reset": "重置所有颜色"
     }
   },
   "register": {

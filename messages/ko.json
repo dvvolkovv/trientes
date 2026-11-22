@@ -55,7 +55,18 @@
       "description": "실시간 가격, 거래소, 핀테크 디렉터리, 그리고 {count}개 언어로 제공되는 현장형 크립토 내비게이터.",
       "pageDescription": "Trientes — 실시간 암호화폐 시세, 거래소, 핀테크 디렉터리, 그리고 현장 내비게이터."
     },
-    "products": "제품"
+    "products": "제품",
+    "colors": {
+      "none": "색상 없음",
+      "red": "빨강",
+      "orange": "주황",
+      "amber": "호박",
+      "green": "초록",
+      "teal": "청록",
+      "blue": "파랑",
+      "violet": "보라",
+      "pink": "분홍"
+    }
   },
   "home": {
     "title": "환영합니다",
@@ -1069,18 +1080,7 @@
       "kicker": "관리자",
       "title": "섹션 색상",
       "subtitle": "각 섹션에 본인이 알아볼 수 있는 외곽선 색상을 지정하세요. 선택은 오로지 본인만의 것이며 — 다른 직원들은 각자 자신의 것을 유지합니다.",
-      "none": "색상 없음",
-      "reset": "모든 색상 재설정",
-      "colors": {
-        "red": "빨강",
-        "orange": "주황",
-        "amber": "호박",
-        "green": "초록",
-        "teal": "청록",
-        "blue": "파랑",
-        "violet": "보라",
-        "pink": "분홍"
-      }
+      "reset": "모든 색상 재설정"
     }
   },
   "exchanges": {
@@ -1973,6 +1973,24 @@
       "codesLeft": "{count}개의 복구 코드가 남았습니다.",
       "enable": "2단계 인증 설정",
       "rotate": "다른 휴대전화로 옮기기"
+    },
+    "hub": {
+      "back": "캐비닛으로 돌아가기",
+      "editProfile": "프로필 편집",
+      "noEmail": "아직 이메일 없음",
+      "hint": {
+        "settings": "언어, 통화, 테마",
+        "interests": "경로를 따라 무엇을 보여줄지",
+        "loyalty": "내 등급과 캐시백",
+        "mfa": "직원 로그인용 2차 인증",
+        "admin": "대기열과 케이스",
+        "appearance": "각 타일의 테두리 색상"
+      }
+    },
+    "appearance": {
+      "title": "섹션 색상",
+      "subtitle": "각 타일에 알아보기 쉬운 테두리 색상을 지정하세요. 선택은 전적으로 당신의 몫입니다.",
+      "reset": "모든 색상 초기화"
     }
   },
   "register": {

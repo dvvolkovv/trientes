@@ -17,6 +17,7 @@ export function CabinetTile({
   value,
   hint,
   badge,
+  colorHex,
 }: {
   href: string;
   icon: string;
@@ -27,10 +28,14 @@ export function CabinetTile({
   hint?: string | null;
   /** Жёлтая метка в углу: «2 на модерации», «1 просрочена». */
   badge?: string | null;
+  colorHex?: string | null;
 }) {
   return (
     <Link
       href={href}
+      // Цвет из закрытой палитры, не из ввода человека, поэтому он идёт стилем:
+      // Tailwind не умеет классов, которых нет при сборке.
+      style={colorHex ? { borderColor: colorHex } : undefined}
       className={`${ADMIN_TILE} @container transition-colors hover:border-accent/60`}
     >
       {badge ? (
@@ -38,7 +43,10 @@ export function CabinetTile({
           {badge}
         </span>
       ) : null}
-      <div className="flex h-9 w-9 items-center justify-center rounded-[11px] bg-card-alt text-base">
+      <div
+        style={colorHex ? { backgroundColor: `${colorHex}26` } : undefined}
+        className="flex h-9 w-9 items-center justify-center rounded-[11px] bg-card-alt text-base"
+      >
         {icon}
       </div>
       <div>

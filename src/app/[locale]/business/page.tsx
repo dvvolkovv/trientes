@@ -6,5 +6,5 @@ export default async function BusinessLegacyRedirect({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  redirect(`/${locale}/cabinet#companies`);
+  redirect(`/${locale}/cabinet/companies`);
 }

@@ -140,7 +140,7 @@ export async function requestOrDeleteCompany(input: {
     }
     notifyOwners(owners, userId,
       `🗑 Company "${company.displayName}" was deleted on Trientes.`,
-      `Company deleted: ${company.displayName}`, `${SITE}/en/cabinet#companies`);
+      `Company deleted: ${company.displayName}`, `${SITE}/en/cabinet/companies`);
     revalidatePath("/", "layout");
     return { ok: true, applied: true };
   }

@@ -55,7 +55,18 @@
       "description": "Cijene uživo, burze, fintech direktorij i kripto navigator na terenu na {count} jezicima.",
       "pageDescription": "Trientes — cijene kripta uživo, burze, fintech imenik i navigator na terenu."
     },
-    "products": "Proizvodi"
+    "products": "Proizvodi",
+    "colors": {
+      "none": "Bez boje",
+      "red": "Crvena",
+      "orange": "Narančasta",
+      "amber": "Jantarna",
+      "green": "Zelena",
+      "teal": "Modrozelena",
+      "blue": "Plava",
+      "violet": "Ljubičasta",
+      "pink": "Ružičasta"
+    }
   },
   "home": {
     "title": "Dobrodošli",
@@ -1069,18 +1080,7 @@
       "kicker": "Admin",
       "title": "Boje odjeljaka",
       "subtitle": "Dodijelite svakom odjeljku boju obruba koju ćete prepoznati. Izbor je samo vaš — ostalo osoblje zadržava svoje.",
-      "none": "Bez boje",
-      "reset": "Resetirajte sve boje",
-      "colors": {
-        "red": "Crvena",
-        "orange": "Narančasta",
-        "amber": "Jantarna",
-        "green": "Zelena",
-        "teal": "Modrozelena",
-        "blue": "Plava",
-        "violet": "Ljubičasta",
-        "pink": "Ružičasta"
-      }
+      "reset": "Resetirajte sve boje"
     }
   },
   "exchanges": {
@@ -1973,6 +1973,24 @@
       "codesLeft": "{count} preostalih kodova za oporavak.",
       "enable": "Postaviti drugi faktor",
       "rotate": "Premjestiti ga na drugi telefon"
+    },
+    "hub": {
+      "back": "Natrag na profil",
+      "editProfile": "Uredite profil",
+      "noEmail": "Još nema e-pošte",
+      "hint": {
+        "settings": "Jezik, valuta, tema",
+        "interests": "Što prikazivati duž rute",
+        "loyalty": "Vaša razina i povrat novca",
+        "mfa": "Drugi faktor za prijavu osoblja",
+        "admin": "Redovi i slučajevi",
+        "appearance": "Boja obruba svake pločice"
+      }
+    },
+    "appearance": {
+      "title": "Boje odjeljaka",
+      "subtitle": "Dodijelite svakoj pločici boju obruba koju ćete prepoznati. Izbor je samo vaš.",
+      "reset": "Poništiti sve boje"
     }
   },
   "register": {

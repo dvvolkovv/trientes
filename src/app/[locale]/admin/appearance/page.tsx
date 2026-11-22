@@ -5,7 +5,8 @@ import { ResetColorsButton } from "@/components/admin/reset-colors-button";
 import { loadViewerAccess } from "@/lib/authz/guard";
 import { canAny, canOwnerOnly, visibleQueues } from "@/lib/authz/policy";
 import { readViewerSectionColors } from "@/lib/admin-appearance";
-import { ADMIN_SECTIONS, SECTION_COLOR_KEYS } from "@/lib/admin-sections";
+import { ADMIN_SECTIONS } from "@/lib/admin-sections";
+import { SECTION_COLOR_KEYS } from "@/lib/section-colors";
 import { ADMIN_TABS } from "@/lib/admin-tabs";
 import { ADMIN_COLUMN } from "@/lib/admin-ui";
 
@@ -36,9 +37,10 @@ export default async function AdminAppearancePage({
     }
   }
   const sections = ADMIN_SECTIONS.filter((s) => allowed.has(s.key));
-  const colorNames = Object.fromEntries(
-    SECTION_COLOR_KEYS.map((key) => [key, t(`appearance.colors.${key}`)]),
-  );
+  // Имена цветов живут в `common`: они не принадлежат админке, и вторая
+  // копия тех же девяти слов разошлась бы с первой.
+  const tc = await getTranslations("common.colors");
+  const colorNames = Object.fromEntries(SECTION_COLOR_KEYS.map((key) => [key, tc(key)]));
 
   return (
     <div className={ADMIN_COLUMN}>
@@ -66,7 +68,7 @@ export default async function AdminAppearancePage({
                 section={section.key}
                 label={t(section.labelKey)}
                 initial={colors[section.key] ?? null}
-                noneLabel={t("appearance.none")}
+                noneLabel={tc("none")}
                 colorNames={colorNames}
               />
             ))}

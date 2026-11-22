@@ -1,16 +1,7 @@
 import { describe, it, expect } from "vitest";
 import en from "../messages/en.json";
-import {
-  ADMIN_SECTIONS,
-  SECTION_COLORS,
-  SECTION_COLOR_KEYS,
-  readSectionColors,
-  sectionColorHex,
-  isAdminSectionKey,
-  isSectionColorKey,
-  STATUS_FILTER_COLORS,
-  statusFilterHex,
-} from "../src/lib/admin-sections";
+import { ADMIN_SECTIONS, isAdminSectionKey } from "../src/lib/admin-sections";
+import { SECTION_COLORS, SECTION_COLOR_KEYS, readSectionColors, sectionColorHex, isSectionColorKey, STATUS_FILTER_COLORS, statusFilterHex } from "../src/lib/section-colors";
 import { adminChoiceLook } from "../src/lib/admin-ui";
 import { ADMIN_TABS } from "../src/lib/admin-tabs";
 import { QUEUES } from "../src/lib/cases/queues";
@@ -47,10 +38,13 @@ describe("реестр разделов админки", () => {
 });
 
 describe("палитра", () => {
+  // Имена цветов живут в `common`: они служат и админке, и кабинету.
   it("у каждого цвета есть имя в переводах", () => {
+    const colors = (en.common as Record<string, unknown>).colors as Record<string, unknown>;
     for (const key of SECTION_COLOR_KEYS) {
-      expect(typeof lookup(`appearance.colors.${key}`), key).toBe("string");
+      expect(typeof colors?.[key], key).toBe("string");
     }
+    expect(typeof colors?.none).toBe("string");
   });
 
   it("два цвета не совпадают значением", () => {

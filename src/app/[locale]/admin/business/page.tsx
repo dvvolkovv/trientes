@@ -4,7 +4,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { AdminNav } from "@/components/admin/nav";
 import { AdminFilterTiles } from "@/components/admin/filter-tiles";
-import { statusFilterHex } from "@/lib/admin-sections";
+import { statusFilterHex } from "@/lib/section-colors";
 import { PointRow, type PointRowData } from "@/components/admin/point-row";
 import { CompanyRow, type CompanyRowData } from "@/components/admin/company-row";
 import { KybRow } from "@/components/admin/kyb-row";

@@ -55,7 +55,18 @@
       "description": "Live-Preise, Börsen, Fintech-Verzeichnis und ein praxisnaher Krypto-Navigator in {count} Sprachen.",
       "pageDescription": "Trientes — Live-Kryptopreise, Börsen, ein Fintech-Verzeichnis und ein Navigator vor Ort"
     },
-    "products": "Produkte"
+    "products": "Produkte",
+    "colors": {
+      "none": "Keine Farbe",
+      "red": "Rot",
+      "orange": "Orange",
+      "amber": "Bernstein",
+      "green": "Grün",
+      "teal": "Türkis",
+      "blue": "Blau",
+      "violet": "Violett",
+      "pink": "Pink"
+    }
   },
   "home": {
     "title": "Willkommen",
@@ -1069,18 +1080,7 @@
       "kicker": "Admin",
       "title": "Abschnittsfarben",
       "subtitle": "Gib jedem Abschnitt eine Rahmenfarbe, die du wiedererkennst. Die Wahl liegt nur bei dir — andere Mitarbeitende behalten ihre eigene.",
-      "none": "Keine Farbe",
-      "reset": "Alle Farben zurücksetzen",
-      "colors": {
-        "red": "Rot",
-        "orange": "Orange",
-        "amber": "Bernstein",
-        "green": "Grün",
-        "teal": "Türkis",
-        "blue": "Blau",
-        "violet": "Violett",
-        "pink": "Pink"
-      }
+      "reset": "Alle Farben zurücksetzen"
     }
   },
   "exchanges": {
@@ -1973,6 +1973,24 @@
       "codesLeft": "Noch {count} Wiederherstellungscodes übrig.",
       "enable": "Zweiten Faktor einrichten",
       "rotate": "Auf ein anderes Telefon übertragen"
+    },
+    "hub": {
+      "back": "Zurück zum Cabinet",
+      "editProfile": "Profil bearbeiten",
+      "noEmail": "Noch keine E-Mail",
+      "hint": {
+        "settings": "Sprache, Währung, Thema",
+        "interests": "Was entlang einer Route angezeigt wird",
+        "loyalty": "Ihr Level und Cashback",
+        "mfa": "Zweiter Faktor für Mitarbeiter-Login",
+        "admin": "Warteschlangen und Fälle",
+        "appearance": "Konturfarbe jeder Kachel"
+      }
+    },
+    "appearance": {
+      "title": "Bereichsfarben",
+      "subtitle": "Geben Sie jeder Kachel eine Konturfarbe, die Sie wiedererkennen. Die Wahl liegt ganz bei Ihnen.",
+      "reset": "Alle Farben zurücksetzen"
     }
   },
   "register": {

@@ -55,7 +55,18 @@
       "description": "Preços em tempo real, exchanges, diretório de fintechs e um navegador cripto em campo em {count} idiomas.",
       "pageDescription": "Trientes — preços de cripto ao vivo, exchanges, um diretório de fintechs e um guia em campo."
     },
-    "products": "Produtos"
+    "products": "Produtos",
+    "colors": {
+      "none": "Sem cor",
+      "red": "Vermelho",
+      "orange": "Laranja",
+      "amber": "Âmbar",
+      "green": "Verde",
+      "teal": "Verde-azulado",
+      "blue": "Azul",
+      "violet": "Violeta",
+      "pink": "Rosa"
+    }
   },
   "home": {
     "title": "Bem-vindo",
@@ -1069,18 +1080,7 @@
       "kicker": "Admin",
       "title": "Cores das seções",
       "subtitle": "Dê a cada seção uma cor de borda que você reconheça. A escolha é só sua — os outros membros da equipe mantêm as deles.",
-      "none": "Sem cor",
-      "reset": "Redefinir todas as cores",
-      "colors": {
-        "red": "Vermelho",
-        "orange": "Laranja",
-        "amber": "Âmbar",
-        "green": "Verde",
-        "teal": "Verde-azulado",
-        "blue": "Azul",
-        "violet": "Violeta",
-        "pink": "Rosa"
-      }
+      "reset": "Redefinir todas as cores"
     }
   },
   "exchanges": {
@@ -1973,6 +1973,24 @@
       "codesLeft": "{count} códigos de recuperação restantes.",
       "enable": "Configurar o segundo fator",
       "rotate": "Mover para outro telefone"
+    },
+    "hub": {
+      "back": "Voltar ao painel",
+      "editProfile": "Editar perfil",
+      "noEmail": "Ainda sem e-mail",
+      "hint": {
+        "settings": "Idioma, moeda, tema",
+        "interests": "O que mostrar ao longo de uma rota",
+        "loyalty": "Seu nível e cashback",
+        "mfa": "Segundo fator para login da equipe",
+        "admin": "Filas e casos",
+        "appearance": "Cor do contorno de cada bloco"
+      }
+    },
+    "appearance": {
+      "title": "Cores das seções",
+      "subtitle": "Dê a cada bloco uma cor de contorno que você reconheça. A escolha é só sua",
+      "reset": "Redefinir todas as cores"
     }
   },
   "register": {

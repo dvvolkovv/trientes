@@ -55,7 +55,18 @@
       "description": "Živé ceny, burzy, adresár fintechu a terénny krypto navigátor v {count} jazykoch.",
       "pageDescription": "Trientes — živé ceny kryptomien, burzy, fintech adresár a terénny navigátor"
     },
-    "products": "Produkty"
+    "products": "Produkty",
+    "colors": {
+      "none": "Bez farby",
+      "red": "Červená",
+      "orange": "Oranžová",
+      "amber": "Jantárová",
+      "green": "Zelená",
+      "teal": "Tyrkysová",
+      "blue": "Modrá",
+      "violet": "Fialová",
+      "pink": "Ružová"
+    }
   },
   "home": {
     "title": "Vitajte",
@@ -1069,18 +1080,7 @@
       "kicker": "Admin",
       "title": "Farby sekcií",
       "subtitle": "Každej sekcii priraďte obrysovú farbu, ktorú ľahko rozpoznáte. Voľba je len na vás — ostatní členovia tímu majú vlastné.",
-      "none": "Bez farby",
-      "reset": "Resetovať všetky farby",
-      "colors": {
-        "red": "Červená",
-        "orange": "Oranžová",
-        "amber": "Jantárová",
-        "green": "Zelená",
-        "teal": "Tyrkysová",
-        "blue": "Modrá",
-        "violet": "Fialová",
-        "pink": "Ružová"
-      }
+      "reset": "Resetovať všetky farby"
     }
   },
   "exchanges": {
@@ -1973,6 +1973,24 @@
       "codesLeft": "{count} záložných kódov zostáva.",
       "enable": "Nastaviť druhý faktor",
       "rotate": "Presunúť ho do iného telefónu"
+    },
+    "hub": {
+      "back": "Späť do profilu",
+      "editProfile": "Upraviť profil",
+      "noEmail": "Zatiaľ žiadny e-mail",
+      "hint": {
+        "settings": "Jazyk, mena, motív",
+        "interests": "Čo zobrazovať pozdĺž trasy",
+        "loyalty": "Vaša úroveň a cashback",
+        "mfa": "Druhý faktor pre prihlásenie personálu",
+        "admin": "Fronty a prípady",
+        "appearance": "Farba obrysu každej dlaždice"
+      }
+    },
+    "appearance": {
+      "title": "Farby sekcií",
+      "subtitle": "Každej dlaždici priraďte farbu obrysu, ktorú ľahko rozpoznáte. Voľba je len na vás",
+      "reset": "Obnoviť všetky farby"
     }
   },
   "register": {

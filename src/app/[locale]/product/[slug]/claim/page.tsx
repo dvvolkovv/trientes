@@ -55,7 +55,7 @@ export default async function ClaimProductPage({
       ) : members.length === 0 ? (
         <div className="text-sm text-muted">
           <p className="mb-3">{t("claim.needCompany")}</p>
-          <Link href={`/${locale}/cabinet#companies`} className="text-accent">
+          <Link href={`/${locale}/cabinet/companies`} className="text-accent">
             {t("claim.toCabinet")}
           </Link>
         </div>
