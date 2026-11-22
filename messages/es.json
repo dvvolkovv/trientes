@@ -1674,7 +1674,7 @@
     "pointType": "¿Qué tipo de lugar es?",
     "sendForReview": "Enviar cambios para revisión",
     "moderatedEditHint": "Tu empresa está publicada, así que el nombre en el escaparate, el sitio web, los contactos y la dirección no cambian de inmediato: pasan a un revisor y los visitantes siguen viendo la ficha actual hasta que se apruebe el cambio. La descripción y el logotipo se guardan de inmediato.",
-    "profileSentToReview": "Guardado. {count} cambio(s) se enviaron a revisión — el escaparate mantiene la ficha actual hasta que se aprueben.",
+    "profileSentToReview": "Guardado. Cambios enviados para revisión: {count}. La tienda mantiene la tarjeta actual hasta que sean aprobados.",
     "pendingChanges": "En espera de un revisor: {count} cambio(s)",
     "pendingChangesHint": "Edita de nuevo y el cambio pendiente se sustituye por el nuevo — una empresa solo tiene un cambio pendiente a la vez.",
     "documentsRequiredTitle": "Documentos necesarios",

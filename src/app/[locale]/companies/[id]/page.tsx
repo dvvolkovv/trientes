@@ -290,7 +290,7 @@ export default async function PublicCompanyPage({
       ) : null}
 
       <section className="grid sm:grid-cols-2 gap-3 text-sm">
-        {company.website ? (
+        {company.website && show.website ? (
           <Field label={t("website")}>
             <a href={company.website} target="_blank" rel="noopener noreferrer nofollow" className="text-accent underline">
               {company.website.replace(/^https?:\/\//, "")}
@@ -414,11 +414,16 @@ export default async function PublicCompanyPage({
       {/* Что продавец обещает вообще (слайс BD): ставка «на всё» и лучшая категория. */}
       <CompanyLoyaltyLine companyId={company.id} />
 
-      {/* Акции магазина (слайс BG). Текст — слово продавца, срок — его срок. */}
-      <CompanyPromosBlock companyId={company.id} locale={locale} />
+      {/* Акции магазина (слайс BG). Текст — слово продавца, срок — его срок.
+          Выключатель тот же, что гасит строку акции в карточке с карты (BX):
+          один модуль не может быть выключен на карте и показан на витрине. */}
+      {show.promos ? <CompanyPromosBlock companyId={company.id} locale={locale} /> : null}
 
-      {/* Витрина товаров предприятия (слайс BC): цена и ставка — его заявления. */}
-      <CompanyOffersBlock companyId={company.id} locale={locale} />
+      {/* Витрина товаров предприятия (слайс BC): цена и ставка — его заявления.
+          Модуль `products` гасит **список товаров предприятия** — здесь и в
+          карточке с карты. Строку продавца на паспорте товара он не трогает:
+          уйти из «где взять» — это пауза предложения (BC), а не скрытие витрины. */}
+      {show.products ? <CompanyOffersBlock companyId={company.id} locale={locale} /> : null}
 
       {physicalPoints.length > 0 ? (
         <section>
@@ -436,7 +441,9 @@ export default async function PublicCompanyPage({
                       const cat = merchantCategory(effectiveCategory(p.category, company.category));
                       return cat ? <span>{cat.emoji} {tb(`category.${cat.key}`)}</span> : null;
                     })()}
-                    <OpenBadge hours={pointHours(p).hours} timezone={pointHours(p).timezone} />
+                    {show.hours ? (
+                      <OpenBadge hours={pointHours(p).hours} timezone={pointHours(p).timezone} />
+                    ) : null}
                     {/* В навигатор и прямо на эту точку: `?point=<id>` открывает
                         карту на ней с раскрытой карточкой. Прежде ссылка вела на
                         `/coin/bitcoin` — страницу монеты, где карта лишь один из
@@ -448,17 +455,19 @@ export default async function PublicCompanyPage({
                       </Link>
                     ) : null}
                   </div>
-                  <div className="mt-1.5">
-                    <HoursTable
-                      hours={pointHours(p).hours}
-                      timezone={pointHours(p).timezone}
-                      fallbackText={p.openingHours}
-                    />
-                    {pointHours(p).from === "company" ? (
-                      <p className="mt-1 text-[11px] text-muted">{t("hoursFromCompany")}</p>
-                    ) : null}
-                  </div>
-                  {photos.length > 0 ? (
+                  {show.hours ? (
+                    <div className="mt-1.5">
+                      <HoursTable
+                        hours={pointHours(p).hours}
+                        timezone={pointHours(p).timezone}
+                        fallbackText={p.openingHours}
+                      />
+                      {pointHours(p).from === "company" ? (
+                        <p className="mt-1 text-[11px] text-muted">{t("hoursFromCompany")}</p>
+                      ) : null}
+                    </div>
+                  ) : null}
+                  {photos.length > 0 && show.photos ? (
                     <div className="mt-2 flex gap-1.5 overflow-x-auto">
                       {photos.map((ph, i) => (
                         // eslint-disable-next-line @next/next/no-img-element
@@ -484,16 +493,18 @@ export default async function PublicCompanyPage({
                   <span className="font-medium">{p.name}</span>
                   {/* Часы онлайна (слайс BU): в данных они были с BN, но редактор
                       их не показывал — у онлайн-точки расписания не бывало. */}
-                  <OpenBadge hours={parseWeekHours(p.hours)} timezone={p.timezone} />
+                  {show.hours ? <OpenBadge hours={parseWeekHours(p.hours)} timezone={p.timezone} /> : null}
                 </div>
-                {p.website ? (
+                {p.website && show.website ? (
                   <a href={p.website} target="_blank" rel="noopener noreferrer nofollow" className="text-xs text-accent underline">
                     {p.website.replace(/^https?:\/\//, "")}
                   </a>
                 ) : null}
-                <div className="mt-1.5">
-                  <HoursTable hours={parseWeekHours(p.hours)} timezone={p.timezone} />
-                </div>
+                {show.hours ? (
+                  <div className="mt-1.5">
+                    <HoursTable hours={parseWeekHours(p.hours)} timezone={p.timezone} />
+                  </div>
+                ) : null}
               </li>
             ))}
           </ul>

@@ -1674,7 +1674,7 @@
     "pointType": "O aké miesto ide?",
     "sendForReview": "Odoslať zmeny na posúdenie",
     "moderatedEditHint": "Vaša spoločnosť je zverejnená, preto sa názov vo výklade, web, kontakty a adresa nemenia hneď: putujú k posudzovateľovi a návštevníci dovtedy vidia aktuálnu kartu, kým sa zmena neschváli. Popis a logo sa ukladajú okamžite.",
-    "profileSentToReview": "Uložené. {count} zmien odoslaných posudzovateľovi — výklad ponechá aktuálnu kartu, kým nebudú schválené.",
+    "profileSentToReview": "Uložené. Zmeny odoslané na schválenie: {count}. Výklad ponechá aktuálnu kartu, kým nebudú schválené.",
     "pendingChanges": "Čaká na posudzovateľa: {count} zmien",
     "pendingChangesHint": "Upravte znova a čakajúca zmena sa nahradí novou — spoločnosť môže mať naraz len jednu čakajúcu zmenu.",
     "documentsRequiredTitle": "Potrebné dokumenty",

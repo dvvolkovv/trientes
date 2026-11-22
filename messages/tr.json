@@ -1674,7 +1674,7 @@
     "pointType": "Ne tür bir yer?",
     "sendForReview": "Değişiklikleri incelemeye gönder",
     "moderatedEditHint": "Şirketiniz yayında, bu yüzden vitrindeki ad, web sitesi, iletişim bilgileri ve adres hemen değişmez: bunlar bir inceleyene gider ve onaylanana kadar ziyaretçiler mevcut kartı görmeye devam eder. Açıklama ve logo anında kaydedilir.",
-    "profileSentToReview": "Kaydedildi. {count} değişiklik incelemeye gitti — onaylanana kadar vitrinde mevcut kart kalır.",
+    "profileSentToReview": "Kaydedildi. İncelemeye gönderilen değişiklikler: {count}. Onaylanana kadar vitrin mevcut kartı korur.",
     "pendingChanges": "İnceleyen bekleniyor: {count} değişiklik",
     "pendingChangesHint": "Tekrar düzenlerseniz bekleyen değişiklik yenisiyle değiştirilir — bir şirketin aynı anda yalnızca bir bekleyen değişikliği olur.",
     "documentsRequiredTitle": "Gerekli belgeler",

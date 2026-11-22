@@ -1674,7 +1674,7 @@
     "pointType": "De quel type d’établissement s’agit‑il ?",
     "sendForReview": "Envoyer les modifications pour examen",
     "moderatedEditHint": "Votre entreprise est en ligne, donc le nom sur la vitrine, le site web, les contacts et l’adresse ne changent pas immédiatement : ils sont envoyés à un modérateur, et les visiteurs continuent de voir la fiche actuelle jusqu’à l’approbation de la modification. La description et le logo sont enregistrés immédiatement.",
-    "profileSentToReview": "Enregistré. {count} modification(s) ont été envoyées à un modérateur — la vitrine conserve la fiche actuelle jusqu’à leur approbation.",
+    "profileSentToReview": "Enregistré. Modifications envoyées pour examen : {count}. La vitrine conserve la carte actuelle jusqu'à leur approbation.",
     "pendingChanges": "En attente d’un modérateur : {count} modification(s)",
     "pendingChangesHint": "Modifiez de nouveau et le changement en attente sera remplacé par le nouveau — une entreprise ne peut avoir qu’un changement en attente à la fois.",
     "documentsRequiredTitle": "Documents requis",

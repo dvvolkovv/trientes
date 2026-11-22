@@ -1674,7 +1674,7 @@
     "pointType": "Kakva je to lokacija?",
     "sendForReview": "Pošaljite promjene na pregled",
     "moderatedEditHint": "Vaša je tvrtka objavljena, stoga se naziv na izlogu, web-stranica, kontakti i adresa ne mijenjaju odmah: odlaze na pregled, a posjetitelji i dalje vide trenutačnu karticu dok promjena ne bude odobrena. Opis i logo spremaju se odmah.",
-    "profileSentToReview": "Spremljeno. Na pregled je poslano {count} promjena — izlog zadržava trenutačnu karticu dok ne budu odobrene.",
+    "profileSentToReview": "Spremljeno. Promjene poslane na pregled: {count}. Izlog zadržava trenutačnu karticu dok ne budu odobrene",
     "pendingChanges": "Čeka recenzenta: {count} promjena",
     "pendingChangesHint": "Uredite ponovno i promjena na čekanju bit će zamijenjena novom — tvrtka u jednom trenutku može imati samo jednu promjenu na čekanju.",
     "documentsRequiredTitle": "Potrebni dokumenti",

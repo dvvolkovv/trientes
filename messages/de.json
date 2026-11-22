@@ -1674,7 +1674,7 @@
     "pointType": "Welche Art von Ort ist das?",
     "sendForReview": "Änderungen zur Prüfung senden",
     "moderatedEditHint": "Ihr Unternehmen ist live, daher werden der Name im Schaufenster, die Website, die Kontakte und die Adresse nicht sofort geändert: Sie gehen an eine prüfende Person, und Besucher sehen weiterhin die aktuelle Karte, bis die Änderung genehmigt ist. Die Beschreibung und das Logo werden sofort gespeichert.",
-    "profileSentToReview": "Gespeichert. {count} Änderung(en) gingen an eine prüfende Person — das Schaufenster behält die aktuelle Karte bei, bis sie genehmigt sind.",
+    "profileSentToReview": "Gespeichert. Zur Prüfung gesendete Änderungen: {count}. Das Schaufenster behält die aktuelle Karte, bis sie genehmigt sind.",
     "pendingChanges": "Warten auf Prüfung: {count} Änderung(en)",
     "pendingChangesHint": "Erneut bearbeiten, dann wird die ausstehende Änderung durch die neue ersetzt — ein Unternehmen kann jeweils nur eine ausstehende Änderung haben.",
     "documentsRequiredTitle": "Erforderliche Dokumente",

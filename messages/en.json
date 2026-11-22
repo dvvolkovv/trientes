@@ -1674,7 +1674,7 @@
     "pointType": "What kind of place is it?",
     "sendForReview": "Send changes for review",
     "moderatedEditHint": "Your company is live, so the name on the storefront, the website, contacts and the address do not change straight away: they go to a reviewer, and visitors keep seeing the current card until the change is approved. The description and the logo are saved immediately.",
-    "profileSentToReview": "Saved. {count} change(s) went to a reviewer — the storefront keeps the current card until they are approved.",
+    "profileSentToReview": "Saved. Changes sent for review: {count}. The storefront keeps the current card until they are approved.",
     "pendingChanges": "Waiting for a reviewer: {count} change(s)",
     "pendingChangesHint": "Edit again and the pending change is replaced by the new one — a company has one pending change at a time.",
     "documentsRequiredTitle": "Documents needed",

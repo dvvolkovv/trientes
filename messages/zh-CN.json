@@ -1674,7 +1674,7 @@
     "pointType": "这是哪种场所？",
     "sendForReview": "提交更改以供审核",
     "moderatedEditHint": "您的公司已上线，因此店面名称、网站、联系方式和地址不会立即更改：它们会提交给审核员，访客在变更获批前将继续看到当前卡片。描述和徽标会立即保存。",
-    "profileSentToReview": "已保存。{count} 项更改已提交给审核员 — 在获批之前，店面将保留当前卡片。",
+    "profileSentToReview": "已保存。更改已送审：{count}。在其获批前，店面将保留当前卡片。",
     "pendingChanges": "等待审核员：{count} 项更改",
     "pendingChangesHint": "再次编辑，待处理的更改将被新更改取代——一家公司同一时间只能有一个待处理更改。",
     "documentsRequiredTitle": "所需文件",

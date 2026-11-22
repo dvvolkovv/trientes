@@ -1674,7 +1674,7 @@
     "pointType": "Que tipo de lugar é?",
     "sendForReview": "Enviar alterações para revisão",
     "moderatedEditHint": "Sua empresa está no ar, então o nome na vitrine, o site, os contatos e o endereço não mudam imediatamente: eles vão para um revisor, e os visitantes continuam vendo o cartão atual até a alteração ser aprovada. A descrição e o logo são salvos imediatamente.",
-    "profileSentToReview": "Salvo. {count} alteração(ões) foram para um revisor — a vitrine mantém o cartão atual até serem aprovadas.",
+    "profileSentToReview": "Salvo. Alterações enviadas para revisão: {count}. A vitrine mantém o cartão atual até que sejam aprovadas.",
     "pendingChanges": "Aguardando um revisor: {count} alteração(ões)",
     "pendingChangesHint": "Edite novamente e a alteração pendente será substituída pela nova — uma empresa tem uma alteração pendente por vez.",
     "documentsRequiredTitle": "Documentos necessários",

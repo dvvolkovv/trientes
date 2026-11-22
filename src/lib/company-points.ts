@@ -7,7 +7,7 @@ import { localizedProse } from "@/lib/localized-prose";
 import type { AcceptedCoin, Bbox, CoinSelector, Poi, PoiLayer, Social } from "@/lib/crypto-map";
 import { effectiveCategory } from "@/lib/merchant-categories";
 import { inheritedCoins, inheritedHours } from "@/lib/company-inherit";
-import { parsePublicFields, type PublicFields } from "@/lib/company-public-fields";
+import { parsePublicFields, publicFieldOn, type PublicFields } from "@/lib/company-public-fields";
 
 // Shape returned by the prisma query in fetchApprovedPointsInBbox (point + its company).
 export type PointWithCompany = Prisma.CompanyPointGetPayload<{
@@ -433,9 +433,9 @@ export async function fetchApprovedPointsInBbox(
     const promos = await readPointPromos(rows.map((r) => r.id));
     if (promos.length > 0) {
       const byPoint = new Map(promos.map((p) => [p.pointId as string, p]));
-      const promoShown = new Map(
-        rows.map((r) => [r.id, parsePublicFields(r.company.publicFields, { hasPhysicalPoints: true }).promos]),
-      );
+      // Тот же выключатель, что гасит акции на витрине. Контекст («есть ли живые
+      // точки») нужен только точному адресу, поэтому читаем одним ключом.
+      const promoShown = new Map(rows.map((r) => [r.id, publicFieldOn(r.company.publicFields, "promos")]));
       for (const poi of pois) {
         const pointId = poi.id.slice("company/".length);
         // Выключатель «акции» читается здесь же, где выключены остальные модули:

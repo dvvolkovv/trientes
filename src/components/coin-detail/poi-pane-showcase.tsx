@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import type { Poi } from "@/lib/crypto-map";
 import type { StepTranslator } from "@/components/coin-detail/route-steps-panel";
 import { CHIP, PRIMARY, ROW_BTN } from "@/components/coin-detail/poi-sheet-ui";
@@ -34,6 +35,7 @@ export function PoiPaneShowcase({
   locale: string;
   t: StepTranslator;
 }) {
+  const tc = useTranslations("common");
   const website = safeHttpUrl(poi.website);
   // Точка нашей компании отличается от точки зеркала BTC Map префиксом id —
   // его ставит `companyPointToPoi`, другого признака в фиде нет.
@@ -63,7 +65,18 @@ export function PoiPaneShowcase({
         </section>
       )}
 
-      {poi.description && <p className="text-[14px] leading-relaxed">{poi.description}</p>}
+      {poi.description && (
+        <p className="text-[14px] leading-relaxed">
+          {poi.description}
+          {/* Тот же знак, что на странице «Место» и на витрине предприятия: один
+              текст не может быть переведён в одном месте и не отмечен в другом. */}
+          {poi.descriptionTranslated ? (
+            <span className="ml-2 rounded border border-hairline px-1.5 py-0.5 align-middle text-[10px] uppercase tracking-[0.12em]">
+              {tc("machineTranslated")}
+            </span>
+          ) : null}
+        </p>
+      )}
 
       {/* Ссылка на саму витрину предприятия: до слайса BX её не было вовсе, и
           человек, открывший точку с карты, не мог дойти до того, кто за ней стоит. */}
