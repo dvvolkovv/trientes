@@ -10,6 +10,7 @@
  */
 
 import { useTranslations } from "next-intl";
+import { CardOpenBadge } from "@/components/company-card/open-badge";
 import { WEEK_DAYS, isEmptyWeek, openStateAt, type WeekHours } from "@/lib/opening-hours";
 
 export function PoiHours({
@@ -17,6 +18,7 @@ export function PoiHours({
   timezone,
   fallbackText,
   note,
+  title,
 }: {
   hours?: WeekHours | null;
   timezone?: string | null;
@@ -28,6 +30,8 @@ export function PoiHours({
    * покупатель поедет к закрытой двери, уверенный, что мы обещали открытую.
    */
   note?: string | null;
+  /** Подпись раздела: состояние стоит с ней на одной строке (просьба владельца, BY). */
+  title?: string;
 }) {
   const t = useTranslations("business.hours");
   const week = hours && !isEmptyWeek(hours) ? hours : null;
@@ -47,15 +51,13 @@ export function PoiHours({
     <div className="flex gap-2 text-[13px] leading-snug">
       <span aria-hidden className="w-5 shrink-0 text-center text-muted">🕒</span>
       <div className="flex-1 space-y-1">
-        {state.known ? (
-          <div className={state.open ? "font-semibold text-[#30B658]" : "font-semibold text-muted"}>
-            {state.open ? t("openNow") : t("closedNow")}
-            {state.open && state.until ? ` · ${t("until", { time: state.until })}` : ""}
-            {!state.open && state.opensAt
-              ? ` · ${t("opensAt", { time: state.opensAt, day: t(`dayShort.${state.opensDay}`) })}`
-              : ""}
-          </div>
-        ) : null}
+        {/* Заголовок слева, состояние справа на той же строке: закрыто красным,
+            открыто зелёным (решение владельца, слайс BY). Прежде «закрыто» было
+            серым и терялось в списке дней. */}
+        <div className="flex items-center justify-between gap-2">
+          {title ? <span className="text-[11px] uppercase tracking-[0.16em] text-muted">{title}</span> : <span />}
+          <CardOpenBadge state={state} />
+        </div>
         {note ? <div className="text-[11px] text-muted">{note}</div> : null}
         <div className="space-y-0.5">
           {WEEK_DAYS.map((day) => {

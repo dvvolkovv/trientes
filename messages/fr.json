@@ -1414,7 +1414,9 @@
     "requisitesTitle": "Informations sur l'entreprise",
     "registrationNumber": "Numéro d'immatriculation",
     "taxNumber": "Numéro fiscal",
-    "productsTitle": "En vente ici"
+    "productsTitle": "En vente ici",
+    "hoursTitle": "Horaires d'ouverture",
+    "showcaseEmpty": "Rien en vente ici pour le moment."
   },
   "markets": {
     "title": "Marchés",
@@ -1709,7 +1711,8 @@
       "tasks": "Tâches",
       "journal": "Journal d’activité",
       "chat": "Chat d'équipe",
-      "customers": "Messages clients"
+      "customers": "Messages clients",
+      "ads": "Bannière de carte"
     },
     "tileUnit": {
       "points": "{count} sur la carte",
@@ -1722,7 +1725,8 @@
       "tasks": "{count} ouvertes",
       "journal": "{count} entrées",
       "chat": "{count} messages",
-      "customers": "Conversations : {count}"
+      "customers": "Conversations : {count}",
+      "ads": "{count} en cours"
     },
     "tileEmpty": "rien pour l’instant",
     "tileBadge": {
@@ -1920,7 +1924,8 @@
     "coinSearch": "Rechercher des cryptomonnaies",
     "coinSearchEmpty": "Aucun résultat. Essayez le ticker.",
     "companyCoinsHint": "Les points sans sélection propre héritent de ces cryptomonnaies. La modification de l'ensemble est transmise à un modérateur.",
-    "coinsInherited": "Aucune sélection — ce point affiche l'ensemble de l'entreprise : {coins}"
+    "coinsInherited": "Aucune sélection — ce point affiche l'ensemble de l'entreprise : {coins}",
+    "paymentMethods": "Autres moyens de payer"
   },
   "cabinet": {
     "kicker": "Section · Espace personnel",
@@ -2467,7 +2472,8 @@
     "officeHoursTitle": "Heures de bureau",
     "officeHoursHint": "Quand le téléphone, l’e-mail et le personnel répondent. Les horaires de vente sont indiqués pour chaque point de vente.",
     "documentsTitle": "Documents",
-    "hoursFromCompany": "Heures d'ouverture de l'entreprise — les heures de trading ne sont pas définies pour ce point"
+    "hoursFromCompany": "Heures d'ouverture de l'entreprise — les heures de trading ne sont pas définies pour ce point",
+    "requisitesAndContacts": "Détails de l'entreprise et contacts"
   },
   "companiesDirectory": {
     "kicker": "Annuaire",
@@ -4355,7 +4361,11 @@
       "DOCUMENT_PUBLISHED": "Document publié sur la page publique",
       "DOCUMENT_UNPUBLISHED": "Document retiré de la page publique",
       "DOCUMENT_DELETED": "Document public supprimé",
-      "PUBLIC_FIELDS_SET": "Changé ce que voient les clients"
+      "PUBLIC_FIELDS_SET": "Changé ce que voient les clients",
+      "AD_CREATED": "Élément de bannière créé",
+      "AD_UPDATED": "Élément de bannière mis à jour",
+      "AD_PUBLISHED": "Élément de bannière publié",
+      "AD_ARCHIVED": "Élément de bannière archivé"
     }
   },
   "cabinetTasks": {
@@ -4792,6 +4802,131 @@
       "forbidden": "Vous n'êtes pas autorisé à faire cela.",
       "not_found": "La conversation a disparu.",
       "unauth": "Connectez-vous d'abord."
+    }
+  },
+  "companyCard": {
+    "paymentsTitle": "Acceptés ici",
+    "payment": {
+      "cash": "Espèces",
+      "card": "Carte bancaire",
+      "transfer": "Virement bancaire"
+    },
+    "ad": {
+      "section": "Mises en avant de la boutique",
+      "slides": "Mises en avant",
+      "slide": "Mise en avant {n} sur {total}",
+      "play": "Lire le clip",
+      "listen": "Écouter",
+      "stopVoice": "Arrêter la voix",
+      "more": "Détails",
+      "less": "Réduire",
+      "voiced": "Avec voix",
+      "until": "jusqu'au {date}",
+      "copy": "Copier",
+      "copied": "Copié",
+      "kind": {
+        "PROMO": "Offre",
+        "EVENT": "Événement",
+        "NEWS": "Actualité"
+      },
+      "action": {
+        "PRODUCT": "Ouvrir le produit",
+        "WEBSITE": "Ouvrir le site web",
+        "POINT": "Afficher sur la carte"
+      }
+    }
+  },
+  "cabinetAds": {
+    "title": "Bannière de carte",
+    "subtitle": "Ce que les visiteurs voient en haut de votre carte : un cadre épuré, avec les détails en dessous.",
+    "notListed": "La bannière apparaît une fois l’entreprise référencée.",
+    "liveCount": "En ligne dans le carrousel : {count} sur {max}",
+    "hint": "Un appui sur le cadre ouvre le texte, le code promo et l’action. Le clip et la voix off sont facultatifs.",
+    "newTitle": "Nouvel élément",
+    "editTitle": "Modifier l’élément",
+    "fieldKind": "Type",
+    "kind": {
+      "PROMO": "Offre",
+      "EVENT": "Événement",
+      "NEWS": "Actualité"
+    },
+    "fieldMedia": "Cadre",
+    "mediaHint": "Une photo, ou un clip MP4 jusqu’à 30 Mo. Rien n’est superposé au cadre.",
+    "uploadImage": "Téléverser une photo",
+    "uploadVideo": "Téléverser un clip",
+    "uploadPoster": "Téléverser une image de couverture",
+    "fieldTitle": "Titre",
+    "fieldBody": "Texte",
+    "noLinks": "Pas de liens dans le texte : la voix le lit, et le seul lien est le bouton d’action ci-dessous.",
+    "fieldLanguage": "Langue",
+    "languageHint": "La voix lit le texte dans cette langue.",
+    "fieldAudio": "Voix off",
+    "uploadAudio": "Téléverser un enregistrement",
+    "audioReplace": "Remplacer l’enregistrement",
+    "audioRemove": "Supprimer",
+    "audioHint": "Votre propre enregistrement est prioritaire ; sans lui, le navigateur lit le texte à voix haute.",
+    "fieldFrom": "Affiché à partir du",
+    "fieldTo": "Affiché jusqu’au",
+    "fieldEvent": "Date de l’événement",
+    "fieldPromoCode": "Code promo",
+    "fieldAction": "Action",
+    "action": {
+      "NONE": "Aucune action",
+      "PRODUCT": "Ouvrir le produit",
+      "WEBSITE": "Ouvrir le site web",
+      "POINT": "Afficher sur la carte"
+    },
+    "fieldProduct": "Produit",
+    "fieldPoint": "Lieu",
+    "fieldUrl": "Adresse",
+    "create": "Ajouter",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "publish": "Publier",
+    "unpublish": "Repasser en brouillon",
+    "archive": "Archiver",
+    "up": "Monter",
+    "down": "Descendre",
+    "video": "Clip",
+    "voiced": "Voix off",
+    "empty": "Aucun élément pour l'instant.",
+    "status": {
+      "DRAFT": "Brouillon",
+      "PUBLISHED": "En ligne",
+      "ARCHIVED": "Archivé"
+    },
+    "errors": {
+      "unauth": "Veuillez vous connecter.",
+      "forbidden": "Vous n'êtes pas autorisé à modifier la bannière.",
+      "not_found": "Élément introuvable.",
+      "kind_invalid": "Choisissez un type.",
+      "title_required": "Ajoutez un titre.",
+      "title_too_long": "Le titre est trop long.",
+      "body_too_long": "Le texte est trop long.",
+      "text_has_link": "Retirez le lien du texte — la voix le lit, et l'unique lien est le bouton d'action.",
+      "language_invalid": "Choisissez une langue.",
+      "media_required": "Téléversez une photo ou un clip : l'image est la bannière.",
+      "media_invalid": "Téléversez le fichier ici — une adresse externe disparaîtrait le jour où elle sera supprimée.",
+      "promo_code_too_long": "Le code promo est trop long.",
+      "window_invalid": "Vérifiez les dates.",
+      "window_backwards": "La date de fin est antérieure à la date de début.",
+      "event_invalid": "Vérifiez la date de l'événement.",
+      "event_required": "Un événement nécessite une date.",
+      "product_required": "Choisissez le produit.",
+      "product_not_offered": "Vous ne vendez pas encore ce produit.",
+      "point_required": "Choisissez le lieu.",
+      "point_not_found": "Lieu introuvable.",
+      "point_out_of_scope": "Ce lieu est hors de votre zone.",
+      "url_required": "Ajoutez l'adresse.",
+      "url_invalid": "L'adresse doit commencer par https://",
+      "too_many": "Trop d'éléments — archivez les anciens.",
+      "too_many_published": "Le carrousel contient déjà 5 éléments.",
+      "daily_limit": "Trop de modifications aujourd'hui — réessayez demain.",
+      "at_edge": "Déjà au bord.",
+      "upload_failed": "Le fichier ne s'est pas téléversé. Vérifiez le format et la taille.",
+      "too_large": "Le fichier est trop volumineux.",
+      "bad_type": "Ce type de fichier n'est pas accepté."
     }
   }
 }

@@ -51,6 +51,11 @@ export type CompanyAction =
   | "PROMO_ARCHIVED"
   | "PROMO_SENT"
   | "PROMO_RESTORED"
+  // Слайс BY: рекламный материал баннера карточки.
+  | "AD_CREATED"
+  | "AD_UPDATED"
+  | "AD_PUBLISHED"
+  | "AD_ARCHIVED"
   | "SUPPLIER_SAVED"
   | "SUPPLIER_ARCHIVED"
   | "SUPPLIER_RESTORED"

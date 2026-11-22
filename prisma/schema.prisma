@@ -70,6 +70,7 @@ model User {
   tasksTaken               CompanyTask[]             @relation("CompanyTaskTaker")
   tasksClosed              CompanyTask[]             @relation("CompanyTaskCloser")
   chatMessages             CompanyChatMessage[]      @relation("CompanyChatAuthor")
+  companyAds               CompanyAd[]               @relation("CompanyAdAuthor")
   chatReads                CompanyChatRead[]
   customerThreads          CustomerThread[]          @relation("CustomerThreadCustomer")
   customerMessages         CustomerMessage[]         @relation("CustomerMessageAuthor")
@@ -931,12 +932,12 @@ enum PointType {
 }
 
 model Company {
-  id              String          @id @default(cuid())
-  ownerUserId     String
-  owner           User            @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
-  members         CompanyMember[]
-  invites         CompanyInvite[]
-  legalName       String
+  id                 String          @id @default(cuid())
+  ownerUserId        String
+  owner              User            @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
+  members            CompanyMember[]
+  invites            CompanyInvite[]
+  legalName          String
   /// Публичные реквизиты (слайс BV): номер в торговом реестре и налоговый номер.
   /// Класс правки — документальный, вместе с `legalName`: номер регистрации это имя
   /// лица на языке реестра, и правка его словом заявителя означала бы, что одобренную
@@ -944,64 +945,69 @@ model Company {
   /// по странам, и своя таблица отстала бы в тот же месяц.
   registrationNumber String?
   taxNumber          String?
-  displayName     String
-  logoUrl         String?
+  displayName        String
+  logoUrl            String?
   /// Как показывать логотип (слайс BU): `square` | `rounded` | `circle` и
   /// `contain` | `cover`. Правило вида одно на кабинет, витрину и каталог —
   /// `src/lib/company-logo.ts`; пусто значит умолчание реестра.
-  logoShape       String?
-  logoFit         String?
-  description     String?         @db.Text
+  logoShape          String?
+  logoFit            String?
+  description        String?         @db.Text
   /// Вид заведения из реестра `src/lib/merchant-categories.ts` (слайс BN). Уточнение
   /// у точки сильнее: `effectiveCategory`. Свободное поле — вид не меняет ни места,
   /// ни принимаемых монет, ни хозяина.
-  category        String?
+  category           String?
   /// Отрасль (слайс BU) — ключ реестра `src/lib/industries.ts`. Вторая ось, а не
   /// расширение видов заведения: у вида висит интерес маршрута (BK) и цвет
   /// булавки (AY), и «нефтепереработка» как интерес не значит ничего.
-  industry        String?
+  industry           String?
   /// Своя рубрика словами. Фильтром не является: фильтр по свободному тексту —
   /// это тысяча рубрик по одной штуке.
-  industryCustom  String?
+  industryCustom     String?
   /// Часы **конторы**: когда отвечает телефон, почта и человек. Своё расписание
   /// точки сильнее (правило BN), но точка **без** своего берёт эти (слайс BX):
   /// пустота означает «как у предприятия», а не «часов нет».
-  hours           Json?
-  timezone        String?
+  hours              Json?
+  timezone           String?
   /// Набор монет предприятия (слайс BX). Точка без своего набора наследует его.
   /// Поле **модерируемое**: смена монет у точки возвращает её в очередь, и молчаливая
   /// правка наследуемого набора была бы обходом того же правила.
-  acceptedCoinIds String[]        @default([])
-  acceptedCardIds String[]        @default([])
+  acceptedCoinIds    String[]        @default([])
+  acceptedCardIds    String[]        @default([])
+  /// Способы оплаты помимо монет (слайс BY): `cash`, `card`, `transfer`. Свободное
+  /// поле, как часы и вид заведения: фильтром карты не служит, места и хозяина не
+  /// меняет, а злоупотребление ловится жалобой. Монеты остаются модерируемыми — их
+  /// читает фид и по ним ищут.
+  paymentMethods     String[]        @default([])
   /// Что показывать на витрине **и в карточке с карты** (слайс BX): phone, email,
   /// preciseAddress, hours, documents, description, returnPolicy, photos, coins,
   /// socials, website, products, promos. Пусто читается как умолчание реестра,
   /// поэтому у нынешних предприятий не меняется ничего.
-  publicFields    Json?
+  publicFields       Json?
   /// Политика возврата. ТЗ § 3.1 требует показывать её покупателю; не указана —
   /// так и пишем, промолчать значит создать впечатление, которого мы не вправе
   /// создавать.
-  returnPolicy    String?         @db.Text
-  returnDays      Int?
-  country         String?
-  countryCode     String?
-  city            String?
-  street          String?
-  houseNumber     String?
-  postalCode      String?
-  address         String?
-  phone           String?
-  email           String?
-  website         String?
-  socials         Json?
-  status          RequestStatus   @default(PENDING)
-  rejectionReason String?
-  reviewedById    String?
-  reviewer        User?           @relation("CompanyReviewer", fields: [reviewedById], references: [id])
-  reviewedAt      DateTime?
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  points          CompanyPoint[]
+  returnPolicy       String?         @db.Text
+  returnDays         Int?
+  country            String?
+  countryCode        String?
+  city               String?
+  street             String?
+  houseNumber        String?
+  postalCode         String?
+  address            String?
+  phone              String?
+  email              String?
+  website            String?
+  socials            Json?
+  status             RequestStatus   @default(PENDING)
+  rejectionReason    String?
+  reviewedById       String?
+  reviewer           User?           @relation("CompanyReviewer", fields: [reviewedById], references: [id])
+  reviewedAt         DateTime?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  points             CompanyPoint[]
 
   kybStatus          KybStatus @default(NONE)
   kybDocuments       Json? // [{ kind, url, label }]
@@ -1047,6 +1053,9 @@ model Company {
   tasks     CompanyTask[]
   followers CompanyFollow[]
   promos    MerchantPromo[]
+
+  /// Рекламные материалы баннера карточки (слайс BY).
+  ads CompanyAd[]
 
   // Поставки (BI). «Заказы нам» читаются через `Supplier.supplierCompany`: заказ
   // принадлежит покупателю, а поставщик — его адресат, а не второй владелец.
@@ -1115,20 +1124,20 @@ model CompanyDocument {
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   /// Вид из реестра `src/lib/company-docs.ts`.
-  kind  String
+  kind       String
   /// Своя рубрика словами при `kind = "other"` (слайс BV) — тот же приём, что
   /// `industryCustom`: закрытый реестр для того, что мы понимаем кодом, свободное
   /// слово для всего прочего.
   kindCustom String?
   /// Своё название; пусто — показываем название вида.
-  title String?
+  title      String?
   /// Наш файл (`/uploads/company-docs/…`) или ссылка на свой сайт. Пусто законно:
   /// у лицензии бывает только адрес реестра (слайс BV).
-  url   String?
+  url        String?
   /// Где эту бумагу можно **проверить**: страница реестра лицензиара. Наш файл
   /// подтверждает только то, что продавец его загрузил, — это разные обещания, и
   /// поэтому разные поля.
-  linkUrl String?
+  linkUrl    String?
 
   /// Пусто — черновик: в кабинете виден, на витрине нет. Владелец просил
   /// «настраиваемые, публиковать или не публиковать».
@@ -1200,6 +1209,7 @@ model CompanyPoint {
   suspendReason   String?
   reports         PointReport[]
   promos          MerchantPromo[]
+  ads             CompanyAd[]
   // Полки, стоящие на этой точке (слайс BC).
   warehouses      Warehouse[]
   // Участки сотрудников, в которые входит эта точка (слайс BE).
@@ -2331,6 +2341,7 @@ model Product {
   tasks        CompanyTask[]
   movements    StockMovement[]
   promos       MerchantPromo[]
+  ads          CompanyAd[]
   supplyLines  SupplyOrderLine[]
   reorderRules ReorderRule[]
 
@@ -2907,4 +2918,85 @@ model ReorderRule {
   @@unique([warehouseId, productId])
   @@index([companyId])
   @@index([supplierId])
+}
+
+/// Вид рекламного материала. Метка над заголовком в раскрытой части баннера.
+enum CompanyAdKind {
+  PROMO
+  EVENT
+  NEWS
+}
+
+enum CompanyAdMediaKind {
+  IMAGE
+  VIDEO
+}
+
+/// Одно названное действие материала. Ссылок в тексте нет (правило BG): текст
+/// читается голосом, а ссылка в голосе бессмысленна.
+enum CompanyAdAction {
+  NONE
+  PRODUCT
+  WEBSITE
+  POINT
+}
+
+enum CompanyAdStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+/// Рекламный материал предприятия (слайс BY) — то, что крутится в баннере карточки.
+///
+/// Это **не** `MerchantPromo`: та строка — объект рассылки, у неё аудитория, квота и
+/// антиспам. Баннер никто никому не шлёт, и общий ограничитель рассылки молча гасил
+/// бы витрину. Своей модерации у материала нет: объявляет залистованное предприятие
+/// правом `promos: EDIT`, гасят надзор (AR) и жалоба (AQ).
+model CompanyAd {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  kind     CompanyAdKind @default(PROMO)
+  title    String
+  /// Текст без ссылок: его читает голос, и переход у материала один — кнопкой.
+  body     String?       @db.Text
+  /// Язык материала: на нём говорит синтез речи. Текст продавца машинно не переводим
+  /// (решение BB) — это его утверждение.
+  language String        @default("en")
+
+  mediaKind CompanyAdMediaKind @default(IMAGE)
+  /// Кадр (изображение) или файл ролика; оба лежат в `/var/www/trientes-uploads/ads`.
+  mediaUrl  String
+  /// Заставка ролика: в свёрнутом виде баннер не играет сам — автоплей со звуком
+  /// браузеры глушат, а ролик с озвучкой без звука это немое кино.
+  posterUrl String?
+  /// Своя запись голосом сильнее синтеза. Длительность не проверяем — `ffprobe` на
+  /// машине нет, и выдумывать проверку, которой не делаем, нельзя (правило BB).
+  audioUrl  String?
+
+  promoCode String?
+  /// Окно показа. Пусто — показывается, пока опубликован.
+  startsAt  DateTime?
+  endsAt    DateTime?
+  /// Дата события у материала вида EVENT.
+  eventAt   DateTime?
+
+  action    CompanyAdAction @default(NONE)
+  productId String?
+  product   Product?        @relation(fields: [productId], references: [id], onDelete: SetNull)
+  pointId   String?
+  point     CompanyPoint?   @relation(fields: [pointId], references: [id], onDelete: SetNull)
+  actionUrl String?
+
+  status    CompanyAdStatus @default(DRAFT)
+  sortOrder Int             @default(0)
+
+  createdById String?
+  createdBy   User?    @relation("CompanyAdAuthor", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([companyId, status, sortOrder])
 }

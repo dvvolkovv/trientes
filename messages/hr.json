@@ -1414,7 +1414,9 @@
     "requisitesTitle": "Podaci o tvrtki",
     "registrationNumber": "Registracijski broj",
     "taxNumber": "Porezni broj",
-    "productsTitle": "Prodaje se ovdje"
+    "productsTitle": "Prodaje se ovdje",
+    "hoursTitle": "Radno vrijeme",
+    "showcaseEmpty": "Još nema ničega na prodaju."
   },
   "markets": {
     "title": "Tržišta",
@@ -1709,7 +1711,8 @@
       "tasks": "Zadaci",
       "journal": "Dnevnik aktivnosti",
       "chat": "Timski chatu",
-      "customers": "Poruke kupaca"
+      "customers": "Poruke kupaca",
+      "ads": "Baner kartice"
     },
     "tileUnit": {
       "points": "{count} na karti",
@@ -1722,7 +1725,8 @@
       "tasks": "{count} otvorenih",
       "journal": "{count} unosa",
       "chat": "{count} poruka",
-      "customers": "Razgovori: {count}"
+      "customers": "Razgovori: {count}",
+      "ads": "{count} uživo"
     },
     "tileEmpty": "još ništa",
     "tileBadge": {
@@ -1920,7 +1924,8 @@
     "coinSearch": "Pretražiti kovanice",
     "coinSearchEmpty": "Ništa nije pronađeno. Pokušajte s tickerom.",
     "companyCoinsHint": "Lokacije bez vlastitog odabira nasljeđuju ove kovanice. Promjena skupa ide moderatoru.",
-    "coinsInherited": "Ništa nije odabrano — ova lokacija prikazuje skup tvrtke: {coins}"
+    "coinsInherited": "Ništa nije odabrano — ova lokacija prikazuje skup tvrtke: {coins}",
+    "paymentMethods": "Drugi načini plaćanja"
   },
   "cabinet": {
     "kicker": "Odjeljak · Profil",
@@ -2467,7 +2472,8 @@
     "officeHoursTitle": "Radno vrijeme ureda",
     "officeHoursHint": "Vrijeme kada se odgovara na telefon i e-poštu te kada je osoblje dostupno. Radno vrijeme prodaje je navedeno uz svako prodajno mjesto.",
     "documentsTitle": "Dokumenti",
-    "hoursFromCompany": "Radno vrijeme tvrtke — radno vrijeme ove lokacije nije postavljeno."
+    "hoursFromCompany": "Radno vrijeme tvrtke — radno vrijeme ove lokacije nije postavljeno.",
+    "requisitesAndContacts": "Podaci o tvrtki i kontakti"
   },
   "companiesDirectory": {
     "kicker": "Imenik",
@@ -4355,7 +4361,11 @@
       "DOCUMENT_PUBLISHED": "Dokument objavljen na javnoj stranici",
       "DOCUMENT_UNPUBLISHED": "Dokument uklonjen s javne stranice",
       "DOCUMENT_DELETED": "Javni dokument izbrisan",
-      "PUBLIC_FIELDS_SET": "Promijenjeno što kupci vide"
+      "PUBLIC_FIELDS_SET": "Promijenjeno što kupci vide",
+      "AD_CREATED": "Stvorena stavka bannera",
+      "AD_UPDATED": "Ažurirana stavka bannera",
+      "AD_PUBLISHED": "Objavljena stavka bannera",
+      "AD_ARCHIVED": "Arhivirana stavka bannera"
     }
   },
   "cabinetTasks": {
@@ -4792,6 +4802,131 @@
       "forbidden": "Nemate dopuštenje za tu radnju.",
       "not_found": "Razgovor više ne postoji.",
       "unauth": "Prvo se prijavite."
+    }
+  },
+  "companyCard": {
+    "paymentsTitle": "Prihvaćamo",
+    "payment": {
+      "cash": "Gotovina",
+      "card": "Bankovna kartica",
+      "transfer": "Bankovni prijenos"
+    },
+    "ad": {
+      "section": "Istaknuto u trgovini",
+      "slides": "Istaknuto",
+      "slide": "Istaknuto {n} od {total}",
+      "play": "Pustiti isječak",
+      "listen": "Slušati",
+      "stopVoice": "Zaustaviti glas",
+      "more": "Detalji",
+      "less": "Sažeti",
+      "voiced": "Ozvučeno",
+      "until": "do {date}",
+      "copy": "Kopirati",
+      "copied": "Kopirano",
+      "kind": {
+        "PROMO": "Ponuda",
+        "EVENT": "Događaj",
+        "NEWS": "Vijest"
+      },
+      "action": {
+        "PRODUCT": "Otvoriti proizvod",
+        "WEBSITE": "Otvoriti web-stranicu",
+        "POINT": "Prikazati na karti"
+      }
+    }
+  },
+  "cabinetAds": {
+    "title": "Baner na kartici",
+    "subtitle": "Ono što posjetitelji vide na vrhu vaše kartice: čist okvir, s detaljima ispod.",
+    "notListed": "Baner se prikazuje nakon uvrštenja poslovanja.",
+    "liveCount": "Uživo u karuselu: {count} od {max}",
+    "hint": "Dodir okvira otvara tekst, promo kod i radnju. Isječak i glasovna pratnja su neobvezni.",
+    "newTitle": "Nova stavka",
+    "editTitle": "Uređivanje stavke",
+    "fieldKind": "Vrsta",
+    "kind": {
+      "PROMO": "Ponuda",
+      "EVENT": "Događaj",
+      "NEWS": "Vijest"
+    },
+    "fieldMedia": "Okvir",
+    "mediaHint": "Fotografija ili MP4 isječak do 30 MB. Preko okvira se ništa ne crta.",
+    "uploadImage": "Prenijeti fotografiju",
+    "uploadVideo": "Prenijeti isječak",
+    "uploadPoster": "Prenijeti naslovni okvir",
+    "fieldTitle": "Naslov",
+    "fieldBody": "Tekst",
+    "noLinks": "Bez poveznica u tekstu: glas ga čita naglas, a jedina poveznica je gumb radnje ispod.",
+    "fieldLanguage": "Jezik",
+    "languageHint": "Glas čita tekst na ovom jeziku.",
+    "fieldAudio": "Glasovna pratnja",
+    "uploadAudio": "Prenijeti snimku",
+    "audioReplace": "Zamijeniti snimku",
+    "audioRemove": "Ukloniti",
+    "audioHint": "Vaša vlastita snimka ima prednost; bez nje preglednik čita tekst naglas.",
+    "fieldFrom": "Prikazuje se od",
+    "fieldTo": "Prikazivati do",
+    "fieldEvent": "Datum događaja",
+    "fieldPromoCode": "Promo kod",
+    "fieldAction": "Radnja",
+    "action": {
+      "NONE": "Bez radnje",
+      "PRODUCT": "Otvoriti proizvod",
+      "WEBSITE": "Otvoriti web-stranicu",
+      "POINT": "Prikazati na karti"
+    },
+    "fieldProduct": "Proizvod",
+    "fieldPoint": "Lokacija",
+    "fieldUrl": "URL adresa",
+    "create": "Dodaj",
+    "save": "Spremi",
+    "cancel": "Odustani",
+    "edit": "Uredi",
+    "publish": "Objavi",
+    "unpublish": "Vrati u nacrt",
+    "archive": "Arhiviraj",
+    "up": "Pomakni gore",
+    "down": "Pomakni dolje",
+    "video": "Isječak",
+    "voiced": "Ozvučeno",
+    "empty": "Još nema stavki.",
+    "status": {
+      "DRAFT": "Nacrt",
+      "PUBLISHED": "Aktivno",
+      "ARCHIVED": "Arhivirano"
+    },
+    "errors": {
+      "unauth": "Prijavite se.",
+      "forbidden": "Nemate pravo uređivati baner.",
+      "not_found": "Stavka nije pronađena.",
+      "kind_invalid": "Odaberite vrstu.",
+      "title_required": "Dodajte naslov.",
+      "title_too_long": "Naslov je predugačak.",
+      "body_too_long": "Tekst je predugačak.",
+      "text_has_link": "Uklonite poveznicu iz teksta — glas je čita, a jedina poveznica je gumb radnje.",
+      "language_invalid": "Odaberite jezik.",
+      "media_required": "Učitajte fotografiju ili isječak: kadar je baner.",
+      "media_invalid": "Učitajte datoteku ovdje — vanjska adresa nestat će onog dana kad se ukloni.",
+      "promo_code_too_long": "Promo kod je predugačak.",
+      "window_invalid": "Provjerite datume.",
+      "window_backwards": "Datum završetka je prije datuma početka.",
+      "event_invalid": "Provjerite datum događaja.",
+      "event_required": "Događaj treba datum.",
+      "product_required": "Odaberite proizvod.",
+      "product_not_offered": "Još ne prodajete ovaj proizvod.",
+      "point_required": "Odaberite lokaciju.",
+      "point_not_found": "Lokacija nije pronađena.",
+      "point_out_of_scope": "Ova je lokacija izvan vašeg područja.",
+      "url_required": "Dodajte adresu.",
+      "url_invalid": "Adresa mora počinjati s https://",
+      "too_many": "Previše stavki — arhivirajte stare.",
+      "too_many_published": "Karusel već sadrži 5 stavki.",
+      "daily_limit": "Previše izmjena danas — pokušajte ponovno sutra.",
+      "at_edge": "Već na rubu.",
+      "upload_failed": "Datoteka nije prenesena. Provjerite format i veličinu.",
+      "too_large": "Datoteka je prevelika.",
+      "bad_type": "Ova vrsta datoteke nije prihvaćena."
     }
   }
 }

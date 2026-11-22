@@ -1414,7 +1414,9 @@
     "requisitesTitle": "Unternehmensangaben",
     "registrationNumber": "Registrierungsnummer",
     "taxNumber": "Steuernummer",
-    "productsTitle": "Hier erhältlich"
+    "productsTitle": "Hier erhältlich",
+    "hoursTitle": "Öffnungszeiten",
+    "showcaseEmpty": "Hier ist noch nichts im Angebot."
   },
   "markets": {
     "title": "Märkte",
@@ -1709,7 +1711,8 @@
       "tasks": "Aufgaben",
       "journal": "Aktivitätsprotokoll",
       "chat": "Team-Chat",
-      "customers": "Kundenmitteilungen"
+      "customers": "Kundenmitteilungen",
+      "ads": "Kartenbanner"
     },
     "tileUnit": {
       "points": "{count} auf der Karte",
@@ -1722,7 +1725,8 @@
       "tasks": "{count} offen",
       "journal": "{count} Einträge",
       "chat": "{count} Nachrichten",
-      "customers": "Unterhaltungen: {count}"
+      "customers": "Unterhaltungen: {count}",
+      "ads": "{count} live"
     },
     "tileEmpty": "noch nichts",
     "tileBadge": {
@@ -1920,7 +1924,8 @@
     "coinSearch": "Coins suchen",
     "coinSearchEmpty": "Nichts gefunden. Versuche den Ticker",
     "companyCoinsHint": "Punkte ohne eigene Auswahl erben diese Coins. Eine Änderung des Sets geht an einen Moderator",
-    "coinsInherited": "Nichts ausgewählt — dieser Punkt zeigt das Unternehmens-Set: {coins}"
+    "coinsInherited": "Nichts ausgewählt — dieser Punkt zeigt das Unternehmens-Set: {coins}",
+    "paymentMethods": "Weitere Zahlungsmöglichkeiten"
   },
   "cabinet": {
     "kicker": "Bereich · Kabinett",
@@ -2467,7 +2472,8 @@
     "officeHoursTitle": "Bürozeiten",
     "officeHoursHint": "Wenn Telefon, E-Mail und Personal erreichbar sind. Handelszeiten sind bei jedem Verkaufsort aufgeführt.",
     "documentsTitle": "Dokumente",
-    "hoursFromCompany": "Bürozeiten des Unternehmens — Handelszeiten sind für diesen Standort nicht festgelegt."
+    "hoursFromCompany": "Bürozeiten des Unternehmens — Handelszeiten sind für diesen Standort nicht festgelegt.",
+    "requisitesAndContacts": "Firmendaten und Kontakte"
   },
   "companiesDirectory": {
     "kicker": "Verzeichnis",
@@ -4355,7 +4361,11 @@
       "DOCUMENT_PUBLISHED": "Dokument auf der öffentlichen Seite veröffentlicht",
       "DOCUMENT_UNPUBLISHED": "Dokument von der öffentlichen Seite entfernt",
       "DOCUMENT_DELETED": "Öffentliches Dokument gelöscht",
-      "PUBLIC_FIELDS_SET": "Geändert, was Kunden sehen"
+      "PUBLIC_FIELDS_SET": "Geändert, was Kunden sehen",
+      "AD_CREATED": "Banner-Element erstellt",
+      "AD_UPDATED": "Banner-Element aktualisiert",
+      "AD_PUBLISHED": "Banner-Element veröffentlicht",
+      "AD_ARCHIVED": "Banner-Element archiviert"
     }
   },
   "cabinetTasks": {
@@ -4792,6 +4802,131 @@
       "forbidden": "Du bist nicht berechtigt, das zu tun.",
       "not_found": "Die Unterhaltung existiert nicht mehr.",
       "unauth": "Melde dich zuerst an."
+    }
+  },
+  "companyCard": {
+    "paymentsTitle": "Hier akzeptiert",
+    "payment": {
+      "cash": "Bargeld",
+      "card": "Bankkarte",
+      "transfer": "Banküberweisung"
+    },
+    "ad": {
+      "section": "Shop-Highlights",
+      "slides": "Highlights",
+      "slide": "Highlight {n} von {total}",
+      "play": "Clip abspielen",
+      "listen": "Anhören",
+      "stopVoice": "Sprachspur stoppen",
+      "more": "Details",
+      "less": "Einklappen",
+      "voiced": "Vertont",
+      "until": "bis {date}",
+      "copy": "Kopieren",
+      "copied": "Kopiert",
+      "kind": {
+        "PROMO": "Angebot",
+        "EVENT": "Event",
+        "NEWS": "News"
+      },
+      "action": {
+        "PRODUCT": "Produkt öffnen",
+        "WEBSITE": "Website öffnen",
+        "POINT": "Auf der Karte anzeigen"
+      }
+    }
+  },
+  "cabinetAds": {
+    "title": "Kartenbanner",
+    "subtitle": "Was Besucher oben auf Ihrer Karte sehen: ein schlichter Rahmen, mit Details darunter.",
+    "notListed": "Das Banner erscheint, sobald das Unternehmen gelistet ist.",
+    "liveCount": "Live im Karussell: {count} von {max}",
+    "hint": "Ein Tippen auf den Rahmen öffnet den Text, den Promo-Code und die Aktion. Clip und Sprachspur sind optional.",
+    "newTitle": "Neuer Eintrag",
+    "editTitle": "Eintrag bearbeiten",
+    "fieldKind": "Typ",
+    "kind": {
+      "PROMO": "Angebot",
+      "EVENT": "Event",
+      "NEWS": "News"
+    },
+    "fieldMedia": "Rahmen",
+    "mediaHint": "Ein Foto oder ein MP4-Clip bis 30 MB. Auf den Rahmen wird nichts gelegt.",
+    "uploadImage": "Foto hochladen",
+    "uploadVideo": "Clip hochladen",
+    "uploadPoster": "Titelrahmen hochladen",
+    "fieldTitle": "Überschrift",
+    "fieldBody": "Text",
+    "noLinks": "Keine Links im Text: Die Sprachausgabe liest den Text vor, und der einzige Link ist die Aktionsschaltfläche unten.",
+    "fieldLanguage": "Sprache",
+    "languageHint": "Die Sprachausgabe liest den Text in dieser Sprache vor.",
+    "fieldAudio": "Vertonung",
+    "uploadAudio": "Eine Aufnahme hochladen",
+    "audioReplace": "Aufnahme ersetzen",
+    "audioRemove": "Entfernen",
+    "audioHint": "Eigene Aufnahmen haben Vorrang; ohne Aufnahme liest der Browser den Text vor.",
+    "fieldFrom": "Angezeigt ab",
+    "fieldTo": "Angezeigt bis",
+    "fieldEvent": "Veranstaltungsdatum",
+    "fieldPromoCode": "Promo-Code",
+    "fieldAction": "Aktion",
+    "action": {
+      "NONE": "Keine Aktion",
+      "PRODUCT": "Produkt öffnen",
+      "WEBSITE": "Website öffnen",
+      "POINT": "Auf der Karte anzeigen"
+    },
+    "fieldProduct": "Produkt",
+    "fieldPoint": "Ort",
+    "fieldUrl": "Adresse",
+    "create": "Hinzufügen",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "edit": "Bearbeiten",
+    "publish": "Veröffentlichen",
+    "unpublish": "Zurück zum Entwurf",
+    "archive": "Archivieren",
+    "up": "Nach oben",
+    "down": "Nach unten",
+    "video": "Clip",
+    "voiced": "Vertont",
+    "empty": "Noch keine Einträge.",
+    "status": {
+      "DRAFT": "Entwurf",
+      "PUBLISHED": "Live",
+      "ARCHIVED": "Archiviert"
+    },
+    "errors": {
+      "unauth": "Bitte melden Sie sich an.",
+      "forbidden": "Sie haben keine Berechtigung, das Banner zu bearbeiten.",
+      "not_found": "Eintrag nicht gefunden.",
+      "kind_invalid": "Wählen Sie eine Art.",
+      "title_required": "Fügen Sie eine Überschrift hinzu.",
+      "title_too_long": "Die Überschrift ist zu lang.",
+      "body_too_long": "Der Text ist zu lang.",
+      "text_has_link": "Entferne den Link aus dem Text — die Sprachausgabe liest ihn vor, und der einzige Link ist die Aktionsschaltfläche.",
+      "language_invalid": "Wähle eine Sprache.",
+      "media_required": "Lade ein Foto oder einen Clip hoch: Der Rahmen ist das Banner.",
+      "media_invalid": "Lade die Datei hier hoch — eine externe Adresse verschwindet, sobald sie entfernt wird.",
+      "promo_code_too_long": "Der Promo-Code ist zu lang.",
+      "window_invalid": "Prüfe die Datumsangaben.",
+      "window_backwards": "Das Enddatum liegt vor dem Startdatum.",
+      "event_invalid": "Prüfe das Veranstaltungsdatum.",
+      "event_required": "Eine Veranstaltung braucht ein Datum.",
+      "product_required": "Wähle das Produkt.",
+      "product_not_offered": "Du verkaufst dieses Produkt noch nicht.",
+      "point_required": "Wähle den Ort.",
+      "point_not_found": "Ort nicht gefunden.",
+      "point_out_of_scope": "Dieser Ort liegt außerhalb deines Gebiets.",
+      "url_required": "Füge die Adresse hinzu.",
+      "url_invalid": "Die Adresse muss mit https:// beginnen",
+      "too_many": "Zu viele Elemente — archiviere die alten.",
+      "too_many_published": "Das Karussell enthält bereits 5 Elemente.",
+      "daily_limit": "Heute zu viele Änderungen — versuche es morgen noch einmal.",
+      "at_edge": "Bereits am Rand.",
+      "upload_failed": "Die Datei wurde nicht hochgeladen. Prüfe Format und Größe.",
+      "too_large": "Die Datei ist zu groß.",
+      "bad_type": "Dieser Dateityp wird nicht akzeptiert."
     }
   }
 }

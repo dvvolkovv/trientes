@@ -1414,7 +1414,9 @@
     "requisitesTitle": "公司信息",
     "registrationNumber": "注册号",
     "taxNumber": "税号",
-    "productsTitle": "在此出售"
+    "productsTitle": "在此出售",
+    "hoursTitle": "营业时间",
+    "showcaseEmpty": "此处尚无在售内容。"
   },
   "markets": {
     "title": "市场",
@@ -1709,7 +1711,8 @@
       "tasks": "任务",
       "journal": "活动日志",
       "chat": "团队聊天",
-      "customers": "客户消息"
+      "customers": "客户消息",
+      "ads": "卡片横幅"
     },
     "tileUnit": {
       "points": "地图上{count}个",
@@ -1722,7 +1725,8 @@
       "tasks": "未完成{count}个",
       "journal": "{count}条",
       "chat": "{count} 条消息",
-      "customers": "对话：{count}"
+      "customers": "对话：{count}",
+      "ads": "{count} 个在线"
     },
     "tileEmpty": "尚无内容",
     "tileBadge": {
@@ -1920,7 +1924,8 @@
     "coinSearch": "搜索币种",
     "coinSearchEmpty": "未找到。试试使用代号",
     "companyCoinsHint": "未单独选择的网点将继承这些币种。更改该集合将提交给审核员",
-    "coinsInherited": "未选择任何项 — 此网点显示公司集合：{coins}"
+    "coinsInherited": "未选择任何项 — 此网点显示公司集合：{coins}",
+    "paymentMethods": "其他支付方式"
   },
   "cabinet": {
     "kicker": "板块 · 个人中心",
@@ -2467,7 +2472,8 @@
     "officeHoursTitle": "办公时间",
     "officeHoursHint": "电话、电子邮件和工作人员的响应时间。每个销售点都会列出交易时间。",
     "documentsTitle": "文件",
-    "hoursFromCompany": "公司办公时间 — 此网点未设置交易时间."
+    "hoursFromCompany": "公司办公时间 — 此网点未设置交易时间.",
+    "requisitesAndContacts": "公司信息和联系方式"
   },
   "companiesDirectory": {
     "kicker": "目录",
@@ -4355,7 +4361,11 @@
       "DOCUMENT_PUBLISHED": "文档已发布到公共页面",
       "DOCUMENT_UNPUBLISHED": "文档已从公共页面移除",
       "DOCUMENT_DELETED": "已删除公共文档",
-      "PUBLIC_FIELDS_SET": "已更改客户可见内容"
+      "PUBLIC_FIELDS_SET": "已更改客户可见内容",
+      "AD_CREATED": "横幅条目已创建",
+      "AD_UPDATED": "横幅条目已更新",
+      "AD_PUBLISHED": "横幅条目已发布",
+      "AD_ARCHIVED": "横幅条目已归档"
     }
   },
   "cabinetTasks": {
@@ -4792,6 +4802,131 @@
       "forbidden": "您无权执行此操作。",
       "not_found": "该对话已不存在。",
       "unauth": "请先登录。"
+    }
+  },
+  "companyCard": {
+    "paymentsTitle": "此处可用",
+    "payment": {
+      "cash": "现金",
+      "card": "银行卡",
+      "transfer": "银行转账"
+    },
+    "ad": {
+      "section": "店铺亮点",
+      "slides": "亮点",
+      "slide": "亮点 {n}/{total}",
+      "play": "播放片段",
+      "listen": "收听",
+      "stopVoice": "停止语音",
+      "more": "详情",
+      "less": "收起",
+      "voiced": "已配音",
+      "until": "至 {date}",
+      "copy": "复制",
+      "copied": "已复制",
+      "kind": {
+        "PROMO": "优惠",
+        "EVENT": "活动",
+        "NEWS": "新闻"
+      },
+      "action": {
+        "PRODUCT": "打开产品",
+        "WEBSITE": "打开网站",
+        "POINT": "在地图上显示"
+      }
+    }
+  },
+  "cabinetAds": {
+    "title": "卡片横幅",
+    "subtitle": "访客在你的卡片顶部看到的内容：一个干净的画面，下面有详细信息。",
+    "notListed": "商家上架后会显示横幅。",
+    "liveCount": "轮播中上线：{count}/{max}",
+    "hint": "点按画面会打开文本、优惠码和操作。剪辑和配音为可选。",
+    "newTitle": "新项目",
+    "editTitle": "编辑项目",
+    "fieldKind": "类型",
+    "kind": {
+      "PROMO": "优惠",
+      "EVENT": "活动",
+      "NEWS": "新闻"
+    },
+    "fieldMedia": "画面",
+    "mediaHint": "一张照片，或最大 30 MB 的 MP4 剪辑。画面上不会叠加任何元素。",
+    "uploadImage": "上传照片",
+    "uploadVideo": "上传剪辑",
+    "uploadPoster": "上传封面帧",
+    "fieldTitle": "标题",
+    "fieldBody": "文本",
+    "noLinks": "文本中不要放链接：将由语音读出，唯一的链接是下方的操作按钮。",
+    "fieldLanguage": "语言",
+    "languageHint": "语音将以此语言朗读文本。",
+    "fieldAudio": "配音",
+    "uploadAudio": "上传录音",
+    "audioReplace": "替换录音",
+    "audioRemove": "移除",
+    "audioHint": "你的录音优先；没有录音时，浏览器会朗读文本。",
+    "fieldFrom": "开始展示",
+    "fieldTo": "结束展示",
+    "fieldEvent": "活动日期",
+    "fieldPromoCode": "优惠码",
+    "fieldAction": "操作",
+    "action": {
+      "NONE": "无操作",
+      "PRODUCT": "打开产品",
+      "WEBSITE": "打开网站",
+      "POINT": "在地图上显示"
+    },
+    "fieldProduct": "产品",
+    "fieldPoint": "地点",
+    "fieldUrl": "地址",
+    "create": "添加",
+    "save": "保存",
+    "cancel": "取消",
+    "edit": "编辑",
+    "publish": "发布",
+    "unpublish": "退回草稿",
+    "archive": "归档",
+    "up": "上移",
+    "down": "下移",
+    "video": "短片",
+    "voiced": "配音",
+    "empty": "暂无项目。",
+    "status": {
+      "DRAFT": "草稿",
+      "PUBLISHED": "已上线",
+      "ARCHIVED": "已归档"
+    },
+    "errors": {
+      "unauth": "请登录。",
+      "forbidden": "您无权编辑该横幅。",
+      "not_found": "未找到项目。",
+      "kind_invalid": "选择一种类型。",
+      "title_required": "添加标题。",
+      "title_too_long": "标题过长。",
+      "body_too_long": "文本过长。",
+      "text_has_link": "请从文本中移除链接——语音会读出它，且唯一的链接应为操作按钮。",
+      "language_invalid": "选择语言。",
+      "media_required": "上传照片或短片：画面即为横幅。",
+      "media_invalid": "请在此上传文件——外部地址一旦被移除就会失效。",
+      "promo_code_too_long": "优惠码过长。",
+      "window_invalid": "请检查日期。",
+      "window_backwards": "结束日期早于开始日期。",
+      "event_invalid": "请检查活动日期。",
+      "event_required": "活动需要日期。",
+      "product_required": "选择产品。",
+      "product_not_offered": "您尚未销售此产品。",
+      "point_required": "选择地点。",
+      "point_not_found": "未找到地点。",
+      "point_out_of_scope": "该地点不在您的范围内。",
+      "url_required": "添加地址。",
+      "url_invalid": "地址必须以 https:// 开头",
+      "too_many": "条目过多—请归档旧的。",
+      "too_many_published": "轮播已包含 5 个条目。",
+      "daily_limit": "今天编辑次数过多—请明天再试。",
+      "at_edge": "已在边缘。",
+      "upload_failed": "文件未上传。请检查格式和大小。",
+      "too_large": "文件过大。",
+      "bad_type": "不支持此文件类型。"
     }
   }
 }

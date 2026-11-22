@@ -35,6 +35,10 @@ export const COMPANY_FREE_FIELDS = [
   "logoShape",
   "logoFit",
   "timezone",
+  // Слайс BY: способы оплаты помимо монет. Монеты модерируются (они фильтруют
+  // карту и по ним ищут), а «принимаем наличные» фильтром не служит и ловится
+  // жалобой — тот же разбор, что вид заведения и часы.
+  "paymentMethods",
 ] as const;
 
 /**
@@ -43,7 +47,7 @@ export const COMPANY_FREE_FIELDS = [
  * надо записать массив. Второй путь записи (одобренная правка) идёт через тот же
  * `toCompanyPatch`, поэтому правило живёт в одном месте.
  */
-export const COMPANY_LIST_FIELDS = ["acceptedCoinIds", "acceptedCardIds"] as const;
+export const COMPANY_LIST_FIELDS = ["acceptedCoinIds", "acceptedCardIds", "paymentMethods"] as const;
 
 /**
  * Поля, которые в базе целые числа. Набор изменений и сравнение «было → стало»

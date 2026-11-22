@@ -125,6 +125,7 @@ export default async function CompanyManagementPage({
             coins={coinOpts.map((c) => ({ id: c.id, symbol: c.symbol, name: c.name, logoUrl: c.logoUrl }))}
             cards={cardOpts.map((c) => ({ id: c.id, symbol: c.symbol, name: c.name, logoUrl: c.logoUrl }))}
             initialCoinIds={company.acceptedCoinIds}
+            initialPaymentMethods={company.paymentMethods}
             initialCardIds={company.acceptedCardIds}
             initial={{
               legalName: company.legalName, displayName: company.displayName,

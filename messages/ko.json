@@ -1414,7 +1414,9 @@
     "requisitesTitle": "회사 정보",
     "registrationNumber": "등록 번호",
     "taxNumber": "세금 번호",
-    "productsTitle": "여기에서 판매 중"
+    "productsTitle": "여기에서 판매 중",
+    "hoursTitle": "영업시간",
+    "showcaseEmpty": "여기에는 아직 판매 중인 항목이 없습니다."
   },
   "markets": {
     "title": "시장",
@@ -1709,7 +1711,8 @@
       "tasks": "작업",
       "journal": "활동 기록",
       "chat": "팀 채팅",
-      "customers": "고객 메시지"
+      "customers": "고객 메시지",
+      "ads": "카드 배너"
     },
     "tileUnit": {
       "points": "지도에 {count}개",
@@ -1722,7 +1725,8 @@
       "tasks": "열림 {count}개",
       "journal": "항목 {count}개",
       "chat": "{count}개 메시지",
-      "customers": "대화: {count}개"
+      "customers": "대화: {count}개",
+      "ads": "{count}개 진행 중"
     },
     "tileEmpty": "아직 없음",
     "tileBadge": {
@@ -1920,7 +1924,8 @@
     "coinSearch": "코인 검색",
     "coinSearchEmpty": "찾은 항목이 없습니다. 티커로 시도해 보세요.",
     "companyCoinsHint": "개별 선택이 없는 지점은 이 코인들을 따릅니다. 세트 변경은 모더레이터에게 전달됩니다.",
-    "coinsInherited": "선택된 항목이 없음 — 이 지점은 회사 세트를 표시합니다: {coins}"
+    "coinsInherited": "선택된 항목이 없음 — 이 지점은 회사 세트를 표시합니다: {coins}",
+    "paymentMethods": "다른 결제 수단"
   },
   "cabinet": {
     "kicker": "섹션 · 캐비닛",
@@ -2467,7 +2472,8 @@
     "officeHoursTitle": "업무 시간",
     "officeHoursHint": "전화, 이메일, 직원 응대 시간입니다. 거래 가능 시간은 각 판매 지점에 표기되어 있습니다.",
     "documentsTitle": "문서",
-    "hoursFromCompany": "회사 영업시간 — 이 지점에는 거래 시간이 설정되어 있지 않습니다."
+    "hoursFromCompany": "회사 영업시간 — 이 지점에는 거래 시간이 설정되어 있지 않습니다.",
+    "requisitesAndContacts": "회사 정보 및 연락처"
   },
   "companiesDirectory": {
     "kicker": "디렉터리",
@@ -4355,7 +4361,11 @@
       "DOCUMENT_PUBLISHED": "공개 페이지에 문서가 게시됨",
       "DOCUMENT_UNPUBLISHED": "공개 페이지에서 문서가 제거됨",
       "DOCUMENT_DELETED": "공개 문서가 삭제됨",
-      "PUBLIC_FIELDS_SET": "고객이 보는 내용 변경"
+      "PUBLIC_FIELDS_SET": "고객이 보는 내용 변경",
+      "AD_CREATED": "배너 항목이 생성됨",
+      "AD_UPDATED": "배너 항목이 업데이트됨",
+      "AD_PUBLISHED": "배너 항목이 게시됨",
+      "AD_ARCHIVED": "배너 항목이 보관됨"
     }
   },
   "cabinetTasks": {
@@ -4792,6 +4802,131 @@
       "forbidden": "이 작업을 수행할 권한이 없습니다.",
       "not_found": "대화가 삭제되었습니다.",
       "unauth": "먼저 로그인해 주세요."
+    }
+  },
+  "companyCard": {
+    "paymentsTitle": "여기에서 결제 가능",
+    "payment": {
+      "cash": "현금",
+      "card": "은행 카드",
+      "transfer": "계좌 이체"
+    },
+    "ad": {
+      "section": "매장 하이라이트",
+      "slides": "하이라이트",
+      "slide": "{total}개 중 하이라이트 {n}",
+      "play": "클립 재생",
+      "listen": "듣기",
+      "stopVoice": "음성 중지",
+      "more": "자세히",
+      "less": "접기",
+      "voiced": "음성 처리됨",
+      "until": "{date}까지",
+      "copy": "복사",
+      "copied": "복사됨",
+      "kind": {
+        "PROMO": "프로모션",
+        "EVENT": "이벤트",
+        "NEWS": "뉴스"
+      },
+      "action": {
+        "PRODUCT": "제품 열기",
+        "WEBSITE": "웹사이트 열기",
+        "POINT": "지도에서 보기"
+      }
+    }
+  },
+  "cabinetAds": {
+    "title": "카드 배너",
+    "subtitle": "방문자가 카드 상단에서 보게 되는 요소입니다: 깔끔한 프레임과 그 아래의 세부 정보.",
+    "notListed": "비즈니스가 등록되면 배너가 표시됩니다.",
+    "liveCount": "캐러셀에서 라이브: {max} 중 {count}",
+    "hint": "프레임을 탭하면 텍스트, 프로모 코드, 동작이 열립니다. 클립과 보이스오버는 선택 사항입니다.",
+    "newTitle": "새 항목",
+    "editTitle": "항목 편집",
+    "fieldKind": "종류",
+    "kind": {
+      "PROMO": "프로모션",
+      "EVENT": "이벤트",
+      "NEWS": "뉴스"
+    },
+    "fieldMedia": "프레임",
+    "mediaHint": "사진 또는 최대 30 MB의 MP4 클립. 프레임 위에는 아무것도 표시되지 않습니다.",
+    "uploadImage": "사진 업로드",
+    "uploadVideo": "클립 업로드",
+    "uploadPoster": "커버 프레임 업로드",
+    "fieldTitle": "헤드라인",
+    "fieldBody": "텍스트",
+    "noLinks": "텍스트에는 링크를 넣지 마세요: 음성이 내용을 읽어 주며, 유일한 링크는 아래의 동작 버튼입니다.",
+    "fieldLanguage": "언어",
+    "languageHint": "음성이 이 언어로 텍스트를 읽습니다.",
+    "fieldAudio": "보이스오버",
+    "uploadAudio": "녹음 업로드",
+    "audioReplace": "녹음 교체",
+    "audioRemove": "제거",
+    "audioHint": "직접 녹음한 음성이 우선 적용됩니다. 없으면 브라우저가 텍스트를 음성으로 읽습니다.",
+    "fieldFrom": "노출 시작",
+    "fieldTo": "노출 종료",
+    "fieldEvent": "이벤트 날짜",
+    "fieldPromoCode": "프로모 코드",
+    "fieldAction": "동작",
+    "action": {
+      "NONE": "동작 없음",
+      "PRODUCT": "상품 열기",
+      "WEBSITE": "웹사이트 열기",
+      "POINT": "지도에서 보기"
+    },
+    "fieldProduct": "상품",
+    "fieldPoint": "장소",
+    "fieldUrl": "주소",
+    "create": "추가",
+    "save": "저장",
+    "cancel": "취소",
+    "edit": "편집",
+    "publish": "게시",
+    "unpublish": "초안으로 되돌리기",
+    "archive": "보관",
+    "up": "위로 이동",
+    "down": "아래로 이동",
+    "video": "클립",
+    "voiced": "음성 있음",
+    "empty": "아직 항목이 없습니다.",
+    "status": {
+      "DRAFT": "초안",
+      "PUBLISHED": "게시됨",
+      "ARCHIVED": "보관됨"
+    },
+    "errors": {
+      "unauth": "로그인해 주세요.",
+      "forbidden": "배너를 편집할 권한이 없습니다.",
+      "not_found": "항목을 찾을 수 없습니다.",
+      "kind_invalid": "유형을 선택하세요.",
+      "title_required": "헤드라인을 추가하세요.",
+      "title_too_long": "헤드라인이 너무 깁니다.",
+      "body_too_long": "텍스트가 너무 깁니다.",
+      "text_has_link": "텍스트에서 링크를 제거하세요 — 음성으로 링크가 읽히며, 링크는 동작 버튼 하나뿐입니다.",
+      "language_invalid": "언어를 선택하세요.",
+      "media_required": "사진이나 클립을 업로드하세요: 프레임이 배너가 됩니다.",
+      "media_invalid": "파일을 여기에 업로드하세요 — 외부 주소는 삭제되는 즉시 사라집니다.",
+      "promo_code_too_long": "프로모 코드가 너무 깁니다.",
+      "window_invalid": "날짜를 확인하세요.",
+      "window_backwards": "종료일이 시작일보다 빠릅니다.",
+      "event_invalid": "이벤트 날짜를 확인하세요.",
+      "event_required": "이벤트에는 날짜가 필요합니다.",
+      "product_required": "상품을 선택하세요.",
+      "product_not_offered": "아직 이 상품을 판매하지 않습니다.",
+      "point_required": "장소를 선택하세요.",
+      "point_not_found": "장소를 찾을 수 없습니다.",
+      "point_out_of_scope": "이 장소는 귀하의 지역 밖입니다.",
+      "url_required": "주소를 추가하세요.",
+      "url_invalid": "주소는 https://로 시작해야 합니다",
+      "too_many": "항목이 너무 많습니다 — 기존 항목을 보관 처리하세요.",
+      "too_many_published": "캐러셀에는 이미 5개의 항목이 있습니다.",
+      "daily_limit": "오늘 수정이 너무 많습니다 — 내일 다시 시도하세요.",
+      "at_edge": "이미 끝에 있습니다.",
+      "upload_failed": "파일이 업로드되지 않았습니다. 형식과 크기를 확인하세요.",
+      "too_large": "파일이 너무 큽니다.",
+      "bad_type": "이 파일 형식은 허용되지 않습니다."
     }
   }
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { AcceptedCoin, Poi } from "@/lib/crypto-map";
+import type { Poi } from "@/lib/crypto-map";
 import type { StepTranslator } from "@/components/coin-detail/route-steps-panel";
 import { CHIP, ROW_BTN, usePoiPhoto } from "@/components/coin-detail/poi-sheet-ui";
 import { PoiBannerOverlay } from "@/components/coin-detail/poi-banner-overlay";
@@ -9,6 +9,9 @@ import { PoiReportDialog } from "@/components/coin-detail/poi-report-dialog";
 import { reportablePointId, TILE_PAD_CLASS, TILE_SHELL } from "@/lib/poi-tile";
 import { safeHttpUrl } from "@/lib/safe-url";
 import { PoiHours } from "@/components/coin-detail/poi-hours";
+import { AdBanner } from "@/components/company-card/ad-banner";
+import { CardPayments, CardRequisites } from "@/components/company-card/panels";
+import { useCompanyCard } from "@/components/company-card/use-company-card";
 import { useTranslations } from "next-intl";
 
 /**
@@ -47,10 +50,20 @@ export function PoiPaneCard({
   const [reportOpen, setReportOpen] = useState(false);
   // Жалоба — только на нашу точку: чужую мы снять не можем (см. reportablePointId).
   const reportId = reportablePointId(poi.id);
+  // Та же карточка, что на витрине предприятия (слайс BY): владелец просил показывать
+  // её и здесь «в таком же виде». Берётся отдельным запросом при открытии точки.
+  const card = useCompanyCard(poi.companyId, locale);
 
   return (
     <div className="pb-4">
-      {photo.image && (
+      {/* Баннер предприятия: чистый кадр, управление под ним. Он старше плитки
+          фотографии — это то, что предприятие само хочет сказать первым. */}
+      {card && card.ads.length > 0 ? (
+        <div className={TILE_PAD_CLASS}>
+          <AdBanner ads={card.ads} />
+        </div>
+      ) : null}
+      {!card?.ads.length && photo.image && (
         <div className={TILE_PAD_CLASS}>
           <button
             type="button"
@@ -71,7 +84,7 @@ export function PoiPaneCard({
           </button>
         </div>
       )}
-      {photo.loading && !photo.image && (
+      {photo.loading && !photo.image && !card?.ads.length && (
         <div className={TILE_PAD_CLASS}>
           <div className={`${TILE_SHELL} animate-pulse bg-bg-tint`} />
         </div>
@@ -95,20 +108,22 @@ export function PoiPaneCard({
           </button>
         )}
 
-        {hasAccepted && (
+        {/* Чем платят — тот же баннер, что на витрине (слайс BY), но монеты берутся
+            **у точки**: у неё набор бывает уже, чем у предприятия, и показать здесь
+            весь список предприятия значило бы обещать приём там, где его нет. */}
+        {hasAccepted || card?.payments.length ? (
           <section className="space-y-2">
-            <h3 className="text-[11px] uppercase tracking-[0.16em] text-muted">{t("acceptedCoins")}</h3>
-            <div className="flex flex-wrap gap-2">
-              {poi.acceptedCoins.map((c) => (
-                <CoinChip key={`${c.own ? "card" : "coin"}-${c.key}`} coin={c} locale={locale} t={t} />
-              ))}
-              {poi.acceptedGeneric && poi.acceptedCoins.length === 0 && (
-                <span className={`${CHIP} text-muted`}>₿ {t("acceptedAny")}</span>
-              )}
-              {poi.lightning && <span className={`${CHIP} text-muted`}>⚡ Lightning</span>}
-            </div>
+            <CardPayments coins={poi.acceptedCoins} payments={card?.payments ?? []} locale={locale} />
+            {(poi.acceptedGeneric && poi.acceptedCoins.length === 0) || poi.lightning ? (
+              <div className="flex flex-wrap gap-2">
+                {poi.acceptedGeneric && poi.acceptedCoins.length === 0 && (
+                  <span className={`${CHIP} text-muted`}>₿ {t("acceptedAny")}</span>
+                )}
+                {poi.lightning && <span className={`${CHIP} text-muted`}>⚡ Lightning</span>}
+              </div>
+            ) : null}
           </section>
-        )}
+        ) : null}
 
         <section className="space-y-2.5">
           {/* Идущая акция заведения (слайс BG). Строка, а не плашка: обещание
@@ -138,6 +153,7 @@ export function PoiPaneCard({
             hours={poi.hours}
             timezone={poi.timezone}
             fallbackText={poi.openingHours}
+            title={t("hoursTitle")}
             note={poi.hoursFrom === "company" ? t("hoursFromCompany") : null}
           />
           {poi.address && (
@@ -149,24 +165,14 @@ export function PoiPaneCard({
             </div>
           )}
 
-          {/* Что тут продают (слайс BX). Строки, а не плитки: карточка точки
-              отвечает на «что тут есть», а витрина товара — на «кто продаёт». */}
-          {poi.offers && poi.offers.length > 0 && (
-            <div className="space-y-1.5">
-              <h3 className="text-[11px] uppercase tracking-[0.16em] text-muted">{t("productsTitle")}</h3>
-              {poi.offers.map((o) => (
-                <a key={o.slug} href={`/${locale}/product/${o.slug}`} className={ROW_BTN}>
-                  <span aria-hidden>📦</span>
-                  <span className="flex-1 truncate text-left">{o.name}</span>
-                  {o.price && <span className="num shrink-0 text-[12px] text-muted">{o.price}</span>}
-                </a>
-              ))}
-            </div>
-          )}
+          {/* Товары живут на странице «Витрина» (решение владельца, слайс BY):
+              витрина — это товары и услуги, а «Место» — про само место. Одна вещь в
+              двух местах расходится. */}
 
-          {/* Политика возврата (BW): показывается там же, где названа цена, —
-              то есть рядом с товаром, а не в конце карточки. */}
-          {(poi.returnPolicy || poi.returnDays) && (
+          {/* Политика возврата (BW): показывается там же, где названа цена, — то
+              есть рядом с товаром, а не в конце карточки. У нашей точки её несёт
+              карточка предприятия ниже, и вторая такая же строка была бы повтором. */}
+          {!card && (poi.returnPolicy || poi.returnDays) && (
             <div className="flex gap-2 text-[13px] leading-snug">
               <span aria-hidden className="w-5 shrink-0 text-center text-muted">↩️</span>
               <span className="flex-1 text-muted">
@@ -176,6 +182,10 @@ export function PoiPaneCard({
               </span>
             </div>
           )}
+
+          {/* Реквизиты и контакты одним баннером и «принимаем к оплате» — те же
+              компоненты, что на витрине: карточка одна. */}
+          {card ? <CardRequisites card={card} hideAddress /> : null}
 
           <button type="button" onClick={onStreetView} className={`${ROW_BTN} ${near ? "border-up" : ""}`}>
             <span aria-hidden>👁</span>
@@ -206,35 +216,5 @@ export function PoiPaneCard({
         <PoiReportDialog pointId={reportId} onClose={() => setReportOpen(false)} t={t} />
       )}
     </div>
-  );
-}
-
-/**
- * Чипс монеты — кнопка на её страницу. И у монеты каталога, и у нашего
- * листинга это один адрес `/coin/<slug>`: страницы различаются содержимым, а
- * не путём.
- */
-function CoinChip({ coin, locale, t }: { coin: AcceptedCoin; locale: string; t: StepTranslator }) {
-  const inside = (
-    <>
-      {coin.logoUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={coin.logoUrl} alt="" loading="lazy" className="h-5 w-5 rounded-full" />
-      ) : (
-        <span aria-hidden className="text-[13px]">
-          ●
-        </span>
-      )}
-      <span className="num font-medium">{coin.symbol}</span>
-      {coin.own && <span className="text-[10px] uppercase tracking-wide text-accent">{t("ownListing")}</span>}
-    </>
-  );
-  // Классы повторены, а не вынесены в переменную: тест `poi-sheet-buttons`
-  // читает исходник и должен видеть размер под палец прямо на элементе.
-  if (!coin.slug) return <span className={`${CHIP} text-foreground`}>{inside}</span>;
-  return (
-    <a href={`/${locale}/coin/${coin.slug}`} className={`${CHIP} text-foreground hover:border-accent`}>
-      {inside}
-    </a>
   );
 }

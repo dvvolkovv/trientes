@@ -1414,7 +1414,9 @@
     "requisitesTitle": "Detalles de la empresa",
     "registrationNumber": "Número de registro",
     "taxNumber": "Número de identificación fiscal",
-    "productsTitle": "A la venta aquí"
+    "productsTitle": "A la venta aquí",
+    "hoursTitle": "Horario de apertura",
+    "showcaseEmpty": "Aún no hay nada a la venta aquí."
   },
   "markets": {
     "title": "Mercados",
@@ -1709,7 +1711,8 @@
       "tasks": "Tareas",
       "journal": "Registro de actividad",
       "chat": "Chat del equipo",
-      "customers": "Mensajes de clientes"
+      "customers": "Mensajes de clientes",
+      "ads": "Banner de tarjeta"
     },
     "tileUnit": {
       "points": "{count} en el mapa",
@@ -1722,7 +1725,8 @@
       "tasks": "{count} abiertas",
       "journal": "{count} entradas",
       "chat": "{count} mensajes",
-      "customers": "Conversaciones: {count}"
+      "customers": "Conversaciones: {count}",
+      "ads": "{count} activos"
     },
     "tileEmpty": "nada todavía",
     "tileBadge": {
@@ -1733,7 +1737,7 @@
     "categoryHint": "Define la etiqueta de tu ficha pública, el color del pin en el mapa y qué viajeros te ven en su ruta.",
     "category": {
       "grocery": "Supermercado",
-      "cafe": "Café",
+      "cafe": "Cafetería",
       "restaurant": "Restaurante",
       "bar": "Bar",
       "fuel": "Gasolinera",
@@ -1920,7 +1924,8 @@
     "coinSearch": "Buscar monedas",
     "coinSearchEmpty": "No se encontró nada. Prueba el ticker.",
     "companyCoinsHint": "Los puntos sin selección propia heredan estas monedas. Cambiar el conjunto pasa a un moderador.",
-    "coinsInherited": "Nada seleccionado — este punto muestra el conjunto de la empresa: {coins}"
+    "coinsInherited": "Nada seleccionado — este punto muestra el conjunto de la empresa: {coins}",
+    "paymentMethods": "Otras formas de pago"
   },
   "cabinet": {
     "kicker": "Sección · Panel",
@@ -2467,7 +2472,8 @@
     "officeHoursTitle": "Horario de oficina",
     "officeHoursHint": "Cuando responden el teléfono, el correo electrónico y el personal. El horario de atención comercial se indica en cada punto de venta.",
     "documentsTitle": "Documentos",
-    "hoursFromCompany": "Horario de oficina de la empresa — el horario de atención no está configurado para este punto"
+    "hoursFromCompany": "Horario de oficina de la empresa — el horario de atención no está configurado para este punto",
+    "requisitesAndContacts": "Detalles de la empresa y contactos"
   },
   "companiesDirectory": {
     "kicker": "Directorio",
@@ -4355,7 +4361,11 @@
       "DOCUMENT_PUBLISHED": "Documento publicado en la página pública",
       "DOCUMENT_UNPUBLISHED": "Documento retirado de la página pública",
       "DOCUMENT_DELETED": "Documento público eliminado",
-      "PUBLIC_FIELDS_SET": "Se cambió lo que ven los clientes"
+      "PUBLIC_FIELDS_SET": "Se cambió lo que ven los clientes",
+      "AD_CREATED": "Elemento de banner creado",
+      "AD_UPDATED": "Elemento de banner actualizado",
+      "AD_PUBLISHED": "Elemento de banner publicado",
+      "AD_ARCHIVED": "Elemento de banner archivado"
     }
   },
   "cabinetTasks": {
@@ -4792,6 +4802,131 @@
       "forbidden": "No tienes permiso para hacer eso.",
       "not_found": "La conversación ha desaparecido.",
       "unauth": "Inicia sesión primero."
+    }
+  },
+  "companyCard": {
+    "paymentsTitle": "Se acepta aquí",
+    "payment": {
+      "cash": "Efectivo",
+      "card": "Tarjeta bancaria",
+      "transfer": "Transferencia bancaria"
+    },
+    "ad": {
+      "section": "Destacados de la tienda",
+      "slides": "Destacados",
+      "slide": "Destacado {n} de {total}",
+      "play": "Reproducir el clip",
+      "listen": "Escuchar",
+      "stopVoice": "Detener la voz",
+      "more": "Detalles",
+      "less": "Contraer",
+      "voiced": "Con voz",
+      "until": "hasta {date}",
+      "copy": "Copiar",
+      "copied": "Copiado",
+      "kind": {
+        "PROMO": "Oferta",
+        "EVENT": "Evento",
+        "NEWS": "Noticias"
+      },
+      "action": {
+        "PRODUCT": "Abrir el producto",
+        "WEBSITE": "Abrir el sitio web",
+        "POINT": "Mostrar en el mapa"
+      }
+    }
+  },
+  "cabinetAds": {
+    "title": "Banner de la tarjeta",
+    "subtitle": "Lo que los visitantes ven en la parte superior de tu tarjeta: un marco limpio, con detalles debajo.",
+    "notListed": "El banner aparece cuando el negocio está listado.",
+    "liveCount": "Activos en el carrusel: {count} de {max}",
+    "hint": "Tocar el marco abre el texto, el código promocional y la acción. El clip y la locución son opcionales.",
+    "newTitle": "Nuevo elemento",
+    "editTitle": "Editar elemento",
+    "fieldKind": "Tipo",
+    "kind": {
+      "PROMO": "Oferta",
+      "EVENT": "Evento",
+      "NEWS": "Noticias"
+    },
+    "fieldMedia": "Marco",
+    "mediaHint": "Una foto o un clip MP4 de hasta 30 MB. No se dibuja nada sobre el marco.",
+    "uploadImage": "Subir una foto",
+    "uploadVideo": "Subir un clip",
+    "uploadPoster": "Subir un marco de portada",
+    "fieldTitle": "Titular",
+    "fieldBody": "Texto",
+    "noLinks": "Sin enlaces en el texto: la voz lo lee y el único enlace es el botón de acción de abajo.",
+    "fieldLanguage": "Idioma",
+    "languageHint": "La voz lee el texto en este idioma.",
+    "fieldAudio": "Locución",
+    "uploadAudio": "Subir una grabación",
+    "audioReplace": "Reemplazar la grabación",
+    "audioRemove": "Eliminar",
+    "audioHint": "Tu propia grabación tiene prioridad; sin ella, el navegador lee el texto en voz alta.",
+    "fieldFrom": "Se muestra desde",
+    "fieldTo": "Se muestra hasta",
+    "fieldEvent": "Fecha del evento",
+    "fieldPromoCode": "Código promocional",
+    "fieldAction": "Acción",
+    "action": {
+      "NONE": "Sin acción",
+      "PRODUCT": "Abrir el producto",
+      "WEBSITE": "Abrir el sitio web",
+      "POINT": "Mostrar en el mapa"
+    },
+    "fieldProduct": "Producto",
+    "fieldPoint": "Lugar",
+    "fieldUrl": "Dirección",
+    "create": "Añadir",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "publish": "Publicar",
+    "unpublish": "Volver a borrador",
+    "archive": "Archivar",
+    "up": "Subir",
+    "down": "Bajar",
+    "video": "Clip",
+    "voiced": "Con voz",
+    "empty": "Aún no hay elementos.",
+    "status": {
+      "DRAFT": "Borrador",
+      "PUBLISHED": "Activa",
+      "ARCHIVED": "Archivado"
+    },
+    "errors": {
+      "unauth": "Inicia sesión.",
+      "forbidden": "No tienes permiso para editar el banner.",
+      "not_found": "Elemento no encontrado.",
+      "kind_invalid": "Elige un tipo.",
+      "title_required": "Añade un titular.",
+      "title_too_long": "El titular es demasiado largo.",
+      "body_too_long": "El texto es demasiado largo.",
+      "text_has_link": "Quita el enlace del texto — la voz lo leerá, y el único enlace es el botón de acción.",
+      "language_invalid": "Elige un idioma.",
+      "media_required": "Sube una foto o un clip: el fotograma es el banner.",
+      "media_invalid": "Sube el archivo aquí — una dirección externa desaparecería el día que se elimine.",
+      "promo_code_too_long": "El código promocional es demasiado largo.",
+      "window_invalid": "Revisa las fechas.",
+      "window_backwards": "La fecha de finalización es anterior a la de inicio.",
+      "event_invalid": "Revisa la fecha del evento.",
+      "event_required": "Un evento necesita una fecha.",
+      "product_required": "Elige el producto.",
+      "product_not_offered": "Aún no vendes este producto.",
+      "point_required": "Elige el lugar.",
+      "point_not_found": "Lugar no encontrado.",
+      "point_out_of_scope": "Este lugar está fuera de tu área.",
+      "url_required": "Añade la dirección.",
+      "url_invalid": "La dirección debe empezar con https://",
+      "too_many": "Demasiados elementos — archiva los antiguos.",
+      "too_many_published": "El carrusel ya tiene 5 elementos.",
+      "daily_limit": "Demasiadas ediciones hoy — inténtalo de nuevo mañana.",
+      "at_edge": "Ya está en el borde.",
+      "upload_failed": "El archivo no se cargó. Revisa el formato y el tamaño.",
+      "too_large": "El archivo es demasiado grande.",
+      "bad_type": "Este tipo de archivo no se admite."
     }
   }
 }

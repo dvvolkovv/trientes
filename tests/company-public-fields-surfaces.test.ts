@@ -14,7 +14,12 @@ import { PUBLIC_FIELD_KEYS, type PublicFieldKey } from "@/lib/company-public-fie
  * `tests/outbound-timeouts.test.ts`: забытый гейт видно до выкладки.
  */
 
-const SHOWCASE = readFileSync("src/app/[locale]/companies/[id]/page.tsx", "utf8");
+// Слайс BY: карточку собирает одна функция, и выключатели читает она — страница лишь
+// рисует собранное. Поэтому поверхность «витрина» это сборка плюс страница.
+const SHOWCASE = [
+  readFileSync("src/lib/company-card/view.ts", "utf8"),
+  readFileSync("src/app/[locale]/companies/[id]/page.tsx", "utf8"),
+].join("\n");
 const FEED = [
   readFileSync("src/lib/company-points.ts", "utf8"),
   readFileSync("src/lib/products/offers-read.ts", "utf8"),
@@ -23,7 +28,8 @@ const FEED = [
 /** Чего на этой поверхности нет вовсе — с причиной, а не молча. */
 const NOT_RENDERED: Record<"showcase" | "feed", Partial<Record<PublicFieldKey, string>>> = {
   showcase: {
-    coins: "набор монет живёт у точки на карте, на витрине его нет",
+    // Слайс BY: монеты на витрине появились баннером «принимаем к оплате», и
+    // выключатель `coins` гасит его там же, где и в карточке с карты.
     socials: "ссылки на соцсети показывает только карточка с карты",
   },
   feed: {

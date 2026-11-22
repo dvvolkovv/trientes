@@ -13,6 +13,7 @@ import { HoursEditor } from "@/components/business/hours-editor";
 import { defaultWeek, isEmptyWeek, type WeekHours } from "@/lib/opening-hours";
 import { timezoneForCountry } from "@/lib/timezones";
 import { CoinPicker, type PickerCoin } from "@/components/business/coin-picker";
+import { PAYMENT_METHODS } from "@/lib/payment-methods";
 
 type Initial = {
   legalName: string; displayName: string; description: string;
@@ -52,6 +53,7 @@ export function CompanyProfileForm({
   coins,
   cards,
   initialCoinIds,
+  initialPaymentMethods,
   initialCardIds,
 }: {
   companyId: string;
@@ -66,9 +68,12 @@ export function CompanyProfileForm({
   cards: PickerCoin[];
   initialCoinIds?: string[];
   initialCardIds?: string[];
+  /** Способы оплаты помимо монет (слайс BY): свободное поле. */
+  initialPaymentMethods?: string[];
 }) {
   const t = useTranslations("business");
   const tk = useTranslations("business.kyb");
+  const tCard = useTranslations("companyCard");
   const router = useRouter();
   const [pending, start] = useTransition();
   const [msg, setMsg] = useState<string | null>(null);
@@ -81,6 +86,8 @@ export function CompanyProfileForm({
   // модерируемое — поэтому уходит тем же путём, что витринное имя.
   const [pickedCoins, setPickedCoins] = useState<string[]>(initialCoinIds ?? []);
   const [pickedCards, setPickedCards] = useState<string[]>(initialCardIds ?? []);
+  // Способы оплаты помимо монет (слайс BY) — свободное поле, применяется сразу.
+  const [payments, setPayments] = useState<string[]>(initialPaymentMethods ?? []);
   const [hours, setHours] = useState<WeekHours | null>(initialHours ?? null);
   const [timezone, setTimezone] = useState(initialTimezone ?? "");
   // Обновление от предыдущего состояния, а не от замыкания: два изменения в одном
@@ -153,6 +160,7 @@ export function CompanyProfileForm({
           timezone: timezone || null,
           acceptedCoinIds: pickedCoins,
           acceptedCardIds: pickedCards,
+          paymentMethods: payments,
         },
         docs,
       );
@@ -225,6 +233,30 @@ export function CompanyProfileForm({
               />
             </>
           ) : null}
+          {/* Чем ещё платят (слайс BY). Свободное поле: оно не фильтрует карту и
+              не меняет ни места, ни хозяина — а неправда ловится жалобой. */}
+          <span className={label}>{t("paymentMethods")}</span>
+          <div className="flex flex-wrap gap-2">
+            {PAYMENT_METHODS.map((m) => {
+              const on = payments.includes(m.key);
+              return (
+                <button
+                  key={m.key}
+                  type="button"
+                  disabled={pending}
+                  onClick={() =>
+                    setPayments((a) => (a.includes(m.key) ? a.filter((x) => x !== m.key) : [...a, m.key]))
+                  }
+                  className={`inline-flex h-11 items-center gap-2 rounded-full border px-4 text-[12.5px] font-semibold ${
+                    on ? "border-accent bg-accent/12 text-foreground" : "border-hairline bg-bg-tint text-muted"
+                  }`}
+                >
+                  <span aria-hidden>{m.emoji}</span>
+                  {tCard(`payment.${m.key}`)}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Логотип: файлом или ссылкой, и сразу видно, как он встанет в окно

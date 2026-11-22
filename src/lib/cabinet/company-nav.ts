@@ -1,5 +1,5 @@
 /**
- * Карта разделов кабинета предприятия: три группы и девять плиток (слайс BM).
+ * Карта разделов кабинета предприятия: три группы и десять плиток (слайсы BM, BY).
  *
  * Карта одна и чистая — по ней рисуются и плитки групп, и плитки внутри группы, и
  * ею же сверяется полнота в тесте: раздел прав, до которого в кабинете не добраться,
@@ -44,6 +44,10 @@ export const COMPANY_TILES: CompanyTileDef[] = [
   { key: "products", group: "showcase", icon: "📦", section: "products", path: "products" },
   { key: "pricing", group: "showcase", icon: "💰", section: "pricing", path: "loyalty" },
   { key: "promos", group: "showcase", icon: "📣", section: "promos", path: "promos" },
+  // Баннер карточки (слайс BY). Своего раздела прав не заводим: реклама — работа
+  // маркетолога, а `promos` уже его. Отдельная плитка, потому что акция и баннер —
+  // разные вещи: акцию рассылают с лимитами, баннер стоит на витрине.
+  { key: "ads", group: "showcase", icon: "🖼", section: "promos", path: "ads" },
   // Переписка с покупателем — лицо магазина наружу, поэтому витрина, а не «порядок» (BQ).
   { key: "customers", group: "showcase", icon: "✉️", section: "customers", path: "inbox" },
 

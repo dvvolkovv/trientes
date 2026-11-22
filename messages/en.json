@@ -1414,7 +1414,9 @@
     "requisitesTitle": "Company details",
     "registrationNumber": "Registration number",
     "taxNumber": "Tax number",
-    "productsTitle": "On sale here"
+    "productsTitle": "On sale here",
+    "hoursTitle": "Opening hours",
+    "showcaseEmpty": "Nothing on sale here yet."
   },
   "markets": {
     "title": "Markets",
@@ -1709,7 +1711,8 @@
       "tasks": "Tasks",
       "journal": "Activity log",
       "chat": "Team chat",
-      "customers": "Customer messages"
+      "customers": "Customer messages",
+      "ads": "Card banner"
     },
     "tileUnit": {
       "points": "{count} on the map",
@@ -1722,7 +1725,8 @@
       "tasks": "{count} open",
       "journal": "{count} entries",
       "chat": "{count} messages",
-      "customers": "Conversations: {count}"
+      "customers": "Conversations: {count}",
+      "ads": "{count} live"
     },
     "tileEmpty": "nothing yet",
     "tileBadge": {
@@ -1920,7 +1924,8 @@
     "coinSearch": "Search coins",
     "coinSearchEmpty": "Nothing found. Try the ticker.",
     "companyCoinsHint": "Points without their own selection inherit these coins. Changing the set goes to a moderator.",
-    "coinsInherited": "Nothing selected — this point shows the company set: {coins}"
+    "coinsInherited": "Nothing selected — this point shows the company set: {coins}",
+    "paymentMethods": "Other ways to pay"
   },
   "cabinet": {
     "kicker": "Section · Cabinet",
@@ -2467,7 +2472,8 @@
     "officeHoursTitle": "Office hours",
     "officeHoursHint": "When the phone, email and staff answer. Trading hours are listed with each point of sale.",
     "documentsTitle": "Documents",
-    "hoursFromCompany": "Company office hours — trading hours are not set for this point."
+    "hoursFromCompany": "Company office hours — trading hours are not set for this point.",
+    "requisitesAndContacts": "Company details and contacts"
   },
   "companiesDirectory": {
     "kicker": "Directory",
@@ -4355,7 +4361,11 @@
       "DOCUMENT_PUBLISHED": "Document published on the public page",
       "DOCUMENT_UNPUBLISHED": "Document removed from the public page",
       "DOCUMENT_DELETED": "Public document deleted",
-      "PUBLIC_FIELDS_SET": "Changed what customers see"
+      "PUBLIC_FIELDS_SET": "Changed what customers see",
+      "AD_CREATED": "Banner item created",
+      "AD_UPDATED": "Banner item updated",
+      "AD_PUBLISHED": "Banner item published",
+      "AD_ARCHIVED": "Banner item archived"
     }
   },
   "cabinetTasks": {
@@ -4792,6 +4802,131 @@
       "forbidden": "You are not allowed to do that.",
       "not_found": "The conversation is gone.",
       "unauth": "Sign in first."
+    }
+  },
+  "companyCard": {
+    "paymentsTitle": "Accepted here",
+    "payment": {
+      "cash": "Cash",
+      "card": "Bank card",
+      "transfer": "Bank transfer"
+    },
+    "ad": {
+      "section": "Store highlights",
+      "slides": "Highlights",
+      "slide": "Highlight {n} of {total}",
+      "play": "Play the clip",
+      "listen": "Listen",
+      "stopVoice": "Stop the voice",
+      "more": "Details",
+      "less": "Collapse",
+      "voiced": "Voiced",
+      "until": "until {date}",
+      "copy": "Copy",
+      "copied": "Copied",
+      "kind": {
+        "PROMO": "Offer",
+        "EVENT": "Event",
+        "NEWS": "News"
+      },
+      "action": {
+        "PRODUCT": "Open the product",
+        "WEBSITE": "Open the website",
+        "POINT": "Show on the map"
+      }
+    }
+  },
+  "cabinetAds": {
+    "title": "Card banner",
+    "subtitle": "What visitors see at the top of your card: a clean frame, with details below it.",
+    "notListed": "The banner appears once the business is listed.",
+    "liveCount": "Live in the carousel: {count} of {max}",
+    "hint": "Tapping the frame opens the text, the promo code and the action. The clip and the voice-over are optional.",
+    "newTitle": "New item",
+    "editTitle": "Edit item",
+    "fieldKind": "Kind",
+    "kind": {
+      "PROMO": "Offer",
+      "EVENT": "Event",
+      "NEWS": "News"
+    },
+    "fieldMedia": "Frame",
+    "mediaHint": "A photo, or an MP4 clip up to 30 MB. Nothing is drawn on top of the frame.",
+    "uploadImage": "Upload a photo",
+    "uploadVideo": "Upload a clip",
+    "uploadPoster": "Upload a cover frame",
+    "fieldTitle": "Headline",
+    "fieldBody": "Text",
+    "noLinks": "No links in the text: the voice reads it out, and the only link is the action button below.",
+    "fieldLanguage": "Language",
+    "languageHint": "The voice reads the text in this language.",
+    "fieldAudio": "Voice-over",
+    "uploadAudio": "Upload a recording",
+    "audioReplace": "Replace the recording",
+    "audioRemove": "Remove",
+    "audioHint": "Your own recording wins; without one the browser reads the text aloud.",
+    "fieldFrom": "Shown from",
+    "fieldTo": "Shown until",
+    "fieldEvent": "Event date",
+    "fieldPromoCode": "Promo code",
+    "fieldAction": "Action",
+    "action": {
+      "NONE": "No action",
+      "PRODUCT": "Open the product",
+      "WEBSITE": "Open the website",
+      "POINT": "Show on the map"
+    },
+    "fieldProduct": "Product",
+    "fieldPoint": "Place",
+    "fieldUrl": "Address",
+    "create": "Add",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "publish": "Publish",
+    "unpublish": "Back to draft",
+    "archive": "Archive",
+    "up": "Move up",
+    "down": "Move down",
+    "video": "Clip",
+    "voiced": "Voiced",
+    "empty": "No items yet.",
+    "status": {
+      "DRAFT": "Draft",
+      "PUBLISHED": "Live",
+      "ARCHIVED": "Archived"
+    },
+    "errors": {
+      "unauth": "Please sign in.",
+      "forbidden": "You do not have the right to edit the banner.",
+      "not_found": "Item not found.",
+      "kind_invalid": "Pick a kind.",
+      "title_required": "Add a headline.",
+      "title_too_long": "The headline is too long.",
+      "body_too_long": "The text is too long.",
+      "text_has_link": "Remove the link from the text — the voice reads it out, and the only link is the action button.",
+      "language_invalid": "Pick a language.",
+      "media_required": "Upload a photo or a clip: the frame is the banner.",
+      "media_invalid": "Upload the file here — an outside address would disappear the day it is removed.",
+      "promo_code_too_long": "The promo code is too long.",
+      "window_invalid": "Check the dates.",
+      "window_backwards": "The end date is before the start date.",
+      "event_invalid": "Check the event date.",
+      "event_required": "An event needs a date.",
+      "product_required": "Pick the product.",
+      "product_not_offered": "You do not sell this product yet.",
+      "point_required": "Pick the place.",
+      "point_not_found": "Place not found.",
+      "point_out_of_scope": "This place is outside your area.",
+      "url_required": "Add the address.",
+      "url_invalid": "The address must start with https://",
+      "too_many": "Too many items — archive the old ones.",
+      "too_many_published": "The carousel already holds 5 items.",
+      "daily_limit": "Too many edits today — try again tomorrow.",
+      "at_edge": "Already at the edge.",
+      "upload_failed": "The file did not upload. Check the format and the size.",
+      "too_large": "The file is too large.",
+      "bad_type": "This file type is not accepted."
     }
   }
 }

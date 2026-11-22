@@ -1414,7 +1414,9 @@
     "requisitesTitle": "Şirket bilgileri",
     "registrationNumber": "Kayıt numarası",
     "taxNumber": "Vergi numarası",
-    "productsTitle": "Burada satılanlar"
+    "productsTitle": "Burada satılanlar",
+    "hoursTitle": "Çalışma saatleri",
+    "showcaseEmpty": "Burada henüz satılık bir şey yok."
   },
   "markets": {
     "title": "Piyasalar",
@@ -1709,7 +1711,8 @@
       "tasks": "Görevler",
       "journal": "Etkinlik günlüğü",
       "chat": "Takım sohbeti",
-      "customers": "Müşteri mesajları"
+      "customers": "Müşteri mesajları",
+      "ads": "Kart afişi"
     },
     "tileUnit": {
       "points": "{count} haritada",
@@ -1722,7 +1725,8 @@
       "tasks": "{count} açık",
       "journal": "{count} kayıt",
       "chat": "{count} mesaj",
-      "customers": "Sohbetler: {count}"
+      "customers": "Sohbetler: {count}",
+      "ads": "{count} canlı"
     },
     "tileEmpty": "henüz bir şey yok",
     "tileBadge": {
@@ -1920,7 +1924,8 @@
     "coinSearch": "Coinleri ara",
     "coinSearchEmpty": "Hiçbir şey bulunamadı. Ticker'ı deneyin.",
     "companyCoinsHint": "Kendi seçimi olmayan noktalar bu coinleri devralır. Seti değiştirmek moderatöre gider.",
-    "coinsInherited": "Hiçbir şey seçilmedi — bu nokta şirket setini gösterir: {coins}"
+    "coinsInherited": "Hiçbir şey seçilmedi — bu nokta şirket setini gösterir: {coins}",
+    "paymentMethods": "Diğer ödeme yöntemleri"
   },
   "cabinet": {
     "kicker": "Bölüm · Kabin",
@@ -2467,7 +2472,8 @@
     "officeHoursTitle": "Mesai saatleri",
     "officeHoursHint": "Telefonun, e-postaın ve personelin yanıt verdiği zamanlar. Ticaret saatleri her satış noktasıyla birlikte listelenir.",
     "documentsTitle": "Belgeler",
-    "hoursFromCompany": "Şirket çalışma saatleri — bu nokta için işlem saatleri ayarlanmadı."
+    "hoursFromCompany": "Şirket çalışma saatleri — bu nokta için işlem saatleri ayarlanmadı.",
+    "requisitesAndContacts": "Şirket bilgileri ve iletişim"
   },
   "companiesDirectory": {
     "kicker": "Dizin",
@@ -4355,7 +4361,11 @@
       "DOCUMENT_PUBLISHED": "Belge herkese açık sayfada yayımlandı",
       "DOCUMENT_UNPUBLISHED": "Belge herkese açık sayfadan kaldırıldı",
       "DOCUMENT_DELETED": "Herkese açık belge silindi",
-      "PUBLIC_FIELDS_SET": "Müşterilerin gördükleri değiştirildi"
+      "PUBLIC_FIELDS_SET": "Müşterilerin gördükleri değiştirildi",
+      "AD_CREATED": "Banner öğesi oluşturuldu",
+      "AD_UPDATED": "Banner öğesi güncellendi",
+      "AD_PUBLISHED": "Banner öğesi yayımlandı",
+      "AD_ARCHIVED": "Banner öğesi arşivlendi"
     }
   },
   "cabinetTasks": {
@@ -4792,6 +4802,131 @@
       "forbidden": "Bunu yapmaya izniniz yok.",
       "not_found": "Sohbet bulunamadı.",
       "unauth": "Önce giriş yapın."
+    }
+  },
+  "companyCard": {
+    "paymentsTitle": "Burada kabul edilir",
+    "payment": {
+      "cash": "Nakit",
+      "card": "Banka kartı",
+      "transfer": "Banka havalesi"
+    },
+    "ad": {
+      "section": "Mağaza öne çıkanları",
+      "slides": "Öne çıkanlar",
+      "slide": "Öne çıkan {n} / {total}",
+      "play": "Klibi oynat",
+      "listen": "Dinle",
+      "stopVoice": "Sesi durdur",
+      "more": "Ayrıntılar",
+      "less": "Daralt",
+      "voiced": "Seslendirmeli",
+      "until": "{date} tarihine kadar",
+      "copy": "Kopyala",
+      "copied": "Kopyalandı",
+      "kind": {
+        "PROMO": "Teklif",
+        "EVENT": "Etkinlik",
+        "NEWS": "Haber"
+      },
+      "action": {
+        "PRODUCT": "Ürünü aç",
+        "WEBSITE": "Web sitesini aç",
+        "POINT": "Haritada göster"
+      }
+    }
+  },
+  "cabinetAds": {
+    "title": "Kart bannerı",
+    "subtitle": "Ziyaretçilerin kartınızın üstünde gördüğü şey: altındaki ayrıntılarla birlikte sade bir çerçeve.",
+    "notListed": "İşletme listelendiğinde banner görünür.",
+    "liveCount": "Karuselde yayında: {count} / {max}",
+    "hint": "Çerçeveye dokunmak metni, promosyon kodunu ve eylemi açar. Klip ve seslendirme isteğe bağlıdır.",
+    "newTitle": "Yeni öğe",
+    "editTitle": "Öğeyi düzenle",
+    "fieldKind": "Tür",
+    "kind": {
+      "PROMO": "Teklif",
+      "EVENT": "Etkinlik",
+      "NEWS": "Haber"
+    },
+    "fieldMedia": "Çerçeve",
+    "mediaHint": "Bir fotoğraf ya da 30 MB'a kadar MP4 klip. Çerçevenin üstüne hiçbir şey çizilmez.",
+    "uploadImage": "Fotoğraf yükle",
+    "uploadVideo": "Klip yükle",
+    "uploadPoster": "Kapak çerçevesi yükle",
+    "fieldTitle": "Başlık",
+    "fieldBody": "Metin",
+    "noLinks": "Metinde bağlantı yok: metni ses okur ve tek bağlantı aşağıdaki eylem düğmesidir.",
+    "fieldLanguage": "Dil",
+    "languageHint": "Ses metni bu dilde okur.",
+    "fieldAudio": "Seslendirme",
+    "uploadAudio": "Kayıt yükle",
+    "audioReplace": "Kaydı değiştir",
+    "audioRemove": "Kaldır",
+    "audioHint": "Kendi kaydınız önceliklidir; olmazsa tarayıcı metni sesli okur.",
+    "fieldFrom": "Gösterim başlangıcı",
+    "fieldTo": "Gösterim bitişi",
+    "fieldEvent": "Etkinlik tarihi",
+    "fieldPromoCode": "Promosyon kodu",
+    "fieldAction": "Eylem",
+    "action": {
+      "NONE": "Eylem yok",
+      "PRODUCT": "Ürünü aç",
+      "WEBSITE": "Web sitesini aç",
+      "POINT": "Haritada göster"
+    },
+    "fieldProduct": "Ürün",
+    "fieldPoint": "Yer",
+    "fieldUrl": "Adres",
+    "create": "Ekle",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "edit": "Düzenle",
+    "publish": "Yayınla",
+    "unpublish": "Taslağa geri al",
+    "archive": "Arşivle",
+    "up": "Yukarı taşı",
+    "down": "Aşağı taşı",
+    "video": "Klip",
+    "voiced": "Seslendirmeli",
+    "empty": "Henüz öğe yok.",
+    "status": {
+      "DRAFT": "Taslak",
+      "PUBLISHED": "Yayında",
+      "ARCHIVED": "Arşivde"
+    },
+    "errors": {
+      "unauth": "Lütfen oturum açın.",
+      "forbidden": "Bu bannerı düzenleme yetkiniz yok.",
+      "not_found": "Öğe bulunamadı.",
+      "kind_invalid": "Bir tür seçin.",
+      "title_required": "Bir başlık ekleyin.",
+      "title_too_long": "Başlık çok uzun.",
+      "body_too_long": "Metin çok uzun.",
+      "text_has_link": "Metinden bağlantıyı kaldırın — ses onu okur ve tek bağlantı eylem düğmesindedir.",
+      "language_invalid": "Bir dil seçin.",
+      "media_required": "Bir fotoğraf veya klip yükleyin: kare bannerın kendisidir.",
+      "media_invalid": "Dosyayı buraya yükleyin — dış adresteki bir dosya kaldırıldığı gün kaybolur.",
+      "promo_code_too_long": "Promosyon kodu çok uzun.",
+      "window_invalid": "Tarihleri kontrol edin.",
+      "window_backwards": "Bitiş tarihi başlangıç tarihinden önce.",
+      "event_invalid": "Etkinlik tarihini kontrol edin.",
+      "event_required": "Bir etkinliğin bir tarihe ihtiyacı var.",
+      "product_required": "Ürünü seçin.",
+      "product_not_offered": "Bu ürünü henüz satmıyorsunuz.",
+      "point_required": "Yeri seçin.",
+      "point_not_found": "Yer bulunamadı.",
+      "point_out_of_scope": "Bu yer bölgenizin dışında.",
+      "url_required": "Adresi ekleyin.",
+      "url_invalid": "Adres https:// ile başlamalı",
+      "too_many": "Çok fazla öğe var — eskileri arşivleyin.",
+      "too_many_published": "Karuselde zaten 5 öğe var.",
+      "daily_limit": "Bugün çok fazla düzenleme yapıldı — yarın tekrar deneyin.",
+      "at_edge": "Zaten en uçta.",
+      "upload_failed": "Dosya yüklenmedi. Biçimi ve boyutu kontrol edin.",
+      "too_large": "Dosya çok büyük.",
+      "bad_type": "Bu dosya türü kabul edilmiyor."
     }
   }
 }

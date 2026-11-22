@@ -1414,7 +1414,9 @@
     "requisitesTitle": "Údaje o spoločnosti",
     "registrationNumber": "Registračné číslo",
     "taxNumber": "Daňové číslo",
-    "productsTitle": "Tu v predaji"
+    "productsTitle": "Tu v predaji",
+    "hoursTitle": "Otváracie hodiny",
+    "showcaseEmpty": "Zatiaľ sa tu nič nepredáva."
   },
   "markets": {
     "title": "Trhy",
@@ -1709,7 +1711,8 @@
       "tasks": "Úlohy",
       "journal": "Záznam aktivít",
       "chat": "Tímový chat",
-      "customers": "Správy od zákazníkov"
+      "customers": "Správy od zákazníkov",
+      "ads": "Baner karty"
     },
     "tileUnit": {
       "points": "{count} na mape",
@@ -1722,7 +1725,8 @@
       "tasks": "{count} otvorených",
       "journal": "{count} záznamov",
       "chat": "{count} správ",
-      "customers": "Konverzácie: {count}"
+      "customers": "Konverzácie: {count}",
+      "ads": "{count} aktívne"
     },
     "tileEmpty": "zatiaľ nič",
     "tileBadge": {
@@ -1897,7 +1901,7 @@
       "hidden": "skryté",
       "field": {
         "phone": "Telefón",
-        "email": "Email",
+        "email": "E-mail",
         "preciseAddress": "Ulica a číslo domu",
         "hours": "Úradné hodiny",
         "documents": "Verejné dokumenty",
@@ -1920,7 +1924,8 @@
     "coinSearch": "Hľadať mince",
     "coinSearchEmpty": "Nenašlo sa nič. Skúste ticker.",
     "companyCoinsHint": "Miesta bez vlastného výberu zdedia tieto mince. Zmena sady ide moderátorovi.",
-    "coinsInherited": "Nič nie je vybrané — toto miesto zobrazuje sadu spoločnosti: {coins}"
+    "coinsInherited": "Nič nie je vybrané — toto miesto zobrazuje sadu spoločnosti: {coins}",
+    "paymentMethods": "Iné spôsoby platby"
   },
   "cabinet": {
     "kicker": "Sekcia · Profil",
@@ -2467,7 +2472,8 @@
     "officeHoursTitle": "Úradné hodiny",
     "officeHoursHint": "Čas, keď odpovedá telefón, email a personál. Obchodné hodiny sú uvedené pri každom predajnom mieste.",
     "documentsTitle": "Dokumenty",
-    "hoursFromCompany": "Otváracie hodiny spoločnosti — obchodné hodiny pre toto miesto nie sú nastavené"
+    "hoursFromCompany": "Otváracie hodiny spoločnosti — obchodné hodiny pre toto miesto nie sú nastavené",
+    "requisitesAndContacts": "Firemné údaje a kontakty"
   },
   "companiesDirectory": {
     "kicker": "Adresár",
@@ -4355,7 +4361,11 @@
       "DOCUMENT_PUBLISHED": "Dokument zverejnený na verejnej stránke",
       "DOCUMENT_UNPUBLISHED": "Dokument odstránený z verejnej stránky",
       "DOCUMENT_DELETED": "Verejný dokument vymazaný",
-      "PUBLIC_FIELDS_SET": "Zmenené to, čo vidia zákazníci"
+      "PUBLIC_FIELDS_SET": "Zmenené to, čo vidia zákazníci",
+      "AD_CREATED": "Položka banneru vytvorená",
+      "AD_UPDATED": "Položka banneru aktualizovaná",
+      "AD_PUBLISHED": "Položka banneru zverejnená",
+      "AD_ARCHIVED": "Položka banneru archivovaná"
     }
   },
   "cabinetTasks": {
@@ -4792,6 +4802,131 @@
       "forbidden": "Na túto akciu nemáte oprávnenie.",
       "not_found": "Konverzácia sa nenašla.",
       "unauth": "Najprv sa prihláste."
+    }
+  },
+  "companyCard": {
+    "paymentsTitle": "Prijímame",
+    "payment": {
+      "cash": "Hotovosť",
+      "card": "Platobná karta",
+      "transfer": "Bankový prevod"
+    },
+    "ad": {
+      "section": "Prednosti obchodu",
+      "slides": "Prednosti",
+      "slide": "Prednosť {n} z {total}",
+      "play": "Prehrať klip",
+      "listen": "Vypočuť",
+      "stopVoice": "Zastaviť hlas",
+      "more": "Podrobnosti",
+      "less": "Zbaliť",
+      "voiced": "Ozvučené",
+      "until": "do {date}",
+      "copy": "Kopírovať",
+      "copied": "Skopírované",
+      "kind": {
+        "PROMO": "Ponuka",
+        "EVENT": "Podujatie",
+        "NEWS": "Novinky"
+      },
+      "action": {
+        "PRODUCT": "Otvoriť produkt",
+        "WEBSITE": "Otvoriť web",
+        "POINT": "Zobraziť na mape"
+      }
+    }
+  },
+  "cabinetAds": {
+    "title": "Banner karty",
+    "subtitle": "To, čo návštevníci vidia na vrchu vašej karty: čistý rám s podrobnosťami pod ním",
+    "notListed": "Banner sa zobrazí po zaradení firmy",
+    "liveCount": "Aktívne v karuseli: {count} z {max}",
+    "hint": "Ťuknutie na rám otvorí text, promo kód a akciu. Klip a hlasový komentár sú voliteľné",
+    "newTitle": "Nová položka",
+    "editTitle": "Upraviť položku",
+    "fieldKind": "Typ",
+    "kind": {
+      "PROMO": "Ponuka",
+      "EVENT": "Udalosť",
+      "NEWS": "Novinka"
+    },
+    "fieldMedia": "Snímka",
+    "mediaHint": "Fotka alebo MP4 klip do 30 MB. Na snímke nie je nič navrchu.",
+    "uploadImage": "Nahrať fotku",
+    "uploadVideo": "Nahrať klip",
+    "uploadPoster": "Nahrať titulnú snímku",
+    "fieldTitle": "Nadpis",
+    "fieldBody": "Text",
+    "noLinks": "V texte bez odkazov: hlas ho prečíta a jediný odkaz je akčné tlačidlo nižšie.",
+    "fieldLanguage": "Jazyk",
+    "languageHint": "Hlas číta text v tomto jazyku.",
+    "fieldAudio": "Hlasový komentár",
+    "uploadAudio": "Nahrať nahrávku",
+    "audioReplace": "Nahradiť nahrávku",
+    "audioRemove": "Odstrániť",
+    "audioHint": "Vlastná nahrávka má prednosť; bez nej prehliadač prečíta text nahlas.",
+    "fieldFrom": "Zobrazené od",
+    "fieldTo": "Zobrazené do",
+    "fieldEvent": "Dátum udalosti",
+    "fieldPromoCode": "Promo kód",
+    "fieldAction": "Akcia",
+    "action": {
+      "NONE": "Bez akcie",
+      "PRODUCT": "Otvoriť produkt",
+      "WEBSITE": "Otvoriť web",
+      "POINT": "Zobraziť na mape"
+    },
+    "fieldProduct": "Produkt",
+    "fieldPoint": "Miesto",
+    "fieldUrl": "Adresa",
+    "create": "Pridať",
+    "save": "Uložiť",
+    "cancel": "Zrušiť",
+    "edit": "Upraviť",
+    "publish": "Publikovať",
+    "unpublish": "Späť do konceptu",
+    "archive": "Archivovať",
+    "up": "Posunúť hore",
+    "down": "Posunúť nadol",
+    "video": "Klip",
+    "voiced": "Nahovorené",
+    "empty": "Zatiaľ žiadne položky.",
+    "status": {
+      "DRAFT": "Koncept",
+      "PUBLISHED": "Aktívne",
+      "ARCHIVED": "Archivované"
+    },
+    "errors": {
+      "unauth": "Prosím, prihláste sa.",
+      "forbidden": "Nemáte právo upravovať banner.",
+      "not_found": "Položka sa nenašla.",
+      "kind_invalid": "Vyberte typ.",
+      "title_required": "Pridajte nadpis.",
+      "title_too_long": "Nadpis je príliš dlhý.",
+      "body_too_long": "Text je príliš dlhý.",
+      "text_has_link": "Odstráňte odkaz z textu — hlas ho číta a jediným odkazom je akčné tlačidlo.",
+      "language_invalid": "Vyberte jazyk.",
+      "media_required": "Nahrajte fotku alebo klip: snímka je banner.",
+      "media_invalid": "Nahrajte súbor sem — externá adresa zmizne v deň, keď bude odstránená.",
+      "promo_code_too_long": "Promo kód je príliš dlhý.",
+      "window_invalid": "Skontrolujte dátumy.",
+      "window_backwards": "Dátum konca je pred dátumom začiatku.",
+      "event_invalid": "Skontrolujte dátum udalosti.",
+      "event_required": "Udalosť potrebuje dátum.",
+      "product_required": "Vyberte produkt.",
+      "product_not_offered": "Tento produkt ešte nepredávate.",
+      "point_required": "Vyberte miesto.",
+      "point_not_found": "Miesto sa nenašlo.",
+      "point_out_of_scope": "Toto miesto je mimo vašej oblasti.",
+      "url_required": "Pridajte adresu.",
+      "url_invalid": "Adresa musí začínať na https://",
+      "too_many": "Príliš veľa položiek — archivujte tie staré.",
+      "too_many_published": "Karusel už obsahuje 5 položiek.",
+      "daily_limit": "Dnes príliš veľa úprav — skúste to znova zajtra.",
+      "at_edge": "Už ste na okraji.",
+      "upload_failed": "Súbor sa nenahral. Skontrolujte formát a veľkosť.",
+      "too_large": "Súbor je príliš veľký.",
+      "bad_type": "Tento typ súboru nie je podporovaný."
     }
   }
 }

@@ -102,6 +102,7 @@ test("экраны кабинета предприятия не ездят по 
     `${base}/warehouses`,
     `${base}/supply`,
     `${base}/promos`,
+    `${base}/ads`,
     `${base}/loyalty`,
     `${base}/tasks`,
     `${base}/chat`,

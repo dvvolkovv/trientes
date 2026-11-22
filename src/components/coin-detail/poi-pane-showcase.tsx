@@ -4,6 +4,8 @@ import { useTranslations } from "next-intl";
 import type { Poi } from "@/lib/crypto-map";
 import type { StepTranslator } from "@/components/coin-detail/route-steps-panel";
 import { CHIP, PRIMARY, ROW_BTN } from "@/components/coin-detail/poi-sheet-ui";
+import { CardOffers } from "@/components/company-card/offers";
+import { useCompanyCard } from "@/components/company-card/use-company-card";
 import { safeHttpUrl } from "@/lib/safe-url";
 import { poiIdToOsmKey } from "@/lib/osm-key";
 
@@ -21,10 +23,16 @@ const SOCIAL_LABELS: Record<string, string> = {
 };
 
 /**
- * Страница «Витрина»: то, что заведение говорит о себе само. Пока рекламы из
- * кабинета нет (следующий слайс), она собирается из уже заявленного — все
- * фотографии точки, рассказ, связь. У чужой точки вместо пустого экрана стоит
- * приглашение забрать её себе: на карте это самый частый случай.
+ * Страница «Витрина».
+ *
+ * Решение владельца (слайс BY): **витрина — это витрина**, на ней стоят товары и
+ * услуги с действиями. Адрес, телефон, сайт, реквизиты и соцсети с неё ушли — они
+ * стоят в карточке на странице «Место», и одна вещь в двух местах расходится.
+ *
+ * Правило касается **нашей** точки: у точки зеркала BTC Map и у финтех-точки
+ * карточки предприятия нет вовсе, и витрина остаётся им прежней — фотографии,
+ * рассказ, связь и приглашение забрать точку себе. Иначе чужая точка осталась бы
+ * пустым экраном.
  */
 export function PoiPaneShowcase({
   poi,
@@ -40,9 +48,28 @@ export function PoiPaneShowcase({
   // Точка нашей компании отличается от точки зеркала BTC Map префиксом id —
   // его ставит `companyPointToPoi`, другого признака в фиде нет.
   const own = poi.id.startsWith("company/");
-  // Забрать себе можно только точку зеркала BTC Map: у неё нет хозяина. У
-  // финтех-точки он есть (её завёл каталог), у нашей — тем более.
+  // Забрать себе можно только точку зеркала BTC Map: у неё нет хозяина.
   const osmKey = poiIdToOsmKey(poi.id);
+  const card = useCompanyCard(own ? poi.companyId : null, locale);
+
+  if (own) {
+    return (
+      <div className="space-y-4 px-4 py-4">
+        {card && card.offers.length > 0 ? (
+          <CardOffers offers={card.offers} locale={locale} bare />
+        ) : (
+          <p className="text-[13px] text-muted">{t("showcaseEmpty")}</p>
+        )}
+        {poi.companyId ? (
+          <a href={`/${locale}/companies/${poi.companyId}`} className={ROW_BTN}>
+            <span aria-hidden>🏢</span>
+            {t("openCompany")}
+            <span className="ml-auto text-muted">→</span>
+          </a>
+        ) : null}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-5 px-4 py-4">
@@ -68,24 +95,12 @@ export function PoiPaneShowcase({
       {poi.description && (
         <p className="text-[14px] leading-relaxed">
           {poi.description}
-          {/* Тот же знак, что на странице «Место» и на витрине предприятия: один
-              текст не может быть переведён в одном месте и не отмечен в другом. */}
           {poi.descriptionTranslated ? (
             <span className="ml-2 rounded border border-hairline px-1.5 py-0.5 align-middle text-[10px] uppercase tracking-[0.12em]">
               {tc("machineTranslated")}
             </span>
           ) : null}
         </p>
-      )}
-
-      {/* Ссылка на саму витрину предприятия: до слайса BX её не было вовсе, и
-          человек, открывший точку с карты, не мог дойти до того, кто за ней стоит. */}
-      {own && poi.companyId && (
-        <a href={`/${locale}/companies/${poi.companyId}`} className={ROW_BTN}>
-          <span aria-hidden>🏢</span>
-          {t("openCompany")}
-          <span className="ml-auto text-muted">→</span>
-        </a>
       )}
 
       <section className="space-y-2">
@@ -119,25 +134,6 @@ export function PoiPaneShowcase({
         )}
       </section>
 
-      {/* Реквизиты — те же, что на витрине (слайс BV): публичные реквизиты,
-          которые видны в одном месте и не видны в другом, — это два разных
-          предприятия в глазах покупателя. */}
-      {own && poi.requisites && (poi.requisites.registrationNumber || poi.requisites.taxNumber) && (
-        <section className="space-y-1">
-          <h3 className="text-[11px] uppercase tracking-[0.16em] text-muted">{t("requisitesTitle")}</h3>
-          {poi.requisites.registrationNumber && (
-            <p className="text-[12px] text-muted">
-              {t("registrationNumber")}: <span className="num text-foreground">{poi.requisites.registrationNumber}</span>
-            </p>
-          )}
-          {poi.requisites.taxNumber && (
-            <p className="text-[12px] text-muted">
-              {t("taxNumber")}: <span className="num text-foreground">{poi.requisites.taxNumber}</span>
-            </p>
-          )}
-        </section>
-      )}
-
       {poi.socials.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {poi.socials.map((s) => (
@@ -154,7 +150,7 @@ export function PoiPaneShowcase({
         </div>
       )}
 
-      {!own && osmKey && (
+      {osmKey && (
         <section className="space-y-2 rounded-xl border border-hairline bg-bg-tint/50 p-3">
           <p className="text-[13px] leading-snug text-muted">{t("claimTitle")}</p>
           <a href={`/${locale}/claim/${encodeURIComponent(osmKey)}`} className={`${PRIMARY} w-full`}>

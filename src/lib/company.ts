@@ -8,6 +8,7 @@ import { isLogoFit, isLogoShape } from "@/lib/company-logo";
 import { hasLink } from "@/lib/promos/rules";
 import { normalizeRequisite } from "@/lib/company-requisites";
 import { splitIdList } from "@/lib/id-list";
+import { parsePaymentMethods } from "@/lib/payment-methods";
 
 const POINT_TYPES = ["SHOP", "ATM", "POS", "SALES_OFFICE", "COMPANY", "ONLINE"] as const;
 export type PointTypeStr = (typeof POINT_TYPES)[number];
@@ -132,6 +133,8 @@ export type CompanyProfileInput = {
   taxNumber?: string | null;
   /** Слайс BX: набор монет предприятия, который наследуют его точки. */
   acceptedCoinIds?: string[] | null;
+  /** Способы оплаты помимо монет (слайс BY): свободное поле, реестр закрытый. */
+  paymentMethods?: string[] | null;
   acceptedCardIds?: string[] | null;
 };
 export type ValidatedProfile = {
@@ -145,7 +148,7 @@ export type ValidatedProfile = {
   hours: WeekHours | null; timezone: string | null;
   registrationNumber: string | null; taxNumber: string | null;
   /** Слайс BX: набор монет предприятия, который наследуют его точки. */
-  acceptedCoinIds: string[]; acceptedCardIds: string[];
+  acceptedCoinIds: string[]; acceptedCardIds: string[]; paymentMethods: string[];
 };
 export type ProfileResult =
   | { ok: true; data: ValidatedProfile }
@@ -245,6 +248,9 @@ export function validateCompanyProfile(input: CompanyProfileInput): ProfileResul
       // правке: пустые строки и повторы до базы доезжать не должны.
       acceptedCoinIds: [...new Set(splitIdList(input.acceptedCoinIds))],
       acceptedCardIds: [...new Set(splitIdList(input.acceptedCardIds))],
+      // Способы оплаты (слайс BY): выдуманный ключ выбрасывается молча — реестр
+      // закрытый, а на витрине он был бы пустым чипом.
+      paymentMethods: parsePaymentMethods(input.paymentMethods),
     },
   };
 }
