@@ -17,6 +17,7 @@ import { can } from "@/lib/company-team/permissions";
 import { buildCompanyCard, type CardAd, type CompanyCardView } from "@/lib/company-card/view";
 import { hasQueueAccess } from "@/lib/authz/guard";
 import type { AdStatus } from "@/lib/ads/moderation";
+import type { MapFocus } from "@/lib/map-start";
 
 export type AdPageView = {
   ad: CardAd;
@@ -131,5 +132,48 @@ export async function readAdMeta(adId: string): Promise<{ title: string; body: s
     body: row.body,
     company: row.company.displayName,
     image: row.mediaKind === "VIDEO" ? (row.posterUrl ?? row.mediaUrl) : row.mediaUrl,
+  };
+}
+
+
+/**
+ * Место опубликованного материала как цель навигатора: `?ad=<id>`.
+ *
+ * Прежде ссылка «открыть на карте» несла только координату (`?at=`), и карта
+ * вставала на пустом поле — отметки у места нет, потому что строки в фиде у него
+ * нет (BZ). Теперь адрес называет сам материал, и сервер отдаёт карте знак
+ * предприятия: чьё это место, видно глазом.
+ *
+ * Видимость — те же правила, что у баннера: черновик цели карты не получает.
+ */
+export async function readAdPlaceFocus(adId: string, locale: string): Promise<MapFocus | null> {
+  const row = await prisma.companyAd.findFirst({
+    where: { id: adId, placeLat: { not: null }, placeLon: { not: null } },
+    select: {
+      id: true,
+      status: true,
+      startsAt: true,
+      endsAt: true,
+      placeLat: true,
+      placeLon: true,
+      placeName: true,
+      company: {
+        select: { status: true, suspendedAt: true, deletedAt: true, displayName: true, logoUrl: true },
+      },
+    },
+  });
+  if (!row || row.placeLat === null || row.placeLon === null) return null;
+  if (!adVisible({ company: row.company, ad: row }, new Date())) return null;
+  return {
+    // Строки в фиде у места нет, и карточке открываться нечему: это опознание
+    // цели, а не точка приёма.
+    id: `ad:${row.id}`,
+    lat: row.placeLat,
+    lon: row.placeLon,
+    mark: {
+      label: row.placeName?.trim() || row.company.displayName,
+      logoUrl: row.company.logoUrl,
+      href: `/${locale}/ad/${row.id}`,
+    },
   };
 }

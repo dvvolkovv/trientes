@@ -63,6 +63,7 @@ import { DEFAULT_POI_PAGE, type PoiPage } from "@/lib/poi-pager";
 import { tileOffset, tilePadding } from "@/lib/poi-tile";
 import { CURATED_POIS, type CuratedPoi } from "@/lib/curated-pois";
 import { poiLogoSrc, showsLogoMarker } from "@/lib/poi-markers";
+import { buildLogoMarkerElement } from "@/lib/logo-marker";
 import { NavigationController, type NavigationCallbacks, type NavUpdate } from "./navigation-controller";
 import { haversineMeters } from "@/lib/route-geometry";
 import { MapControls } from "@/components/coin-detail/map-controls";
@@ -262,6 +263,8 @@ export default function CryptoNavigator({
   // заведений — это и svg, и чужие хосты. Поэтому метка живёт в DOM, а
   // фильтры слоёв к ней применяются руками.
   const logoMarkersRef = useRef<{ marker: Marker; poi: Poi; el: HTMLElement }[]>([]);
+  /** Знак места из адреса (`focus.mark`): ставится один раз, фильтры его не касаются. */
+  const focusMarkRef = useRef<Marker | null>(null);
   const destKeyRef = useRef<string | null>(null);
   // Точка, из которой построен нынешний маршрут: по ней видно, переехал ли
   // человек настолько, что маршрут стоит считать заново.
@@ -485,20 +488,14 @@ export default function CryptoNavigator({
     (map: MlMap, pois: Poi[]) => {
       logoMarkersRef.current.forEach(({ marker }) => marker.remove());
       logoMarkersRef.current = pois.flatMap((poi) => {
-        const src = poiLogoSrc(poi);
-        if (!src) return [];
-        const el = document.createElement("div");
-        el.className = "cmap-poi-logo";
+        if (!poiLogoSrc(poi)) return [];
         // Кольцо — фирменного цвета источника, как у булавки: знак говорит,
         // чьё это место, а цвет — насколько мы за него отвечаем.
-        el.style.borderColor = BRAND_COLOR[poiBrand(poi)];
-        el.title = poi.name;
-        const img = document.createElement("img");
-        img.src = src;
-        img.alt = "";
-        img.loading = "lazy";
-        img.referrerPolicy = "no-referrer";
-        el.append(img);
+        const { el, img } = buildLogoMarkerElement({
+          logoUrl: poi.logoUrl,
+          label: poi.name,
+          ringColor: BRAND_COLOR[poiBrand(poi)],
+        });
         el.addEventListener("click", (ev) => {
           ev.stopPropagation();
           openPoi(poi);
@@ -506,7 +503,7 @@ export default function CryptoNavigator({
         const marker = new Marker({ element: el, anchor: "center" }).setLngLat([poi.lon, poi.lat]).addTo(map);
         // Битый знак — это белый кружок ни о чём поверх точки: метка уходит, а
         // круг слоя под ней остаётся и говорит хотя бы вид места.
-        img.addEventListener("error", () => marker.remove());
+        img?.addEventListener("error", () => marker.remove());
         return [{ marker, poi, el }];
       });
       applyLogoMarkerVisibility();
@@ -952,6 +949,27 @@ export default function CryptoNavigator({
         });
       });
 
+      // Место, ради которого карту открыли, но которого нет в фиде: у места
+      // рекламного материала строки `Poi` не бывает (BZ), и карта вставала на
+      // координате вообще без отметки. Знак предприятия и говорит, чьё это
+      // место, — тот же кружок, что у точек приёма.
+      if (focus?.mark) {
+        const { el, img } = buildLogoMarkerElement({
+          logoUrl: focus.mark.logoUrl,
+          label: focus.mark.label,
+          ringColor: BRAND_COLOR.own,
+          href: focus.mark.href,
+        });
+        const mk = new Marker({ element: el, anchor: "center" }).setLngLat([focus.lon, focus.lat]).addTo(map);
+        // Битый знак метку не убирает: под ней, в отличие от точки приёма, нет
+        // круга слоя — убери её, и место осталось бы ничем не отмечено.
+        img?.addEventListener("error", () => {
+          img.remove();
+          el.textContent = focus.mark!.label.trim().slice(0, 1).toUpperCase();
+        });
+        focusMarkRef.current = mk;
+      }
+
       mapReadyRef.current = true;
       applyDesiredMapState(map);
       startPulse(map);
@@ -1032,6 +1050,8 @@ export default function CryptoNavigator({
       cancelRouteRequest();
       logoMarkersRef.current.forEach(({ marker }) => marker.remove());
       logoMarkersRef.current = [];
+      focusMarkRef.current?.remove();
+      focusMarkRef.current = null;
       compassStopRef.current?.();
       compassStopRef.current = null;
       pulseWatchRef.current?.disconnect();

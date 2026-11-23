@@ -10,6 +10,8 @@ import { tryCreateMap } from "@/lib/maplibre-map";
 import { basemapStyle } from "@/lib/basemap";
 import { CoinPicker, type PickerCoin } from "@/components/business/coin-picker";
 import { PAYMENT_METHODS } from "@/lib/payment-methods";
+import { placeQueryOrder } from "@/lib/geocode-place";
+import { hasCyrillic } from "@/lib/translit";
 
 /**
  * Место рекламного материала (слайс BZ): «где это находится».
@@ -43,6 +45,7 @@ export function AdPlaceField({
   onChange,
   coins,
   cards,
+  countryCode = null,
   open,
   onOpenChange,
 }: {
@@ -50,6 +53,13 @@ export function AdPlaceField({
   onChange: (patch: Partial<AdPlaceValue>) => void;
   coins: PickerCoin[];
   cards: PickerCoin[];
+  /**
+   * Страна предприятия: геокодер с ней отвечает точнее, а кириллический адрес
+   * без неё не переводится в латиницу вовсе (`geocodeQueryOrder`). Место
+   * материала бывает и в другой стране — поэтому это подсказка, а не фильтр
+   * ответа: не нашлось со страной — спрашиваем ещё раз без неё.
+   */
+  countryCode?: string | null;
   /** Раскрыт ли блок. Состояние держит форма: выбор «вести на место материала»
    *  в разделе действия обязан раскрывать этот блок, а не искать его глазами. */
   open: boolean;
@@ -63,14 +73,19 @@ export function AdPlaceField({
   onChangeRef.current = onChange;
   const valueRef = useRef(value);
   valueRef.current = value;
-  const [searching, setSearching] = useState(false);
-  const [searchFailed, setSearchFailed] = useState(false);
+  // Состояние поиска одно на обе двери — кнопку и поиск по ходу набора: «ничего
+  // не происходит» было ровно тем, что человек видел, когда геокодер отвечал
+  // пусто, а сказано об этом было серой строкой в 11 px.
+  const [status, setStatus] = useState<"idle" | "searching" | "pinned" | "failed">("idle");
   const [mapUnavailable, setMapUnavailable] = useState(false);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   // Набранное руками ищется само; у открытой на правку записи адрес уже стоит, и
   // геокодер не должен немедленно сдвинуть булавку, поставленную человеком
   // (то же правило, что `addrTouchedRef` в форме точки).
   const typedRef = useRef(false);
+  /** Запрос в полёте и отложенный поиск по набору: обе двери ведут одну работу. */
+  const searchCtrlRef = useRef<AbortController | null>(null);
+  const autoTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const field = "w-full rounded-md border border-hairline bg-card px-3 py-2 text-sm";
   const label = "mb-1 block text-[11px] uppercase tracking-wider text-muted";
@@ -152,57 +167,116 @@ export function AdPlaceField({
     const address = [s.title, s.subtitle].filter(Boolean).join(", ") || s.label;
     typedRef.current = false;
     setSuggestions([]);
-    setSearchFailed(false);
+    setStatus("pinned");
     onChange({ placeAddress: address, placeLat: s.lat, placeLon: s.lon });
     const map = mapRef.current;
     if (map) placeMarker(map, s.lon, s.lat);
   }
 
-  // Адрес ищется по ходу набора: человек пишет улицу — мы показываем, что нашли, и
-  // он выбирает нажатием. Пауза 700 мс не из вкуса: у Nominatim предел один запрос
-  // в секунду, и запрос на каждую букву вернулся бы отказом.
-  useEffect(() => {
-    if (!open) return;
-    const q = [value.placeName, value.placeAddress].filter(Boolean).join(", ").trim();
-    if (!typedRef.current || q.length < 4) return;
-    const ctrl = new AbortController();
-    setSearching(true);
-    const tm = setTimeout(async () => {
-      try {
-        const r = await fetch(`/api/crypto-map/geocode?q=${encodeURIComponent(q)}`, { signal: ctrl.signal });
-        const j = (await r.json()) as { results?: Suggestion[] };
-        const list = (j.results ?? []).filter((s) => Number.isFinite(s.lat) && Number.isFinite(s.lon)).slice(0, 5);
-        setSuggestions(list);
-        setSearchFailed(list.length === 0);
-      } catch (e) {
-        if ((e as Error).name !== "AbortError") setSearchFailed(true);
-      } finally {
-        setSearching(false);
-      }
-    }, 700);
-    return () => { ctrl.abort(); clearTimeout(tm); setSearching(false); };
-  }, [open, value.placeName, value.placeAddress]);
+  /**
+   * Булавка по найденному — но набранный адрес остаётся как набран. Человек не
+   * выбирал этот вариант, а геокодер нормализует по-своему («Brehmstraße,
+   * 1110 Wien, Österreich» вместо дома с индексом): подменять его слова, пока он
+   * не нажал на строку списка, нельзя — то же правило, что у подписи булавки.
+   */
+  function pinSuggestion(s: Suggestion) {
+    onChangeRef.current({ placeLat: s.lat, placeLon: s.lon });
+    const map = mapRef.current;
+    if (map) placeMarker(map, s.lon, s.lat);
+  }
 
-  async function findAddress() {
-    const q = [value.placeName, value.placeAddress].filter(Boolean).join(", ").trim();
-    if (!q) return;
-    setSearching(true);
-    setSearchFailed(false);
-    try {
-      const r = await fetch(`/api/crypto-map/geocode?q=${encodeURIComponent(q)}`, {
-        signal: AbortSignal.timeout(8000),
-      });
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+  /**
+   * Спрашиваем геокодер по списку кандидатов до первого непустого ответа
+   * (`placeQueryOrder`): название с адресом Nominatim знает только у знаменитых
+   * мест, а один адрес — почти всегда. Пауза 1100 мс между запросами — предел
+   * Nominatim, один запрос в секунду; тот же шаг, что в самом маршруте.
+   *
+   * Страна уходит в запрос только при кириллическом наборе: там она решает, по
+   * каким правилам читать адрес (немецкие или общие). У латинского набора
+   * страна — жёсткий фильтр ответа, и место в соседней стране она бы отрезала.
+   */
+  async function askGeocoder(signal?: AbortSignal): Promise<Suggestion[]> {
+    const v = valueRef.current;
+    const cc = countryCode && /^[a-z]{2}$/i.test(countryCode) ? countryCode.toUpperCase() : null;
+    const urls: string[] = [];
+    for (const q of placeQueryOrder(v.placeName, v.placeAddress)) {
+      const base = `/api/crypto-map/geocode?q=${encodeURIComponent(q)}`;
+      if (cc && hasCyrillic(q)) urls.push(`${base}&cc=${cc}`);
+      urls.push(base);
+    }
+    for (let i = 0; i < Math.min(urls.length, 4); i += 1) {
+      if (signal?.aborted) return [];
+      if (i > 0) await sleep(1100);
+      const r = await fetch(urls[i]!, { signal: signal ?? AbortSignal.timeout(9000) });
       const j = (await r.json()) as { results?: Suggestion[] };
-      const list = (j.results ?? []).filter((s) => Number.isFinite(s.lat) && Number.isFinite(s.lon)).slice(0, 5);
-      setSuggestions(list);
-      if (list.length === 1) takeSuggestion(list[0]!);
-      else if (list.length === 0) setSearchFailed(true);
-    } catch {
-      setSearchFailed(true);
-    } finally {
-      setSearching(false);
+      const list = (j.results ?? [])
+        .filter((x) => Number.isFinite(x.lat) && Number.isFinite(x.lon))
+        .slice(0, 5);
+      if (list.length > 0) return list;
+    }
+    return [];
+  }
+
+  /**
+   * Нашли — ставим булавку сразу на первое найденное: «автоматический поиск
+   * кладёт булавку» и есть то, чего ждёт человек, нажавший «найти на карте».
+   * Список при этом остаётся открытым, если найдено не одно: выбор уточняет
+   * нажатием, а не остаётся без метки вовсе.
+   */
+  function applyFound(list: Suggestion[], movePin: boolean) {
+    setSuggestions(list.length > 1 ? list : []);
+    if (list.length === 0) {
+      setStatus("failed");
+      return;
+    }
+    if (movePin) pinSuggestion(list[0]!);
+    setStatus("pinned");
+  }
+
+  /**
+   * Поиск один на обе двери — кнопку и набор. Прежде они шли параллельно и
+   * спрашивали геокодер по два раза подряд (живой прогон: шесть запросов на одно
+   * нажатие), а у Nominatim предел один запрос в секунду.
+   *
+   * `if-empty` — поиск по ходу набора: он ставит метку только пока её нет.
+   * Поставленную пальцем метку набор адреса дёргать не должен.
+   */
+  async function runSearch(pin: "always" | "if-empty") {
+    if (autoTimerRef.current) {
+      clearTimeout(autoTimerRef.current);
+      autoTimerRef.current = null;
+    }
+    searchCtrlRef.current?.abort();
+    const ctrl = new AbortController();
+    searchCtrlRef.current = ctrl;
+    setStatus("searching");
+    try {
+      const list = await askGeocoder(ctrl.signal);
+      if (ctrl.signal.aborted) return;
+      const movePin =
+        pin === "always" || valueRef.current.placeLat === null || valueRef.current.placeLon === null;
+      applyFound(list, movePin);
+    } catch (e) {
+      if ((e as Error).name !== "AbortError") setStatus("failed");
     }
   }
+
+  // Адрес ищется по ходу набора: человек пишет улицу — мы показываем, что нашли.
+  // Пауза 700 мс не из вкуса: у Nominatim предел один запрос в секунду, и запрос
+  // на каждую букву вернулся бы отказом.
+  useEffect(() => {
+    if (!open || !typedRef.current) return;
+    if (placeQueryOrder(value.placeName, value.placeAddress).length === 0) return;
+    const tm = setTimeout(() => void runSearch("if-empty"), 700);
+    autoTimerRef.current = tm;
+    return () => clearTimeout(tm);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, value.placeName, value.placeAddress]);
+
+  // Ушли со страницы посреди запроса — запрос снимаем: отвечать уже некому.
+  useEffect(() => () => searchCtrlRef.current?.abort(), []);
 
   function clearPlace() {
     markerRef.current?.remove();
@@ -212,6 +286,7 @@ export function AdPlaceField({
       placeAcceptedCoinIds: [], placeAcceptedCardIds: [], placePaymentMethods: [],
     });
     setSuggestions([]);
+    setStatus("idle");
     typedRef.current = false;
     onOpenChange(false);
   }
@@ -255,8 +330,13 @@ export function AdPlaceField({
       </div>
 
       <div className="mt-2 flex flex-wrap items-center gap-2">
-        <button type="button" className={button} onClick={findAddress} disabled={searching}>
-          {searching ? "…" : t("placeFind")}
+        <button
+          type="button"
+          className={button}
+          onClick={() => void runSearch("always")}
+          disabled={status === "searching"}
+        >
+          {status === "searching" ? "…" : t("placeFind")}
         </button>
         {value.placeLat !== null && value.placeLon !== null ? (
           <span className="num text-[11.5px] text-muted">
@@ -266,6 +346,24 @@ export function AdPlaceField({
           <span className="text-[11.5px] text-muted">{t("placeNoPin")}</span>
         )}
       </div>
+      {/* Исход поиска словами. Прежде он весь сводился к серой строке «не
+          найдено» в 11,5 px, и нажатие кнопки выглядело как «ничего не
+          происходит» — жалоба владельца 23 ноября. */}
+      {status !== "idle" ? (
+        <p
+          className={`mt-1.5 text-[12.5px] font-semibold ${
+            status === "failed" ? "text-accent" : "text-muted-strong"
+          }`}
+        >
+          {status === "searching"
+            ? t("placeSearching")
+            : status === "failed"
+              ? t("placeNotFound")
+              : suggestions.length > 1
+                ? t("placePinnedPickOther")
+                : t("placePinned")}
+        </p>
+      ) : null}
       {suggestions.length > 0 ? (
         <ul className="mt-2 space-y-1">
           {suggestions.map((s) => (
@@ -282,10 +380,6 @@ export function AdPlaceField({
           ))}
         </ul>
       ) : null}
-      {searchFailed && suggestions.length === 0 ? (
-        <p className="mt-1 text-[11.5px] text-muted">{t("placeNotFound")}</p>
-      ) : null}
-
       {!mapUnavailable ? (
         <div ref={containerRef} className="mt-2 h-[260px] w-full overflow-hidden rounded-[14px] border border-hairline" />
       ) : null}

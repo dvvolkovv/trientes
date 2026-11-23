@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
+import { readAdPlaceFocus } from "@/lib/company-card/ad-page";
 import { LIVE_CARD_COMPANY, PUBLIC_COMPANY } from "@/lib/company-visibility";
 import { parseCoinSelector, parsePointId } from "@/lib/crypto-map";
 import { getAcceptanceArea } from "@/lib/coin-card-acceptance";
@@ -113,10 +114,10 @@ export default async function CryptoMapPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ coin?: string; point?: string; product?: string; at?: string }>;
+  searchParams: Promise<{ coin?: string; point?: string; product?: string; at?: string; ad?: string }>;
 }) {
   const { locale } = await params;
-  const { coin, point, product, at } = await searchParams;
+  const { coin, point, product, at, ad } = await searchParams;
   setRequestLocale(locale);
 
   const selector = parseCoinSelector(coin);
@@ -149,10 +150,13 @@ export default async function CryptoMapPage({
   }
 
   // Названное место важнее области: в него и зовёт ссылка «где именно».
-  // `?at=<широта>,<долгота>` — место рекламного материала (слайс BZ). У объекта
-  // рекламы нет строки в фиде (он не точка приёма), поэтому карта просто встаёт на
-  // координате: карточке открываться нечему, и это честно.
-  const focus = (await resolveFocus(point)) ?? parseAt(at);
+  // `?ad=<id>` — место рекламного материала (слайс BZ). Строки в фиде у объекта
+  // рекламы нет (он не точка приёма), поэтому карточке открываться нечему — но
+  // знак предприятия на месте стоит, иначе карта встаёт на пустом поле.
+  // `?ad=<id>` — место рекламного материала со знаком предприятия на нём;
+  // `?at=` остаётся запасным путём для прежних ссылок, но отметки у него нет.
+  const focus =
+    (await resolveFocus(point)) ?? (ad ? await readAdPlaceFocus(ad, locale) : null) ?? parseAt(at);
   // Фильтр по товару (слайс BC): карта садится на полки, где он лежит, а не под ноги
   // нажавшему — единственный магазин может оказаться в другой стране.
   const productArea = product ? await resolveProductArea(product) : null;

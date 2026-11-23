@@ -178,6 +178,7 @@ export default async function CompanyAdsPage({
           products={offers.map((o) => ({ id: o.productId, label: o.product.name }))}
           coins={coinRows.map((c) => ({ id: c.id, symbol: c.symbol, name: c.name, logoUrl: c.logoUrl }))}
           cards={cardRows.map((c) => ({ id: c.id, symbol: c.symbol, name: c.name, logoUrl: c.logoUrl }))}
+          countryCode={company.countryCode}
         />
       ) : null}
 

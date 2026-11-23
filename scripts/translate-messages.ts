@@ -59,6 +59,7 @@ const GLOSSARY: Record<string, string> = {
     "merchant → продавец; product passport → паспорт товара; offer → предложение",
     "rate (percentage) → ставка; shelf (sales warehouse) → полка",
     "customer → покупатель (never «клиент»); conversation / thread → диалог",
+    "pin (marker on the map) → метка (never «пин», never «булавка»)",
   ].join("\n"),
   hr: [
     "Trientes — brand name, never translate.",

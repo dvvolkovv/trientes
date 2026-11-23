@@ -40,6 +40,7 @@ export function AdForm({
   defaultLanguage,
   coins,
   cards,
+  countryCode = null,
 }: {
   companyId: string;
   initial?: AdFormValues | null;
@@ -54,6 +55,8 @@ export function AdForm({
   /** Монеты для места материала (BZ): тот же каталог, что в форме точки. */
   coins: PickerCoin[];
   cards: PickerCoin[];
+  /** Страна предприятия — подсказка геокодеру места (см. `AdPlaceField`). */
+  countryCode?: string | null;
 }) {
   const t = useTranslations("cabinetAds");
   const router = useRouter();
@@ -311,6 +314,7 @@ export function AdForm({
           onChange={(patch) => set(patch)}
           coins={coins}
           cards={cards}
+          countryCode={countryCode}
           open={placeOpen}
           onOpenChange={setPlaceOpen}
         />

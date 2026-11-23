@@ -139,7 +139,12 @@ export default async function AdPage({
           {place.address ? <p className="text-sm text-muted-strong">{place.address}</p> : null}
 
           <div className="mt-3">
-            <PlaceMap lat={place.lat} lon={place.lon} label={place.name ?? t("placeTitle")} />
+            <PlaceMap
+              lat={place.lat}
+              lon={place.lon}
+              label={place.name ?? card.displayName}
+              logoUrl={card.logoUrl}
+            />
           </div>
 
           {place.coins.length > 0 || place.payments.length > 0 ? (
@@ -171,7 +176,9 @@ export default async function AdPage({
             </div>
           ) : null}
 
-          <Link href={`/${locale}/crypto-map?at=${place.lat},${place.lon}`} className={`${CARD_ACTION} mt-3`}>
+          {/* Адрес называет материал, а не координату: тогда карта ставит на
+              место знак предприятия (просьба владельца 23 ноября). */}
+          <Link href={`/${locale}/crypto-map?ad=${ad.id}`} className={`${CARD_ACTION} mt-3`}>
             <span aria-hidden>🗺</span>
             {tp("openOnMap")}
           </Link>

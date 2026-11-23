@@ -15,7 +15,14 @@ export const MAP_FALLBACK_ZOOM = 12;
  * `id` — тот же, каким точка приходит в фиде (`company/<id>`), чтобы по нему
  * узнать её в ответе и раскрыть карточку.
  */
-export type MapFocus = { id: string; lat: number; lon: number };
+/**
+ * Знак на месте, ради которого карту открыли. Нужен там, где у места нет строки
+ * в фиде: место рекламного материала точкой приёма не является (BZ), и карта
+ * просто вставала на координате — пустым полем без всякой отметки.
+ */
+export type FocusMark = { label: string; logoUrl: string | null; href: string | null };
+
+export type MapFocus = { id: string; lat: number; lon: number; mark?: FocusMark | null };
 
 /** Приближение улицы: названное место должно быть видно домом, а не городом. */
 export const MAP_FOCUS_ZOOM = 16;
