@@ -97,6 +97,16 @@ export async function requireQueue(queue: string, need: StaffLevel): Promise<Gua
   return r;
 }
 
+/**
+ * Тихий вопрос «пустят ли». Для мест, где отказ — не ошибка, а другой вид
+ * страницы: предпросмотр рекламы модератором (слайс CC) рядом с предпросмотром
+ * продавцом. Калитка та же — включая второй фактор.
+ */
+export async function hasQueueAccess(queue: string, need: StaffLevel): Promise<boolean> {
+  const r = await requireQueue(queue, need);
+  return r.ok;
+}
+
 /** Объект, за который отвечают две очереди (точка в делах о жалобах). */
 export async function requireAnyQueue(queues: string[], need: StaffLevel): Promise<GuardResult> {
   const r = await requireStaff();

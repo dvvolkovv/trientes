@@ -34,6 +34,7 @@ const EMPTY: AdFormValues = {
 export function AdForm({
   companyId,
   initial,
+  editMode = "direct",
   points,
   products,
   defaultLanguage,
@@ -42,6 +43,11 @@ export function AdForm({
 }: {
   companyId: string;
   initial?: AdFormValues | null;
+  /**
+   * Как ложится правка (слайс CC): `direct` — сразу в материал, `proposal` —
+   * слепком на проверку, а в карусели остаётся прежний, уже одобренный.
+   */
+  editMode?: "direct" | "frozen" | "proposal";
   points: { id: string; label: string }[];
   products: { id: string; label: string }[];
   defaultLanguage: string;
@@ -70,7 +76,10 @@ export function AdForm({
 
   const set = (patch: Partial<AdFormValues>) => setV((prev) => ({ ...prev, ...patch }));
 
-  const field = "w-full rounded-md border border-hairline bg-card px-3 py-2 text-sm";
+  // `min-w-0`: у элемента сетки ширина по содержимому, и список с длинным
+  // названием товара растягивал бы колонку шире окна (жалоба владельца про поля,
+  // которые ездят вправо-влево).
+  const field = "w-full min-w-0 rounded-md border border-hairline bg-card px-3 py-2 text-sm";
   const button =
     "inline-flex h-12 items-center justify-center rounded-md border border-hairline px-4 text-sm hover:border-accent disabled:opacity-50";
   const label = "mb-1 block text-[11px] uppercase tracking-wider text-muted";
@@ -237,7 +246,7 @@ export function AdForm({
           <p className="mt-1 text-[11px] text-muted">{t("noLinks")}</p>
         </div>
 
-        <div className="grid gap-3">
+        <div className="grid min-w-0 gap-3 [&>div]:min-w-0">
           <div>
             <label className={label} htmlFor="ad-language">{t("fieldLanguage")}</label>
             <select id="ad-language" className={field} value={v.language} onChange={(e) => set({ language: e.target.value })}>
@@ -266,7 +275,7 @@ export function AdForm({
           onRemove={() => set({ audioUrl: "", audioGenerated: false, audioVoice: "", audioTextHash: "" })}
         />
 
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid min-w-0 gap-3 [&>div]:min-w-0 sm:grid-cols-2">
           <div>
             <label className={label} htmlFor="ad-from">{t("fieldFrom")}</label>
             <input id="ad-from" type="date" className={field} value={v.startsAt ?? ""} onChange={(e) => set({ startsAt: e.target.value })} />
@@ -312,7 +321,7 @@ export function AdForm({
           <input id="ad-code" className={field} value={v.promoCode ?? ""} onChange={(e) => set({ promoCode: e.target.value })} />
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid min-w-0 gap-3 [&>div]:min-w-0 sm:grid-cols-2">
           <div>
             <label className={label} htmlFor="ad-action">{t("fieldAction")}</label>
             <select id="ad-action" className={field} value={v.action} onChange={(e) => set({ action: e.target.value })}>
@@ -398,9 +407,19 @@ export function AdForm({
           <p className="text-[12px] text-muted">{t("missingHint", { list: missing.join(", ") })}</p>
         ) : null}
 
-        <div className="flex gap-2">
+        {/* Куда уйдёт правка — словами и заранее. Молчание тут создало бы
+            впечатление, что изменение уже на витрине. */}
+        {editMode === "proposal" ? (
+          <p className="rounded-md border border-accent/40 bg-accent/10 p-2 text-[12px] text-accent">
+            {t("proposalHint")}
+          </p>
+        ) : (
+          <p className="text-[12px] text-muted">{t("draftHint")}</p>
+        )}
+
+        <div className="flex flex-wrap gap-2">
           <button type="button" className={button} onClick={submit} disabled={pending || uploading !== null}>
-            {pending ? "…" : v.id ? t("save") : t("create")}
+            {pending ? "…" : v.id ? (editMode === "proposal" ? t("saveForReview") : t("save")) : t("create")}
           </button>
           {v.id ? (
             <button type="button" className={button} onClick={() => { router.push("?"); router.refresh(); }}>

@@ -602,7 +602,8 @@
         "kyb": "KYB dokumenti",
         "coinRequests": "Zahtjevi za kovanice",
         "pointReports": "Izvješća o lokacijama",
-        "products": "Putovnice proizvoda"
+        "products": "Putovnice proizvoda",
+        "ads": "Baner oglasi"
       },
       "unread": "{count} nepročitanih",
       "spam": {
@@ -755,7 +756,11 @@
         "brandRightProven": "Pravo na robnu marku je dokazano (registar, licenca ili ugovor)",
         "reportReproduced": "Izvješće je potvrđeno u izvorima",
         "passportMatchesSource": "Putovnica odgovara podacima proizvođača",
-        "changeExplained": "Promjena je objašnjena i ima smisla"
+        "changeExplained": "Promjena je objašnjena i ima smisla",
+        "mediaRightsOk": "Prodavatelj ima prava na fotografiju ili snimku",
+        "contentAllowed": "Ništa u materijalu nije neprihvatljivo za naše stranice",
+        "adPlacePlausible": "Mjesto na karti odgovara adresi",
+        "promoTermsClear": "Promotivni kod i njegovi uvjeti su jasni"
       },
       "checklist": {
         "title": "Provjere",
@@ -864,6 +869,10 @@
         "companyRevision": {
           "approve": "Primijeniti promjene na karticu",
           "reject": "Odbiti promjene — zadržati trenutnu karticu"
+        },
+        "companyAd": {
+          "approve": "Odobriti i staviti u karusel",
+          "reject": "Odbiti materijal"
         }
       },
       "reports": {
@@ -889,6 +898,14 @@
       "handledUnits": {
         "h": "h",
         "m": "min"
+      },
+      "ad": {
+        "title": "Materijal",
+        "publishSummary": "prva objava",
+        "revisionSummary": "zatražene promjene: {count}",
+        "publishHint": "Ovo je točno ono što će kupci vidjeti i čuti.",
+        "revisionHint": "Stavka je već objavljena. Ispod je verzija koju prodavatelj traži; trenutačna ostaje u karuselu dok je ne odobrite.",
+        "noChanges": "Verzija na čekanju podudara se s objavljenom."
       }
     },
     "bell": {
@@ -4367,7 +4384,12 @@
       "AD_UPDATED": "Ažurirana stavka bannera",
       "AD_PUBLISHED": "Objavljena stavka bannera",
       "AD_ARCHIVED": "Arhivirana stavka bannera",
-      "AD_VOICED": "Stavka bannera pročitana naglas"
+      "AD_VOICED": "Stavka bannera pročitana naglas",
+      "AD_SUBMITTED": "Stavka bannera poslana na pregled",
+      "AD_WITHDRAWN": "Stavka bannera povučena s pregleda",
+      "AD_CHANGES_SUBMITTED": "Promjene stavke bannera poslane na pregled",
+      "AD_APPROVED": "Stavka bannera odobrena od strane moderatora",
+      "AD_REJECTED": "Stavka bannera odbijena od strane moderatora"
     }
   },
   "cabinetTasks": {
@@ -4898,7 +4920,9 @@
     "status": {
       "DRAFT": "Nacrt",
       "PUBLISHED": "Aktivno",
-      "ARCHIVED": "Arhivirano"
+      "ARCHIVED": "Arhivirano",
+      "PENDING": "Kod moderatora",
+      "REJECTED": "Nije prihvaćeno"
     },
     "errors": {
       "unauth": "Prijavite se.",
@@ -4941,7 +4965,15 @@
       "voice_upstream": "Glasovna usluga nije odgovorila. Pokušajte ponovno.",
       "voice_timeout": "Glasovnoj usluzi je trebalo predugo. Pokušajte ponovno.",
       "voice_empty": "Još nema ničega za čitanje naglas.",
-      "point_or_place_required": "Odaberite jednu od svojih lokacija ili dolje dodajte vlastitu adresu ovog materijala."
+      "point_or_place_required": "Odaberite jednu od svojih lokacija ili dolje dodajte vlastitu adresu ovog materijala.",
+      "on_review": "Stavka je kod moderatora — povucite je prije uređivanja.",
+      "not_submittable": "Ovu stavku trenutačno nije moguće poslati na pregled.",
+      "not_withdrawable": "Nema ništa za povući.",
+      "incomplete": "Dodajte okvir i naslov prije slanja na pregled.",
+      "moderated_only": "Stavke objavljuje moderator — ovu možete poslati na pregled.",
+      "payload_invalid": "Promjene na čekanju više ne prolaze provjere. Zamolite prodavatelja da ih ponovno pošalje.",
+      "reason_too_short": "Napišite razlog riječima.",
+      "not_pending": "Nema o čemu odlučiti za ovu stavku."
     },
     "fieldEventEnd": "Završetak događaja",
     "eventEndHint": "Ostavite prazno za jednodnevni događaj.",
@@ -4994,7 +5026,18 @@
     "preview": "Pregled stranice",
     "slideNo": "Slajd {n} od {total}",
     "docsTitle": "Dokumenti za ovu stavku",
-    "docsSubtitle": "Dozvole, licence, deklaracije — dokumenti koji stoje iza onoga što baner kaže. Prikazuju se na stranici ove stavke, ne na izlogu tvrtke."
+    "docsSubtitle": "Dozvole, licence, deklaracije — dokumenti koji stoje iza onoga što baner kaže. Prikazuju se na stranici ove stavke, ne na izlogu tvrtke.",
+    "moderationHint": "Moderator objavljuje svaku stavku. Pošaljite je na pregled, i nakon što bude odobrena prikazuje se u karuselu.",
+    "frozenOnReview": "Stavka je kod moderatora. Ne može se uređivati dok je na pregledu — najprije je povucite ako trebate nešto promijeniti.",
+    "proposalHint": "Stavka je aktivna. Vaše promjene idu moderatoru, a trenutačna verzija ostaje u karuselu dok ne budu odobrene.",
+    "draftHint": "Još ništa nije objavljeno: spremite stavku, pregledajte je i pošaljite na pregled.",
+    "saveForReview": "Spremiti i poslati na pregled",
+    "submit": "Poslati na pregled",
+    "withdraw": "Povući s pregleda",
+    "withdrawChanges": "Povući promjene",
+    "pendingChanges": "Promjene su kod moderatora. Karusel i dalje prikazuje odobrenu verziju.",
+    "rejectedReason": "Nije prihvaćeno: {reason}",
+    "changesRejectedReason": "Vaše promjene nisu prihvaćene: {reason}. Objavljena verzija ostaje u karuselu."
   },
   "adPage": {
     "placeTitle": "Gdje se nalazi",
@@ -5008,8 +5051,13 @@
       "draft": "Nacrt — još nije vidljivo kupcima",
       "archived": "Arhivirano — nije vidljivo kupcima",
       "hint": "Ova stranica je točno ono što vidi kupac. Poslušajte naraciju i pročitajte sve prije objave.",
-      "publish": "Objavite",
-      "backToStudio": "Natrag u studio"
+      "backToStudio": "Natrag u studio",
+      "onReview": "Kod moderatora — još nije vidljivo kupcima",
+      "rejected": "Nije prihvaćeno — nije vidljivo kupcima",
+      "changesOnReview": "Promjene su kod moderatora — kupci i dalje vide odobrenu verziju",
+      "rejectedReason": "Razlog: {reason}",
+      "submit": "Poslati na pregled",
+      "withdraw": "Povući s pregleda"
     }
   }
 }

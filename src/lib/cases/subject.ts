@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import type { CaseSubjectType } from "@prisma/client";
 import { independentReporters } from "@/lib/points/report-rules";
 import { parseChanges } from "@/lib/company-edit";
+import { adDiff, readPendingPayload } from "@/lib/ads/moderation";
 
 export type SubjectField = { label: string; value: string };
 export type SubjectSummary = {
@@ -128,6 +129,58 @@ export async function loadSubject(
           { label: "symbol", value: r.symbol },
           { label: "coingeckoId", value: text(r.coingeckoId) },
           { label: "reason", value: r.reason },
+        ],
+      };
+    }
+    case "COMPANY_AD": {
+      const ad = await prisma.companyAd.findUnique({
+        where: { id: subjectId },
+        include: {
+          company: {
+            select: {
+              id: true, displayName: true, legalName: true, ownerUserId: true,
+              kybStatus: true, registrationNumber: true, country: true, suspendedAt: true,
+            },
+          },
+          _count: { select: { documents: true } },
+        },
+      });
+      if (!ad) return null;
+      const pending = readPendingPayload(ad.pendingPayload);
+      return {
+        title: ad.title,
+        // Разговор ведётся с владельцем предприятия: материал мог завести
+        // маркетолог, но отвечает за сказанное владелец.
+        applicantUserId: ad.company.ownerUserId,
+        href: `/en/ad/${ad.id}`,
+        fields: [
+          { label: "company", value: ad.company.displayName },
+          // «Мы понимаем, кто за этим стоит» — просьба владельца дословно: лицо,
+          // номер регистрации и состояние проверки стоят там, где принимается
+          // решение, а не на другом экране.
+          { label: "legalName", value: text(ad.company.legalName) },
+          { label: "registrationNumber", value: text(ad.company.registrationNumber) },
+          { label: "country", value: text(ad.company.country) },
+          { label: "kyb", value: text(ad.company.kybStatus) },
+          { label: "suspended", value: ad.company.suspendedAt ? day(ad.company.suspendedAt) : "—" },
+          { label: "adKind", value: ad.kind },
+          { label: "language", value: ad.language },
+          { label: "mediaKind", value: ad.mediaKind },
+          { label: "voice", value: ad.audioUrl ? (ad.audioGenerated ? "trientes" : "own") : "—" },
+          { label: "promoCode", value: text(ad.promoCode) },
+          {
+            label: "window",
+            value: ad.startsAt || ad.endsAt
+              ? `${ad.startsAt ? day(ad.startsAt) : "…"} — ${ad.endsAt ? day(ad.endsAt) : "…"}`
+              : "—",
+          },
+          { label: "event", value: ad.eventAt ? `${day(ad.eventAt)}${ad.eventEndAt ? ` — ${day(ad.eventEndAt)}` : ""}` : "—" },
+          { label: "place", value: text([ad.placeName, ad.placeAddress].filter(Boolean).join(", ") || null) },
+          { label: "action", value: ad.action },
+          { label: "documents", value: String(ad._count.documents) },
+          // Правка ждущего слепка — это другой разговор, чем первая публикация, и
+          // проверяющий должен видеть разницу сразу, а не искать её глазами.
+          { label: "pendingChanges", value: pending ? String(adDiff(ad, pending as unknown as Record<string, unknown>).length) : "—" },
         ],
       };
     }

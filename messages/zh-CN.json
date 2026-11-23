@@ -602,7 +602,8 @@
         "kyb": "KYB 文档",
         "coinRequests": "币种请求",
         "pointReports": "点位报告",
-        "products": "产品护照"
+        "products": "产品护照",
+        "ads": "横幅广告"
       },
       "unread": "{count} 条未读",
       "spam": {
@@ -755,7 +756,11 @@
         "brandRightProven": "品牌权属已证明（注册、许可或合同）",
         "reportReproduced": "经与来源核对，报告属实",
         "passportMatchesSource": "护照与制造商自有数据一致",
-        "changeExplained": "变更已有说明且合情合理"
+        "changeExplained": "变更已有说明且合情合理",
+        "mediaRightsOk": "卖家拥有该照片或视频片段的权利",
+        "contentAllowed": "素材中没有不适合在我们页面上展示的内容",
+        "adPlacePlausible": "地图上的位置与地址相符",
+        "promoTermsClear": "促销码及其条款清晰明了"
       },
       "checklist": {
         "title": "检查",
@@ -864,6 +869,10 @@
         "companyRevision": {
           "approve": "将这些更改应用到卡片",
           "reject": "拒绝更改 — 保留当前卡片"
+        },
+        "companyAd": {
+          "approve": "批准并放入轮播",
+          "reject": "拒绝该素材"
         }
       },
       "reports": {
@@ -889,6 +898,14 @@
       "handledUnits": {
         "h": "小时",
         "m": "分钟"
+      },
+      "ad": {
+        "title": "素材",
+        "publishSummary": "首次发布",
+        "revisionSummary": "请求的更改: {count}",
+        "publishHint": "这正是买家将看到和听到的内容",
+        "revisionHint": "该项目已上线。下方是卖家请求的版本；在您批准前，当前版本将继续留在轮播中",
+        "noChanges": "待处理版本与线上版本一致"
       }
     },
     "bell": {
@@ -4367,7 +4384,12 @@
       "AD_UPDATED": "横幅条目已更新",
       "AD_PUBLISHED": "横幅条目已发布",
       "AD_ARCHIVED": "横幅条目已归档",
-      "AD_VOICED": "横幅条目已配音"
+      "AD_VOICED": "横幅条目已配音",
+      "AD_SUBMITTED": "横幅条目已提交审核",
+      "AD_WITHDRAWN": "横幅条目已从审核中撤回",
+      "AD_CHANGES_SUBMITTED": "横幅条目更改已提交审核",
+      "AD_APPROVED": "横幅条目已被审核员批准",
+      "AD_REJECTED": "横幅条目已被审核员拒绝"
     }
   },
   "cabinetTasks": {
@@ -4898,7 +4920,9 @@
     "status": {
       "DRAFT": "草稿",
       "PUBLISHED": "已上线",
-      "ARCHIVED": "已归档"
+      "ARCHIVED": "已归档",
+      "PENDING": "审核中",
+      "REJECTED": "未通过"
     },
     "errors": {
       "unauth": "请登录。",
@@ -4941,7 +4965,15 @@
       "voice_upstream": "语音服务未响应。请重试。",
       "voice_timeout": "语音服务耗时过长。请重试。",
       "voice_empty": "暂无可朗读的内容。",
-      "point_or_place_required": "选择你的一个地点，或在下方添加该素材的专属地址"
+      "point_or_place_required": "选择你的一个地点，或在下方添加该素材的专属地址",
+      "on_review": "该项目前由审核员处理—编辑前请先撤回。",
+      "not_submittable": "此项目前无法提交审核。",
+      "not_withdrawable": "没有可撤回的内容。",
+      "incomplete": "在提交审核前请添加画面和标题。",
+      "moderated_only": "条目由审核员发布—你可以将此项提交审核。",
+      "payload_invalid": "待处理的更改已无法通过检查。请让卖家重新提交。",
+      "reason_too_short": "请用文字说明原因。",
+      "not_pending": "此项目没有需要决定的内容。"
     },
     "fieldEventEnd": "活动结束",
     "eventEndHint": "单日活动请留空。",
@@ -4994,7 +5026,18 @@
     "preview": "预览页面",
     "slideNo": "第 {n} 张，共 {total} 张",
     "docsTitle": "此项目的文件",
-    "docsSubtitle": "许可证、执照、声明 — 支撑横幅内容的文件。它们显示在此项目的页面上，而不是公司展示页"
+    "docsSubtitle": "许可证、执照、声明 — 支撑横幅内容的文件。它们显示在此项目的页面上，而不是公司展示页",
+    "moderationHint": "每个项目都由审核员放行。提交审核，通过后它会出现在轮播中。",
+    "frozenOnReview": "此项目正由审核员处理。审核期间无法编辑 — 如需更改，请先撤回。",
+    "proposalHint": "此项目已上线。您的更改将提交给审核员，获批前，当前版本将继续在轮播中显示。",
+    "draftHint": "尚未发布：请保存该项目，检查后再提交审核。",
+    "saveForReview": "保存并提交审核",
+    "submit": "提交审核",
+    "withdraw": "从审核中撤回",
+    "withdrawChanges": "撤回更改",
+    "pendingChanges": "更改已提交给审核员。轮播仍显示已批准的版本。",
+    "rejectedReason": "未通过：{reason}",
+    "changesRejectedReason": "您的更改未被接受：{reason}。线上版本将继续在轮播中显示。"
   },
   "adPage": {
     "placeTitle": "位置",
@@ -5008,8 +5051,13 @@
       "draft": "草稿 — 购物者暂不可见",
       "archived": "已归档 — 对购物者不可见",
       "hint": "此页面与购物者所见完全一致。发布前请收听配音并通读",
-      "publish": "发布",
-      "backToStudio": "返回工作室"
+      "backToStudio": "返回工作室",
+      "onReview": "在审核员处 — 购物者暂不可见",
+      "rejected": "未通过 — 对购物者不可见",
+      "changesOnReview": "更改在审核员处 — 购物者仍会看到已批准的版本",
+      "rejectedReason": "原因：{reason}",
+      "submit": "提交审核",
+      "withdraw": "从审核中撤回"
     }
   }
 }

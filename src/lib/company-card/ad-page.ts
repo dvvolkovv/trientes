@@ -15,6 +15,8 @@ import { adVisible } from "@/lib/ads/rules";
 import { canWrite, editorCompany } from "@/lib/products/editor-company";
 import { can } from "@/lib/company-team/permissions";
 import { buildCompanyCard, type CardAd, type CompanyCardView } from "@/lib/company-card/view";
+import { hasQueueAccess } from "@/lib/authz/guard";
+import type { AdStatus } from "@/lib/ads/moderation";
 
 export type AdPageView = {
   ad: CardAd;
@@ -27,9 +29,12 @@ export type AdPageView = {
    * черновик не приняли за опубликованное.
    */
   preview: boolean;
-  /** Можно ли опубликовать прямо отсюда: право `promos` на правку. */
-  canPublish: boolean;
-  status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+  /** Можно ли отсюда отправить на проверку или отозвать: право `promos` на правку. */
+  canManage: boolean;
+  status: AdStatus;
+  /** Ждёт ли решения правка опубликованного материала (слайс CC). */
+  hasPending: boolean;
+  rejectionReason: string | null;
 };
 
 export async function readAdPage(input: {
@@ -50,6 +55,8 @@ export async function readAdPage(input: {
       startsAt: true,
       endsAt: true,
       companyId: true,
+      pendingPayload: true,
+      rejectionReason: true,
       company: { select: { status: true, suspendedAt: true, deletedAt: true } },
     },
   });
@@ -59,13 +66,21 @@ export async function readAdPage(input: {
   // тому, кто вправе его вести: предпросмотр до публикации и есть смысл слайса CB.
   const visible = adVisible({ company: row.company, ad: row }, now);
   let preview = false;
-  let canPublish = false;
+  let canManage = false;
   if (!visible) {
     if (!input.viewerId) return null;
     const gate = await editorCompany(row.companyId, input.viewerId);
-    if (!gate || !can(gate.permissions, "promos", "VIEW")) return null;
-    preview = true;
-    canPublish = canWrite(gate, "promos");
+    if (gate && can(gate.permissions, "promos", "VIEW")) {
+      preview = true;
+      canManage = canWrite(gate, "promos");
+    } else if (await hasQueueAccess("ads", "VIEW")) {
+      // Модератор очереди рекламы смотрит материал целиком — с местом на карте,
+      // бумагами и звуком (слайс CC). Действий продавца у него тут нет: его
+      // решение принимается в деле, где оно записывается и подписывается.
+      preview = true;
+    } else {
+      return null;
+    }
   }
 
   const card = await buildCompanyCard({
@@ -86,8 +101,10 @@ export async function readAdPage(input: {
     ad,
     card,
     preview,
-    canPublish,
-    status: row.status as "DRAFT" | "PUBLISHED" | "ARCHIVED",
+    canManage,
+    status: row.status as AdStatus,
+    hasPending: row.pendingPayload !== null && row.pendingPayload !== undefined,
+    rejectionReason: row.rejectionReason,
     siblings: card.ads
       .filter((a) => a.id !== ad.id)
       .map((a) => ({

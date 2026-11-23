@@ -602,7 +602,8 @@
         "kyb": "Documentos KYB",
         "coinRequests": "Solicitudes de monedas",
         "pointReports": "Informes de puntos",
-        "products": "Pasaportes de producto"
+        "products": "Pasaportes de producto",
+        "ads": "Anuncios de banner"
       },
       "unread": "{count} sin leer",
       "spam": {
@@ -755,7 +756,11 @@
         "brandRightProven": "Se ha comprobado el derecho sobre la marca (registro, licencia o contrato)",
         "reportReproduced": "El informe coincide con las fuentes",
         "passportMatchesSource": "El pasaporte coincide con los datos del fabricante",
-        "changeExplained": "El cambio está explicado y tiene sentido"
+        "changeExplained": "El cambio está explicado y tiene sentido",
+        "mediaRightsOk": "El vendedor posee los derechos de la foto o del clip",
+        "contentAllowed": "Nada en el material está fuera de los límites para nuestras páginas",
+        "adPlacePlausible": "El lugar en el mapa coincide con la dirección",
+        "promoTermsClear": "El código promocional y sus términos están claros"
       },
       "checklist": {
         "title": "Comprobaciones",
@@ -864,6 +869,10 @@
         "companyRevision": {
           "approve": "Aplicar los cambios a la tarjeta",
           "reject": "Rechazar los cambios — mantener la tarjeta actual"
+        },
+        "companyAd": {
+          "approve": "Aprobar y ponerlo en el carrusel",
+          "reject": "Rechazar el material"
         }
       },
       "reports": {
@@ -889,6 +898,14 @@
       "handledUnits": {
         "h": "h",
         "m": "min"
+      },
+      "ad": {
+        "title": "Material",
+        "publishSummary": "primera publicación",
+        "revisionSummary": "cambios solicitados: {count}",
+        "publishHint": "Esto es exactamente lo que los compradores verán y oirán.",
+        "revisionHint": "El elemento ya está publicado. Abajo está la versión que solicita el vendedor; la actual permanece en el carrusel hasta que la apruebes.",
+        "noChanges": "La versión pendiente coincide con la publicada."
       }
     },
     "bell": {
@@ -4367,7 +4384,12 @@
       "AD_UPDATED": "Elemento de banner actualizado",
       "AD_PUBLISHED": "Elemento de banner publicado",
       "AD_ARCHIVED": "Elemento de banner archivado",
-      "AD_VOICED": "Elemento del banner con voz"
+      "AD_VOICED": "Elemento del banner con voz",
+      "AD_SUBMITTED": "Elemento de banner enviado para revisión",
+      "AD_WITHDRAWN": "Elemento de banner retirado de la revisión",
+      "AD_CHANGES_SUBMITTED": "Cambios del elemento de banner enviados para revisión",
+      "AD_APPROVED": "Elemento de banner aprobado por un moderador",
+      "AD_REJECTED": "Elemento de banner rechazado por un moderador"
     }
   },
   "cabinetTasks": {
@@ -4898,7 +4920,9 @@
     "status": {
       "DRAFT": "Borrador",
       "PUBLISHED": "Activa",
-      "ARCHIVED": "Archivado"
+      "ARCHIVED": "Archivado",
+      "PENDING": "Con un moderador",
+      "REJECTED": "No aceptado"
     },
     "errors": {
       "unauth": "Inicia sesión.",
@@ -4941,7 +4965,15 @@
       "voice_upstream": "El servicio de voz no respondió. Inténtalo de nuevo.",
       "voice_timeout": "El servicio de voz tardó demasiado. Inténtalo de nuevo.",
       "voice_empty": "Aún no hay nada que leer en voz alta.",
-      "point_or_place_required": "Elige uno de tus puntos o agrega la dirección propia de este material abajo"
+      "point_or_place_required": "Elige uno de tus puntos o agrega la dirección propia de este material abajo",
+      "on_review": "El elemento está con un moderador — retíralo antes de editarlo",
+      "not_submittable": "Este elemento no puede enviarse a revisión ahora",
+      "not_withdrawable": "No hay nada que retirar",
+      "incomplete": "Añade un marco y un titular antes de enviarlo a revisión",
+      "moderated_only": "Un moderador publica los elementos — puedes enviar este a revisión",
+      "payload_invalid": "Los cambios pendientes ya no superan las verificaciones. Pide al vendedor que los vuelva a enviar",
+      "reason_too_short": "Escribe el motivo con palabras",
+      "not_pending": "No hay nada que decidir sobre este elemento"
     },
     "fieldEventEnd": "Fin del evento",
     "eventEndHint": "Déjalo vacío para un evento de un día.",
@@ -4994,7 +5026,18 @@
     "preview": "Página de vista previa",
     "slideNo": "Diapositiva {n} de {total}",
     "docsTitle": "Documentos para este artículo",
-    "docsSubtitle": "Permisos, licencias, declaraciones — los documentos que respaldan lo que dice el banner. Se muestran en la página de este artículo, no en el escaparate de la empresa."
+    "docsSubtitle": "Permisos, licencias, declaraciones — los documentos que respaldan lo que dice el banner. Se muestran en la página de este artículo, no en el escaparate de la empresa.",
+    "moderationHint": "Un moderador publica cada elemento. Envíalo a revisión y, una vez aprobado, aparecerá en el carrusel",
+    "frozenOnReview": "Este elemento está con un moderador. No se puede editar mientras se revisa — retíralo primero si necesitas cambiar algo",
+    "proposalHint": "Este elemento está activo. Tus cambios van a un moderador y la versión actual permanece en el carrusel hasta que se aprueben",
+    "draftHint": "Aún no hay nada publicado: guarda el elemento, revísalo y envíalo a revisión",
+    "saveForReview": "Guardar y enviar a revisión",
+    "submit": "Enviar a revisión",
+    "withdraw": "Retirar de la revisión",
+    "withdrawChanges": "Retirar los cambios",
+    "pendingChanges": "Los cambios están con un moderador. El carrusel sigue mostrando la versión aprobada",
+    "rejectedReason": "No aceptado: {reason}",
+    "changesRejectedReason": "Tus cambios no fueron aceptados: {reason}. La versión en vivo permanece en el carrusel."
   },
   "adPage": {
     "placeTitle": "Dónde está",
@@ -5008,8 +5051,13 @@
       "draft": "Borrador — aún no visible para los compradores",
       "archived": "Archivado — no visible para los compradores",
       "hint": "Esta página es exactamente lo que ve un comprador. Escucha la locución y revísala antes de publicarla.",
-      "publish": "Publicar",
-      "backToStudio": "Volver al estudio"
+      "backToStudio": "Volver al estudio",
+      "onReview": "Con un moderador — aún no es visible para los compradores",
+      "rejected": "No aceptado — no visible para los compradores",
+      "changesOnReview": "Los cambios están con un moderador — los compradores siguen viendo la versión aprobada",
+      "rejectedReason": "Motivo: {reason}",
+      "submit": "Enviar a revisión",
+      "withdraw": "Retirar de la revisión"
     }
   }
 }

@@ -101,7 +101,9 @@ export default async function AdPage({
       {view.preview ? (
         <AdPreviewBar
           status={view.status}
-          canPublish={view.canPublish}
+          hasPending={view.hasPending}
+          canManage={view.canManage}
+          rejectionReason={view.rejectionReason}
           adId={ad.id}
           studioHref={`/${locale}/cabinet/companies/${card.id}/ads?ad=${ad.id}`}
         />

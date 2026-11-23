@@ -1,12 +1,23 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { Prisma } from "@prisma/client";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { ensureCase } from "@/lib/cases/ensure";
+import { appendCaseEvent } from "@/lib/cases/journal";
+import { isOpen } from "@/lib/cases/types";
 import { canWrite, editorCompany } from "@/lib/products/editor-company";
 import { pointScopeAllows } from "@/lib/company-team/permissions";
 import { logCompanyAction } from "@/lib/company-team/journal";
 import { AD_EDITS_PER_DAY, MAX_ADS, MAX_PUBLISHED_ADS, parseAdInput, type AdInput } from "@/lib/ads/rules";
+import {
+  adEditMode,
+  adSlotsTaken,
+  adSubmittable,
+  adWithdrawable,
+  type AdStatus,
+} from "@/lib/ads/moderation";
 
 type Fail = { ok: false; reason: string };
 const fail = (reason: string): Fail => ({ ok: false, reason });
@@ -96,19 +107,56 @@ export async function createAd(companyId: string, input: AdInput) {
   return { ok: true as const, id: ad.id };
 }
 
+/**
+ * Правка материала (слайс CC изменил правило).
+ *
+ * Не опубликованный материал правится в колонках: снаружи его нет, защищать нечего
+ * (тот же разбор, которым BM пустил правки непрошедшего модерацию предприятия).
+ * Материал **на проверке** не правится вовсе — иначе модератор смотрит один ролик,
+ * а в карусель уезжает другой; для этого есть отзыв. Правка **опубликованного**
+ * ложится слепком, а в карусели остаётся прежний, уже одобренный материал.
+ */
 export async function updateAd(adId: string, input: AdInput) {
   const userId = await requireUser();
   if (!userId) return fail("unauth");
-  const ad = await prisma.companyAd.findUnique({ where: { id: adId }, select: { id: true, companyId: true } });
+  const ad = await prisma.companyAd.findUnique({
+    where: { id: adId },
+    select: { id: true, companyId: true, status: true, title: true },
+  });
   if (!ad) return fail("not_found");
   const gate = await editorCompany(ad.companyId, userId);
   if (!canWrite(gate, "promos")) return fail("forbidden");
+
+  const mode = adEditMode(ad.status as AdStatus);
+  if (mode === "frozen") return fail("on_review");
 
   const parsed = parseAdInput(input);
   if (!parsed.ok) return fail(parsed.reason);
   const linkError = await checkAction(ad.companyId, parsed.value, gate!.pointScope);
   if (linkError) return fail(linkError);
   if (await overDailyLimit(ad.companyId)) return fail("daily_limit");
+
+  if (mode === "proposal") {
+    // Храним форму, а не разобранные значения: на одобрении слепок проходит ту же
+    // проверку, что живая форма. Новая правка гасит прежнюю — ждущих правок у
+    // материала не бывает двух (прецедент: новая просьба о сбросе пароля гасит
+    // прежние ссылки).
+    await prisma.companyAd.update({
+      where: { id: adId },
+      data: {
+        pendingPayload: input as unknown as Prisma.InputJsonValue,
+        pendingAt: new Date(),
+        rejectionReason: null,
+      },
+    });
+    await logCompanyAction({
+      companyId: ad.companyId, actorUserId: userId,
+      action: "AD_CHANGES_SUBMITTED", subject: parsed.value.title,
+    });
+    await openAdCase(ad.id, ad.companyId, parsed.value.title);
+    revalidateCard(ad.companyId);
+    return { ok: true as const, pending: true as const };
+  }
 
   await prisma.companyAd.update({ where: { id: adId }, data: { ...parsed.value } });
   await logCompanyAction({
@@ -119,13 +167,130 @@ export async function updateAd(adId: string, input: AdInput) {
 }
 
 /**
- * Статус. Публиковать можно, пока в карусели меньше пяти: шестую никто не долистает,
- * и молчаливое обрезание читалось бы как «показываем всё» (правило BL о потолках).
- * Материал не удаляется, а уходит в архив: показанное обещание люди видели.
+ * Дело на материал. Заводится при отправке на проверку и при правке
+ * опубликованного; решённое дело при этом открывается заново — это и есть
+ * `ensureCase` (AT). Сбой заведения дела подачу не роняет (правило AN).
  */
-export async function setAdStatus(adId: string, status: "DRAFT" | "PUBLISHED" | "ARCHIVED") {
+async function openAdCase(adId: string, companyId: string, title: string) {
+  const company = await prisma.company.findUnique({
+    where: { id: companyId },
+    select: { ownerUserId: true },
+  });
+  await ensureCase({
+    subjectType: "COMPANY_AD",
+    subjectId: adId,
+    title,
+    // Отвечает за сказанное владелец: материал мог завести маркетолог.
+    applicantUserId: company?.ownerUserId ?? null,
+  });
+}
+
+/**
+ * Отправка материала на проверку (слайс CC). Публикует модератор, а продавец
+ * встаёт в очередь: место в карусели занимает уже отправленный, иначе потолок
+ * вскрылся бы в момент одобрения — отказом по делу, которое уже проверено.
+ */
+export async function submitAd(adId: string) {
   const userId = await requireUser();
   if (!userId) return fail("unauth");
+  const ad = await prisma.companyAd.findUnique({
+    where: { id: adId },
+    select: { id: true, companyId: true, status: true, title: true, mediaUrl: true },
+  });
+  if (!ad) return fail("not_found");
+  const gate = await editorCompany(ad.companyId, userId);
+  if (!canWrite(gate, "promos")) return fail("forbidden");
+  if (!adSubmittable(ad.status as AdStatus)) return fail("not_submittable");
+  if (!ad.mediaUrl || !ad.title.trim()) return fail("incomplete");
+
+  const rows = await prisma.companyAd.findMany({
+    where: { companyId: ad.companyId, id: { not: ad.id } },
+    select: { status: true },
+  });
+  if (adSlotsTaken(rows as { status: AdStatus }[]) >= MAX_PUBLISHED_ADS) {
+    return fail("too_many_published");
+  }
+
+  await prisma.companyAd.update({
+    where: { id: adId },
+    data: { status: "PENDING", submittedAt: new Date(), rejectionReason: null, decidedAt: null, decidedById: null },
+  });
+  await logCompanyAction({
+    companyId: ad.companyId, actorUserId: userId, action: "AD_SUBMITTED", subject: ad.title,
+  });
+  await openAdCase(ad.id, ad.companyId, ad.title);
+  revalidateCard(ad.companyId);
+  return { ok: true as const };
+}
+
+/**
+ * Отзыв с проверки: материал возвращается в черновик, ждущая правка стирается.
+ *
+ * Дело закрывается **без решения** (прецедент `withdrawKyb` в AT): проверяющий
+ * работы не делал, и в аналитике труда отзыв работой выглядеть не должен.
+ */
+export async function withdrawAd(adId: string) {
+  const userId = await requireUser();
+  if (!userId) return fail("unauth");
+  const ad = await prisma.companyAd.findUnique({
+    where: { id: adId },
+    select: { id: true, companyId: true, status: true, title: true, pendingPayload: true },
+  });
+  if (!ad) return fail("not_found");
+  const gate = await editorCompany(ad.companyId, userId);
+  if (!canWrite(gate, "promos")) return fail("forbidden");
+  const hasPending = ad.pendingPayload !== null && ad.pendingPayload !== undefined;
+  if (!adWithdrawable({ status: ad.status as AdStatus, hasPending })) return fail("not_withdrawable");
+
+  await prisma.companyAd.update({
+    where: { id: adId },
+    data: {
+      // Отзыв правки опубликованного материала статуса не меняет: в карусели
+      // остаётся то, что одобрено.
+      ...(ad.status === "PENDING" ? { status: "DRAFT" as const, submittedAt: null } : {}),
+      pendingPayload: Prisma.DbNull,
+      pendingAt: null,
+    },
+  });
+
+  const existing = await prisma.complianceCase.findUnique({
+    where: { subjectType_subjectId: { subjectType: "COMPANY_AD", subjectId: adId } },
+    select: { id: true, status: true },
+  });
+  if (existing && isOpen(existing.status)) {
+    await prisma.complianceCase.update({
+      where: { id: existing.id },
+      data: { status: "CLOSED", decidedAt: new Date(), clockStoppedAt: null, assigneeId: null },
+    });
+    await appendCaseEvent({
+      caseId: existing.id,
+      actorId: userId,
+      actorSide: "APPLICANT",
+      kind: "STATUS_CHANGED",
+      payload: { from: existing.status, to: "CLOSED", why: "withdrawn" },
+    });
+  }
+
+  await logCompanyAction({
+    companyId: ad.companyId, actorUserId: userId, action: "AD_WITHDRAWN", subject: ad.title,
+  });
+  revalidateCard(ad.companyId);
+  return { ok: true as const };
+}
+
+/**
+ * Архив и возврат из архива. Публикация сюда больше не входит (слайс CC): её
+ * делает модератор, и кнопки «опубликовать» у продавца нет вовсе — погашенная
+ * кнопка, которую действие всё равно отвергает, хуже её отсутствия (правило BI).
+ *
+ * Возврат из архива ведёт в черновик, а не в карусель: содержание могло пролежать
+ * месяцы, и «когда-то одобрено» не значит «одобрено сейчас». Материал не удаляется:
+ * показанное обещание люди видели.
+ */
+export async function setAdStatus(adId: string, status: "DRAFT" | "ARCHIVED") {
+  const userId = await requireUser();
+  if (!userId) return fail("unauth");
+  if (status !== "DRAFT" && status !== "ARCHIVED") return fail("moderated_only");
   const ad = await prisma.companyAd.findUnique({
     where: { id: adId },
     select: { id: true, companyId: true, title: true, status: true },
@@ -133,17 +298,23 @@ export async function setAdStatus(adId: string, status: "DRAFT" | "PUBLISHED" | 
   if (!ad) return fail("not_found");
   const gate = await editorCompany(ad.companyId, userId);
   if (!canWrite(gate, "promos")) return fail("forbidden");
+  // Материал на проверке убирают отзывом, а не сменой статуса: иначе дело осталось
+  // бы открытым на объекте, которого в очереди уже нет смысла смотреть.
+  if (ad.status === "PENDING") return fail("on_review");
 
-  if (status === "PUBLISHED" && ad.status !== "PUBLISHED") {
-    const live = await prisma.companyAd.count({ where: { companyId: ad.companyId, status: "PUBLISHED" } });
-    if (live >= MAX_PUBLISHED_ADS) return fail("too_many_published");
-  }
-
-  await prisma.companyAd.update({ where: { id: adId }, data: { status } });
+  await prisma.companyAd.update({
+    where: { id: adId },
+    data: {
+      status,
+      // Уходя из карусели, материал забирает с собой и ждущую правку: применять её
+      // к архивному нечему.
+      ...(status === "ARCHIVED" ? { pendingPayload: Prisma.DbNull, pendingAt: null } : {}),
+    },
+  });
   await logCompanyAction({
     companyId: ad.companyId,
     actorUserId: userId,
-    action: status === "PUBLISHED" ? "AD_PUBLISHED" : status === "ARCHIVED" ? "AD_ARCHIVED" : "AD_UPDATED",
+    action: status === "ARCHIVED" ? "AD_ARCHIVED" : "AD_UPDATED",
     subject: ad.title,
   });
   revalidateCard(ad.companyId);

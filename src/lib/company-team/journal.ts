@@ -59,6 +59,13 @@ export type CompanyAction =
   // Слайс BZ: озвучка материала нашим синтезом — платный вызов наружу, и по журналу
   // же считается суточный потолок: своей таблицы под один счётчик не заводим.
   | "AD_VOICED"
+  // Слайс CC: материал публикует модератор. `AD_PUBLISHED` остаётся — журнал
+  // неизменяем, и прежняя строка обязана остаться читаемой.
+  | "AD_SUBMITTED"
+  | "AD_WITHDRAWN"
+  | "AD_CHANGES_SUBMITTED"
+  | "AD_APPROVED"
+  | "AD_REJECTED"
   | "SUPPLIER_SAVED"
   | "SUPPLIER_ARCHIVED"
   | "SUPPLIER_RESTORED"

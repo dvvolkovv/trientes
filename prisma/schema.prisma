@@ -71,6 +71,7 @@ model User {
   tasksClosed              CompanyTask[]             @relation("CompanyTaskCloser")
   chatMessages             CompanyChatMessage[]      @relation("CompanyChatAuthor")
   companyAds               CompanyAd[]               @relation("CompanyAdAuthor")
+  companyAdDecisions       CompanyAd[]               @relation("CompanyAdModerator")
   chatReads                CompanyChatRead[]
   customerThreads          CustomerThread[]          @relation("CustomerThreadCustomer")
   customerMessages         CustomerMessage[]         @relation("CustomerMessageAuthor")
@@ -801,6 +802,8 @@ enum AdminAction {
   REVERT_PRODUCT_EDIT
   APPROVE_COMPANY_REVISION
   REJECT_COMPANY_REVISION
+  APPROVE_COMPANY_AD
+  REJECT_COMPANY_AD
 }
 
 model AdminAuditLog {
@@ -1868,6 +1871,7 @@ enum CaseSubjectType {
   PRODUCT_CLAIM
   PRODUCT_REPORT
   COMPANY_REVISION
+  COMPANY_AD
 }
 
 enum CaseStatus {
@@ -2951,9 +2955,14 @@ enum CompanyAdAction {
   POINT
 }
 
+/// Дорога материала (слайс CC): публикует модератор, а не продавец.
 enum CompanyAdStatus {
   DRAFT
+  /// Отправлен на проверку. Правки не принимает: модератор смотрит ролик, и
+  /// подмена кадра секундой раньше одобрения обесценила бы проверку.
+  PENDING
   PUBLISHED
+  REJECTED
   ARCHIVED
 }
 
@@ -3030,6 +3039,22 @@ model CompanyAd {
 
   status    CompanyAdStatus @default(DRAFT)
   sortOrder Int             @default(0)
+
+  // --- Модерация (слайс CC) --------------------------------------------------------
+  /// Когда материал отправлен на проверку.
+  submittedAt     DateTime?
+  /// Решение модератора. Публикация и отказ — его работа, а не продавца.
+  decidedAt       DateTime?
+  decidedById     String?
+  decidedBy       User?     @relation("CompanyAdModerator", fields: [decidedById], references: [id], onDelete: SetNull)
+  /// Причина отказа: её читает продавец у себя в студии.
+  rejectionReason String?   @db.Text
+  /// Предложенная правка **опубликованного** материала — слепок значений формы.
+  /// Витрина и фид читают колонки, поэтому в карусели остаётся прежний, одобренный
+  /// материал, пока модератор не принял слепок (дословно правило BM). Ждёт не
+  /// больше одной правки: новая гасит прежнюю.
+  pendingPayload  Json?
+  pendingAt       DateTime?
 
   /// Бумаги этого объявления (слайс CB): разрешения и лицензии, которыми продавец
   /// подкрепляет сказанное на баннере. Каскад: материала нет — и бумаг его нет.

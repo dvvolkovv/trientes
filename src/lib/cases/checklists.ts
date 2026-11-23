@@ -88,6 +88,18 @@ export const CHECKLISTS: Record<CaseSubjectType, CheckDef[]> = {
     { key: "legalNameMatchesRegistry", required: false },
     { key: "documentsLegible", required: false },
   ],
+  // Рекламный материал (слайс CC). Обязательны три вопроса, на которые отвечаем
+  // мы, а не продавец: его ли это кадр, не обещает ли текст лишнего и можно ли
+  // такое показывать вообще. Ключ `noMisleadingClaims` общий с прежними листами:
+  // вопрос тот же (правило AP).
+  COMPANY_AD: [
+    { key: "mediaRightsOk", required: true },
+    { key: "noMisleadingClaims", required: true },
+    { key: "contentAllowed", required: true },
+    { key: "adPlacePlausible", required: false },
+    { key: "promoTermsClear", required: false },
+    { key: "documentsLegible", required: false },
+  ],
   POINT_REPORT: [
     { key: "reportsIndependent", required: true },
     { key: "ownerAsked", required: true },

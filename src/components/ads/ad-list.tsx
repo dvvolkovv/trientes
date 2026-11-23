@@ -3,23 +3,42 @@
 import Link from "next/link";
 import { useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { moveAd, setAdStatus } from "@/app/actions/company-ads";
+import { moveAd, setAdStatus, submitAd, withdrawAd } from "@/app/actions/company-ads";
 import { MAX_PUBLISHED_ADS } from "@/lib/ads/rules";
+import { adSubmittable, adWithdrawable, type AdStatus } from "@/lib/ads/moderation";
 
 export type AdRow = {
   id: string;
   kind: string;
   title: string;
-  status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+  status: AdStatus;
   mediaKind: "IMAGE" | "VIDEO";
   preview: string;
   window: string | null;
   hasAudio: boolean;
+  /** Ждёт ли решения правка опубликованного материала (слайс CC). */
+  hasPending: boolean;
+  /** Причина отказа модератора: её читает продавец, и молчать о ней нельзя. */
+  rejectionReason: string | null;
   /** Место в карусели — ради него и нужны «выше»/«ниже». */
   position?: number;
 };
 
-/** Список материалов: что сейчас в карусели, в каком порядке и что лежит черновиком. */
+const STATUS_CLASS: Record<AdStatus, string> = {
+  PUBLISHED: "bg-[#30B658]/15 text-[#30B658]",
+  PENDING: "bg-accent/15 text-accent",
+  REJECTED: "bg-[#E55C5C]/15 text-[#E55C5C]",
+  ARCHIVED: "bg-card-alt text-muted",
+  DRAFT: "bg-card-alt text-muted-strong",
+};
+
+/**
+ * Список материалов: что сейчас в карусели, что ждёт модератора, что лежит
+ * черновиком и что отвергнуто — с причиной.
+ *
+ * Публикует модератор (слайс CC), поэтому кнопки «Опубликовать» здесь нет вовсе:
+ * кнопка, которую действие всё равно отвергает, хуже её отсутствия (правило BI).
+ */
 export function AdList({
   ads,
   editable,
@@ -59,13 +78,7 @@ export function AdList({
                   {t(`kind.${ad.kind}`)}
                 </span>
                 <span
-                  className={`rounded-full px-2 py-0.5 text-[10.5px] uppercase tracking-wider ${
-                    ad.status === "PUBLISHED"
-                      ? "bg-[#30B658]/15 text-[#30B658]"
-                      : ad.status === "ARCHIVED"
-                        ? "bg-card-alt text-muted"
-                        : "bg-accent/15 text-accent"
-                  }`}
+                  className={`rounded-full px-2 py-0.5 text-[10.5px] uppercase tracking-wider ${STATUS_CLASS[ad.status]}`}
                 >
                   {t(`status.${ad.status}`)}
                 </span>
@@ -84,22 +97,45 @@ export function AdList({
             </div>
           </div>
 
+          {/* Ждущая правка опубликованного: в карусели по-прежнему прежний материал,
+              и сказать это надо словами — иначе продавец решит, что правка пропала. */}
+          {ad.hasPending ? (
+            <p className="mt-2 rounded-md border border-accent/40 bg-accent/10 p-2 text-[12px] text-accent">
+              {t("pendingChanges")}
+            </p>
+          ) : null}
+          {/* Причина отказа показывается и опубликованному материалу: модератор мог
+              отвергнуть **правку**, а не материал, и тогда статус остаётся
+              «в карусели» — продавец иначе не узнал бы, что с его правкой. */}
+          {ad.rejectionReason && !ad.hasPending ? (
+            <p className="mt-2 rounded-md border border-[#E55C5C]/40 bg-[#E55C5C]/10 p-2 text-[12px] text-[#E55C5C]">
+              {ad.status === "REJECTED"
+                ? t("rejectedReason", { reason: ad.rejectionReason })
+                : t("changesRejectedReason", { reason: ad.rejectionReason })}
+            </p>
+          ) : null}
+
           {editable ? (
             <div className="mt-3 flex flex-wrap gap-2">
-              <Link href={`${basePath}?ad=${ad.id}`} className={button}>{t("edit")}</Link>
+              {/* Материал на проверке не правится: модератор смотрит именно это
+                  содержание (слайс CC). Кнопки правки у него нет, а не погашена. */}
+              {ad.status !== "PENDING" ? (
+                <Link href={`${basePath}?ad=${ad.id}`} className={button}>{t("edit")}</Link>
+              ) : null}
               <Link href={`${adBasePath}/${ad.id}`} className={button}>{t("preview")}</Link>
-              {ad.status !== "PUBLISHED" ? (
+              {adSubmittable(ad.status) ? (
                 <button type="button" className={button} disabled={pending}
-                  onClick={() => start(async () => { await setAdStatus(ad.id, "PUBLISHED"); })}>
-                  {t("publish")}
+                  onClick={() => start(async () => { await submitAd(ad.id); })}>
+                  {t("submit")}
                 </button>
-              ) : (
+              ) : null}
+              {adWithdrawable({ status: ad.status, hasPending: ad.hasPending }) ? (
                 <button type="button" className={button} disabled={pending}
-                  onClick={() => start(async () => { await setAdStatus(ad.id, "DRAFT"); })}>
-                  {t("unpublish")}
+                  onClick={() => start(async () => { await withdrawAd(ad.id); })}>
+                  {ad.status === "PENDING" ? t("withdraw") : t("withdrawChanges")}
                 </button>
-              )}
-              {ad.status !== "ARCHIVED" ? (
+              ) : null}
+              {ad.status !== "ARCHIVED" && ad.status !== "PENDING" ? (
                 <button type="button" className={button} disabled={pending}
                   onClick={() => start(async () => { await setAdStatus(ad.id, "ARCHIVED"); })}>
                   {t("archive")}

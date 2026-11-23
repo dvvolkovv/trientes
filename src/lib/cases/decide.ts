@@ -2,6 +2,7 @@ import type { CaseSubjectType } from "@prisma/client";
 import { approveCoinCard, rejectCoinCard } from "@/app/actions/admin-coin-cards";
 import { approveCompany, rejectCompany } from "@/app/actions/admin-company";
 import { approveCompanyRevision, rejectCompanyRevision } from "@/app/actions/admin-company-revision";
+import { approveAd, rejectAd } from "@/app/actions/admin-company-ads";
 import { approvePoint, rejectPoint } from "@/app/actions/admin-points";
 import { approveExchange, rejectExchange } from "@/app/actions/admin-exchange";
 import { approveFintech, rejectFintech } from "@/app/actions/admin-fintech";
@@ -106,6 +107,13 @@ export async function applyDecision(input: {
         approve
           ? await approveProductClaim({ claimId: subjectId })
           : await rejectProductClaim({ claimId: subjectId, reason, silent }),
+      );
+    case "COMPANY_AD":
+      // Объект дела — сам материал. «Одобрено» значит «выпустить в карусель», а у
+      // ждущей правки опубликованного — «применить правку»; «отклонено» у правки
+      // оставляет в карусели прежний, уже одобренный материал.
+      return normalize(
+        approve ? await approveAd({ adId: subjectId }) : await rejectAd({ adId: subjectId, reason, silent }),
       );
     case "PRODUCT_REPORT":
       // «Одобрено» значит «жалоба подтверждена»: паспорт уходит из каталога.

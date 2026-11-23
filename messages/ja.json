@@ -602,7 +602,8 @@
         "kyb": "KYB書類",
         "coinRequests": "コイン申請",
         "pointReports": "地点報告",
-        "products": "製品パスポート"
+        "products": "製品パスポート",
+        "ads": "バナー広告"
       },
       "unread": "{count} 件の未読",
       "spam": {
@@ -755,7 +756,11 @@
         "brandRightProven": "ブランドの権利が証明された（登録、ライセンス、または契約）",
         "reportReproduced": "報告内容は情報源と照合して確認済み",
         "passportMatchesSource": "パスポートはメーカー自身のデータと一致",
-        "changeExplained": "変更は説明されており、妥当です"
+        "changeExplained": "変更は説明されており、妥当です",
+        "mediaRightsOk": "販売者は写真またはクリップの権利を保有している",
+        "contentAllowed": "この素材には当サイトで禁止されている内容はない",
+        "adPlacePlausible": "地図上の場所が住所と一致している",
+        "promoTermsClear": "プロモコードとその条件が明確である"
       },
       "checklist": {
         "title": "チェック",
@@ -864,6 +869,10 @@
         "companyRevision": {
           "approve": "カードに変更を適用",
           "reject": "変更を却下 — 現在のカードを維持"
+        },
+        "companyAd": {
+          "approve": "承認してカルーセルに掲載する",
+          "reject": "素材を却下する"
         }
       },
       "reports": {
@@ -889,6 +898,14 @@
       "handledUnits": {
         "h": "時間",
         "m": "分"
+      },
+      "ad": {
+        "title": "素材",
+        "publishSummary": "初回公開",
+        "revisionSummary": "要求された変更: {count}",
+        "publishHint": "買い物客が実際に目にし、耳にする内容そのものです",
+        "revisionHint": "このアイテムはすでに公開中です。下は販売者が希望しているバージョンで、あなたが承認するまで現在のものがカルーセルに表示され続けます",
+        "noChanges": "保留中のバージョンは公開中のものと一致しています"
       }
     },
     "bell": {
@@ -4367,7 +4384,12 @@
       "AD_UPDATED": "バナー項目を更新しました",
       "AD_PUBLISHED": "バナー項目を公開しました",
       "AD_ARCHIVED": "バナー項目をアーカイブしました",
-      "AD_VOICED": "バナー項目を告知"
+      "AD_VOICED": "バナー項目を告知",
+      "AD_SUBMITTED": "バナー項目を審査に提出",
+      "AD_WITHDRAWN": "バナー項目を審査から取り下げ",
+      "AD_CHANGES_SUBMITTED": "バナー項目の変更を審査に提出",
+      "AD_APPROVED": "バナー項目がモデレーターに承認された",
+      "AD_REJECTED": "バナー項目がモデレーターに却下された"
     }
   },
   "cabinetTasks": {
@@ -4898,7 +4920,9 @@
     "status": {
       "DRAFT": "下書き",
       "PUBLISHED": "公開中",
-      "ARCHIVED": "アーカイブ済み"
+      "ARCHIVED": "アーカイブ済み",
+      "PENDING": "モデレーター審査中",
+      "REJECTED": "不承認"
     },
     "errors": {
       "unauth": "サインインしてください。",
@@ -4941,7 +4965,15 @@
       "voice_upstream": "音声サービスが応答しませんでした。もう一度お試しください。",
       "voice_timeout": "音声サービスに時間がかかりすぎました。もう一度お試しください。",
       "voice_empty": "読み上げるものがまだありません。",
-      "point_or_place_required": "あなたの拠点のいずれかを選択するか、下にこの素材の住所を追加してください。"
+      "point_or_place_required": "あなたの拠点のいずれかを選択するか、下にこの素材の住所を追加してください。",
+      "on_review": "この項目は現在モデレーターのもとにあります—編集する前に取り下げてください",
+      "not_submittable": "この項目は今は審査に送れません",
+      "not_withdrawable": "取り下げるものはありません",
+      "incomplete": "フレームと見出しを追加してから審査に送ってください",
+      "moderated_only": "項目の公開はモデレーターが行います—この項目は審査に送れます",
+      "payload_invalid": "保留中の変更がチェックを通らなくなりました。販売者に再提出を依頼してください",
+      "reason_too_short": "理由を言葉で記入してください",
+      "not_pending": "この項目は審査待ちではありません"
     },
     "fieldEventEnd": "イベント終了",
     "eventEndHint": "1日限定のイベントは空欄のままにしてください。",
@@ -4994,22 +5026,38 @@
     "preview": "プレビューページ",
     "slideNo": "スライド {n}/{total}",
     "docsTitle": "この商品の書類",
-    "docsSubtitle": "許可証、ライセンス、申告書—バナーの内容を裏付ける書類です。これらは会社のショーケースではなく、この商品のページに表示されます。"
+    "docsSubtitle": "許可証、ライセンス、申告書—バナーの内容を裏付ける書類です。これらは会社のショーケースではなく、この商品のページに表示されます。",
+    "moderationHint": "各項目はモデレーターが公開します。審査に送ると、承認され次第カルーセルに表示されます",
+    "frozenOnReview": "この項目は現在モデレーターのもとにあります。審査中は編集できません—変更が必要な場合はいったん取り下げてください",
+    "proposalHint": "この項目は掲載中です。あなたの変更はモデレーターに送られ、承認されるまでは現在の版がカルーセルに表示され続けます",
+    "draftHint": "まだ何も公開されていません: 項目を保存して見直し、審査に送ってください",
+    "saveForReview": "保存して審査に送る",
+    "submit": "審査に送る",
+    "withdraw": "審査から取り下げる",
+    "withdrawChanges": "変更を取り下げる",
+    "pendingChanges": "変更はモデレーターのもとにあります。カルーセルには承認済みの版が引き続き表示されます",
+    "rejectedReason": "不承認: {reason}",
+    "changesRejectedReason": "あなたの変更は承認されませんでした：{reason}。公開版はカルーセルに残ります。"
   },
   "adPage": {
     "placeTitle": "場所",
     "placeAccepts": "ここで受け入れ可能",
     "paymentOutside": "支払いは販売者と直接取り決めます — Trientesは支払いを処理しません。",
     "moreTitle": "このビジネスの他の掲載",
-    "eventRange": "{from} — {to}",
+    "eventRange": "{from} 〜 {to}",
     "companyProfile": "ビジネスプロフィール",
     "documentsTitle": "書類と許可証",
     "preview": {
       "draft": "下書き — まだ買い物客には表示されません",
       "archived": "アーカイブ済み — 買い物客には表示されません",
       "hint": "このページは買い物客が目にするものと同じです。公開前にナレーションを聞き、内容を通して確認してください。",
-      "publish": "公開",
-      "backToStudio": "スタジオに戻る"
+      "backToStudio": "スタジオに戻る",
+      "onReview": "モデレーターのもとにあります—まだ購入者には表示されません",
+      "rejected": "不承認—購入者には表示されません",
+      "changesOnReview": "変更はモデレーターのもとにあります—購入者には承認済みの版が引き続き表示されます",
+      "rejectedReason": "理由: {reason}",
+      "submit": "審査に送る",
+      "withdraw": "審査から取り下げる"
     }
   }
 }

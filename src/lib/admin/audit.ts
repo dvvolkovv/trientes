@@ -21,7 +21,8 @@ export async function logAdminAction(input: {
     | "FintechCompany"
     | "ComplianceCase"
     | "Product"
-    | "ProductClaim";
+    | "ProductClaim"
+    | "CompanyAd";
   targetId: string;
   details?: Record<string, unknown>;
 }): Promise<void> {

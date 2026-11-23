@@ -35,6 +35,7 @@ export const SUBJECT_QUEUES: Record<CaseSubjectType, QueueKey[]> = {
   POINT_REPORT: ["points", "pointReports"],
   PRODUCT_CLAIM: ["products"],
   PRODUCT_REPORT: ["products"],
+  COMPANY_AD: ["ads"],
 };
 
 export const ACCESS_MAP: Requirement[] = [
@@ -69,6 +70,7 @@ export const ACCESS_MAP: Requirement[] = [
   { key: "exchangeDecision", need: "APPROVE", queues: ["exchanges"] },
   { key: "fintechDecision", need: "APPROVE", queues: ["fintech"] },
   { key: "coinRequestDecision", need: "APPROVE", queues: ["coinRequests"] },
+  { key: "adDecision", need: "APPROVE", queues: ["ads"] },
 
   { key: "adminHistoryCoinCards", need: "VIEW", queues: ["coinCards"] },
   { key: "adminHistoryBusiness", need: "VIEW", queues: ["companies", "points", "kyb"] },

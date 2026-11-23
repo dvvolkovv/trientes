@@ -38,6 +38,7 @@ const WIDTHS = [280, 320, 390];
 
 let userId = "";
 let companyId = "";
+let adId = "";
 let sessionToken = "";
 
 test.beforeAll(async () => {
@@ -66,6 +67,40 @@ test.beforeAll(async () => {
   });
   companyId = company.id;
   await prisma.companyMember.create({ data: { companyId: company.id, userId: user.id, role: "OWNER" } });
+  // Студию мерили пустой — а значит не мерили вовсе: ни формы бумаг, ни
+  // предпросмотра, ни полей места там нет, пока нет материала. Жалоба владельца
+  // («во время правок поля ездят вправо-влево») пришла именно с правки.
+  const ad = await prisma.companyAd.create({
+    data: {
+      companyId: company.id,
+      kind: "PROMO",
+      title: "Временный материал проверки ширины экрана",
+      body: "Текст материала для проверки того, что поля не уезжают вбок.",
+      language: "ru",
+      mediaKind: "IMAGE",
+      mediaUrl: `/uploads/ads/${company.id}/00000000000000000000000000000000.png`,
+      promoCode: "WIDTH-280",
+      status: "DRAFT",
+      placeName: "Место материала",
+      placeAddress: "Dlouhá 12, Praha",
+      placeLat: 50.0875,
+      placeLon: 14.4213,
+      action: "NONE",
+    },
+    select: { id: true },
+  });
+  adId = ad.id;
+  await prisma.companyDocument.create({
+    data: {
+      companyId: company.id,
+      adId: ad.id,
+      kind: "other",
+      kindCustom: "Разрешение",
+      title: "Разрешение на размещение",
+      linkUrl: "https://example.org/permit",
+      publishedAt: new Date(),
+    },
+  });
   sessionToken = randomBytes(24).toString("hex");
   await prisma.session.create({
     data: { sessionToken, userId: user.id, expires: new Date(Date.now() + 3600_000) },
@@ -103,6 +138,8 @@ test("экраны кабинета предприятия не ездят по 
     `${base}/supply`,
     `${base}/promos`,
     `${base}/ads`,
+    // Та же студия в правке: форма места, бумаги и предпросмотр появляются только тут.
+    `${base}/ads?ad=${adId}`,
     `${base}/loyalty`,
     `${base}/tasks`,
     `${base}/chat`,
@@ -158,5 +195,28 @@ test("экраны кабинета предприятия не ездят по 
       });
       expect(over, `${path} @ ${width}px`).toBeNull();
     }
+  }
+
+  // Вторая половина той же жалобы, и причина у неё другая: Safari на iPhone
+  // приближает страницу, когда фокус попадает в поле с кеглем меньше 16 px, и
+  // после этого страница ездит боком. Мерим кегль, а не последствие: прокрутки
+  // в Chromium при этом нет вовсе, и первая проверка такое пропускает.
+  await page.setViewportSize({ width: 390, height: 844 });
+  for (const path of [`${base}/ads?ad=${adId}`, `${base}?edit=1`, `${base}/points`]) {
+    await page.goto(path, { waitUntil: "domcontentloaded" });
+    const small = await page.evaluate(() => {
+      const out: { tag: string; type: string; size: number }[] = [];
+      for (const el of Array.from(document.querySelectorAll("input, select, textarea"))) {
+        const e = el as HTMLInputElement;
+        const type = (e.getAttribute("type") ?? "").toLowerCase();
+        if (["checkbox", "radio", "range", "color", "hidden", "file"].includes(type)) continue;
+        const r = e.getBoundingClientRect();
+        if (r.width === 0 && r.height === 0) continue;
+        const size = parseFloat(getComputedStyle(e).fontSize);
+        if (size < 16) out.push({ tag: e.tagName.toLowerCase(), type, size });
+      }
+      return out;
+    });
+    expect(small, `${path}: поля мельче 16px — Safari приблизит страницу при фокусе`).toEqual([]);
   }
 });

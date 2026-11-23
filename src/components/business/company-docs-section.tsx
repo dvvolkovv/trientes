@@ -318,7 +318,10 @@ export function CompanyDocsSection({
                 if (file) void upload(file);
                 e.target.value = "";
               }}
-              className="text-[12px]"
+              // Поле выбора файла: подпись у браузера своя (по-русски длиннее),
+              // и без ширины оно вылезало за край экрана — живой замер на 280 px
+              // назвал его виновником прокрутки вбок.
+              className="w-full max-w-full text-[12px]"
             />
             <p className="mt-1 text-[11px] text-muted">{t("fileHint")}</p>
           </div>

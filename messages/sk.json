@@ -602,7 +602,8 @@
         "kyb": "Dokumenty KYB",
         "coinRequests": "Žiadosti o mince",
         "pointReports": "Nahlásenia miest",
-        "products": "Produktové pasy"
+        "products": "Produktové pasy",
+        "ads": "Banerové reklamy"
       },
       "unread": "{count} neprečítaných",
       "spam": {
@@ -755,7 +756,11 @@
         "brandRightProven": "Právo na značku je preukázané (register, licencia alebo zmluva)",
         "reportReproduced": "Nahlásenie sa potvrdilo podľa zdrojov",
         "passportMatchesSource": "Pas zodpovedá údajom výrobcu",
-        "changeExplained": "Zmena je vysvetlená a dáva zmysel"
+        "changeExplained": "Zmena je vysvetlená a dáva zmysel",
+        "mediaRightsOk": "Predávajúci vlastní práva k fotografii alebo klipu",
+        "contentAllowed": "V materiáli nie je nič, čo je nepovolené na našich stránkach",
+        "adPlacePlausible": "Miesto na mape zodpovedá adrese",
+        "promoTermsClear": "Promo kód a jeho podmienky sú jasné"
       },
       "checklist": {
         "title": "Kontroly",
@@ -864,6 +869,10 @@
         "companyRevision": {
           "approve": "Použiť zmeny na kartu",
           "reject": "Zamietnuť zmeny — ponechať aktuálnu kartu"
+        },
+        "companyAd": {
+          "approve": "Schváliť a zaradiť do karuselu",
+          "reject": "Zamietnuť materiál"
         }
       },
       "reports": {
@@ -889,6 +898,14 @@
       "handledUnits": {
         "h": "h",
         "m": "min"
+      },
+      "ad": {
+        "title": "Materiál",
+        "publishSummary": "prvé zverejnenie",
+        "revisionSummary": "požadované zmeny: {count}",
+        "publishHint": "Presne toto uvidia a budú počuť nakupujúci.",
+        "revisionHint": "Položka je už zverejnená. Nižšie je verzia, o ktorú žiada predávajúci; aktuálna zostane v karuseli, kým ju neschválite.",
+        "noChanges": "Čakajúca verzia sa zhoduje so zverejnenou."
       }
     },
     "bell": {
@@ -4367,7 +4384,12 @@
       "AD_UPDATED": "Položka banneru aktualizovaná",
       "AD_PUBLISHED": "Položka banneru zverejnená",
       "AD_ARCHIVED": "Položka banneru archivovaná",
-      "AD_VOICED": "Položka banneru ozvučená"
+      "AD_VOICED": "Položka banneru ozvučená",
+      "AD_SUBMITTED": "Bannerová položka odoslaná na kontrolu",
+      "AD_WITHDRAWN": "Bannerová položka stiahnutá z kontroly",
+      "AD_CHANGES_SUBMITTED": "Zmeny bannerovej položky odoslané na kontrolu",
+      "AD_APPROVED": "Bannerová položka schválená moderátorom",
+      "AD_REJECTED": "Bannerová položka zamietnutá moderátorom"
     }
   },
   "cabinetTasks": {
@@ -4898,7 +4920,9 @@
     "status": {
       "DRAFT": "Koncept",
       "PUBLISHED": "Aktívne",
-      "ARCHIVED": "Archivované"
+      "ARCHIVED": "Archivované",
+      "PENDING": "U moderátora",
+      "REJECTED": "Neprijaté"
     },
     "errors": {
       "unauth": "Prosím, prihláste sa.",
@@ -4941,7 +4965,15 @@
       "voice_upstream": "Hlasová služba neodpovedala. Skúste znova.",
       "voice_timeout": "Hlasová služba neodpovedala včas. Skúste znova.",
       "voice_empty": "Zatiaľ nie je čo nahovoriť.",
-      "point_or_place_required": "Vyberte jedno zo svojich miest alebo nižšie pridajte vlastnú adresu tohto materiálu"
+      "point_or_place_required": "Vyberte jedno zo svojich miest alebo nižšie pridajte vlastnú adresu tohto materiálu",
+      "on_review": "Položka je u moderátora — pred úpravami ju stiahnite",
+      "not_submittable": "Túto položku teraz nemožno poslať na kontrolu",
+      "not_withdrawable": "Nie je čo stiahnuť",
+      "incomplete": "Pred odoslaním na kontrolu pridajte snímku a nadpis",
+      "moderated_only": "Položky publikuje moderátor — túto môžete poslať na kontrolu",
+      "payload_invalid": "Čakajúce zmeny už neprechádzajú kontrolami. Požiadajte predajcu, aby ich znova odoslal",
+      "reason_too_short": "Uveďte dôvod slovami",
+      "not_pending": "Pri tejto položke nie je o čom rozhodnúť"
     },
     "fieldEventEnd": "Koniec podujatia",
     "eventEndHint": "Pri jednodňovom podujatí nechajte prázdne.",
@@ -4994,7 +5026,18 @@
     "preview": "Náhľad stránky",
     "slideNo": "Snímka {n} z {total}",
     "docsTitle": "Dokumenty k tejto položke",
-    "docsSubtitle": "Povolenia, licencie, vyhlásenia — podklady k tomu, čo hovorí banner. Zobrazia sa na stránke tejto položky, nie na firemnej prezentácii."
+    "docsSubtitle": "Povolenia, licencie, vyhlásenia — podklady k tomu, čo hovorí banner. Zobrazia sa na stránke tejto položky, nie na firemnej prezentácii.",
+    "moderationHint": "Každú položku zverejňuje moderátor. Pošlite ju na kontrolu a po schválení sa zobrazí v karuseli",
+    "frozenOnReview": "Táto položka je u moderátora. Počas kontroly ju nemožno upravovať — ak potrebujete niečo zmeniť, najprv ju stiahnite",
+    "proposalHint": "Táto položka je zverejnená. Vaše zmeny idú moderátorovi a aktuálna verzia zostáva v karuseli, kým nebudú schválené",
+    "draftHint": "Zatiaľ nie je nič zverejnené: uložte položku, skontrolujte ju a pošlite na kontrolu",
+    "saveForReview": "Uložiť a poslať na kontrolu",
+    "submit": "Poslať na kontrolu",
+    "withdraw": "Stiahnuť z kontroly",
+    "withdrawChanges": "Stiahnuť zmeny",
+    "pendingChanges": "Zmeny sú u moderátora. V karuseli sa zatiaľ zobrazuje schválená verzia",
+    "rejectedReason": "Neprijaté: {reason}",
+    "changesRejectedReason": "Vaše zmeny neboli prijaté: {reason}. Živá verzia zostáva v karuseli."
   },
   "adPage": {
     "placeTitle": "Kde sa nachádza",
@@ -5008,8 +5051,13 @@
       "draft": "Koncept — zatiaľ neviditeľné pre nakupujúcich",
       "archived": "Archivované — neviditeľné pre nakupujúcich",
       "hint": "Táto stránka je presne to, čo vidí nakupujúci. Pred publikovaním si vypočujte hlasový komentár a prečítajte si ju celú.",
-      "publish": "Zverejniť",
-      "backToStudio": "Späť do štúdia"
+      "backToStudio": "Späť do štúdia",
+      "onReview": "U moderátora — zatiaľ neviditeľné pre nakupujúcich",
+      "rejected": "Neprijaté — neviditeľné pre nakupujúcich",
+      "changesOnReview": "Zmeny sú u moderátora — zákazníci stále vidia schválenú verziu",
+      "rejectedReason": "Dôvod: {reason}",
+      "submit": "Odoslať na kontrolu",
+      "withdraw": "Stiahnuť z kontroly"
     }
   }
 }

@@ -5,6 +5,7 @@ import { canEditSection, canSeeSection, getViewerCompanyById } from "@/lib/busin
 import { prisma } from "@/lib/prisma";
 import { pointScopeAllows } from "@/lib/company-team/permissions";
 import { MAX_PUBLISHED_ADS } from "@/lib/ads/rules";
+import { adEditMode, adSlotsTaken, readPendingPayload, type AdStatus } from "@/lib/ads/moderation";
 import { AdForm, type AdFormValues } from "@/components/ads/ad-form";
 import { readTop100 } from "@/lib/snapshot";
 import { listSelfListedCards } from "@/lib/coin-card-directory";
@@ -15,9 +16,9 @@ import { CabinetBackButton } from "@/components/cabinet/back-button";
 export const dynamic = "force-dynamic";
 
 /**
- * Баннер карточки: материалы предприятия (слайс BY). Своей модерации у рекламы нет —
- * её объявляет уже залистованное предприятие тем же правом `promos`, которым правит
- * акции, а злоупотребление ловится жалобой и надзором.
+ * Баннер карточки: материалы предприятия (слайс BY), публикует их модератор
+ * (слайс CC). Продавец заводит материал, отправляет на проверку и видит решение
+ * с причиной; место в карусели занимает уже отправленный.
  */
 export default async function CompanyAdsPage({
   params,
@@ -69,40 +70,46 @@ export default async function CompanyAdsPage({
   ]);
 
   const listed = company.status === "APPROVED" && !company.suspendedAt;
-  const live = ads.filter((a) => a.status === "PUBLISHED").length;
+  // Занято — опубликованные **и** ждущие проверки: иначе потолок вскрылся бы в
+  // момент одобрения, отказом по уже проверенному делу (слайс CC).
+  const taken = adSlotsTaken(ads as { status: AdStatus }[]);
   const editing = editId ? ads.find((a) => a.id === editId) ?? null : null;
   const day = (d: Date) => format.dateTime(d, { day: "numeric", month: "short" });
 
-  const initial: AdFormValues | null = editing
+  // Правит человек **свою последнюю** версию: у опубликованного материала это
+  // ждущий слепок, иначе его правка исчезла бы с экрана и он набрал бы её заново.
+  const proposed = editing ? readPendingPayload(editing.pendingPayload) : null;
+  const shown = editing ? { ...editing, ...(proposed ?? {}) } : null;
+  const initial: AdFormValues | null = editing && shown
     ? {
         id: editing.id,
-        kind: editing.kind,
-        title: editing.title,
-        body: editing.body ?? "",
-        language: editing.language,
-        mediaKind: editing.mediaKind,
-        mediaUrl: editing.mediaUrl,
-        posterUrl: editing.posterUrl ?? "",
-        audioUrl: editing.audioUrl ?? "",
-        promoCode: editing.promoCode ?? "",
-        startsAt: editing.startsAt ? editing.startsAt.toISOString().slice(0, 10) : "",
-        endsAt: editing.endsAt ? editing.endsAt.toISOString().slice(0, 10) : "",
-        eventAt: editing.eventAt ? editing.eventAt.toISOString().slice(0, 10) : "",
-        eventEndAt: editing.eventEndAt ? editing.eventEndAt.toISOString().slice(0, 10) : "",
-        audioGenerated: editing.audioGenerated,
-        audioVoice: editing.audioVoice ?? "",
-        audioTextHash: editing.audioTextHash ?? "",
-        placeName: editing.placeName ?? "",
-        placeAddress: editing.placeAddress ?? "",
-        placeLat: editing.placeLat,
-        placeLon: editing.placeLon,
-        placeAcceptedCoinIds: editing.placeAcceptedCoinIds,
-        placeAcceptedCardIds: editing.placeAcceptedCardIds,
-        placePaymentMethods: editing.placePaymentMethods,
-        action: editing.action,
-        productId: editing.productId ?? "",
-        pointId: editing.pointId ?? "",
-        actionUrl: editing.actionUrl ?? "",
+        kind: shown.kind,
+        title: shown.title,
+        body: shown.body ?? "",
+        language: shown.language,
+        mediaKind: shown.mediaKind,
+        mediaUrl: shown.mediaUrl,
+        posterUrl: shown.posterUrl ?? "",
+        audioUrl: shown.audioUrl ?? "",
+        promoCode: shown.promoCode ?? "",
+        startsAt: shown.startsAt ? shown.startsAt.toISOString().slice(0, 10) : "",
+        endsAt: shown.endsAt ? shown.endsAt.toISOString().slice(0, 10) : "",
+        eventAt: shown.eventAt ? shown.eventAt.toISOString().slice(0, 10) : "",
+        eventEndAt: shown.eventEndAt ? shown.eventEndAt.toISOString().slice(0, 10) : "",
+        audioGenerated: shown.audioGenerated,
+        audioVoice: shown.audioVoice ?? "",
+        audioTextHash: shown.audioTextHash ?? "",
+        placeName: shown.placeName ?? "",
+        placeAddress: shown.placeAddress ?? "",
+        placeLat: shown.placeLat,
+        placeLon: shown.placeLon,
+        placeAcceptedCoinIds: shown.placeAcceptedCoinIds,
+        placeAcceptedCardIds: shown.placeAcceptedCardIds,
+        placePaymentMethods: shown.placePaymentMethods,
+        action: shown.action,
+        productId: shown.productId ?? "",
+        pointId: shown.pointId ?? "",
+        actionUrl: shown.actionUrl ?? "",
       }
     : null;
 
@@ -119,11 +126,13 @@ export default async function CompanyAdsPage({
         ? `${a.startsAt ? day(a.startsAt) : "…"} — ${a.endsAt ? day(a.endsAt) : "…"}`
         : null,
     hasAudio: a.audioUrl !== null,
+    hasPending: a.pendingPayload !== null && a.pendingPayload !== undefined,
+    rejectionReason: a.rejectionReason,
     position: liveOrder.indexOf(a.id) >= 0 ? liveOrder.indexOf(a.id) + 1 : undefined,
   }));
 
   return (
-    <main className="mx-auto max-w-[900px] px-4 py-10 md:px-12">
+    <main className="mx-auto max-w-[900px] overflow-x-clip px-4 py-10 md:px-12">
       <div className="mb-4">
         <CabinetBackButton locale={locale} />
       </div>
@@ -145,14 +154,23 @@ export default async function CompanyAdsPage({
       ) : null}
 
       <section className="mb-6 rounded-md border border-hairline p-3 text-sm">
-        <p>{t("liveCount", { count: live, max: MAX_PUBLISHED_ADS })}</p>
-        <p className="mt-1 text-muted">{t("hint")}</p>
+        <p>{t("liveCount", { count: taken, max: MAX_PUBLISHED_ADS })}</p>
+        {/* Публикует модератор, и сказать это надо прямо: продавец ищет кнопку
+            «опубликовать», которой больше нет. */}
+        <p className="mt-1 text-muted">{t("moderationHint")}</p>
       </section>
 
-      {editable ? (
+      {/* Материал на проверке не правится вовсе (слайс CC): модератор смотрит
+          именно это содержание. Вместо формы — слова и один выход: отозвать. */}
+      {editable && editing && adEditMode(editing.status as AdStatus) === "frozen" ? (
+        <p className="mb-8 rounded-md border border-accent/40 bg-accent/10 p-3 text-sm text-accent">
+          {t("frozenOnReview")}
+        </p>
+      ) : editable ? (
         <AdForm
           companyId={company.id}
           initial={initial}
+          editMode={editing ? adEditMode(editing.status as AdStatus) : "direct"}
           defaultLanguage={locale}
           points={points
             .filter((p) => pointScopeAllows(pointScope, p.id))

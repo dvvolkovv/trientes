@@ -137,6 +137,21 @@ select:focus-visible {
   outline-offset: 2px;
 }
 
+/* Телефон: Safari приближает страницу, когда фокус попадает в поле с кеглем
+   меньше 16px, и после этого страница ездит вправо-влево — ровно жалоба владельца
+   на студию рекламы («во время правок поля ездят»). Лечится не вёрсткой одного
+   экрана, а кеглем: на узком экране поля ввода, списки и области текста не мельче
+   16px. Правило по ширине, а не по виду указателя, — тогда его видит и измеряет
+   тест (`tests/e2e/cabinet-no-hscroll.spec.ts`). `!important` обязателен: класс
+   Tailwind (`text-sm`) по весу сильнее селектора элемента. */
+@media (max-width: 767px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
 /* The base map is the light OpenStreetMap raster, so the fixed attribution
    needs its own plate to stay readable over streets and parks. */
 .maplibregl-ctrl-attrib.maplibregl-ctrl {

@@ -602,7 +602,8 @@
         "kyb": "KYB documents",
         "coinRequests": "Coin requests",
         "pointReports": "Point reports",
-        "products": "Product passports"
+        "products": "Product passports",
+        "ads": "Banner ads"
       },
       "unread": "{count} unread",
       "spam": {
@@ -755,7 +756,11 @@
         "brandRightProven": "Right to the brand is proven (registry, licence or contract)",
         "reportReproduced": "The report checks out against the sources",
         "passportMatchesSource": "Passport matches the manufacturer's own data",
-        "changeExplained": "The change is explained and makes sense"
+        "changeExplained": "The change is explained and makes sense",
+        "mediaRightsOk": "The seller holds the rights to the photo or clip",
+        "contentAllowed": "Nothing in the material is off limits for our pages",
+        "adPlacePlausible": "The place on the map matches the address",
+        "promoTermsClear": "The promo code and its terms are clear"
       },
       "checklist": {
         "title": "Checks",
@@ -864,6 +869,10 @@
         "companyRevision": {
           "approve": "Apply the changes to the card",
           "reject": "Reject the changes — keep the current card"
+        },
+        "companyAd": {
+          "approve": "Approve and put it in the carousel",
+          "reject": "Reject the material"
         }
       },
       "reports": {
@@ -889,6 +898,14 @@
       "handledUnits": {
         "h": "h",
         "m": "min"
+      },
+      "ad": {
+        "title": "Material",
+        "publishSummary": "first publication",
+        "revisionSummary": "changes requested: {count}",
+        "publishHint": "This is exactly what shoppers will see and hear.",
+        "revisionHint": "The item is already live. Below is the version the seller is asking for; the current one stays in the carousel until you approve.",
+        "noChanges": "The pending version matches the live one."
       }
     },
     "bell": {
@@ -4367,7 +4384,12 @@
       "AD_UPDATED": "Banner item updated",
       "AD_PUBLISHED": "Banner item published",
       "AD_ARCHIVED": "Banner item archived",
-      "AD_VOICED": "Banner item voiced"
+      "AD_VOICED": "Banner item voiced",
+      "AD_SUBMITTED": "Banner item sent for review",
+      "AD_WITHDRAWN": "Banner item withdrawn from review",
+      "AD_CHANGES_SUBMITTED": "Banner item changes sent for review",
+      "AD_APPROVED": "Banner item approved by a moderator",
+      "AD_REJECTED": "Banner item rejected by a moderator"
     }
   },
   "cabinetTasks": {
@@ -4844,7 +4866,7 @@
     "title": "Card banner",
     "subtitle": "What visitors see at the top of your card: a clean frame, with details below it.",
     "notListed": "The banner appears once the business is listed.",
-    "liveCount": "Live in the carousel: {count} of {max}",
+    "liveCount": "Carousel slots used: {count} of {max} (live and awaiting review)",
     "hint": "Tapping the frame opens the text, the promo code and the action. The clip and the voice-over are optional.",
     "newTitle": "New item",
     "editTitle": "Edit item",
@@ -4898,7 +4920,9 @@
     "status": {
       "DRAFT": "Draft",
       "PUBLISHED": "Live",
-      "ARCHIVED": "Archived"
+      "ARCHIVED": "Archived",
+      "PENDING": "With a moderator",
+      "REJECTED": "Not accepted"
     },
     "errors": {
       "unauth": "Please sign in.",
@@ -4925,7 +4949,7 @@
       "url_required": "Add the address.",
       "url_invalid": "The address must start with https://",
       "too_many": "Too many items — archive the old ones.",
-      "too_many_published": "The carousel already holds 5 items.",
+      "too_many_published": "All 8 carousel slots are taken, counting items awaiting review. Archive one first.",
       "daily_limit": "Too many edits today — try again tomorrow.",
       "at_edge": "Already at the edge.",
       "upload_failed": "The file did not upload. Check the format and the size.",
@@ -4941,7 +4965,15 @@
       "voice_upstream": "The voice service did not answer. Try again.",
       "voice_timeout": "The voice service took too long. Try again.",
       "voice_empty": "There is nothing to read aloud yet.",
-      "point_or_place_required": "Pick one of your points, or add this material's own address below."
+      "point_or_place_required": "Pick one of your points, or add this material's own address below.",
+      "on_review": "The item is with a moderator — withdraw it before editing.",
+      "not_submittable": "This item cannot be sent for review right now.",
+      "not_withdrawable": "There is nothing to withdraw.",
+      "incomplete": "Add a frame and a headline before sending it for review.",
+      "moderated_only": "A moderator publishes items — you can send this one for review.",
+      "payload_invalid": "The pending changes no longer pass the checks. Ask the seller to re-submit them.",
+      "reason_too_short": "Write the reason in words.",
+      "not_pending": "There is nothing to decide on this item."
     },
     "fieldEventEnd": "Event ends",
     "eventEndHint": "Leave empty for a one-day event.",
@@ -4994,7 +5026,18 @@
     "preview": "Preview page",
     "slideNo": "Slide {n} of {total}",
     "docsTitle": "Documents for this item",
-    "docsSubtitle": "Permits, licences, declarations — the papers behind what the banner says. They show on this item's page, not on the company showcase."
+    "docsSubtitle": "Permits, licences, declarations — the papers behind what the banner says. They show on this item's page, not on the company showcase.",
+    "moderationHint": "A moderator releases each item. Send it for review, and once it is approved it appears in the carousel.",
+    "frozenOnReview": "This item is with a moderator. It cannot be edited while it is being reviewed — withdraw it first if you need to change something.",
+    "proposalHint": "This item is live. Your changes go to a moderator, and the current version stays in the carousel until they are approved.",
+    "draftHint": "Nothing is published yet: save the item, look it over, and send it for review.",
+    "saveForReview": "Save and send for review",
+    "submit": "Send for review",
+    "withdraw": "Withdraw from review",
+    "withdrawChanges": "Withdraw the changes",
+    "pendingChanges": "Changes are with a moderator. The carousel still shows the approved version.",
+    "rejectedReason": "Not accepted: {reason}",
+    "changesRejectedReason": "Your changes were not accepted: {reason}. The live version stays in the carousel."
   },
   "adPage": {
     "placeTitle": "Where it is",
@@ -5007,9 +5050,14 @@
     "preview": {
       "draft": "Draft — not visible to shoppers yet",
       "archived": "Archived — not visible to shoppers",
-      "hint": "This page is exactly what a shopper sees. Listen to the voice-over and read it through before you publish.",
-      "publish": "Publish",
-      "backToStudio": "Back to the studio"
+      "hint": "This page is exactly what a shopper sees. Listen to the voice-over and read it through before you send it for review.",
+      "backToStudio": "Back to the studio",
+      "onReview": "With a moderator — not visible to shoppers yet",
+      "rejected": "Not accepted — not visible to shoppers",
+      "changesOnReview": "Changes are with a moderator — shoppers still see the approved version",
+      "rejectedReason": "Reason: {reason}",
+      "submit": "Send for review",
+      "withdraw": "Withdraw from review"
     }
   }
 }

@@ -14,6 +14,9 @@ import { CaseChecklist, type ChecklistItem } from "@/components/admin/case-check
 import { CaseDocuments, type CaseDocumentItem } from "@/components/admin/case-documents";
 import { CaseDecision } from "@/components/admin/case-decision";
 import { CaseReports } from "@/components/admin/case-reports";
+import { CaseAd } from "@/components/admin/case-ad";
+import { buildCompanyCard, type CardAd } from "@/lib/company-card/view";
+import { adDiff, readPendingPayload } from "@/lib/ads/moderation";
 import { CaseThread } from "@/components/cases/case-thread";
 import { CaseComposer } from "@/components/cases/case-composer";
 import { CaseReadMarker } from "@/components/cases/case-read-marker";
@@ -235,6 +238,59 @@ export default async function AdminCasePage({
     };
   });
 
+  // Материал рекламы (слайс CC). Баннер собирается **той же** сборкой, что витрина
+  // (`buildCompanyCard` с предпросмотром), а предложенные правки накладываются
+  // сверху: проверяющий обязан смотреть тот ролик и слушать ту запись, которые
+  // просят выпустить, а не прежние.
+  let adView: { ad: CardAd; diff: ReturnType<typeof adDiff>; revision: boolean } | null = null;
+  if (c.subjectType === "COMPANY_AD") {
+    const row = await prisma.companyAd.findUnique({
+      where: { id: c.subjectId },
+      select: {
+        id: true, companyId: true, kind: true, title: true, body: true, language: true,
+        mediaKind: true, mediaUrl: true, posterUrl: true, audioUrl: true, promoCode: true,
+        startsAt: true, endsAt: true, eventAt: true, eventEndAt: true,
+        placeName: true, placeAddress: true, placeLat: true, placeLon: true,
+        placeAcceptedCoinIds: true, placeAcceptedCardIds: true, placePaymentMethods: true,
+        action: true, productId: true, pointId: true, actionUrl: true,
+        pendingPayload: true,
+      },
+    });
+    if (row) {
+      const card = await buildCompanyCard({
+        companyId: row.companyId,
+        locale,
+        previewAdId: row.id,
+      });
+      const live = card?.ads.find((a) => a.id === row.id) ?? null;
+      const proposed = readPendingPayload(row.pendingPayload);
+      if (live) {
+        const shown: CardAd = proposed
+          ? {
+              ...live,
+              kind: proposed.kind,
+              title: proposed.title,
+              body: proposed.body,
+              language: proposed.language,
+              mediaKind: proposed.mediaKind,
+              mediaUrl: proposed.mediaUrl,
+              posterUrl: proposed.posterUrl,
+              audioUrl: proposed.audioUrl,
+              promoCode: proposed.promoCode,
+              endsAt: proposed.endsAt ? proposed.endsAt.toISOString() : null,
+              eventAt: proposed.eventAt ? proposed.eventAt.toISOString() : null,
+              eventEndAt: proposed.eventEndAt ? proposed.eventEndAt.toISOString() : null,
+            }
+          : live;
+        adView = {
+          ad: shown,
+          diff: proposed ? adDiff(row, proposed as unknown as Record<string, unknown>) : [],
+          revision: proposed !== null,
+        };
+      }
+    }
+  }
+
   // Номер раздела считается, а не вписан руками: раздел «Жалобы» появляется
   // только у дел по жалобам, и вписанные номера разъехались бы.
   // У дела по жалобе «одобрить» значит «подтвердить жалобу»: подписи кнопок
@@ -255,6 +311,14 @@ export default async function AdminCasePage({
               approve: t("case.decision.productClaim.approve"),
               reject: t("case.decision.productClaim.reject"),
             }
+          : c.subjectType === "COMPANY_AD"
+            ? {
+                // «Одобрить» значит «выпустить материал в карусель», а у ждущей
+                // правки — «применить правку»; безымянное «одобрить» читалось бы
+                // как «одобрить предприятие».
+                approve: t("case.decision.companyAd.approve"),
+                reject: t("case.decision.companyAd.reject"),
+              }
           : c.subjectType === "COMPANY_REVISION"
             ? {
                 // «Одобрить» тут значит «применить изменения к карточке», а не
@@ -376,6 +440,17 @@ export default async function AdminCasePage({
             <div className="text-[11px] text-muted">{c.applicant?.email ?? "—"}</div>
           </div>
         </CaseSection>
+
+        {adView ? (
+          <CaseSection
+            n={nextNo()}
+            title={t("case.ad.title")}
+            summary={adView.revision ? t("case.ad.revisionSummary", { count: adView.diff.length }) : t("case.ad.publishSummary")}
+            open
+          >
+            <CaseAd ad={adView.ad} diff={adView.diff} revision={adView.revision} />
+          </CaseSection>
+        ) : null}
 
         {(c.subjectType === "POINT_REPORT" || c.subjectType === "PRODUCT_REPORT") && (
           <CaseSection

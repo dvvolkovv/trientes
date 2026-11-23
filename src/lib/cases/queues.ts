@@ -10,7 +10,8 @@ export type QueueKey =
   | "kyb"
   | "coinRequests"
   | "pointReports"
-  | "products";
+  | "products"
+  | "ads";
 
 export type QueueDef = {
   key: QueueKey;
@@ -33,6 +34,10 @@ export const QUEUES: QueueDef[] = [
   // Одна очередь на два типа дел: заявка производителя и жалоба на паспорт — про один
   // объект, и разводить их по двум плиткам значило бы делить одну работу.
   { key: "products", subjectTypes: ["PRODUCT_CLAIM", "PRODUCT_REPORT"], icon: "📦" },
+  // Реклама — своя плитка, а не строка внутри `companies` (слайс CC): посмотреть
+  // ролик и послушать озвучку это отдельная работа, и её можно поручить человеку,
+  // которому незачем видеть KYB-документы и реквизиты (мотив AS).
+  { key: "ads", subjectTypes: ["COMPANY_AD"], icon: "📣" },
 ];
 
 export function queueOfSubject(subjectType: CaseSubjectType): QueueDef | null {

@@ -602,7 +602,8 @@
         "kyb": "KYB-Dokumente",
         "coinRequests": "Coin-Anfragen",
         "pointReports": "Punktmeldungen",
-        "products": "Produktpässe"
+        "products": "Produktpässe",
+        "ads": "Banneranzeigen"
       },
       "unread": "{count} ungelesen",
       "spam": {
@@ -755,7 +756,11 @@
         "brandRightProven": "Recht an der Marke ist nachgewiesen (Register, Lizenz oder Vertrag)",
         "reportReproduced": "Die Meldung ist anhand der Quellen verifiziert",
         "passportMatchesSource": "Pass stimmt mit den Herstellerangaben überein",
-        "changeExplained": "Die Änderung ist erläutert und sinnvoll"
+        "changeExplained": "Die Änderung ist erläutert und sinnvoll",
+        "mediaRightsOk": "Der Verkäufer besitzt die Rechte am Foto oder Clip",
+        "contentAllowed": "Im Material ist nichts für unsere Seiten unzulässig",
+        "adPlacePlausible": "Der Ort auf der Karte entspricht der Adresse",
+        "promoTermsClear": "Der Promo-Code und seine Bedingungen sind klar"
       },
       "checklist": {
         "title": "Prüfungen",
@@ -864,6 +869,10 @@
         "companyRevision": {
           "approve": "Änderungen auf die Karte übernehmen",
           "reject": "Änderungen verwerfen — aktuelle Karte beibehalten"
+        },
+        "companyAd": {
+          "approve": "Genehmigen und ins Karussell aufnehmen",
+          "reject": "Material ablehnen"
         }
       },
       "reports": {
@@ -889,6 +898,14 @@
       "handledUnits": {
         "h": "h",
         "m": "Min"
+      },
+      "ad": {
+        "title": "Material",
+        "publishSummary": "Erstveröffentlichung",
+        "revisionSummary": "Änderungen angefordert: {count}",
+        "publishHint": "Genau so werden es Käufer sehen und hören.",
+        "revisionHint": "Der Artikel ist bereits live. Unten steht die vom Verkäufer gewünschte Version; die aktuelle bleibt im Karussell, bis Sie genehmigen.",
+        "noChanges": "Die ausstehende Version entspricht der Live-Version."
       }
     },
     "bell": {
@@ -4367,7 +4384,12 @@
       "AD_UPDATED": "Banner-Element aktualisiert",
       "AD_PUBLISHED": "Banner-Element veröffentlicht",
       "AD_ARCHIVED": "Banner-Element archiviert",
-      "AD_VOICED": "Banner-Element vertont"
+      "AD_VOICED": "Banner-Element vertont",
+      "AD_SUBMITTED": "Banner-Element zur Prüfung eingereicht",
+      "AD_WITHDRAWN": "Banner-Element von der Prüfung zurückgezogen",
+      "AD_CHANGES_SUBMITTED": "Änderungen am Banner-Element zur Prüfung eingereicht",
+      "AD_APPROVED": "Banner-Element von einem Moderator genehmigt",
+      "AD_REJECTED": "Banner-Element vom Moderator abgelehnt"
     }
   },
   "cabinetTasks": {
@@ -4898,7 +4920,9 @@
     "status": {
       "DRAFT": "Entwurf",
       "PUBLISHED": "Veröffentlicht",
-      "ARCHIVED": "Archiviert"
+      "ARCHIVED": "Archiviert",
+      "PENDING": "Bei einem Moderator",
+      "REJECTED": "Nicht angenommen"
     },
     "errors": {
       "unauth": "Bitte melden Sie sich an.",
@@ -4941,7 +4965,15 @@
       "voice_upstream": "Der Sprachdienst hat nicht geantwortet. Versuche es erneut.",
       "voice_timeout": "Der Sprachdienst hat zu lange gebraucht. Versuche es erneut.",
       "voice_empty": "Es gibt noch nichts zum Vorlesen.",
-      "point_or_place_required": "Wählen Sie einen Ihrer Standorte aus oder fügen Sie unten die eigene Adresse dieses Materials hinzu."
+      "point_or_place_required": "Wählen Sie einen Ihrer Standorte aus oder fügen Sie unten die eigene Adresse dieses Materials hinzu.",
+      "on_review": "Der Eintrag ist bei einem Moderator — ziehe ihn vor dem Bearbeiten zurück.",
+      "not_submittable": "Dieser Eintrag kann derzeit nicht zur Prüfung gesendet werden.",
+      "not_withdrawable": "Es gibt nichts zurückzuziehen.",
+      "incomplete": "Füge vor dem Senden zur Prüfung einen Rahmen und eine Überschrift hinzu.",
+      "moderated_only": "Ein Moderator veröffentlicht Einträge — du kannst diesen zur Prüfung senden.",
+      "payload_invalid": "Die ausstehenden Änderungen bestehen die Prüfungen nicht mehr. Bitte den Verkäufer, sie erneut einzureichen.",
+      "reason_too_short": "Schreibe den Grund in Worten.",
+      "not_pending": "Zu diesem Eintrag gibt es nichts zu entscheiden."
     },
     "fieldEventEnd": "Ende der Veranstaltung",
     "eventEndHint": "Für eine eintägige Veranstaltung leer lassen.",
@@ -4994,7 +5026,18 @@
     "preview": "Vorschauseite",
     "slideNo": "Folie {n} von {total}",
     "docsTitle": "Dokumente zu diesem Artikel",
-    "docsSubtitle": "Genehmigungen, Lizenzen, Erklärungen — die Unterlagen hinter dem, was das Banner sagt. Sie erscheinen auf der Seite dieses Artikels, nicht in der Unternehmenspräsentation."
+    "docsSubtitle": "Genehmigungen, Lizenzen, Erklärungen — die Unterlagen hinter dem, was das Banner sagt. Sie erscheinen auf der Seite dieses Artikels, nicht in der Unternehmenspräsentation.",
+    "moderationHint": "Ein Moderator gibt jeden Eintrag frei. Sende ihn zur Prüfung, und sobald er genehmigt ist, erscheint er im Karussell.",
+    "frozenOnReview": "Dieser Eintrag ist bei einem Moderator. Er kann während der Prüfung nicht bearbeitet werden — ziehe ihn zuerst zurück, wenn du etwas ändern musst.",
+    "proposalHint": "Dieser Eintrag ist live. Deine Änderungen gehen an einen Moderator, und die aktuelle Version bleibt im Karussell, bis sie genehmigt sind.",
+    "draftHint": "Noch ist nichts veröffentlicht: Speichere den Eintrag, sieh ihn dir an und sende ihn zur Prüfung.",
+    "saveForReview": "Speichern und zur Prüfung senden",
+    "submit": "Zur Prüfung senden",
+    "withdraw": "Aus der Prüfung zurückziehen",
+    "withdrawChanges": "Änderungen zurückziehen",
+    "pendingChanges": "Änderungen sind bei einem Moderator. Das Karussell zeigt weiterhin die genehmigte Version.",
+    "rejectedReason": "Nicht angenommen: {reason}",
+    "changesRejectedReason": "Ihre Änderungen wurden nicht akzeptiert: {reason}. Die Live-Version bleibt im Karussell."
   },
   "adPage": {
     "placeTitle": "Standort",
@@ -5008,8 +5051,13 @@
       "draft": "Entwurf — für Käufer noch nicht sichtbar",
       "archived": "Archiviert — für Käufer nicht sichtbar",
       "hint": "Diese Seite entspricht genau dem, was ein Käufer sieht. Hören Sie sich das Voice-over an und lesen Sie alles durch, bevor Sie veröffentlichen.",
-      "publish": "Veröffentlichen",
-      "backToStudio": "Zurück zum Studio"
+      "backToStudio": "Zurück zum Studio",
+      "onReview": "Bei einem Moderator — für Käufer noch nicht sichtbar",
+      "rejected": "Nicht angenommen — für Käufer nicht sichtbar",
+      "changesOnReview": "Änderungen sind bei einem Moderator — Käufer sehen weiterhin die genehmigte Version",
+      "rejectedReason": "Grund: {reason}",
+      "submit": "Zur Prüfung einreichen",
+      "withdraw": "Aus der Prüfung zurückziehen"
     }
   }
 }

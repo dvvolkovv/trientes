@@ -602,7 +602,8 @@
         "kyb": "KYB belgeleri",
         "coinRequests": "Coin talepleri",
         "pointReports": "Nokta raporları",
-        "products": "Ürün pasaportları"
+        "products": "Ürün pasaportları",
+        "ads": "Banner reklamları"
       },
       "unread": "{count} okunmamış",
       "spam": {
@@ -755,7 +756,11 @@
         "brandRightProven": "Marka hakkı kanıtlandı (sicil, lisans veya sözleşme)",
         "reportReproduced": "Rapor kaynaklara karşı doğrulandı",
         "passportMatchesSource": "Pasaport üreticinin kendi verileriyle eşleşiyor",
-        "changeExplained": "Değişiklik açıklanmış ve mantıklı"
+        "changeExplained": "Değişiklik açıklanmış ve mantıklı",
+        "mediaRightsOk": "Satıcı fotoğrafın veya klibin haklarına sahiptir",
+        "contentAllowed": "Materyalde sayfalarımız için yasak olan hiçbir şey yok",
+        "adPlacePlausible": "Haritadaki yer adresle eşleşiyor",
+        "promoTermsClear": "Promosyon kodu ve koşulları net"
       },
       "checklist": {
         "title": "Kontroller",
@@ -864,6 +869,10 @@
         "companyRevision": {
           "approve": "Değişiklikleri karta uygula",
           "reject": "Değişiklikleri reddet — mevcut kartı koru"
+        },
+        "companyAd": {
+          "approve": "Onayla ve karusele ekle",
+          "reject": "Materyali reddet"
         }
       },
       "reports": {
@@ -889,6 +898,14 @@
       "handledUnits": {
         "h": "sa",
         "m": "dk"
+      },
+      "ad": {
+        "title": "Materyal",
+        "publishSummary": "ilk yayın",
+        "revisionSummary": "istenen değişiklikler: {count}",
+        "publishHint": "Alışveriş yapanların göreceği ve duyacağı şey tam olarak budur.",
+        "revisionHint": "Öğe zaten yayında. Aşağıda satıcının talep ettiği sürüm var; siz onaylayana kadar mevcut olan karuselde kalır.",
+        "noChanges": "Bekleyen sürüm, yayındakiyle aynıdır."
       }
     },
     "bell": {
@@ -4367,7 +4384,12 @@
       "AD_UPDATED": "Banner öğesi güncellendi",
       "AD_PUBLISHED": "Banner öğesi yayımlandı",
       "AD_ARCHIVED": "Banner öğesi arşivlendi",
-      "AD_VOICED": "Banner öğesi seslendirildi"
+      "AD_VOICED": "Banner öğesi seslendirildi",
+      "AD_SUBMITTED": "Banner öğesi incelemeye gönderildi",
+      "AD_WITHDRAWN": "Banner öğesi incelemeden geri çekildi",
+      "AD_CHANGES_SUBMITTED": "Banner öğesi değişiklikleri incelemeye gönderildi",
+      "AD_APPROVED": "Banner öğesi bir moderatör tarafından onaylandı",
+      "AD_REJECTED": "Banner öğesi bir moderatör tarafından reddedildi"
     }
   },
   "cabinetTasks": {
@@ -4898,7 +4920,9 @@
     "status": {
       "DRAFT": "Taslak",
       "PUBLISHED": "Yayında",
-      "ARCHIVED": "Arşivde"
+      "ARCHIVED": "Arşivde",
+      "PENDING": "Moderatörde",
+      "REJECTED": "Kabul edilmedi"
     },
     "errors": {
       "unauth": "Lütfen oturum açın.",
@@ -4941,7 +4965,15 @@
       "voice_upstream": "Ses hizmeti yanıt vermedi. Tekrar deneyin.",
       "voice_timeout": "Ses hizmeti zaman aşımına uğradı. Tekrar deneyin.",
       "voice_empty": "Henüz sesli okunacak bir şey yok.",
-      "point_or_place_required": "Noktalarınızdan birini seçin veya aşağıya bu materyalin kendi adresini ekleyin."
+      "point_or_place_required": "Noktalarınızdan birini seçin veya aşağıya bu materyalin kendi adresini ekleyin.",
+      "on_review": "Öğe moderatörde — düzenlemeden önce geri çekin",
+      "not_submittable": "Bu öğe şu anda incelemeye gönderilemez",
+      "not_withdrawable": "Geri çekilecek bir şey yok",
+      "incomplete": "İncelemeye göndermeden önce bir çerçeve ve bir başlık ekleyin",
+      "moderated_only": "Öğeleri bir moderatör yayımlar — bunu incelemeye gönderebilirsiniz",
+      "payload_invalid": "Bekleyen değişiklikler artık denetimlerden geçmiyor. Satıcıdan bunları yeniden göndermesini isteyin",
+      "reason_too_short": "Nedeni sözcüklerle yazın",
+      "not_pending": "Bu öğeyle ilgili karar verilecek bir şey yok"
     },
     "fieldEventEnd": "Etkinlik bitişi",
     "eventEndHint": "Tek günlük etkinlik için boş bırakın.",
@@ -4994,7 +5026,18 @@
     "preview": "Önizleme sayfası",
     "slideNo": "Toplam {total} slayttan {n}. slayt",
     "docsTitle": "Bu öğe için belgeler",
-    "docsSubtitle": "İzinler, lisanslar, beyanlar — bannerda söylenenlerin arkasındaki belgeler. Bunlar şirket vitrini yerine bu öğenin sayfasında görünür."
+    "docsSubtitle": "İzinler, lisanslar, beyanlar — bannerda söylenenlerin arkasındaki belgeler. Bunlar şirket vitrini yerine bu öğenin sayfasında görünür.",
+    "moderationHint": "Her öğeyi bir moderatör yayımlar. İncelemeye gönderin; onaylandığında karuselde görünür",
+    "frozenOnReview": "Bu öğe moderatörde. İnceleme altındayken düzenlenemez — bir şeyi değiştirmeniz gerekiyorsa önce geri çekin",
+    "proposalHint": "Bu öğe yayında. Değişiklikleriniz bir moderatöre gider ve onaylanana kadar geçerli sürüm karuselde kalır",
+    "draftHint": "Henüz hiçbir şey yayımlanmadı: öğeyi kaydedin, gözden geçirin ve incelemeye gönderin",
+    "saveForReview": "Kaydet ve incelemeye gönder",
+    "submit": "İncelemeye gönder",
+    "withdraw": "İncelemeden geri çek",
+    "withdrawChanges": "Değişiklikleri geri çek",
+    "pendingChanges": "Değişiklikler moderatörde. Karusel hâlâ onaylı sürümü gösteriyor.",
+    "rejectedReason": "Kabul edilmedi: {reason}",
+    "changesRejectedReason": "Değişiklikleriniz kabul edilmedi: {reason}. Canlı sürüm karuselde kalır."
   },
   "adPage": {
     "placeTitle": "Nerede",
@@ -5008,8 +5051,13 @@
       "draft": "Taslak — henüz alıcılara görünmüyor",
       "archived": "Arşivlendi — alıcılara görünmez",
       "hint": "Bu sayfa, bir alıcının gördüğüyle birebir aynıdır. Yayınlamadan önce seslendirmeyi dinleyin ve baştan sona okuyun.",
-      "publish": "Yayınla",
-      "backToStudio": "Stüdyoya geri dön"
+      "backToStudio": "Stüdyoya geri dön",
+      "onReview": "Moderatörde — henüz alışveriş yapanlara görünmüyor",
+      "rejected": "Kabul edilmedi — alışveriş yapanlara görünmüyor",
+      "changesOnReview": "Değişiklikler moderatörde — alışveriş yapanlar hâlâ onaylı sürümü görüyor",
+      "rejectedReason": "Gerekçe: {reason}",
+      "submit": "İncelemeye gönder",
+      "withdraw": "İncelemeden geri çek"
     }
   }
 }
