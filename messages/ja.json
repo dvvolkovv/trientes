@@ -1925,7 +1925,8 @@
     "coinSearchEmpty": "見つかりませんでした。ティッカーで試してください",
     "companyCoinsHint": "独自の選択がない拠点はこれらのコインを継承します。セットの変更はモデレーターに送られます",
     "coinsInherited": "何も選択されていません — この拠点は会社のセットを表示します: {coins}",
-    "paymentMethods": "その他の支払い方法"
+    "paymentMethods": "その他の支払い方法",
+    "bannerPreview": "このバナーは訪問者にこのように表示されます。タップするとアイテムが開きます。"
   },
   "cabinet": {
     "kicker": "セクション · キャビネット",
@@ -4365,7 +4366,8 @@
       "AD_CREATED": "バナー項目を作成しました",
       "AD_UPDATED": "バナー項目を更新しました",
       "AD_PUBLISHED": "バナー項目を公開しました",
-      "AD_ARCHIVED": "バナー項目をアーカイブしました"
+      "AD_ARCHIVED": "バナー項目をアーカイブしました",
+      "AD_VOICED": "バナー項目を告知"
     }
   },
   "cabinetTasks": {
@@ -4833,7 +4835,9 @@
         "PRODUCT": "商品を開く",
         "WEBSITE": "ウェブサイトを開く",
         "POINT": "地図で表示"
-      }
+      },
+      "openPage": "この項目を開く",
+      "placeHere": "場所"
     }
   },
   "cabinetAds": {
@@ -4867,7 +4871,7 @@
     "audioHint": "自分の録音が優先されます。録音がない場合はブラウザがテキストを読み上げます。",
     "fieldFrom": "表示開始",
     "fieldTo": "表示終了",
-    "fieldEvent": "イベント日",
+    "fieldEvent": "イベント開始",
     "fieldPromoCode": "プロモコード",
     "fieldAction": "アクション",
     "action": {
@@ -4926,7 +4930,58 @@
       "at_edge": "すでに端にあります。",
       "upload_failed": "ファイルをアップロードできませんでした。形式とサイズを確認してください。",
       "too_large": "ファイルが大きすぎます。",
-      "bad_type": "このファイル形式は受け付けていません."
-    }
+      "bad_type": "このファイル形式は受け付けていません.",
+      "event_backwards": "開始前にイベントを終了することはできません。",
+      "place_coords_required": "地図上にピンを置いてください。名前だけでは場所になりません。",
+      "place_coords_invalid": "そのピンは地図上にありません—もう一度その場所をタップしてください。",
+      "place_too_long": "場所名または住所が長すぎます。",
+      "voice_daily_limit": "本日の音声読み上げの上限に達しました—明日もう一度お試しください。",
+      "voice_not_configured": "このサーバーでは音声読み上げが有効になっていません。",
+      "voice_too_long": "読み上げるにはテキストが長すぎます—短くしてください。",
+      "voice_upstream": "音声サービスが応答しませんでした。もう一度お試しください。",
+      "voice_timeout": "音声サービスに時間がかかりすぎました。もう一度お試しください。",
+      "voice_empty": "読み上げるものがまだありません。"
+    },
+    "fieldEventEnd": "イベント終了",
+    "eventEndHint": "1日限定のイベントは空欄のままにしてください。",
+    "placeTitle": "場所",
+    "placeAdd": "場所を追加",
+    "placeHint": "あなたが宣伝する対象（オフィス、会場、物件）向けです。これは暗号資産の受け入れ拠点ではなく、ナビゲーターの地図には表示されません。",
+    "placeRemove": "場所を削除",
+    "placeName": "場所名",
+    "placeAddress": "住所",
+    "placeFind": "地図で探す",
+    "placeNoPin": "ピンがまだありません — 地図をタップしてください",
+    "placeNotFound": "その住所では見つかりませんでした — 地図をタップしてピンを置いてください。",
+    "placeMapHint": "地図をタップしてピンを置き、ドラッグして調整します。",
+    "placeAccepts": "この場所で受け入れ可能",
+    "placeCoinSearch": "コインを検索",
+    "placeCoinEmpty": "見つかりませんでした",
+    "payment": {
+      "cash": "現金",
+      "card": "銀行カード",
+      "transfer": "銀行振込"
+    },
+    "voiceVoice": "音声",
+    "voiceStyle": "話し方",
+    "voiceStyles": {
+      "calm": "落ち着いて明瞭",
+      "bright": "明るく温かい",
+      "solemn": "荘重でゆったり"
+    },
+    "voiceMake": "読み上げを作成",
+    "voiceRedo": "録り直す",
+    "voiceOurs": "Trientesの音声",
+    "voiceYours": "自分の録音",
+    "voiceStale": "以前のテキストからの録音",
+    "voiceHint": "テキストを生の音声で読み上げ、ファイルを保存します。ご自身の録音が優先され、どちらもない場合はブラウザーが読み上げます。"
+  },
+  "adPage": {
+    "placeTitle": "場所",
+    "placeAccepts": "ここで受け入れ可能",
+    "paymentOutside": "支払いは販売者と直接取り決めます — Trientesは支払いを処理しません。",
+    "moreTitle": "このビジネスの他の掲載",
+    "eventRange": "{from} — {to}",
+    "companyProfile": "ビジネスプロフィール"
   }
 }

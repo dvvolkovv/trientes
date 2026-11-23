@@ -4,15 +4,21 @@ import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { createAd, updateAd } from "@/app/actions/company-ads";
-import { AD_BODY_MAX, AD_KINDS, AD_ACTIONS, type AdInput } from "@/lib/ads/rules";
+import { AD_BODY_MAX, AD_KINDS, AD_ACTIONS, adTextHash, type AdInput } from "@/lib/ads/rules";
 import { SUPPORTED_LOCALES } from "@/lib/locales";
+import { AdPlaceField } from "@/components/ads/ad-place-field";
+import { AdVoiceField } from "@/components/ads/ad-voice-field";
+import type { PickerCoin } from "@/components/business/coin-picker";
 
 export type AdFormValues = AdInput & { id?: string };
 
 const EMPTY: AdFormValues = {
   kind: "PROMO", title: "", body: "", language: "en",
   mediaKind: "IMAGE", mediaUrl: "", posterUrl: "", audioUrl: "",
-  promoCode: "", startsAt: "", endsAt: "", eventAt: "",
+  audioGenerated: false, audioVoice: "", audioTextHash: "",
+  promoCode: "", startsAt: "", endsAt: "", eventAt: "", eventEndAt: "",
+  placeName: "", placeAddress: "", placeLat: null, placeLon: null,
+  placeAcceptedCoinIds: [], placeAcceptedCardIds: [], placePaymentMethods: [],
   action: "NONE", productId: "", pointId: "", actionUrl: "",
 };
 
@@ -29,12 +35,17 @@ export function AdForm({
   points,
   products,
   defaultLanguage,
+  coins,
+  cards,
 }: {
   companyId: string;
   initial?: AdFormValues | null;
   points: { id: string; label: string }[];
   products: { id: string; label: string }[];
   defaultLanguage: string;
+  /** Монеты для места материала (BZ): тот же каталог, что в форме точки. */
+  coins: PickerCoin[];
+  cards: PickerCoin[];
 }) {
   const t = useTranslations("cabinetAds");
   const router = useRouter();
@@ -45,7 +56,7 @@ export function AdForm({
   const imageRef = useRef<HTMLInputElement | null>(null);
   const videoRef = useRef<HTMLInputElement | null>(null);
   const posterRef = useRef<HTMLInputElement | null>(null);
-  const audioRef = useRef<HTMLInputElement | null>(null);
+
 
   const set = (patch: Partial<AdFormValues>) => setV((prev) => ({ ...prev, ...patch }));
 
@@ -162,7 +173,7 @@ export function AdForm({
           <p className="mt-1 text-[11px] text-muted">{t("noLinks")}</p>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-3">
           <div>
             <label className={label} htmlFor="ad-language">{t("fieldLanguage")}</label>
             <select id="ad-language" className={field} value={v.language} onChange={(e) => set({ language: e.target.value })}>
@@ -170,25 +181,28 @@ export function AdForm({
             </select>
             <p className="mt-1 text-[11px] text-muted">{t("languageHint")}</p>
           </div>
-          <div>
-            <span className={label}>{t("fieldAudio")}</span>
-            <div className="flex items-center gap-2">
-              <button type="button" className={button} onClick={() => audioRef.current?.click()} disabled={uploading !== null}>
-                {uploading === "audio" ? "…" : v.audioUrl ? t("audioReplace") : t("uploadAudio")}
-              </button>
-              {v.audioUrl ? (
-                <button type="button" className="text-[12px] text-muted underline" onClick={() => set({ audioUrl: "" })}>
-                  {t("audioRemove")}
-                </button>
-              ) : null}
-            </div>
-            <input ref={audioRef} type="file" accept="audio/mpeg,audio/mp4,audio/ogg,audio/x-m4a" hidden
-              onChange={(e) => { const f = e.target.files?.[0]; if (f) void upload("audio", f, "audio"); e.target.value = ""; }} />
-            <p className="mt-1 text-[11px] text-muted">{t("audioHint")}</p>
-          </div>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-3">
+        {/* Голос материала: наша запись, своя запись или синтез браузера (слайс BZ). */}
+        <AdVoiceField
+          companyId={companyId}
+          title={v.title}
+          body={v.body ?? ""}
+          language={v.language}
+          audioUrl={v.audioUrl ?? ""}
+          audioGenerated={Boolean(v.audioGenerated)}
+          stale={
+            Boolean(v.audioUrl) && Boolean(v.audioGenerated)
+            && (v.audioTextHash ?? "") !== adTextHash(v.title, v.body ?? "")
+          }
+          onGenerated={({ url, voice, textHash }) =>
+            set({ audioUrl: url, audioGenerated: true, audioVoice: voice, audioTextHash: textHash })
+          }
+          onUploaded={(url) => set({ audioUrl: url, audioGenerated: false, audioVoice: "", audioTextHash: "" })}
+          onRemove={() => set({ audioUrl: "", audioGenerated: false, audioVoice: "", audioTextHash: "" })}
+        />
+
+        <div className="grid gap-3 sm:grid-cols-2">
           <div>
             <label className={label} htmlFor="ad-from">{t("fieldFrom")}</label>
             <input id="ad-from" type="date" className={field} value={v.startsAt ?? ""} onChange={(e) => set({ startsAt: e.target.value })} />
@@ -201,7 +215,29 @@ export function AdForm({
             <label className={label} htmlFor="ad-event">{t("fieldEvent")}</label>
             <input id="ad-event" type="date" className={field} value={v.eventAt ?? ""} onChange={(e) => set({ eventAt: e.target.value })} />
           </div>
+          <div>
+            <label className={label} htmlFor="ad-event-end">{t("fieldEventEnd")}</label>
+            <input id="ad-event-end" type="date" className={field} value={v.eventEndAt ?? ""}
+              onChange={(e) => set({ eventEndAt: e.target.value })} />
+            <p className="mt-1 text-[11px] text-muted">{t("eventEndHint")}</p>
+          </div>
         </div>
+
+        {/* Где это находится (слайс BZ): объект рекламы, а не точка приёма. */}
+        <AdPlaceField
+          value={{
+            placeName: v.placeName ?? "",
+            placeAddress: v.placeAddress ?? "",
+            placeLat: typeof v.placeLat === "number" ? v.placeLat : null,
+            placeLon: typeof v.placeLon === "number" ? v.placeLon : null,
+            placeAcceptedCoinIds: v.placeAcceptedCoinIds ?? [],
+            placeAcceptedCardIds: v.placeAcceptedCardIds ?? [],
+            placePaymentMethods: v.placePaymentMethods ?? [],
+          }}
+          onChange={(patch) => set(patch)}
+          coins={coins}
+          cards={cards}
+        />
 
         <div>
           <label className={label} htmlFor="ad-code">{t("fieldPromoCode")}</label>

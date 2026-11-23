@@ -1925,7 +1925,8 @@
     "coinSearchEmpty": "Nothing found. Try the ticker.",
     "companyCoinsHint": "Points without their own selection inherit these coins. Changing the set goes to a moderator.",
     "coinsInherited": "Nothing selected — this point shows the company set: {coins}",
-    "paymentMethods": "Other ways to pay"
+    "paymentMethods": "Other ways to pay",
+    "bannerPreview": "This is how visitors see your banner. Tapping it opens the item."
   },
   "cabinet": {
     "kicker": "Section · Cabinet",
@@ -4365,7 +4366,8 @@
       "AD_CREATED": "Banner item created",
       "AD_UPDATED": "Banner item updated",
       "AD_PUBLISHED": "Banner item published",
-      "AD_ARCHIVED": "Banner item archived"
+      "AD_ARCHIVED": "Banner item archived",
+      "AD_VOICED": "Banner item voiced"
     }
   },
   "cabinetTasks": {
@@ -4833,7 +4835,9 @@
         "PRODUCT": "Open the product",
         "WEBSITE": "Open the website",
         "POINT": "Show on the map"
-      }
+      },
+      "openPage": "Open this item",
+      "placeHere": "Location"
     }
   },
   "cabinetAds": {
@@ -4867,7 +4871,7 @@
     "audioHint": "Your own recording wins; without one the browser reads the text aloud.",
     "fieldFrom": "Shown from",
     "fieldTo": "Shown until",
-    "fieldEvent": "Event date",
+    "fieldEvent": "Event starts",
     "fieldPromoCode": "Promo code",
     "fieldAction": "Action",
     "action": {
@@ -4926,7 +4930,58 @@
       "at_edge": "Already at the edge.",
       "upload_failed": "The file did not upload. Check the format and the size.",
       "too_large": "The file is too large.",
-      "bad_type": "This file type is not accepted."
-    }
+      "bad_type": "This file type is not accepted.",
+      "event_backwards": "The event cannot end before it starts.",
+      "place_coords_required": "Drop the pin on the map: a name alone is not a location.",
+      "place_coords_invalid": "That pin is not on the map — tap the place again.",
+      "place_too_long": "The place name or address is too long.",
+      "voice_daily_limit": "Today's voice-over limit is used up — try again tomorrow.",
+      "voice_not_configured": "Voice-over is not switched on for this server.",
+      "voice_too_long": "The text is too long to read aloud — shorten it.",
+      "voice_upstream": "The voice service did not answer. Try again.",
+      "voice_timeout": "The voice service took too long. Try again.",
+      "voice_empty": "There is nothing to read aloud yet."
+    },
+    "fieldEventEnd": "Event ends",
+    "eventEndHint": "Leave empty for a one-day event.",
+    "placeTitle": "Where it is",
+    "placeAdd": "Add a location",
+    "placeHint": "For the object you advertise — an office, a venue, a property. It is not a crypto acceptance point and does not appear on the navigator map.",
+    "placeRemove": "Remove the location",
+    "placeName": "Place name",
+    "placeAddress": "Address",
+    "placeFind": "Find on the map",
+    "placeNoPin": "No pin yet — tap the map",
+    "placeNotFound": "Nothing found for that address — drop the pin by tapping the map.",
+    "placeMapHint": "Tap the map to drop the pin; drag it to adjust.",
+    "placeAccepts": "Accepted at this place",
+    "placeCoinSearch": "Search coins",
+    "placeCoinEmpty": "Nothing found",
+    "payment": {
+      "cash": "Cash",
+      "card": "Bank card",
+      "transfer": "Bank transfer"
+    },
+    "voiceVoice": "Voice",
+    "voiceStyle": "Delivery",
+    "voiceStyles": {
+      "calm": "Calm and clear",
+      "bright": "Bright and warm",
+      "solemn": "Solemn and unhurried"
+    },
+    "voiceMake": "Voice it for me",
+    "voiceRedo": "Record it again",
+    "voiceOurs": "Voiced by Trientes",
+    "voiceYours": "Your own recording",
+    "voiceStale": "recorded from the earlier text",
+    "voiceHint": "We read the text aloud with a live voice and keep the file. Your own recording wins over ours; with neither, the browser reads the text."
+  },
+  "adPage": {
+    "placeTitle": "Where it is",
+    "placeAccepts": "Accepted here",
+    "paymentOutside": "Payment is arranged with the seller — Trientes does not process payments.",
+    "moreTitle": "More from this business",
+    "eventRange": "{from} — {to}",
+    "companyProfile": "Business profile"
   }
 }

@@ -23,6 +23,8 @@ import { parsePublicFields } from "@/lib/company-public-fields";
 import { parseWeekHours } from "@/lib/opening-hours";
 import { industry as industryOf } from "@/lib/industries";
 import { CabinetBackButton } from "@/components/cabinet/back-button";
+import { buildCompanyCard } from "@/lib/company-card/view";
+import { AdBanner } from "@/components/company-card/ad-banner";
 
 export const dynamic = "force-dynamic";
 
@@ -66,6 +68,10 @@ export default async function CompanyManagementPage({
   const kybOpen = kybParam === "1" && isOwner;
 
   const officeHours = parseWeekHours(company.hours);
+
+  // Баннер глазами посетителя. Предприятие ещё не на витрине — карточки нет, и
+  // предпросмотра тоже: показывать то, чего никто снаружи не видит, значит обещать.
+  const publicCard = editing ? null : await buildCompanyCard({ companyId: company.id, locale });
 
   const gate = { permissions, isOwner };
   const groups = visibleGroups(gate);
@@ -149,6 +155,16 @@ export default async function CompanyManagementPage({
         </section>
       ) : (
         <>
+          {/* Предпросмотр баннера (слайс BZ): владелец видел его только на витрине, а
+              своё предприятие он открывает отсюда. Карточка собирается той же
+              функцией, что и витрина, — вторая сборка уже однажды разошлась (BX). */}
+          {publicCard && publicCard.ads.length > 0 ? (
+            <section className="space-y-2">
+              <AdBanner ads={publicCard.ads} />
+              <p className="px-1 text-[11.5px] text-muted">{t("bannerPreview")}</p>
+            </section>
+          ) : null}
+
           <CompanyCard
             locale={locale}
             editable={editable}

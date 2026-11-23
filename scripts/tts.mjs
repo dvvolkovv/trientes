@@ -25,15 +25,39 @@ loadEnv({ path: new URL("../.env", import.meta.url).pathname });
 
 const MODEL = process.env.OPENAI_TTS_MODEL ?? "gpt-4o-mini-tts";
 const VOICE = process.env.OPENAI_TTS_VOICE ?? "onyx";
+/**
+ * Интонация. Модель `gpt-4o-mini-tts` принимает `instructions` — это и есть разница
+ * между диктором автоответчика и живым человеком: без них голос читает отчёт ровно,
+ * одной высотой, и владелец сказал прямо — «не очень хорошее, нужен живой голос».
+ * Переопределяется `OPENAI_TTS_INSTRUCTIONS` в `.env` или флагом `--style`.
+ */
+const INSTRUCTIONS =
+  process.env.OPENAI_TTS_INSTRUCTIONS ??
+  [
+    "Говори по-русски как живой человек, который докладывает коллеге о работе: спокойно, уверенно, доброжелательно.",
+    "Темп — чуть медленнее обычного разговорного, с ясной артикуляцией; слушают на ходу и с телефона.",
+    "Держи естественную мелодику: голос идёт вниз в конце утверждения и вверх в конце вопроса.",
+    "Делай короткую паузу на точке и чуть длиннее между смысловыми кусками; перечисление читай с перечислительной интонацией.",
+    "Подчёркивай голосом числа, названия и слова «нашёл», «починено», «не сделано» — по ним человек ориентируется.",
+    "Никакой дикторской напыщенности, спешки и монотонности. Не проглатывай окончания.",
+  ].join(" ");
 /** Потолок модели — 4096 знаков; запас на то, что кусок режется по предложению. */
 const CHUNK = 3500;
 
 const argv = process.argv.slice(2);
+// `--style "…"` — разовая интонация поверх умолчания (например, бодрее для короткой
+// новости). Вынимается из разбора до всего остального, чтобы не сдвинуть позиции.
+let styleOverride = null;
+const styleAt = argv.indexOf("--style");
+if (styleAt >= 0) {
+  styleOverride = argv[styleAt + 1] ?? null;
+  argv.splice(styleAt, styleOverride === null ? 1 : 2);
+}
 const out = argv[argv.length - 1];
 const source = argv[0] === "--file" ? { kind: "file", value: argv[1] } : { kind: "arg", value: argv[0] };
 
 if (!source.value || !out || argv.length < 2) {
-  console.error("usage: node scripts/tts.mjs <text | --file path | -> <out.mp3>");
+  console.error("usage: node scripts/tts.mjs [--style \"…\"] <text | --file path | -> <out.mp3>");
   process.exit(2);
 }
 
@@ -88,6 +112,7 @@ for (const part of chunks(text)) {
     model: MODEL,
     voice: VOICE,
     input: part,
+    instructions: styleOverride ?? INSTRUCTIONS,
     response_format: "mp3",
   });
   pieces.push(Buffer.from(await r.arrayBuffer()));

@@ -1925,7 +1925,8 @@
     "coinSearchEmpty": "Hiçbir şey bulunamadı. Ticker'ı deneyin.",
     "companyCoinsHint": "Kendi seçimi olmayan noktalar bu coinleri devralır. Seti değiştirmek moderatöre gider.",
     "coinsInherited": "Hiçbir şey seçilmedi — bu nokta şirket setini gösterir: {coins}",
-    "paymentMethods": "Diğer ödeme yöntemleri"
+    "paymentMethods": "Diğer ödeme yöntemleri",
+    "bannerPreview": "Ziyaretçiler afişinizi bu şekilde görür. Üzerine dokunmak öğeyi açar."
   },
   "cabinet": {
     "kicker": "Bölüm · Kabin",
@@ -4365,7 +4366,8 @@
       "AD_CREATED": "Banner öğesi oluşturuldu",
       "AD_UPDATED": "Banner öğesi güncellendi",
       "AD_PUBLISHED": "Banner öğesi yayımlandı",
-      "AD_ARCHIVED": "Banner öğesi arşivlendi"
+      "AD_ARCHIVED": "Banner öğesi arşivlendi",
+      "AD_VOICED": "Banner öğesi seslendirildi"
     }
   },
   "cabinetTasks": {
@@ -4833,7 +4835,9 @@
         "PRODUCT": "Ürünü aç",
         "WEBSITE": "Web sitesini aç",
         "POINT": "Haritada göster"
-      }
+      },
+      "openPage": "Bu öğeyi aç",
+      "placeHere": "Konum"
     }
   },
   "cabinetAds": {
@@ -4867,7 +4871,7 @@
     "audioHint": "Kendi kaydınız önceliklidir; olmazsa tarayıcı metni sesli okur.",
     "fieldFrom": "Gösterim başlangıcı",
     "fieldTo": "Gösterim bitişi",
-    "fieldEvent": "Etkinlik tarihi",
+    "fieldEvent": "Etkinlik başlangıcı",
     "fieldPromoCode": "Promosyon kodu",
     "fieldAction": "Eylem",
     "action": {
@@ -4926,7 +4930,58 @@
       "at_edge": "Zaten en uçta.",
       "upload_failed": "Dosya yüklenmedi. Biçimi ve boyutu kontrol edin.",
       "too_large": "Dosya çok büyük.",
-      "bad_type": "Bu dosya türü kabul edilmiyor."
-    }
+      "bad_type": "Bu dosya türü kabul edilmiyor.",
+      "event_backwards": "Etkinlik başlamadan önce bitemez.",
+      "place_coords_required": "İşaretçiyi haritaya bırakın: tek başına ad bir konum değildir.",
+      "place_coords_invalid": "Bu işaretçi haritada değil — yere tekrar dokunun.",
+      "place_too_long": "Yer adı veya adres çok uzun.",
+      "voice_daily_limit": "Bugünün seslendirme limiti tükendi — yarın tekrar deneyin.",
+      "voice_not_configured": "Bu sunucuda seslendirme etkin değil.",
+      "voice_too_long": "Metin sesli okunamayacak kadar uzun — kısaltın.",
+      "voice_upstream": "Ses hizmeti yanıt vermedi. Tekrar deneyin.",
+      "voice_timeout": "Ses hizmeti zaman aşımına uğradı. Tekrar deneyin.",
+      "voice_empty": "Henüz sesli okunacak bir şey yok."
+    },
+    "fieldEventEnd": "Etkinlik bitişi",
+    "eventEndHint": "Tek günlük etkinlik için boş bırakın.",
+    "placeTitle": "Nerede",
+    "placeAdd": "Konum ekle",
+    "placeHint": "Reklamını yaptığınız nesne için — bir ofis, bir mekan, bir mülk. Bu bir kripto kabul noktası değildir ve navigasyon haritasında görünmez.",
+    "placeRemove": "Konumu kaldır",
+    "placeName": "Yer adı",
+    "placeAddress": "Adres",
+    "placeFind": "Haritada bul",
+    "placeNoPin": "Henüz işaretçi yok — haritaya dokunun",
+    "placeNotFound": "Bu adres için hiçbir şey bulunamadı — haritaya dokunarak işaretçiyi bırakın.",
+    "placeMapHint": "İşaretçiyi bırakmak için haritaya dokunun; ayarlamak için sürükleyin.",
+    "placeAccepts": "Bu yerde kabul edilenler",
+    "placeCoinSearch": "Coin ara",
+    "placeCoinEmpty": "Hiçbir şey bulunamadı",
+    "payment": {
+      "cash": "Nakit",
+      "card": "Banka kartı",
+      "transfer": "Banka havalesi"
+    },
+    "voiceVoice": "Ses",
+    "voiceStyle": "Seslendirme tarzı",
+    "voiceStyles": {
+      "calm": "Sakin ve anlaşılır",
+      "bright": "Parlak ve sıcak",
+      "solemn": "Ağırbaşlı ve sakin"
+    },
+    "voiceMake": "Benim için seslendir",
+    "voiceRedo": "Yeniden kaydet",
+    "voiceOurs": "Trientes tarafından seslendirildi",
+    "voiceYours": "Kendi kaydınız",
+    "voiceStale": "önceki metinden kaydedildi",
+    "voiceHint": "Metni canlı bir sesle seslendirir ve dosyayı saklarız. Sizin kaydınız bizimkine önceliklidir; ikisi de yoksa metni tarayıcı okur."
+  },
+  "adPage": {
+    "placeTitle": "Nerede",
+    "placeAccepts": "Burada kabul edilir",
+    "paymentOutside": "Ödeme satıcıyla ayarlanır — Trientes ödemeleri işlemez.",
+    "moreTitle": "Bu işletmeden daha fazlası",
+    "eventRange": "{from} — {to}",
+    "companyProfile": "İşletme profili"
   }
 }

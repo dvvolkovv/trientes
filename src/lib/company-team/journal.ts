@@ -56,6 +56,9 @@ export type CompanyAction =
   | "AD_UPDATED"
   | "AD_PUBLISHED"
   | "AD_ARCHIVED"
+  // Слайс BZ: озвучка материала нашим синтезом — платный вызов наружу, и по журналу
+  // же считается суточный потолок: своей таблицы под один счётчик не заводим.
+  | "AD_VOICED"
   | "SUPPLIER_SAVED"
   | "SUPPLIER_ARCHIVED"
   | "SUPPLIER_RESTORED"

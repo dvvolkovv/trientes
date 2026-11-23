@@ -1925,7 +1925,8 @@
     "coinSearchEmpty": "Nenašlo sa nič. Skúste ticker.",
     "companyCoinsHint": "Miesta bez vlastného výberu zdedia tieto mince. Zmena sady ide moderátorovi.",
     "coinsInherited": "Nič nie je vybrané — toto miesto zobrazuje sadu spoločnosti: {coins}",
-    "paymentMethods": "Iné spôsoby platby"
+    "paymentMethods": "Iné spôsoby platby",
+    "bannerPreview": "Takto návštevníci vidia váš banner. Ťuknutím sa položka otvorí"
   },
   "cabinet": {
     "kicker": "Sekcia · Profil",
@@ -4365,7 +4366,8 @@
       "AD_CREATED": "Položka banneru vytvorená",
       "AD_UPDATED": "Položka banneru aktualizovaná",
       "AD_PUBLISHED": "Položka banneru zverejnená",
-      "AD_ARCHIVED": "Položka banneru archivovaná"
+      "AD_ARCHIVED": "Položka banneru archivovaná",
+      "AD_VOICED": "Položka banneru ozvučená"
     }
   },
   "cabinetTasks": {
@@ -4833,7 +4835,9 @@
         "PRODUCT": "Otvoriť produkt",
         "WEBSITE": "Otvoriť web",
         "POINT": "Zobraziť na mape"
-      }
+      },
+      "openPage": "Otvoriť túto položku",
+      "placeHere": "Miesto"
     }
   },
   "cabinetAds": {
@@ -4867,7 +4871,7 @@
     "audioHint": "Vlastná nahrávka má prednosť; bez nej prehliadač prečíta text nahlas.",
     "fieldFrom": "Zobrazené od",
     "fieldTo": "Zobrazené do",
-    "fieldEvent": "Dátum udalosti",
+    "fieldEvent": "Začiatok podujatia",
     "fieldPromoCode": "Promo kód",
     "fieldAction": "Akcia",
     "action": {
@@ -4926,7 +4930,58 @@
       "at_edge": "Už ste na okraji.",
       "upload_failed": "Súbor sa nenahral. Skontrolujte formát a veľkosť.",
       "too_large": "Súbor je príliš veľký.",
-      "bad_type": "Tento typ súboru nie je podporovaný."
-    }
+      "bad_type": "Tento typ súboru nie je podporovaný.",
+      "event_backwards": "Podujatie nemôže skončiť skôr, než začne.",
+      "place_coords_required": "Položte značku na mapu: samotný názov ešte nie je miesto.",
+      "place_coords_invalid": "Tá značka nie je na mape — ťuknite na miesto znova.",
+      "place_too_long": "Názov miesta alebo adresa sú príliš dlhé.",
+      "voice_daily_limit": "Dnešný limit nahovorenia je vyčerpaný — skúste to znova zajtra.",
+      "voice_not_configured": "Nahovorenie nie je pre tento server zapnuté.",
+      "voice_too_long": "Text je príliš dlhý na nahovorenie — skráťte ho.",
+      "voice_upstream": "Hlasová služba neodpovedala. Skúste znova.",
+      "voice_timeout": "Hlasová služba neodpovedala včas. Skúste znova.",
+      "voice_empty": "Zatiaľ nie je čo nahovoriť."
+    },
+    "fieldEventEnd": "Koniec podujatia",
+    "eventEndHint": "Pri jednodňovom podujatí nechajte prázdne.",
+    "placeTitle": "Kde sa nachádza",
+    "placeAdd": "Pridať miesto",
+    "placeHint": "Pre objekt, ktorý propagujete — kancelária, miesto konania, nehnuteľnosť. Nejde o miesto prijímania krypta a nezobrazuje sa v mape navigátora.",
+    "placeRemove": "Odstrániť miesto",
+    "placeName": "Názov miesta",
+    "placeAddress": "Adresa",
+    "placeFind": "Nájsť na mape",
+    "placeNoPin": "Zatiaľ bez značky — ťuknite na mapu",
+    "placeNotFound": "Pre túto adresu sa nič nenašlo — položte značku ťuknutím do mapy.",
+    "placeMapHint": "Ťuknite na mapu a položte značku; ťahaním ju upravte.",
+    "placeAccepts": "Prijímané na tomto mieste",
+    "placeCoinSearch": "Hľadať mince",
+    "placeCoinEmpty": "Nič sa nenašlo",
+    "payment": {
+      "cash": "Hotovosť",
+      "card": "Platobná karta",
+      "transfer": "Bankový prevod"
+    },
+    "voiceVoice": "Hlas",
+    "voiceStyle": "Podanie",
+    "voiceStyles": {
+      "calm": "Pokojné a zreteľné",
+      "bright": "Jasné a hrejivé",
+      "solemn": "Slávnostné a rozvážne"
+    },
+    "voiceMake": "Nahovoriť za mňa",
+    "voiceRedo": "Nahrať znova",
+    "voiceOurs": "Nahovorené Trientes",
+    "voiceYours": "Vaša vlastná nahrávka",
+    "voiceStale": "nahraté z predchádzajúceho textu",
+    "voiceHint": "Text prečítame nahlas živým hlasom a súbor uchováme. Vaša vlastná nahrávka má prednosť pred našou; ak nie je ani jedna, text prečíta prehliadač."
+  },
+  "adPage": {
+    "placeTitle": "Kde sa nachádza",
+    "placeAccepts": "Tu akceptované",
+    "paymentOutside": "Platba sa dohodne s predávajúcim — Trientes platby nespracúva.",
+    "moreTitle": "Ďalšie od tejto firmy",
+    "eventRange": "{from} — {to}",
+    "companyProfile": "Firemný profil"
   }
 }

@@ -1925,7 +1925,8 @@
     "coinSearchEmpty": "No se encontró nada. Prueba el ticker.",
     "companyCoinsHint": "Los puntos sin selección propia heredan estas monedas. Cambiar el conjunto pasa a un moderador.",
     "coinsInherited": "Nada seleccionado — este punto muestra el conjunto de la empresa: {coins}",
-    "paymentMethods": "Otras formas de pago"
+    "paymentMethods": "Otras formas de pago",
+    "bannerPreview": "Así es como los visitantes ven tu banner. Al tocarlo se abre el elemento."
   },
   "cabinet": {
     "kicker": "Sección · Panel",
@@ -4365,7 +4366,8 @@
       "AD_CREATED": "Elemento de banner creado",
       "AD_UPDATED": "Elemento de banner actualizado",
       "AD_PUBLISHED": "Elemento de banner publicado",
-      "AD_ARCHIVED": "Elemento de banner archivado"
+      "AD_ARCHIVED": "Elemento de banner archivado",
+      "AD_VOICED": "Elemento del banner con voz"
     }
   },
   "cabinetTasks": {
@@ -4833,7 +4835,9 @@
         "PRODUCT": "Abrir el producto",
         "WEBSITE": "Abrir el sitio web",
         "POINT": "Mostrar en el mapa"
-      }
+      },
+      "openPage": "Abrir este elemento",
+      "placeHere": "Ubicación"
     }
   },
   "cabinetAds": {
@@ -4867,7 +4871,7 @@
     "audioHint": "Tu propia grabación tiene prioridad; sin ella, el navegador lee el texto en voz alta.",
     "fieldFrom": "Se muestra desde",
     "fieldTo": "Se muestra hasta",
-    "fieldEvent": "Fecha del evento",
+    "fieldEvent": "Inicio del evento",
     "fieldPromoCode": "Código promocional",
     "fieldAction": "Acción",
     "action": {
@@ -4926,7 +4930,58 @@
       "at_edge": "Ya está en el borde.",
       "upload_failed": "El archivo no se cargó. Revisa el formato y el tamaño.",
       "too_large": "El archivo es demasiado grande.",
-      "bad_type": "Este tipo de archivo no se admite."
-    }
+      "bad_type": "Este tipo de archivo no se admite.",
+      "event_backwards": "El evento no puede terminar antes de comenzar.",
+      "place_coords_required": "Suelta el pin en el mapa: un nombre por sí solo no es una ubicación.",
+      "place_coords_invalid": "Ese pin no está en el mapa — toca el lugar de nuevo.",
+      "place_too_long": "El nombre del lugar o la dirección es demasiado largo.",
+      "voice_daily_limit": "Se agotó el límite de locuciones de hoy — inténtalo mañana.",
+      "voice_not_configured": "La locución no está activada para este servidor.",
+      "voice_too_long": "El texto es demasiado largo para leerlo en voz alta — acórtalo.",
+      "voice_upstream": "El servicio de voz no respondió. Inténtalo de nuevo.",
+      "voice_timeout": "El servicio de voz tardó demasiado. Inténtalo de nuevo.",
+      "voice_empty": "Aún no hay nada que leer en voz alta."
+    },
+    "fieldEventEnd": "Fin del evento",
+    "eventEndHint": "Déjalo vacío para un evento de un día.",
+    "placeTitle": "Dónde está",
+    "placeAdd": "Añadir una ubicación",
+    "placeHint": "Para el objeto que publicitas — una oficina, un recinto, una propiedad. No es un punto de aceptación cripto y no aparece en el mapa del navegador.",
+    "placeRemove": "Eliminar la ubicación",
+    "placeName": "Nombre del lugar",
+    "placeAddress": "Dirección",
+    "placeFind": "Buscar en el mapa",
+    "placeNoPin": "Aún no hay marcador — toca el mapa",
+    "placeNotFound": "No se encontró nada para esa dirección — coloca el marcador tocando el mapa.",
+    "placeMapHint": "Toca el mapa para colocar el marcador; arrástralo para ajustarlo.",
+    "placeAccepts": "Aceptado en este lugar",
+    "placeCoinSearch": "Buscar monedas",
+    "placeCoinEmpty": "No se encontró nada",
+    "payment": {
+      "cash": "Efectivo",
+      "card": "Tarjeta bancaria",
+      "transfer": "Transferencia bancaria"
+    },
+    "voiceVoice": "Voz",
+    "voiceStyle": "Estilo",
+    "voiceStyles": {
+      "calm": "Serena y clara",
+      "bright": "Brillante y cálida",
+      "solemn": "Solemne y pausada"
+    },
+    "voiceMake": "Locútalo por mí",
+    "voiceRedo": "Volver a grabar",
+    "voiceOurs": "Con voz de Trientes",
+    "voiceYours": "Tu propia grabación",
+    "voiceStale": "grabado a partir del texto anterior",
+    "voiceHint": "Leemos el texto en voz alta con una voz real y guardamos el archivo. Tu grabación tiene prioridad sobre la nuestra; si no hay ninguna, el navegador lee el texto."
+  },
+  "adPage": {
+    "placeTitle": "Dónde está",
+    "placeAccepts": "Aceptado aquí",
+    "paymentOutside": "El pago se acuerda con el vendedor — Trientes no procesa pagos.",
+    "moreTitle": "Más de este negocio",
+    "eventRange": "{from} — {to}",
+    "companyProfile": "Perfil de la empresa"
   }
 }

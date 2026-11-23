@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { adInWindow, adVisible, isOwnMedia, parseAdInput, type AdInput } from "@/lib/ads/rules";
+import {
+  adInWindow, adTextHash, adVisible, adVoiceStale, isAdVoice, isOwnMedia, parseAdInput, type AdInput,
+} from "@/lib/ads/rules";
 
 const MEDIA = "/uploads/ads/cmwcompany1/0123456789abcdef0123456789abcdef.jpg";
 
@@ -73,5 +75,87 @@ describe("рекламный материал: видимость", () => {
     expect(adVisible({ company: live, ad }, now)).toBe(true);
     expect(adVisible({ company: { ...live, suspendedAt: now }, ad }, now)).toBe(false);
     expect(adVisible({ company: live, ad: { ...ad, status: "DRAFT" } }, now)).toBe(false);
+  });
+});
+
+describe("рекламный материал: место и конец события (слайс BZ)", () => {
+  it("конец события раньше начала отвергает", () => {
+    expect(parseAdInput({ ...base, kind: "EVENT", eventAt: "2026-12-10", eventEndAt: "2026-12-01" }))
+      .toMatchObject({ ok: false, reason: "event_backwards" });
+    expect(parseAdInput({ ...base, kind: "EVENT", eventAt: "2026-12-01", eventEndAt: "2026-12-03" }).ok).toBe(true);
+  });
+
+  it("конец без начала — не срок события", () => {
+    expect(parseAdInput({ ...base, eventEndAt: "2026-12-03" }))
+      .toMatchObject({ ok: false, reason: "event_required" });
+  });
+
+  it("событие одного дня: конец равен началу — это законно", () => {
+    expect(parseAdInput({ ...base, kind: "EVENT", eventAt: "2026-12-01", eventEndAt: "2026-12-01" }).ok).toBe(true);
+  });
+
+  it("место без координат не принимает: «где-то» местом не является", () => {
+    expect(parseAdInput({ ...base, placeName: "LMNT Offices" }))
+      .toMatchObject({ ok: false, reason: "place_coords_required" });
+  });
+
+  it("место с булавкой принимает и чистит набор монет и способов оплаты", () => {
+    const r = parseAdInput({
+      ...base,
+      placeName: " LMNT Offices ",
+      placeAddress: " Bahnhofplatz 10 ",
+      placeLat: 47.39,
+      placeLon: 9.277,
+      placeAcceptedCoinIds: ["bitcoin", "bitcoin", "  ", "ethereum"],
+      placePaymentMethods: ["cash", "pigeon", "card"],
+    });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.value.placeName).toBe("LMNT Offices");
+    expect(r.value.placeAddress).toBe("Bahnhofplatz 10");
+    expect(r.value.placeAcceptedCoinIds).toEqual(["bitcoin", "ethereum"]);
+    // Неизвестный способ оплаты выбрасывается, порядок — реестра (BY).
+    expect(r.value.placePaymentMethods).toEqual(["cash", "card"]);
+  });
+
+  it("булавка за пределами земли — не булавка", () => {
+    expect(parseAdInput({ ...base, placeLat: 95, placeLon: 9 }))
+      .toMatchObject({ ok: false, reason: "place_coords_invalid" });
+    expect(parseAdInput({ ...base, placeLat: 0, placeLon: 0 }))
+      .toMatchObject({ ok: false, reason: "place_coords_invalid" });
+  });
+
+  it("монеты и оплата без места не сохраняются: обещание без адреса", () => {
+    const r = parseAdInput({ ...base, placeAcceptedCoinIds: ["bitcoin"], placePaymentMethods: ["cash"] });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.value.placeAcceptedCoinIds).toEqual([]);
+    expect(r.value.placePaymentMethods).toEqual([]);
+  });
+
+  it("ссылку в названии места отвергает, как и в тексте", () => {
+    expect(parseAdInput({ ...base, placeName: "arcon.ch office", placeLat: 47.39, placeLon: 9.277 }))
+      .toMatchObject({ ok: false, reason: "text_has_link" });
+  });
+});
+
+describe("озвучка материала (слайс BZ)", () => {
+  it("отпечаток текста меняется вместе с текстом и не зависит от пробелов по краям", () => {
+    expect(adTextHash("Заголовок", "Текст")).toBe(adTextHash(" Заголовок ", "Текст "));
+    expect(adTextHash("Заголовок", "Текст")).not.toBe(adTextHash("Заголовок", "Другой"));
+  });
+
+  it("устаревшей считается запись нашего синтеза, сделанная по прежнему тексту", () => {
+    const hash = adTextHash("A", "B");
+    expect(adVoiceStale({ audioUrl: "/u.mp3", audioGenerated: true, audioTextHash: hash }, "A", "B")).toBe(false);
+    expect(adVoiceStale({ audioUrl: "/u.mp3", audioGenerated: true, audioTextHash: hash }, "A", "C")).toBe(true);
+    // Присланная продавцом запись нашим текстом не мерится: это его голос.
+    expect(adVoiceStale({ audioUrl: "/u.mp3", audioGenerated: false, audioTextHash: null }, "A", "C")).toBe(false);
+    expect(adVoiceStale({ audioUrl: null, audioGenerated: false, audioTextHash: null }, "A", "C")).toBe(false);
+  });
+
+  it("голос синтеза — только из реестра", () => {
+    expect(isAdVoice("alloy")).toBe(true);
+    expect(isAdVoice("шептун")).toBe(false);
   });
 });

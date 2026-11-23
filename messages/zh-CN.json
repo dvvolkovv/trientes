@@ -1925,7 +1925,8 @@
     "coinSearchEmpty": "未找到。试试使用代号",
     "companyCoinsHint": "未单独选择的网点将继承这些币种。更改该集合将提交给审核员",
     "coinsInherited": "未选择任何项 — 此网点显示公司集合：{coins}",
-    "paymentMethods": "其他支付方式"
+    "paymentMethods": "其他支付方式",
+    "bannerPreview": "这是访客看到你的横幅的样子。点击它会打开该条目。"
   },
   "cabinet": {
     "kicker": "板块 · 个人中心",
@@ -4365,7 +4366,8 @@
       "AD_CREATED": "横幅条目已创建",
       "AD_UPDATED": "横幅条目已更新",
       "AD_PUBLISHED": "横幅条目已发布",
-      "AD_ARCHIVED": "横幅条目已归档"
+      "AD_ARCHIVED": "横幅条目已归档",
+      "AD_VOICED": "横幅条目已配音"
     }
   },
   "cabinetTasks": {
@@ -4833,7 +4835,9 @@
         "PRODUCT": "打开产品",
         "WEBSITE": "打开网站",
         "POINT": "在地图上显示"
-      }
+      },
+      "openPage": "打开此项",
+      "placeHere": "位置"
     }
   },
   "cabinetAds": {
@@ -4867,7 +4871,7 @@
     "audioHint": "你的录音优先；没有录音时，浏览器会朗读文本。",
     "fieldFrom": "开始展示",
     "fieldTo": "结束展示",
-    "fieldEvent": "活动日期",
+    "fieldEvent": "活动开始",
     "fieldPromoCode": "优惠码",
     "fieldAction": "操作",
     "action": {
@@ -4926,7 +4930,58 @@
       "at_edge": "已在边缘。",
       "upload_failed": "文件未上传。请检查格式和大小。",
       "too_large": "文件过大。",
-      "bad_type": "不支持此文件类型。"
-    }
+      "bad_type": "不支持此文件类型。",
+      "event_backwards": "活动不能在开始之前结束。",
+      "place_coords_required": "请在地图上放置定位点：仅名称并不能表示位置。",
+      "place_coords_invalid": "该定位点不在地图上—请重新点选位置。",
+      "place_too_long": "地点名称或地址过长。",
+      "voice_daily_limit": "今日配音额度已用完—请明天再试。",
+      "voice_not_configured": "此服务器未启用配音功能。",
+      "voice_too_long": "文本过长，无法朗读—请缩短。",
+      "voice_upstream": "语音服务未响应。请重试。",
+      "voice_timeout": "语音服务耗时过长。请重试。",
+      "voice_empty": "暂无可朗读的内容。"
+    },
+    "fieldEventEnd": "活动结束",
+    "eventEndHint": "单日活动请留空。",
+    "placeTitle": "所在位置",
+    "placeAdd": "添加位置",
+    "placeHint": "用于你要推广的对象—如办公室、场馆、房产。它不是加密支付受理点，不会显示在导航地图上。",
+    "placeRemove": "移除位置",
+    "placeName": "地点名称",
+    "placeAddress": "地址",
+    "placeFind": "在地图上查找",
+    "placeNoPin": "尚未放置定位点—请点按地图",
+    "placeNotFound": "未找到该地址—请点按地图放置定位点。",
+    "placeMapHint": "点按地图放置定位点；拖动以调整。",
+    "placeAccepts": "该地点接受",
+    "placeCoinSearch": "搜索币种",
+    "placeCoinEmpty": "未找到任何内容",
+    "payment": {
+      "cash": "现金",
+      "card": "银行卡",
+      "transfer": "银行转账"
+    },
+    "voiceVoice": "语音",
+    "voiceStyle": "演绎风格",
+    "voiceStyles": {
+      "calm": "平静清晰",
+      "bright": "明亮温暖",
+      "solemn": "庄重从容"
+    },
+    "voiceMake": "替我配音",
+    "voiceRedo": "重新录制",
+    "voiceOurs": "Trientes 配音",
+    "voiceYours": "你的录音",
+    "voiceStale": "根据较早文本录制",
+    "voiceHint": "我们用真人声音朗读文本并保留文件。你的录音优先于我们的；两者都没有时，将由浏览器朗读文本。"
+  },
+  "adPage": {
+    "placeTitle": "位置",
+    "placeAccepts": "此处接受",
+    "paymentOutside": "付款由你与卖家协商安排——Trientes 不处理支付。",
+    "moreTitle": "该商家的更多",
+    "eventRange": "{from} — {to}",
+    "companyProfile": "商家资料"
   }
 }

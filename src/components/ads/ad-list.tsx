@@ -14,6 +14,8 @@ export type AdRow = {
   preview: string;
   window: string | null;
   hasAudio: boolean;
+  /** Место в карусели — ради него и нужны «выше»/«ниже». */
+  position?: number;
 };
 
 /** Список материалов: что сейчас в карусели, в каком порядке и что лежит черновиком. */
@@ -55,7 +57,12 @@ export function AdList({ ads, editable, basePath }: { ads: AdRow[]; editable: bo
                 {ad.mediaKind === "VIDEO" ? <span className="text-[11px] text-muted">▶ {t("video")}</span> : null}
                 {ad.hasAudio ? <span className="text-[11px] text-muted">🔊 {t("voiced")}</span> : null}
               </div>
-              <div className="mt-1 truncate text-[14.5px] font-semibold">{ad.title}</div>
+              <div className="mt-1 truncate text-[14.5px] font-semibold">
+                {ad.status === "PUBLISHED" && ad.position ? (
+                  <span className="num mr-1.5 text-muted">{ad.position}.</span>
+                ) : null}
+                {ad.title}
+              </div>
               {ad.window ? <div className="num text-[11.5px] text-muted">{ad.window}</div> : null}
             </div>
           </div>
@@ -82,10 +89,16 @@ export function AdList({ ads, editable, basePath }: { ads: AdRow[]; editable: bo
               ) : null}
               {ad.status === "PUBLISHED" ? (
                 <>
-                  <button type="button" className={button} aria-label={t("up")} disabled={pending}
-                    onClick={() => start(async () => { await moveAd(ad.id, "up"); })}>↑</button>
-                  <button type="button" className={button} aria-label={t("down")} disabled={pending}
-                    onClick={() => start(async () => { await moveAd(ad.id, "down"); })}>↓</button>
+                  {/* Порядок в карусели: что человек увидит первым. Голая стрелка
+                      ничего не говорит — слово рядом обязательно (правило AN). */}
+                  <button type="button" className={button} disabled={pending}
+                    onClick={() => start(async () => { await moveAd(ad.id, "up"); })}>
+                    <span aria-hidden className="mr-1.5">↑</span>{t("up")}
+                  </button>
+                  <button type="button" className={button} disabled={pending}
+                    onClick={() => start(async () => { await moveAd(ad.id, "down"); })}>
+                    <span aria-hidden className="mr-1.5">↓</span>{t("down")}
+                  </button>
                 </>
               ) : null}
             </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useFormatter, useTranslations } from "next-intl";
 import type { CardAd } from "@/lib/company-card/view";
@@ -12,8 +13,10 @@ import type { CardAd } from "@/lib/company-card/view";
  * кадра нажатие. Всё управление — одной полосой **под** баннером: слева точки (сколько
  * материалов и какой сейчас), справа кнопки 44 px.
  *
- * Нажатие на сам кадр равно «подробнее»: кадр — самая большая цель на экране, и терять
- * её нельзя. Описательная часть раскрывается под баннером.
+ * Нажатие на сам кадр ведёт **на страницу материала** (слайс BZ): кадр — самая большая
+ * цель на экране, и за ним стоит всё, что с материалом можно сделать — место на карте,
+ * срок события, голос, вопрос магазину, подписка. Быстрый просмотр на месте остался
+ * кнопкой «подробнее»: в навигаторе человек не всегда хочет уходить с карты.
  *
  * Листание — родная прокрутка со снапом, а не свой разбор жеста: у навигатора свой
  * разбор уже есть (слайс AK), и второй внутри него спорил бы с ним за палец.
@@ -139,11 +142,10 @@ export function AdBanner({ ads }: { ads: CardAd[] }) {
                 className="aspect-[16/10] w-full rounded-[22px] border border-hairline bg-black object-cover"
               />
             ) : (
-              <button
-                type="button"
-                onClick={() => setOpen((v) => !v)}
-                aria-expanded={open}
+              <Link
+                href={a.href}
                 data-testid="ad-banner-frame"
+                aria-label={a.title}
                 className="block aspect-[16/10] w-full overflow-hidden rounded-[22px] border border-hairline bg-bg-tint"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -153,7 +155,7 @@ export function AdBanner({ ads }: { ads: CardAd[] }) {
                   loading={i === 0 ? "eager" : "lazy"}
                   className="h-full w-full object-cover"
                 />
-              </button>
+              </Link>
             )}
           </div>
         ))}
@@ -227,7 +229,14 @@ export function AdBanner({ ads }: { ads: CardAd[] }) {
           <div className="mt-3 flex flex-wrap gap-2 text-[11.5px] text-muted">
             {ad.eventAt ? (
               <span className="rounded-full border border-hairline bg-bg-tint px-2.5 py-1.5">
-                📅 {day(ad.eventAt)}
+                📅 {ad.eventEndAt && ad.eventEndAt.slice(0, 10) !== ad.eventAt.slice(0, 10)
+                  ? `${day(ad.eventAt)} — ${day(ad.eventEndAt)}`
+                  : day(ad.eventAt)}
+              </span>
+            ) : null}
+            {ad.place ? (
+              <span className="rounded-full border border-hairline bg-bg-tint px-2.5 py-1.5">
+                📍 {ad.place.name ?? ad.place.address ?? t("ad.placeHere")}
               </span>
             ) : null}
             {ad.endsAt ? (
@@ -266,6 +275,15 @@ export function AdBanner({ ads }: { ads: CardAd[] }) {
               <span aria-hidden className="text-muted">→</span>
             </a>
           ) : null}
+
+          {/* Вся работа с материалом — на его странице; тут только быстрый просмотр. */}
+          <Link
+            href={ad.href}
+            className="mt-2 flex h-12 items-center justify-center gap-2 rounded-[14px] bg-accent text-[13px] font-bold text-accent-foreground"
+          >
+            {t("ad.openPage")}
+            <span aria-hidden>→</span>
+          </Link>
         </div>
       ) : null}
     </section>

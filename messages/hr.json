@@ -1925,7 +1925,8 @@
     "coinSearchEmpty": "Ništa nije pronađeno. Pokušajte s tickerom.",
     "companyCoinsHint": "Lokacije bez vlastitog odabira nasljeđuju ove kovanice. Promjena skupa ide moderatoru.",
     "coinsInherited": "Ništa nije odabrano — ova lokacija prikazuje skup tvrtke: {coins}",
-    "paymentMethods": "Drugi načini plaćanja"
+    "paymentMethods": "Drugi načini plaćanja",
+    "bannerPreview": "Ovako posjetitelji vide vaš banner. Dodirom se otvara stavka."
   },
   "cabinet": {
     "kicker": "Odjeljak · Profil",
@@ -4365,7 +4366,8 @@
       "AD_CREATED": "Stvorena stavka bannera",
       "AD_UPDATED": "Ažurirana stavka bannera",
       "AD_PUBLISHED": "Objavljena stavka bannera",
-      "AD_ARCHIVED": "Arhivirana stavka bannera"
+      "AD_ARCHIVED": "Arhivirana stavka bannera",
+      "AD_VOICED": "Stavka bannera pročitana naglas"
     }
   },
   "cabinetTasks": {
@@ -4833,7 +4835,9 @@
         "PRODUCT": "Otvoriti proizvod",
         "WEBSITE": "Otvoriti web-stranicu",
         "POINT": "Prikazati na karti"
-      }
+      },
+      "openPage": "Otvoriti ovu stavku",
+      "placeHere": "Lokacija"
     }
   },
   "cabinetAds": {
@@ -4867,7 +4871,7 @@
     "audioHint": "Vaša vlastita snimka ima prednost; bez nje preglednik čita tekst naglas.",
     "fieldFrom": "Prikazuje se od",
     "fieldTo": "Prikazivati do",
-    "fieldEvent": "Datum događaja",
+    "fieldEvent": "Početak događaja",
     "fieldPromoCode": "Promo kod",
     "fieldAction": "Radnja",
     "action": {
@@ -4926,7 +4930,58 @@
       "at_edge": "Već na rubu.",
       "upload_failed": "Datoteka nije prenesena. Provjerite format i veličinu.",
       "too_large": "Datoteka je prevelika.",
-      "bad_type": "Ova vrsta datoteke nije prihvaćena."
-    }
+      "bad_type": "Ova vrsta datoteke nije prihvaćena.",
+      "event_backwards": "Događaj ne može završiti prije nego što počne.",
+      "place_coords_required": "Spustite oznaku na kartu: samo naziv nije lokacija.",
+      "place_coords_invalid": "Ta oznaka nije na karti — dodirnite mjesto ponovno.",
+      "place_too_long": "Naziv mjesta ili adresa predugi su.",
+      "voice_daily_limit": "Današnji limit za glasovno čitanje je potrošen — pokušajte ponovno sutra.",
+      "voice_not_configured": "Glasovno čitanje nije uključeno za ovaj poslužitelj.",
+      "voice_too_long": "Tekst je predug za čitanje naglas — skratite ga.",
+      "voice_upstream": "Glasovna usluga nije odgovorila. Pokušajte ponovno.",
+      "voice_timeout": "Glasovnoj usluzi je trebalo predugo. Pokušajte ponovno.",
+      "voice_empty": "Još nema ničega za čitanje naglas."
+    },
+    "fieldEventEnd": "Završetak događaja",
+    "eventEndHint": "Ostavite prazno za jednodnevni događaj.",
+    "placeTitle": "Gdje se nalazi",
+    "placeAdd": "Dodati lokaciju",
+    "placeHint": "Za objekt koji oglašavate — ured, prostor, nekretnina. To nije lokacija za prihvat kripta i ne prikazuje se na karti navigatora.",
+    "placeRemove": "Ukloniti lokaciju",
+    "placeName": "Naziv lokacije",
+    "placeAddress": "Adresa",
+    "placeFind": "Pronaći na karti",
+    "placeNoPin": "Još nema oznake — dodirnuti kartu",
+    "placeNotFound": "Ništa nije pronađeno za tu adresu — postaviti oznaku dodirom na kartu.",
+    "placeMapHint": "Dodirnuti kartu za postavljanje oznake; povući je radi prilagodbe.",
+    "placeAccepts": "Prihvaćeno na ovoj lokaciji",
+    "placeCoinSearch": "Pretražiti kovanice",
+    "placeCoinEmpty": "Ništa nije pronađeno",
+    "payment": {
+      "cash": "Gotovina",
+      "card": "Bankovna kartica",
+      "transfer": "Bankovni prijenos"
+    },
+    "voiceVoice": "Glas",
+    "voiceStyle": "Izvedba",
+    "voiceStyles": {
+      "calm": "Smireno i jasno",
+      "bright": "Vedro i toplo",
+      "solemn": "Svečano i bez žurbe"
+    },
+    "voiceMake": "Pročitati za mene",
+    "voiceRedo": "Ponovno snimiti",
+    "voiceOurs": "Izgovoreno od Trientesa",
+    "voiceYours": "Vaša vlastita snimka",
+    "voiceStale": "snimljeno iz ranijeg teksta",
+    "voiceHint": "Tekst čitamo naglas živim glasom i čuvamo datoteku. Vaša vlastita snimka ima prednost pred našom; ako nema nijedne, preglednik čita tekst."
+  },
+  "adPage": {
+    "placeTitle": "Gdje se nalazi",
+    "placeAccepts": "Prihvaćeno ovdje",
+    "paymentOutside": "Plaćanje se dogovara s prodavateljem — Trientes ne obrađuje plaćanja.",
+    "moreTitle": "Još od ovog poduzeća",
+    "eventRange": "{from} — {to}",
+    "companyProfile": "Poslovni profil"
   }
 }

@@ -16,6 +16,8 @@ type Row = {
   logoFit: string | null;
   muted: boolean;
   live: boolean;
+  /** Кадр первого идущего материала (слайс BZ): баннер магазина, а не только знак. */
+  banner: { adId: string; preview: string; title: string } | null;
 };
 
 /**
@@ -76,6 +78,18 @@ export function SubscriptionsControls({
         <div className={TILE_GRID}>
           {list.map((row) => (
             <div key={row.companyId} className="space-y-2">
+              {/* Баннер подписанного магазина: владелец сказал, что в подписках его
+                  не видно вовсе. Нажатие ведёт на страницу материала (BZ). */}
+              {row.live && row.banner ? (
+                <a href={`/${locale}/ad/${row.banner.adId}`} className="block" aria-label={row.banner.title}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={row.banner.preview}
+                    alt={row.banner.title}
+                    className="aspect-[16/10] w-full rounded-[16px] border border-hairline object-cover"
+                  />
+                </a>
+              ) : null}
               <TileShell row={row} locale={locale} mutedLabel={row.muted ? t("muted") : t("receiving")} notLive={t("notLive")} />
               <div className="grid gap-2">
                 <button

@@ -46,6 +46,18 @@ async function resolveFocus(raw: string | undefined): Promise<MapFocus | null> {
   return { id: `company/${point.id}`, lat: point.lat, lon: point.lon };
 }
 
+/** Координата из адреса: «широта,долгота» и ничего больше. */
+function parseAt(raw: string | undefined): MapFocus | null {
+  if (!raw) return null;
+  const [a, b] = raw.split(",", 2);
+  const lat = Number(a);
+  const lon = Number(b);
+  if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+  if (lat < -90 || lat > 90 || lon < -180 || lon > 180) return null;
+  if (lat === 0 && lon === 0) return null;
+  return { id: "", lat, lon };
+}
+
 /**
  * Где эту монету принимают — и, значит, с чего карта открывается, когда места
  * в адресе не названо.
@@ -101,10 +113,10 @@ export default async function CryptoMapPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ coin?: string; point?: string; product?: string }>;
+  searchParams: Promise<{ coin?: string; point?: string; product?: string; at?: string }>;
 }) {
   const { locale } = await params;
-  const { coin, point, product } = await searchParams;
+  const { coin, point, product, at } = await searchParams;
   setRequestLocale(locale);
 
   const selector = parseCoinSelector(coin);
@@ -137,7 +149,10 @@ export default async function CryptoMapPage({
   }
 
   // Названное место важнее области: в него и зовёт ссылка «где именно».
-  const focus = await resolveFocus(point);
+  // `?at=<широта>,<долгота>` — место рекламного материала (слайс BZ). У объекта
+  // рекламы нет строки в фиде (он не точка приёма), поэтому карта просто встаёт на
+  // координате: карточке открываться нечему, и это честно.
+  const focus = (await resolveFocus(point)) ?? parseAt(at);
   // Фильтр по товару (слайс BC): карта садится на полки, где он лежит, а не под ноги
   // нажавшему — единственный магазин может оказаться в другой стране.
   const productArea = product ? await resolveProductArea(product) : null;

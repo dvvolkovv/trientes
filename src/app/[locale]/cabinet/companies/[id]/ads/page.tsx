@@ -6,6 +6,8 @@ import { prisma } from "@/lib/prisma";
 import { pointScopeAllows } from "@/lib/company-team/permissions";
 import { MAX_PUBLISHED_ADS } from "@/lib/ads/rules";
 import { AdForm, type AdFormValues } from "@/components/ads/ad-form";
+import { readTop100 } from "@/lib/snapshot";
+import { listSelfListedCards } from "@/lib/coin-card-directory";
 import { AdList, type AdRow } from "@/components/ads/ad-list";
 import { CabinetBackButton } from "@/components/cabinet/back-button";
 
@@ -35,7 +37,7 @@ export default async function CompanyAdsPage({
   if (!canSeeSection(permissions, "promos")) notFound();
   const editable = canEditSection(permissions, "promos");
 
-  const [ads, points, offers] = await Promise.all([
+  const [ads, points, offers, coinRows, cardRows] = await Promise.all([
     prisma.companyAd.findMany({
       where: { companyId: company.id },
       orderBy: [{ status: "asc" }, { sortOrder: "asc" }, { createdAt: "desc" }],
@@ -52,6 +54,9 @@ export default async function CompanyAdsPage({
       take: 200,
       select: { productId: true, product: { select: { name: true } } },
     }),
+    // Монеты для места материала — тот же каталог, что в форме точки (BZ).
+    readTop100(),
+    listSelfListedCards(200),
   ]);
 
   const listed = company.status === "APPROVED" && !company.suspendedAt;
@@ -74,6 +79,17 @@ export default async function CompanyAdsPage({
         startsAt: editing.startsAt ? editing.startsAt.toISOString().slice(0, 10) : "",
         endsAt: editing.endsAt ? editing.endsAt.toISOString().slice(0, 10) : "",
         eventAt: editing.eventAt ? editing.eventAt.toISOString().slice(0, 10) : "",
+        eventEndAt: editing.eventEndAt ? editing.eventEndAt.toISOString().slice(0, 10) : "",
+        audioGenerated: editing.audioGenerated,
+        audioVoice: editing.audioVoice ?? "",
+        audioTextHash: editing.audioTextHash ?? "",
+        placeName: editing.placeName ?? "",
+        placeAddress: editing.placeAddress ?? "",
+        placeLat: editing.placeLat,
+        placeLon: editing.placeLon,
+        placeAcceptedCoinIds: editing.placeAcceptedCoinIds,
+        placeAcceptedCardIds: editing.placeAcceptedCardIds,
+        placePaymentMethods: editing.placePaymentMethods,
         action: editing.action,
         productId: editing.productId ?? "",
         pointId: editing.pointId ?? "",
@@ -81,6 +97,7 @@ export default async function CompanyAdsPage({
       }
     : null;
 
+  const liveOrder = ads.filter((a) => a.status === "PUBLISHED").map((a) => a.id);
   const rows: AdRow[] = ads.map((a) => ({
     id: a.id,
     kind: a.kind,
@@ -93,6 +110,7 @@ export default async function CompanyAdsPage({
         ? `${a.startsAt ? day(a.startsAt) : "…"} — ${a.endsAt ? day(a.endsAt) : "…"}`
         : null,
     hasAudio: a.audioUrl !== null,
+    position: liveOrder.indexOf(a.id) >= 0 ? liveOrder.indexOf(a.id) + 1 : undefined,
   }));
 
   return (
@@ -131,6 +149,8 @@ export default async function CompanyAdsPage({
             .filter((p) => pointScopeAllows(pointScope, p.id))
             .map((p) => ({ id: p.id, label: [p.name, p.city].filter(Boolean).join(" · ") }))}
           products={offers.map((o) => ({ id: o.productId, label: o.product.name }))}
+          coins={coinRows.map((c) => ({ id: c.id, symbol: c.symbol, name: c.name, logoUrl: c.logoUrl }))}
+          cards={cardRows.map((c) => ({ id: c.id, symbol: c.symbol, name: c.name, logoUrl: c.logoUrl }))}
         />
       ) : null}
 

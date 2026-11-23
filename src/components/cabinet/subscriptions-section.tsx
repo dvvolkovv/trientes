@@ -28,6 +28,34 @@ export async function SubscriptionsSection({ locale }: { locale: string }) {
     prisma.user.findUnique({ where: { id: userId }, select: { notifyPromos: true } }),
   ]);
 
+  // Баннеры подписанных магазинов (слайс BZ): один запрос на весь список, а не по
+  // запросу на плитку. Окно показа проверяем здесь же — витрина показывает только
+  // идущий материал, и подписки обязаны говорить то же самое.
+  const now = new Date();
+  const liveAds = follows.length
+    ? await prisma.companyAd.findMany({
+        where: {
+          companyId: { in: follows.map((f) => f.companyId) },
+          status: "PUBLISHED",
+          AND: [
+            { OR: [{ startsAt: null }, { startsAt: { lte: now } }] },
+            { OR: [{ endsAt: null }, { endsAt: { gte: now } }] },
+          ],
+        },
+        orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+        select: { id: true, companyId: true, title: true, mediaKind: true, mediaUrl: true, posterUrl: true },
+      })
+    : [];
+  const bannerOf = (companyId: string) => {
+    const a = liveAds.find((x) => x.companyId === companyId);
+    if (!a) return null;
+    return {
+      adId: a.id,
+      title: a.title,
+      preview: a.mediaKind === "VIDEO" ? (a.posterUrl ?? a.mediaUrl) : a.mediaUrl,
+    };
+  };
+
   return (
     <section id="subscriptions">
       <p className="mb-4 text-sm text-muted">{t("subtitle")}</p>
@@ -45,6 +73,7 @@ export async function SubscriptionsSection({ locale }: { locale: string }) {
           // Снятое надзором или нелистованное предприятие в списке остаётся: человек
           // подписывался сам и должен видеть, на что подписан, даже когда витрины нет.
           live: f.company.status === "APPROVED" && !f.company.suspendedAt && !f.company.deletedAt,
+          banner: bannerOf(f.companyId),
         }))}
       />
     </section>

@@ -46,8 +46,23 @@ export type CardAd = {
   promoCode: string | null;
   endsAt: string | null;
   eventAt: string | null;
+  /** Конец события (слайс BZ). Пусто — событие одного дня. */
+  eventEndAt: string | null;
+  /** Место материала (BZ): объект рекламы, а не точка приёма — в фид карты не идёт. */
+  place: CardAdPlace | null;
+  /** Куда ведёт нажатие на кадр: отдельная страница материала. */
+  href: string;
   /** Одно названное действие. Пусто — действия нет. */
   action: { kind: "PRODUCT" | "WEBSITE" | "POINT"; href: string; label: string } | null;
+};
+
+export type CardAdPlace = {
+  name: string | null;
+  address: string | null;
+  lat: number;
+  lon: number;
+  coins: AcceptedCoin[];
+  payments: PaymentMethodKey[];
 };
 
 export type CardPoint = {
@@ -162,7 +177,9 @@ export async function buildCompanyCard({
         select: {
           id: true, kind: true, title: true, body: true, language: true,
           mediaKind: true, mediaUrl: true, posterUrl: true, audioUrl: true,
-          promoCode: true, startsAt: true, endsAt: true, eventAt: true,
+          promoCode: true, startsAt: true, endsAt: true, eventAt: true, eventEndAt: true,
+          placeName: true, placeAddress: true, placeLat: true, placeLon: true,
+          placeAcceptedCoinIds: true, placeAcceptedCardIds: true, placePaymentMethods: true,
           action: true, actionUrl: true,
           product: { select: { slug: true, name: true, suspendedAt: true, mergedIntoId: true } },
           point: { select: { id: true, name: true, status: true, suspendedAt: true, deletedAt: true } },
@@ -178,6 +195,18 @@ export async function buildCompanyCard({
     hasPhysicalPoints: physical.some((p) => !p.suspendedAt),
   });
 
+  // Монеты места материала (BZ) читаются тем же запросом, что монеты предприятия:
+  // два запроса об одних и тех же строках стоили бы вдвое, а набор у места свой.
+  const liveAds = company.ads.filter((a) => adInWindow(a, now)).slice(0, 5);
+  const wantedCoinIds = [
+    ...(show.coins ? company.acceptedCoinIds : []),
+    ...liveAds.flatMap((a) => a.placeAcceptedCoinIds),
+  ];
+  const wantedCardIds = [
+    ...(show.coins ? company.acceptedCardIds : []),
+    ...liveAds.flatMap((a) => a.placeAcceptedCardIds),
+  ];
+
   const [onlineStockShelves, offers, coinRows, cardRows] = await Promise.all([
     prisma.warehouse.count({
       where: {
@@ -186,16 +215,15 @@ export async function buildCompanyCard({
       },
     }),
     show.products ? readCompanyOffers(company.id) : Promise.resolve([] as ShowcaseOffer[]),
-    // Монеты показываем только когда продавец их не выключил (слайс BX).
-    show.coins && company.acceptedCoinIds.length
+    wantedCoinIds.length
       ? prisma.coin.findMany({
-          where: { id: { in: company.acceptedCoinIds } },
+          where: { id: { in: [...new Set(wantedCoinIds)] } },
           select: { id: true, symbol: true, name: true, logoUrl: true, slug: true },
         })
       : Promise.resolve([]),
-    show.coins && company.acceptedCardIds.length
+    wantedCardIds.length
       ? prisma.coinCard.findMany({
-          where: { id: { in: company.acceptedCardIds }, status: "APPROVED" },
+          where: { id: { in: [...new Set(wantedCardIds)] }, status: "APPROVED" },
           select: { id: true, symbol: true, name: true, logoUrl: true, slug: true },
         })
       : Promise.resolve([]),
@@ -232,20 +260,27 @@ export async function buildCompanyCard({
       };
     });
 
-  const coins: AcceptedCoin[] = [
-    ...coinRows.map((c) => ({
-      key: c.id, symbol: c.symbol.toUpperCase(), name: c.name, logoUrl: c.logoUrl, slug: c.slug, own: false,
-    })),
-    ...cardRows.map((c) => ({
-      key: c.id, symbol: c.symbol.toUpperCase(), name: c.name, logoUrl: c.logoUrl, slug: c.slug, own: true,
-    })),
+  /** Монета словами по ключу: один набор строк на предприятие и на места материалов. */
+  const coinsByIds = (coinIds: string[], cardIds: string[]): AcceptedCoin[] => [
+    ...coinRows
+      .filter((c) => coinIds.includes(c.id))
+      .map((c) => ({
+        key: c.id, symbol: c.symbol.toUpperCase(), name: c.name, logoUrl: c.logoUrl, slug: c.slug, own: false,
+      })),
+    ...cardRows
+      .filter((c) => cardIds.includes(c.id))
+      .map((c) => ({
+        key: c.id, symbol: c.symbol.toUpperCase(), name: c.name, logoUrl: c.logoUrl, slug: c.slug, own: true,
+      })),
   ];
+
+  const coins: AcceptedCoin[] = show.coins
+    ? coinsByIds(company.acceptedCoinIds, company.acceptedCardIds)
+    : [];
 
   // Материалы баннера: опубликованные и идущие сейчас. Привязка к снятому товару или
   // снятой точке гасит **действие**, а не материал (правило BG).
-  const ads: CardAd[] = company.ads
-    .filter((a) => adInWindow(a, now))
-    .slice(0, 5)
+  const ads: CardAd[] = liveAds
     .map((a) => {
       let action: CardAd["action"] = null;
       if (a.action === "PRODUCT" && a.product && !a.product.suspendedAt && !a.product.mergedIntoId) {
@@ -268,6 +303,21 @@ export async function buildCompanyCard({
         promoCode: a.promoCode,
         endsAt: a.endsAt ? a.endsAt.toISOString() : null,
         eventAt: a.eventAt ? a.eventAt.toISOString() : null,
+        eventEndAt: a.eventEndAt ? a.eventEndAt.toISOString() : null,
+        // Место материала выключателями витрины не гасится: это часть самого
+        // объявления, а не раздел карточки (монеты предприятия — другое дело).
+        place:
+          a.placeLat !== null && a.placeLon !== null
+            ? {
+                name: a.placeName,
+                address: a.placeAddress,
+                lat: a.placeLat,
+                lon: a.placeLon,
+                coins: coinsByIds(a.placeAcceptedCoinIds, a.placeAcceptedCardIds),
+                payments: parsePaymentMethods(a.placePaymentMethods),
+              }
+            : null,
+        href: `/${locale}/ad/${a.id}`,
         action,
       };
     });

@@ -1925,7 +1925,8 @@
     "coinSearchEmpty": "찾은 항목이 없습니다. 티커로 시도해 보세요.",
     "companyCoinsHint": "개별 선택이 없는 지점은 이 코인들을 따릅니다. 세트 변경은 모더레이터에게 전달됩니다.",
     "coinsInherited": "선택된 항목이 없음 — 이 지점은 회사 세트를 표시합니다: {coins}",
-    "paymentMethods": "다른 결제 수단"
+    "paymentMethods": "다른 결제 수단",
+    "bannerPreview": "방문자가 배너를 이렇게 봅니다. 탭하면 항목이 열립니다."
   },
   "cabinet": {
     "kicker": "섹션 · 캐비닛",
@@ -4365,7 +4366,8 @@
       "AD_CREATED": "배너 항목이 생성됨",
       "AD_UPDATED": "배너 항목이 업데이트됨",
       "AD_PUBLISHED": "배너 항목이 게시됨",
-      "AD_ARCHIVED": "배너 항목이 보관됨"
+      "AD_ARCHIVED": "배너 항목이 보관됨",
+      "AD_VOICED": "배너 항목 음성 처리됨"
     }
   },
   "cabinetTasks": {
@@ -4833,7 +4835,9 @@
         "PRODUCT": "제품 열기",
         "WEBSITE": "웹사이트 열기",
         "POINT": "지도에서 보기"
-      }
+      },
+      "openPage": "이 항목 열기",
+      "placeHere": "위치"
     }
   },
   "cabinetAds": {
@@ -4867,7 +4871,7 @@
     "audioHint": "직접 녹음한 음성이 우선 적용됩니다. 없으면 브라우저가 텍스트를 음성으로 읽습니다.",
     "fieldFrom": "노출 시작",
     "fieldTo": "노출 종료",
-    "fieldEvent": "이벤트 날짜",
+    "fieldEvent": "이벤트 시작",
     "fieldPromoCode": "프로모 코드",
     "fieldAction": "동작",
     "action": {
@@ -4926,7 +4930,58 @@
       "at_edge": "이미 끝에 있습니다.",
       "upload_failed": "파일이 업로드되지 않았습니다. 형식과 크기를 확인하세요.",
       "too_large": "파일이 너무 큽니다.",
-      "bad_type": "이 파일 형식은 허용되지 않습니다."
-    }
+      "bad_type": "이 파일 형식은 허용되지 않습니다.",
+      "event_backwards": "이벤트는 시작 전에 종료될 수 없습니다.",
+      "place_coords_required": "지도에 핀을 놓으세요: 이름만으로는 위치가 아닙니다.",
+      "place_coords_invalid": "그 핀은 지도에 있지 않습니다 — 장소를 다시 탭하세요.",
+      "place_too_long": "장소 이름이나 주소가 너무 깁니다.",
+      "voice_daily_limit": "오늘의 보이스오버 한도가 소진되었습니다 — 내일 다시 시도하세요.",
+      "voice_not_configured": "이 서버에서는 보이스오버가 활성화되어 있지 않습니다.",
+      "voice_too_long": "보이스오버로 읽기에 텍스트가 너무 깁니다 — 줄이세요.",
+      "voice_upstream": "음성 서비스가 응답하지 않았습니다. 다시 시도하세요.",
+      "voice_timeout": "음성 서비스에 시간이 너무 오래 걸렸습니다. 다시 시도하세요.",
+      "voice_empty": "아직 읽을 내용이 없습니다."
+    },
+    "fieldEventEnd": "이벤트 종료",
+    "eventEndHint": "하루짜리 이벤트라면 비워 두세요.",
+    "placeTitle": "위치",
+    "placeAdd": "위치 추가",
+    "placeHint": "광고하는 대상(사무실, 행사장, 부동산)용입니다. 암호화폐 결제 수락 지점이 아니며 내비게이터 지도에 표시되지 않습니다.",
+    "placeRemove": "위치 제거",
+    "placeName": "장소명",
+    "placeAddress": "주소",
+    "placeFind": "지도에서 찾기",
+    "placeNoPin": "아직 핀이 없습니다 — 지도를 탭하세요",
+    "placeNotFound": "해당 주소를 찾지 못했습니다 — 지도를 탭해 핀을 놓으세요.",
+    "placeMapHint": "지도를 탭해 핀을 놓고, 끌어서 조정하세요.",
+    "placeAccepts": "이 장소에서 결제 가능",
+    "placeCoinSearch": "코인 검색",
+    "placeCoinEmpty": "검색 결과 없음",
+    "payment": {
+      "cash": "현금",
+      "card": "카드",
+      "transfer": "계좌이체"
+    },
+    "voiceVoice": "음성",
+    "voiceStyle": "낭독",
+    "voiceStyles": {
+      "calm": "차분하고 분명하게",
+      "bright": "밝고 따뜻하게",
+      "solemn": "엄숙하고 느긋하게"
+    },
+    "voiceMake": "대신 읽어주기",
+    "voiceRedo": "다시 녹음하기",
+    "voiceOurs": "Trientes 녹음",
+    "voiceYours": "내 녹음",
+    "voiceStale": "이전 텍스트로 녹음됨",
+    "voiceHint": "우리가 실제 음성으로 텍스트를 읽어 파일을 보관합니다. 사용자의 녹음이 우리 녹음보다 우선하며, 둘 다 없으면 브라우저가 텍스트를 읽습니다."
+  },
+  "adPage": {
+    "placeTitle": "위치",
+    "placeAccepts": "여기에서 결제 가능",
+    "paymentOutside": "결제는 판매자와 직접 진행됩니다 — Trientes는 결제를 처리하지 않습니다.",
+    "moreTitle": "이 업체 더 보기",
+    "eventRange": "{from} — {to}",
+    "companyProfile": "업체 프로필"
   }
 }

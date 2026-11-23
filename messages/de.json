@@ -1925,7 +1925,8 @@
     "coinSearchEmpty": "Nichts gefunden. Versuche den Ticker",
     "companyCoinsHint": "Punkte ohne eigene Auswahl erben diese Coins. Eine Änderung des Sets geht an einen Moderator",
     "coinsInherited": "Nichts ausgewählt — dieser Punkt zeigt das Unternehmens-Set: {coins}",
-    "paymentMethods": "Weitere Zahlungsmöglichkeiten"
+    "paymentMethods": "Weitere Zahlungsmöglichkeiten",
+    "bannerPreview": "So sehen Besucher dein Banner. Durch Tippen wird der Eintrag geöffnet."
   },
   "cabinet": {
     "kicker": "Bereich · Kabinett",
@@ -4365,7 +4366,8 @@
       "AD_CREATED": "Banner-Element erstellt",
       "AD_UPDATED": "Banner-Element aktualisiert",
       "AD_PUBLISHED": "Banner-Element veröffentlicht",
-      "AD_ARCHIVED": "Banner-Element archiviert"
+      "AD_ARCHIVED": "Banner-Element archiviert",
+      "AD_VOICED": "Banner-Element vertont"
     }
   },
   "cabinetTasks": {
@@ -4833,7 +4835,9 @@
         "PRODUCT": "Produkt öffnen",
         "WEBSITE": "Website öffnen",
         "POINT": "Auf der Karte anzeigen"
-      }
+      },
+      "openPage": "Eintrag öffnen",
+      "placeHere": "Standort"
     }
   },
   "cabinetAds": {
@@ -4867,7 +4871,7 @@
     "audioHint": "Eigene Aufnahmen haben Vorrang; ohne Aufnahme liest der Browser den Text vor.",
     "fieldFrom": "Angezeigt ab",
     "fieldTo": "Angezeigt bis",
-    "fieldEvent": "Veranstaltungsdatum",
+    "fieldEvent": "Beginn der Veranstaltung",
     "fieldPromoCode": "Promo-Code",
     "fieldAction": "Aktion",
     "action": {
@@ -4893,7 +4897,7 @@
     "empty": "Noch keine Einträge.",
     "status": {
       "DRAFT": "Entwurf",
-      "PUBLISHED": "Live",
+      "PUBLISHED": "Veröffentlicht",
       "ARCHIVED": "Archiviert"
     },
     "errors": {
@@ -4926,7 +4930,58 @@
       "at_edge": "Bereits am Rand.",
       "upload_failed": "Die Datei wurde nicht hochgeladen. Prüfe Format und Größe.",
       "too_large": "Die Datei ist zu groß.",
-      "bad_type": "Dieser Dateityp wird nicht akzeptiert."
-    }
+      "bad_type": "Dieser Dateityp wird nicht akzeptiert.",
+      "event_backwards": "Die Veranstaltung kann nicht enden, bevor sie beginnt.",
+      "place_coords_required": "Setze den Pin auf die Karte: Ein Name allein ist kein Standort.",
+      "place_coords_invalid": "Dieser Pin liegt nicht auf der Karte — tippe den Ort erneut an.",
+      "place_too_long": "Der Ortsname oder die Adresse ist zu lang.",
+      "voice_daily_limit": "Das heutige Sprachlimit ist aufgebraucht — versuche es morgen erneut.",
+      "voice_not_configured": "Die Sprachfunktion ist für diesen Server nicht aktiviert.",
+      "voice_too_long": "Der Text ist zu lang zum Vorlesen — kürze ihn.",
+      "voice_upstream": "Der Sprachdienst hat nicht geantwortet. Versuche es erneut.",
+      "voice_timeout": "Der Sprachdienst hat zu lange gebraucht. Versuche es erneut.",
+      "voice_empty": "Es gibt noch nichts zum Vorlesen."
+    },
+    "fieldEventEnd": "Ende der Veranstaltung",
+    "eventEndHint": "Für eine eintägige Veranstaltung leer lassen.",
+    "placeTitle": "Wo es ist",
+    "placeAdd": "Standort hinzufügen",
+    "placeHint": "Für das beworbene Objekt — ein Büro, ein Veranstaltungsort, eine Immobilie. Es ist kein Krypto-Akzeptanzpunkt und erscheint nicht auf der Navigator-Karte.",
+    "placeRemove": "Standort entfernen",
+    "placeName": "Name des Ortes",
+    "placeAddress": "Adresse",
+    "placeFind": "Auf der Karte finden",
+    "placeNoPin": "Noch kein Pin — tippe auf die Karte",
+    "placeNotFound": "Unter dieser Adresse nichts gefunden — setze den Pin, indem du auf die Karte tippst.",
+    "placeMapHint": "Tippe auf die Karte, um den Pin zu setzen; ziehe ihn, um ihn anzupassen.",
+    "placeAccepts": "An diesem Ort akzeptiert",
+    "placeCoinSearch": "Coins suchen",
+    "placeCoinEmpty": "Nichts gefunden",
+    "payment": {
+      "cash": "Bargeld",
+      "card": "Bankkarte",
+      "transfer": "Banküberweisung"
+    },
+    "voiceVoice": "Stimme",
+    "voiceStyle": "Sprechweise",
+    "voiceStyles": {
+      "calm": "Ruhig und klar",
+      "bright": "Hell und warm",
+      "solemn": "Feierlich und bedächtig"
+    },
+    "voiceMake": "Für mich vertonen",
+    "voiceRedo": "Erneut aufnehmen",
+    "voiceOurs": "Vertont von Trientes",
+    "voiceYours": "Eigene Aufnahme",
+    "voiceStale": "aus dem vorherigen Text aufgenommen",
+    "voiceHint": "Wir lesen den Text mit einer echten Stimme vor und speichern die Datei. Ihre eigene Aufnahme hat Vorrang vor unserer; gibt es keine, liest der Browser den Text vor."
+  },
+  "adPage": {
+    "placeTitle": "Standort",
+    "placeAccepts": "Hier akzeptiert",
+    "paymentOutside": "Die Zahlung wird mit dem Verkäufer vereinbart — Trientes verarbeitet keine Zahlungen.",
+    "moreTitle": "Mehr von diesem Unternehmen",
+    "eventRange": "{from} — {to}",
+    "companyProfile": "Unternehmensprofil"
   }
 }
