@@ -1827,7 +1827,7 @@
       "media": "Mediji i oglašavanje",
       "other": "Ostalo"
     },
-    "logoSection": "Logo",
+    "logoSection": "Logotip",
     "logoFileHint": "PNG, JPEG ili WebP, do 4 MB. Datoteka se sprema odmah.",
     "logoShape": {
       "square": "Kvadrat",
@@ -3880,7 +3880,7 @@
       "attributes": "Svojstva",
       "photos": "Fotografije",
       "videoUrl": "Video URL",
-      "video": "Video",
+      "video": "Videozapis",
       "documents": "Dokumenti"
     },
     "category": {
@@ -4940,7 +4940,8 @@
       "voice_too_long": "Tekst je predug za čitanje naglas — skratite ga.",
       "voice_upstream": "Glasovna usluga nije odgovorila. Pokušajte ponovno.",
       "voice_timeout": "Glasovnoj usluzi je trebalo predugo. Pokušajte ponovno.",
-      "voice_empty": "Još nema ničega za čitanje naglas."
+      "voice_empty": "Još nema ničega za čitanje naglas.",
+      "point_or_place_required": "Odaberite jednu od svojih lokacija ili dolje dodajte vlastitu adresu ovog materijala."
     },
     "fieldEventEnd": "Završetak događaja",
     "eventEndHint": "Ostavite prazno za jednodnevni događaj.",
@@ -4974,7 +4975,19 @@
     "voiceOurs": "Izgovoreno od Trientesa",
     "voiceYours": "Vaša vlastita snimka",
     "voiceStale": "snimljeno iz ranijeg teksta",
-    "voiceHint": "Tekst čitamo naglas živim glasom i čuvamo datoteku. Vaša vlastita snimka ima prednost pred našom; ako nema nijedne, preglednik čita tekst."
+    "voiceHint": "Tekst čitamo naglas živim glasom i čuvamo datoteku. Vaša vlastita snimka ima prednost pred našom; ako nema nijedne, preglednik čita tekst.",
+    "pointTargetPlace": "Vlastita lokacija ovog materijala",
+    "pointTargetPlaceEmpty": "Još nema adrese — dodirnite za dodavanje",
+    "placeTypeHint": "Upišite adresu i tražit ćemo je dok tipkate, ili dodirnite kartu da postavite oznaku.",
+    "missingHint": "Još potrebno: {list}",
+    "missing": {
+      "media": "fotografija ili videozapis",
+      "title": "naslov",
+      "event": "datum događaja",
+      "product": "proizvod",
+      "url": "adresa web-mjesta",
+      "place": "mjesto za akciju"
+    }
   },
   "adPage": {
     "placeTitle": "Gdje se nalazi",

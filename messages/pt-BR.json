@@ -4940,7 +4940,8 @@
       "voice_too_long": "O texto é muito longo para leitura em voz alta — reduza-o.",
       "voice_upstream": "O serviço de voz não respondeu. Tente novamente.",
       "voice_timeout": "O serviço de voz demorou demais. Tente novamente.",
-      "voice_empty": "Ainda não há nada para ler em voz alta."
+      "voice_empty": "Ainda não há nada para ler em voz alta.",
+      "point_or_place_required": "Escolha um dos seus pontos ou adicione o endereço deste material abaixo."
     },
     "fieldEventEnd": "Fim do evento",
     "eventEndHint": "Deixe em branco para um evento de um dia.",
@@ -4974,7 +4975,19 @@
     "voiceOurs": "Locução da Trientes",
     "voiceYours": "Sua própria gravação",
     "voiceStale": "gravado a partir do texto anterior",
-    "voiceHint": "Lemos o texto em voz alta com uma voz humana e guardamos o arquivo. Sua própria gravação prevalece sobre a nossa; sem nenhuma delas, o navegador lê o texto."
+    "voiceHint": "Lemos o texto em voz alta com uma voz humana e guardamos o arquivo. Sua própria gravação prevalece sobre a nossa; sem nenhuma delas, o navegador lê o texto.",
+    "pointTargetPlace": "Local do próprio material",
+    "pointTargetPlaceEmpty": "Ainda sem endereço — toque para adicionar um",
+    "placeTypeHint": "Digite o endereço e buscamos conforme você digita, ou toque no mapa para soltar o pino.",
+    "missingHint": "Ainda faltam: {list}",
+    "missing": {
+      "media": "uma foto ou um clipe",
+      "title": "um título",
+      "event": "a data do evento",
+      "product": "o produto",
+      "url": "o endereço do site",
+      "place": "o local da ação"
+    }
   },
   "adPage": {
     "placeTitle": "Onde fica",

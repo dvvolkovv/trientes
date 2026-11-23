@@ -1726,7 +1726,7 @@
       "journal": "{count} Einträge",
       "chat": "{count} Nachrichten",
       "customers": "Unterhaltungen: {count}",
-      "ads": "{count} live"
+      "ads": "{count} aktiv"
     },
     "tileEmpty": "noch nichts",
     "tileBadge": {
@@ -4940,7 +4940,8 @@
       "voice_too_long": "Der Text ist zu lang zum Vorlesen — kürze ihn.",
       "voice_upstream": "Der Sprachdienst hat nicht geantwortet. Versuche es erneut.",
       "voice_timeout": "Der Sprachdienst hat zu lange gebraucht. Versuche es erneut.",
-      "voice_empty": "Es gibt noch nichts zum Vorlesen."
+      "voice_empty": "Es gibt noch nichts zum Vorlesen.",
+      "point_or_place_required": "Wählen Sie einen Ihrer Standorte aus oder fügen Sie unten die eigene Adresse dieses Materials hinzu."
     },
     "fieldEventEnd": "Ende der Veranstaltung",
     "eventEndHint": "Für eine eintägige Veranstaltung leer lassen.",
@@ -4974,7 +4975,19 @@
     "voiceOurs": "Vertont von Trientes",
     "voiceYours": "Eigene Aufnahme",
     "voiceStale": "aus dem vorherigen Text aufgenommen",
-    "voiceHint": "Wir lesen den Text mit einer echten Stimme vor und speichern die Datei. Ihre eigene Aufnahme hat Vorrang vor unserer; gibt es keine, liest der Browser den Text vor."
+    "voiceHint": "Wir lesen den Text mit einer echten Stimme vor und speichern die Datei. Ihre eigene Aufnahme hat Vorrang vor unserer; gibt es keine, liest der Browser den Text vor.",
+    "pointTargetPlace": "Eigener Standort des Materials",
+    "pointTargetPlaceEmpty": "Noch keine Adresse — tippen, um eine hinzuzufügen",
+    "placeTypeHint": "Geben Sie die Adresse ein, wir suchen während der Eingabe, oder tippen Sie auf die Karte, um einen Pin zu setzen.",
+    "missingHint": "Noch benötigt: {list}",
+    "missing": {
+      "media": "ein Foto oder ein Clip",
+      "title": "eine Überschrift",
+      "event": "das Veranstaltungsdatum",
+      "product": "das Produkt",
+      "url": "die Website-Adresse",
+      "place": "der Ort für die Aktion"
+    }
   },
   "adPage": {
     "placeTitle": "Standort",

@@ -4940,7 +4940,8 @@
       "voice_too_long": "Metin sesli okunamayacak kadar uzun — kısaltın.",
       "voice_upstream": "Ses hizmeti yanıt vermedi. Tekrar deneyin.",
       "voice_timeout": "Ses hizmeti zaman aşımına uğradı. Tekrar deneyin.",
-      "voice_empty": "Henüz sesli okunacak bir şey yok."
+      "voice_empty": "Henüz sesli okunacak bir şey yok.",
+      "point_or_place_required": "Noktalarınızdan birini seçin veya aşağıya bu materyalin kendi adresini ekleyin."
     },
     "fieldEventEnd": "Etkinlik bitişi",
     "eventEndHint": "Tek günlük etkinlik için boş bırakın.",
@@ -4974,7 +4975,19 @@
     "voiceOurs": "Trientes tarafından seslendirildi",
     "voiceYours": "Kendi kaydınız",
     "voiceStale": "önceki metinden kaydedildi",
-    "voiceHint": "Metni canlı bir sesle seslendirir ve dosyayı saklarız. Sizin kaydınız bizimkine önceliklidir; ikisi de yoksa metni tarayıcı okur."
+    "voiceHint": "Metni canlı bir sesle seslendirir ve dosyayı saklarız. Sizin kaydınız bizimkine önceliklidir; ikisi de yoksa metni tarayıcı okur.",
+    "pointTargetPlace": "Bu materyalin kendi konumu",
+    "pointTargetPlaceEmpty": "Henüz adres yok — eklemek için dokunun",
+    "placeTypeHint": "Adresi yazın; siz yazarken arayalım, ya da pini bırakmak için haritaya dokunun.",
+    "missingHint": "Hâlâ gerekli: {list}",
+    "missing": {
+      "media": "bir fotoğraf veya bir klip",
+      "title": "bir başlık",
+      "event": "etkinlik tarihi",
+      "product": "ürün",
+      "url": "web sitesi adresi",
+      "place": "işlemin yeri"
+    }
   },
   "adPage": {
     "placeTitle": "Nerede",

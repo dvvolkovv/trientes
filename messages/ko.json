@@ -4940,7 +4940,8 @@
       "voice_too_long": "보이스오버로 읽기에 텍스트가 너무 깁니다 — 줄이세요.",
       "voice_upstream": "음성 서비스가 응답하지 않았습니다. 다시 시도하세요.",
       "voice_timeout": "음성 서비스에 시간이 너무 오래 걸렸습니다. 다시 시도하세요.",
-      "voice_empty": "아직 읽을 내용이 없습니다."
+      "voice_empty": "아직 읽을 내용이 없습니다.",
+      "point_or_place_required": "내 지점 중 하나를 선택하거나, 아래에 이 소재의 자체 주소를 추가하세요."
     },
     "fieldEventEnd": "이벤트 종료",
     "eventEndHint": "하루짜리 이벤트라면 비워 두세요.",
@@ -4974,7 +4975,19 @@
     "voiceOurs": "Trientes 녹음",
     "voiceYours": "내 녹음",
     "voiceStale": "이전 텍스트로 녹음됨",
-    "voiceHint": "우리가 실제 음성으로 텍스트를 읽어 파일을 보관합니다. 사용자의 녹음이 우리 녹음보다 우선하며, 둘 다 없으면 브라우저가 텍스트를 읽습니다."
+    "voiceHint": "우리가 실제 음성으로 텍스트를 읽어 파일을 보관합니다. 사용자의 녹음이 우리 녹음보다 우선하며, 둘 다 없으면 브라우저가 텍스트를 읽습니다.",
+    "pointTargetPlace": "이 소재의 자체 위치",
+    "pointTargetPlaceEmpty": "아직 주소가 없어요 — 탭하여 추가하세요",
+    "placeTypeHint": "주소를 입력하면 입력하는 대로 찾아드려요, 또는 지도를 탭해 핀을 놓으세요.",
+    "missingHint": "아직 필요한 항목: {list}",
+    "missing": {
+      "media": "사진 또는 클립",
+      "title": "제목",
+      "event": "이벤트 날짜",
+      "product": "제품",
+      "url": "웹사이트 주소",
+      "place": "행동이 이루어질 장소"
+    }
   },
   "adPage": {
     "placeTitle": "위치",

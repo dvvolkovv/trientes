@@ -312,7 +312,11 @@ export function parseAdInput(input: AdInput): AdParse {
     if (!productId) return fail("product_required");
   } else if (action === "POINT") {
     pointId = (input.pointId ?? "").trim() || null;
-    if (!pointId) return fail("point_required");
+    // Вести «на карту» можно двумя способами: на свою точку приёма или на место
+    // самого материала (BZ). Объект рекламы — офис, площадка, дом — точкой приёма
+    // не является, и требовать выбора из точек значило бы, что у такой рекламы
+    // действия не бывает вовсе.
+    if (!pointId && place.value.placeLat === null) return fail("point_or_place_required");
   } else if (action === "WEBSITE") {
     actionUrl = (input.actionUrl ?? "").trim() || null;
     if (!actionUrl) return fail("url_required");

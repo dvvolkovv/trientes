@@ -4940,7 +4940,8 @@
       "voice_too_long": "Text je príliš dlhý na nahovorenie — skráťte ho.",
       "voice_upstream": "Hlasová služba neodpovedala. Skúste znova.",
       "voice_timeout": "Hlasová služba neodpovedala včas. Skúste znova.",
-      "voice_empty": "Zatiaľ nie je čo nahovoriť."
+      "voice_empty": "Zatiaľ nie je čo nahovoriť.",
+      "point_or_place_required": "Vyberte jedno zo svojich miest alebo nižšie pridajte vlastnú adresu tohto materiálu"
     },
     "fieldEventEnd": "Koniec podujatia",
     "eventEndHint": "Pri jednodňovom podujatí nechajte prázdne.",
@@ -4974,7 +4975,19 @@
     "voiceOurs": "Nahovorené Trientes",
     "voiceYours": "Vaša vlastná nahrávka",
     "voiceStale": "nahraté z predchádzajúceho textu",
-    "voiceHint": "Text prečítame nahlas živým hlasom a súbor uchováme. Vaša vlastná nahrávka má prednosť pred našou; ak nie je ani jedna, text prečíta prehliadač."
+    "voiceHint": "Text prečítame nahlas živým hlasom a súbor uchováme. Vaša vlastná nahrávka má prednosť pred našou; ak nie je ani jedna, text prečíta prehliadač.",
+    "pointTargetPlace": "Vlastná poloha tohto materiálu",
+    "pointTargetPlaceEmpty": "Zatiaľ bez adresy — ťuknite a pridajte ju",
+    "placeTypeHint": "Zadajte adresu a budeme ju vyhľadávať počas písania, alebo ťuknite do mapy a umiestnite značku.",
+    "missingHint": "Stále chýba: {list}",
+    "missing": {
+      "media": "fotka alebo klip",
+      "title": "nadpis",
+      "event": "dátum podujatia",
+      "product": "produkt",
+      "url": "webová adresa",
+      "place": "miesto akcie"
+    }
   },
   "adPage": {
     "placeTitle": "Kde sa nachádza",

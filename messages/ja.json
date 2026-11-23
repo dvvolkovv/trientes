@@ -4940,7 +4940,8 @@
       "voice_too_long": "読み上げるにはテキストが長すぎます—短くしてください。",
       "voice_upstream": "音声サービスが応答しませんでした。もう一度お試しください。",
       "voice_timeout": "音声サービスに時間がかかりすぎました。もう一度お試しください。",
-      "voice_empty": "読み上げるものがまだありません。"
+      "voice_empty": "読み上げるものがまだありません。",
+      "point_or_place_required": "あなたの拠点のいずれかを選択するか、下にこの素材の住所を追加してください。"
     },
     "fieldEventEnd": "イベント終了",
     "eventEndHint": "1日限定のイベントは空欄のままにしてください。",
@@ -4974,7 +4975,19 @@
     "voiceOurs": "Trientesの音声",
     "voiceYours": "自分の録音",
     "voiceStale": "以前のテキストからの録音",
-    "voiceHint": "テキストを生の音声で読み上げ、ファイルを保存します。ご自身の録音が優先され、どちらもない場合はブラウザーが読み上げます。"
+    "voiceHint": "テキストを生の音声で読み上げ、ファイルを保存します。ご自身の録音が優先され、どちらもない場合はブラウザーが読み上げます。",
+    "pointTargetPlace": "この素材の所在地",
+    "pointTargetPlaceEmpty": "住所は未設定 — タップして追加",
+    "placeTypeHint": "住所を入力すると入力中に検索します。地図をタップしてピンを落とすこともできます。",
+    "missingHint": "まだ必要: {list}",
+    "missing": {
+      "media": "写真または動画",
+      "title": "見出し",
+      "event": "イベント日",
+      "product": "商品",
+      "url": "WebサイトのURL",
+      "place": "実施場所"
+    }
   },
   "adPage": {
     "placeTitle": "場所",

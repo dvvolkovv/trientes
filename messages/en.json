@@ -4940,7 +4940,8 @@
       "voice_too_long": "The text is too long to read aloud — shorten it.",
       "voice_upstream": "The voice service did not answer. Try again.",
       "voice_timeout": "The voice service took too long. Try again.",
-      "voice_empty": "There is nothing to read aloud yet."
+      "voice_empty": "There is nothing to read aloud yet.",
+      "point_or_place_required": "Pick one of your points, or add this material's own address below."
     },
     "fieldEventEnd": "Event ends",
     "eventEndHint": "Leave empty for a one-day event.",
@@ -4974,7 +4975,19 @@
     "voiceOurs": "Voiced by Trientes",
     "voiceYours": "Your own recording",
     "voiceStale": "recorded from the earlier text",
-    "voiceHint": "We read the text aloud with a live voice and keep the file. Your own recording wins over ours; with neither, the browser reads the text."
+    "voiceHint": "We read the text aloud with a live voice and keep the file. Your own recording wins over ours; with neither, the browser reads the text.",
+    "pointTargetPlace": "This material's own location",
+    "pointTargetPlaceEmpty": "No address yet — tap to add one",
+    "placeTypeHint": "Type the address and we look it up as you type, or tap the map to drop the pin.",
+    "missingHint": "Still needed: {list}",
+    "missing": {
+      "media": "a photo or a clip",
+      "title": "a headline",
+      "event": "the event date",
+      "product": "the product",
+      "url": "the website address",
+      "place": "the place for the action"
+    }
   },
   "adPage": {
     "placeTitle": "Where it is",

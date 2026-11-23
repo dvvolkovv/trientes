@@ -4940,7 +4940,8 @@
       "voice_too_long": "El texto es demasiado largo para leerlo en voz alta — acórtalo.",
       "voice_upstream": "El servicio de voz no respondió. Inténtalo de nuevo.",
       "voice_timeout": "El servicio de voz tardó demasiado. Inténtalo de nuevo.",
-      "voice_empty": "Aún no hay nada que leer en voz alta."
+      "voice_empty": "Aún no hay nada que leer en voz alta.",
+      "point_or_place_required": "Elige uno de tus puntos o agrega la dirección propia de este material abajo"
     },
     "fieldEventEnd": "Fin del evento",
     "eventEndHint": "Déjalo vacío para un evento de un día.",
@@ -4974,7 +4975,19 @@
     "voiceOurs": "Con voz de Trientes",
     "voiceYours": "Tu propia grabación",
     "voiceStale": "grabado a partir del texto anterior",
-    "voiceHint": "Leemos el texto en voz alta con una voz real y guardamos el archivo. Tu grabación tiene prioridad sobre la nuestra; si no hay ninguna, el navegador lee el texto."
+    "voiceHint": "Leemos el texto en voz alta con una voz real y guardamos el archivo. Tu grabación tiene prioridad sobre la nuestra; si no hay ninguna, el navegador lee el texto.",
+    "pointTargetPlace": "Ubicación propia de este material",
+    "pointTargetPlaceEmpty": "Aún no hay dirección — toca para agregar una",
+    "placeTypeHint": "Escribe la dirección y la buscaremos mientras escribes, o toca el mapa para soltar el pin",
+    "missingHint": "Aún falta: {list}",
+    "missing": {
+      "media": "una foto o un clip",
+      "title": "un titular",
+      "event": "la fecha del evento",
+      "product": "el producto",
+      "url": "la dirección del sitio web",
+      "place": "el lugar para la acción"
+    }
   },
   "adPage": {
     "placeTitle": "Dónde está",

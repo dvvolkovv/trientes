@@ -4940,7 +4940,8 @@
       "voice_too_long": "文本过长，无法朗读—请缩短。",
       "voice_upstream": "语音服务未响应。请重试。",
       "voice_timeout": "语音服务耗时过长。请重试。",
-      "voice_empty": "暂无可朗读的内容。"
+      "voice_empty": "暂无可朗读的内容。",
+      "point_or_place_required": "选择你的一个地点，或在下方添加该素材的专属地址"
     },
     "fieldEventEnd": "活动结束",
     "eventEndHint": "单日活动请留空。",
@@ -4974,7 +4975,19 @@
     "voiceOurs": "Trientes 配音",
     "voiceYours": "你的录音",
     "voiceStale": "根据较早文本录制",
-    "voiceHint": "我们用真人声音朗读文本并保留文件。你的录音优先于我们的；两者都没有时，将由浏览器朗读文本。"
+    "voiceHint": "我们用真人声音朗读文本并保留文件。你的录音优先于我们的；两者都没有时，将由浏览器朗读文本。",
+    "pointTargetPlace": "该素材的专属位置",
+    "pointTargetPlaceEmpty": "尚无地址 — 点按添加",
+    "placeTypeHint": "输入地址，我们会在你输入时查找，或点按地图以放置图钉",
+    "missingHint": "仍需：{list}",
+    "missing": {
+      "media": "一张照片或一段视频",
+      "title": "一个标题",
+      "event": "活动日期",
+      "product": "产品",
+      "url": "网站地址",
+      "place": "执行地点"
+    }
   },
   "adPage": {
     "placeTitle": "位置",

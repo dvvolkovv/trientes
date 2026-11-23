@@ -53,6 +53,14 @@ export function AdForm({
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState<string | null>(null);
   const [pending, start] = useTransition();
+  // Блок «Где это» раскрыт, когда место уже есть или когда действие ведёт на него:
+  // выбор «вести на место материала» обязан показать поля адреса, а не отправить
+  // человека искать их глазами выше по форме.
+  const [placeOpen, setPlaceOpen] = useState(
+    typeof (initial?.placeLat ?? null) === "number" && typeof (initial?.placeLon ?? null) === "number",
+  );
+  const placeRef = useRef<HTMLDivElement | null>(null);
+  const errorRef = useRef<HTMLParagraphElement | null>(null);
   const imageRef = useRef<HTMLInputElement | null>(null);
   const videoRef = useRef<HTMLInputElement | null>(null);
   const posterRef = useRef<HTMLInputElement | null>(null);
@@ -95,6 +103,9 @@ export function AdForm({
       const res = v.id ? await updateAd(v.id, v) : await createAd(companyId, v);
       if (!res.ok) {
         setError(res.reason);
+        // Отказ стоит над кнопкой, и на длинной форме его можно не заметить вовсе:
+        // человек жмёт второй раз и решает, что кнопка не работает.
+        requestAnimationFrame(() => errorRef.current?.scrollIntoView({ block: "center", behavior: "smooth" }));
         return;
       }
       if (!v.id) setV({ ...EMPTY, language: defaultLanguage });
@@ -102,6 +113,17 @@ export function AdForm({
       router.refresh();
     });
   };
+
+  const hasPlace = typeof v.placeLat === "number" && typeof v.placeLon === "number";
+  const placeLine = [v.placeName, v.placeAddress].filter(Boolean).join(", ").trim();
+
+  const missing: string[] = [];
+  if (!v.mediaUrl) missing.push(t("missing.media"));
+  if (!v.title.trim()) missing.push(t("missing.title"));
+  if (v.kind === "EVENT" && !(v.eventAt ?? "").trim()) missing.push(t("missing.event"));
+  if (v.action === "PRODUCT" && !(v.productId ?? "").trim()) missing.push(t("missing.product"));
+  if (v.action === "WEBSITE" && !(v.actionUrl ?? "").trim()) missing.push(t("missing.url"));
+  if (v.action === "POINT" && !(v.pointId ?? "").trim() && !hasPlace) missing.push(t("missing.place"));
 
   return (
     <section className="mb-8 rounded-[18px] border border-hairline bg-card p-4">
@@ -224,6 +246,7 @@ export function AdForm({
         </div>
 
         {/* Где это находится (слайс BZ): объект рекламы, а не точка приёма. */}
+        <div ref={placeRef}>
         <AdPlaceField
           value={{
             placeName: v.placeName ?? "",
@@ -237,7 +260,10 @@ export function AdForm({
           onChange={(patch) => set(patch)}
           coins={coins}
           cards={cards}
+          open={placeOpen}
+          onOpenChange={setPlaceOpen}
         />
+        </div>
 
         <div>
           <label className={label} htmlFor="ad-code">{t("fieldPromoCode")}</label>
@@ -261,12 +287,45 @@ export function AdForm({
             </div>
           ) : null}
           {v.action === "POINT" ? (
-            <div>
-              <label className={label} htmlFor="ad-point">{t("fieldPoint")}</label>
-              <select id="ad-point" className={field} value={v.pointId ?? ""} onChange={(e) => set({ pointId: e.target.value })}>
-                <option value="">—</option>
-                {points.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
-              </select>
+            <div className="sm:col-span-2">
+              <span className={label}>{t("fieldPoint")}</span>
+              {/* Две разные вещи, и обе законны: своя точка приёма и место самого
+                  материала. Выбор — кнопками 48 px, а не строками списка: в
+                  подчёркнутое слово пальцем не попасть (правило AN). */}
+              <div className="flex flex-col gap-2">
+                <button
+                  type="button"
+                  aria-pressed={!v.pointId}
+                  onClick={() => {
+                    set({ pointId: "" });
+                    setPlaceOpen(true);
+                    requestAnimationFrame(() =>
+                      placeRef.current?.scrollIntoView({ block: "start", behavior: "smooth" }),
+                    );
+                  }}
+                  className={`flex min-h-[48px] flex-col justify-center rounded-[12px] border px-3 py-2 text-left ${
+                    !v.pointId ? "border-accent bg-accent/12" : "border-hairline bg-card"
+                  }`}
+                >
+                  <span className="text-[13px] font-semibold leading-tight">📍 {t("pointTargetPlace")}</span>
+                  <span className="text-[11.5px] leading-tight text-muted">
+                    {placeLine || t("pointTargetPlaceEmpty")}
+                  </span>
+                </button>
+                {points.map((p) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    aria-pressed={v.pointId === p.id}
+                    onClick={() => set({ pointId: p.id })}
+                    className={`flex min-h-[48px] items-center rounded-[12px] border px-3 py-2 text-left text-[13px] font-semibold ${
+                      v.pointId === p.id ? "border-accent bg-accent/12" : "border-hairline bg-card"
+                    }`}
+                  >
+                    🏬 {p.label}
+                  </button>
+                ))}
+              </div>
             </div>
           ) : null}
           {v.action === "WEBSITE" ? (
@@ -277,7 +336,15 @@ export function AdForm({
           ) : null}
         </div>
 
-        {error ? <p className="text-[13px] text-[#E55C5C]">{t(`errors.${error}`)}</p> : null}
+        {error ? (
+          <p ref={errorRef} className="text-[13px] text-[#E55C5C]">{t(`errors.${error}`)}</p>
+        ) : null}
+
+        {/* Чего не хватает — словами и заранее. Кнопку не гасим: погасшая кнопка
+            без объяснения уже была дефектом живого прогона BG. */}
+        {missing.length > 0 ? (
+          <p className="text-[12px] text-muted">{t("missingHint", { list: missing.join(", ") })}</p>
+        ) : null}
 
         <div className="flex gap-2">
           <button type="button" className={button} onClick={submit} disabled={pending || uploading !== null}>

@@ -39,6 +39,28 @@ describe("рекламный материал: разбор ввода", () => {
       .toMatchObject({ ok: false, reason: "text_has_link" });
   });
 
+  it("«показать на карте» ведёт на точку приёма или на место самого материала", () => {
+    // Объект рекламы — офис, площадка, дом — точкой приёма не является. Требовать
+    // выбора из точек значило бы, что у такой рекламы действия не бывает вовсе.
+    expect(parseAdInput({ ...base, action: "POINT" }))
+      .toMatchObject({ ok: false, reason: "point_or_place_required" });
+
+    const onPoint = parseAdInput({ ...base, action: "POINT", pointId: "cmwpoint1" });
+    expect(onPoint.ok).toBe(true);
+    if (onPoint.ok) expect(onPoint.value.pointId).toBe("cmwpoint1");
+
+    const onPlace = parseAdInput({
+      ...base, action: "POINT",
+      placeName: "LMNT Offices", placeAddress: "Bahnhofplatz 10, 9100 Herisau",
+      placeLat: 47.3900641, placeLon: 9.2773337,
+    });
+    expect(onPlace.ok).toBe(true);
+    if (onPlace.ok) {
+      expect(onPlace.value.pointId).toBeNull();
+      expect(onPlace.value.placeLat).toBeCloseTo(47.3900641, 6);
+    }
+  });
+
   it("событию нужна дата, иначе это не событие", () => {
     expect(parseAdInput({ ...base, kind: "EVENT" })).toMatchObject({ ok: false, reason: "event_required" });
     expect(parseAdInput({ ...base, kind: "EVENT", eventAt: "2026-12-01" }).ok).toBe(true);

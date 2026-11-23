@@ -4940,7 +4940,8 @@
       "voice_too_long": "Le texte est trop long pour être lu à voix haute — raccourcissez-le.",
       "voice_upstream": "Le service vocal n'a pas répondu. Réessayez.",
       "voice_timeout": "Le service vocal a mis trop de temps. Réessayez.",
-      "voice_empty": "Il n'y a encore rien à lire à voix haute."
+      "voice_empty": "Il n'y a encore rien à lire à voix haute.",
+      "point_or_place_required": "Choisissez l'un de vos points, ou ajoutez l'adresse propre à cet élément ci-dessous."
     },
     "fieldEventEnd": "Fin de l'événement",
     "eventEndHint": "Laissez vide pour un événement d'une journée.",
@@ -4974,7 +4975,19 @@
     "voiceOurs": "Enregistré par Trientes",
     "voiceYours": "Votre propre enregistrement",
     "voiceStale": "enregistré à partir du texte précédent",
-    "voiceHint": "Nous lisons le texte à voix haute avec une vraie voix et conservons le fichier. Votre propre enregistrement l'emporte sur le nôtre ; en l'absence des deux, le navigateur lit le texte."
+    "voiceHint": "Nous lisons le texte à voix haute avec une vraie voix et conservons le fichier. Votre propre enregistrement l'emporte sur le nôtre ; en l'absence des deux, le navigateur lit le texte.",
+    "pointTargetPlace": "Emplacement propre à cet élément",
+    "pointTargetPlaceEmpty": "Pas encore d'adresse — touchez pour en ajouter une",
+    "placeTypeHint": "Saisissez l'adresse et nous la rechercherons au fur et à mesure, ou touchez la carte pour placer l'épingle.",
+    "missingHint": "Encore nécessaire : {list}",
+    "missing": {
+      "media": "une photo ou un clip",
+      "title": "un titre",
+      "event": "la date de l'événement",
+      "product": "le produit",
+      "url": "l'adresse du site web",
+      "place": "le lieu de l'action"
+    }
   },
   "adPage": {
     "placeTitle": "Où c'est",

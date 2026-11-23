@@ -35,16 +35,25 @@ export type AdPlaceValue = {
   placePaymentMethods: string[];
 };
 
+/** Подсказка геокодера: две строки, как в поиске навигатора. */
+type Suggestion = { label: string; title?: string; subtitle?: string; lat: number; lon: number };
+
 export function AdPlaceField({
   value,
   onChange,
   coins,
   cards,
+  open,
+  onOpenChange,
 }: {
   value: AdPlaceValue;
   onChange: (patch: Partial<AdPlaceValue>) => void;
   coins: PickerCoin[];
   cards: PickerCoin[];
+  /** Раскрыт ли блок. Состояние держит форма: выбор «вести на место материала»
+   *  в разделе действия обязан раскрывать этот блок, а не искать его глазами. */
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }) {
   const t = useTranslations("cabinetAds");
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -52,15 +61,42 @@ export function AdPlaceField({
   const markerRef = useRef<Marker | null>(null);
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
-  const [open, setOpen] = useState(value.placeLat !== null && value.placeLon !== null);
+  const valueRef = useRef(value);
+  valueRef.current = value;
   const [searching, setSearching] = useState(false);
   const [searchFailed, setSearchFailed] = useState(false);
   const [mapUnavailable, setMapUnavailable] = useState(false);
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  // Набранное руками ищется само; у открытой на правку записи адрес уже стоит, и
+  // геокодер не должен немедленно сдвинуть булавку, поставленную человеком
+  // (то же правило, что `addrTouchedRef` в форме точки).
+  const typedRef = useRef(false);
 
   const field = "w-full rounded-md border border-hairline bg-card px-3 py-2 text-sm";
   const label = "mb-1 block text-[11px] uppercase tracking-wider text-muted";
   const button =
     "inline-flex h-12 items-center justify-center rounded-md border border-hairline px-4 text-sm hover:border-accent disabled:opacity-50";
+
+  /**
+   * Булавка поставлена пальцем — подписываем её адресом. Набранное человеком не
+   * перебиваем: он мог написать «площадка у озера», и адрес из реестра стёр бы
+   * его слова.
+   */
+  async function fillAddressFromPin(lat: number, lon: number) {
+    if (valueRef.current.placeAddress.trim()) return;
+    try {
+      const r = await fetch(`/api/crypto-map/geocode?lat=${lat}&lon=${lon}`, {
+        signal: AbortSignal.timeout(8000),
+      });
+      const j = (await r.json()) as { result?: { label?: string; title?: string; subtitle?: string } | null };
+      const found = j.result;
+      if (!found) return;
+      const address = [found.title, found.subtitle].filter(Boolean).join(", ") || (found.label ?? "");
+      if (address && !valueRef.current.placeAddress.trim()) onChangeRef.current({ placeAddress: address });
+    } catch {
+      // Молчание геокодера булавку не отменяет: координата и есть место.
+    }
+  }
 
   function placeMarker(map: MlMap, lng: number, lat: number) {
     if (markerRef.current) markerRef.current.setLngLat([lng, lat]);
@@ -69,6 +105,7 @@ export function AdPlaceField({
       mk.on("dragend", () => {
         const l = mk.getLngLat();
         onChangeRef.current({ placeLat: l.lat, placeLon: l.lng });
+        void fillAddressFromPin(l.lat, l.lng);
       });
       markerRef.current = mk;
     }
@@ -95,6 +132,8 @@ export function AdPlaceField({
     map.on("click", (e) => {
       onChangeRef.current({ placeLat: e.lngLat.lat, placeLon: e.lngLat.lng });
       placeMarker(map, e.lngLat.lng, e.lngLat.lat);
+      setSuggestions([]);
+      void fillAddressFromPin(e.lngLat.lat, e.lngLat.lng);
     });
     map.once("load", () => {
       if (value.placeLat !== null && value.placeLon !== null) placeMarker(map, value.placeLon, value.placeLat);
@@ -108,6 +147,42 @@ export function AdPlaceField({
     // булавки означало бы терять масштаб, выбранный человеком.
   }, [open]);
 
+  /** Берём подсказку: булавка, нормализованный адрес и закрытый список. */
+  function takeSuggestion(s: Suggestion) {
+    const address = [s.title, s.subtitle].filter(Boolean).join(", ") || s.label;
+    typedRef.current = false;
+    setSuggestions([]);
+    setSearchFailed(false);
+    onChange({ placeAddress: address, placeLat: s.lat, placeLon: s.lon });
+    const map = mapRef.current;
+    if (map) placeMarker(map, s.lon, s.lat);
+  }
+
+  // Адрес ищется по ходу набора: человек пишет улицу — мы показываем, что нашли, и
+  // он выбирает нажатием. Пауза 700 мс не из вкуса: у Nominatim предел один запрос
+  // в секунду, и запрос на каждую букву вернулся бы отказом.
+  useEffect(() => {
+    if (!open) return;
+    const q = [value.placeName, value.placeAddress].filter(Boolean).join(", ").trim();
+    if (!typedRef.current || q.length < 4) return;
+    const ctrl = new AbortController();
+    setSearching(true);
+    const tm = setTimeout(async () => {
+      try {
+        const r = await fetch(`/api/crypto-map/geocode?q=${encodeURIComponent(q)}`, { signal: ctrl.signal });
+        const j = (await r.json()) as { results?: Suggestion[] };
+        const list = (j.results ?? []).filter((s) => Number.isFinite(s.lat) && Number.isFinite(s.lon)).slice(0, 5);
+        setSuggestions(list);
+        setSearchFailed(list.length === 0);
+      } catch (e) {
+        if ((e as Error).name !== "AbortError") setSearchFailed(true);
+      } finally {
+        setSearching(false);
+      }
+    }, 700);
+    return () => { ctrl.abort(); clearTimeout(tm); setSearching(false); };
+  }, [open, value.placeName, value.placeAddress]);
+
   async function findAddress() {
     const q = [value.placeName, value.placeAddress].filter(Boolean).join(", ").trim();
     if (!q) return;
@@ -117,15 +192,11 @@ export function AdPlaceField({
       const r = await fetch(`/api/crypto-map/geocode?q=${encodeURIComponent(q)}`, {
         signal: AbortSignal.timeout(8000),
       });
-      const j = (await r.json()) as { results?: { lat: number; lon: number }[] };
-      const top = j.results?.[0];
-      if (top && Number.isFinite(top.lat) && Number.isFinite(top.lon)) {
-        onChange({ placeLat: top.lat, placeLon: top.lon });
-        const map = mapRef.current;
-        if (map) placeMarker(map, top.lon, top.lat);
-      } else {
-        setSearchFailed(true);
-      }
+      const j = (await r.json()) as { results?: Suggestion[] };
+      const list = (j.results ?? []).filter((s) => Number.isFinite(s.lat) && Number.isFinite(s.lon)).slice(0, 5);
+      setSuggestions(list);
+      if (list.length === 1) takeSuggestion(list[0]!);
+      else if (list.length === 0) setSearchFailed(true);
     } catch {
       setSearchFailed(true);
     } finally {
@@ -140,14 +211,16 @@ export function AdPlaceField({
       placeName: "", placeAddress: "", placeLat: null, placeLon: null,
       placeAcceptedCoinIds: [], placeAcceptedCardIds: [], placePaymentMethods: [],
     });
-    setOpen(false);
+    setSuggestions([]);
+    typedRef.current = false;
+    onOpenChange(false);
   }
 
   if (!open) {
     return (
       <div>
         <span className={label}>{t("placeTitle")}</span>
-        <button type="button" className={button} onClick={() => setOpen(true)}>
+        <button type="button" className={button} onClick={() => onOpenChange(true)}>
           📍 {t("placeAdd")}
         </button>
         <p className="mt-1 text-[11px] text-muted">{t("placeHint")}</p>
@@ -171,12 +244,13 @@ export function AdPlaceField({
         <div>
           <label className={label} htmlFor="ad-place-name">{t("placeName")}</label>
           <input id="ad-place-name" className={field} value={value.placeName}
-            onChange={(e) => onChange({ placeName: e.target.value })} />
+            onChange={(e) => { typedRef.current = true; onChange({ placeName: e.target.value }); }} />
         </div>
         <div>
           <label className={label} htmlFor="ad-place-address">{t("placeAddress")}</label>
           <input id="ad-place-address" className={field} value={value.placeAddress}
-            onChange={(e) => onChange({ placeAddress: e.target.value })} />
+            onChange={(e) => { typedRef.current = true; onChange({ placeAddress: e.target.value }); }} />
+          <p className="mt-1 text-[11px] text-muted">{t("placeTypeHint")}</p>
         </div>
       </div>
 
@@ -192,7 +266,25 @@ export function AdPlaceField({
           <span className="text-[11.5px] text-muted">{t("placeNoPin")}</span>
         )}
       </div>
-      {searchFailed ? <p className="mt-1 text-[11.5px] text-muted">{t("placeNotFound")}</p> : null}
+      {suggestions.length > 0 ? (
+        <ul className="mt-2 space-y-1">
+          {suggestions.map((s) => (
+            <li key={`${s.lat},${s.lon},${s.label}`}>
+              <button
+                type="button"
+                onClick={() => takeSuggestion(s)}
+                className="flex min-h-[48px] w-full flex-col justify-center rounded-[12px] border border-hairline bg-card px-3 py-2 text-left hover:border-accent"
+              >
+                <span className="text-[13px] font-semibold leading-tight">{s.title ?? s.label}</span>
+                {s.subtitle ? <span className="text-[11.5px] leading-tight text-muted">{s.subtitle}</span> : null}
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      {searchFailed && suggestions.length === 0 ? (
+        <p className="mt-1 text-[11.5px] text-muted">{t("placeNotFound")}</p>
+      ) : null}
 
       {!mapUnavailable ? (
         <div ref={containerRef} className="mt-2 h-[260px] w-full overflow-hidden rounded-[14px] border border-hairline" />

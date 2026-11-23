@@ -53,7 +53,13 @@ export type CardAd = {
   /** Куда ведёт нажатие на кадр: отдельная страница материала. */
   href: string;
   /** Одно названное действие. Пусто — действия нет. */
-  action: { kind: "PRODUCT" | "WEBSITE" | "POINT"; href: string; label: string } | null;
+  action: {
+    kind: "PRODUCT" | "WEBSITE" | "POINT";
+    href: string;
+    label: string;
+    /** Действие ведёт на место самого материала, а не на точку приёма. */
+    fromPlace?: boolean;
+  } | null;
 };
 
 export type CardAdPlace = {
@@ -287,6 +293,19 @@ export async function buildCompanyCard({
         action = { kind: "PRODUCT", href: `/${locale}/product/${a.product.slug}`, label: a.product.name };
       } else if (a.action === "POINT" && a.point && a.point.status === "APPROVED" && !a.point.suspendedAt && !a.point.deletedAt) {
         action = { kind: "POINT", href: `/${locale}/crypto-map?point=${a.point.id}`, label: a.point.name };
+      } else if (a.action === "POINT" && a.placeLat !== null && a.placeLon !== null) {
+        // «Показать на карте» ведёт и на место самого материала: объект рекламы
+        // точкой приёма не является, и карточке его открывать нечему — поэтому
+        // навигатор просто становится на координату (тот же `?at=`, что на
+        // странице материала).
+        action = {
+          kind: "POINT",
+          href: `/${locale}/crypto-map?at=${a.placeLat},${a.placeLon}`,
+          // Подпись короткая: полный адрес из реестра бывает в четыре строки с
+          // названием страны на четырёх языках, и кнопка перестаёт быть кнопкой.
+          label: a.placeName ?? (a.placeAddress ?? "").split(",")[0]?.trim() ?? "",
+          fromPlace: true,
+        };
       } else if (a.action === "WEBSITE" && a.actionUrl) {
         action = { kind: "WEBSITE", href: a.actionUrl, label: a.actionUrl.replace(/^https:\/\//, "") };
       }
