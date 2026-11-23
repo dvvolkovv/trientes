@@ -4987,7 +4987,14 @@
       "product": "produkt",
       "url": "webová adresa",
       "place": "miesto akcie"
-    }
+    },
+    "previewTitle": "Náhľad",
+    "previewHint": "Presne to, čo uvidia nakupujúci",
+    "previewNoTitle": "Bez názvu",
+    "preview": "Náhľad stránky",
+    "slideNo": "Snímka {n} z {total}",
+    "docsTitle": "Dokumenty k tejto položke",
+    "docsSubtitle": "Povolenia, licencie, vyhlásenia — podklady k tomu, čo hovorí banner. Zobrazia sa na stránke tejto položky, nie na firemnej prezentácii."
   },
   "adPage": {
     "placeTitle": "Kde sa nachádza",
@@ -4995,6 +5002,14 @@
     "paymentOutside": "Platba sa dohodne s predávajúcim — Trientes platby nespracúva.",
     "moreTitle": "Ďalšie od tejto firmy",
     "eventRange": "{from} — {to}",
-    "companyProfile": "Firemný profil"
+    "companyProfile": "Firemný profil",
+    "documentsTitle": "Dokumenty a povolenia",
+    "preview": {
+      "draft": "Koncept — zatiaľ neviditeľné pre nakupujúcich",
+      "archived": "Archivované — neviditeľné pre nakupujúcich",
+      "hint": "Táto stránka je presne to, čo vidí nakupujúci. Pred publikovaním si vypočujte hlasový komentár a prečítajte si ju celú.",
+      "publish": "Zverejniť",
+      "backToStudio": "Späť do štúdia"
+    }
   }
 }

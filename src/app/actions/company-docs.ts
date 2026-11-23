@@ -7,6 +7,10 @@ import { prisma } from "@/lib/prisma";
 import { editorCompany } from "@/lib/products/editor-company";
 import { logCompanyAction } from "@/lib/company-team/journal";
 import {
+  AD_DOCS_MAX,
+} from "@/lib/ads/rules";
+import { canWrite } from "@/lib/products/editor-company";
+import {
   COMPANY_DOCS_MAX,
   COMPANY_DOC_TITLE_MAX,
   companyDocFilePath,
@@ -31,12 +35,20 @@ import type { Prisma } from "@prisma/client";
  * доступом.
  */
 
-async function gateFor(companyId: string) {
+/**
+ * Калитка. Бумага предприятия правится правом `card`, бумага объявления — правом
+ * `promos` (слайс CB): документ принадлежит тому, что он подкрепляет, и маркетолог,
+ * который ведёт рекламу, не должен ради разрешения получать право на паспорт
+ * предприятия.
+ */
+async function gateFor(companyId: string, adId?: string | null) {
   const session = await auth();
   const userId = (session?.user as { id?: string } | undefined)?.id ?? null;
   if (!userId) return { userId: null as string | null, ok: false as const };
   const gate = await editorCompany(companyId, userId);
-  if (!gate || gate.permissions.card !== "EDIT") return { userId, ok: false as const };
+  if (!gate) return { userId, ok: false as const };
+  const allowed = adId ? canWrite(gate, "promos") : gate.permissions.card === "EDIT";
+  if (!allowed) return { userId, ok: false as const };
   return { userId, ok: true as const };
 }
 
@@ -51,9 +63,12 @@ export async function addCompanyDocument(
     /** Где бумагу можно проверить: страница реестра лицензиара (слайс BV). */
     linkUrl?: string | null;
     publish?: boolean;
+    /** Бумага этого объявления, а не предприятия (слайс CB). */
+    adId?: string | null;
   },
 ) {
-  const gate = await gateFor(companyId);
+  const adId = (input.adId ?? "").trim() || null;
+  const gate = await gateFor(companyId, adId);
   if (!gate.ok) return { ok: false as const, reason: gate.userId ? ("not_found" as const) : ("unauth" as const) };
 
   const rubric = normalizeDocRubric(input.kind, input.kindCustom, hasLink);
@@ -62,14 +77,25 @@ export async function addCompanyDocument(
   const parsed = parseDocLocation(input.url, input.linkUrl);
   if (!parsed.ok) return { ok: false as const, reason: parsed.reason };
 
-  const count = await prisma.companyDocument.count({ where: { companyId } });
-  if (count >= COMPANY_DOCS_MAX) return { ok: false as const, reason: "docs_limit" as const };
+  // Объявление чужого предприятия бумагой не подкрепляют: ключ пришёл из браузера.
+  if (adId) {
+    const ad = await prisma.companyAd.findFirst({ where: { id: adId, companyId }, select: { id: true } });
+    if (!ad) return { ok: false as const, reason: "not_found" as const };
+  }
+
+  const count = await prisma.companyDocument.count({
+    where: adId ? { adId } : { companyId, adId: null },
+  });
+  if (count >= (adId ? AD_DOCS_MAX : COMPANY_DOCS_MAX)) {
+    return { ok: false as const, reason: "docs_limit" as const };
+  }
 
   const title = (input.title ?? "").trim().slice(0, COMPANY_DOC_TITLE_MAX) || null;
   const subject = await docSubject(title, rubric.kind, rubric.kindCustom);
   const doc = await prisma.companyDocument.create({
     data: {
       companyId,
+      adId,
       kind: rubric.kind,
       kindCustom: rubric.kindCustom,
       title,
@@ -103,10 +129,10 @@ export async function updateCompanyDocument(
 ) {
   const doc = await prisma.companyDocument.findUnique({
     where: { id: documentId },
-    select: { id: true, companyId: true, url: true },
+    select: { id: true, companyId: true, adId: true, url: true },
   });
   if (!doc) return { ok: false as const, reason: "not_found" as const };
-  const gate = await gateFor(doc.companyId);
+  const gate = await gateFor(doc.companyId, doc.adId);
   if (!gate.ok) return { ok: false as const, reason: gate.userId ? ("not_found" as const) : ("unauth" as const) };
 
   const rubric = normalizeDocRubric(input.kind, input.kindCustom, hasLink);
@@ -173,10 +199,10 @@ async function docSubject(
 export async function setCompanyDocumentPublished(documentId: string, published: boolean) {
   const doc = await prisma.companyDocument.findUnique({
     where: { id: documentId },
-    select: { id: true, companyId: true, kind: true, kindCustom: true, title: true },
+    select: { id: true, companyId: true, adId: true, kind: true, kindCustom: true, title: true },
   });
   if (!doc) return { ok: false as const, reason: "not_found" as const };
-  const gate = await gateFor(doc.companyId);
+  const gate = await gateFor(doc.companyId, doc.adId);
   if (!gate.ok) return { ok: false as const, reason: gate.userId ? ("not_found" as const) : ("unauth" as const) };
   const subject = await docSubject(doc.title, doc.kind, doc.kindCustom);
 
@@ -202,10 +228,13 @@ export async function setCompanyDocumentPublished(documentId: string, published:
 export async function deleteCompanyDocument(documentId: string) {
   const doc = await prisma.companyDocument.findUnique({
     where: { id: documentId },
-    select: { id: true, companyId: true, kind: true, kindCustom: true, title: true, url: true, publishedAt: true },
+    select: {
+      id: true, companyId: true, adId: true, kind: true, kindCustom: true,
+      title: true, url: true, publishedAt: true,
+    },
   });
   if (!doc) return { ok: false as const, reason: "not_found" as const };
-  const gate = await gateFor(doc.companyId);
+  const gate = await gateFor(doc.companyId, doc.adId);
   if (!gate.ok) return { ok: false as const, reason: gate.userId ? ("not_found" as const) : ("unauth" as const) };
   if (doc.publishedAt) return { ok: false as const, reason: "unpublish_first" as const };
   const subject = await docSubject(doc.title, doc.kind, doc.kindCustom);

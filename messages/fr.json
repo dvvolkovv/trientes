@@ -4987,7 +4987,14 @@
       "product": "le produit",
       "url": "l'adresse du site web",
       "place": "le lieu de l'action"
-    }
+    },
+    "previewTitle": "Aperçu",
+    "previewHint": "Exactement ce que les acheteurs verront",
+    "previewNoTitle": "Sans titre",
+    "preview": "Page d’aperçu",
+    "slideNo": "Diapositive {n} sur {total}",
+    "docsTitle": "Documents pour cet article",
+    "docsSubtitle": "Permis, licences, déclarations — les documents qui appuient le message de la bannière. Ils s’affichent sur la page de cet article, pas sur la vitrine de l’entreprise."
   },
   "adPage": {
     "placeTitle": "Où c'est",
@@ -4995,6 +5002,14 @@
     "paymentOutside": "Le paiement est convenu avec le vendeur — Trientes ne traite pas les paiements.",
     "moreTitle": "Plus de cette entreprise",
     "eventRange": "{from} — {to}",
-    "companyProfile": "Profil de l'entreprise"
+    "companyProfile": "Profil de l'entreprise",
+    "documentsTitle": "Documents et permis",
+    "preview": {
+      "draft": "Brouillon — pas encore visible pour les acheteurs",
+      "archived": "Archivé — non visible pour les acheteurs",
+      "hint": "Cette page est exactement ce qu’un acheteur voit. Écoutez la voix off et relisez-la avant de publier.",
+      "publish": "Publier",
+      "backToStudio": "Retour au studio"
+    }
   }
 }

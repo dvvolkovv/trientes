@@ -4987,7 +4987,14 @@
       "product": "das Produkt",
       "url": "die Website-Adresse",
       "place": "der Ort für die Aktion"
-    }
+    },
+    "previewTitle": "Vorschau",
+    "previewHint": "Genau das, was Kunden sehen werden",
+    "previewNoTitle": "Unbenannt",
+    "preview": "Vorschauseite",
+    "slideNo": "Folie {n} von {total}",
+    "docsTitle": "Dokumente zu diesem Artikel",
+    "docsSubtitle": "Genehmigungen, Lizenzen, Erklärungen — die Unterlagen hinter dem, was das Banner sagt. Sie erscheinen auf der Seite dieses Artikels, nicht in der Unternehmenspräsentation."
   },
   "adPage": {
     "placeTitle": "Standort",
@@ -4995,6 +5002,14 @@
     "paymentOutside": "Die Zahlung wird mit dem Verkäufer vereinbart — Trientes verarbeitet keine Zahlungen.",
     "moreTitle": "Mehr von diesem Unternehmen",
     "eventRange": "{from} — {to}",
-    "companyProfile": "Unternehmensprofil"
+    "companyProfile": "Unternehmensprofil",
+    "documentsTitle": "Dokumente und Genehmigungen",
+    "preview": {
+      "draft": "Entwurf — für Käufer noch nicht sichtbar",
+      "archived": "Archiviert — für Käufer nicht sichtbar",
+      "hint": "Diese Seite entspricht genau dem, was ein Käufer sieht. Hören Sie sich das Voice-over an und lesen Sie alles durch, bevor Sie veröffentlichen.",
+      "publish": "Veröffentlichen",
+      "backToStudio": "Zurück zum Studio"
+    }
   }
 }

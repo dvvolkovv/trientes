@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { moveAd, setAdStatus } from "@/app/actions/company-ads";
+import { MAX_PUBLISHED_ADS } from "@/lib/ads/rules";
 
 export type AdRow = {
   id: string;
@@ -19,7 +20,21 @@ export type AdRow = {
 };
 
 /** Список материалов: что сейчас в карусели, в каком порядке и что лежит черновиком. */
-export function AdList({ ads, editable, basePath }: { ads: AdRow[]; editable: boolean; basePath: string }) {
+export function AdList({
+  ads,
+  editable,
+  basePath,
+  adBasePath,
+}: {
+  ads: AdRow[];
+  editable: boolean;
+  basePath: string;
+  /**
+   * Корень страниц материала: оттуда его смотрят и слушают до публикации (CB).
+   * Строкой, а не функцией: функцию серверный компонент клиентскому не передаёт.
+   */
+  adBasePath: string;
+}) {
   const t = useTranslations("cabinetAds");
   const [pending, start] = useTransition();
   // Кнопка ряда — та же, что в списке акций: высота под палец (правило AN), но не во
@@ -57,12 +72,14 @@ export function AdList({ ads, editable, basePath }: { ads: AdRow[]; editable: bo
                 {ad.mediaKind === "VIDEO" ? <span className="text-[11px] text-muted">▶ {t("video")}</span> : null}
                 {ad.hasAudio ? <span className="text-[11px] text-muted">🔊 {t("voiced")}</span> : null}
               </div>
-              <div className="mt-1 truncate text-[14.5px] font-semibold">
-                {ad.status === "PUBLISHED" && ad.position ? (
-                  <span className="num mr-1.5 text-muted">{ad.position}.</span>
-                ) : null}
-                {ad.title}
-              </div>
+              <div className="mt-1 truncate text-[14.5px] font-semibold">{ad.title}</div>
+              {/* Место в карусели словами: голый номер «3.» не говорит, из скольких
+                  и чего именно (та же жалоба, что на голые стрелки в AN). */}
+              {ad.status === "PUBLISHED" && ad.position ? (
+                <div className="text-[11.5px] text-accent">
+                  {t("slideNo", { n: ad.position, total: MAX_PUBLISHED_ADS })}
+                </div>
+              ) : null}
               {ad.window ? <div className="num text-[11.5px] text-muted">{ad.window}</div> : null}
             </div>
           </div>
@@ -70,6 +87,7 @@ export function AdList({ ads, editable, basePath }: { ads: AdRow[]; editable: bo
           {editable ? (
             <div className="mt-3 flex flex-wrap gap-2">
               <Link href={`${basePath}?ad=${ad.id}`} className={button}>{t("edit")}</Link>
+              <Link href={`${adBasePath}/${ad.id}`} className={button}>{t("preview")}</Link>
               {ad.status !== "PUBLISHED" ? (
                 <button type="button" className={button} disabled={pending}
                   onClick={() => start(async () => { await setAdStatus(ad.id, "PUBLISHED"); })}>

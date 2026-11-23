@@ -9,6 +9,7 @@ import {
   setCompanyDocumentPublished,
   updateCompanyDocument,
 } from "@/app/actions/company-docs";
+import { AD_DOCS_MAX } from "@/lib/ads/rules";
 import {
   COMPANY_DOC_KINDS,
   COMPANY_DOCS_MAX,
@@ -48,10 +49,21 @@ export function CompanyDocsSection({
   companyId,
   docs,
   canEdit,
+  adId = null,
+  heading,
+  subheading,
 }: {
   companyId: string;
   docs: DocRow[];
   canEdit: boolean;
+  /**
+   * Бумаги этого объявления, а не предприятия (слайс CB). Тот же экран, та же
+   * форма и те же рубрики: вторая реализация разошлась бы с первой.
+   */
+  adId?: string | null;
+  /** Свой заголовок у бумаг объявления: «документы предприятия» тут неправда. */
+  heading?: string;
+  subheading?: string;
 }) {
   const t = useTranslations("business.docs");
   const tb = useTranslations("business");
@@ -106,6 +118,7 @@ export function CompanyDocsSection({
     setErr(null);
     start(async () => {
       const res = await addCompanyDocument(companyId, {
+        adId,
         kind,
         kindCustom: kind === "other" ? kindCustom : null,
         title,
@@ -125,6 +138,7 @@ export function CompanyDocsSection({
     try {
       const fd = new FormData();
       fd.append("companyId", companyId);
+      if (adId) fd.append("adId", adId);
       fd.append("file", file);
       const res = await fetch("/api/business/document", { method: "POST", body: fd });
       const j = (await res.json()) as { url?: string; error?: string };
@@ -155,13 +169,13 @@ export function CompanyDocsSection({
     });
   }
 
-  const canAdd = docs.length < COMPANY_DOCS_MAX;
+  const canAdd = docs.length < (adId ? AD_DOCS_MAX : COMPANY_DOCS_MAX);
 
   return (
     <section className="space-y-3">
       <div>
-        <h2 className="text-[13px] uppercase tracking-[0.2em] text-muted">{t("title")}</h2>
-        <p className="mt-1 text-[12px] text-muted">{t("subtitle")}</p>
+        <h2 className="text-[13px] uppercase tracking-[0.2em] text-muted">{heading ?? t("title")}</h2>
+        <p className="mt-1 text-[12px] text-muted">{subheading ?? t("subtitle")}</p>
       </div>
 
       {docs.length === 0 ? (

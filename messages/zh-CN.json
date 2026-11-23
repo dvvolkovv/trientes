@@ -4987,7 +4987,14 @@
       "product": "产品",
       "url": "网站地址",
       "place": "执行地点"
-    }
+    },
+    "previewTitle": "预览",
+    "previewHint": "与购物者所见完全一致",
+    "previewNoTitle": "无标题",
+    "preview": "预览页面",
+    "slideNo": "第 {n} 张，共 {total} 张",
+    "docsTitle": "此项目的文件",
+    "docsSubtitle": "许可证、执照、声明 — 支撑横幅内容的文件。它们显示在此项目的页面上，而不是公司展示页"
   },
   "adPage": {
     "placeTitle": "位置",
@@ -4995,6 +5002,14 @@
     "paymentOutside": "付款由你与卖家协商安排——Trientes 不处理支付。",
     "moreTitle": "该商家的更多",
     "eventRange": "{from} — {to}",
-    "companyProfile": "商家资料"
+    "companyProfile": "商家资料",
+    "documentsTitle": "文件与许可",
+    "preview": {
+      "draft": "草稿 — 购物者暂不可见",
+      "archived": "已归档 — 对购物者不可见",
+      "hint": "此页面与购物者所见完全一致。发布前请收听配音并通读",
+      "publish": "发布",
+      "backToStudio": "返回工作室"
+    }
   }
 }

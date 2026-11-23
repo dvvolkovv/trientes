@@ -22,9 +22,9 @@ import {
   CardRequisites,
   CardWeek,
 } from "@/components/company-card/panels";
-import { docRubricKey, isCompanyDocKind } from "@/lib/company-docs";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { TranslatedBadge } from "@/components/coin-card/translated-badge";
+import { DocList } from "@/components/company-card/doc-list";
 import { CARD_ACTION, CARD_HEADING, CARD_PANEL } from "@/lib/company-card-ui";
 
 export const dynamic = "force-dynamic";
@@ -96,23 +96,6 @@ export default async function PublicCompanyPage({
     : [null, null];
 
   const telHref = card.requisites.phone ? `tel:${card.requisites.phone.replace(/[^\d+]/g, "")}` : null;
-
-  // Группы документов: ключ один на витрину и кабинет, название своей рубрики —
-  // слово продавца, название реестровой — наш перевод.
-  const docGroups: {
-    key: string;
-    label: string;
-    rows: { id: string; title: string | null; url: string | null; linkUrl: string | null }[];
-  }[] = [];
-  for (const d of card.documents) {
-    if (!isCompanyDocKind(d.kind)) continue;
-    const key = docRubricKey(d.kind, d.kindCustom);
-    const label = d.kind === "other" && d.kindCustom ? d.kindCustom : tb(`docs.kind.${d.kind}`);
-    const found = docGroups.find((g) => g.key === key);
-    const row = { id: d.id, title: d.title, url: d.url, linkUrl: d.linkUrl };
-    if (found) found.rows.push(row);
-    else docGroups.push({ key, label, rows: [row] });
-  }
 
   const breadcrumbLd = {
     "@context": "https://schema.org",
@@ -247,43 +230,10 @@ export default async function PublicCompanyPage({
       {/* 6. Чем платят: логотипы монет и способы оплаты помимо них. */}
       <CardPayments coins={card.coins} payments={card.payments} locale={locale} />
 
-      {docGroups.length > 0 ? (
-        // Публичные документы (слайсы BU и BV): политика возврата полностью,
-        // гарантия, лицензия. Это бумаги для покупателя, а не для проверяющего.
-        <section className={CARD_PANEL}>
-          <h2 className={CARD_HEADING}>{t("documentsTitle")}</h2>
-          <div className="space-y-3">
-            {docGroups.map((g) => (
-              <div key={g.key}>
-                <div className="mb-1 text-[11px] uppercase tracking-wider text-muted">{g.label}</div>
-                <ul className="space-y-1.5">
-                  {g.rows.map((d) => (
-                    <li key={d.id}>
-                      {d.url ? (
-                        <a href={d.url} target="_blank" rel="noopener noreferrer" className="text-sm text-accent underline">
-                          {d.title ?? g.label}
-                        </a>
-                      ) : (
-                        <span className="text-sm">{d.title ?? g.label}</span>
-                      )}
-                      {d.linkUrl ? (
-                        <a
-                          href={d.linkUrl}
-                          target="_blank"
-                          rel="noopener noreferrer nofollow"
-                          className="mt-0.5 block text-[12px] text-muted underline"
-                        >
-                          {tb("docs.verifyLink")} ↗
-                        </a>
-                      ) : null}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </section>
-      ) : null}
+      {/* Публичные документы (слайсы BU и BV): политика возврата полностью,
+          гарантия, лицензия. Это бумаги для покупателя, а не для проверяющего;
+          разметка общая с бумагами объявления (слайс CB). */}
+      <DocList docs={card.documents} heading={t("documentsTitle")} />
 
       {/* Что продавец обещает вообще (слайс BD): ставка «на всё» и лучшая категория. */}
       <CompanyLoyaltyLine companyId={card.id} />

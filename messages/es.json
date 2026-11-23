@@ -4987,7 +4987,14 @@
       "product": "el producto",
       "url": "la dirección del sitio web",
       "place": "el lugar para la acción"
-    }
+    },
+    "previewTitle": "Vista previa",
+    "previewHint": "Exactamente lo que verán los compradores",
+    "previewNoTitle": "Sin título",
+    "preview": "Página de vista previa",
+    "slideNo": "Diapositiva {n} de {total}",
+    "docsTitle": "Documentos para este artículo",
+    "docsSubtitle": "Permisos, licencias, declaraciones — los documentos que respaldan lo que dice el banner. Se muestran en la página de este artículo, no en el escaparate de la empresa."
   },
   "adPage": {
     "placeTitle": "Dónde está",
@@ -4995,6 +5002,14 @@
     "paymentOutside": "El pago se acuerda con el vendedor — Trientes no procesa pagos.",
     "moreTitle": "Más de este negocio",
     "eventRange": "{from} — {to}",
-    "companyProfile": "Perfil de la empresa"
+    "companyProfile": "Perfil de la empresa",
+    "documentsTitle": "Documentos y permisos",
+    "preview": {
+      "draft": "Borrador — aún no visible para los compradores",
+      "archived": "Archivado — no visible para los compradores",
+      "hint": "Esta página es exactamente lo que ve un comprador. Escucha la locución y revísala antes de publicarla.",
+      "publish": "Publicar",
+      "backToStudio": "Volver al estudio"
+    }
   }
 }

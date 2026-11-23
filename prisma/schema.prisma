@@ -1123,6 +1123,15 @@ model CompanyDocument {
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
+  /// Документ рекламного материала (слайс CB): разрешение, лицензия, проектная
+  /// декларация — то, чем подкрепляют именно это объявление. Таблица одна с
+  /// бумагами предприятия намеренно: поля, рубрики, корень файлов и правила у них
+  /// те же, а вторая реализация разошлась бы с первой (болезнь, уже стоившая
+  /// проекту двух сборок одной витрины — живой прогон BX). Пусто — бумага
+  /// предприятия; у материала правит право `promos`, у предприятия — `card`.
+  adId      String?
+  ad        CompanyAd? @relation(fields: [adId], references: [id], onDelete: Cascade)
+
   /// Вид из реестра `src/lib/company-docs.ts`.
   kind       String
   /// Своя рубрика словами при `kind = "other"` (слайс BV) — тот же приём, что
@@ -1151,6 +1160,7 @@ model CompanyDocument {
   updatedAt DateTime @updatedAt
 
   @@index([companyId, publishedAt])
+  @@index([adId, publishedAt])
 }
 
 model CompanyPoint {
@@ -3020,6 +3030,10 @@ model CompanyAd {
 
   status    CompanyAdStatus @default(DRAFT)
   sortOrder Int             @default(0)
+
+  /// Бумаги этого объявления (слайс CB): разрешения и лицензии, которыми продавец
+  /// подкрепляет сказанное на баннере. Каскад: материала нет — и бумаг его нет.
+  documents CompanyDocument[]
 
   createdById String?
   createdBy   User?    @relation("CompanyAdAuthor", fields: [createdById], references: [id], onDelete: SetNull)

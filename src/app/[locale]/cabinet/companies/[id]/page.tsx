@@ -89,7 +89,7 @@ export default async function CompanyManagementPage({
   const [docs, physicalPoints] = editable
     ? await Promise.all([
         prisma.companyDocument.findMany({
-          where: { companyId: company.id },
+          where: { companyId: company.id, adId: null },
           orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
         }),
         prisma.companyPoint.count({

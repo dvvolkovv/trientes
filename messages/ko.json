@@ -4987,7 +4987,14 @@
       "product": "제품",
       "url": "웹사이트 주소",
       "place": "행동이 이루어질 장소"
-    }
+    },
+    "previewTitle": "미리보기",
+    "previewHint": "구매자가 보게 되는 것과 정확히 동일",
+    "previewNoTitle": "제목 없음",
+    "preview": "미리보기 페이지",
+    "slideNo": "슬라이드 {n}/{total}",
+    "docsTitle": "이 항목의 문서",
+    "docsSubtitle": "허가서, 라이선스, 선언문 — 배너의 내용을 뒷받침하는 서류입니다. 이 항목의 페이지에만 표시되며, 회사 쇼케이스에는 표시되지 않습니다."
   },
   "adPage": {
     "placeTitle": "위치",
@@ -4995,6 +5002,14 @@
     "paymentOutside": "결제는 판매자와 직접 진행됩니다 — Trientes는 결제를 처리하지 않습니다.",
     "moreTitle": "이 업체 더 보기",
     "eventRange": "{from} — {to}",
-    "companyProfile": "업체 프로필"
+    "companyProfile": "업체 프로필",
+    "documentsTitle": "문서 및 허가서",
+    "preview": {
+      "draft": "초안 — 아직 구매자에게 표시되지 않음",
+      "archived": "보관됨 — 구매자에게 표시되지 않음",
+      "hint": "이 페이지는 구매자가 보게 되는 화면과 동일합니다. 공개 전에 보이스오버를 듣고 내용을 꼼꼼히 확인하세요.",
+      "publish": "공개",
+      "backToStudio": "스튜디오로 돌아가기"
+    }
   }
 }

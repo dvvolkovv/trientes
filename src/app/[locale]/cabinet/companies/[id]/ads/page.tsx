@@ -9,6 +9,7 @@ import { AdForm, type AdFormValues } from "@/components/ads/ad-form";
 import { readTop100 } from "@/lib/snapshot";
 import { listSelfListedCards } from "@/lib/coin-card-directory";
 import { AdList, type AdRow } from "@/components/ads/ad-list";
+import { CompanyDocsSection, type DocRow } from "@/components/business/company-docs-section";
 import { CabinetBackButton } from "@/components/cabinet/back-button";
 
 export const dynamic = "force-dynamic";
@@ -37,7 +38,7 @@ export default async function CompanyAdsPage({
   if (!canSeeSection(permissions, "promos")) notFound();
   const editable = canEditSection(permissions, "promos");
 
-  const [ads, points, offers, coinRows, cardRows] = await Promise.all([
+  const [ads, points, offers, coinRows, cardRows, adDocs] = await Promise.all([
     prisma.companyAd.findMany({
       where: { companyId: company.id },
       orderBy: [{ status: "asc" }, { sortOrder: "asc" }, { createdAt: "desc" }],
@@ -57,6 +58,14 @@ export default async function CompanyAdsPage({
     // Монеты для места материала — тот же каталог, что в форме точки (BZ).
     readTop100(),
     listSelfListedCards(200),
+    // Бумаги правимого материала (слайс CB): форма и рубрики те же, что у бумаг
+    // предприятия, — таблица одна, и экран один.
+    editId
+      ? prisma.companyDocument.findMany({
+          where: { adId: editId, companyId: company.id },
+          orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+        })
+      : Promise.resolve([]),
   ]);
 
   const listed = company.status === "APPROVED" && !company.suspendedAt;
@@ -154,7 +163,36 @@ export default async function CompanyAdsPage({
         />
       ) : null}
 
-      <AdList ads={rows} editable={editable} basePath={`/${locale}/cabinet/companies/${company.id}/ads`} />
+      {/* Бумаги этого объявления: разрешения и лицензии под то, что сказано на
+          баннере. Заводятся только у сохранённого материала — документу нужен тот,
+          к кому он прикреплён. */}
+      {editable && editing ? (
+        <div className="mb-8">
+          <CompanyDocsSection
+            companyId={company.id}
+            adId={editing.id}
+            canEdit
+            heading={t("docsTitle")}
+            subheading={t("docsSubtitle")}
+            docs={adDocs.map((d): DocRow => ({
+              id: d.id,
+              kind: d.kind,
+              kindCustom: d.kindCustom,
+              title: d.title,
+              url: d.url,
+              linkUrl: d.linkUrl,
+              published: d.publishedAt !== null,
+            }))}
+          />
+        </div>
+      ) : null}
+
+      <AdList
+        ads={rows}
+        editable={editable}
+        basePath={`/${locale}/cabinet/companies/${company.id}/ads`}
+        adBasePath={`/${locale}/ad`}
+      />
     </main>
   );
 }

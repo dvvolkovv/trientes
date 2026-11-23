@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useFormatter, useTranslations } from "next-intl";
 import type { CardAd } from "@/lib/company-card/view";
+import { AD_SLIDE_SECONDS } from "@/lib/ads/rules";
 
 /**
  * Баннер карточки предприятия (слайс BY) — решение владельца, два круга макетов.
@@ -20,6 +21,14 @@ import type { CardAd } from "@/lib/company-card/view";
  *
  * Листание — родная прокрутка со снапом, а не свой разбор жеста: у навигатора свой
  * разбор уже есть (слайс AK), и второй внутри него спорил бы с ним за палец.
+ *
+ * **Слайды сменяются сами** (слайс CB, решение владельца «до восьми, и чтобы они по
+ * очереди перелистывались»), и у этого четыре границы, каждая из живого опыта:
+ * карусель молчит, пока она за краем экрана (приём пульса булавки в AY); молчит при
+ * `prefers-reduced-motion`; молчит, пока раскрыта описательная часть, играет ролик
+ * или говорит голос — человек в этот момент читает или слушает; и **останавливается
+ * навсегда**, как только человек тронул её сам. Баннер, уезжающий из-под пальца,
+ * враждебен, а «подождём и поедем дальше» — это он и есть.
  */
 export function AdBanner({ ads }: { ads: CardAd[] }) {
   const t = useTranslations("companyCard");
@@ -29,6 +38,9 @@ export function AdBanner({ ads }: { ads: CardAd[] }) {
   const [playing, setPlaying] = useState(false);
   const [speaking, setSpeaking] = useState(false);
   const [copied, setCopied] = useState(false);
+  /** Человек тронул карусель — дальше она его слушается, а не часы. */
+  const [touched, setTouched] = useState(false);
+  const [onScreen, setOnScreen] = useState(false);
   const trackRef = useRef<HTMLDivElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -67,11 +79,34 @@ export function AdBanner({ ads }: { ads: CardAd[] }) {
     changeIndex(Math.max(0, Math.min(ads.length - 1, next)));
   }, [ads.length, changeIndex]);
 
-  const goTo = (i: number) => {
+  const goTo = useCallback((i: number) => {
     const el = trackRef.current;
     if (!el) return;
     el.scrollTo({ left: i * el.clientWidth, behavior: "smooth" });
-  };
+  }, []);
+
+  // Карусель за краем экрана не листается: на странице монеты и в навигаторе она
+  // стоит ниже сгиба, и слайды уезжали бы вхолостую (тот же приём, что пульс AY).
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") {
+      setOnScreen(true);
+      return;
+    }
+    const io = new IntersectionObserver((entries) => setOnScreen(entries[0]?.isIntersecting ?? false), {
+      threshold: 0.4,
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (ads.length < 2 || touched || !onScreen) return;
+    if (open || playing || speaking) return;
+    if (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    const tm = setTimeout(() => goTo((index + 1) % ads.length), AD_SLIDE_SECONDS * 1000);
+    return () => clearTimeout(tm);
+  }, [ads.length, touched, onScreen, open, playing, speaking, index, goTo]);
 
   /**
    * Озвучка: своя запись сильнее синтеза. Записи нет — текст читает синтез браузера на
@@ -128,6 +163,8 @@ export function AdBanner({ ads }: { ads: CardAd[] }) {
       <div
         ref={trackRef}
         onScroll={onScroll}
+        onPointerDown={() => setTouched(true)}
+        onKeyDown={() => setTouched(true)}
         className="flex snap-x snap-mandatory overflow-x-auto scroll-smooth rounded-[22px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {ads.map((a, i) => (
@@ -172,7 +209,7 @@ export function AdBanner({ ads }: { ads: CardAd[] }) {
                 role="tab"
                 aria-selected={i === index}
                 aria-label={t("ad.slide", { n: i + 1, total: ads.length })}
-                onClick={() => goTo(i)}
+                onClick={() => { setTouched(true); goTo(i); }}
                 className={`h-[7px] rounded-full transition-all ${i === index ? "w-[18px] bg-accent" : "w-[7px] bg-card-alt"}`}
               />
             ))}

@@ -4987,7 +4987,14 @@
       "product": "商品",
       "url": "WebサイトのURL",
       "place": "実施場所"
-    }
+    },
+    "previewTitle": "プレビュー",
+    "previewHint": "買い物客に見えるそのまま",
+    "previewNoTitle": "無題",
+    "preview": "プレビューページ",
+    "slideNo": "スライド {n}/{total}",
+    "docsTitle": "この商品の書類",
+    "docsSubtitle": "許可証、ライセンス、申告書—バナーの内容を裏付ける書類です。これらは会社のショーケースではなく、この商品のページに表示されます。"
   },
   "adPage": {
     "placeTitle": "場所",
@@ -4995,6 +5002,14 @@
     "paymentOutside": "支払いは販売者と直接取り決めます — Trientesは支払いを処理しません。",
     "moreTitle": "このビジネスの他の掲載",
     "eventRange": "{from} — {to}",
-    "companyProfile": "ビジネスプロフィール"
+    "companyProfile": "ビジネスプロフィール",
+    "documentsTitle": "書類と許可証",
+    "preview": {
+      "draft": "下書き — まだ買い物客には表示されません",
+      "archived": "アーカイブ済み — 買い物客には表示されません",
+      "hint": "このページは買い物客が目にするものと同じです。公開前にナレーションを聞き、内容を通して確認してください。",
+      "publish": "公開",
+      "backToStudio": "スタジオに戻る"
+    }
   }
 }

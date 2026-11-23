@@ -4987,7 +4987,14 @@
       "product": "ürün",
       "url": "web sitesi adresi",
       "place": "işlemin yeri"
-    }
+    },
+    "previewTitle": "Önizleme",
+    "previewHint": "Alıcıların göreceğiyle birebir aynı",
+    "previewNoTitle": "Başlıksız",
+    "preview": "Önizleme sayfası",
+    "slideNo": "Toplam {total} slayttan {n}. slayt",
+    "docsTitle": "Bu öğe için belgeler",
+    "docsSubtitle": "İzinler, lisanslar, beyanlar — bannerda söylenenlerin arkasındaki belgeler. Bunlar şirket vitrini yerine bu öğenin sayfasında görünür."
   },
   "adPage": {
     "placeTitle": "Nerede",
@@ -4995,6 +5002,14 @@
     "paymentOutside": "Ödeme satıcıyla ayarlanır — Trientes ödemeleri işlemez.",
     "moreTitle": "Bu işletmeden daha fazlası",
     "eventRange": "{from} — {to}",
-    "companyProfile": "İşletme profili"
+    "companyProfile": "İşletme profili",
+    "documentsTitle": "Belgeler ve izinler",
+    "preview": {
+      "draft": "Taslak — henüz alıcılara görünmüyor",
+      "archived": "Arşivlendi — alıcılara görünmez",
+      "hint": "Bu sayfa, bir alıcının gördüğüyle birebir aynıdır. Yayınlamadan önce seslendirmeyi dinleyin ve baştan sona okuyun.",
+      "publish": "Yayınla",
+      "backToStudio": "Stüdyoya geri dön"
+    }
   }
 }

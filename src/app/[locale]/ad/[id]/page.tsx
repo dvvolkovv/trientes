@@ -10,6 +10,8 @@ import { AdDetail } from "@/components/company-card/ad-detail";
 import { PlaceMap } from "@/components/company-card/place-map";
 import { FollowButton } from "@/components/company/follow-button";
 import { MessageStoreButton } from "@/components/customer-messages/message-store-button";
+import { AdPreviewBar } from "@/components/ads/ad-preview-bar";
+import { DocList } from "@/components/company-card/doc-list";
 import { paymentMethod } from "@/lib/payment-methods";
 import { CARD_ACTION, CARD_HEADING, CARD_PANEL } from "@/lib/company-card-ui";
 
@@ -60,16 +62,16 @@ export default async function AdPage({
   const { orig } = await searchParams;
   setRequestLocale(locale);
 
-  const view = await readAdPage({ adId: id, locale, original: orig === "1" });
+  const session = await auth();
+  const viewerId = (session?.user as { id?: string } | undefined)?.id ?? null;
+
+  const view = await readAdPage({ adId: id, locale, original: orig === "1", viewerId });
   if (!view) notFound();
   const { ad, card, siblings } = view;
 
   const t = await getTranslations("adPage");
   const tc = await getTranslations("companyCard");
   const tp = await getTranslations("companyPublic");
-
-  const session = await auth();
-  const viewerId = (session?.user as { id?: string } | undefined)?.id ?? null;
   const follow = viewerId ? await readFollow(viewerId, card.id) : null;
   const [ownThread, viewerMembership] = viewerId
     ? await Promise.all([
@@ -93,6 +95,17 @@ export default async function AdPage({
           ← {card.displayName}
         </Link>
       </nav>
+
+      {/* Предпросмотр до публикации (слайс CB): всё то же самое, что увидит
+          покупатель, плюс честная плашка и кнопка «опубликовать». */}
+      {view.preview ? (
+        <AdPreviewBar
+          status={view.status}
+          canPublish={view.canPublish}
+          adId={ad.id}
+          studioHref={`/${locale}/cabinet/companies/${card.id}/ads?ad=${ad.id}`}
+        />
+      ) : null}
 
       <AdDetail ad={ad} />
 
@@ -162,6 +175,11 @@ export default async function AdPage({
           </Link>
         </section>
       ) : null}
+
+      {/* Бумаги этого объявления (слайс CB): разрешения, лицензии, декларации —
+          то, чем продавец подкрепляет сказанное на баннере. Бумаги предприятия
+          живут на его витрине: это разные обещания. */}
+      <DocList docs={ad.documents} heading={t("documentsTitle")} />
 
       {/* Что человек может сделать: следить, спросить, открыть профиль. */}
       <section className="grid gap-2 sm:grid-cols-2">

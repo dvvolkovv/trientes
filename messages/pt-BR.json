@@ -4987,7 +4987,14 @@
       "product": "o produto",
       "url": "o endereço do site",
       "place": "o local da ação"
-    }
+    },
+    "previewTitle": "Prévia",
+    "previewHint": "Exatamente o que os compradores verão",
+    "previewNoTitle": "Sem título",
+    "preview": "Página de prévia",
+    "slideNo": "Slide {n} de {total}",
+    "docsTitle": "Documentos deste item",
+    "docsSubtitle": "Alvarás, licenças, declarações — os documentos por trás do que o banner diz. Eles aparecem na página deste item, não na vitrine da empresa."
   },
   "adPage": {
     "placeTitle": "Onde fica",
@@ -4995,6 +5002,14 @@
     "paymentOutside": "O pagamento é combinado com o vendedor — Trientes não processa pagamentos.",
     "moreTitle": "Mais desta empresa",
     "eventRange": "{from} — {to}",
-    "companyProfile": "Perfil da empresa"
+    "companyProfile": "Perfil da empresa",
+    "documentsTitle": "Documentos e licenças",
+    "preview": {
+      "draft": "Rascunho — ainda não visível para compradores",
+      "archived": "Arquivado — não visível para compradores",
+      "hint": "Esta página é exatamente o que um comprador vê. Ouça a narração e leia atentamente antes de publicar.",
+      "publish": "Publicar",
+      "backToStudio": "Voltar ao estúdio"
+    }
   }
 }

@@ -3,7 +3,8 @@ import { randomBytes } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { auth } from "@/auth";
-import { editorCompany } from "@/lib/products/editor-company";
+import { prisma } from "@/lib/prisma";
+import { canWrite, editorCompany } from "@/lib/products/editor-company";
 import {
   COMPANY_DOC_MAX_BYTES,
   companyDocExtension,
@@ -32,8 +33,16 @@ export async function POST(req: Request) {
   const companyId = String(form.get("companyId") ?? "");
   if (!companyId) return NextResponse.json({ error: "company_required" }, { status: 400 });
 
+  // Бумага объявления правится правом `promos`, бумага предприятия — `card`
+  // (слайс CB): документ принадлежит тому, что он подкрепляет.
+  const adId = String(form.get("adId") ?? "").trim();
   const gate = await editorCompany(companyId, userId);
-  if (!gate || gate.permissions.card !== "EDIT") {
+  if (!gate) return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  if (adId) {
+    if (!canWrite(gate, "promos")) return NextResponse.json({ error: "forbidden" }, { status: 403 });
+    const ad = await prisma.companyAd.findFirst({ where: { id: adId, companyId }, select: { id: true } });
+    if (!ad) return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  } else if (gate.permissions.card !== "EDIT") {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 

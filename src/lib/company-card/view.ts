@@ -21,7 +21,7 @@ import { parsePaymentMethods, type PaymentMethodKey } from "@/lib/payment-method
 import { effectiveCategory } from "@/lib/merchant-categories";
 import { companyMode, type CompanyMode } from "@/lib/company-mode";
 import { localizedProse } from "@/lib/localized-prose";
-import { adInWindow } from "@/lib/ads/rules";
+import { adInWindow, MAX_PUBLISHED_ADS } from "@/lib/ads/rules";
 import { readCompanyOffers, type ShowcaseOffer } from "@/lib/products/offers-read";
 import type { AcceptedCoin } from "@/lib/crypto-map";
 
@@ -52,6 +52,12 @@ export type CardAd = {
   place: CardAdPlace | null;
   /** Куда ведёт нажатие на кадр: отдельная страница материала. */
   href: string;
+  /**
+   * Бумаги этого объявления (слайс CB): разрешения и лицензии, которыми продавец
+   * подкрепляет сказанное. В карусели их нет — они на странице материала: баннер
+   * это обещание, а бумага — его проверка, и читают её отдельно.
+   */
+  documents: CardDoc[];
   /** Одно названное действие. Пусто — действия нет. */
   action: {
     kind: "PRODUCT" | "WEBSITE" | "POINT";
@@ -60,6 +66,15 @@ export type CardAd = {
     /** Действие ведёт на место самого материала, а не на точку приёма. */
     fromPlace?: boolean;
   } | null;
+};
+
+export type CardDoc = {
+  id: string;
+  kind: string;
+  kindCustom: string | null;
+  title: string | null;
+  url: string | null;
+  linkUrl: string | null;
 };
 
 export type CardAdPlace = {
@@ -156,17 +171,27 @@ export async function buildCompanyCard({
   locale,
   now = new Date(),
   original = false,
+  previewAdId = null,
 }: {
   companyId: string;
   locale: string;
   now?: Date;
   original?: boolean;
+  /**
+   * Предпросмотр одного материала (слайс CB): он попадает в сборку, даже если ещё
+   * черновик или вне окна показа. Сборка карточки одна на все поверхности, и второй
+   * путь «как это будет выглядеть» разошёлся бы с первым — ровно та болезнь, что
+   * поймал живой прогон BX.
+   */
+  previewAdId?: string | null;
 }): Promise<CompanyCardView | null> {
   const company = await prisma.company.findFirst({
     where: { id: companyId, ...NOT_DELETED },
     include: {
       documents: {
-        where: { publishedAt: { not: null } },
+        // Только бумаги предприятия: у объявления свои, и они показываются на его
+        // странице, а не в разделе документов витрины (слайс CB).
+        where: { publishedAt: { not: null }, adId: null },
         orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
         select: { id: true, kind: true, kindCustom: true, title: true, url: true, linkUrl: true },
       },
@@ -177,7 +202,9 @@ export async function buildCompanyCard({
         select: POINT_SELECT,
       },
       ads: {
-        where: { status: "PUBLISHED" },
+        where: previewAdId
+          ? { OR: [{ status: "PUBLISHED" }, { id: previewAdId }] }
+          : { status: "PUBLISHED" },
         orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
         take: 20,
         select: {
@@ -189,6 +216,11 @@ export async function buildCompanyCard({
           action: true, actionUrl: true,
           product: { select: { slug: true, name: true, suspendedAt: true, mergedIntoId: true } },
           point: { select: { id: true, name: true, status: true, suspendedAt: true, deletedAt: true } },
+          documents: {
+            where: { publishedAt: { not: null } },
+            orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+            select: { id: true, kind: true, kindCustom: true, title: true, url: true, linkUrl: true },
+          },
         },
       },
     },
@@ -203,7 +235,9 @@ export async function buildCompanyCard({
 
   // Монеты места материала (BZ) читаются тем же запросом, что монеты предприятия:
   // два запроса об одних и тех же строках стоили бы вдвое, а набор у места свой.
-  const liveAds = company.ads.filter((a) => adInWindow(a, now)).slice(0, 5);
+  const liveAds = company.ads
+    .filter((a) => a.id === previewAdId || adInWindow(a, now))
+    .slice(0, MAX_PUBLISHED_ADS);
   const wantedCoinIds = [
     ...(show.coins ? company.acceptedCoinIds : []),
     ...liveAds.flatMap((a) => a.placeAcceptedCoinIds),
@@ -336,6 +370,7 @@ export async function buildCompanyCard({
                 payments: parsePaymentMethods(a.placePaymentMethods),
               }
             : null,
+        documents: a.documents,
         href: `/${locale}/ad/${a.id}`,
         action,
       };

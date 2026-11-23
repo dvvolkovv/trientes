@@ -7,6 +7,8 @@ import { createAd, updateAd } from "@/app/actions/company-ads";
 import { AD_BODY_MAX, AD_KINDS, AD_ACTIONS, adTextHash, type AdInput } from "@/lib/ads/rules";
 import { SUPPORTED_LOCALES } from "@/lib/locales";
 import { AdPlaceField } from "@/components/ads/ad-place-field";
+import { AdBanner } from "@/components/company-card/ad-banner";
+import type { CardAd } from "@/lib/company-card/view";
 import { AdVoiceField } from "@/components/ads/ad-voice-field";
 import type { PickerCoin } from "@/components/business/coin-picker";
 
@@ -124,6 +126,46 @@ export function AdForm({
   if (v.action === "PRODUCT" && !(v.productId ?? "").trim()) missing.push(t("missing.product"));
   if (v.action === "WEBSITE" && !(v.actionUrl ?? "").trim()) missing.push(t("missing.url"));
   if (v.action === "POINT" && !(v.pointId ?? "").trim() && !hasPlace) missing.push(t("missing.place"));
+
+  /**
+   * Предпросмотр (слайс CB, просьба владельца «посмотреть и послушать до
+   * публикации»). Рисует его **тот же** компонент, что и живую карточку: второй
+   * «как это будет выглядеть» разошёлся бы с настоящим — болезнь, уже стоившая
+   * проекту двух сборок одной витрины (живой прогон BX).
+   *
+   * Кадр ведёт в никуда (`#`): у несохранённого материала страницы ещё нет, а
+   * уводить человека из формы посреди набора нельзя.
+   */
+  const previewAd: CardAd | null = v.mediaUrl
+    ? {
+        id: v.id ?? "preview",
+        kind: (AD_KINDS.find((k) => k === v.kind) ?? "PROMO"),
+        title: v.title.trim() || t("previewNoTitle"),
+        body: (v.body ?? "").trim() || null,
+        language: v.language,
+        mediaKind: v.mediaKind === "VIDEO" ? "VIDEO" : "IMAGE",
+        mediaUrl: v.mediaUrl,
+        posterUrl: (v.posterUrl ?? "") || null,
+        audioUrl: (v.audioUrl ?? "") || null,
+        promoCode: (v.promoCode ?? "").trim() || null,
+        endsAt: (v.endsAt ?? "") ? `${v.endsAt}T00:00:00.000Z` : null,
+        eventAt: (v.eventAt ?? "") ? `${v.eventAt}T00:00:00.000Z` : null,
+        eventEndAt: (v.eventEndAt ?? "") ? `${v.eventEndAt}T00:00:00.000Z` : null,
+        place: hasPlace
+          ? {
+              name: (v.placeName ?? "").trim() || null,
+              address: (v.placeAddress ?? "").trim() || null,
+              lat: Number(v.placeLat),
+              lon: Number(v.placeLon),
+              coins: [],
+              payments: [],
+            }
+          : null,
+        documents: [],
+        href: "#",
+        action: null,
+      }
+    : null;
 
   return (
     <section className="mb-8 rounded-[18px] border border-hairline bg-card p-4">
@@ -335,6 +377,16 @@ export function AdForm({
             </div>
           ) : null}
         </div>
+
+        {previewAd ? (
+          <div className="rounded-[18px] border border-hairline bg-bg-tint p-3">
+            <div className="mb-2 flex items-center justify-between">
+              <span className={`${label} mb-0`}>{t("previewTitle")}</span>
+              <span className="text-[11px] text-muted">{t("previewHint")}</span>
+            </div>
+            <AdBanner ads={[previewAd]} />
+          </div>
+        ) : null}
 
         {error ? (
           <p ref={errorRef} className="text-[13px] text-[#E55C5C]">{t(`errors.${error}`)}</p>

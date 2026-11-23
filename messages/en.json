@@ -4987,7 +4987,14 @@
       "product": "the product",
       "url": "the website address",
       "place": "the place for the action"
-    }
+    },
+    "previewTitle": "Preview",
+    "previewHint": "Exactly what shoppers will see",
+    "previewNoTitle": "Untitled",
+    "preview": "Preview page",
+    "slideNo": "Slide {n} of {total}",
+    "docsTitle": "Documents for this item",
+    "docsSubtitle": "Permits, licences, declarations — the papers behind what the banner says. They show on this item's page, not on the company showcase."
   },
   "adPage": {
     "placeTitle": "Where it is",
@@ -4995,6 +5002,14 @@
     "paymentOutside": "Payment is arranged with the seller — Trientes does not process payments.",
     "moreTitle": "More from this business",
     "eventRange": "{from} — {to}",
-    "companyProfile": "Business profile"
+    "companyProfile": "Business profile",
+    "documentsTitle": "Documents and permits",
+    "preview": {
+      "draft": "Draft — not visible to shoppers yet",
+      "archived": "Archived — not visible to shoppers",
+      "hint": "This page is exactly what a shopper sees. Listen to the voice-over and read it through before you publish.",
+      "publish": "Publish",
+      "backToStudio": "Back to the studio"
+    }
   }
 }

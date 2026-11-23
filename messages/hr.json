@@ -4987,7 +4987,14 @@
       "product": "proizvod",
       "url": "adresa web-mjesta",
       "place": "mjesto za akciju"
-    }
+    },
+    "previewTitle": "Pregled",
+    "previewHint": "Točno ono što će kupci vidjeti",
+    "previewNoTitle": "Bez naslova",
+    "preview": "Pregled stranice",
+    "slideNo": "Slajd {n} od {total}",
+    "docsTitle": "Dokumenti za ovu stavku",
+    "docsSubtitle": "Dozvole, licence, deklaracije — dokumenti koji stoje iza onoga što baner kaže. Prikazuju se na stranici ove stavke, ne na izlogu tvrtke."
   },
   "adPage": {
     "placeTitle": "Gdje se nalazi",
@@ -4995,6 +5002,14 @@
     "paymentOutside": "Plaćanje se dogovara s prodavateljem — Trientes ne obrađuje plaćanja.",
     "moreTitle": "Još od ovog poduzeća",
     "eventRange": "{from} — {to}",
-    "companyProfile": "Poslovni profil"
+    "companyProfile": "Poslovni profil",
+    "documentsTitle": "Dokumenti i dozvole",
+    "preview": {
+      "draft": "Nacrt — još nije vidljivo kupcima",
+      "archived": "Arhivirano — nije vidljivo kupcima",
+      "hint": "Ova stranica je točno ono što vidi kupac. Poslušajte naraciju i pročitajte sve prije objave.",
+      "publish": "Objavite",
+      "backToStudio": "Natrag u studio"
+    }
   }
 }
