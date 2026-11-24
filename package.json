@@ -83,6 +83,7 @@
     "eslint-config-next": "16.4.5",
     "htmlparser2": "10.1.0",
     "ioredis-mock": "^8.9.0",
+    "jsqr": "^1.4.0",
     "prisma": "^5.22.0",
     "tailwindcss": "^4",
     "tsx": "^4.22.3",

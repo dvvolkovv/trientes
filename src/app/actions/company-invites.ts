@@ -6,6 +6,8 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { notifyUser } from "@/lib/notify";
 import { logCompanyAction } from "@/lib/company-team/journal";
+import { inviteRoleAllowed } from "@/lib/company-team/permissions";
+import { getViewerCompanyById, canEditSection } from "@/lib/business";
 import {
   MAX_ACTIVE_INVITES,
   generateInviteToken,
@@ -20,19 +22,30 @@ async function requireUserId(): Promise<string | null> {
   return (session?.user as { id?: string } | undefined)?.id ?? null;
 }
 
-async function isOwner(companyId: string, userId: string): Promise<boolean> {
-  const m = await prisma.companyMember.findUnique({
-    where: { companyId_userId: { companyId, userId } },
-    select: { role: true },
-  });
-  return m?.role === "OWNER";
+/**
+ * Кто вправе выпускать и отзывать ссылки: владелец либо кадровик — член с правом
+ * `hiring: EDIT` (слайс CH). Состав команды, роли и конструктор прав при этом
+ * остаются у владельца: поручено звать людей, а не распоряжаться доступом.
+ */
+async function hiringGate(companyId: string, userId: string) {
+  const { company, role, permissions } = await getViewerCompanyById(companyId);
+  if (!company) return null;
+  const isOwner = role === "OWNER";
+  if (!isOwner && !canEditSection(permissions, "hiring")) return null;
+  return { isOwner };
 }
 
 export async function createInvite(input: { companyId: string; role: CompanyRole }) {
   const userId = await requireUserId();
   if (!userId) return { ok: false as const, reason: "unauth" as const };
   if (!ROLES.includes(input.role)) return { ok: false as const, reason: "invalid" as const };
-  if (!(await isOwner(input.companyId, userId))) return { ok: false as const, reason: "forbidden" as const };
+  const gate = await hiringGate(input.companyId, userId);
+  if (!gate) return { ok: false as const, reason: "forbidden" as const };
+  // Кадровик зовёт людей, но не отдаёт предприятие: приглашение в владельцы — только
+  // от владельца, иначе запрет «повышать себя» обходится через второго человека.
+  if (!inviteRoleAllowed(gate.isOwner, input.role)) {
+    return { ok: false as const, reason: "role_not_allowed" as const };
+  }
 
   const active = await prisma.companyInvite.count({
     where: {
@@ -67,7 +80,7 @@ export async function createInvite(input: { companyId: string; role: CompanyRole
 export async function revokeInvite(input: { companyId: string; inviteId: string }) {
   const userId = await requireUserId();
   if (!userId) return { ok: false as const, reason: "unauth" as const };
-  if (!(await isOwner(input.companyId, userId))) return { ok: false as const, reason: "forbidden" as const };
+  if (!(await hiringGate(input.companyId, userId))) return { ok: false as const, reason: "forbidden" as const };
 
   // Scoped by companyId so an owner of company A cannot revoke B's invites;
   // guarded on acceptedAt so an already-used link stays in its final state.

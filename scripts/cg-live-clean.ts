@@ -20,6 +20,7 @@ async function main() {
   for (const c of companies) {
     await prisma.companyInvite.deleteMany({ where: { companyId: c.id } });
     await prisma.companyMember.deleteMany({ where: { companyId: c.id } });
+    await prisma.companyTeamRole.deleteMany({ where: { companyId: c.id } });
     await prisma.companyActionLog.deleteMany({ where: { companyId: c.id } });
     await prisma.company.delete({ where: { id: c.id } });
   }

@@ -7,6 +7,7 @@ import type { CompanyRole } from "@prisma/client";
 import { createInvite, revokeInvite } from "@/app/actions/company-invites";
 import { buildInviteUrl } from "@/lib/company-invites";
 import { ShareButton } from "@/components/share-button";
+import { QrButton } from "@/components/qr-button";
 
 /** Действие в строке ссылки — кнопка под палец, а не подчёркнутое слово. */
 const ROW_BTN =
@@ -22,9 +23,15 @@ export type InviteListItem = {
 export function InviteLinks({
   companyId,
   invites,
+  canEdit = true,
+  canInviteOwner = true,
 }: {
   companyId: string;
   invites: InviteListItem[];
+  /// Кадровик (слайс CH) выпускает и отзывает ссылки; без права — только список.
+  canEdit?: boolean;
+  /// Приглашение в владельцы выдаёт только владелец: иначе позванный звал бы дальше.
+  canInviteOwner?: boolean;
 }) {
   const t = useTranslations("business.members.invites");
   // Role labels live one level up — shared with the member list.
@@ -67,6 +74,7 @@ export function InviteLinks({
       <h3 className="text-sm font-semibold mb-1">{t("title")}</h3>
       <p className="text-xs text-muted mb-3">{t("subtitle")}</p>
 
+      {canEdit ? (
       <div className="flex flex-wrap gap-2 items-stretch">
         <select
           value={role}
@@ -75,7 +83,7 @@ export function InviteLinks({
         >
           <option value="VIEWER">{tr("role.VIEWER")}</option>
           <option value="EDITOR">{tr("role.EDITOR")}</option>
-          <option value="OWNER">{tr("role.OWNER")}</option>
+          {canInviteOwner ? <option value="OWNER">{tr("role.OWNER")}</option> : null}
         </select>
         <button
           type="button"
@@ -93,6 +101,7 @@ export function InviteLinks({
           {pending ? t("creating") : t("create")}
         </button>
       </div>
+      ) : null}
       {error ? <p className="text-red-500 text-xs mt-2">{t(`errors.${error}`)}</p> : null}
 
       {invites.length === 0 ? (
@@ -123,8 +132,12 @@ export function InviteLinks({
               {/* Системному окну нужен полный адрес, а он известен только
                   после монтирования — до него кнопки нет. */}
               {origin ? (
-                <ShareButton payload={shareFor(inv)} className={ROW_BTN} panelClassName="bg-card" />
+                <>
+                  <ShareButton payload={shareFor(inv)} className={ROW_BTN} panelClassName="bg-card" />
+                  <QrButton text={urlFor(inv.token)} className={ROW_BTN} panelClassName="bg-card" />
+                </>
               ) : null}
+              {canEdit ? (
               <button
                 type="button"
                 disabled={pending}
@@ -140,6 +153,7 @@ export function InviteLinks({
               >
                 {t("revoke")}
               </button>
+              ) : null}
             </li>
           ))}
         </ul>

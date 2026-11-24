@@ -16,10 +16,17 @@ describe("permissionsFor", () => {
     for (const section of TEAM_SECTIONS) expect(can(perms, section, "EDIT")).toBe(true);
   });
 
+  // Наём (`hiring`, слайс CH) в наследие не входит: раздел появился позже этих
+  // членов, и право звать людей им никто не давал — см. `hiring-permission.test.ts`.
   it("наследие фазы 10: EDITOR правит всё, VIEWER смотрит всё", () => {
     const editor = permissionsFor({ role: "EDITOR", rolePermissions: null });
     const viewer = permissionsFor({ role: "VIEWER", rolePermissions: null });
     for (const section of TEAM_SECTIONS) {
+      if (section === "hiring") {
+        expect(can(editor, section, "VIEW")).toBe(false);
+        expect(can(viewer, section, "VIEW")).toBe(false);
+        continue;
+      }
       expect(can(editor, section, "EDIT")).toBe(true);
       expect(can(viewer, section, "EDIT")).toBe(false);
       expect(can(viewer, section, "VIEW")).toBe(true);

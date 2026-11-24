@@ -9,6 +9,8 @@ export async function MembersSection({
   companyId,
   viewerId,
   canManage,
+  canInvite = false,
+  canSeeInvites = false,
   viewerRole,
   teamRoles = [],
   points = [],
@@ -16,6 +18,9 @@ export async function MembersSection({
   companyId: string;
   viewerId: string;
   canManage: boolean;
+  /// Кадровик (слайс CH): выпускает и отзывает ссылки, состав команды не трогает.
+  canInvite?: boolean;
+  canSeeInvites?: boolean;
   viewerRole: CompanyRole | null;
   /// Свои роли предприятия (слайс BE) и точки, из которых собирается участок.
   teamRoles?: { id: string; name: string }[];
@@ -31,8 +36,8 @@ export async function MembersSection({
     },
   });
 
-  // Only owners manage links, so skip the query entirely for everyone else.
-  const invites: InviteListItem[] = canManage
+  // Ссылки видит владелец и кадровик; остальным запрос не нужен вовсе.
+  const invites: InviteListItem[] = canSeeInvites || canManage
     ? (
         await prisma.companyInvite.findMany({
           where: {
@@ -51,11 +56,22 @@ export async function MembersSection({
     <section>
       <h2 className="text-[24px] font-bold tracking-[-0.02em] mb-1">{t("title")}</h2>
       <p className="text-sm text-muted mb-4">
-        {canManage ? t("subtitleOwner") : t("subtitleViewer", { role: viewerRole ? t(`role.${viewerRole}`) : "" })}
+        {canManage
+          ? t("subtitleOwner")
+          : canInvite
+            ? t("subtitleHiring")
+            : t("subtitleViewer", { role: viewerRole ? t(`role.${viewerRole}`) : "" })}
       </p>
 
       {canManage ? <InviteMemberForm companyId={companyId} /> : null}
-      {canManage ? <InviteLinks companyId={companyId} invites={invites} /> : null}
+      {canSeeInvites || canManage ? (
+        <InviteLinks
+          companyId={companyId}
+          invites={invites}
+          canEdit={canInvite || canManage}
+          canInviteOwner={canManage}
+        />
+      ) : null}
 
       <ul className="space-y-2 mt-4">
         {members.map((m) => (

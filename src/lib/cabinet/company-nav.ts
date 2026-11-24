@@ -54,7 +54,10 @@ export const COMPANY_TILES: CompanyTileDef[] = [
   { key: "warehouses", group: "household", icon: "🏬", section: "warehouses", path: "warehouses" },
   { key: "supply", group: "household", icon: "🚚", section: "supply", path: "supply" },
 
-  { key: "team", group: "order", icon: "👥", section: "card", path: "team", ownerOnly: true },
+  // Команда — дверь раздела `hiring` (слайс CH): кадровик выпускает приглашения, и
+  // плитка нужна ему, а не только владельцу. Состав команды и роли внутри страницы
+  // по-прежнему правит только владелец.
+  { key: "team", group: "order", icon: "👥", section: "hiring", path: "team" },
   { key: "tasks", group: "order", icon: "✅", section: "tasks", path: "tasks", everyone: true },
   // Чат виден каждому члену и своего раздела прав не имеет: комната принадлежит
   // команде, а право, умеющее только замолчать человека, — управление, не доступ (BP).

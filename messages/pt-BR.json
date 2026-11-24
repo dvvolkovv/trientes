@@ -41,7 +41,7 @@
       "signIn": "Entrar",
       "newRequest": "Nova solicitação",
       "history": "Histórico",
-      "admin": "Admin",
+      "admin": "Administrador",
       "support": "Suporte"
     },
     "a11y": {
@@ -78,6 +78,12 @@
         "telegram": "Telegram",
         "whatsapp": "WhatsApp"
       }
+    },
+    "qr": {
+      "show": "Código QR",
+      "label": "Código QR do link de convite",
+      "hint": "Peça que apontem a câmera do celular para este código — ele abre o convite",
+      "close": "Fechar"
     }
   },
   "home": {
@@ -1624,11 +1630,13 @@
           "unauth": "Entre primeiro.",
           "forbidden": "Apenas proprietários.",
           "invalid": "Este link não está mais ativo.",
-          "too_many": "Links ativos demais — revogue um primeiro."
+          "too_many": "Links ativos demais — revogue um primeiro.",
+          "role_not_allowed": "Somente um proprietário pode convidar outro proprietário."
         },
         "shareTitle": "Trientes — convite para equipe",
         "shareText": "Você foi convidado a entrar em uma equipe da empresa no Trientes. O link funciona uma vez e expira em {date}."
-      }
+      },
+      "subtitleHiring": "Você pode emitir e revogar links de convite. A equipe em si é gerenciada pelo proprietário."
     },
     "kyb": {
       "title": "Verificação empresarial (KYB)",
@@ -4302,7 +4310,8 @@
         "manager": "Gerente",
         "stock": "Estoquista",
         "marketing": "Marketing",
-        "observer": "Observador"
+        "observer": "Observador",
+        "hr": "RH"
       },
       "sections": {
         "card": "Ficha da loja",
@@ -4313,7 +4322,8 @@
         "tasks": "Tarefas",
         "promos": "Ofertas e envios",
         "supply": "Fornecedores e pedidos",
-        "customers": "Mensagens de clientes"
+        "customers": "Mensagens de clientes",
+        "hiring": "Contratação: links de convite"
       },
       "levels": {
         "NONE": "Sem acesso",

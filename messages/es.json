@@ -78,6 +78,12 @@
         "telegram": "Telegram",
         "whatsapp": "WhatsApp"
       }
+    },
+    "qr": {
+      "show": "Código QR",
+      "label": "Código QR del enlace de invitación",
+      "hint": "Que apunten la cámara del teléfono a este código — se abre la invitación.",
+      "close": "Cerrar"
     }
   },
   "home": {
@@ -1624,11 +1630,13 @@
           "unauth": "Inicia sesión primero.",
           "forbidden": "Solo para propietarios.",
           "invalid": "Este enlace ya no está activo.",
-          "too_many": "Demasiados enlaces activos: revoca uno primero."
+          "too_many": "Demasiados enlaces activos: revoca uno primero.",
+          "role_not_allowed": "Solo un propietario puede invitar a otro propietario"
         },
         "shareTitle": "Trientes — invitación al equipo",
         "shareText": "Estás invitado a unirte al equipo de una empresa en Trientes. El enlace funciona una sola vez y caduca el {date}."
-      }
+      },
+      "subtitleHiring": "Puedes emitir y revocar enlaces de invitación. El equipo en sí lo gestiona el propietario"
     },
     "kyb": {
       "title": "Verificación empresarial (KYB)",
@@ -4302,7 +4310,8 @@
         "manager": "Gerente",
         "stock": "Encargado de almacén",
         "marketing": "Especialista en marketing",
-        "observer": "Observador"
+        "observer": "Observador",
+        "hr": "HR"
       },
       "sections": {
         "card": "Ficha de la tienda",
@@ -4313,7 +4322,8 @@
         "tasks": "Tareas",
         "promos": "Ofertas y comunicaciones",
         "supply": "Proveedores y pedidos",
-        "customers": "Mensajes de clientes"
+        "customers": "Mensajes de clientes",
+        "hiring": "Contratación: enlaces de invitación"
       },
       "levels": {
         "NONE": "Sin acceso",

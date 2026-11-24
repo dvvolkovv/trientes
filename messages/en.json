@@ -78,6 +78,12 @@
         "telegram": "Telegram",
         "whatsapp": "WhatsApp"
       }
+    },
+    "qr": {
+      "show": "QR code",
+      "label": "QR code of the invite link",
+      "hint": "Let them point their phone camera at this code — it opens the invitation.",
+      "close": "Close"
     }
   },
   "home": {
@@ -1624,11 +1630,13 @@
           "unauth": "Sign in first.",
           "forbidden": "Owners only.",
           "invalid": "This link is no longer active.",
-          "too_many": "Too many active links — revoke one first."
+          "too_many": "Too many active links — revoke one first.",
+          "role_not_allowed": "Only an owner can invite another owner."
         },
         "shareTitle": "Trientes — team invite",
         "shareText": "You are invited to join a company team on Trientes. The link works once and expires on {date}."
-      }
+      },
+      "subtitleHiring": "You can issue and revoke invite links. The team itself is managed by the owner."
     },
     "kyb": {
       "title": "Business verification (KYB)",
@@ -4302,7 +4310,8 @@
         "manager": "Manager",
         "stock": "Warehouse keeper",
         "marketing": "Marketer",
-        "observer": "Observer"
+        "observer": "Observer",
+        "hr": "HR"
       },
       "sections": {
         "card": "Shop card",
@@ -4313,7 +4322,8 @@
         "tasks": "Tasks",
         "promos": "Offers and mailings",
         "supply": "Suppliers and orders",
-        "customers": "Customer messages"
+        "customers": "Customer messages",
+        "hiring": "Hiring: invite links"
       },
       "levels": {
         "NONE": "No access",

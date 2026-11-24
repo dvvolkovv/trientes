@@ -6,6 +6,7 @@ import { grantStaffByIdentifier } from "@/app/actions/staff-access";
 import { ADMIN_BUTTON, ADMIN_BUTTON_SECONDARY } from "@/lib/admin-ui";
 import type { PresetKey } from "@/lib/staff/presets";
 import { ShareButton } from "@/components/share-button";
+import { QrButton } from "@/components/qr-button";
 import { GrantMatrix, type MatrixLabels, type MatrixValue } from "./staff-grant-matrix";
 
 export type InviteLabels = {
@@ -219,6 +220,7 @@ export function StaffInviteForm({
               className={ADMIN_BUTTON_SECONDARY}
               panelClassName="bg-card"
             />
+            <QrButton text={link} className={ADMIN_BUTTON_SECONDARY} panelClassName="bg-card" />
           </div>
           <p className="mt-2 text-[11px] leading-snug text-muted">{labels.expiresIn}</p>
         </div>

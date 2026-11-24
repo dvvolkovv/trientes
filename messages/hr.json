@@ -78,6 +78,12 @@
         "telegram": "Telegram",
         "whatsapp": "WhatsApp"
       }
+    },
+    "qr": {
+      "show": "QR kod",
+      "label": "QR kod pozivne poveznice",
+      "hint": "Neka usmjere kameru telefona na ovaj kod — otvorit će se pozivnica.",
+      "close": "Zatvori"
     }
   },
   "home": {
@@ -1624,11 +1630,13 @@
           "unauth": "Prijavite se prvo.",
           "forbidden": "Samo vlasnici.",
           "invalid": "Ova poveznica više nije aktivna.",
-          "too_many": "Previše aktivnih poveznica — najprije opozovite jednu."
+          "too_many": "Previše aktivnih poveznica — najprije opozovite jednu.",
+          "role_not_allowed": "Samo vlasnik može pozvati drugog vlasnika."
         },
         "shareTitle": "Trientes — poziv u tim",
         "shareText": "Pozvani ste da se pridružite timu tvrtke na Trientesu. Poveznica vrijedi jednom i istječe {date}."
-      }
+      },
+      "subtitleHiring": "Možete izdati i opozvati pozivne poveznice. Timom upravlja vlasnik."
     },
     "kyb": {
       "title": "Poslovna verifikacija (KYB)",
@@ -4302,7 +4310,8 @@
         "manager": "Menadžer",
         "stock": "Skladištar",
         "marketing": "Marketinški stručnjak",
-        "observer": "Promatrač"
+        "observer": "Promatrač",
+        "hr": "HR"
       },
       "sections": {
         "card": "Kartica trgovine",
@@ -4313,7 +4322,8 @@
         "tasks": "Zadaci",
         "promos": "Ponude i slanja e-poštom",
         "supply": "Dobavljači i narudžbe",
-        "customers": "Poruke kupaca"
+        "customers": "Poruke kupaca",
+        "hiring": "Zapošljavanje: pozivne poveznice"
       },
       "levels": {
         "NONE": "Bez pristupa",

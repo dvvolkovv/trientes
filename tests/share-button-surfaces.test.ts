@@ -20,8 +20,16 @@ describe("ссылка приглашения отдаётся «Поделит�
       const src = readFileSync(file, "utf8");
       expect(src).toContain('from "@/components/share-button"');
       expect(src).toContain("<ShareButton");
+      // Человек стоит рядом — показать экран быстрее, чем переслать (слайс CH).
+      expect(src).toContain('from "@/components/qr-button"');
+      expect(src).toContain("<QrButton");
     });
   }
+
+  it("у символа QR есть слова", () => {
+    const qr = (en as Record<string, any>).common.qr;
+    for (const key of ["show", "label", "hint", "close"]) expect(qr[key].length).toBeGreaterThan(1);
+  });
 
   it("у кнопки есть слова, и у каждой цели своё название", () => {
     const share = (en as Record<string, any>).common.share;

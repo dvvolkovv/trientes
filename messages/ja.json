@@ -78,6 +78,12 @@
         "telegram": "Telegram",
         "whatsapp": "WhatsApp"
       }
+    },
+    "qr": {
+      "show": "QRコード",
+      "label": "招待リンクのQRコード",
+      "hint": "このコードにスマホのカメラを向けてもらえば、招待が開きます。",
+      "close": "閉じる"
     }
   },
   "home": {
@@ -1624,11 +1630,13 @@
           "unauth": "先にサインインしてください。",
           "forbidden": "オーナーのみ可能です。",
           "invalid": "このリンクは無効になりました。",
-          "too_many": "有効なリンクが多すぎます。まず1つ無効にしてください。"
+          "too_many": "有効なリンクが多すぎます。まず1つ無効にしてください。",
+          "role_not_allowed": "オーナーのみが別のオーナーを招待できます。"
         },
         "shareTitle": "Trientes — チーム招待",
         "shareText": "Trientesの会社チームに参加する招待です。リンクは1回のみ有効で、{date}に期限切れになります。"
-      }
+      },
+      "subtitleHiring": "招待リンクの発行と取り消しができます。チームの管理はオーナーが行います。"
     },
     "kyb": {
       "title": "事業者認証（KYB）",
@@ -4302,7 +4310,8 @@
         "manager": "マネージャー",
         "stock": "倉庫管理者",
         "marketing": "マーケター",
-        "observer": "オブザーバー"
+        "observer": "オブザーバー",
+        "hr": "HR"
       },
       "sections": {
         "card": "店舗カード",
@@ -4313,7 +4322,8 @@
         "tasks": "タスク",
         "promos": "オファーと配信",
         "supply": "仕入先と発注",
-        "customers": "顧客メッセージ"
+        "customers": "顧客メッセージ",
+        "hiring": "採用: 招待リンク"
       },
       "levels": {
         "NONE": "アクセスなし",

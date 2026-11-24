@@ -78,6 +78,12 @@
         "telegram": "Telegram",
         "whatsapp": "WhatsApp"
       }
+    },
+    "qr": {
+      "show": "QR kód",
+      "label": "QR kód odkazu na pozvánku",
+      "hint": "Nech namieria fotoaparát svojho telefónu na tento kód — otvorí pozvánku.",
+      "close": "Zavrieť"
     }
   },
   "home": {
@@ -1624,11 +1630,13 @@
           "unauth": "Najprv sa prihláste.",
           "forbidden": "Len vlastníci.",
           "invalid": "Tento odkaz už nie je aktívny.",
-          "too_many": "Príliš veľa aktívnych odkazov — najprv jeden zrušte."
+          "too_many": "Príliš veľa aktívnych odkazov — najprv jeden zrušte.",
+          "role_not_allowed": "Len vlastník môže pozvať iného vlastníka."
         },
         "shareTitle": "Trientes — pozvánka do tímu",
         "shareText": "Ste pozvaní pridať sa k tímu spoločnosti na Trientes. Odkaz funguje len raz a vyprší {date}."
-      }
+      },
+      "subtitleHiring": "Môžete vystavovať a rušiť pozvánkové odkazy. Samotný tím spravuje vlastník."
     },
     "kyb": {
       "title": "Overenie firmy (KYB)",
@@ -4302,7 +4310,8 @@
         "manager": "Manažér",
         "stock": "Skladník",
         "marketing": "Marketér",
-        "observer": "Pozorovateľ"
+        "observer": "Pozorovateľ",
+        "hr": "HR"
       },
       "sections": {
         "card": "Karta obchodu",
@@ -4313,7 +4322,8 @@
         "tasks": "Úlohy",
         "promos": "Ponuky a rozosielanie",
         "supply": "Dodávatelia a objednávky",
-        "customers": "Správy od zákazníkov"
+        "customers": "Správy od zákazníkov",
+        "hiring": "Nábor: odkazy na pozvánky"
       },
       "levels": {
         "NONE": "Bez prístupu",

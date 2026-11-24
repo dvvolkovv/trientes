@@ -78,6 +78,12 @@
         "telegram": "Telegram",
         "whatsapp": "WhatsApp"
       }
+    },
+    "qr": {
+      "show": "QR kodu",
+      "label": "Davet bağlantısının QR kodu",
+      "hint": "Telefonlarının kamerasını bu koda doğrultmalarını söyleyin — daveti açar",
+      "close": "Kapat"
     }
   },
   "home": {
@@ -1624,11 +1630,13 @@
           "unauth": "Önce giriş yapın.",
           "forbidden": "Yalnızca sahipler.",
           "invalid": "Bu bağlantı artık etkin değil.",
-          "too_many": "Çok fazla etkin bağlantı — önce birini iptal edin."
+          "too_many": "Çok fazla etkin bağlantı — önce birini iptal edin.",
+          "role_not_allowed": "Yalnızca bir sahip başka bir sahibi davet edebilir."
         },
         "shareTitle": "Trientes — ekip daveti",
         "shareText": "Trientes'te bir şirket ekibine katılmaya davet edildiniz. Bağlantı bir kez çalışır ve {date} tarihinde sona erer."
-      }
+      },
+      "subtitleHiring": "Davet bağlantıları oluşturabilir ve iptal edebilirsiniz. Ekibin kendisi sahibi tarafından yönetilir."
     },
     "kyb": {
       "title": "İşletme doğrulaması (KYB)",
@@ -4302,7 +4310,8 @@
         "manager": "Yönetici",
         "stock": "Depo sorumlusu",
         "marketing": "Pazarlamacı",
-        "observer": "Gözlemci"
+        "observer": "Gözlemci",
+        "hr": "HR"
       },
       "sections": {
         "card": "Mağaza kartı",
@@ -4313,7 +4322,8 @@
         "tasks": "Görevler",
         "promos": "Teklifler ve gönderimler",
         "supply": "Tedarikçiler ve siparişler",
-        "customers": "Müşteri mesajları"
+        "customers": "Müşteri mesajları",
+        "hiring": "İşe alım: davet bağlantıları"
       },
       "levels": {
         "NONE": "Erişim yok",

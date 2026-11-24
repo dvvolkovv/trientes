@@ -78,6 +78,12 @@
         "telegram": "Telegram",
         "whatsapp": "WhatsApp"
       }
+    },
+    "qr": {
+      "show": "QR-Code",
+      "label": "QR-Code des Einladungslinks",
+      "hint": "Lass sie ihre Handykamera auf diesen Code richten — er öffnet die Einladung",
+      "close": "Schließen"
     }
   },
   "home": {
@@ -1624,11 +1630,13 @@
           "unauth": "Bitte zuerst anmelden.",
           "forbidden": "Nur für Eigentümer.",
           "invalid": "Dieser Link ist nicht mehr aktiv.",
-          "too_many": "Zu viele aktive Links — widerrufe zuerst einen."
+          "too_many": "Zu viele aktive Links — widerrufe zuerst einen.",
+          "role_not_allowed": "Nur ein Inhaber kann einen weiteren Inhaber einladen."
         },
         "shareTitle": "Trientes — Teameinladung",
         "shareText": "Du bist eingeladen, einem Unternehmensteam auf Trientes beizutreten. Der Link funktioniert einmal und läuft am {date} ab."
-      }
+      },
+      "subtitleHiring": "Sie können Einladungslinks ausstellen und widerrufen. Das Team selbst wird vom Inhaber verwaltet."
     },
     "kyb": {
       "title": "Geschäftsprüfung (KYB)",
@@ -4302,7 +4310,8 @@
         "manager": "Manager",
         "stock": "Lagerverwalter",
         "marketing": "Marketingmanager",
-        "observer": "Beobachter"
+        "observer": "Beobachter",
+        "hr": "HR"
       },
       "sections": {
         "card": "Shop-Karte",
@@ -4313,7 +4322,8 @@
         "tasks": "Aufgaben",
         "promos": "Angebote und Mailings",
         "supply": "Lieferanten und Bestellungen",
-        "customers": "Kundennachrichten"
+        "customers": "Kundennachrichten",
+        "hiring": "Einstellung: Einladungslinks"
       },
       "levels": {
         "NONE": "Kein Zugriff",

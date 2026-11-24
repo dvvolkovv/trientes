@@ -10,6 +10,14 @@
  * которому поручено вести приход на полку, не должен заказывать у поставщика — заказ это
  * обещание заплатить (тот же мотив, которым BE отделил `pricing` от `warehouses`).
  *
+ * Десятый раздел `hiring` — слайс CH, просьба владельца: директор вправе поручить
+ * выпуск приглашений кадровику. Это уточнение правила BE «команда правами не
+ * настраивается», а не его отмена: кадровик **зовёт** людей (ссылка и её отзыв), а
+ * состав команды, роли и конструктор прав остаются у владельца. Приглашение с ролью
+ * `OWNER` кадровику недоступно — иначе позванный им человек получил бы право звать
+ * кого угодно кем угодно, то есть запрет `self_grant` обходился бы через второго
+ * человека.
+ *
  * Девятый раздел `customers` появился в BQ вместе с перепиской покупателя: ТЗ 6.6 прямо
  * говорит «сотрудники **с нужной ролью** отвечают на сообщения покупателей». Общий чат
  * команды (BP) раздела прав не получил — комната принадлежит команде, — а внешняя
@@ -20,7 +28,7 @@
 /** Ролей на предприятие — столько, сколько читает человек в списке. */
 export const MAX_TEAM_ROLES = 20;
 
-export const TEAM_SECTIONS = ["card", "points", "products", "warehouses", "pricing", "tasks", "promos", "supply", "customers"] as const;
+export const TEAM_SECTIONS = ["card", "points", "products", "warehouses", "pricing", "tasks", "promos", "supply", "customers", "hiring"] as const;
 export type TeamSection = (typeof TEAM_SECTIONS)[number];
 
 /** Уровней два; отсутствие строки — запрет по умолчанию, как очередь без гранта в AS. */
@@ -47,14 +55,24 @@ export function parsePermissions(raw: unknown): TeamPermissions {
   return out;
 }
 
-function fill(level: TeamLevel): TeamPermissions {
+function fill(level: TeamLevel, sections: readonly TeamSection[] = TEAM_SECTIONS): TeamPermissions {
   const out: TeamPermissions = {};
-  for (const section of TEAM_SECTIONS) out[section] = level;
+  for (const section of sections) out[section] = level;
   return out;
 }
 
 export const ALL_EDIT: TeamPermissions = fill("EDIT");
 export const ALL_VIEW: TeamPermissions = fill("VIEW");
+
+/**
+ * Что получает член **без своей роли** — наследие фазы 10. `hiring` сюда не входит:
+ * эти члены заведены до того, как раздел появился, и никто не решал давать им право
+ * звать людей в команду. Молчаливое расширение прав живого редактора было бы ровно
+ * тем, от чего охраняет запрет по умолчанию.
+ */
+const LEGACY_SECTIONS = TEAM_SECTIONS.filter((s) => s !== "hiring");
+const LEGACY_EDIT: TeamPermissions = fill("EDIT", LEGACY_SECTIONS);
+const LEGACY_VIEW: TeamPermissions = fill("VIEW", LEGACY_SECTIONS);
 
 export type TeamMemberGate = {
   role: "OWNER" | "EDITOR" | "VIEWER";
@@ -72,7 +90,7 @@ export function permissionsFor(member: TeamMemberGate | null | undefined): TeamP
   if (!member) return {};
   if (member.role === "OWNER") return { ...ALL_EDIT };
   if (member.rolePermissions) return { ...member.rolePermissions };
-  return member.role === "EDITOR" ? { ...ALL_EDIT } : { ...ALL_VIEW };
+  return member.role === "EDITOR" ? { ...LEGACY_EDIT } : { ...LEGACY_VIEW };
 }
 
 /** Есть ли у набора прав нужный уровень по разделу. `EDIT` включает `VIEW`. */
@@ -93,12 +111,15 @@ export function visibleSections(perms: TeamPermissions): TeamSection[] {
  * сохранённая роль хранит свой набор и от шаблона больше не зависит.
  */
 export const ROLE_TEMPLATES: { key: string; permissions: TeamPermissions }[] = [
-  { key: "manager", permissions: { card: "EDIT", points: "EDIT", products: "EDIT", warehouses: "EDIT", pricing: "EDIT", tasks: "EDIT", promos: "EDIT", supply: "EDIT", customers: "EDIT" } },
+  { key: "manager", permissions: { card: "EDIT", points: "EDIT", products: "EDIT", warehouses: "EDIT", pricing: "EDIT", tasks: "EDIT", promos: "EDIT", supply: "EDIT", customers: "EDIT", hiring: "EDIT" } },
+  // Кадровик зовёт людей и больше не делает ничего: витрина, склад и цена к найму
+  // отношения не имеют.
+  { key: "hr", permissions: { hiring: "EDIT", tasks: "VIEW" } },
   // Кладовщик видит, что едет на его полку, но не заказывает: заказ — обещание денег.
   { key: "stock", permissions: { points: "VIEW", products: "VIEW", warehouses: "EDIT", tasks: "VIEW", supply: "VIEW" } },
   // Маркетолог и есть голос магазина — переписку с покупателем ведёт он.
   { key: "marketing", permissions: { card: "EDIT", products: "VIEW", pricing: "EDIT", tasks: "VIEW", promos: "EDIT", customers: "EDIT" } },
-  { key: "observer", permissions: { card: "VIEW", points: "VIEW", products: "VIEW", warehouses: "VIEW", pricing: "VIEW", tasks: "VIEW", promos: "VIEW", supply: "VIEW", customers: "VIEW" } },
+  { key: "observer", permissions: { card: "VIEW", points: "VIEW", products: "VIEW", warehouses: "VIEW", pricing: "VIEW", tasks: "VIEW", promos: "VIEW", supply: "VIEW", customers: "VIEW", hiring: "VIEW" } },
 ];
 
 /**
@@ -125,4 +146,13 @@ export function movementScopeAllows(
   if (ends.fromPointId !== undefined && !pointScopeAllows(scope, ends.fromPointId)) return false;
   if (ends.toPointId !== undefined && !pointScopeAllows(scope, ends.toPointId)) return false;
   return true;
+}
+
+/**
+ * Какую роль вправе выдать приглашением тот, кто его выпускает. Владелец — любую;
+ * кадровик — любую, кроме владельца: приглашение в `OWNER` отдало бы предприятие
+ * целиком, а право «звать» задумано как наём, а не передача дел.
+ */
+export function inviteRoleAllowed(isOwner: boolean, role: "OWNER" | "EDITOR" | "VIEWER"): boolean {
+  return isOwner || role !== "OWNER";
 }

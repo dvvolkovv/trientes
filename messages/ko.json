@@ -78,6 +78,12 @@
         "telegram": "Telegram",
         "whatsapp": "WhatsApp"
       }
+    },
+    "qr": {
+      "show": "QR 코드",
+      "label": "초대 링크의 QR 코드",
+      "hint": "이 코드를 휴대폰 카메라로 비추게 하세요 — 초대가 열립니다.",
+      "close": "닫기"
     }
   },
   "home": {
@@ -1624,11 +1630,13 @@
           "unauth": "먼저 로그인하세요.",
           "forbidden": "소유자만 가능합니다.",
           "invalid": "이 링크는 더 이상 유효하지 않습니다.",
-          "too_many": "활성 링크가 너무 많습니다. 먼저 하나를 취소하세요."
+          "too_many": "활성 링크가 너무 많습니다. 먼저 하나를 취소하세요.",
+          "role_not_allowed": "소유자만 다른 소유자를 초대할 수 있습니다."
         },
         "shareTitle": "Trientes — 팀 초대",
         "shareText": "Trientes의 회사 팀에 초대되었습니다. 링크는 한 번만 작동하며 {date}에 만료됩니다."
-      }
+      },
+      "subtitleHiring": "초대 링크를 발급하고 취소할 수 있습니다. 팀 자체는 소유자가 관리합니다."
     },
     "kyb": {
       "title": "사업자 인증 (KYB)",
@@ -4302,7 +4310,8 @@
         "manager": "관리자",
         "stock": "창고 관리자",
         "marketing": "마케터",
-        "observer": "관찰자"
+        "observer": "관찰자",
+        "hr": "HR"
       },
       "sections": {
         "card": "매장 카드",
@@ -4313,7 +4322,8 @@
         "tasks": "작업",
         "promos": "프로모션 및 메일링",
         "supply": "공급업체 및 주문",
-        "customers": "고객 메시지"
+        "customers": "고객 메시지",
+        "hiring": "채용: 초대 링크"
       },
       "levels": {
         "NONE": "접근 권한 없음",

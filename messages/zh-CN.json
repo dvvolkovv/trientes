@@ -78,6 +78,12 @@
         "telegram": "Telegram",
         "whatsapp": "WhatsApp"
       }
+    },
+    "qr": {
+      "show": "二维码",
+      "label": "邀请链接的二维码",
+      "hint": "让他们用手机摄像头对准此码——即可打开邀请。",
+      "close": "关闭"
     }
   },
   "home": {
@@ -1624,11 +1630,13 @@
           "unauth": "请先登录。",
           "forbidden": "仅限所有者。",
           "invalid": "该链接已失效。",
-          "too_many": "有效链接过多，请先撤销一个。"
+          "too_many": "有效链接过多，请先撤销一个。",
+          "role_not_allowed": "只有所有者可以邀请另一位所有者。"
         },
         "shareTitle": "Trientes — 团队邀请",
         "shareText": "您受邀加入 Trientes 上的公司团队。该链接仅可使用一次，并将于 {date} 过期。"
-      }
+      },
+      "subtitleHiring": "您可以发放并撤销邀请链接。团队由所有者管理。"
     },
     "kyb": {
       "title": "企业认证 (KYB)",
@@ -4302,7 +4310,8 @@
         "manager": "经理",
         "stock": "仓库管理员",
         "marketing": "营销人员",
-        "observer": "观察者"
+        "observer": "观察者",
+        "hr": "HR"
       },
       "sections": {
         "card": "店铺卡片",
@@ -4313,7 +4322,8 @@
         "tasks": "任务",
         "promos": "优惠与群发",
         "supply": "供应商与订单",
-        "customers": "顾客消息"
+        "customers": "顾客消息",
+        "hiring": "招聘: 邀请链接"
       },
       "levels": {
         "NONE": "无访问权限",

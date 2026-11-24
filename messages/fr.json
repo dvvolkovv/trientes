@@ -78,6 +78,12 @@
         "telegram": "Telegram",
         "whatsapp": "WhatsApp"
       }
+    },
+    "qr": {
+      "show": "Code QR",
+      "label": "Code QR du lien d'invitation",
+      "hint": "Qu'ils pointent l'appareil photo de leur téléphone vers ce code — cela ouvre l'invitation.",
+      "close": "Fermer"
     }
   },
   "home": {
@@ -1624,11 +1630,13 @@
           "unauth": "Connectez-vous d'abord.",
           "forbidden": "Réservé aux propriétaires.",
           "invalid": "Ce lien n'est plus actif.",
-          "too_many": "Trop de liens actifs — révoquez-en un d'abord."
+          "too_many": "Trop de liens actifs — révoquez-en un d'abord.",
+          "role_not_allowed": "Seul un propriétaire peut inviter un autre propriétaire."
         },
         "shareTitle": "Trientes — invitation d'équipe",
         "shareText": "Vous êtes invité à rejoindre l'équipe d'une entreprise sur Trientes. Le lien fonctionne une fois et expire le {date}."
-      }
+      },
+      "subtitleHiring": "Vous pouvez émettre et révoquer des liens d'invitation. L'équipe elle-même est gérée par le propriétaire."
     },
     "kyb": {
       "title": "Vérification d'entreprise (KYB)",
@@ -4302,7 +4310,8 @@
         "manager": "Gestionnaire",
         "stock": "Magasinier",
         "marketing": "Responsable marketing",
-        "observer": "Observateur"
+        "observer": "Observateur",
+        "hr": "RH"
       },
       "sections": {
         "card": "Fiche boutique",
@@ -4313,7 +4322,8 @@
         "tasks": "Tâches",
         "promos": "Offres et envois",
         "supply": "Fournisseurs et commandes",
-        "customers": "Messages clients"
+        "customers": "Messages clients",
+        "hiring": "Recrutement: liens d'invitation"
       },
       "levels": {
         "NONE": "Aucun accès",

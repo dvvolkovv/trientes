@@ -7,6 +7,7 @@ import type { CoinCardRole } from "@prisma/client";
 import { createCardInvite, revokeCardInvite } from "@/app/actions/coin-card-invites";
 import { buildCardInviteUrl } from "@/lib/coin-card-invites";
 import { ShareButton } from "@/components/share-button";
+import { QrButton } from "@/components/qr-button";
 
 /** Действие в строке ссылки — кнопка под палец, а не подчёркнутое слово. */
 const ROW_BTN =
@@ -130,7 +131,14 @@ export function CardInviteLinks({
                 {copied === inv.token ? t("copied") : t("copy")}
               </button>
               {origin ? (
-                <ShareButton payload={shareFor(inv)} className={ROW_BTN} panelClassName="bg-card" />
+                <>
+                  <ShareButton payload={shareFor(inv)} className={ROW_BTN} panelClassName="bg-card" />
+                  <QrButton
+                    text={buildCardInviteUrl(origin, locale, inv.token)}
+                    className={ROW_BTN}
+                    panelClassName="bg-card"
+                  />
+                </>
               ) : null}
               <button
                 type="button"
