@@ -67,7 +67,18 @@
       "violet": "Violeta",
       "pink": "Rosa"
     },
-    "save": "Guardar"
+    "save": "Guardar",
+    "share": {
+      "share": "Compartir",
+      "via": "Enviar el enlace por:",
+      "close": "Cerrar",
+      "target": {
+        "email": "Correo electrónico",
+        "sms": "Mensaje de texto (SMS)",
+        "telegram": "Telegram",
+        "whatsapp": "WhatsApp"
+      }
+    }
   },
   "home": {
     "title": "Bienvenido",
@@ -1035,7 +1046,9 @@
         "activeEmpty": "No hay invitaciones activas.",
         "revokeInvite": "Revocar",
         "forWhom": "para {identifier}",
-        "openLink": "abrir enlace"
+        "openLink": "abrir enlace",
+        "shareTitle": "Trientes — invitación de acceso al equipo",
+        "shareText": "Estás invitado a unirte al equipo de Trientes. El enlace funciona una vez y vence en 14 días."
       },
       "mfa": {
         "heading": "Segundo factor",
@@ -1612,7 +1625,9 @@
           "forbidden": "Solo para propietarios.",
           "invalid": "Este enlace ya no está activo.",
           "too_many": "Demasiados enlaces activos: revoca uno primero."
-        }
+        },
+        "shareTitle": "Trientes — invitación al equipo",
+        "shareText": "Estás invitado a unirte al equipo de una empresa en Trientes. El enlace funciona una sola vez y caduca el {date}."
       }
     },
     "kyb": {
@@ -3151,7 +3166,9 @@
           "decimals_invalid": "Los decimales deben estar entre 0 y 36.",
           "not_pending": "Este elemento ya no está pendiente.",
           "unknown": "Algo ha ido mal."
-        }
+        },
+        "shareTitle": "Trientes — invitación al equipo de la ficha de moneda",
+        "shareText": "Estás invitado a unirte a un equipo de la ficha de moneda en Trientes. El enlace funciona una vez y expira el {date}."
       }
     },
     "policy": {

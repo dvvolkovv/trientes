@@ -67,7 +67,18 @@
       "violet": "Violet",
       "pink": "Pink"
     },
-    "save": "Save"
+    "save": "Save",
+    "share": {
+      "share": "Share",
+      "via": "Send the link through:",
+      "close": "Close",
+      "target": {
+        "email": "Email",
+        "sms": "Text message (SMS)",
+        "telegram": "Telegram",
+        "whatsapp": "WhatsApp"
+      }
+    }
   },
   "home": {
     "title": "Welcome",
@@ -1035,7 +1046,9 @@
         "activeEmpty": "No active invites.",
         "revokeInvite": "Revoke",
         "forWhom": "for {identifier}",
-        "openLink": "open link"
+        "openLink": "open link",
+        "shareTitle": "Trientes — staff access invite",
+        "shareText": "You are invited to join the Trientes staff. The link works once and expires in 14 days."
       },
       "mfa": {
         "heading": "Second factor",
@@ -1612,7 +1625,9 @@
           "forbidden": "Owners only.",
           "invalid": "This link is no longer active.",
           "too_many": "Too many active links — revoke one first."
-        }
+        },
+        "shareTitle": "Trientes — team invite",
+        "shareText": "You are invited to join a company team on Trientes. The link works once and expires on {date}."
       }
     },
     "kyb": {
@@ -3151,7 +3166,9 @@
           "decimals_invalid": "Decimals must be between 0 and 36.",
           "not_pending": "This item is no longer pending.",
           "unknown": "Something went wrong."
-        }
+        },
+        "shareTitle": "Trientes — coin card team invite",
+        "shareText": "You are invited to join a coin card team on Trientes. The link works once and expires on {date}."
       }
     },
     "policy": {

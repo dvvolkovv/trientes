@@ -67,7 +67,18 @@
       "violet": "紫色",
       "pink": "粉色"
     },
-    "save": "保存"
+    "save": "保存",
+    "share": {
+      "share": "分享",
+      "via": "通过以下方式发送链接：",
+      "close": "关闭",
+      "target": {
+        "email": "电子邮件",
+        "sms": "短信 (SMS)",
+        "telegram": "Telegram",
+        "whatsapp": "WhatsApp"
+      }
+    }
   },
   "home": {
     "title": "欢迎",
@@ -1035,7 +1046,9 @@
         "activeEmpty": "无有效邀请。",
         "revokeInvite": "撤销",
         "forWhom": "针对{identifier}",
-        "openLink": "打开链接"
+        "openLink": "打开链接",
+        "shareTitle": "Trientes — 员工访问邀请",
+        "shareText": "您受邀加入 Trientes 员工团队。该链接仅可使用一次，并在 14 天后过期。"
       },
       "mfa": {
         "heading": "第二因素",
@@ -1612,7 +1625,9 @@
           "forbidden": "仅限所有者。",
           "invalid": "该链接已失效。",
           "too_many": "有效链接过多，请先撤销一个。"
-        }
+        },
+        "shareTitle": "Trientes — 团队邀请",
+        "shareText": "您受邀加入 Trientes 上的公司团队。该链接仅可使用一次，并将于 {date} 过期。"
       }
     },
     "kyb": {
@@ -3151,7 +3166,9 @@
           "decimals_invalid": "decimals 必须在 0 到 36 之间。",
           "not_pending": "该条目已不在待处理状态。",
           "unknown": "出了点问题。"
-        }
+        },
+        "shareTitle": "Trientes — 币种卡片团队邀请",
+        "shareText": "您被邀请加入 Trientes 上的币种卡片团队。该链接仅可使用一次，并将于{date}过期。"
       }
     },
     "policy": {

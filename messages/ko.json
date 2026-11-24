@@ -67,7 +67,18 @@
       "violet": "보라",
       "pink": "분홍"
     },
-    "save": "저장"
+    "save": "저장",
+    "share": {
+      "share": "공유",
+      "via": "다음으로 링크 보내기:",
+      "close": "닫기",
+      "target": {
+        "email": "이메일",
+        "sms": "문자 메시지 (SMS)",
+        "telegram": "Telegram",
+        "whatsapp": "WhatsApp"
+      }
+    }
   },
   "home": {
     "title": "환영합니다",
@@ -1035,7 +1046,9 @@
         "activeEmpty": "활성 초대가 없습니다.",
         "revokeInvite": "취소",
         "forWhom": "{identifier}용",
-        "openLink": "링크 열기"
+        "openLink": "링크 열기",
+        "shareTitle": "Trientes — 직원 액세스 초대",
+        "shareText": "Trientes 직원으로 초대되었습니다. 링크는 한 번만 작동하며 14일 후 만료됩니다."
       },
       "mfa": {
         "heading": "2차 인증",
@@ -1612,7 +1625,9 @@
           "forbidden": "소유자만 가능합니다.",
           "invalid": "이 링크는 더 이상 유효하지 않습니다.",
           "too_many": "활성 링크가 너무 많습니다. 먼저 하나를 취소하세요."
-        }
+        },
+        "shareTitle": "Trientes — 팀 초대",
+        "shareText": "Trientes의 회사 팀에 초대되었습니다. 링크는 한 번만 작동하며 {date}에 만료됩니다."
       }
     },
     "kyb": {
@@ -3151,7 +3166,9 @@
           "decimals_invalid": "decimals 는 0~36 이어야 합니다.",
           "not_pending": "이 항목은 더 이상 대기 중이 아닙니다.",
           "unknown": "문제가 발생했습니다."
-        }
+        },
+        "shareTitle": "Trientes — 코인 카드 팀 초대",
+        "shareText": "Trientes에서 코인 카드 팀에 참여하도록 초대되었습니다. 이 링크는 한 번만 작동하며 {date}에 만료됩니다."
       }
     },
     "policy": {

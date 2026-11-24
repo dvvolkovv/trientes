@@ -245,6 +245,8 @@ export default async function AdminStaffPage({
     grant: t("staff.invite.grant"),
     granted: t("staff.invite.granted"),
     linkOnce: t("staff.invite.linkOnce"),
+    shareTitle: t("staff.invite.shareTitle"),
+    shareText: t("staff.invite.shareText"),
     copy: t("staff.invite.copy"),
     copied: t("staff.invite.copied"),
     expiresIn: t("staff.invite.expiresIn"),

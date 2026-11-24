@@ -5,6 +5,7 @@ import { createStaffInvite, revokeStaffInvite } from "@/app/actions/staff-invite
 import { grantStaffByIdentifier } from "@/app/actions/staff-access";
 import { ADMIN_BUTTON, ADMIN_BUTTON_SECONDARY } from "@/lib/admin-ui";
 import type { PresetKey } from "@/lib/staff/presets";
+import { ShareButton } from "@/components/share-button";
 import { GrantMatrix, type MatrixLabels, type MatrixValue } from "./staff-grant-matrix";
 
 export type InviteLabels = {
@@ -24,6 +25,8 @@ export type InviteLabels = {
   linkOnce: string;
   copy: string;
   copied: string;
+  shareTitle: string;
+  shareText: string;
   expiresIn: string;
   activeTitle: string;
   activeEmpty: string;
@@ -200,16 +203,23 @@ export function StaffInviteForm({
         <div className="mt-3 rounded-[14px] border border-hairline bg-bg-tint p-3">
           <p className="mb-2 text-[11px] leading-snug text-muted">{labels.linkOnce}</p>
           <code className="num mb-2 block break-all text-[11px]">{link}</code>
-          <button
-            type="button"
-            className={ADMIN_BUTTON_SECONDARY}
-            onClick={() => {
-              void navigator.clipboard?.writeText(link);
-              setCopied(true);
-            }}
-          >
-            {copied ? labels.copied : labels.copy}
-          </button>
+          <div className="flex flex-col gap-2">
+            <button
+              type="button"
+              className={ADMIN_BUTTON_SECONDARY}
+              onClick={() => {
+                void navigator.clipboard?.writeText(link);
+                setCopied(true);
+              }}
+            >
+              {copied ? labels.copied : labels.copy}
+            </button>
+            <ShareButton
+              payload={{ title: labels.shareTitle, text: labels.shareText, url: link }}
+              className={ADMIN_BUTTON_SECONDARY}
+              panelClassName="bg-card"
+            />
+          </div>
           <p className="mt-2 text-[11px] leading-snug text-muted">{labels.expiresIn}</p>
         </div>
       ) : null}

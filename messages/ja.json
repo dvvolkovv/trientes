@@ -67,7 +67,18 @@
       "violet": "バイオレット",
       "pink": "ピンク"
     },
-    "save": "保存"
+    "save": "保存",
+    "share": {
+      "share": "共有",
+      "via": "次の方法でリンクを送信:",
+      "close": "閉じる",
+      "target": {
+        "email": "メール",
+        "sms": "テキストメッセージ（SMS）",
+        "telegram": "Telegram",
+        "whatsapp": "WhatsApp"
+      }
+    }
   },
   "home": {
     "title": "ようこそ",
@@ -1035,7 +1046,9 @@
         "activeEmpty": "有効な招待はありません。",
         "revokeInvite": "取り消す",
         "forWhom": "{identifier}向け",
-        "openLink": "リンクを開く"
+        "openLink": "リンクを開く",
+        "shareTitle": "Trientes — スタッフ用アクセス招待",
+        "shareText": "Trientesのスタッフに参加する招待です。リンクは1回のみ有効で、14日で期限切れになります。"
       },
       "mfa": {
         "heading": "第2要素",
@@ -1612,7 +1625,9 @@
           "forbidden": "オーナーのみ可能です。",
           "invalid": "このリンクは無効になりました。",
           "too_many": "有効なリンクが多すぎます。まず1つ無効にしてください。"
-        }
+        },
+        "shareTitle": "Trientes — チーム招待",
+        "shareText": "Trientesの会社チームに参加する招待です。リンクは1回のみ有効で、{date}に期限切れになります。"
       }
     },
     "kyb": {
@@ -3151,7 +3166,9 @@
           "decimals_invalid": "decimals は0〜36の範囲にしてください。",
           "not_pending": "この項目はすでに処理済みです。",
           "unknown": "問題が発生しました。"
-        }
+        },
+        "shareTitle": "Trientes — コインカードチームへの招待",
+        "shareText": "Trientes でコインカードのチームに招待されています。リンクは一度だけ有効で、{date}に失効します。"
       }
     },
     "policy": {

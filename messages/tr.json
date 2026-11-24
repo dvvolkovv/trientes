@@ -67,7 +67,18 @@
       "violet": "Mor",
       "pink": "Pembe"
     },
-    "save": "Kaydet"
+    "save": "Kaydet",
+    "share": {
+      "share": "Paylaş",
+      "via": "Bağlantıyı şuradan gönder:",
+      "close": "Kapat",
+      "target": {
+        "email": "E-posta",
+        "sms": "Kısa mesaj (SMS)",
+        "telegram": "Telegram",
+        "whatsapp": "WhatsApp"
+      }
+    }
   },
   "home": {
     "title": "Hoş geldiniz",
@@ -1035,7 +1046,9 @@
         "activeEmpty": "Aktif davet yok.",
         "revokeInvite": "İptal et",
         "forWhom": "{identifier} için",
-        "openLink": "bağlantıyı aç"
+        "openLink": "bağlantıyı aç",
+        "shareTitle": "Trientes — personel erişim daveti",
+        "shareText": "Trientes personeline katılmaya davet edildiniz. Bağlantı bir kez çalışır ve 14 gün içinde sona erer."
       },
       "mfa": {
         "heading": "İkinci faktör",
@@ -1612,7 +1625,9 @@
           "forbidden": "Yalnızca sahipler.",
           "invalid": "Bu bağlantı artık etkin değil.",
           "too_many": "Çok fazla etkin bağlantı — önce birini iptal edin."
-        }
+        },
+        "shareTitle": "Trientes — ekip daveti",
+        "shareText": "Trientes'te bir şirket ekibine katılmaya davet edildiniz. Bağlantı bir kez çalışır ve {date} tarihinde sona erer."
       }
     },
     "kyb": {
@@ -3151,7 +3166,9 @@
           "decimals_invalid": "Ondalık basamak 0 ile 36 arasında olmalı.",
           "not_pending": "Bu kayıt artık beklemede değil.",
           "unknown": "Bir şeyler ters gitti."
-        }
+        },
+        "shareTitle": "Trientes — coin kartı ekip daveti",
+        "shareText": "Trientes'te bir coin kartı ekibine katılmaya davet edildiniz. Bağlantı bir kez çalışır ve {date} tarihinde sona erer."
       }
     },
     "policy": {

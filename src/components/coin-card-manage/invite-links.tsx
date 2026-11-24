@@ -1,11 +1,16 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import type { CoinCardRole } from "@prisma/client";
 import { createCardInvite, revokeCardInvite } from "@/app/actions/coin-card-invites";
 import { buildCardInviteUrl } from "@/lib/coin-card-invites";
+import { ShareButton } from "@/components/share-button";
+
+/** Действие в строке ссылки — кнопка под палец, а не подчёркнутое слово. */
+const ROW_BTN =
+  "min-h-11 px-3 rounded-[12px] border border-hairline bg-card hover:border-accent";
 
 export type CardInviteItem = {
   id: string;
@@ -37,6 +42,18 @@ export function CardInviteLinks({
   // The path renders identically on server and client; the absolute URL is
   // built at click time, where window actually exists.
   const pathFor = (token: string) => `/${locale}/invite/coin/${token}`;
+  // Полный адрес нужен окну «поделиться»; на сервере `window` нет, поэтому он
+  // появляется после монтирования — до него кнопки нет.
+  const [origin, setOrigin] = useState("");
+  useEffect(() => setOrigin(window.location.origin), []);
+
+  function shareFor(inv: CardInviteItem) {
+    return {
+      title: t("shareTitle"),
+      text: t("shareText", { date: new Date(inv.expiresAt).toLocaleDateString(locale) }),
+      url: buildCardInviteUrl(origin, locale, inv.token),
+    };
+  }
 
   async function copy(token: string) {
     try {
@@ -109,13 +126,12 @@ export function CardInviteLinks({
               <span className="text-muted whitespace-nowrap">
                 {t("expires", { date: new Date(inv.expiresAt).toLocaleDateString(locale) })}
               </span>
-              <button
-                type="button"
-                onClick={() => void copy(inv.token)}
-                className="px-2 py-1 rounded border border-hairline hover:bg-card"
-              >
+              <button type="button" onClick={() => void copy(inv.token)} className={ROW_BTN}>
                 {copied === inv.token ? t("copied") : t("copy")}
               </button>
+              {origin ? (
+                <ShareButton payload={shareFor(inv)} className={ROW_BTN} panelClassName="bg-card" />
+              ) : null}
               <button
                 type="button"
                 disabled={pending}
@@ -127,7 +143,7 @@ export function CardInviteLinks({
                     else setError(r.reason);
                   });
                 }}
-                className="px-2 py-1 rounded border border-hairline text-red-500 hover:bg-card disabled:opacity-50"
+                className={`${ROW_BTN} text-red-500 disabled:opacity-50`}
               >
                 {t("revoke")}
               </button>

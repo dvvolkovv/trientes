@@ -67,7 +67,18 @@
       "violet": "Fialová",
       "pink": "Ružová"
     },
-    "save": "Uložiť"
+    "save": "Uložiť",
+    "share": {
+      "share": "Zdieľať",
+      "via": "Pošlite odkaz cez:",
+      "close": "Zavrieť",
+      "target": {
+        "email": "E-mail",
+        "sms": "Textová správa (SMS)",
+        "telegram": "Telegram",
+        "whatsapp": "WhatsApp"
+      }
+    }
   },
   "home": {
     "title": "Vitajte",
@@ -1035,7 +1046,9 @@
         "activeEmpty": "Žiadne aktívne pozvánky.",
         "revokeInvite": "Zrušiť",
         "forWhom": "pre {identifier}",
-        "openLink": "otvoriť odkaz"
+        "openLink": "otvoriť odkaz",
+        "shareTitle": "Trientes — pozvánka na prístup pre personál",
+        "shareText": "Ste pozvaní pridať sa k tímu Trientes. Odkaz funguje len raz a vyprší o 14 dní."
       },
       "mfa": {
         "heading": "Druhý faktor",
@@ -1612,7 +1625,9 @@
           "forbidden": "Len vlastníci.",
           "invalid": "Tento odkaz už nie je aktívny.",
           "too_many": "Príliš veľa aktívnych odkazov — najprv jeden zrušte."
-        }
+        },
+        "shareTitle": "Trientes — pozvánka do tímu",
+        "shareText": "Ste pozvaní pridať sa k tímu spoločnosti na Trientes. Odkaz funguje len raz a vyprší {date}."
       }
     },
     "kyb": {
@@ -3151,7 +3166,9 @@
           "decimals_invalid": "Počet desatinných miest musí byť medzi 0 a 36.",
           "not_pending": "Táto položka už nie je v stave čakania.",
           "unknown": "Niečo sa pokazilo."
-        }
+        },
+        "shareTitle": "Trientes — pozvánka do tímu karty mince",
+        "shareText": "Boli ste pozvaní pridať sa k tímu karty mince na Trientes. Odkaz funguje raz a vyprší dňa {date}."
       }
     },
     "policy": {

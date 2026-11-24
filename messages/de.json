@@ -67,7 +67,18 @@
       "violet": "Violett",
       "pink": "Pink"
     },
-    "save": "Speichern"
+    "save": "Speichern",
+    "share": {
+      "share": "Teilen",
+      "via": "Link senden über:",
+      "close": "Schließen",
+      "target": {
+        "email": "E-Mail",
+        "sms": "Textnachricht (SMS)",
+        "telegram": "Telegram",
+        "whatsapp": "WhatsApp"
+      }
+    }
   },
   "home": {
     "title": "Willkommen",
@@ -1035,7 +1046,9 @@
         "activeEmpty": "Keine aktiven Einladungen.",
         "revokeInvite": "Widerrufen",
         "forWhom": "für {identifier}",
-        "openLink": "Link öffnen"
+        "openLink": "Link öffnen",
+        "shareTitle": "Trientes — Einladung zum Mitarbeiterzugang",
+        "shareText": "Du bist eingeladen, dem Trientes‑Team beizutreten. Der Link funktioniert einmal und läuft in 14 Tagen ab."
       },
       "mfa": {
         "heading": "Zweiter Faktor",
@@ -1612,7 +1625,9 @@
           "forbidden": "Nur für Eigentümer.",
           "invalid": "Dieser Link ist nicht mehr aktiv.",
           "too_many": "Zu viele aktive Links — widerrufe zuerst einen."
-        }
+        },
+        "shareTitle": "Trientes — Teameinladung",
+        "shareText": "Du bist eingeladen, einem Unternehmensteam auf Trientes beizutreten. Der Link funktioniert einmal und läuft am {date} ab."
       }
     },
     "kyb": {
@@ -3151,7 +3166,9 @@
           "decimals_invalid": "Decimals müssen zwischen 0 und 36 liegen.",
           "not_pending": "Dieser Eintrag wartet nicht mehr auf eine Entscheidung.",
           "unknown": "Etwas ist schiefgelaufen."
-        }
+        },
+        "shareTitle": "Trientes — Team-Einladung zur Coin-Karte",
+        "shareText": "Sie sind eingeladen, einem Coin-Karten-Team auf Trientes beizutreten. Der Link funktioniert einmal und läuft am {date} ab."
       }
     },
     "policy": {

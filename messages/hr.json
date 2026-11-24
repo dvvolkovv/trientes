@@ -67,7 +67,18 @@
       "violet": "Ljubičasta",
       "pink": "Ružičasta"
     },
-    "save": "Spremi"
+    "save": "Spremi",
+    "share": {
+      "share": "Podijeli",
+      "via": "Pošaljite poveznicu putem:",
+      "close": "Zatvori",
+      "target": {
+        "email": "E-pošta",
+        "sms": "Tekstualna poruka (SMS)",
+        "telegram": "Telegram",
+        "whatsapp": "WhatsApp"
+      }
+    }
   },
   "home": {
     "title": "Dobrodošli",
@@ -770,7 +781,7 @@
         "required": "obvezno",
         "state": {
           "TODO": "nema odgovora",
-          "OK": "ok",
+          "OK": "u redu",
           "FAIL": "problem",
           "NA": "neprimjenjivo"
         },
@@ -1035,7 +1046,9 @@
         "activeEmpty": "Nema aktivnih pozivnica.",
         "revokeInvite": "Opozvati",
         "forWhom": "za {identifier}",
-        "openLink": "otvoriti poveznicu"
+        "openLink": "otvoriti poveznicu",
+        "shareTitle": "Trientes — poziv za pristup za osoblje",
+        "shareText": "Pozvani ste da se pridružite Trientes osoblju. Poveznica vrijedi jednom i istječe za 14 dana."
       },
       "mfa": {
         "heading": "Drugi faktor",
@@ -1612,7 +1625,9 @@
           "forbidden": "Samo vlasnici.",
           "invalid": "Ova poveznica više nije aktivna.",
           "too_many": "Previše aktivnih poveznica — najprije opozovite jednu."
-        }
+        },
+        "shareTitle": "Trientes — poziv u tim",
+        "shareText": "Pozvani ste da se pridružite timu tvrtke na Trientesu. Poveznica vrijedi jednom i istječe {date}."
       }
     },
     "kyb": {
@@ -3151,7 +3166,9 @@
           "decimals_invalid": "Decimalna mjesta moraju biti između 0 i 36.",
           "not_pending": "Ova stavka više nije na čekanju.",
           "unknown": "Nešto je pošlo po zlu."
-        }
+        },
+        "shareTitle": "Trientes — poziv u tim kartice kovanice",
+        "shareText": "Pozvani ste pridružiti se timu kartice kovanice na Trientesu. Poveznica vrijedi jednom i istječe {date}."
       }
     },
     "policy": {

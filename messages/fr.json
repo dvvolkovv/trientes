@@ -67,7 +67,18 @@
       "violet": "Violet",
       "pink": "Rose"
     },
-    "save": "Enregistrer"
+    "save": "Enregistrer",
+    "share": {
+      "share": "Partager",
+      "via": "Envoyer le lien via:",
+      "close": "Fermer",
+      "target": {
+        "email": "E-mail",
+        "sms": "Message texte (SMS)",
+        "telegram": "Telegram",
+        "whatsapp": "WhatsApp"
+      }
+    }
   },
   "home": {
     "title": "Bienvenue",
@@ -1035,7 +1046,9 @@
         "activeEmpty": "Aucune invitation active.",
         "revokeInvite": "Révoquer",
         "forWhom": "pour {identifier}",
-        "openLink": "ouvrir le lien"
+        "openLink": "ouvrir le lien",
+        "shareTitle": "Trientes — invitation d'accès au staff",
+        "shareText": "Vous êtes invité à rejoindre le staff de Trientes. Le lien fonctionne une fois et expire dans 14 jours."
       },
       "mfa": {
         "heading": "Second facteur",
@@ -1612,7 +1625,9 @@
           "forbidden": "Réservé aux propriétaires.",
           "invalid": "Ce lien n'est plus actif.",
           "too_many": "Trop de liens actifs — révoquez-en un d'abord."
-        }
+        },
+        "shareTitle": "Trientes — invitation d'équipe",
+        "shareText": "Vous êtes invité à rejoindre l'équipe d'une entreprise sur Trientes. Le lien fonctionne une fois et expire le {date}."
       }
     },
     "kyb": {
@@ -3151,7 +3166,9 @@
           "decimals_invalid": "Les décimales doivent être entre 0 et 36.",
           "not_pending": "Cet élément n'est plus en attente.",
           "unknown": "Une erreur est survenue."
-        }
+        },
+        "shareTitle": "Trientes — invitation pour l'équipe de la fiche crypto",
+        "shareText": "Vous êtes invité à rejoindre l'équipe d'une fiche crypto sur Trientes. Le lien fonctionne une seule fois et expire le {date}."
       }
     },
     "policy": {

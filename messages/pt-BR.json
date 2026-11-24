@@ -67,7 +67,18 @@
       "violet": "Violeta",
       "pink": "Rosa"
     },
-    "save": "Salvar"
+    "save": "Salvar",
+    "share": {
+      "share": "Compartilhar",
+      "via": "Enviar o link por:",
+      "close": "Fechar",
+      "target": {
+        "email": "E-mail",
+        "sms": "Mensagem de texto (SMS)",
+        "telegram": "Telegram",
+        "whatsapp": "WhatsApp"
+      }
+    }
   },
   "home": {
     "title": "Bem-vindo",
@@ -1035,7 +1046,9 @@
         "activeEmpty": "Nenhum convite ativo.",
         "revokeInvite": "Revogar",
         "forWhom": "para {identifier}",
-        "openLink": "abrir link"
+        "openLink": "abrir link",
+        "shareTitle": "Trientes — convite de acesso da equipe",
+        "shareText": "Você foi convidado a entrar na equipe da Trientes. O link funciona uma vez e expira em 14 dias."
       },
       "mfa": {
         "heading": "Segundo fator",
@@ -1612,7 +1625,9 @@
           "forbidden": "Apenas proprietários.",
           "invalid": "Este link não está mais ativo.",
           "too_many": "Links ativos demais — revogue um primeiro."
-        }
+        },
+        "shareTitle": "Trientes — convite para equipe",
+        "shareText": "Você foi convidado a entrar em uma equipe da empresa no Trientes. O link funciona uma vez e expira em {date}."
       }
     },
     "kyb": {
@@ -3151,7 +3166,9 @@
           "decimals_invalid": "Os decimais devem ficar entre 0 e 36.",
           "not_pending": "Este item já não está pendente.",
           "unknown": "Algo deu errado."
-        }
+        },
+        "shareTitle": "Trientes — convite para a equipe do cartão da moeda",
+        "shareText": "Você foi convidado para participar da equipe do cartão da moeda no Trientes. O link funciona uma vez e expira em {date}."
       }
     },
     "policy": {
