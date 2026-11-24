@@ -136,19 +136,26 @@ export function PoiPaneMap({
       >
         {/* «Моё положение» теперь кнопка самого ряда управления картой —
             отдельной широкой кнопки рядом с ним быть не должно, иначе одна
-            и та же команда стоит в карточке дважды. */}
-        <div className="flex items-center gap-2">
-          <MapControls
-            bearing={view.bearing}
-            pitch={view.pitch}
-            compassMode={compassMode}
-            onZoomIn={onZoomIn}
-            onZoomOut={onZoomOut}
-            onCompass={onCompass}
-            onLocate={onLocate}
-            t={t}
-          />
-        </div>
+            и та же команда стоит в карточке дважды.
+
+            На десктопе (`docked`) этого ряда здесь нет вовсе: ровно такой же
+            стоит под картой в самом навигаторе, а окна в карту на этой
+            странице нет. Одна команда в двух местах — не удобство, а
+            расхождение (слайс CF). */}
+        {!docked && (
+          <div className="flex items-center gap-2">
+            <MapControls
+              bearing={view.bearing}
+              pitch={view.pitch}
+              compassMode={compassMode}
+              onZoomIn={onZoomIn}
+              onZoomOut={onZoomOut}
+              onCompass={onCompass}
+              onLocate={onLocate}
+              t={t}
+            />
+          </div>
+        )}
 
         <div className="grid grid-cols-3 gap-2">
           {TRAVEL_MODES.map((m) => (
@@ -296,7 +303,9 @@ export function PoiPaneMap({
       </div>
   );
 
-  if (docked) return <div className="flex flex-col">{controls}</div>;
+  // Страница «Маршрут» на десктопе (слайс CF): то же управление без окна в карту.
+  // Высоту и прокрутку даёт сама страница листалки.
+  if (docked) return <div className="flex min-h-full flex-col">{controls}</div>;
 
   return (
     <div className="pointer-events-none flex h-full flex-col">

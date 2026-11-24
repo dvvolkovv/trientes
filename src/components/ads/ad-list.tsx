@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { moveAd, setAdStatus, submitAd, withdrawAd } from "@/app/actions/company-ads";
+import { deleteAd, moveAd, setAdStatus, submitAd, withdrawAd } from "@/app/actions/company-ads";
 import { MAX_CAROUSEL_SLIDES } from "@/lib/ads/rules";
 import { adSubmittable, adWithdrawable, type AdStatus } from "@/lib/ads/moderation";
 
@@ -60,6 +60,12 @@ export function AdList({
 }) {
   const t = useTranslations("cabinetAds");
   const [pending, start] = useTransition();
+  /**
+   * Удаление подтверждается **вторым нажатием той же кнопки** (приём BT), а не
+   * диалогом: на телефоне диалог — ещё один экран ради одного слова.
+   */
+  const [armed, setArmed] = useState<string | null>(null);
+  const [failed, setFailed] = useState<{ id: string; reason: string } | null>(null);
   // Кнопка ряда — та же, что в списке акций: высота под палец (правило AN), но не во
   // всю ширину, иначе пять действий встают пятью полосами.
   const button =
@@ -129,6 +135,12 @@ export function AdList({
             </p>
           ) : null}
 
+          {failed?.id === ad.id ? (
+            <p className="mt-2 rounded-md border border-[#E55C5C]/40 bg-[#E55C5C]/10 p-2 text-[12px] text-[#E55C5C]">
+              {t("deleteFailed", { reason: t(`errors.${failed.reason}`) })}
+            </p>
+          ) : null}
+
           {editable ? (
             <div className="mt-3 flex flex-wrap gap-2">
               {/* Материал на проверке не правится: модератор смотрит именно это
@@ -153,6 +165,29 @@ export function AdList({
                 <button type="button" className={button} disabled={pending}
                   onClick={() => start(async () => { await setAdStatus(ad.id, "ARCHIVED"); })}>
                   {t("archive")}
+                </button>
+              ) : null}
+              {/* Удаление (слайс CF). На проверке кнопки нет вовсе — материал там
+                  смотрит модератор, и убирают его отзывом (правило CC). */}
+              {ad.status !== "PENDING" ? (
+                <button
+                  type="button"
+                  className={`${button} ${armed === ad.id ? "border-[#E55C5C] text-[#E55C5C]" : "text-muted"}`}
+                  disabled={pending}
+                  onClick={() => {
+                    setFailed(null);
+                    if (armed !== ad.id) {
+                      setArmed(ad.id);
+                      return;
+                    }
+                    setArmed(null);
+                    start(async () => {
+                      const res = await deleteAd(ad.id);
+                      if (!res.ok) setFailed({ id: ad.id, reason: res.reason });
+                    });
+                  }}
+                >
+                  {armed === ad.id ? t("deleteConfirm") : `✕ ${t("delete")}`}
                 </button>
               ) : null}
               {ad.status === "PUBLISHED" ? (

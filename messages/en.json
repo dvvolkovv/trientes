@@ -1357,6 +1357,7 @@
       "stopCue": "In {distance}: {name}, {offset} off the road"
     },
     "pageMap": "Map",
+    "pageRoute": "Route",
     "pageCard": "Place",
     "pageShowcase": "Showcase",
     "acceptedCoins": "Accepted here",
@@ -4416,7 +4417,8 @@
       "AD_WITHDRAWN": "Banner item withdrawn from review",
       "AD_CHANGES_SUBMITTED": "Banner item changes sent for review",
       "AD_APPROVED": "Banner item approved by a moderator",
-      "AD_REJECTED": "Banner item rejected by a moderator"
+      "AD_REJECTED": "Banner item rejected by a moderator",
+      "AD_DELETED": "Banner item deleted"
     }
   },
   "cabinetTasks": {
@@ -4938,6 +4940,9 @@
     "edit": "Edit",
     "publish": "Publish",
     "unpublish": "Back to draft",
+    "delete": "Delete",
+    "deleteConfirm": "Delete for good?",
+    "deleteFailed": "Could not delete: {reason}",
     "archive": "Archive",
     "up": "Move up",
     "down": "Move down",
@@ -5074,6 +5079,10 @@
     "slideCover": "Cover — shown in feeds and shared links",
     "slideUp": "Up",
     "slideDown": "Down",
+    "mediaEmpty": "No slides yet — add a photo or a clip and the banner appears here.",
+    "slideLeft": "Left",
+    "slideRight": "Right",
+    "coverBadge": "Cover",
     "slideRemove": "Remove",
     "slidesFull": "{max} slides is the limit — remove one to add another.",
     "slideRange": "Slides {from}–{to} of {total}",

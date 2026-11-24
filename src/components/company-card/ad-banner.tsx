@@ -36,7 +36,23 @@ import { AD_SLIDE_SECONDS, adSlides } from "@/lib/ads/rules";
  * навсегда**, как только человек тронул её сам. Баннер, уезжающий из-под пальца,
  * враждебен, а «подождём и поедем дальше» — это он и есть.
  */
-export function AdBanner({ ads }: { ads: CardAd[] }) {
+export function AdBanner({
+  ads,
+  activeIndex,
+  onActiveIndexChange,
+  autoAdvance = true,
+}: {
+  ads: CardAd[];
+  /**
+   * Номер показанного кадра снаружи (слайс CF). Нужен студии: там кадр правят, и
+   * «правлю то, на что смотрю» обязано быть одним числом, а не двумя. На витрине
+   * номер свой, и эти свойства не передаются вовсе.
+   */
+  activeIndex?: number;
+  onActiveIndexChange?: (next: number) => void;
+  /** В студии часы кадры не листают: уезжающий из-под пальца кадр враждебен. */
+  autoAdvance?: boolean;
+}) {
   const t = useTranslations("companyCard");
   const format = useFormatter();
   const [index, setIndex] = useState(0);
@@ -57,7 +73,8 @@ export function AdBanner({ ads }: { ads: CardAd[] }) {
   const frames = ads.flatMap((a) =>
     adSlides(a).map((slide, i) => ({ ad: a, slide, key: `${a.id}:${i}` })),
   );
-  const pos = Math.min(index, Math.max(0, frames.length - 1));
+  const shown = activeIndex ?? index;
+  const pos = Math.min(Math.max(0, shown), Math.max(0, frames.length - 1));
   const frame = frames[pos];
   const ad = frame?.ad ?? ads[0];
 
@@ -88,8 +105,9 @@ export function AdBanner({ ads }: { ads: CardAd[] }) {
         setCopied(false);
         return next;
       });
+      onActiveIndexChange?.(next);
     },
-    [stopVoice],
+    [stopVoice, onActiveIndexChange],
   );
 
   const onScroll = useCallback(() => {
@@ -105,6 +123,20 @@ export function AdBanner({ ads }: { ads: CardAd[] }) {
     if (!el) return;
     el.scrollTo({ left: i * el.clientWidth, behavior: "smooth" });
   }, []);
+
+  /**
+   * Номер пришёл снаружи — полотно едет к нему (слайс CF). Своя прокрутка человека
+   * возвращается тем же путём через `onActiveIndexChange`, поэтому второго источника
+   * истины не появляется: число одно, а это его исполнение.
+   */
+  useEffect(() => {
+    if (activeIndex === undefined) return;
+    const el = trackRef.current;
+    if (!el) return;
+    const want = Math.min(Math.max(0, activeIndex), Math.max(0, frames.length - 1));
+    const at = Math.round(el.scrollLeft / Math.max(1, el.clientWidth));
+    if (at !== want) goTo(want);
+  }, [activeIndex, frames.length, goTo]);
 
   // Карусель за краем экрана не листается: на странице монеты и в навигаторе она
   // стоит ниже сгиба, и слайды уезжали бы вхолостую (тот же приём, что пульс AY).
@@ -122,12 +154,13 @@ export function AdBanner({ ads }: { ads: CardAd[] }) {
   }, []);
 
   useEffect(() => {
+    if (!autoAdvance) return;
     if (frames.length < 2 || touched || !onScreen) return;
     if (open || playing || speaking) return;
     if (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
     const tm = setTimeout(() => goTo((index + 1) % frames.length), AD_SLIDE_SECONDS * 1000);
     return () => clearTimeout(tm);
-  }, [frames.length, touched, onScreen, open, playing, speaking, index, goTo]);
+  }, [autoAdvance, frames.length, touched, onScreen, open, playing, speaking, index, goTo]);
 
   /**
    * Озвучка: своя запись сильнее синтеза. Записи нет — текст читает синтез браузера на

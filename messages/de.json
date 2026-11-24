@@ -913,7 +913,7 @@
           "language": "Sprache",
           "slides": "Folien",
           "mediaKind": "Cover-Typ",
-          "mediaUrl": "Cover",
+          "mediaUrl": "Titelbild",
           "posterUrl": "Clip-Cover-Frame",
           "audioUrl": "Voice-over",
           "promoCode": "Promo-Code",
@@ -1357,6 +1357,7 @@
       "stopCue": "In {distance}: {name}, {offset} abseits der Straße"
     },
     "pageMap": "Karte",
+    "pageRoute": "Route",
     "pageCard": "Ort",
     "pageShowcase": "Präsentation",
     "acceptedCoins": "Hier akzeptiert",
@@ -4416,7 +4417,8 @@
       "AD_WITHDRAWN": "Banner-Element von der Prüfung zurückgezogen",
       "AD_CHANGES_SUBMITTED": "Änderungen am Banner-Element zur Prüfung eingereicht",
       "AD_APPROVED": "Banner-Element von einem Moderator genehmigt",
-      "AD_REJECTED": "Banner-Element vom Moderator abgelehnt"
+      "AD_REJECTED": "Banner-Element vom Moderator abgelehnt",
+      "AD_DELETED": "Banner-Element gelöscht"
     }
   },
   "cabinetTasks": {
@@ -4938,6 +4940,9 @@
     "edit": "Bearbeiten",
     "publish": "Veröffentlichen",
     "unpublish": "Zurück zum Entwurf",
+    "delete": "Löschen",
+    "deleteConfirm": "Endgültig löschen?",
+    "deleteFailed": "Konnte nicht gelöscht werden: {reason}",
     "archive": "Archivieren",
     "up": "Nach oben",
     "down": "Nach unten",
@@ -5074,6 +5079,10 @@
     "slideCover": "Cover — in Feeds und geteilten Links angezeigt",
     "slideUp": "Hoch",
     "slideDown": "Runter",
+    "mediaEmpty": "Noch keine Folien — füge ein Foto oder einen Clip hinzu, dann erscheint das Banner hier.",
+    "slideLeft": "Links",
+    "slideRight": "Rechts",
+    "coverBadge": "Titelbild",
     "slideRemove": "Entfernen",
     "slidesFull": "{max} Folien sind das Limit — entfernen Sie eine, um eine weitere hinzuzufügen.",
     "slideRange": "Folien {from}–{to} von {total}",

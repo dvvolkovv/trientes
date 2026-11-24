@@ -31,11 +31,13 @@ export { MODE_ICON };
 export type { SheetRoute };
 
 /**
- * Карточка точки — листалка. На телефоне три страницы: «Карта» (прозрачное
- * окно в живое полотно MapLibre), «Карточка» (наши проверенные факты) и
- * «Витрина» (рассказ заведения о себе); открывается середина, потому что
- * нажатие на точку — это вопрос «что это за место». На десктопе страниц две:
- * карта и так видна рядом с панелью, окно в неё там ничего не покупает.
+ * Карточка точки — листалка. Страниц всюду три, и открывается середина, потому
+ * что нажатие на точку — это вопрос «что это за место». На телефоне первая
+ * страница — «Карта», прозрачное окно в живое полотно MapLibre; на десктопе
+ * окна нет (карта стоит рядом с панелью), и первой страницей идёт «Маршрут» —
+ * то же управление без окна. Прежде оно было **подвалом** панели и съедало её
+ * целиком: карточка, ради которой точку открывают, была не видна вовсе
+ * (слайс CF).
  *
  * Пристыкованного полустояния (55vh) здесь больше нет: его работу — показать
  * линию маршрута, не закрывая её карточкой, — делает страница «Карта».
@@ -55,7 +57,7 @@ export function PoiSheet({
   near,
   voiceOn,
   voiceSupported,
-  page,
+  page: requestedPage,
   onPageChange,
   mapExpanded,
   onMapExpandedChange,
@@ -113,6 +115,10 @@ export function PoiSheet({
   const poiCategory = merchantCategory(poi.categoryKey);
   const phone = usePhone();
   const pages = useMemo(() => pagesFor(phone), [phone]);
+  // Страница, которой на этой ширине нет (телефонная «Карта» на десктопе — её
+  // просит открытие точки по адресу `?point=`), читается как «Место»: иначе
+  // `indexOf` даёт −1, и человек попадает на первую страницу, то есть в маршрут.
+  const page = pages.includes(requestedPage) ? requestedPage : DEFAULT_POI_PAGE;
   const rootRef = useRef<HTMLDivElement | null>(null);
   const deckRef = useRef<HTMLDivElement | null>(null);
   const [drag, setDrag] = useState<number | null>(null);
@@ -383,6 +389,34 @@ export function PoiSheet({
                   t={t}
                 />
               )}
+              {p === "route" && (
+                <PoiPaneMap
+                  poi={poi}
+                  route={route}
+                  stopsPanel={stopsPanel}
+                  mode={mode}
+                  status={status}
+                  hasOrigin={hasOrigin}
+                  voiceOn={voiceOn}
+                  voiceSupported={voiceSupported}
+                  tileRef={mapTileRef}
+                  expanded={false}
+                  docked
+                  onExpandedChange={onMapExpandedChange}
+                  onMode={onMode}
+                  onBuildRoute={onBuildRoute}
+                  onGo={onGo}
+                  onClearRoute={onClearRoute}
+                  onLocate={onLocate}
+                  onToggleVoice={onToggleVoice}
+                  view={view}
+                  compassMode={compassMode}
+                  onZoomIn={onZoomIn}
+                  onZoomOut={onZoomOut}
+                  onCompass={onCompass}
+                  t={t}
+                />
+              )}
               {p === "card" && (
                 <PoiPaneCard
                   poi={poi}
@@ -398,7 +432,7 @@ export function PoiSheet({
                         }
                       : null
                   }
-                  onShowRoute={() => onPageChange("map")}
+                  onShowRoute={() => onPageChange(phone ? "map" : "route")}
                   onStreetView={onStreetView}
                   t={t}
                 />
@@ -409,38 +443,6 @@ export function PoiSheet({
         </div>
       </div>
 
-      {/* На десктопе страницы карты нет, поэтому управление маршрутом стоит
-          подвалом панели — ровно там, где его положил предыдущий слайс. */}
-      {!phone && (
-        <div className="shrink-0 border-t border-hairline">
-          <PoiPaneMap
-            poi={poi}
-            route={route}
-            stopsPanel={stopsPanel}
-            mode={mode}
-            status={status}
-            hasOrigin={hasOrigin}
-            voiceOn={voiceOn}
-            voiceSupported={voiceSupported}
-            tileRef={mapTileRef}
-            expanded={false}
-            docked
-            onExpandedChange={onMapExpandedChange}
-            onMode={onMode}
-            onBuildRoute={onBuildRoute}
-            onGo={onGo}
-            onClearRoute={onClearRoute}
-            onLocate={onLocate}
-            onToggleVoice={onToggleVoice}
-            view={view}
-            compassMode={compassMode}
-            onZoomIn={onZoomIn}
-            onZoomOut={onZoomOut}
-            onCompass={onCompass}
-            t={t}
-          />
-        </div>
-      )}
     </div>
   );
 }

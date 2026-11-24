@@ -1357,6 +1357,7 @@
       "stopCue": "Dans {distance} : {name}, {offset} hors de la route"
     },
     "pageMap": "Carte",
+    "pageRoute": "Itinéraire",
     "pageCard": "Lieu",
     "pageShowcase": "Vitrine",
     "acceptedCoins": "Acceptées ici",
@@ -4416,7 +4417,8 @@
       "AD_WITHDRAWN": "Élément de bannière retiré de l'examen",
       "AD_CHANGES_SUBMITTED": "Modifications de l'élément de bannière envoyées pour examen",
       "AD_APPROVED": "Élément de bannière approuvé par un modérateur",
-      "AD_REJECTED": "Élément de bannière refusé par un modérateur"
+      "AD_REJECTED": "Élément de bannière refusé par un modérateur",
+      "AD_DELETED": "Élément de bannière supprimé"
     }
   },
   "cabinetTasks": {
@@ -4938,6 +4940,9 @@
     "edit": "Modifier",
     "publish": "Publier",
     "unpublish": "Repasser en brouillon",
+    "delete": "Supprimer",
+    "deleteConfirm": "Supprimer définitivement ?",
+    "deleteFailed": "Impossible de supprimer : {reason}",
     "archive": "Archiver",
     "up": "Monter",
     "down": "Descendre",
@@ -5074,6 +5079,10 @@
     "slideCover": "Couverture — affichée dans les flux et les liens partagés",
     "slideUp": "Monter",
     "slideDown": "Descendre",
+    "mediaEmpty": "Aucune diapositive pour l’instant — ajoutez une photo ou un clip et la bannière apparaîtra ici",
+    "slideLeft": "Gauche",
+    "slideRight": "Droite",
+    "coverBadge": "Couverture",
     "slideRemove": "Supprimer",
     "slidesFull": "{max} diapositives, c’est la limite — supprimez-en une pour en ajouter une autre.",
     "slideRange": "Diapositives {from}–{to} sur {total}",

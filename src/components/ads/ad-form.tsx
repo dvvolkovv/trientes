@@ -90,6 +90,11 @@ export function AdForm({
   const posterRef = useRef<HTMLInputElement | null>(null);
   /** Какому кадру грузится заставка: у ролика она своя, одна общая врала бы. */
   const [posterFor, setPosterFor] = useState<number | null>(null);
+  /**
+   * Показанный кадр (слайс CF). Одно число на предпросмотр и на правку: «правлю то,
+   * на что смотрю» — иначе человек удаляет не тот кадр, который видит.
+   */
+  const [cur, setCur] = useState(0);
 
 
   const set = (patch: Partial<AdFormValues>) => setV((prev) => ({ ...prev, ...patch }));
@@ -123,13 +128,19 @@ export function AdForm({
     const next = slides.slice();
     [next[i], next[j]] = [next[j], next[i]];
     setSlides(next);
+    // Выбор идёт за кадром, а не остаётся на месте: человек переставляет именно тот
+    // кадр, на который смотрит, и смотреть он должен на него же.
+    setCur(j);
   };
 
   /**
    * Кадр убирается из списка, а файл с диска не стирается: он мог уже уйти в слепок
    * правки, который ждёт модератора.
    */
-  const dropSlide = (i: number) => setSlides(slides.filter((_, k) => k !== i));
+  const dropSlide = (i: number) => {
+    setSlides(slides.filter((_, k) => k !== i));
+    setCur(Math.max(0, Math.min(i, slides.length - 2)));
+  };
 
   const slidesFull = slides.length >= MAX_AD_SLIDES;
 
@@ -182,6 +193,8 @@ export function AdForm({
           posterUrl: null,
         }));
         setSlides([...slides, ...added]);
+        // Показываем первый из добавленных: человек должен увидеть, что он загрузил.
+        setCur(slides.length);
       } else if (target === "audio") {
         set({ audioUrl: urls[0], audioGenerated: false, audioVoice: "", audioTextHash: "" });
       } else {
@@ -270,92 +283,124 @@ export function AdForm({
       <h2 className="mb-3 text-[16px] font-semibold">{v.id ? t("editTitle") : t("newTitle")}</h2>
 
       <div className="space-y-3">
-        <div>
-          <span className={label}>{t("fieldKind")}</span>
-          <div className="flex flex-wrap gap-2">
-            {AD_KINDS.map((k) => (
+        {/*
+          Баннер и его кадры — одним блоком и **первым** (слайс CF, просьба владельца
+          «прямо под баннером, не гонять снизу доверху»). Прежде кадры правились наверху
+          формы, а предпросмотр стоял в самом низу: человек смотрел на одно, а правил
+          другое, через всю форму.
+
+          Рисует предпросмотр **тот же** компонент, что и живую карточку: второй «как это
+          будет выглядеть» разошёлся бы с настоящим (болезнь двух сборок одной витрины,
+          живой прогон BX). Номер кадра — один на баннер и на правку, поэтому баннер
+          здесь управляемый, а часы кадры не листают: в студии правят, и уезжающий
+          из-под пальца кадр враждебен.
+        */}
+        <div className="rounded-[18px] border border-hairline bg-bg-tint p-3">
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <span className={`${label} mb-0`}>{t("previewTitle")}</span>
+            <span className="text-[11px] text-muted">{t("previewHint")}</span>
+          </div>
+
+          {previewAd ? (
+            <AdBanner
+              ads={[previewAd]}
+              activeIndex={Math.min(cur, Math.max(0, slides.length - 1))}
+              onActiveIndexChange={setCur}
+              autoAdvance={false}
+            />
+          ) : (
+            <div className="flex aspect-[16/10] w-full items-center justify-center rounded-[22px] border border-dashed border-hairline bg-card px-6 text-center text-[12.5px] leading-snug text-muted">
+              {t("mediaEmpty")}
+            </div>
+          )}
+
+          {/* Лента кадров: нажатие выбирает кадр, и баннер едет к нему. Только выбор —
+              добавление стоит ниже, в видимом ряду (см. разбор там же). */}
+          <div className="mt-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {slides.map((s, i) => (
               <button
-                key={k}
+                key={`${s.url}:${i}`}
                 type="button"
-                onClick={() => set({ kind: k })}
-                className={`h-11 rounded-[12px] border px-4 text-[13px] font-semibold ${
-                  v.kind === k ? "border-accent bg-accent/12 text-foreground" : "border-hairline bg-card-alt text-muted"
+                aria-pressed={i === cur}
+                aria-label={t("slideNo", { n: i + 1, total: slides.length })}
+                onClick={() => setCur(i)}
+                className={`relative h-[54px] w-[86px] shrink-0 overflow-hidden rounded-[10px] border-2 bg-bg-tint ${
+                  i === cur ? "border-accent" : "border-hairline"
                 }`}
               >
-                {t(`kind.${k}`)}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={s.kind === "VIDEO" ? (s.posterUrl ?? "/logo.png") : s.url}
+                  alt=""
+                  className="h-full w-full object-cover"
+                />
+                {s.kind === "VIDEO" ? (
+                  <span aria-hidden className="absolute left-1 top-1 rounded bg-card/85 px-1 text-[10px] leading-tight">▶</span>
+                ) : null}
+                {i === 0 ? (
+                  <span className="absolute inset-x-0 bottom-0 bg-card/85 text-center text-[9px] uppercase tracking-wider text-accent">
+                    {t("coverBadge")}
+                  </span>
+                ) : null}
               </button>
             ))}
           </div>
-        </div>
-
-        {/* Кадры баннера (слайс CE): до восьми, добавляются пачкой, порядок — свой. */}
-        <div>
-          <span className={label}>{t("fieldMedia")}</span>
 
           {slides.length > 0 ? (
-            <ol className="mb-2 flex flex-col gap-2">
-              {slides.map((s, i) => (
-                <li key={`${s.url}:${i}`} className="rounded-[14px] border border-hairline bg-card-alt p-2">
-                  <div className="flex items-start gap-2">
-                    <div className="h-[56px] w-[88px] shrink-0 overflow-hidden rounded-[10px] border border-hairline bg-bg-tint">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={s.kind === "VIDEO" ? (s.posterUrl ?? "/logo.png") : s.url}
-                        alt=""
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-[12.5px] font-semibold">
-                        {s.kind === "VIDEO" ? `▶ ${t("slideVideo")}` : `▣ ${t("slideImage")}`}
-                        {" · "}
-                        {t("slideNo", { n: i + 1, total: slides.length })}
-                      </div>
-                      {/* Обложку никто не задаёт отдельно: это первый кадр, и сказать
-                          это надо прямо — иначе человек ищет поле обложки. */}
-                      {i === 0 ? <div className="text-[11px] text-accent">{t("slideCover")}</div> : null}
-                      <div className="mt-1.5 flex flex-wrap gap-1.5">
-                        <button type="button" onClick={() => moveSlide(i, -1)} disabled={i === 0}
-                          className="h-10 rounded-[10px] border border-hairline px-2.5 text-[11.5px] disabled:opacity-40">
-                          ↑ {t("slideUp")}
-                        </button>
-                        <button type="button" onClick={() => moveSlide(i, 1)} disabled={i === slides.length - 1}
-                          className="h-10 rounded-[10px] border border-hairline px-2.5 text-[11.5px] disabled:opacity-40">
-                          ↓ {t("slideDown")}
-                        </button>
-                        {s.kind === "VIDEO" ? (
-                          <button type="button" onClick={() => { setPosterFor(i); posterRef.current?.click(); }}
-                            disabled={uploading !== null}
-                            className="h-10 rounded-[10px] border border-hairline px-2.5 text-[11.5px] disabled:opacity-40">
-                            {uploading === `poster:${i}` ? "…" : t("uploadPoster")}
-                          </button>
-                        ) : null}
-                        <button type="button" onClick={() => dropSlide(i)}
-                          className="h-10 rounded-[10px] border border-hairline px-2.5 text-[11.5px]">
-                          ✕ {t("slideRemove")}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ol>
+            <div className="mt-2 text-[11.5px] leading-snug text-muted">
+              {t("slideNo", { n: Math.min(cur, slides.length - 1) + 1, total: slides.length })}
+              {cur === 0 ? ` · ${t("slideCover")}` : ""}
+            </div>
           ) : null}
 
-          <div className="flex flex-wrap gap-2">
-            <button type="button" className={button} onClick={() => imageRef.current?.click()}
-              disabled={uploading !== null || slidesFull}>
-              {uploading === "slides" ? "…" : t("uploadImage")}
+          {/*
+            Один видимый ряд: сперва «добавить», потом действия над показанным кадром.
+            Добавление **не** живёт в ленте: при пяти кадрах плитка «плюс» уезжает за
+            правый край, и самое частое действие пришлось бы искать прокруткой (поймано
+            живым прогоном CF).
+          */}
+          <div className="mt-1.5 flex flex-wrap gap-1.5">
+            <button type="button" onClick={() => imageRef.current?.click()}
+              disabled={uploading !== null || slidesFull}
+              className="h-11 rounded-[10px] border border-hairline bg-card px-3 text-[12px] font-semibold disabled:opacity-40">
+              {uploading === "slides" ? "…" : `+ ${t("slideImage")}`}
             </button>
-            <button type="button" className={button} onClick={() => videoRef.current?.click()}
-              disabled={uploading !== null || slidesFull}>
-              {t("uploadVideo")}
+            <button type="button" onClick={() => videoRef.current?.click()}
+              disabled={uploading !== null || slidesFull}
+              className="h-11 rounded-[10px] border border-hairline bg-card px-3 text-[12px] font-semibold disabled:opacity-40">
+              + {t("slideVideo")}
             </button>
+            {slides.length > 0 ? (
+              <>
+                <button type="button" onClick={() => moveSlide(cur, -1)} disabled={cur === 0}
+                  className="h-11 rounded-[10px] border border-hairline px-3 text-[12px] disabled:opacity-40">
+                  ← {t("slideLeft")}
+                </button>
+                <button type="button" onClick={() => moveSlide(cur, 1)} disabled={cur >= slides.length - 1}
+                  className="h-11 rounded-[10px] border border-hairline px-3 text-[12px] disabled:opacity-40">
+                  {t("slideRight")} →
+                </button>
+                {slides[cur]?.kind === "VIDEO" ? (
+                  <button type="button" onClick={() => { setPosterFor(cur); posterRef.current?.click(); }}
+                    disabled={uploading !== null}
+                    className="h-11 rounded-[10px] border border-hairline px-3 text-[12px] disabled:opacity-40">
+                    {uploading === `poster:${cur}` ? "…" : t("uploadPoster")}
+                  </button>
+                ) : null}
+                <button type="button" onClick={() => dropSlide(cur)}
+                  className="h-11 rounded-[10px] border border-[#E55C5C]/50 px-3 text-[12px] text-[#E55C5C]">
+                  ✕ {t("slideRemove")}
+                </button>
+              </>
+            ) : null}
           </div>
+
           {/* Кнопка, погасшая без объяснения, уже была дефектом живого прогона BG. */}
           {slidesFull ? (
-            <p className="mt-1 text-[12px] text-accent">{t("slidesFull", { max: MAX_AD_SLIDES })}</p>
+            <p className="mt-1.5 text-[12px] text-accent">{t("slidesFull", { max: MAX_AD_SLIDES })}</p>
           ) : null}
+          <p className="mt-1.5 text-[11px] leading-snug text-muted">{t("mediaHint", { max: MAX_AD_SLIDES })}</p>
+
           <input ref={imageRef} type="file" accept="image/png,image/jpeg,image/webp" hidden multiple
             onChange={(e) => {
               const files = Array.from(e.target.files ?? []);
@@ -374,7 +419,24 @@ export function AdForm({
               if (f && posterFor !== null) void upload("image", [f], { poster: posterFor });
               e.target.value = "";
             }} />
-          <p className="mt-1 text-[11px] text-muted">{t("mediaHint", { max: MAX_AD_SLIDES })}</p>
+        </div>
+
+        <div>
+          <span className={label}>{t("fieldKind")}</span>
+          <div className="flex flex-wrap gap-2">
+            {AD_KINDS.map((k) => (
+              <button
+                key={k}
+                type="button"
+                onClick={() => set({ kind: k })}
+                className={`h-11 rounded-[12px] border px-4 text-[13px] font-semibold ${
+                  v.kind === k ? "border-accent bg-accent/12 text-foreground" : "border-hairline bg-card-alt text-muted"
+                }`}
+              >
+                {t(`kind.${k}`)}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div>
@@ -530,16 +592,6 @@ export function AdForm({
             </div>
           ) : null}
         </div>
-
-        {previewAd ? (
-          <div className="rounded-[18px] border border-hairline bg-bg-tint p-3">
-            <div className="mb-2 flex items-center justify-between">
-              <span className={`${label} mb-0`}>{t("previewTitle")}</span>
-              <span className="text-[11px] text-muted">{t("previewHint")}</span>
-            </div>
-            <AdBanner ads={[previewAd]} />
-          </div>
-        ) : null}
 
         {error ? (
           <p ref={errorRef} className="text-[13px] text-[#E55C5C]">{t(`errors.${error}`)}</p>

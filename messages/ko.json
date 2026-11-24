@@ -1357,6 +1357,7 @@
       "stopCue": "{distance} 후: {name}, {offset}"
     },
     "pageMap": "지도",
+    "pageRoute": "경로",
     "pageCard": "장소",
     "pageShowcase": "쇼케이스",
     "acceptedCoins": "여기서 결제 가능",
@@ -4416,7 +4417,8 @@
       "AD_WITHDRAWN": "배너 항목이 검토에서 철회됨",
       "AD_CHANGES_SUBMITTED": "배너 항목 변경 사항이 검토를 위해 제출됨",
       "AD_APPROVED": "모더레이터가 배너 항목을 승인함",
-      "AD_REJECTED": "모더레이터가 배너 항목을 거부함"
+      "AD_REJECTED": "모더레이터가 배너 항목을 거부함",
+      "AD_DELETED": "배너 항목이 삭제됨"
     }
   },
   "cabinetTasks": {
@@ -4938,6 +4940,9 @@
     "edit": "편집",
     "publish": "게시",
     "unpublish": "초안으로 되돌리기",
+    "delete": "삭제",
+    "deleteConfirm": "영구적으로 삭제할까요?",
+    "deleteFailed": "삭제할 수 없음: {reason}",
     "archive": "보관",
     "up": "위로 이동",
     "down": "아래로 이동",
@@ -5074,6 +5079,10 @@
     "slideCover": "표지 — 피드와 공유 링크에 표시",
     "slideUp": "위로",
     "slideDown": "아래로",
+    "mediaEmpty": "아직 슬라이드가 없습니다 — 사진이나 클립을 추가하면 배너가 여기 표시됩니다.",
+    "slideLeft": "왼쪽",
+    "slideRight": "오른쪽",
+    "coverBadge": "커버",
     "slideRemove": "제거",
     "slidesFull": "{max}개의 슬라이드가 한도 — 추가하려면 하나를 제거하세요.",
     "slideRange": "슬라이드 {total}개 중 {from}–{to}",

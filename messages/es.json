@@ -1357,6 +1357,7 @@
       "stopCue": "En {distance}: {name}, {offset} fuera de la carretera"
     },
     "pageMap": "Mapa",
+    "pageRoute": "Ruta",
     "pageCard": "Lugar",
     "pageShowcase": "Escaparate",
     "acceptedCoins": "Se aceptan aquí",
@@ -4416,7 +4417,8 @@
       "AD_WITHDRAWN": "Elemento de banner retirado de la revisión",
       "AD_CHANGES_SUBMITTED": "Cambios del elemento de banner enviados para revisión",
       "AD_APPROVED": "Elemento de banner aprobado por un moderador",
-      "AD_REJECTED": "Elemento de banner rechazado por un moderador"
+      "AD_REJECTED": "Elemento de banner rechazado por un moderador",
+      "AD_DELETED": "Elemento del banner eliminado"
     }
   },
   "cabinetTasks": {
@@ -4938,6 +4940,9 @@
     "edit": "Editar",
     "publish": "Publicar",
     "unpublish": "Volver a borrador",
+    "delete": "Eliminar",
+    "deleteConfirm": "¿Eliminar para siempre?",
+    "deleteFailed": "No se pudo eliminar: {reason}",
     "archive": "Archivar",
     "up": "Subir",
     "down": "Bajar",
@@ -5074,6 +5079,10 @@
     "slideCover": "Portada — se muestra en los feeds y en los enlaces compartidos",
     "slideUp": "Arriba",
     "slideDown": "Abajo",
+    "mediaEmpty": "Aún no hay diapositivas — agrega una foto o un clip y el banner aparecerá aquí.",
+    "slideLeft": "Izquierda",
+    "slideRight": "Derecha",
+    "coverBadge": "Portada",
     "slideRemove": "Eliminar",
     "slidesFull": "{max} diapositivas es el límite — elimina una para agregar otra.",
     "slideRange": "Diapositivas {from}–{to} de {total}",

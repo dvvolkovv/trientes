@@ -1357,6 +1357,7 @@
       "stopCue": "Em {distance}: {name}, {offset} fora da rota"
     },
     "pageMap": "Mapa",
+    "pageRoute": "Rota",
     "pageCard": "Local",
     "pageShowcase": "Vitrine",
     "acceptedCoins": "Aceitas aqui",
@@ -4416,7 +4417,8 @@
       "AD_WITHDRAWN": "Item de banner retirado da revisão",
       "AD_CHANGES_SUBMITTED": "Alterações do item de banner enviadas para revisão",
       "AD_APPROVED": "Item de banner aprovado por um moderador",
-      "AD_REJECTED": "Item de banner rejeitado por um moderador"
+      "AD_REJECTED": "Item de banner rejeitado por um moderador",
+      "AD_DELETED": "Item do banner excluído"
     }
   },
   "cabinetTasks": {
@@ -4938,6 +4940,9 @@
     "edit": "Editar",
     "publish": "Publicar",
     "unpublish": "Voltar ao rascunho",
+    "delete": "Excluir",
+    "deleteConfirm": "Excluir permanentemente?",
+    "deleteFailed": "Não foi possível excluir: {reason}",
     "archive": "Arquivar",
     "up": "Mover para cima",
     "down": "Mover para baixo",
@@ -5074,6 +5079,10 @@
     "slideCover": "Capa — exibida nos feeds e em links compartilhados",
     "slideUp": "Subir",
     "slideDown": "Descer",
+    "mediaEmpty": "Ainda não há slides — adicione uma foto ou um clipe e o banner aparece aqui.",
+    "slideLeft": "Esquerda",
+    "slideRight": "Direita",
+    "coverBadge": "Capa",
     "slideRemove": "Remover",
     "slidesFull": "{max} slides é o limite — remova um para adicionar outro.",
     "slideRange": "Slides {from}–{to} de {total}",

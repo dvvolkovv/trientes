@@ -1357,6 +1357,7 @@
       "stopCue": "在{distance}后：{name}，离路{offset}"
     },
     "pageMap": "地图",
+    "pageRoute": "路线",
     "pageCard": "地点",
     "pageShowcase": "展示",
     "acceptedCoins": "接受的币种",
@@ -4416,7 +4417,8 @@
       "AD_WITHDRAWN": "横幅条目已从审核中撤回",
       "AD_CHANGES_SUBMITTED": "横幅条目更改已提交审核",
       "AD_APPROVED": "横幅条目已被审核员批准",
-      "AD_REJECTED": "横幅条目已被审核员拒绝"
+      "AD_REJECTED": "横幅条目已被审核员拒绝",
+      "AD_DELETED": "横幅条目已删除"
     }
   },
   "cabinetTasks": {
@@ -4938,6 +4940,9 @@
     "edit": "编辑",
     "publish": "发布",
     "unpublish": "退回草稿",
+    "delete": "删除",
+    "deleteConfirm": "确定永久删除？",
+    "deleteFailed": "无法删除: {reason}",
     "archive": "归档",
     "up": "上移",
     "down": "下移",
@@ -5074,6 +5079,10 @@
     "slideCover": "封面 — 显示在信息流和分享的链接中",
     "slideUp": "上移",
     "slideDown": "下移",
+    "mediaEmpty": "尚无幻灯片 — 添加照片或视频，横幅会出现在这里。",
+    "slideLeft": "左",
+    "slideRight": "右",
+    "coverBadge": "封面",
     "slideRemove": "移除",
     "slidesFull": "{max} 张幻灯片已达上限 — 移除一张后再添加。",
     "slideRange": "第 {from}–{to} 张，共 {total} 张",

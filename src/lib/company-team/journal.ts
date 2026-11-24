@@ -66,6 +66,9 @@ export type CompanyAction =
   | "AD_CHANGES_SUBMITTED"
   | "AD_APPROVED"
   | "AD_REJECTED"
+  // Слайс CF: удаление материала. Строка журнала переживает сам материал — «что
+  // обещали» остаётся читаемым, исчезает только показ.
+  | "AD_DELETED"
   | "SUPPLIER_SAVED"
   | "SUPPLIER_ARCHIVED"
   | "SUPPLIER_RESTORED"

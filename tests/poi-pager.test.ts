@@ -8,6 +8,7 @@ import {
   type PoiPage,
 } from "@/lib/poi-pager";
 
+const ALL: PoiPage[] = ["map", "route", "card", "showcase"];
 const PHONE: PoiPage[] = ["map", "card", "showcase"];
 
 describe("pagesFor", () => {
@@ -15,14 +16,22 @@ describe("pagesFor", () => {
     expect(pagesFor(true)).toEqual(["map", "card", "showcase"]);
   });
 
-  it("drops the map page on desktop, where the map is already beside the panel", () => {
-    expect(pagesFor(false)).toEqual(["card", "showcase"]);
+  it("gives the desktop a route page instead of the map window", () => {
+    // Окно в полотно рядом с настоящей картой ничего не покупает, а управление
+    // маршрутом — покупает: подвалом панели оно съедало её целиком (слайс CF).
+    expect(pagesFor(false)).toEqual(["route", "card", "showcase"]);
+  });
+
+  it("opens on the facts on both", () => {
+    for (const phone of [true, false]) {
+      expect(pagesFor(phone)[1]).toBe("card");
+    }
   });
 });
 
 describe("pageLabelKey", () => {
   it("never reuses a label", () => {
-    const keys = PHONE.map(pageLabelKey);
+    const keys = ALL.map(pageLabelKey);
     expect(new Set(keys).size).toBe(keys.length);
   });
 });

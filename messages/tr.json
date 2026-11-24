@@ -1357,6 +1357,7 @@
       "stopCue": "{distance} sonra: {name}, yoldan {offset} uzakta"
     },
     "pageMap": "Harita",
+    "pageRoute": "Rota",
     "pageCard": "Yer",
     "pageShowcase": "Vitrin",
     "acceptedCoins": "Burada kabul edilenler",
@@ -4416,7 +4417,8 @@
       "AD_WITHDRAWN": "Banner öğesi incelemeden geri çekildi",
       "AD_CHANGES_SUBMITTED": "Banner öğesi değişiklikleri incelemeye gönderildi",
       "AD_APPROVED": "Banner öğesi bir moderatör tarafından onaylandı",
-      "AD_REJECTED": "Banner öğesi bir moderatör tarafından reddedildi"
+      "AD_REJECTED": "Banner öğesi bir moderatör tarafından reddedildi",
+      "AD_DELETED": "Banner öğesi silindi"
     }
   },
   "cabinetTasks": {
@@ -4938,6 +4940,9 @@
     "edit": "Düzenle",
     "publish": "Yayınla",
     "unpublish": "Taslağa geri al",
+    "delete": "Sil",
+    "deleteConfirm": "Kalıcı olarak silinsin mi?",
+    "deleteFailed": "Silinemedi: {reason}",
     "archive": "Arşivle",
     "up": "Yukarı taşı",
     "down": "Aşağı taşı",
@@ -5074,6 +5079,10 @@
     "slideCover": "Kapak — akışlarda ve paylaşılan bağlantılarda gösterilir",
     "slideUp": "Yukarı",
     "slideDown": "Aşağı",
+    "mediaEmpty": "Henüz slayt yok — bir fotoğraf veya klip ekleyin ve banner burada görünecek.",
+    "slideLeft": "Sol",
+    "slideRight": "Sağ",
+    "coverBadge": "Kapak",
     "slideRemove": "Kaldır",
     "slidesFull": "Sınır {max} slayt — bir tane daha eklemek için birini kaldırın.",
     "slideRange": "{total} slaytın {from}–{to}",

@@ -1357,6 +1357,7 @@
       "stopCue": "Za {distance}: {name}, {offset} od ceste"
     },
     "pageMap": "Karta",
+    "pageRoute": "Ruta",
     "pageCard": "Lokacija",
     "pageShowcase": "Izlog",
     "acceptedCoins": "Prihvaćene kovanice",
@@ -4416,7 +4417,8 @@
       "AD_WITHDRAWN": "Stavka bannera povučena s pregleda",
       "AD_CHANGES_SUBMITTED": "Promjene stavke bannera poslane na pregled",
       "AD_APPROVED": "Stavka bannera odobrena od strane moderatora",
-      "AD_REJECTED": "Stavka bannera odbijena od strane moderatora"
+      "AD_REJECTED": "Stavka bannera odbijena od strane moderatora",
+      "AD_DELETED": "Stavka banera izbrisana"
     }
   },
   "cabinetTasks": {
@@ -4938,6 +4940,9 @@
     "edit": "Uredi",
     "publish": "Objavi",
     "unpublish": "Vrati u nacrt",
+    "delete": "Izbriši",
+    "deleteConfirm": "Trajno izbrisati?",
+    "deleteFailed": "Nije moguće izbrisati: {reason}",
     "archive": "Arhiviraj",
     "up": "Pomakni gore",
     "down": "Pomakni dolje",
@@ -5074,6 +5079,10 @@
     "slideCover": "Naslovnica — prikazuje se u feedovima i dijeljenim poveznicama",
     "slideUp": "Gore",
     "slideDown": "Dolje",
+    "mediaEmpty": "Još nema slajdova — dodajte fotografiju ili isječak i baner će se pojaviti ovdje.",
+    "slideLeft": "Lijevo",
+    "slideRight": "Desno",
+    "coverBadge": "Naslovna",
     "slideRemove": "Ukloniti",
     "slidesFull": "Ograničenje je {max} slajdova — ukloniti jedan da biste dodali drugi.",
     "slideRange": "Slajdovi {from}–{to} od {total}",

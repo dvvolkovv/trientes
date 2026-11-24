@@ -1,5 +1,7 @@
 "use server";
 
+import { unlink } from "node:fs/promises";
+
 import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { auth } from "@/auth";
@@ -10,6 +12,8 @@ import { isOpen } from "@/lib/cases/types";
 import { canWrite, editorCompany } from "@/lib/products/editor-company";
 import { pointScopeAllows } from "@/lib/company-team/permissions";
 import { logCompanyAction } from "@/lib/company-team/journal";
+import { adMediaFilePath, orphanMediaUrls } from "@/lib/ads/media-files";
+import { companyDocFilePath } from "@/lib/company-docs";
 import {
   AD_EDITS_PER_DAY,
   MAX_ADS,
@@ -376,6 +380,84 @@ export async function moveAd(adId: string, direction: "up" | "down") {
     prisma.companyAd.update({ where: { id: ad.id }, data: { sortOrder: neighbour.sortOrder } }),
     prisma.companyAd.update({ where: { id: neighbour.id }, data: { sortOrder: ad.sortOrder } }),
   ]);
+  revalidateCard(ad.companyId);
+  return { ok: true as const };
+}
+
+/**
+ * Удаление материала (слайс CF, просьба владельца «дать возможность удалять этот весь
+ * контент»).
+ *
+ * Это отмена решения BY («материал не удаляется»): архив убирает материал с витрины, но
+ * оставляет строку в списке навсегда, и пробный ролик жил бы там вечно. Удаляется показ,
+ * а не след: `CompanyActionLog` неизменяем и переживает материал.
+ *
+ * На проверке материал не удаляется — ровно по той причине, по которой он не правится
+ * (слайс CC): модератор смотрит именно это содержание. Сперва «Отозвать».
+ */
+export async function deleteAd(adId: string) {
+  const userId = await requireUser();
+  if (!userId) return fail("unauth");
+  const ad = await prisma.companyAd.findUnique({
+    where: { id: adId },
+    select: {
+      id: true, companyId: true, status: true, title: true,
+      mediaUrl: true, posterUrl: true, audioUrl: true, slides: true, pendingPayload: true,
+    },
+  });
+  if (!ad) return fail("not_found");
+  const gate = await editorCompany(ad.companyId, userId);
+  if (!canWrite(gate, "promos")) return fail("forbidden");
+  if (ad.status === "PENDING") return fail("on_review");
+
+  // Бумаги материала уходят каскадом (`CompanyDocument.adId`), но их файлы надо стереть
+  // до удаления строк: после каскада адресов уже не узнать.
+  const docs = await prisma.companyDocument.findMany({
+    where: { adId: ad.id },
+    select: { url: true },
+  });
+  const others = await prisma.companyAd.findMany({
+    where: { companyId: ad.companyId, id: { not: ad.id } },
+    select: { mediaUrl: true, posterUrl: true, audioUrl: true, slides: true, pendingPayload: true },
+  });
+  const orphans = orphanMediaUrls(ad, others);
+
+  // Открытое дело закрывается **без решения**: удаление не работа проверяющего, и в
+  // аналитике труда решением выглядеть не должно (прецедент `withdrawKyb` в AT).
+  const existing = await prisma.complianceCase.findUnique({
+    where: { subjectType_subjectId: { subjectType: "COMPANY_AD", subjectId: adId } },
+    select: { id: true, status: true },
+  });
+  if (existing && isOpen(existing.status)) {
+    await prisma.complianceCase.update({
+      where: { id: existing.id },
+      data: { status: "CLOSED", decidedAt: new Date(), clockStoppedAt: null, assigneeId: null },
+    });
+    await appendCaseEvent({
+      caseId: existing.id,
+      actorId: userId,
+      actorSide: "APPLICANT",
+      kind: "STATUS_CHANGED",
+      payload: { from: existing.status, to: "CLOSED", why: "deleted" },
+    });
+  }
+
+  await prisma.companyAd.delete({ where: { id: ad.id } });
+
+  // Файлы стираются только под нашим корнем и только осиротевшие: тот же кадр бывает в
+  // двух материалах. Сбой стирания удаление не роняет — строки уже нет.
+  for (const url of orphans) {
+    const path = adMediaFilePath(url, ad.companyId);
+    if (path) await unlink(path).catch(() => {});
+  }
+  for (const doc of docs) {
+    const path = companyDocFilePath(doc.url, ad.companyId);
+    if (path) await unlink(path).catch(() => {});
+  }
+
+  await logCompanyAction({
+    companyId: ad.companyId, actorUserId: userId, action: "AD_DELETED", subject: ad.title,
+  });
   revalidateCard(ad.companyId);
   return { ok: true as const };
 }

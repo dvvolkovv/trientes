@@ -1870,7 +1870,9 @@ export default function CryptoNavigator({
             className={
               mapFull
                 ? "relative w-full min-h-0 flex-1 overflow-hidden"
-                : "relative w-full h-[420px] md:h-[520px] rounded-md overflow-hidden border border-hairline"
+                : // Карта на десктопе выше (слайс CF): карточка точки — панель внутри неё, и
+                  // при 520 px она не вмещала баннер 16 : 10 вместе с шапкой и закладками.
+                  "relative w-full h-[420px] md:h-[600px] xl:h-[680px] rounded-md overflow-hidden border border-hairline"
             }
           />
         )}

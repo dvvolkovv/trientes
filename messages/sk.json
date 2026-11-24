@@ -1357,6 +1357,7 @@
       "stopCue": "Za {distance}: {name}, {offset} od cesty"
     },
     "pageMap": "Mapa",
+    "pageRoute": "Trasa",
     "pageCard": "Miesto",
     "pageShowcase": "Prezentácia",
     "acceptedCoins": "Tu akceptované",
@@ -4416,7 +4417,8 @@
       "AD_WITHDRAWN": "Bannerová položka stiahnutá z kontroly",
       "AD_CHANGES_SUBMITTED": "Zmeny bannerovej položky odoslané na kontrolu",
       "AD_APPROVED": "Bannerová položka schválená moderátorom",
-      "AD_REJECTED": "Bannerová položka zamietnutá moderátorom"
+      "AD_REJECTED": "Bannerová položka zamietnutá moderátorom",
+      "AD_DELETED": "Položka banneru odstránená"
     }
   },
   "cabinetTasks": {
@@ -4938,6 +4940,9 @@
     "edit": "Upraviť",
     "publish": "Publikovať",
     "unpublish": "Späť do konceptu",
+    "delete": "Vymazať",
+    "deleteConfirm": "Vymazať natrvalo?",
+    "deleteFailed": "Nepodarilo sa vymazať: {reason}",
     "archive": "Archivovať",
     "up": "Posunúť hore",
     "down": "Posunúť nadol",
@@ -5074,6 +5079,10 @@
     "slideCover": "Titulná — zobrazená v feedoch a v zdieľaných odkazoch",
     "slideUp": "Hore",
     "slideDown": "Dole",
+    "mediaEmpty": "Zatiaľ žiadne snímky — pridajte fotku alebo klip a banner sa zobrazí tu",
+    "slideLeft": "Vľavo",
+    "slideRight": "Vpravo",
+    "coverBadge": "Obálka",
     "slideRemove": "Odstrániť",
     "slidesFull": "Limit je {max} snímok — odstráňte jednu, aby ste pridali ďalšiu.",
     "slideRange": "Snímky {from}–{to} z {total}",

@@ -1357,6 +1357,7 @@
       "stopCue": "{distance}先: {name}、道路から{offset}"
     },
     "pageMap": "地図",
+    "pageRoute": "ルート",
     "pageCard": "場所",
     "pageShowcase": "ショーケース",
     "acceptedCoins": "ここで使える通貨",
@@ -4416,7 +4417,8 @@
       "AD_WITHDRAWN": "バナー項目を審査から取り下げ",
       "AD_CHANGES_SUBMITTED": "バナー項目の変更を審査に提出",
       "AD_APPROVED": "バナー項目がモデレーターに承認された",
-      "AD_REJECTED": "バナー項目がモデレーターに却下された"
+      "AD_REJECTED": "バナー項目がモデレーターに却下された",
+      "AD_DELETED": "バナー項目が削除されました"
     }
   },
   "cabinetTasks": {
@@ -4938,6 +4940,9 @@
     "edit": "編集",
     "publish": "公開",
     "unpublish": "下書きに戻す",
+    "delete": "削除",
+    "deleteConfirm": "完全に削除しますか?",
+    "deleteFailed": "削除できませんでした: {reason}",
     "archive": "アーカイブ",
     "up": "上へ移動",
     "down": "下へ移動",
@@ -5074,6 +5079,10 @@
     "slideCover": "カバー — フィードや共有リンクに表示",
     "slideUp": "上へ",
     "slideDown": "下へ",
+    "mediaEmpty": "まだスライドがありません — 写真またはクリップを追加すると、ここにバナーが表示されます。",
+    "slideLeft": "左",
+    "slideRight": "右",
+    "coverBadge": "カバー",
     "slideRemove": "削除",
     "slidesFull": "{max} スライドが上限です — 追加するには1つ削除してください.",
     "slideRange": "スライド {from}–{to} / {total}",
