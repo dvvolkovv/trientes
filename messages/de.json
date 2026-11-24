@@ -620,7 +620,8 @@
         "coinRequests": "Coin-Anfragen",
         "pointReports": "Punktmeldungen",
         "products": "Produktpässe",
-        "ads": "Banneranzeigen"
+        "ads": "Banneranzeigen",
+        "domainClaims": "Domain-Ansprüche"
       },
       "unread": "{count} ungelesen",
       "spam": {
@@ -777,7 +778,10 @@
         "mediaRightsOk": "Der Verkäufer besitzt die Rechte am Foto oder Clip",
         "contentAllowed": "Im Material ist nichts für unsere Seiten unzulässig",
         "adPlacePlausible": "Der Ort auf der Karte entspricht der Adresse",
-        "promoTermsClear": "Der Promo-Code und seine Bedingungen sind klar"
+        "promoTermsClear": "Der Promo-Code und seine Bedingungen sind klar",
+        "domainProofReadable": "Der Domain-Nachweis im Schreiben ist lesbar und gehört zu unserem Server",
+        "senderRepresentsProject": "Der Absender spricht wirklich für das Projekt, nicht nur für das Postfach",
+        "targetsMatchDomain": "Jede ausgewählte Seite gehört zu dieser Domain"
       },
       "checklist": {
         "title": "Prüfungen",
@@ -868,7 +872,10 @@
           "logo_required": "Der Antrag hat noch kein Logo, und ohne Logo wird keine Karte veröffentlicht.",
           "slug_taken": "Eine andere Karte verwendet diese Adresse bereits.",
           "already_verified": "Das wurde bereits verifiziert.",
-          "invalid": "Der Antrag kann in diesem Zustand nicht veröffentlicht werden."
+          "invalid": "Der Antrag kann in diesem Zustand nicht veröffentlicht werden.",
+          "no_targets": "Setze oben bei mindestens einer Seite ein Häkchen.",
+          "email_failed": "Der Willkommensbrief konnte nicht gesendet werden — es wurde nichts übergeben.",
+          "already_decided": "Der Anspruch wurde bereits entschieden."
         },
         "pointReport": {
           "approve": "Meldungen bestätigen — Ort von der Karte entfernen",
@@ -890,6 +897,10 @@
         "companyAd": {
           "approve": "Genehmigen und ins Karussell aufnehmen",
           "reject": "Material ablehnen"
+        },
+        "domainClaim": {
+          "approve": "Seiten übergeben (sendet den Willkommensbrief)",
+          "reject": "Anspruch ablehnen"
         }
       },
       "reports": {
@@ -950,6 +961,54 @@
           "pointId": "Punkt",
           "actionUrl": "Aktionslink"
         }
+      },
+      "domainClaim": {
+        "title": "Schreiben von der Domain",
+        "summary": "{domain} · {count} Seite(n) gefunden",
+        "proof": {
+          "DKIM": "Signiert von {domain} — DKIM von unserem Mailserver geprüft",
+          "DMARC_SPF": "Absender stimmt mit {domain} überein — SPF und DMARC von unserem Mailserver geprüft"
+        },
+        "match": {
+          "EXACT": "Die Domain stimmt exakt mit der Seite überein.",
+          "PARENT": "Das Schreiben kam von der übergeordneten Domain — wer die Zone besitzt, besitzt auch die Subdomain.",
+          "SUBDOMAIN": "Das Schreiben kam von einer Subdomain. Eine Subdomain kann delegiert werden, daher genauer prüfen."
+        },
+        "sender": "Absender",
+        "showProof": "Nachweis-Header anzeigen",
+        "hideProof": "Nachweis-Header ausblenden",
+        "targets": "Seiten, die dieser Nachweis abdeckt",
+        "targetsHint": "Hake an, was übergeben werden soll. Bei Genehmigung wird pro Seite ein Willkommensbrief mit einem Einmal-Link gesendet.",
+        "owned": "Hat bereits einen Eigentümer — wird nicht über diese Tür übergeben.",
+        "kind": {
+          "COIN_CARD": "Coin-Karte",
+          "FINTECH": "Fintech-Profil"
+        },
+        "letters": "Schreiben",
+        "sideProject": "Projekt",
+        "sideStaff": "Wir",
+        "replyTitle": "Dem Projekt antworten",
+        "replyPlaceholder": "Frag nach allem, was fehlt…",
+        "reply": "Antwort senden",
+        "engineeringTitle": "An unsere Entwickler übergeben",
+        "engineeringHint": "Das Projekt hat eine eigene API und das Anbinden ist Aufgabe der Entwickler, nicht der Prüfer. Das benachrichtigt die Eigentümer.",
+        "engineeringPlaceholder": "Was sie anbieten und was benötigt wird…",
+        "engineering": "Unsere Entwickler fragen",
+        "engineeringAsked": "Unsere Entwickler wurden angefragt.",
+        "error": {
+          "not_found": "Der Anspruch ist weg.",
+          "already_decided": "Über den Anspruch wurde bereits entschieden.",
+          "already_owned": "Diese Seite hat bereits einen Inhaber.",
+          "body_required": "Schreibe wenigstens ein paar Worte.",
+          "note_required": "Schreibe wenigstens ein paar Worte.",
+          "email_failed": "Der Brief konnte nicht gesendet werden — der Anspruch bleibt offen.",
+          "no_targets": "Markiere mindestens eine Seite: Genehmigen ohne etwas zu übergeben würde den Anspruch stillschweigend schließen.",
+          "reason_required": "Ein Grund ist erforderlich.",
+          "unauth": "Melde dich erneut an.",
+          "no_access": "Du hast keine Berechtigung für diese Warteschlange.",
+          "forbidden": "Du hast keine Berechtigung für diese Warteschlange.",
+          "failed": "Konnte nicht gespeichert werden."
+        }
       }
     },
     "bell": {
@@ -963,7 +1022,10 @@
         "CASE_OVERDUE": "Überfällig",
         "APPLICANT_SILENT": "Antragsteller hat seit 14 Tagen nicht geantwortet",
         "POINT_REPORTED": "Ein Besucher hat einen Kartenpunkt gemeldet",
-        "REVIEW_DUE": "Regelmäßige Überprüfung fällig"
+        "REVIEW_DUE": "Regelmäßige Überprüfung fällig",
+        "ACCESS_REVIEW_DUE": "Überprüfung der Mitarbeiterzugriffe fällig",
+        "PRODUCT_REPORTED": "Neuer Bericht zu einem Produktpass",
+        "DOMAIN_CLAIM_ENGINEERING": "Ein Projekt bittet uns, seine API anzubinden"
       }
     },
     "movedToQueues": {
@@ -2503,6 +2565,11 @@
       },
       "supportedCards": "Eigene Listings",
       "supportedCardsHint": "Markieren Sie die selbst gelisteten Trientes-Münzen, die Ihr Dienst unterstützt."
+    },
+    "claim": {
+      "title": "Ist dies Ihr Service?",
+      "body": "Wir haben dieses Profil aus öffentlichen Quellen zusammengestellt. Schreiben Sie uns von einer Adresse unter {domain}, und wir übergeben es Ihrem Team.",
+      "cta": "So übernehmen Sie es"
     }
   },
   "companyPublic": {
@@ -5134,6 +5201,66 @@
       "rejectedReason": "Grund: {reason}",
       "submit": "Zur Prüfung einreichen",
       "withdraw": "Aus der Prüfung zurückziehen"
+    }
+  },
+  "forProjects": {
+    "kicker": "Für Projekte",
+    "title": "Ihre Seite auf Trientes",
+    "subtitle": "Wir stellen Coin-Karten und Fintech-Profile selbst zusammen, aus öffentlichen Quellen und aus den Netzwerken selbst. Wenn eines davon Ihr Projekt betrifft, übernehmen Sie es — es braucht nur eine E‑Mail.",
+    "claim": {
+      "title": "Belegen Sie es mit einer E‑Mail",
+      "body": "Schreiben Sie uns von einer geschäftlichen E‑Mail‑Adresse auf derselben Domain wie die Website auf Ihrer Seite. Der Präfix ist egal — entscheidend ist die Domain.",
+      "bodyDomain": "Schreiben Sie uns von einer geschäftlichen E‑Mail‑Adresse unter {domain}. Der Präfix ist egal — info@, listing@, was auch immer; entscheidend ist die Domain.",
+      "rule1": "Wir prüfen die Signatur, die Ihr Mailserver der E‑Mail mitgibt, nicht die From-Zeile — die lässt sich leicht fälschen.",
+      "rule2": "Jede E‑Mail wird von einer Person gelesen: Eine verifizierte Domain zeigt uns das Team, und über den Rest entscheidet unsere Moderation.",
+      "rule3": "Anhänge sind nicht nötig und werden nicht gelesen.",
+      "after": "Sie erhalten eine Antwort mit einem Einmal-Link für jede Seite. Folgen Sie ihm, melden Sie sich an, und die Seite gehört Ihnen zur Bearbeitung."
+    },
+    "weRead": {
+      "title": "Was wir bereits selbst auslesen",
+      "prices": "Preise und Handelspaare, aus Börsentickern.",
+      "chain": "On-Chain-Fakten direkt von Ihren Nodes: Emission, Blockzeit, Finalität.",
+      "fee": "Die Transaktionsgebühr, die der Node selbst angibt.",
+      "note": "Für all das müssen Sie nichts eintippen, und nichts davon beruht auf Vertrauen: Jede Zahl nennt ihre Quelle und den Zeitpunkt der Abfrage."
+    },
+    "youAdd": {
+      "title": "Was Sie ergänzen können",
+      "body": "Beschreibung, Logo, Links, Tokenomics, das Team, Zahlungs- und Rechtsangaben. Änderungen an einer Live-Karte gehen über unsere Moderatoren."
+    },
+    "api": {
+      "title": "Wenn Sie eine API haben",
+      "body": "Veröffentlichen Sie die gleichen Daten, die Sie anderen Aggregatoren per API oder JSON-Feed senden? Schicken Sie uns die Adresse in Ihrer E‑Mail, und unsere Ingenieure binden sie an, damit Ihre Seite aktuell bleibt, ohne dass jemand etwas eintippen muss.",
+      "honest": "Ganz offen gesagt: Es gibt noch keinen Self‑Service‑Endpunkt. Eine Person liest die von Ihnen gesendete Adresse, und Ingenieure übernehmen die Anbindung."
+    },
+    "other": {
+      "title": "Noch nicht auf Trientes?",
+      "body": "Ein Coin mit keiner Karte, oder ein Unternehmen, das Krypto an eigenen Standorten akzeptiert — beide haben ihre eigene Tür.",
+      "request": "Coin einreichen",
+      "business": "Unternehmen registrieren"
+    }
+  },
+  "projectInvite": {
+    "kicker": "Projekteinladung",
+    "proved": "Wir haben bestätigt, dass die E-Mail von {domain} kam.",
+    "what": {
+      "COIN_CARD": "Akzeptiere sie und die Coin-Karte gehört dir: Beschreibung, Logo, Links, Tokenomics und der Rest sind in deinem Bereich bearbeitbar.",
+      "FINTECH": "Akzeptiere sie und das Fintech-Profil gehört dir, um es aktuell zu halten."
+    },
+    "accept": "Das ist unser Projekt — annehmen",
+    "accepted": "Erledigt. Wir leiten dich zur Seite weiter…",
+    "guest": "Melde dich an oder erstelle ein Konto, dann überträgt dieser Link die Seite an dieses Konto.",
+    "signIn": "Anmelden",
+    "signUp": "Konto erstellen",
+    "forProjects": "So funktioniert das",
+    "errors": {
+      "invalid": "Dieser Link ist nicht gültig.",
+      "expired": "Dieser Link ist abgelaufen. Schreib uns noch einmal, dann senden wir dir einen neuen.",
+      "accepted": "Dieser Link wurde bereits verwendet.",
+      "revoked": "Dieser Link wurde widerrufen.",
+      "already_owned": "Diese Seite hat bereits einen Inhaber.",
+      "subject_gone": "Diese Seite existiert nicht mehr.",
+      "unauth": "Melde dich zuerst an.",
+      "failed": "Konnte die Einladung nicht annehmen."
     }
   }
 }

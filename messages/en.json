@@ -620,7 +620,8 @@
         "coinRequests": "Coin requests",
         "pointReports": "Point reports",
         "products": "Product passports",
-        "ads": "Banner ads"
+        "ads": "Banner ads",
+        "domainClaims": "Domain claims"
       },
       "unread": "{count} unread",
       "spam": {
@@ -777,7 +778,10 @@
         "mediaRightsOk": "The seller holds the rights to the photo or clip",
         "contentAllowed": "Nothing in the material is off limits for our pages",
         "adPlacePlausible": "The place on the map matches the address",
-        "promoTermsClear": "The promo code and its terms are clear"
+        "promoTermsClear": "The promo code and its terms are clear",
+        "domainProofReadable": "The domain proof in the letter is readable and belongs to our server",
+        "senderRepresentsProject": "The sender really speaks for the project, not just for the mailbox",
+        "targetsMatchDomain": "Every selected page belongs to this domain"
       },
       "checklist": {
         "title": "Checks",
@@ -868,7 +872,10 @@
           "logo_required": "The application has no logo yet, and a card is not published without one.",
           "slug_taken": "Another card already holds that address.",
           "already_verified": "That has already been verified.",
-          "invalid": "The application cannot be published as it stands."
+          "invalid": "The application cannot be published as it stands.",
+          "no_targets": "Tick at least one page in the section above.",
+          "email_failed": "The welcome letter could not be sent — nothing was handed over.",
+          "already_decided": "The claim has already been decided."
         },
         "pointReport": {
           "approve": "Confirm reports — take the place off the map",
@@ -890,6 +897,10 @@
         "companyAd": {
           "approve": "Approve and put it in the carousel",
           "reject": "Reject the material"
+        },
+        "domainClaim": {
+          "approve": "Hand the pages over (sends the welcome letter)",
+          "reject": "Turn the claim down"
         }
       },
       "reports": {
@@ -950,6 +961,54 @@
           "pointId": "Point",
           "actionUrl": "Action link"
         }
+      },
+      "domainClaim": {
+        "title": "Letter from the domain",
+        "summary": "{domain} · {count} page(s) found",
+        "proof": {
+          "DKIM": "Signed by {domain} — DKIM checked by our mail server",
+          "DMARC_SPF": "Sender aligned with {domain} — SPF and DMARC checked by our mail server"
+        },
+        "match": {
+          "EXACT": "The domain matches the page exactly.",
+          "PARENT": "The letter came from the parent domain — whoever owns the zone owns the subdomain too.",
+          "SUBDOMAIN": "The letter came from a subdomain. A subdomain can be delegated to someone else, so look closer."
+        },
+        "sender": "Sender",
+        "showProof": "Show the proof header",
+        "hideProof": "Hide the proof header",
+        "targets": "Pages this proof covers",
+        "targetsHint": "Tick what to hand over. Approving sends one welcome letter with a single-use link per page.",
+        "owned": "Already has an owner — not handed over through this door.",
+        "kind": {
+          "COIN_CARD": "Coin card",
+          "FINTECH": "Fintech profile"
+        },
+        "letters": "Letters",
+        "sideProject": "Project",
+        "sideStaff": "Us",
+        "replyTitle": "Reply to the project",
+        "replyPlaceholder": "Ask for whatever is missing…",
+        "reply": "Send the reply",
+        "engineeringTitle": "Hand over to our engineers",
+        "engineeringHint": "The project has an API of its own and connecting it is an engineer’s job, not a reviewer’s. This rings the owners.",
+        "engineeringPlaceholder": "What they offer and what is needed…",
+        "engineering": "Ask our engineers",
+        "engineeringAsked": "Our engineers have been asked.",
+        "error": {
+          "not_found": "The claim is gone.",
+          "already_decided": "The claim has already been decided.",
+          "already_owned": "That page already has an owner.",
+          "body_required": "Write at least a few words.",
+          "note_required": "Write at least a few words.",
+          "email_failed": "The letter could not be sent — the claim stays open.",
+          "no_targets": "Tick at least one page: approving without handing anything over would close the claim silently.",
+          "reason_required": "A reason is required.",
+          "unauth": "Sign in again.",
+          "no_access": "You have no right to this queue.",
+          "forbidden": "You have no right to this queue.",
+          "failed": "Could not save."
+        }
       }
     },
     "bell": {
@@ -963,7 +1022,10 @@
         "CASE_OVERDUE": "Overdue",
         "APPLICANT_SILENT": "Applicant has been silent for 14 days",
         "POINT_REPORTED": "A visitor reported a map point",
-        "REVIEW_DUE": "Periodic review is due"
+        "REVIEW_DUE": "Periodic review is due",
+        "ACCESS_REVIEW_DUE": "Staff access review due",
+        "PRODUCT_REPORTED": "New report on a product passport",
+        "DOMAIN_CLAIM_ENGINEERING": "A project asks us to connect their API"
       }
     },
     "movedToQueues": {
@@ -2503,6 +2565,11 @@
       },
       "supportedCards": "Self-listed coins",
       "supportedCardsHint": "Tick the Trientes self-listed coins your service supports."
+    },
+    "claim": {
+      "title": "Is this your service?",
+      "body": "We put this profile together from public sources. Write to us from an address at {domain} and we will hand it over to your team.",
+      "cta": "How to take it over"
     }
   },
   "companyPublic": {
@@ -5134,6 +5201,66 @@
       "rejectedReason": "Reason: {reason}",
       "submit": "Send for review",
       "withdraw": "Withdraw from review"
+    }
+  },
+  "forProjects": {
+    "kicker": "For projects",
+    "title": "Your page on Trientes",
+    "subtitle": "We put coin cards and fintech profiles together ourselves, from public sources and from the networks themselves. If one of them is about your project, take it over — it takes one letter.",
+    "claim": {
+      "title": "Prove it with a letter",
+      "body": "Write to us from a work address on the same domain as the website on your page. The prefix does not matter — what matters is the domain.",
+      "bodyDomain": "Write to us from a work address at {domain}. The prefix does not matter — info@, listing@, anything; what matters is the domain.",
+      "rule1": "We check the signature your mail server puts on the letter, not the From line — that one is free to fake.",
+      "rule2": "A person reads every letter: a proven domain shows us the team, and the rest is our moderator’s call.",
+      "rule3": "Attachments are not needed and are not read.",
+      "after": "You will get a reply with a single-use link for each page. Follow it, sign in, and the page is yours to edit."
+    },
+    "weRead": {
+      "title": "What we already read ourselves",
+      "prices": "Prices and trading pairs, from exchange tickers.",
+      "chain": "On-chain facts straight from your nodes: issuance, block time, finality.",
+      "fee": "The transfer fee the node itself quotes.",
+      "note": "None of this needs you to type anything in, and none of it is taken on trust: every number says where it came from and when it was read."
+    },
+    "youAdd": {
+      "title": "What you can add",
+      "body": "Description, logo, links, tokenomics, the team, payment and legal details. Edits to a live card go through our moderators."
+    },
+    "api": {
+      "title": "If you have an API",
+      "body": "Publishing the same data you send to other aggregators over an API or a JSON feed? Send us the address in your letter and our engineers will connect it, so your page stays current without anyone typing it in.",
+      "honest": "To be straight about it: there is no self-service endpoint yet. A person reads the address you send, and engineers do the wiring."
+    },
+    "other": {
+      "title": "Not on Trientes yet?",
+      "body": "A coin with no card, or a company that accepts crypto at its own locations — both have their own door.",
+      "request": "Submit a coin",
+      "business": "Register a business"
+    }
+  },
+  "projectInvite": {
+    "kicker": "Project invite",
+    "proved": "We confirmed the letter came from {domain}.",
+    "what": {
+      "COIN_CARD": "Accept it and the coin card becomes yours: description, logo, links, tokenomics and the rest are editable in your cabinet.",
+      "FINTECH": "Accept it and the fintech profile becomes yours to keep current."
+    },
+    "accept": "This is our project — accept",
+    "accepted": "Done. Taking you to the page…",
+    "guest": "Sign in or create an account, and this link hands the page to that account.",
+    "signIn": "Sign in",
+    "signUp": "Create an account",
+    "forProjects": "How this works",
+    "errors": {
+      "invalid": "This link is not valid.",
+      "expired": "This link has expired. Write to us again and we will send a fresh one.",
+      "accepted": "This link has already been used.",
+      "revoked": "This link was withdrawn.",
+      "already_owned": "That page already has an owner.",
+      "subject_gone": "That page no longer exists.",
+      "unauth": "Sign in first.",
+      "failed": "Could not accept the invite."
     }
   }
 }

@@ -27,6 +27,42 @@ export async function loadSubject(
   subjectId: string,
 ): Promise<SubjectSummary | null> {
   switch (subjectType) {
+    // Письмо с домена: «объект» заявки — сама заявка, и смотреть в ней нужно
+    // доказательство и цели (раздел «Письмо с домена»), а не поля формы.
+    case "DOMAIN_CLAIM": {
+      const claim = await prisma.domainClaim.findUnique({
+        where: { id: subjectId },
+        select: {
+          provedDomain: true,
+          fromAddress: true,
+          proofKind: true,
+          matchKind: true,
+          targets: { select: { subjectName: true, selected: true, owned: true } },
+        },
+      });
+      if (!claim) return null;
+      return {
+        title: claim.provedDomain,
+        // Учётной записи у отправителя нет: переписка идёт письмами.
+        applicantUserId: null,
+        href: null,
+        fields: [
+          { label: "provedDomain", value: claim.provedDomain },
+          { label: "sender", value: claim.fromAddress },
+          { label: "proofKind", value: claim.proofKind },
+          { label: "matchKind", value: claim.matchKind },
+          {
+            label: "targets",
+            value:
+              claim.targets.length === 0
+                ? "—"
+                : claim.targets
+                    .map((t) => `${t.subjectName}${t.owned ? " (owned)" : t.selected ? " ✓" : ""}`)
+                    .join(", "),
+          },
+        ],
+      };
+    }
     case "COMPANY":
     case "KYB": {
       const c = await prisma.company.findUnique({ where: { id: subjectId } });

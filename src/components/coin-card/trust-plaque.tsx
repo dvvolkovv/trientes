@@ -16,15 +16,23 @@ const TONE: Record<Variant, string> = {
  * а не проект: у неё нет ни куратора, ни компании, и писать «проект не
  * подтвердил причастность» было бы странно — проект к нам и не приходил.
  * Вместо этого говорим прямо, откуда числа, и приглашаем забрать карточку.
+ *
+ * Приглашение ведёт на «Для проектов» с доменом карточки (слайс CI): раньше
+ * оно вело на `/request`, то есть звало проект **завести вторую** карточку
+ * рядом со своей же. Домена нет — ведём туда же, но без подстановки: инструкция
+ * на той странице одна и та же.
  */
 export async function TrustPlaque({
   trust,
   seeded = false,
   locale,
+  claimDomain = null,
 }: {
   trust: Trust;
   seeded?: boolean;
   locale?: string;
+  /** Домен карточки — чтобы страница сказала, с какого адреса писать. */
+  claimDomain?: string | null;
 }) {
   const t = await getTranslations("coinCard.trust");
   const variant: Variant = seeded ? "SEEDED" : trust;
@@ -35,7 +43,10 @@ export async function TrustPlaque({
       </span>
       <span className="text-muted">{t(`${variant}_note`)}</span>
       {seeded && locale && (
-        <a href={`/${locale}/request`} className="text-accent ml-2 underline">
+        <a
+          href={`/${locale}/for-projects${claimDomain ? `?domain=${encodeURIComponent(claimDomain)}` : ""}`}
+          className="text-accent ml-2 underline"
+        >
           {t("SEEDED_cta")}
         </a>
       )}

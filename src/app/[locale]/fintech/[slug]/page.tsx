@@ -7,6 +7,8 @@ import { safeHttpUrl } from "@/lib/safe-url";
 import { localizedProse } from "@/lib/localized-prose";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { TranslatedBadge } from "@/components/coin-card/translated-badge";
+import { siteDomain } from "@/lib/claims/domain-subject";
+import { claimInboxAddress } from "@/lib/claims/mailbox";
 
 export const dynamic = "force-dynamic";
 
@@ -180,6 +182,24 @@ export default async function FintechDetail({
                   </a>
                 ))}
               </div>
+            </Section>
+          ) : null}
+
+          {/* Запись каталога завели мы, а не сервис: пока у неё нет владельца,
+              приглашаем его забрать — письмом с домена своего сайта (слайс CI).
+              Ящик не читается — приглашения нет вовсе: инструкция «напишите
+              нам» без чтения ящика ведёт в тишину. */}
+          {row.ownerUserId === null && claimInboxAddress() !== null && siteDomain(row.website) ? (
+            <Section title={t("claim.title")}>
+              <p className="text-sm text-muted">
+                {t("claim.body", { domain: siteDomain(row.website) as string })}
+              </p>
+              <a
+                href={`/${locale}/for-projects?domain=${encodeURIComponent(siteDomain(row.website) as string)}`}
+                className="mt-2 inline-block text-sm font-semibold text-accent hover:underline"
+              >
+                {t("claim.cta")}
+              </a>
             </Section>
           ) : null}
         </div>

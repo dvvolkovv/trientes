@@ -19,6 +19,17 @@ export type CheckDef = {
  * и того же.
  */
 export const CHECKLISTS: Record<CaseSubjectType, CheckDef[]> = {
+  // Письмо с домена: доказательство читает код, но представляет ли отправитель
+  // проект — вопрос к человеку, и он обязателен. Подпись домена без этого
+  // вопроса означала бы, что карточку получает любой, у кого есть ящик на
+  // домене.
+  DOMAIN_CLAIM: [
+    { key: "domainProofReadable", required: true },
+    { key: "senderRepresentsProject", required: true },
+    { key: "targetsMatchDomain", required: true },
+    { key: "noMisleadingClaims", required: false },
+    { key: "websiteLive", required: false },
+  ],
   // Паспорт товара мира: заявка производителя — про право на бренд, жалоба — про то,
   // сходится ли написанное с источником. Ключи общие с другими листами там, где вопрос
   // тот же (documentsLegible, sanctionsScreened).

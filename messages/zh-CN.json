@@ -620,7 +620,8 @@
         "coinRequests": "币种请求",
         "pointReports": "点位报告",
         "products": "产品护照",
-        "ads": "横幅广告"
+        "ads": "横幅广告",
+        "domainClaims": "域名认领"
       },
       "unread": "{count} 条未读",
       "spam": {
@@ -777,7 +778,10 @@
         "mediaRightsOk": "卖家拥有该照片或视频片段的权利",
         "contentAllowed": "素材中没有不适合在我们页面上展示的内容",
         "adPlacePlausible": "地图上的位置与地址相符",
-        "promoTermsClear": "促销码及其条款清晰明了"
+        "promoTermsClear": "促销码及其条款清晰明了",
+        "domainProofReadable": "来信中的域名证明可读，且属于我们的服务器",
+        "senderRepresentsProject": "发件人确实代表该项目，而不只是该邮箱",
+        "targetsMatchDomain": "所有选中的页面都属于此域名"
       },
       "checklist": {
         "title": "检查",
@@ -868,7 +872,10 @@
           "logo_required": "该申请尚无徽标，没有徽标无法发布卡片。",
           "slug_taken": "该地址已被另一张卡片占用。",
           "already_verified": "该项已通过验证。",
-          "invalid": "该申请按现状无法发布。"
+          "invalid": "该申请按现状无法发布。",
+          "no_targets": "在上面的部分至少勾选一个页面。",
+          "email_failed": "欢迎信未能发送—没有移交任何内容。",
+          "already_decided": "该认领已作出决定。"
         },
         "pointReport": {
           "approve": "确认举报——将该地点从地图移除",
@@ -890,6 +897,10 @@
         "companyAd": {
           "approve": "批准并放入轮播",
           "reject": "拒绝该素材"
+        },
+        "domainClaim": {
+          "approve": "移交这些页面(发送欢迎信)",
+          "reject": "拒绝该认领"
         }
       },
       "reports": {
@@ -950,6 +961,54 @@
           "pointId": "网点",
           "actionUrl": "操作链接"
         }
+      },
+      "domainClaim": {
+        "title": "来自该域名的来信",
+        "summary": "{domain} · 找到 {count} 个页面",
+        "proof": {
+          "DKIM": "由 {domain} 签名—DKIM 已被我们的邮件服务器验证",
+          "DMARC_SPF": "发件人与 {domain} 一致—SPF 和 DMARC 已被我们的邮件服务器验证"
+        },
+        "match": {
+          "EXACT": "该域名与页面完全匹配。",
+          "PARENT": "来信来自父级域名—拥有该区域的人也拥有子域名。",
+          "SUBDOMAIN": "来信来自子域名。子域名可能被委派给他人，请进一步核查。"
+        },
+        "sender": "发件人",
+        "showProof": "显示证明头",
+        "hideProof": "隐藏证明头",
+        "targets": "此证明所涵盖的页面",
+        "targetsHint": "勾选要移交的内容。批准后将发送欢迎信，每个页面一封，内含一次性链接。",
+        "owned": "已有人认领—不会通过此入口移交。",
+        "kind": {
+          "COIN_CARD": "币种卡片",
+          "FINTECH": "金融科技资料"
+        },
+        "letters": "信件",
+        "sideProject": "项目",
+        "sideStaff": "我们",
+        "replyTitle": "回复项目",
+        "replyPlaceholder": "询问缺少的内容…",
+        "reply": "发送回复",
+        "engineeringTitle": "交给我们的工程师",
+        "engineeringHint": "该项目有自己的 API，接入应由工程师而非审核员处理。这会通知所有者。",
+        "engineeringPlaceholder": "他们提供了什么、需要什么…",
+        "engineering": "请我们的工程师处理",
+        "engineeringAsked": "已请求我们的工程师。",
+        "error": {
+          "not_found": "该认领已不存在。",
+          "already_decided": "该认领已被处理。",
+          "already_owned": "该页面已有所有者。",
+          "body_required": "至少写几句话。",
+          "note_required": "至少写几句话。",
+          "email_failed": "无法发送该信件—认领将保持打开状态。",
+          "no_targets": "至少勾选一个页面：未交付任何内容就批准会悄然关闭该认领。",
+          "reason_required": "需要填写原因。",
+          "unauth": "请重新登录。",
+          "no_access": "你无权访问此队列。",
+          "forbidden": "你无权访问此队列。",
+          "failed": "无法保存。"
+        }
       }
     },
     "bell": {
@@ -963,7 +1022,10 @@
         "CASE_OVERDUE": "已逾期",
         "APPLICANT_SILENT": "申请人已沉默14天",
         "POINT_REPORTED": "访客举报了一个地图点位",
-        "REVIEW_DUE": "定期审核到期"
+        "REVIEW_DUE": "定期审核到期",
+        "ACCESS_REVIEW_DUE": "员工权限复审到期",
+        "PRODUCT_REPORTED": "产品护照的新报告",
+        "DOMAIN_CLAIM_ENGINEERING": "有项目请求我们接入其 API"
       }
     },
     "movedToQueues": {
@@ -2503,6 +2565,11 @@
       },
       "supportedCards": "自主上架币种",
       "supportedCardsHint": "勾选您的服务支持的 Trientes 自主上架币种。"
+    },
+    "claim": {
+      "title": "这是你的服务吗？",
+      "body": "我们基于公开来源整理了该简介。请从 {domain} 的地址给我们来信，我们会把它移交给你们团队。",
+      "cta": "如何认领"
     }
   },
   "companyPublic": {
@@ -5134,6 +5201,66 @@
       "rejectedReason": "原因：{reason}",
       "submit": "提交审核",
       "withdraw": "从审核中撤回"
+    }
+  },
+  "forProjects": {
+    "kicker": "面向项目",
+    "title": "你在 Trientes 上的页面",
+    "subtitle": "我们根据公开来源和各网络信息自行整理了代币卡片和金融科技资料。如果其中有关于你的项目的，请认领——只需一封邮件。",
+    "claim": {
+      "title": "用一封邮件证明",
+      "body": "请使用与你页面上网站同一域名的工作邮箱给我们写信。前缀无所谓——关键在于域名。",
+      "bodyDomain": "请使用 {domain} 下的工作邮箱给我们写信。前缀无所谓——info@、listing@、任意都可以；关键在于域名。",
+      "rule1": "我们核验你的邮件服务器为来信添加的签名，而不是 From 行——那一项很容易伪造。",
+      "rule2": "每封邮件都会由人工阅读：已验证的域名能向我们证明团队，其余由我们的审核员裁定。",
+      "rule3": "不需要附件，也不会阅读附件。",
+      "after": "我们会回复每个页面一条一次性链接。点击进入，登录后，该页面就归你编辑。"
+    },
+    "weRead": {
+      "title": "我们已自行读取的内容",
+      "prices": "来自交易所行情的价格与交易对。",
+      "chain": "直接从你们节点获取的链上数据：发行量、区块时间、终局性。",
+      "fee": "节点自行报出的转账手续费。",
+      "note": "这些都无需你手动填写，也不是凭信任：每个数值都会标注来源与读取时间。"
+    },
+    "youAdd": {
+      "title": "你可以补充的内容",
+      "body": "简介、标志、链接、代币经济、团队、支付与法务信息。对上线页面的编辑将由版主审核。"
+    },
+    "api": {
+      "title": "如果你有 API",
+      "body": "是否已通过 API 或 JSON 源向其他聚合器发布相同数据？在来信中把地址发给我们，工程师会接入，这样无需手填，你的页面即可保持最新。",
+      "honest": "直说吧：目前还没有自助端点。我们会人工查看你提供的地址，再由工程师完成接入。"
+    },
+    "other": {
+      "title": "还不在 Trientes 上？",
+      "body": "尚无页面的币种，或在线下门店接受加密货币的公司——都有各自的入口。",
+      "request": "提交币种",
+      "business": "注册企业"
+    }
+  },
+  "projectInvite": {
+    "kicker": "项目邀请",
+    "proved": "我们确认这封邮件来自 {domain}.",
+    "what": {
+      "COIN_CARD": "接受后，该币种页面将归你管理：简介、标志、链接、代币经济等都可在你的控制台编辑。",
+      "FINTECH": "接受后，该金融科技资料将归你维护更新。"
+    },
+    "accept": "这是我们的项目——接受",
+    "accepted": "已完成。正在带你前往页面…",
+    "guest": "登录或创建账户，此链接会将该页面交给该账户。",
+    "signIn": "登录",
+    "signUp": "创建账户",
+    "forProjects": "如何运作",
+    "errors": {
+      "invalid": "此链接无效。",
+      "expired": "此链接已过期。再写信给我们，我们会发送新的。",
+      "accepted": "此链接已被使用。",
+      "revoked": "此链接已被撤回。",
+      "already_owned": "该页面已有人认领。",
+      "subject_gone": "该页面已不存在。",
+      "unauth": "请先登录。",
+      "failed": "无法接受该邀请。"
     }
   }
 }

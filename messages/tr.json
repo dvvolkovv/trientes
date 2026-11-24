@@ -620,7 +620,8 @@
         "coinRequests": "Coin talepleri",
         "pointReports": "Nokta raporları",
         "products": "Ürün pasaportları",
-        "ads": "Banner reklamları"
+        "ads": "Banner reklamları",
+        "domainClaims": "Alan adı talepleri"
       },
       "unread": "{count} okunmamış",
       "spam": {
@@ -777,7 +778,10 @@
         "mediaRightsOk": "Satıcı fotoğrafın veya klibin haklarına sahiptir",
         "contentAllowed": "Materyalde sayfalarımız için yasak olan hiçbir şey yok",
         "adPlacePlausible": "Haritadaki yer adresle eşleşiyor",
-        "promoTermsClear": "Promosyon kodu ve koşulları net"
+        "promoTermsClear": "Promosyon kodu ve koşulları net",
+        "domainProofReadable": "Mektuptaki alan adı kanıtı okunabilir ve sunucumuza ait",
+        "senderRepresentsProject": "Gönderen yalnızca posta kutusu adına değil, gerçekten proje adına konuşuyor",
+        "targetsMatchDomain": "Seçilen her sayfa bu alan adına ait"
       },
       "checklist": {
         "title": "Kontroller",
@@ -868,7 +872,10 @@
           "logo_required": "Başvurunun henüz logosu yok ve logosuz bir kart yayımlanmaz.",
           "slug_taken": "Başka bir kart zaten bu adresi kullanıyor.",
           "already_verified": "Bu zaten doğrulandı.",
-          "invalid": "Başvuru mevcut hâliyle yayımlanamaz."
+          "invalid": "Başvuru mevcut hâliyle yayımlanamaz.",
+          "no_targets": "Yukarıdaki bölümde en az bir sayfayı işaretleyin.",
+          "email_failed": "Hoş geldin mektubu gönderilemedi — hiçbir şey devredilmedi.",
+          "already_decided": "Talep zaten karara bağlandı."
         },
         "pointReport": {
           "approve": "Raporları onayla — yeri haritadan kaldır",
@@ -890,6 +897,10 @@
         "companyAd": {
           "approve": "Onayla ve karusele ekle",
           "reject": "Materyali reddet"
+        },
+        "domainClaim": {
+          "approve": "Sayfaları devret (hoş geldin mektubunu gönderir)",
+          "reject": "Talebi reddet"
         }
       },
       "reports": {
@@ -950,6 +961,54 @@
           "pointId": "Nokta",
           "actionUrl": "Eylem bağlantısı"
         }
+      },
+      "domainClaim": {
+        "title": "Alan adından gelen mektup",
+        "summary": "{domain} · {count} sayfa bulundu",
+        "proof": {
+          "DKIM": "{domain} tarafından imzalandı — DKIM posta sunucumuz tarafından kontrol edildi",
+          "DMARC_SPF": "Gönderen {domain} ile hizalı — SPF ve DMARC posta sunucumuz tarafından kontrol edildi"
+        },
+        "match": {
+          "EXACT": "Alan adı sayfayla birebir eşleşiyor.",
+          "PARENT": "Mektup üst alan adından geldi — bölgeye sahip olan, alt alan adına da sahiptir.",
+          "SUBDOMAIN": "Mektup bir alt alan adından geldi. Bir alt alan adı başka birine devredilmiş olabilir, bu yüzden daha yakından bakın."
+        },
+        "sender": "Gönderen",
+        "showProof": "Kanıt başlığını göster",
+        "hideProof": "Kanıt başlığını gizle",
+        "targets": "Bu kanıtın kapsadığı sayfalar",
+        "targetsHint": "Devredilecekleri işaretleyin. Onaylamak, sayfa başına tek kullanımlık bağlantı içeren bir hoş geldin mektubu gönderir.",
+        "owned": "Zaten bir sahibi var — bu kapıdan devredilmez.",
+        "kind": {
+          "COIN_CARD": "Coin kartı",
+          "FINTECH": "Fintech profili"
+        },
+        "letters": "Mektuplar",
+        "sideProject": "Proje",
+        "sideStaff": "Biz",
+        "replyTitle": "Projeye yanıt ver",
+        "replyPlaceholder": "Eksik olan ne varsa isteyin…",
+        "reply": "Yanıtı gönder",
+        "engineeringTitle": "Mühendislerimize devret",
+        "engineeringHint": "Projenin kendi API’si var; bağlamak bir değerlendiricinin değil, bir mühendisin işidir. Bu, sahipleri haberdar eder.",
+        "engineeringPlaceholder": "Ne sundukları ve ne gerektiği…",
+        "engineering": "Mühendislerimize sor",
+        "engineeringAsked": "Mühendislerimize soruldu.",
+        "error": {
+          "not_found": "Talep artık yok.",
+          "already_decided": "Talep hakkında zaten karar verildi.",
+          "already_owned": "Bu sayfanın zaten bir sahibi var.",
+          "body_required": "En az birkaç kelime yazın.",
+          "note_required": "En az birkaç kelime yazın.",
+          "email_failed": "Mektup gönderilemedi — talep açık kalır.",
+          "no_targets": "En az bir sayfayı işaretleyin: hiçbir şeyi devretmeden onaylamak talebi sessizce kapatır.",
+          "reason_required": "Bir gerekçe gerekli.",
+          "unauth": "Yeniden oturum açın.",
+          "no_access": "Bu kuyruğa erişim yetkiniz yok.",
+          "forbidden": "Bu kuyruğa erişim yetkiniz yok.",
+          "failed": "Kaydedilemedi."
+        }
       }
     },
     "bell": {
@@ -963,7 +1022,10 @@
         "CASE_OVERDUE": "Gecikmiş",
         "APPLICANT_SILENT": "Başvuran 14 gündür sessiz",
         "POINT_REPORTED": "Bir ziyaretçi bir harita noktasını raporladı",
-        "REVIEW_DUE": "Periyodik inceleme zamanı geldi"
+        "REVIEW_DUE": "Periyodik inceleme zamanı geldi",
+        "ACCESS_REVIEW_DUE": "Personel erişim incelemesi zamanı",
+        "PRODUCT_REPORTED": "Bir ürün pasaportu hakkında yeni rapor",
+        "DOMAIN_CLAIM_ENGINEERING": "Bir proje, API’lerini bağlamamızı istiyor"
       }
     },
     "movedToQueues": {
@@ -2503,6 +2565,11 @@
       },
       "supportedCards": "Kendi listelemeleri",
       "supportedCardsHint": "Hizmetinizin desteklediği Trientes kendi listelemesi coinlerini işaretleyin."
+    },
+    "claim": {
+      "title": "Bu sizin hizmetiniz mi?",
+      "body": "Bu profili herkese açık kaynaklardan derledik. {domain} adresinden bize yazın, profili ekibinize devredelim",
+      "cta": "Nasıl devralınır"
     }
   },
   "companyPublic": {
@@ -5134,6 +5201,66 @@
       "rejectedReason": "Gerekçe: {reason}",
       "submit": "İncelemeye gönder",
       "withdraw": "İncelemeden geri çek"
+    }
+  },
+  "forProjects": {
+    "kicker": "Projeler için",
+    "title": "Trientes'teki sayfanız",
+    "subtitle": "Coin kartlarını ve fintech profillerini kamu kaynaklarından ve ağların kendilerinden derleyip biz oluşturuyoruz. Bunlardan biri projenizle ilgiliyse, sahiplenin — tek bir e‑postayla olur.",
+    "claim": {
+      "title": "Bunu bir e‑postayla kanıtlayın",
+      "body": "Sayfanızdaki web sitesinin alan adıyla aynı alan adını kullanan bir iş adresinden bize yazın. Önek önemli değil — önemli olan alan adı.",
+      "bodyDomain": "Bize {domain} alanındaki bir iş adresinden yazın. Önek önemli değil — info@, listing@, fark etmez; önemli olan alan adı.",
+      "rule1": "Biz From satırını değil, posta sunucunuzun e‑postaya eklediği imzayı kontrol ederiz — From satırı kolayca sahte olabilir.",
+      "rule2": "Her e‑postayı bir kişi okur: doğrulanmış bir alan adı bize ekibi gösterir, gerisi moderatörümüzün takdiridir.",
+      "rule3": "Ekler gerekli değildir ve okunmaz.",
+      "after": "Her sayfa için tek kullanımlık bir bağlantı içeren bir yanıt alacaksınız. Bağlantıyı açın, oturum açın ve sayfayı siz düzenleyin."
+    },
+    "weRead": {
+      "title": "Zaten kendimizin okudukları",
+      "prices": "Borsa ticker'larından fiyatlar ve işlem çiftleri.",
+      "chain": "Düğümlerinizden doğrudan zincir üzerindeki veriler: ihraç, blok süresi, kesinleşme.",
+      "fee": "Düğümün bizzat bildirdiği transfer ücreti.",
+      "note": "Bunların hiçbiri için bir şey yazmanıza gerek yok ve hiçbiri güvene dayalı değil: her sayı, nereden geldiğini ve ne zaman okunduğunu belirtir."
+    },
+    "youAdd": {
+      "title": "Sizin ekleyebilecekleriniz",
+      "body": "Açıklama, logo, bağlantılar, tokenomik, ekip, ödeme ve yasal ayrıntılar. Yayındaki bir karta yapılan düzenlemeler moderatörlerimizden geçer."
+    },
+    "api": {
+      "title": "Bir API'niz varsa",
+      "body": "Diğer toplayıcılara gönderdiğinizle aynı verileri bir API veya JSON akışı üzerinden yayımlıyor musunuz? Adresini e‑postanıza ekleyin; mühendislerimiz bağlasın, böylece kimse elle girmeden sayfanız güncel kalsın.",
+      "honest": "Dürüst olmak gerekirse: henüz self-servis bir uç nokta yok. Gönderdiğiniz adresi bir kişi okur, bağlantıyı mühendisler kurar"
+    },
+    "other": {
+      "title": "Henüz Trientes'te değil misiniz?",
+      "body": "Kartı olmayan bir coin ya da kendi lokasyonlarında kripto kabul eden bir şirket — ikisinin de kendi kapısı var",
+      "request": "Coin gönder",
+      "business": "İşletme kaydet"
+    }
+  },
+  "projectInvite": {
+    "kicker": "Proje daveti",
+    "proved": "Mektubun {domain}’den geldiğini doğruladık.",
+    "what": {
+      "COIN_CARD": "Kabul edin, coin kartı sizin olur: açıklama, logo, bağlantılar, tokenomics ve diğerleri panelinizden düzenlenebilir.",
+      "FINTECH": "Kabul edin, fintech profili sizin olur; onu güncel tutabilirsiniz."
+    },
+    "accept": "Bu bizim projemiz — kabul et",
+    "accepted": "Tamam. Sizi sayfaya götürüyoruz…",
+    "guest": "Oturum açın veya bir hesap oluşturun; bu bağlantı sayfayı o hesaba devreder.",
+    "signIn": "Oturum aç",
+    "signUp": "Hesap oluştur",
+    "forProjects": "Bu nasıl çalışır",
+    "errors": {
+      "invalid": "Bu bağlantı geçerli değil.",
+      "expired": "Bu bağlantının süresi dolmuş. Bize tekrar yazın, yenisini gönderelim.",
+      "accepted": "Bu bağlantı zaten kullanılmış.",
+      "revoked": "Bu bağlantı geri çekildi.",
+      "already_owned": "Bu sayfanın zaten bir sahibi var.",
+      "subject_gone": "Bu sayfa artık mevcut değil.",
+      "unauth": "Önce oturum açın.",
+      "failed": "Davet kabul edilemedi."
     }
   }
 }

@@ -620,7 +620,8 @@
         "coinRequests": "코인 요청",
         "pointReports": "포인트 신고",
         "products": "제품 패스포트",
-        "ads": "배너 광고"
+        "ads": "배너 광고",
+        "domainClaims": "도메인 클레임"
       },
       "unread": "{count}개 미읽음",
       "spam": {
@@ -777,7 +778,10 @@
         "mediaRightsOk": "판매자가 사진 또는 클립에 대한 권리를 보유함",
         "contentAllowed": "자료에 당사 페이지에서 금지되는 내용이 없음",
         "adPlacePlausible": "지도상의 위치가 주소와 일치함",
-        "promoTermsClear": "프로모 코드와 이용 조건이 명확함"
+        "promoTermsClear": "프로모 코드와 이용 조건이 명확함",
+        "domainProofReadable": "편지의 도메인 증명이 판독 가능하고 우리 서버에 속함",
+        "senderRepresentsProject": "발신자는 단지 메일함 소유자가 아니라 실제로 프로젝트를 대표함",
+        "targetsMatchDomain": "선택한 모든 페이지가 이 도메인에 속함"
       },
       "checklist": {
         "title": "검토",
@@ -868,7 +872,10 @@
           "logo_required": "신청서에 아직 로고가 없으며, 로고 없이는 카드가 게시되지 않습니다.",
           "slug_taken": "다른 카드가 이미 그 주소를 사용하고 있습니다.",
           "already_verified": "해당 항목은 이미 검증되었습니다.",
-          "invalid": "현재 상태로는 신청서를 게시할 수 없습니다."
+          "invalid": "현재 상태로는 신청서를 게시할 수 없습니다.",
+          "no_targets": "위 섹션에서 최소 한 페이지에 체크하세요.",
+          "email_failed": "환영 편지를 보낼 수 없음 — 아무것도 넘겨지지 않음.",
+          "already_decided": "해당 클레임은 이미 결정됨."
         },
         "pointReport": {
           "approve": "신고 확인 — 장소를 지도에서 제거",
@@ -890,6 +897,10 @@
         "companyAd": {
           "approve": "승인하고 캐러셀에 배치",
           "reject": "자료 거부"
+        },
+        "domainClaim": {
+          "approve": "페이지 넘기기(환영 편지 발송)",
+          "reject": "클레임 거절"
         }
       },
       "reports": {
@@ -950,6 +961,54 @@
           "pointId": "지점",
           "actionUrl": "작업 링크"
         }
+      },
+      "domainClaim": {
+        "title": "도메인에서 온 편지",
+        "summary": "{domain} · 페이지 {count}개 발견",
+        "proof": {
+          "DKIM": "Signed by {domain} — DKIM checked by our mail server",
+          "DMARC_SPF": "발신자가 {domain}와 일치 — 우리 메일 서버가 SPF와 DMARC 확인함"
+        },
+        "match": {
+          "EXACT": "도메인이 페이지와 정확히 일치함.",
+          "PARENT": "편지가 상위 도메인에서 왔음 — 존 소유자는 하위 도메인도 소유함.",
+          "SUBDOMAIN": "편지가 하위 도메인에서 왔음. 하위 도메인은 타인에게 위임될 수 있으므로 더 주의해서 확인할 것."
+        },
+        "sender": "발신자",
+        "showProof": "증명 헤더 표시",
+        "hideProof": "증명 헤더 숨기기",
+        "targets": "이 증명이 포괄하는 페이지",
+        "targetsHint": "넘길 항목에 체크하세요. 승인하면 각 페이지마다 1회용 링크가 포함된 환영 편지 1통을 보냅니다.",
+        "owned": "이미 소유자가 있음 — 이 경로로는 넘겨주지 않음.",
+        "kind": {
+          "COIN_CARD": "코인 카드",
+          "FINTECH": "핀테크 프로필"
+        },
+        "letters": "서신",
+        "sideProject": "프로젝트",
+        "sideStaff": "우리",
+        "replyTitle": "프로젝트에 회신",
+        "replyPlaceholder": "빠진 내용을 요청하세요…",
+        "reply": "회신 보내기",
+        "engineeringTitle": "우리 엔지니어에게 이관",
+        "engineeringHint": "해당 프로젝트는 자체 API가 있어 연결 작업은 리뷰어가 아닌 엔지니어의 역할입니다. 소유자에게 알림을 보냅니다.",
+        "engineeringPlaceholder": "제공하는 것과 필요한 것…",
+        "engineering": "엔지니어에게 요청",
+        "engineeringAsked": "엔지니어에게 요청했습니다.",
+        "error": {
+          "not_found": "신청이 사라졌습니다.",
+          "already_decided": "신청이 이미 결정되었습니다.",
+          "already_owned": "해당 페이지는 이미 소유자가 있습니다.",
+          "body_required": "몇 마디라도 작성하세요.",
+          "note_required": "몇 마디라도 작성하세요.",
+          "email_failed": "편지를 보낼 수 없습니다 — 신청은 열린 상태로 유지됩니다.",
+          "no_targets": "페이지를 최소 하나 선택하세요: 아무것도 넘기지 않고 승인하면 신청이 조용히 닫힙니다.",
+          "reason_required": "사유가 필요합니다.",
+          "unauth": "다시 로그인하세요.",
+          "no_access": "이 대기열에 대한 권한이 없습니다.",
+          "forbidden": "이 대기열에 대한 권한이 없습니다.",
+          "failed": "저장할 수 없습니다."
+        }
       }
     },
     "bell": {
@@ -963,7 +1022,10 @@
         "CASE_OVERDUE": "기한 초과",
         "APPLICANT_SILENT": "신청자가 14일째 무응답",
         "POINT_REPORTED": "방문자가 지도 지점을 신고함",
-        "REVIEW_DUE": "정기 심사 기한 도래"
+        "REVIEW_DUE": "정기 심사 기한 도래",
+        "ACCESS_REVIEW_DUE": "직원 접근 권한 검토 기한",
+        "PRODUCT_REPORTED": "제품 패스포트에 대한 새 신고",
+        "DOMAIN_CLAIM_ENGINEERING": "프로젝트가 API 연결을 요청"
       }
     },
     "movedToQueues": {
@@ -2503,6 +2565,11 @@
       },
       "supportedCards": "자체 상장 코인",
       "supportedCardsHint": "서비스가 지원하는 Trientes 자체 상장 코인을 선택하세요."
+    },
+    "claim": {
+      "title": "이 서비스가 귀하의 서비스인가요?",
+      "body": "저희는 공개 출처를 바탕으로 이 프로필을 구성했습니다. {domain}에 속한 주소에서 저희에게 연락해 주시면 귀하의 팀에 넘겨드리겠습니다.",
+      "cta": "인수하는 방법"
     }
   },
   "companyPublic": {
@@ -5134,6 +5201,66 @@
       "rejectedReason": "사유: {reason}",
       "submit": "검토 요청",
       "withdraw": "검토 철회"
+    }
+  },
+  "forProjects": {
+    "kicker": "프로젝트용",
+    "title": "Trientes에서의 귀하의 페이지",
+    "subtitle": "코인 카드와 핀테크 프로필은 공개 소스와 네트워크 자체의 정보로 저희가 직접 구성합니다. 그중에 귀하의 프로젝트에 관한 것이 있다면 인수하세요 — 편지 한 통이면 됩니다.",
+    "claim": {
+      "title": "편지로 증명하세요",
+      "body": "페이지에 적힌 웹사이트와 같은 도메인의 업무용 주소에서 저희에게 편지를 보내세요. 접두사는 중요하지 않으며 — 중요한 것은 도메인입니다.",
+      "bodyDomain": "{domain} 도메인의 업무용 주소에서 저희에게 편지를 보내세요. 접두사는 중요하지 않습니다 — info@, listing@, 무엇이든 좋습니다; 중요한 것은 도메인입니다.",
+      "rule1": "저희는 From 라인이 아니라 귀하의 메일 서버가 편지에 붙이는 서명을 확인합니다 — From은 마음대로 위조할 수 있습니다.",
+      "rule2": "모든 편지는 사람이 읽습니다: 검증된 도메인은 팀을 보여 주고, 나머지는 모더레이터의 판단입니다.",
+      "rule3": "첨부 파일은 필요하지 않으며 읽지 않습니다.",
+      "after": "각 페이지마다 1회용 링크가 담긴 회신을 받게 됩니다. 링크를 따라가서 로그인하면, 그 페이지를 직접 편집할 수 있습니다."
+    },
+    "weRead": {
+      "title": "저희가 이미 직접 읽는 것들",
+      "prices": "거래소 티커에서 읽는 가격과 거래 페어.",
+      "chain": "귀하의 노드에서 바로 읽는 온체인 사실들: 발행량, 블록 시간, 파이널리티.",
+      "fee": "노드가 자체적으로 제시하는 전송 수수료.",
+      "note": "이 모든 것은 귀하가 직접 입력할 필요가 없고, 신뢰만으로 채택되지도 않습니다: 모든 수치는 출처와 읽은 시점을 함께 제공합니다."
+    },
+    "youAdd": {
+      "title": "추가로 입력할 수 있는 것들",
+      "body": "설명, 로고, 링크, 토크노믹스, 팀, 결제 및 법적 세부정보. 라이브 카드에 대한 수정은 모더레이터 검수를 거칩니다."
+    },
+    "api": {
+      "title": "API가 있다면",
+      "body": "다른 애그리게이터에 보내는 것과 동일한 데이터를 API나 JSON 피드로 발행하나요? 편지에 그 주소를 적어 보내 주세요. 엔지니어가 연결해 주어, 누구도 손으로 입력하지 않아도 귀하의 페이지가 최신 상태로 유지됩니다.",
+      "honest": "솔직히 말하면: 아직 셀프서비스 엔드포인트는 없습니다. 보내 주신 주소를 사람이 읽고, 엔지니어가 연결 작업을 합니다."
+    },
+    "other": {
+      "title": "아직 Trientes에 없나요?",
+      "body": "카드가 없는 코인이나 자체 지점에서 암호화폐를 받는 회사 — 둘 다를 위한 전용 창구가 있습니다.",
+      "request": "코인 제출",
+      "business": "비즈니스 등록"
+    }
+  },
+  "projectInvite": {
+    "kicker": "프로젝트 초대",
+    "proved": "편지가 {domain}에서 왔음을 확인했습니다.",
+    "what": {
+      "COIN_CARD": "수락하면 코인 카드가 귀하의 것이 됩니다: 설명, 로고, 링크, 토크노믹스 등은 내 대시보드에서 편집할 수 있습니다.",
+      "FINTECH": "수락하면 핀테크 프로필이 귀하의 것이 되어 최신 상태로 유지할 수 있습니다."
+    },
+    "accept": "이건 우리 프로젝트입니다 — 수락",
+    "accepted": "완료. 페이지로 이동합니다…",
+    "guest": "로그인하거나 계정을 만들면, 이 링크가 그 계정으로 페이지를 넘깁니다.",
+    "signIn": "로그인",
+    "signUp": "계정 만들기",
+    "forProjects": "작동 방식",
+    "errors": {
+      "invalid": "이 링크는 유효하지 않습니다.",
+      "expired": "이 링크는 만료되었습니다. 다시 편지를 보내 주시면 새 링크를 보내 드립니다.",
+      "accepted": "이 링크는 이미 사용되었습니다.",
+      "revoked": "이 링크는 철회되었습니다.",
+      "already_owned": "해당 페이지는 이미 소유자가 있습니다.",
+      "subject_gone": "해당 페이지는 더 이상 존재하지 않습니다.",
+      "unauth": "먼저 로그인하세요.",
+      "failed": "초대를 수락할 수 없습니다."
     }
   }
 }

@@ -26,6 +26,7 @@ import { CoinCardHeader } from "@/components/coin-card/card-header";
 import { CoinRating } from "@/components/coin-rating";
 import { CoinCardSections } from "@/components/coin-card/card-sections";
 import { TrustPlaque } from "@/components/coin-card/trust-plaque";
+import { subjectDomain } from "@/lib/claims/domain-subject";
 import { CardDescription } from "@/components/coin-card/card-description";
 import { NewsRail } from "@/components/news-rail";
 import { LivePrices } from "@/components/live-prices";
@@ -246,7 +247,16 @@ export default async function CoinDetailPage({
       <CoinLinks coin={coin} />
       {card && (
         <>
-          <TrustPlaque trust={card.trust} seeded={isSeededCard(card)} locale={locale} />
+          <TrustPlaque
+            trust={card.trust}
+            seeded={isSeededCard(card)}
+            locale={locale}
+            claimDomain={subjectDomain({
+              kind: "COIN_CARD",
+              links: card.links,
+              coinWebsiteUrl: coin.websiteUrl ?? null,
+            })}
+          />
           <CoinCardSections
             card={card}
             translated={localizedCard?.translated ?? false}
@@ -317,6 +327,11 @@ async function renderCardOnly(
         trust={loc.card.trust}
         seeded={isSeededCard(loc.card)}
         locale={locale}
+        claimDomain={subjectDomain({
+          kind: "COIN_CARD",
+          links: loc.card.links,
+          coinWebsiteUrl: null,
+        })}
       />
       <CardDescription
         description={loc.card.description}

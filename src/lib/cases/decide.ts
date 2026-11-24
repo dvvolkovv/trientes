@@ -9,6 +9,7 @@ import { approveFintech, rejectFintech } from "@/app/actions/admin-fintech";
 import { approveRequest, rejectRequest } from "@/app/actions/admin-requests";
 import { approveKyb, rejectKyb } from "@/app/actions/kyb";
 import { clearPointReview, suspendPoint } from "@/app/actions/point-supervision";
+import { approveDomainClaim, rejectDomainClaim } from "@/app/actions/domain-claims";
 import {
   approveProductClaim,
   rejectProductClaim,
@@ -45,6 +46,15 @@ export async function applyDecision(input: {
   const silent = input.silent === true;
 
   switch (input.subjectType) {
+    // Письмо с домена: одобрение рассылает приглашения на выбранные объекты, а
+    // не правит объект — передавать права некому, пока по ссылке не пришёл
+    // человек (слайс CI).
+    case "DOMAIN_CLAIM":
+      return normalize(
+        approve
+          ? await approveDomainClaim(subjectId)
+          : await rejectDomainClaim(subjectId, reason),
+      );
     case "COIN_CARD":
       return normalize(approve ? await approveCoinCard(subjectId) : await rejectCoinCard(subjectId, reason));
     case "COMPANY":

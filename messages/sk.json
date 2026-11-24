@@ -620,7 +620,8 @@
         "coinRequests": "Žiadosti o mince",
         "pointReports": "Nahlásenia miest",
         "products": "Produktové pasy",
-        "ads": "Banerové reklamy"
+        "ads": "Banerové reklamy",
+        "domainClaims": "Nároky na doménu"
       },
       "unread": "{count} neprečítaných",
       "spam": {
@@ -777,7 +778,10 @@
         "mediaRightsOk": "Predávajúci vlastní práva k fotografii alebo klipu",
         "contentAllowed": "V materiáli nie je nič, čo je nepovolené na našich stránkach",
         "adPlacePlausible": "Miesto na mape zodpovedá adrese",
-        "promoTermsClear": "Promo kód a jeho podmienky sú jasné"
+        "promoTermsClear": "Promo kód a jeho podmienky sú jasné",
+        "domainProofReadable": "Dôkaz o doméne v e-maile je čitateľný a patrí nášmu serveru",
+        "senderRepresentsProject": "Odosielateľ skutočne zastupuje projekt, nie iba mailovú schránku",
+        "targetsMatchDomain": "Každá vybraná stránka patrí tejto doméne"
       },
       "checklist": {
         "title": "Kontroly",
@@ -868,7 +872,10 @@
           "logo_required": "Žiadosť ešte nemá logo a karta sa bez neho nezverejní.",
           "slug_taken": "Tú adresu už používa iná karta.",
           "already_verified": "To už bolo overené.",
-          "invalid": "Žiadosť sa v aktuálnej podobe nedá zverejniť."
+          "invalid": "Žiadosť sa v aktuálnej podobe nedá zverejniť.",
+          "no_targets": "Zaškrtnite aspoň jednu stránku v sekcii vyššie.",
+          "email_failed": "Uvítací e‑mail sa nepodarilo odoslať — nič nebolo odovzdané.",
+          "already_decided": "O nároku už bolo rozhodnuté."
         },
         "pointReport": {
           "approve": "Potvrdiť nahlásenia — odstrániť miesto z mapy",
@@ -890,6 +897,10 @@
         "companyAd": {
           "approve": "Schváliť a zaradiť do karuselu",
           "reject": "Zamietnuť materiál"
+        },
+        "domainClaim": {
+          "approve": "Odovzdať stránky (odošle uvítací e‑mail)",
+          "reject": "Zamietnuť nárok"
         }
       },
       "reports": {
@@ -950,6 +961,54 @@
           "pointId": "Miesto",
           "actionUrl": "Odkaz akcie"
         }
+      },
+      "domainClaim": {
+        "title": "List z domény",
+        "summary": "{domain} · nájdených {count} stránok",
+        "proof": {
+          "DKIM": "Podpísané doménou {domain} — DKIM overené naším poštovým serverom",
+          "DMARC_SPF": "Odosielateľ zosúladený s {domain} — SPF a DMARC overené naším poštovým serverom"
+        },
+        "match": {
+          "EXACT": "Doména sa presne zhoduje so stránkou.",
+          "PARENT": "List prišiel z nadradenej domény — kto vlastní zónu, vlastní aj subdoménu.",
+          "SUBDOMAIN": "List prišiel zo subdomény. Subdoménu možno delegovať niekomu inému, preto sa pozrite pozornejšie."
+        },
+        "sender": "Odosielateľ",
+        "showProof": "Zobraziť hlavičku dôkazu",
+        "hideProof": "Skryť hlavičku dôkazu",
+        "targets": "Stránky, na ktoré sa tento dôkaz vzťahuje",
+        "targetsHint": "Zaškrtnite, čo odovzdať. Schválenie odošle jeden uvítací list s jednorazovým odkazom na každú stránku.",
+        "owned": "Už má vlastníka — cez tieto dvere sa neodovzdáva.",
+        "kind": {
+          "COIN_CARD": "Karta mince",
+          "FINTECH": "Fintech profil"
+        },
+        "letters": "Listy",
+        "sideProject": "Projekt",
+        "sideStaff": "My",
+        "replyTitle": "Odpovedať projektu",
+        "replyPlaceholder": "Požiadajte o čokoľvek, čo chýba…",
+        "reply": "Odoslať odpoveď",
+        "engineeringTitle": "Postúpiť našim inžinierom",
+        "engineeringHint": "Projekt má vlastné API a prepojenie je úloha pre inžiniera, nie pre kontrolóra. Toto upozorní vlastníkov.",
+        "engineeringPlaceholder": "Čo ponúkajú a čo je potrebné…",
+        "engineering": "Požiadať našich inžinierov",
+        "engineeringAsked": "Naši inžinieri boli požiadaní.",
+        "error": {
+          "not_found": "Žiadosť je preč.",
+          "already_decided": "O žiadosti už bolo rozhodnuté.",
+          "already_owned": "Tá stránka už má vlastníka.",
+          "body_required": "Napíšte aspoň pár slov.",
+          "note_required": "Napíšte aspoň pár slov.",
+          "email_failed": "List sa nepodarilo odoslať — žiadosť zostáva otvorená.",
+          "no_targets": "Zaškrtnite aspoň jednu stránku: schválenie bez odovzdania čohokoľvek by potichu uzavrelo žiadosť.",
+          "reason_required": "Vyžaduje sa dôvod.",
+          "unauth": "Prihláste sa znova.",
+          "no_access": "Nemáte oprávnenie k tejto fronte.",
+          "forbidden": "Nemáte oprávnenie k tejto fronte.",
+          "failed": "Nepodarilo sa uložiť."
+        }
       }
     },
     "bell": {
@@ -963,7 +1022,10 @@
         "CASE_OVERDUE": "Po termíne",
         "APPLICANT_SILENT": "Žiadateľ mlčí už 14 dní",
         "POINT_REPORTED": "Návštevník nahlásil miesto na mape",
-        "REVIEW_DUE": "Termín periodickej kontroly"
+        "REVIEW_DUE": "Termín periodickej kontroly",
+        "ACCESS_REVIEW_DUE": "Termín kontroly prístupov personálu",
+        "PRODUCT_REPORTED": "Nové nahlásenie k produktovému pasu",
+        "DOMAIN_CLAIM_ENGINEERING": "Projekt nás žiada o pripojenie ich API"
       }
     },
     "movedToQueues": {
@@ -2503,6 +2565,11 @@
       },
       "supportedCards": "Samostatne zaradené mince",
       "supportedCardsHint": "Zaškrtnite samostatne zaradené mince Trientes, ktoré vaša služba podporuje."
+    },
+    "claim": {
+      "title": "Je toto vaša služba?",
+      "body": "Tento profil sme zostavili z verejných zdrojov. Napíšte nám z adresy na {domain} a odovzdáme ho vášmu tímu.",
+      "cta": "Ako ho prevziať"
     }
   },
   "companyPublic": {
@@ -5134,6 +5201,66 @@
       "rejectedReason": "Dôvod: {reason}",
       "submit": "Odoslať na kontrolu",
       "withdraw": "Stiahnuť z kontroly"
+    }
+  },
+  "forProjects": {
+    "kicker": "Pre projekty",
+    "title": "Vaša stránka na Trientes",
+    "subtitle": "Karty mincí a fintech profily skladáme sami, z verejných zdrojov a priamo zo samotných sietí. Ak je niektorá z nich o vašom projekte, prevezmite si ju — stačí jeden e-mail.",
+    "claim": {
+      "title": "Dokážte to e-mailom",
+      "body": "Napíšte nám z pracovnej adresy na rovnakej doméne ako web uvedený na vašej stránke. Prefix nie je dôležitý — dôležitá je doména.",
+      "bodyDomain": "Napíšte nám z pracovnej adresy na {domain}. Prefix nie je dôležitý — info@, listing@, čokoľvek; dôležitá je doména.",
+      "rule1": "Overujeme podpis, ktorý váš poštový server pridáva k e-mailu, nie riadok From — ten sa dá ľahko sfalšovať.",
+      "rule2": "Každý e-mail číta človek: overená doména nám ukáže tím a zvyšok je na rozhodnutí moderátora.",
+      "rule3": "Prílohy netreba a nečítame ich.",
+      "after": "Dostanete odpoveď s jednorazovým odkazom pre každú stránku. Otvorte ho, prihláste sa a stránka bude vaša na úpravy."
+    },
+    "weRead": {
+      "title": "Čo už čítame sami",
+      "prices": "Ceny a obchodné páry, z burzových tickerov.",
+      "chain": "On-chain fakty priamo z vašich uzlov: emisia, čas bloku, finalita.",
+      "fee": "Poplatok za prevod, ktorý uvádza samotný uzol.",
+      "note": "Na nič z toho nemusíte nič vypĺňať a nič neberieme na dôveru: pri každom čísle je uvedené, odkiaľ je a kedy bolo načítané."
+    },
+    "youAdd": {
+      "title": "Čo môžete pridať",
+      "body": "Popis, logo, odkazy, tokenomika, tím, platobné a právne údaje. Úpravy živej karty prechádzajú cez našich moderátorov."
+    },
+    "api": {
+      "title": "Ak máte API",
+      "body": "Zverejňujete tie isté údaje, ktoré posielate iným agregátorom, cez API alebo JSON feed? Pošlite nám adresu vo vašom e-maile a naši inžinieri ju prepoja, aby vaša stránka zostala aktuálna bez ručného zadávania.",
+      "honest": "Na rovinu: samoobslužný endpoint zatiaľ nemáme. Adresu, ktorú pošlete, si prečíta človek a zapojenie spravia inžinieri."
+    },
+    "other": {
+      "title": "Ešte nie ste na Trientes?",
+      "body": "Minca bez karty alebo firma, ktorá prijíma krypto na vlastných miestach — obe majú vlastné dvere.",
+      "request": "Odoslať mincu",
+      "business": "Zaregistrovať firmu"
+    }
+  },
+  "projectInvite": {
+    "kicker": "Pozvánka do projektu",
+    "proved": "Potvrdili sme, že e‑mail prišiel z {domain}.",
+    "what": {
+      "COIN_CARD": "Prijmite to a karta mince bude vaša: popis, logo, odkazy, tokenomika a zvyšok sú upraviteľné vo vašom profile.",
+      "FINTECH": "Prijmite to a fintech profil bude váš, aby ste ho udržiavali aktuálny."
+    },
+    "accept": "Toto je náš projekt — prijať",
+    "accepted": "Hotovo. Presúvame vás na stránku…",
+    "guest": "Prihláste sa alebo si vytvorte účet a tento odkaz priradí stránku k tomuto účtu.",
+    "signIn": "Prihlásiť sa",
+    "signUp": "Vytvoriť účet",
+    "forProjects": "Ako to funguje",
+    "errors": {
+      "invalid": "Tento odkaz nie je platný.",
+      "expired": "Tomuto odkazu vypršala platnosť. Napíšte nám znova a pošleme nový.",
+      "accepted": "Tento odkaz už bol použitý.",
+      "revoked": "Tento odkaz bol odvolaný.",
+      "already_owned": "Tá stránka už má vlastníka.",
+      "subject_gone": "Tá stránka už neexistuje.",
+      "unauth": "Najprv sa prihláste.",
+      "failed": "Pozvánku sa nepodarilo prijať."
     }
   }
 }

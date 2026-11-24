@@ -14,6 +14,7 @@ const TELEGRAM_LINE: Record<AdminNotificationKind, string> = {
   REVIEW_DUE: "🗓 Periodic review due",
   ACCESS_REVIEW_DUE: "🔑 Staff access review due",
   PRODUCT_REPORTED: "📦 New report on a product passport",
+  DOMAIN_CLAIM_ENGINEERING: "🔌 A project asks us to connect their API",
 };
 
 export type RaiseInput = {

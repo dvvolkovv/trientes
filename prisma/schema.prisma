@@ -97,6 +97,9 @@ model User {
   interests                UserInterest[]
   coinCardsStewarded       CoinCard[]                @relation("CoinCardSteward")
   coinCardClaims           CoinCardClaim[]           @relation("CoinCardClaimant")
+  domainClaimsDecided      DomainClaim[]             @relation("DomainClaimDecider")
+  domainClaimEmails        DomainClaimEmail[]        @relation("DomainClaimEmailAuthor")
+  domainClaimInvites       DomainClaimInvite[]       @relation("DomainClaimInviteAcceptor")
   coinCardsReviewed        CoinCard[]                @relation("CoinCardReviewer")
   coinCardMemberships      CoinCardMember[]          @relation("CoinCardMemberUser")
   coinCardInvitesMade      CoinCardInvite[]          @relation("CoinCardInviteCreator")
@@ -796,6 +799,8 @@ enum AdminAction {
   STAFF_MFA_DISABLED
   APPROVE_PRODUCT_CLAIM
   REJECT_PRODUCT_CLAIM
+  APPROVE_DOMAIN_CLAIM
+  REJECT_DOMAIN_CLAIM
   SUSPEND_PRODUCT
   UNSUSPEND_PRODUCT
   MERGE_PRODUCT
@@ -1132,8 +1137,8 @@ model CompanyDocument {
   /// те же, а вторая реализация разошлась бы с первой (болезнь, уже стоившая
   /// проекту двух сборок одной витрины — живой прогон BX). Пусто — бумага
   /// предприятия; у материала правит право `promos`, у предприятия — `card`.
-  adId      String?
-  ad        CompanyAd? @relation(fields: [adId], references: [id], onDelete: Cascade)
+  adId String?
+  ad   CompanyAd? @relation(fields: [adId], references: [id], onDelete: Cascade)
 
   /// Вид из реестра `src/lib/company-docs.ts`.
   kind       String
@@ -1872,6 +1877,7 @@ enum CaseSubjectType {
   PRODUCT_REPORT
   COMPANY_REVISION
   COMPANY_AD
+  DOMAIN_CLAIM
 }
 
 enum CaseStatus {
@@ -1968,6 +1974,157 @@ enum AdminNotificationKind {
   REVIEW_DUE
   ACCESS_REVIEW_DUE
   PRODUCT_REPORTED
+  // Письмо с доказанного домена, которое модератор отправил нашим
+  // специалистам: «поженить их API с нашим» (слайс CI). Говорит не о деле
+  // вообще, а о деле, которому нужен инженер, поэтому адресат — владельцы.
+  DOMAIN_CLAIM_ENGINEERING
+}
+
+/// Объекты, права на которые доказываются письмом с домена (слайс CI).
+enum ClaimSubjectKind {
+  COIN_CARD
+  FINTECH
+}
+
+enum DomainClaimStatus {
+  NEW
+  APPROVED
+  REJECTED
+}
+
+/// Чем доказан домен: подписью самого домена или согласованием DMARC+SPF.
+enum DomainProofKind {
+  DKIM
+  DMARC_SPF
+}
+
+/// Как домен письма сошёлся с доменом объекта.
+enum DomainMatchKind {
+  EXACT
+  PARENT
+  SUBDOMAIN
+}
+
+enum DomainClaimEmailSide {
+  PROJECT
+  STAFF
+}
+
+/// Заявка «это наш проект», доказанная письмом с домена объекта.
+///
+/// Одно письмо — одна заявка и одно дело; объектов у одного домена бывает
+/// несколько (команда владеет и монетой, и записью финтех-каталога), поэтому
+/// цели лежат строками `DomainClaimTarget`, а выбирает их модератор.
+model DomainClaim {
+  id String @id @default(cuid())
+
+  /// Доказанный домен — тот, что сошёлся с доменом объекта.
+  provedDomain String
+  matchKind    DomainMatchKind
+  proofKind    DomainProofKind
+
+  fromAddress String
+  fromName    String?
+
+  status             DomainClaimStatus @default(NEW)
+  decidedById        String?
+  decidedBy          User?             @relation("DomainClaimDecider", fields: [decidedById], references: [id], onDelete: SetNull)
+  decidedAt          DateTime?
+  rejectionReason    String?
+  /// Модератор позвал наших специалистов стыковать API проекта с нашим.
+  needsEngineeringAt DateTime?
+
+  emails  DomainClaimEmail[]
+  targets DomainClaimTarget[]
+  invites DomainClaimInvite[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([provedDomain, status])
+  @@index([status, createdAt])
+}
+
+/// Письмо заявки: входящее от проекта или наш ответ. Только вставка.
+model DomainClaimEmail {
+  id      String      @id @default(cuid())
+  claimId String
+  claim   DomainClaim @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  side DomainClaimEmailSide
+
+  /// `Message-ID` письма — идемпотентность чтения ящика: прогон, прочитавший
+  /// его дважды, не плодит ни заявок, ни строк.
+  messageId   String  @unique
+  subject     String?
+  bodyText    String? @db.Text
+  fromAddress String
+  toAddress   String?
+  /// Заголовок нашего сервера как есть: доказательство должно остаться
+  /// читаемым через год, а не только засчитанным.
+  authRaw     String? @db.Text
+
+  /// Автор ответа, если письмо наше.
+  authorId String?
+  author   User?   @relation("DomainClaimEmailAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+
+  receivedAt DateTime
+  createdAt  DateTime @default(now())
+
+  @@index([claimId, receivedAt])
+}
+
+/// Объект, на который заявка может передать права.
+model DomainClaimTarget {
+  id      String      @id @default(cuid())
+  claimId String
+  claim   DomainClaim @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  subjectKind   ClaimSubjectKind
+  subjectId     String
+  /// Имя объекта на момент заявки — чтобы дело читалось и после переименования.
+  subjectName   String
+  /// Домен объекта, с которым сошёлся домен письма.
+  subjectDomain String
+
+  /// Выбран ли модератором к передаче.
+  selected Boolean @default(true)
+  /// У объекта уже есть владелец: видно, но передать этой дверью нельзя.
+  owned    Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@unique([claimId, subjectKind, subjectId])
+  @@index([subjectKind, subjectId])
+}
+
+/// Приглашение из приветственного письма: по нему проект получает объект.
+///
+/// Письмо приходит с адреса, у которого нет учётной записи, поэтому передавать
+/// права немедленно некому. Права получает тот, кто пришёл по одноразовой
+/// ссылке, отправленной на доказанный адрес доказанного домена.
+model DomainClaimInvite {
+  id      String      @id @default(cuid())
+  claimId String
+  claim   DomainClaim @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  subjectKind ClaimSubjectKind
+  subjectId   String
+
+  /// В базе только sha256 ссылки: дамп таблицы не должен давать владение.
+  tokenHash String @unique
+  email     String
+
+  expiresAt    DateTime
+  acceptedAt   DateTime?
+  acceptedById String?
+  acceptedBy   User?     @relation("DomainClaimInviteAcceptor", fields: [acceptedById], references: [id], onDelete: SetNull)
+  revokedAt    DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([claimId])
+  @@index([subjectKind, subjectId])
 }
 
 model ComplianceCase {
@@ -2988,25 +3145,25 @@ model CompanyAd {
   /// Обложка материала — **первый кадр** (слайс CE): её читают лента новостей, плитка
   /// подписок, метаданные пересланной ссылки и предпросмотр в студии. Автор значения
   /// один: `parseAdInput` выводит обложку из `slides[0]`, руками её не задают.
-  mediaKind CompanyAdMediaKind @default(IMAGE)
+  mediaKind      CompanyAdMediaKind @default(IMAGE)
   /// Кадр (изображение) или файл ролика; оба лежат в `/var/www/trientes-uploads/ads`.
-  mediaUrl  String
+  mediaUrl       String
   /// Кадры материала (слайс CE): список `{kind, url, poster}` до восьми. Лежат **в
   /// самом материале**, а не в своей таблице, затем что кадры обязаны проходить
   /// модерацию вместе с ним: слепок правки (`pendingPayload`) хранит форму, и кадр из
   /// отдельной таблицы менялся бы мимо модератора — то есть одобренный ролик
   /// подменялся бы после одобрения. Пусто — материал заведён до слайса, и его
   /// единственный кадр читается из обложки (`adSlides`).
-  slides    Json?
+  slides         Json?
   /// Заставка ролика: в свёрнутом виде баннер не играет сам — автоплей со звуком
   /// браузеры глушат, а ролик с озвучкой без звука это немое кино.
-  posterUrl String?
+  posterUrl      String?
   /// Своя запись голосом сильнее синтеза. Длительность не проверяем — `ffprobe` на
   /// машине нет, и выдумывать проверку, которой не делаем, нельзя (правило BB).
-  audioUrl  String?
+  audioUrl       String?
   /// Озвучка сделана нашим синтезом (слайс BZ), а не прислана продавцом: загруженную
   /// запись синтез не перетирает, и человек должен видеть, что он слушает.
-  audioGenerated Boolean @default(false)
+  audioGenerated Boolean            @default(false)
   /// Голос синтеза, которым сделана запись: пересобирать её тем же голосом — обычная
   /// просьба, а угадывать прежний нельзя.
   audioVoice     String?
@@ -3015,14 +3172,14 @@ model CompanyAd {
   /// деньги), молча оставлять расхождение — тем более.
   audioTextHash  String?
 
-  promoCode String?
+  promoCode  String?
   /// Окно показа. Пусто — показывается, пока опубликован.
-  startsAt  DateTime?
-  endsAt    DateTime?
+  startsAt   DateTime?
+  endsAt     DateTime?
   /// Дата события у материала вида EVENT — **начало**. Время суток не заводим:
   /// часового пояса у материала нет, а «в 18:00» без пояса — неизвестно чей вечер
   /// (тот же разбор, которым BF отказал сроку задачи).
-  eventAt   DateTime?
+  eventAt    DateTime?
   /// Конец события (слайс BZ). Пусто — событие одного дня.
   eventEndAt DateTime?
 
@@ -3030,10 +3187,10 @@ model CompanyAd {
   // Рекламируемый объект не точка приёма: в фид карты он не попадает, потому что
   // карта обещает «здесь принимают монеты». Поэтому место живёт полями материала, а
   // не строкой `CompanyPoint`, и видно только в самом материале.
-  placeName    String?
-  placeAddress String?
-  placeLat     Float?
-  placeLon     Float?
+  placeName            String?
+  placeAddress         String?
+  placeLat             Float?
+  placeLon             Float?
   /// Что принимают **в этом месте**. Свободное поле, как часы и вид заведения (BN):
   /// фильтром карты не служит, неправда ловится жалобой.
   placeAcceptedCoinIds String[] @default([])

@@ -37,6 +37,7 @@ import { syncCardSupply } from "../src/lib/coin-card-supply";
 import { runListingSweep } from "../src/lib/coin-card-listing-sweep";
 import { sendHealthReport } from "../src/lib/health-report";
 import { runCaseDueSweep } from "../src/lib/cases/due-sweep";
+import { runClaimMailboxSweep } from "../src/lib/claims/sweep";
 import { runPointReportSweep } from "../src/lib/points/report-sweep";
 import { runCompanyReviewSweep } from "../src/lib/cases/company-review-sweep";
 import { runReorderSweep } from "../src/lib/supply/reorder-sweep";
@@ -432,6 +433,27 @@ async function runCaseDueJob() {
   }
 }
 
+async function runClaimMailboxJob() {
+  const t0 = Date.now();
+  try {
+    const stats = await runClaimMailboxSweep();
+    // Нет ключей ящика — молчим: это не сбой, а выключенная дверь. Иначе лог
+    // наполнялся бы одной строкой каждые пять минут.
+    if (stats.error === "mailbox_not_configured") return;
+    if (stats.error) {
+      console.error(`[worker] claim mailbox sweep failed: ${stats.error}`);
+      return;
+    }
+    if (stats.read > 0) {
+      console.log(
+        `[worker] claim mailbox ok: ${stats.read} read, ${stats.claimed} claimed, ${stats.appended} appended, skipped ${JSON.stringify(stats.skipped)} in ${Date.now() - t0}ms`,
+      );
+    }
+  } catch (err) {
+    console.error("[worker] claim mailbox sweep failed:", err);
+  }
+}
+
 async function runDeletionRequestExpiry() {
   const t0 = Date.now();
   try {
@@ -748,6 +770,9 @@ async function main() {
   cron.schedule("55 * * * *", () => void runDeletionRequestExpiry());
   // Сроки дел — раз в час. Просрочка не событие: её надо заметить самому.
   cron.schedule("10 * * * *", () => void runCaseDueJob());
+  // Ящик заявок «это наш проект» — каждые пять минут: письмо проекта не должно
+  // ждать час, а чаще незачем — ящик читается одним запросом.
+  cron.schedule("*/5 * * * *", () => void runClaimMailboxJob());
   // Жалобы на точки — раз в сутки: шаги лестницы считаются днями, частый
   // прогон ничего не ускорит.
   cron.schedule("20 5 * * *", () => void runPointReportJob());

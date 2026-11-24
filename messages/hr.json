@@ -620,7 +620,8 @@
         "coinRequests": "Zahtjevi za kovanice",
         "pointReports": "Izvješća o lokacijama",
         "products": "Putovnice proizvoda",
-        "ads": "Baner oglasi"
+        "ads": "Baner oglasi",
+        "domainClaims": "Zahtjevi za domenu"
       },
       "unread": "{count} nepročitanih",
       "spam": {
@@ -777,7 +778,10 @@
         "mediaRightsOk": "Prodavatelj ima prava na fotografiju ili snimku",
         "contentAllowed": "Ništa u materijalu nije neprihvatljivo za naše stranice",
         "adPlacePlausible": "Mjesto na karti odgovara adresi",
-        "promoTermsClear": "Promotivni kod i njegovi uvjeti su jasni"
+        "promoTermsClear": "Promotivni kod i njegovi uvjeti su jasni",
+        "domainProofReadable": "Dokaz domene u e-poruci je čitljiv i pripada našem poslužitelju",
+        "senderRepresentsProject": "Pošiljatelj doista predstavlja projekt, a ne samo adresu e-pošte",
+        "targetsMatchDomain": "Svaka odabrana stranica pripada ovoj domeni"
       },
       "checklist": {
         "title": "Provjere",
@@ -868,7 +872,10 @@
           "logo_required": "Prijava još nema logotip, a kartica se ne objavljuje bez njega.",
           "slug_taken": "Druga kartica već ima tu adresu.",
           "already_verified": "To je već verificirano.",
-          "invalid": "Prijavu nije moguće objaviti u ovom obliku."
+          "invalid": "Prijavu nije moguće objaviti u ovom obliku.",
+          "no_targets": "Označite barem jednu stranicu u odjeljku iznad.",
+          "email_failed": "Pozdravno pismo nije bilo moguće poslati — ništa nije predano.",
+          "already_decided": "Zahtjev je već riješen."
         },
         "pointReport": {
           "approve": "Potvrditi prijave — ukloniti lokaciju s karte",
@@ -890,6 +897,10 @@
         "companyAd": {
           "approve": "Odobriti i staviti u karusel",
           "reject": "Odbiti materijal"
+        },
+        "domainClaim": {
+          "approve": "Predajte stranice (šalje pozdravno pismo)",
+          "reject": "Odbijte zahtjev"
         }
       },
       "reports": {
@@ -950,6 +961,54 @@
           "pointId": "Lokacija",
           "actionUrl": "Poveznica radnje"
         }
+      },
+      "domainClaim": {
+        "title": "Pismo s domene",
+        "summary": "{domain} · pronađeno {count} stranica",
+        "proof": {
+          "DKIM": "Potpisano od {domain} — DKIM provjerio naš poslužitelj e-pošte",
+          "DMARC_SPF": "Pošiljatelj usklađen s {domain} — SPF i DMARC provjerio naš poslužitelj e-pošte"
+        },
+        "match": {
+          "EXACT": "Domena se točno podudara sa stranicom.",
+          "PARENT": "Pismo je došlo s nadređene domene — tko god posjeduje zonu, posjeduje i poddomenu.",
+          "SUBDOMAIN": "Pismo je došlo s poddomene. Poddomena može biti delegirana nekome drugome, stoga pogledati pobliže."
+        },
+        "sender": "Pošiljatelj",
+        "showProof": "Prikazati zaglavlje dokaza",
+        "hideProof": "Sakriti zaglavlje dokaza",
+        "targets": "Stranice koje ovaj dokaz pokriva",
+        "targetsHint": "Označiti što predati. Odobravanjem se šalje jedno pismo dobrodošlice s poveznicom za jednokratnu uporabu po stranici.",
+        "owned": "Već ima vlasnika — ne predaje se kroz ova vrata.",
+        "kind": {
+          "COIN_CARD": "Kartica kovanice",
+          "FINTECH": "Fintech profil"
+        },
+        "letters": "Pisma",
+        "sideProject": "Projekt",
+        "sideStaff": "Mi",
+        "replyTitle": "Odgovoriti projektu",
+        "replyPlaceholder": "Zatražiti što god nedostaje…",
+        "reply": "Poslati odgovor",
+        "engineeringTitle": "Predati našim inženjerima",
+        "engineeringHint": "Projekt ima vlastiti API i povezivanje je posao inženjera, a ne recenzenta. Ovo obavještava vlasnike.",
+        "engineeringPlaceholder": "Što nude i što je potrebno…",
+        "engineering": "Obratiti se našim inženjerima",
+        "engineeringAsked": "Naši inženjeri su kontaktirani.",
+        "error": {
+          "not_found": "Zahtjev više ne postoji.",
+          "already_decided": "O zahtjevu je već odlučeno.",
+          "already_owned": "Ta stranica već ima vlasnika.",
+          "body_required": "Napisati barem nekoliko riječi.",
+          "note_required": "Napisati barem nekoliko riječi.",
+          "email_failed": "Pismo nije moguće poslati — zahtjev ostaje otvoren.",
+          "no_targets": "Označiti barem jednu stranicu: odobravanje bez predaje ičega tiho bi zatvorilo zahtjev.",
+          "reason_required": "Potreban je razlog.",
+          "unauth": "Prijaviti se ponovno.",
+          "no_access": "Nemate pravo pristupa ovom redu.",
+          "forbidden": "Nemate pravo pristupa ovom redu.",
+          "failed": "Nije moguće spremiti."
+        }
       }
     },
     "bell": {
@@ -963,7 +1022,10 @@
         "CASE_OVERDUE": "Istekao rok",
         "APPLICANT_SILENT": "Podnositelj se nije javio 14 dana",
         "POINT_REPORTED": "Posjetitelj je prijavio lokaciju na karti",
-        "REVIEW_DUE": "Dospio je periodični pregled"
+        "REVIEW_DUE": "Dospio je periodični pregled",
+        "ACCESS_REVIEW_DUE": "Dospio pregled pristupa osoblja",
+        "PRODUCT_REPORTED": "Novo izvješće o putovnici proizvoda",
+        "DOMAIN_CLAIM_ENGINEERING": "Projekt traži da povežemo njihov API"
       }
     },
     "movedToQueues": {
@@ -2503,6 +2565,11 @@
       },
       "supportedCards": "Samostalno uvrštene kovanice",
       "supportedCardsHint": "Označite Trientes samostalno uvrštene kovanice koje vaša usluga podržava."
+    },
+    "claim": {
+      "title": "Je li ovo vaša usluga?",
+      "body": "Sastavili smo ovaj profil iz javnih izvora. Pišite nam s adrese na domeni {domain} i prepustit ćemo ga vašem timu.",
+      "cta": "Kako preuzeti"
     }
   },
   "companyPublic": {
@@ -5134,6 +5201,66 @@
       "rejectedReason": "Razlog: {reason}",
       "submit": "Poslati na pregled",
       "withdraw": "Povući s pregleda"
+    }
+  },
+  "forProjects": {
+    "kicker": "Za projekte",
+    "title": "Vaša stranica na Trientesu",
+    "subtitle": "Kartice kovanica i fintech profile sastavljamo sami, iz javnih izvora i iz samih mreža. Ako se neki od njih odnosi na vaš projekt, preuzmite ga — dovoljno je jedno pismo.",
+    "claim": {
+      "title": "Potvrdite to pismom",
+      "body": "Pišite nam s poslovne adrese na istoj domeni kao i web-stranica navedena na vašoj stranici. Prefiks nije bitan — bitna je domena.",
+      "bodyDomain": "Pišite nam s poslovne adrese na {domain}. Prefiks nije bitan — info@, listing@, bilo što; bitna je domena.",
+      "rule1": "Provjeravamo potpis koji vaš poslužitelj e-pošte stavlja na poruku, ne polje From — to se može lako krivotvoriti.",
+      "rule2": "Svaku poruku čita osoba: potvrđena domena nam pokazuje tim, a ostalo je na odluci našeg moderatora.",
+      "rule3": "Prilozi nisu potrebni i ne čitaju se.",
+      "after": "Primit ćete odgovor s poveznicom za jednokratnu upotrebu za svaku stranicu. Slijedite je, prijavite se i stranica je vaša za uređivanje."
+    },
+    "weRead": {
+      "title": "Što već sami čitamo",
+      "prices": "Cijene i trgovački parovi, s burzovnih tikera.",
+      "chain": "On-chain činjenice izravno s vaših čvorova: izdavanje, vrijeme bloka, konačnost.",
+      "fee": "Naknada za prijenos koju sam čvor navodi.",
+      "note": "Ništa od ovoga ne traži da išta upisujete, i ništa se ne uzima zdravo za gotovo: svaki broj navodi odakle je došao i kada je očitan."
+    },
+    "youAdd": {
+      "title": "Što možete dodati",
+      "body": "Opis, logo, poveznice, tokenomika, tim, podaci o plaćanju i pravni podaci. Uređivanja na aktivnoj kartici prolaze kroz naše moderatore."
+    },
+    "api": {
+      "title": "Ako imate API",
+      "body": "Izlažete iste podatke koje šaljete drugim agregatorima preko API-ja ili JSON feeda? Pošaljite nam adresu u vašoj poruci i naši će je inženjeri povezati, tako da vaša stranica ostaje ažurna bez ičijeg tipkanja.",
+      "honest": "Da budemo posve jasni: još nema samoposlužne krajnje točke. Osoba čita adresu koju pošaljete, a inženjeri odrade povezivanje."
+    },
+    "other": {
+      "title": "Još niste na Trientes?",
+      "body": "Kovanica bez kartice ili tvrtka koja prima kripto na vlastitim lokacijama — oboje imaju svoj ulaz.",
+      "request": "Prijaviti kovanicu",
+      "business": "Registrirati poslovni subjekt"
+    }
+  },
+  "projectInvite": {
+    "kicker": "Poziv za projekt",
+    "proved": "Potvrdili smo da je poruka došla s {domain}.",
+    "what": {
+      "COIN_CARD": "Prihvatite i kartica kovanice postaje vaša: opis, logo, poveznice, tokenomika i ostalo uređuju se u vašem profilu.",
+      "FINTECH": "Prihvatite i fintech profil postaje vaš da ga održavate ažurnim."
+    },
+    "accept": "Ovo je naš projekt — prihvatite",
+    "accepted": "Gotovo. Vodimo vas na stranicu…",
+    "guest": "Prijavite se ili izradite račun i ova će poveznica predati stranicu tom računu.",
+    "signIn": "Prijava",
+    "signUp": "Registracija",
+    "forProjects": "Kako ovo funkcionira",
+    "errors": {
+      "invalid": "Ova poveznica nije valjana.",
+      "expired": "Ova je poveznica istekla. Pišite nam ponovno i poslat ćemo novu.",
+      "accepted": "Ova je poveznica već iskorištena.",
+      "revoked": "Ova je poveznica povučena.",
+      "already_owned": "Ta stranica već ima vlasnika.",
+      "subject_gone": "Ta stranica više ne postoji.",
+      "unauth": "Najprije se prijavite.",
+      "failed": "Nije moguće prihvatiti poziv."
     }
   }
 }

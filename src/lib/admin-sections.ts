@@ -33,6 +33,7 @@ export const ADMIN_SECTIONS = [
   { key: "pointReports", labelKey: "queues.names.pointReports" },
   { key: "products", labelKey: "queues.names.products" },
   { key: "ads", labelKey: "queues.names.ads" },
+  { key: "domainClaims", labelKey: "queues.names.domainClaims" },
 ] as const satisfies readonly { key: string; labelKey: string }[];
 
 /** Ключи реестра для проверки на запись и чтение. */

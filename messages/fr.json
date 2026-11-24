@@ -620,7 +620,8 @@
         "coinRequests": "Demandes de coins",
         "pointReports": "Rapports de points",
         "products": "Passeports produits",
-        "ads": "Bannières publicitaires"
+        "ads": "Bannières publicitaires",
+        "domainClaims": "Revandications de domaine"
       },
       "unread": "{count} non lus",
       "spam": {
@@ -777,7 +778,10 @@
         "mediaRightsOk": "Le vendeur détient les droits sur la photo ou le clip",
         "contentAllowed": "Rien dans le contenu n’est interdit sur nos pages",
         "adPlacePlausible": "Le lieu sur la carte correspond à l’adresse",
-        "promoTermsClear": "Le code promo et ses conditions sont clairs"
+        "promoTermsClear": "Le code promo et ses conditions sont clairs",
+        "domainProofReadable": "La preuve de domaine dans la lettre est lisible et appartient à notre serveur",
+        "senderRepresentsProject": "L'expéditeur représente réellement le projet, pas seulement la boîte aux lettres",
+        "targetsMatchDomain": "Chaque page sélectionnée appartient à ce domaine"
       },
       "checklist": {
         "title": "Vérifications",
@@ -868,7 +872,10 @@
           "logo_required": "La candidature n’a pas encore de logo, et une fiche n’est pas publiée sans logo.",
           "slug_taken": "Une autre fiche utilise déjà cette adresse.",
           "already_verified": "Cela a déjà été vérifié.",
-          "invalid": "La demande ne peut pas être publiée en l'état."
+          "invalid": "La demande ne peut pas être publiée en l'état.",
+          "no_targets": "Cochez au moins une page dans la section ci-dessus.",
+          "email_failed": "La lettre de bienvenue n’a pas pu être envoyée — rien n’a été remis.",
+          "already_decided": "La demande a déjà été tranchée."
         },
         "pointReport": {
           "approve": "Confirmer les signalements — retirer le lieu de la carte",
@@ -890,6 +897,10 @@
         "companyAd": {
           "approve": "Approuver et le placer dans le carrousel",
           "reject": "Refuser le matériel"
+        },
+        "domainClaim": {
+          "approve": "Remettre les pages (envoie la lettre de bienvenue)",
+          "reject": "Refuser la demande"
         }
       },
       "reports": {
@@ -950,6 +961,54 @@
           "pointId": "Point",
           "actionUrl": "Lien d'action"
         }
+      },
+      "domainClaim": {
+        "title": "Lettre du domaine",
+        "summary": "{domain} · {count} page(s) trouvée(s)",
+        "proof": {
+          "DKIM": "Signé par {domain} — DKIM vérifié par notre serveur de messagerie",
+          "DMARC_SPF": "Expéditeur aligné avec {domain} — SPF et DMARC vérifiés par notre serveur de messagerie"
+        },
+        "match": {
+          "EXACT": "Le domaine correspond exactement à la page.",
+          "PARENT": "La lettre vient du domaine parent — celui qui possède la zone possède aussi le sous-domaine.",
+          "SUBDOMAIN": "La lettre vient d’un sous-domaine. Un sous-domaine peut être délégué à quelqu’un d’autre, donc regardez de plus près."
+        },
+        "sender": "Expéditeur",
+        "showProof": "Afficher l’en-tête de preuve",
+        "hideProof": "Masquer l’en-tête de preuve",
+        "targets": "Pages couvertes par cette preuve",
+        "targetsHint": "Cochez ce qu’il faut remettre. L’approbation envoie une lettre de bienvenue avec un lien à usage unique par page.",
+        "owned": "A déjà un propriétaire — non remis par cette porte.",
+        "kind": {
+          "COIN_CARD": "Fiche de coin",
+          "FINTECH": "Profil fintech"
+        },
+        "letters": "Lettres",
+        "sideProject": "Projet",
+        "sideStaff": "Nous",
+        "replyTitle": "Répondre au projet",
+        "replyPlaceholder": "Demandez ce qui manque…",
+        "reply": "Envoyer la réponse",
+        "engineeringTitle": "Transférer à nos ingénieurs",
+        "engineeringHint": "Le projet a sa propre API et l’intégrer est le travail d’un ingénieur, pas celui d’un examinateur. Cela alerte les propriétaires.",
+        "engineeringPlaceholder": "Ce qu’ils offrent et ce qui est nécessaire…",
+        "engineering": "Demander à nos ingénieurs",
+        "engineeringAsked": "Nos ingénieurs ont été sollicités.",
+        "error": {
+          "not_found": "La demande a disparu.",
+          "already_decided": "La demande a déjà été décidée.",
+          "already_owned": "Cette page a déjà un propriétaire.",
+          "body_required": "Écrivez au moins quelques mots.",
+          "note_required": "Écrivez au moins quelques mots.",
+          "email_failed": "Le courrier n’a pas pu être envoyé — la demande reste ouverte.",
+          "no_targets": "Cochez au moins une page : approuver sans rien transférer fermerait la demande sans avertissement.",
+          "reason_required": "Un motif est requis.",
+          "unauth": "Reconnectez-vous.",
+          "no_access": "Vous n’avez pas le droit d’accéder à cette file.",
+          "forbidden": "Vous n’avez pas le droit d’accéder à cette file.",
+          "failed": "Enregistrement impossible."
+        }
       }
     },
     "bell": {
@@ -963,7 +1022,10 @@
         "CASE_OVERDUE": "En retard",
         "APPLICANT_SILENT": "Le demandeur est silencieux depuis 14 jours",
         "POINT_REPORTED": "Un visiteur a signalé un point sur la carte",
-        "REVIEW_DUE": "Révision périodique arrivée à échéance"
+        "REVIEW_DUE": "Révision périodique arrivée à échéance",
+        "ACCESS_REVIEW_DUE": "Révision des accès du personnel à effectuer",
+        "PRODUCT_REPORTED": "Nouveau signalement sur un passeport produit",
+        "DOMAIN_CLAIM_ENGINEERING": "Un projet nous demande de connecter leur API"
       }
     },
     "movedToQueues": {
@@ -2503,6 +2565,11 @@
       },
       "supportedCards": "Listings propres",
       "supportedCardsHint": "Cochez les cryptos auto-listées sur Trientes que votre service prend en charge."
+    },
+    "claim": {
+      "title": "Est-ce votre service ?",
+      "body": "Nous avons constitué ce profil à partir de sources publiques. Écrivez-nous depuis une adresse sur {domain} et nous le remettrons à votre équipe.",
+      "cta": "Comment le reprendre"
     }
   },
   "companyPublic": {
@@ -5134,6 +5201,66 @@
       "rejectedReason": "Motif : {reason}",
       "submit": "Envoyer pour examen",
       "withdraw": "Retirer de l'examen"
+    }
+  },
+  "forProjects": {
+    "kicker": "Pour les projets",
+    "title": "Votre page sur Trientes",
+    "subtitle": "Nous rassemblons nous‑mêmes les fiches de coins et les profils fintech, à partir de sources publiques et des réseaux eux‑mêmes. Si l’une d’elles concerne votre projet, reprenez-la — cela ne demande qu’une lettre",
+    "claim": {
+      "title": "Prouvez-le avec une lettre",
+      "body": "Écrivez-nous depuis une adresse professionnelle sur le même domaine que le site Web de votre page. Le préfixe n’a pas d’importance — c’est le domaine qui compte",
+      "bodyDomain": "Écrivez-nous depuis une adresse professionnelle sur le domaine {domain}. Le préfixe n’a pas d’importance — info@, listing@, peu importe; c’est le domaine qui compte",
+      "rule1": "Nous vérifions la signature que votre serveur de messagerie appose au courrier, pas la ligne From — celle-ci est librement falsifiable",
+      "rule2": "Une personne lit chaque courrier : un domaine vérifié nous montre l’équipe, et le reste relève de la décision de notre modérateur",
+      "rule3": "Les pièces jointes ne sont pas nécessaires et ne sont pas lues.",
+      "after": "Vous recevrez une réponse avec un lien à usage unique pour chaque page. Suivez-le, connectez-vous, et la page sera à vous pour la modifier."
+    },
+    "weRead": {
+      "title": "Ce que nous lisons déjà nous-mêmes",
+      "prices": "Prix et paires de trading, depuis les tickers des bourses.",
+      "chain": "Données on-chain directement depuis vos nœuds : émission, temps de bloc, finalité.",
+      "fee": "Les frais de transfert tels que cités par le nœud lui-même.",
+      "note": "Rien de tout cela ne nécessite que vous saisissiez quoi que ce soit, et rien n’est pris sur parole : chaque chiffre indique sa source et le moment où il a été lu."
+    },
+    "youAdd": {
+      "title": "Ce que vous pouvez ajouter",
+      "body": "Description, logo, liens, tokenomics, équipe, détails de paiement et juridiques. Les modifications d’une fiche en ligne passent par nos modérateurs."
+    },
+    "api": {
+      "title": "Si vous avez une API",
+      "body": "Vous publiez les mêmes données que vous envoyez à d’autres agrégateurs via une API ou un flux JSON ? Envoyez-nous l’adresse dans votre message et nos ingénieurs la connecteront, pour que votre page reste à jour sans que personne n’ait à les saisir.",
+      "honest": "Pour être clair : il n’y a pas encore d’endpoint en libre-service. Une personne lit l’adresse que vous envoyez, et des ingénieurs font le branchement."
+    },
+    "other": {
+      "title": "Pas encore sur Trientes ?",
+      "body": "Une pièce sans fiche, ou une entreprise qui accepte la crypto dans ses propres établissements — chacune a sa propre porte.",
+      "request": "Soumettre une pièce",
+      "business": "Enregistrer une entreprise"
+    }
+  },
+  "projectInvite": {
+    "kicker": "Invitation de projet",
+    "proved": "Nous avons confirmé que le courrier venait de {domain}.",
+    "what": {
+      "COIN_CARD": "Acceptez et la fiche de la pièce devient la vôtre : description, logo, liens, tokenomics et le reste sont modifiables dans votre espace.",
+      "FINTECH": "Acceptez et le profil fintech devient le vôtre à tenir à jour."
+    },
+    "accept": "C’est notre projet — accepter",
+    "accepted": "C’est fait. Nous vous emmenons vers la page…",
+    "guest": "Connectez-vous ou créez un compte, et ce lien remettra la page à ce compte.",
+    "signIn": "Se connecter",
+    "signUp": "Créer un compte",
+    "forProjects": "Comment cela fonctionne",
+    "errors": {
+      "invalid": "Ce lien n’est pas valide.",
+      "expired": "Ce lien a expiré. Écrivez-nous de nouveau et nous en enverrons un nouveau.",
+      "accepted": "Ce lien a déjà été utilisé.",
+      "revoked": "Ce lien a été retiré.",
+      "already_owned": "Cette page a déjà un propriétaire.",
+      "subject_gone": "Cette page n’existe plus.",
+      "unauth": "Connectez-vous d’abord.",
+      "failed": "Impossible d’accepter l’invitation."
     }
   }
 }

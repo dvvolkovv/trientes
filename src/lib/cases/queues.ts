@@ -11,7 +11,8 @@ export type QueueKey =
   | "coinRequests"
   | "pointReports"
   | "products"
-  | "ads";
+  | "ads"
+  | "domainClaims";
 
 export type QueueDef = {
   key: QueueKey;
@@ -38,6 +39,10 @@ export const QUEUES: QueueDef[] = [
   // ролик и послушать озвучку это отдельная работа, и её можно поручить человеку,
   // которому незачем видеть KYB-документы и реквизиты (мотив AS).
   { key: "ads", subjectTypes: ["COMPANY_AD"], icon: "📣" },
+  // Письма «это наш проект» — своя плитка: тут проверяют доказательство домена
+  // и решают, кому отдать карточку, а не правят объект (мотив AS — работу можно
+  // поручить тому, кому незачем видеть KYB-документы).
+  { key: "domainClaims", subjectTypes: ["DOMAIN_CLAIM"], icon: "✉️" },
 ];
 
 export function queueOfSubject(subjectType: CaseSubjectType): QueueDef | null {

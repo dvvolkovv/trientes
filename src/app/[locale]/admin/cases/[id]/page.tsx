@@ -15,6 +15,7 @@ import { CaseDocuments, type CaseDocumentItem } from "@/components/admin/case-do
 import { CaseDecision } from "@/components/admin/case-decision";
 import { CaseReports } from "@/components/admin/case-reports";
 import { CaseAd } from "@/components/admin/case-ad";
+import { CaseDomainClaim } from "@/components/admin/case-domain-claim";
 import { buildCompanyCard, type CardAd } from "@/lib/company-card/view";
 import { adDiff, readPendingPayload } from "@/lib/ads/moderation";
 import { CaseThread } from "@/components/cases/case-thread";
@@ -114,6 +115,18 @@ export default async function AdminCasePage({
             include: { reporter: { select: { name: true, username: true } } },
           })
         : [];
+  // Письмо с домена: доказательство, письма и цели заявки (слайс CI).
+  const claim =
+    c.subjectType === "DOMAIN_CLAIM"
+      ? await prisma.domainClaim.findUnique({
+          where: { id: c.subjectId },
+          include: {
+            emails: { orderBy: { receivedAt: "asc" }, take: 50 },
+            targets: { orderBy: { createdAt: "asc" } },
+          },
+        })
+      : null;
+
   const now = new Date();
   const s = slaState({
     now,
@@ -452,6 +465,52 @@ export default async function AdminCasePage({
             open
           >
             <CaseAd ad={adView.ad} diff={adView.diff} revision={adView.revision} />
+          </CaseSection>
+        ) : null}
+
+        {claim ? (
+          <CaseSection
+            n={nextNo()}
+            title={t("case.domainClaim.title")}
+            summary={t("case.domainClaim.summary", {
+              domain: claim.provedDomain,
+              count: claim.targets.length,
+            })}
+            open
+          >
+            <CaseDomainClaim
+              claimId={claim.id}
+              domain={claim.provedDomain}
+              proofKind={claim.proofKind}
+              matchKind={claim.matchKind}
+              fromAddress={claim.fromAddress}
+              fromName={claim.fromName}
+              status={claim.status}
+              needsEngineering={claim.needsEngineeringAt !== null}
+              canHandle={mayWork}
+              canDecide={canDecide}
+              emails={claim.emails.map((mail) => ({
+                id: mail.id,
+                side: mail.side,
+                subject: mail.subject,
+                bodyText: mail.bodyText,
+                fromAddress: mail.fromAddress,
+                receivedAt: mail.receivedAt.toISOString(),
+                authRaw: mail.authRaw,
+              }))}
+              targets={claim.targets.map((target) => ({
+                id: target.id,
+                kind: target.subjectKind,
+                name: target.subjectName,
+                domain: target.subjectDomain,
+                href:
+                  target.subjectKind === "COIN_CARD"
+                    ? `/${locale}/admin/coin-cards`
+                    : `/${locale}/fintech`,
+                selected: target.selected,
+                owned: target.owned,
+              }))}
+            />
           </CaseSection>
         ) : null}
 
