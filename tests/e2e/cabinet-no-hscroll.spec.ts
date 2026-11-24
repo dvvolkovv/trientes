@@ -79,6 +79,12 @@ test.beforeAll(async () => {
       language: "ru",
       mediaKind: "IMAGE",
       mediaUrl: `/uploads/ads/${company.id}/00000000000000000000000000000000.png`,
+      // Два кадра (слайс CE): список кадров со стрелками «выше/ниже» и «убрать» —
+      // самая широкая строка студии, и мерить её надо именно на узком экране.
+      slides: [
+        { kind: "IMAGE", url: `/uploads/ads/${company.id}/00000000000000000000000000000000.png` },
+        { kind: "VIDEO", url: `/uploads/ads/${company.id}/11111111111111111111111111111111.mp4` },
+      ],
       promoCode: "WIDTH-280",
       status: "DRAFT",
       placeName: "Место материала",

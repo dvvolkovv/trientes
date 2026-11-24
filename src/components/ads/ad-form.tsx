@@ -4,7 +4,15 @@ import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { createAd, updateAd } from "@/app/actions/company-ads";
-import { AD_BODY_MAX, AD_KINDS, AD_ACTIONS, adTextHash, type AdInput } from "@/lib/ads/rules";
+import {
+  AD_BODY_MAX,
+  AD_KINDS,
+  AD_ACTIONS,
+  MAX_AD_SLIDES,
+  adTextHash,
+  type AdInput,
+  type AdSlide,
+} from "@/lib/ads/rules";
 import { SUPPORTED_LOCALES } from "@/lib/locales";
 import { AdPlaceField } from "@/components/ads/ad-place-field";
 import { AdBanner } from "@/components/company-card/ad-banner";
@@ -16,7 +24,7 @@ export type AdFormValues = AdInput & { id?: string };
 
 const EMPTY: AdFormValues = {
   kind: "PROMO", title: "", body: "", language: "en",
-  mediaKind: "IMAGE", mediaUrl: "", posterUrl: "", audioUrl: "",
+  mediaKind: "IMAGE", mediaUrl: "", posterUrl: "", slides: [], audioUrl: "",
   audioGenerated: false, audioVoice: "", audioTextHash: "",
   promoCode: "", startsAt: "", endsAt: "", eventAt: "", eventEndAt: "",
   placeName: "", placeAddress: "", placeLat: null, placeLon: null,
@@ -30,6 +38,11 @@ const EMPTY: AdFormValues = {
  * Медиа грузится до сохранения: без кадра материала не бывает, а кадр — это файл,
  * который должен лежать у нас (чужой адрес исчезнет в день, когда его уберут).
  * Ссылок в тексте нет, и под полем так и сказано: текст читает голос.
+ *
+ * **Кадров до восьми, и добавляются они пачкой** (слайс CE, просьба владельца). Поле
+ * принимает мульти-выбор, новые кадры встают в конец, порядок правится словами
+ * «выше/ниже» (голые значки — та же жалоба, что в AN), а обложкой служит первый кадр:
+ * второго автора у обложки нет.
  */
 export function AdForm({
   companyId,
@@ -75,9 +88,50 @@ export function AdForm({
   const imageRef = useRef<HTMLInputElement | null>(null);
   const videoRef = useRef<HTMLInputElement | null>(null);
   const posterRef = useRef<HTMLInputElement | null>(null);
+  /** Какому кадру грузится заставка: у ролика она своя, одна общая врала бы. */
+  const [posterFor, setPosterFor] = useState<number | null>(null);
 
 
   const set = (patch: Partial<AdFormValues>) => setV((prev) => ({ ...prev, ...patch }));
+
+  const slides: AdSlide[] = (v.slides ?? [])
+    .map((s): AdSlide => ({
+      // Вид — из расширения файла, как на сервере: второе правило разошлось бы.
+      kind: /\.mp4$/i.test(s.url ?? "") ? "VIDEO" : "IMAGE",
+      url: s.url ?? "",
+      posterUrl: s.posterUrl ?? null,
+    }))
+    .filter((s) => s.url);
+
+  /**
+   * Кадры и обложка пишутся одним движением: обложка — первый кадр, и второй автор у
+   * неё разошёлся бы с первым в тот же день (решение CE).
+   */
+  const setSlides = (next: AdSlide[]) => {
+    const first = next[0];
+    set({
+      slides: next,
+      mediaUrl: first?.url ?? "",
+      mediaKind: first?.kind ?? "IMAGE",
+      posterUrl: first?.posterUrl ?? "",
+    });
+  };
+
+  const moveSlide = (i: number, dir: -1 | 1) => {
+    const j = i + dir;
+    if (j < 0 || j >= slides.length) return;
+    const next = slides.slice();
+    [next[i], next[j]] = [next[j], next[i]];
+    setSlides(next);
+  };
+
+  /**
+   * Кадр убирается из списка, а файл с диска не стирается: он мог уже уйти в слепок
+   * правки, который ждёт модератора.
+   */
+  const dropSlide = (i: number) => setSlides(slides.filter((_, k) => k !== i));
+
+  const slidesFull = slides.length >= MAX_AD_SLIDES;
 
   // `min-w-0`: у элемента сетки ширина по содержимому, и список с длинным
   // названием товара растягивал бы колонку шире окна (жалоба владельца про поля,
@@ -87,23 +141,54 @@ export function AdForm({
     "inline-flex h-12 items-center justify-center rounded-md border border-hairline px-4 text-sm hover:border-accent disabled:opacity-50";
   const label = "mb-1 block text-[11px] uppercase tracking-wider text-muted";
 
-  const upload = async (slot: "image" | "video" | "audio", file: File, target: "media" | "poster" | "audio") => {
-    setUploading(target);
+  /**
+   * Загрузка пачкой: один запрос на все выбранные файлы (слайс CE). `target` говорит,
+   * куда лёг ответ — в кадры, в заставку кадра или в звук материала.
+   */
+  const upload = async (
+    slot: "image" | "video" | "audio",
+    files: File[],
+    target: "slides" | "audio" | { poster: number },
+  ) => {
+    if (files.length === 0) return;
+    // Пачка, которая не влезает, отвергается **до** загрузки: взять часть и
+    // промолчать о второй половине — молчаливая потеря кадров (поймано живым
+    // прогоном CE), а грузить файлы, которым не найдётся места, значит оставлять
+    // на диске мусор.
+    if (target === "slides" && slides.length + files.length > MAX_AD_SLIDES) {
+      setError("slides_too_many");
+      return;
+    }
+    setUploading(typeof target === "object" ? `poster:${target.poster}` : target);
     setError(null);
     try {
       const form = new FormData();
       form.set("companyId", companyId);
       form.set("slot", slot);
-      form.set("file", file);
+      for (const f of files) form.append("file", f);
       const res = await fetch("/api/ads/media/upload", { method: "POST", body: form });
-      const data = (await res.json().catch(() => null)) as { ok?: boolean; url?: string; error?: string } | null;
-      if (!res.ok || !data?.ok || !data.url) {
+      const data = (await res.json().catch(() => null)) as
+        | { ok?: boolean; url?: string; urls?: string[]; error?: string }
+        | null;
+      const urls = data?.urls ?? (data?.url ? [data.url] : []);
+      if (!res.ok || !data?.ok || urls.length === 0) {
         setError(data?.error ?? "upload_failed");
         return;
       }
-      if (target === "media") set({ mediaUrl: data.url, mediaKind: slot === "video" ? "VIDEO" : "IMAGE" });
-      else if (target === "poster") set({ posterUrl: data.url });
-      else set({ audioUrl: data.url });
+      if (target === "slides") {
+        const added: AdSlide[] = urls.map((url) => ({
+          kind: slot === "video" ? "VIDEO" : "IMAGE",
+          url,
+          posterUrl: null,
+        }));
+        setSlides([...slides, ...added]);
+      } else if (target === "audio") {
+        set({ audioUrl: urls[0], audioGenerated: false, audioVoice: "", audioTextHash: "" });
+      } else {
+        const next = slides.slice();
+        if (next[target.poster]) next[target.poster] = { ...next[target.poster], posterUrl: urls[0] };
+        setSlides(next);
+      }
     } catch {
       setError("upload_failed");
     } finally {
@@ -132,7 +217,7 @@ export function AdForm({
   const placeLine = [v.placeName, v.placeAddress].filter(Boolean).join(", ").trim();
 
   const missing: string[] = [];
-  if (!v.mediaUrl) missing.push(t("missing.media"));
+  if (slides.length === 0) missing.push(t("missing.media"));
   if (!v.title.trim()) missing.push(t("missing.title"));
   if (v.kind === "EVENT" && !(v.eventAt ?? "").trim()) missing.push(t("missing.event"));
   if (v.action === "PRODUCT" && !(v.productId ?? "").trim()) missing.push(t("missing.product"));
@@ -148,16 +233,17 @@ export function AdForm({
    * Кадр ведёт в никуда (`#`): у несохранённого материала страницы ещё нет, а
    * уводить человека из формы посреди набора нельзя.
    */
-  const previewAd: CardAd | null = v.mediaUrl
+  const previewAd: CardAd | null = slides.length > 0
     ? {
         id: v.id ?? "preview",
         kind: (AD_KINDS.find((k) => k === v.kind) ?? "PROMO"),
         title: v.title.trim() || t("previewNoTitle"),
         body: (v.body ?? "").trim() || null,
         language: v.language,
-        mediaKind: v.mediaKind === "VIDEO" ? "VIDEO" : "IMAGE",
-        mediaUrl: v.mediaUrl,
-        posterUrl: (v.posterUrl ?? "") || null,
+        mediaKind: slides[0].kind,
+        mediaUrl: slides[0].url,
+        posterUrl: slides[0].posterUrl,
+        slides,
         audioUrl: (v.audioUrl ?? "") || null,
         promoCode: (v.promoCode ?? "").trim() || null,
         endsAt: (v.endsAt ?? "") ? `${v.endsAt}T00:00:00.000Z` : null,
@@ -202,39 +288,93 @@ export function AdForm({
           </div>
         </div>
 
-        {/* Кадр баннера. Он же единственное, что человек увидит свёрнутым. */}
+        {/* Кадры баннера (слайс CE): до восьми, добавляются пачкой, порядок — свой. */}
         <div>
           <span className={label}>{t("fieldMedia")}</span>
-          {v.mediaUrl ? (
-            <div className="mb-2 overflow-hidden rounded-[14px] border border-hairline">
-              {v.mediaKind === "VIDEO" ? (
-                <video src={v.mediaUrl} poster={v.posterUrl ?? undefined} controls className="aspect-[16/10] w-full bg-black object-cover" />
-              ) : (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={v.mediaUrl} alt="" className="aspect-[16/10] w-full object-cover" />
-              )}
-            </div>
+
+          {slides.length > 0 ? (
+            <ol className="mb-2 flex flex-col gap-2">
+              {slides.map((s, i) => (
+                <li key={`${s.url}:${i}`} className="rounded-[14px] border border-hairline bg-card-alt p-2">
+                  <div className="flex items-start gap-2">
+                    <div className="h-[56px] w-[88px] shrink-0 overflow-hidden rounded-[10px] border border-hairline bg-bg-tint">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={s.kind === "VIDEO" ? (s.posterUrl ?? "/logo.png") : s.url}
+                        alt=""
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[12.5px] font-semibold">
+                        {s.kind === "VIDEO" ? `▶ ${t("slideVideo")}` : `▣ ${t("slideImage")}`}
+                        {" · "}
+                        {t("slideNo", { n: i + 1, total: slides.length })}
+                      </div>
+                      {/* Обложку никто не задаёт отдельно: это первый кадр, и сказать
+                          это надо прямо — иначе человек ищет поле обложки. */}
+                      {i === 0 ? <div className="text-[11px] text-accent">{t("slideCover")}</div> : null}
+                      <div className="mt-1.5 flex flex-wrap gap-1.5">
+                        <button type="button" onClick={() => moveSlide(i, -1)} disabled={i === 0}
+                          className="h-10 rounded-[10px] border border-hairline px-2.5 text-[11.5px] disabled:opacity-40">
+                          ↑ {t("slideUp")}
+                        </button>
+                        <button type="button" onClick={() => moveSlide(i, 1)} disabled={i === slides.length - 1}
+                          className="h-10 rounded-[10px] border border-hairline px-2.5 text-[11.5px] disabled:opacity-40">
+                          ↓ {t("slideDown")}
+                        </button>
+                        {s.kind === "VIDEO" ? (
+                          <button type="button" onClick={() => { setPosterFor(i); posterRef.current?.click(); }}
+                            disabled={uploading !== null}
+                            className="h-10 rounded-[10px] border border-hairline px-2.5 text-[11.5px] disabled:opacity-40">
+                            {uploading === `poster:${i}` ? "…" : t("uploadPoster")}
+                          </button>
+                        ) : null}
+                        <button type="button" onClick={() => dropSlide(i)}
+                          className="h-10 rounded-[10px] border border-hairline px-2.5 text-[11.5px]">
+                          ✕ {t("slideRemove")}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ol>
           ) : null}
+
           <div className="flex flex-wrap gap-2">
-            <button type="button" className={button} onClick={() => imageRef.current?.click()} disabled={uploading !== null}>
-              {uploading === "media" ? "…" : t("uploadImage")}
+            <button type="button" className={button} onClick={() => imageRef.current?.click()}
+              disabled={uploading !== null || slidesFull}>
+              {uploading === "slides" ? "…" : t("uploadImage")}
             </button>
-            <button type="button" className={button} onClick={() => videoRef.current?.click()} disabled={uploading !== null}>
+            <button type="button" className={button} onClick={() => videoRef.current?.click()}
+              disabled={uploading !== null || slidesFull}>
               {t("uploadVideo")}
             </button>
-            {v.mediaKind === "VIDEO" ? (
-              <button type="button" className={button} onClick={() => posterRef.current?.click()} disabled={uploading !== null}>
-                {t("uploadPoster")}
-              </button>
-            ) : null}
           </div>
-          <input ref={imageRef} type="file" accept="image/png,image/jpeg,image/webp" hidden
-            onChange={(e) => { const f = e.target.files?.[0]; if (f) void upload("image", f, "media"); e.target.value = ""; }} />
-          <input ref={videoRef} type="file" accept="video/mp4" hidden
-            onChange={(e) => { const f = e.target.files?.[0]; if (f) void upload("video", f, "media"); e.target.value = ""; }} />
+          {/* Кнопка, погасшая без объяснения, уже была дефектом живого прогона BG. */}
+          {slidesFull ? (
+            <p className="mt-1 text-[12px] text-accent">{t("slidesFull", { max: MAX_AD_SLIDES })}</p>
+          ) : null}
+          <input ref={imageRef} type="file" accept="image/png,image/jpeg,image/webp" hidden multiple
+            onChange={(e) => {
+              const files = Array.from(e.target.files ?? []);
+              if (files.length) void upload("image", files, "slides");
+              e.target.value = "";
+            }} />
+          <input ref={videoRef} type="file" accept="video/mp4" hidden multiple
+            onChange={(e) => {
+              const files = Array.from(e.target.files ?? []);
+              if (files.length) void upload("video", files, "slides");
+              e.target.value = "";
+            }} />
           <input ref={posterRef} type="file" accept="image/png,image/jpeg,image/webp" hidden
-            onChange={(e) => { const f = e.target.files?.[0]; if (f) void upload("image", f, "poster"); e.target.value = ""; }} />
-          <p className="mt-1 text-[11px] text-muted">{t("mediaHint")}</p>
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f && posterFor !== null) void upload("image", [f], { poster: posterFor });
+              e.target.value = "";
+            }} />
+          <p className="mt-1 text-[11px] text-muted">{t("mediaHint", { max: MAX_AD_SLIDES })}</p>
         </div>
 
         <div>

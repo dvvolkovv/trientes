@@ -6,8 +6,8 @@ import { prisma } from "@/lib/prisma";
 import { requireQueue } from "@/lib/authz/guard";
 import { logAdminAction } from "@/lib/admin/audit";
 import { notifyUser } from "@/lib/notify";
-import { MAX_PUBLISHED_ADS } from "@/lib/ads/rules";
-import { adSlotsTaken, readPendingPayload, type AdStatus } from "@/lib/ads/moderation";
+import { MAX_CAROUSEL_SLIDES, adSlides } from "@/lib/ads/rules";
+import { adSlotsTaken, readPendingPayload, type AdSlotRow } from "@/lib/ads/moderation";
 import { logCompanyAction } from "@/lib/company-team/journal";
 
 /**
@@ -30,6 +30,8 @@ async function loadAd(adId: string) {
     where: { id: adId },
     select: {
       id: true, companyId: true, title: true, status: true, pendingPayload: true,
+      // Кадры нужны счёту мест: карусель считается в кадрах (слайс CE).
+      slides: true, mediaKind: true, mediaUrl: true, posterUrl: true,
       company: { select: { id: true, displayName: true, ownerUserId: true, deletedAt: true } },
     },
   });
@@ -50,13 +52,15 @@ export async function approveAd(input: { adId: string }): Promise<Res> {
   if (ad.status !== "PENDING" && !pending) return { ok: false, reason: "not_pending" };
 
   // Место в карусели занимают опубликованные и ждущие; свой материал из счёта
-  // исключаем — он и есть тот, кого публикуем.
-  if (ad.status === "PENDING") {
+  // исключаем — он и есть тот, кого публикуем. Считаются **кадры** (слайс CE):
+  // материал на четыре кадра в три свободных места не влезает.
+  const wantSlides = pending ? pending.slides.length : adSlides(ad).length;
+  if (ad.status === "PENDING" || pending) {
     const rows = await prisma.companyAd.findMany({
       where: { companyId: ad.companyId, id: { not: ad.id } },
-      select: { status: true },
+      select: { status: true, slides: true, mediaKind: true, mediaUrl: true, posterUrl: true },
     });
-    if (adSlotsTaken(rows as { status: AdStatus }[]) >= MAX_PUBLISHED_ADS) {
+    if (adSlotsTaken(rows as unknown as AdSlotRow[]) + wantSlides > MAX_CAROUSEL_SLIDES) {
       return { ok: false, reason: "too_many_published" };
     }
   }

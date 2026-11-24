@@ -21,7 +21,7 @@ import { parsePaymentMethods, type PaymentMethodKey } from "@/lib/payment-method
 import { effectiveCategory } from "@/lib/merchant-categories";
 import { companyMode, type CompanyMode } from "@/lib/company-mode";
 import { localizedProse } from "@/lib/localized-prose";
-import { adInWindow, MAX_PUBLISHED_ADS } from "@/lib/ads/rules";
+import { adInWindow, adSlides, takeAdsWithinSlides, type AdSlide } from "@/lib/ads/rules";
 import { readCompanyOffers, type ShowcaseOffer } from "@/lib/products/offers-read";
 import type { AcceptedCoin } from "@/lib/crypto-map";
 
@@ -39,9 +39,16 @@ export type CardAd = {
   title: string;
   body: string | null;
   language: string;
+  /** Обложка — первый кадр: её читают ленты, плитки и пересланная ссылка. */
   mediaKind: "IMAGE" | "VIDEO";
   mediaUrl: string;
   posterUrl: string | null;
+  /**
+   * Кадры материала (слайс CE). Карусель плоская: позиция — пара «материал, кадр»,
+   * кадры одного материала идут подряд и несут его текст, голос и действие. Два
+   * уровня листания человек не различает — это читается как дёргающийся баннер.
+   */
+  slides: AdSlide[];
   audioUrl: string | null;
   promoCode: string | null;
   endsAt: string | null;
@@ -209,7 +216,7 @@ export async function buildCompanyCard({
         take: 20,
         select: {
           id: true, kind: true, title: true, body: true, language: true,
-          mediaKind: true, mediaUrl: true, posterUrl: true, audioUrl: true,
+          mediaKind: true, mediaUrl: true, posterUrl: true, slides: true, audioUrl: true,
           promoCode: true, startsAt: true, endsAt: true, eventAt: true, eventEndAt: true,
           placeName: true, placeAddress: true, placeLat: true, placeLon: true,
           placeAcceptedCoinIds: true, placeAcceptedCardIds: true, placePaymentMethods: true,
@@ -235,9 +242,11 @@ export async function buildCompanyCard({
 
   // Монеты места материала (BZ) читаются тем же запросом, что монеты предприятия:
   // два запроса об одних и тех же строках стоили бы вдвое, а набор у места свой.
-  const liveAds = company.ads
-    .filter((a) => a.id === previewAdId || adInWindow(a, now))
-    .slice(0, MAX_PUBLISHED_ADS);
+  // Потолок карусели считается в кадрах (слайс CE), и материал влезает целиком или
+  // никак: кадры — один рассказ, обрезать его на третьем значит показать половину.
+  const liveAds = takeAdsWithinSlides(
+    company.ads.filter((a) => a.id === previewAdId || adInWindow(a, now)),
+  );
   const wantedCoinIds = [
     ...(show.coins ? company.acceptedCoinIds : []),
     ...liveAds.flatMap((a) => a.placeAcceptedCoinIds),
@@ -352,6 +361,7 @@ export async function buildCompanyCard({
         mediaKind: a.mediaKind,
         mediaUrl: a.mediaUrl,
         posterUrl: a.posterUrl,
+        slides: adSlides(a),
         audioUrl: a.audioUrl,
         promoCode: a.promoCode,
         endsAt: a.endsAt ? a.endsAt.toISOString() : null,

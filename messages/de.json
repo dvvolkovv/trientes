@@ -905,7 +905,34 @@
         "revisionSummary": "Änderungen angefordert: {count}",
         "publishHint": "Genau so werden es Käufer sehen und hören.",
         "revisionHint": "Der Artikel ist bereits live. Unten steht die vom Verkäufer gewünschte Version; die aktuelle bleibt im Karussell, bis Sie genehmigen.",
-        "noChanges": "Die ausstehende Version entspricht der Live-Version."
+        "noChanges": "Die ausstehende Version entspricht der Live-Version.",
+        "field": {
+          "kind": "Typ",
+          "title": "Überschrift",
+          "body": "Text",
+          "language": "Sprache",
+          "slides": "Folien",
+          "mediaKind": "Cover-Typ",
+          "mediaUrl": "Cover",
+          "posterUrl": "Clip-Cover-Frame",
+          "audioUrl": "Voice-over",
+          "promoCode": "Promo-Code",
+          "startsAt": "Angezeigt ab",
+          "endsAt": "Angezeigt bis",
+          "eventAt": "Ereignis beginnt",
+          "eventEndAt": "Ereignis endet",
+          "placeName": "Name des Ortes",
+          "placeAddress": "Adresse des Ortes",
+          "placeLat": "Breitengrad des Ortes",
+          "placeLon": "Längengrad des Ortes",
+          "placePaymentMethods": "Vor Ort akzeptierte Zahlungsarten",
+          "placeAcceptedCoinIds": "Vor Ort akzeptierte Coins",
+          "placeAcceptedCardIds": "Vor Ort akzeptierte Karten-Coins",
+          "action": "Aktion",
+          "productId": "Produkt",
+          "pointId": "Punkt",
+          "actionUrl": "Aktionslink"
+        }
       }
     },
     "bell": {
@@ -4851,7 +4878,7 @@
       "kind": {
         "PROMO": "Angebot",
         "EVENT": "Event",
-        "NEWS": "News"
+        "NEWS": "Neuigkeiten"
       },
       "action": {
         "PRODUCT": "Produkt öffnen",
@@ -4866,7 +4893,7 @@
     "title": "Kartenbanner",
     "subtitle": "Was Besucher oben auf Ihrer Karte sehen: ein schlichter Rahmen, mit Details darunter.",
     "notListed": "Das Banner erscheint, sobald das Unternehmen gelistet ist.",
-    "liveCount": "Live im Karussell: {count} von {max}",
+    "liveCount": "Verwendete Karussellfolien: {count} von {max} (live und zur Prüfung ausstehend)",
     "hint": "Ein Tippen auf den Rahmen öffnet den Text, den Promo-Code und die Aktion. Clip und Sprachspur sind optional.",
     "newTitle": "Neuer Eintrag",
     "editTitle": "Eintrag bearbeiten",
@@ -4874,12 +4901,12 @@
     "kind": {
       "PROMO": "Angebot",
       "EVENT": "Event",
-      "NEWS": "News"
+      "NEWS": "Neuigkeiten"
     },
-    "fieldMedia": "Rahmen",
-    "mediaHint": "Ein Foto oder ein MP4-Clip bis 30 MB. Auf den Rahmen wird nichts gelegt.",
-    "uploadImage": "Foto hochladen",
-    "uploadVideo": "Clip hochladen",
+    "fieldMedia": "Folien",
+    "mediaHint": "Bis zu {max} Folien — Fotos oder MP4-Clips bis zu 30 MB jeweils. Wählen Sie mehrere auf einmal; die erste Folie ist das Cover. Auf einer Folie wird nichts überlagert.",
+    "uploadImage": "Fotos hinzufügen",
+    "uploadVideo": "Clips hinzufügen",
     "uploadPoster": "Titelrahmen hochladen",
     "fieldTitle": "Überschrift",
     "fieldBody": "Text",
@@ -4949,7 +4976,7 @@
       "url_required": "Füge die Adresse hinzu.",
       "url_invalid": "Die Adresse muss mit https:// beginnen",
       "too_many": "Zu viele Elemente — archiviere die alten.",
-      "too_many_published": "Das Karussell enthält bereits 5 Elemente.",
+      "too_many_published": "Das Karussell fasst 8 Folien, einschließlich Einträgen, die auf Überprüfung warten — dieses passt nicht. Entfernen Sie hier eine Folie oder archivieren Sie einen anderen Eintrag.",
       "daily_limit": "Heute zu viele Änderungen — versuche es morgen noch einmal.",
       "at_edge": "Bereits am Rand.",
       "upload_failed": "Die Datei wurde nicht hochgeladen. Prüfe Format und Größe.",
@@ -4973,7 +5000,8 @@
       "moderated_only": "Ein Moderator veröffentlicht Einträge — du kannst diesen zur Prüfung senden.",
       "payload_invalid": "Die ausstehenden Änderungen bestehen die Prüfungen nicht mehr. Bitte den Verkäufer, sie erneut einzureichen.",
       "reason_too_short": "Schreibe den Grund in Worten.",
-      "not_pending": "Zu diesem Eintrag gibt es nichts zu entscheiden."
+      "not_pending": "Zu diesem Eintrag gibt es nichts zu entscheiden.",
+      "slides_too_many": "Bis zu 8 Folien pro Eintrag."
     },
     "fieldEventEnd": "Ende der Veranstaltung",
     "eventEndHint": "Für eine eintägige Veranstaltung leer lassen.",
@@ -5040,7 +5068,16 @@
     "withdrawChanges": "Änderungen zurückziehen",
     "pendingChanges": "Änderungen sind bei einem Moderator. Das Karussell zeigt weiterhin die genehmigte Version.",
     "rejectedReason": "Nicht angenommen: {reason}",
-    "changesRejectedReason": "Ihre Änderungen wurden nicht akzeptiert: {reason}. Die Live-Version bleibt im Karussell."
+    "changesRejectedReason": "Ihre Änderungen wurden nicht akzeptiert: {reason}. Die Live-Version bleibt im Karussell.",
+    "slideImage": "Foto",
+    "slideVideo": "Clip",
+    "slideCover": "Cover — in Feeds und geteilten Links angezeigt",
+    "slideUp": "Hoch",
+    "slideDown": "Runter",
+    "slideRemove": "Entfernen",
+    "slidesFull": "{max} Folien sind das Limit — entfernen Sie eine, um eine weitere hinzuzufügen.",
+    "slideRange": "Folien {from}–{to} von {total}",
+    "slideCount": "Folien: {count}"
   },
   "adPage": {
     "placeTitle": "Standort",

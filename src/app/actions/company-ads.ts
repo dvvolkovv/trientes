@@ -10,10 +10,18 @@ import { isOpen } from "@/lib/cases/types";
 import { canWrite, editorCompany } from "@/lib/products/editor-company";
 import { pointScopeAllows } from "@/lib/company-team/permissions";
 import { logCompanyAction } from "@/lib/company-team/journal";
-import { AD_EDITS_PER_DAY, MAX_ADS, MAX_PUBLISHED_ADS, parseAdInput, type AdInput } from "@/lib/ads/rules";
+import {
+  AD_EDITS_PER_DAY,
+  MAX_ADS,
+  MAX_CAROUSEL_SLIDES,
+  adSlides,
+  parseAdInput,
+  type AdInput,
+} from "@/lib/ads/rules";
 import {
   adEditMode,
   adSlotsTaken,
+  type AdSlotRow,
   adSubmittable,
   adWithdrawable,
   type AdStatus,
@@ -40,6 +48,18 @@ async function overDailyLimit(companyId: string): Promise<boolean> {
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
   const n = await prisma.companyAd.count({ where: { companyId, updatedAt: { gte: since } } });
   return n >= AD_EDITS_PER_DAY;
+}
+
+/**
+ * Сколько мест карусели занято **кроме** этого материала (слайс CE): места считаются
+ * в кадрах, и материал с восемью кадрами занимает карусель целиком.
+ */
+async function slotsTakenByOthers(companyId: string, adId: string): Promise<number> {
+  const rows = await prisma.companyAd.findMany({
+    where: { companyId, id: { not: adId } },
+    select: { status: true, slides: true, mediaKind: true, mediaUrl: true, posterUrl: true },
+  });
+  return adSlotsTaken(rows as unknown as AdSlotRow[]);
 }
 
 /**
@@ -137,6 +157,12 @@ export async function updateAd(adId: string, input: AdInput) {
   if (await overDailyLimit(ad.companyId)) return fail("daily_limit");
 
   if (mode === "proposal") {
+    // Правка, добавляющая кадры, тоже обязана влезть в карусель: иначе модератор
+    // одобрил бы её и получил отказ по потолку на уже проверенной работе.
+    const others = await slotsTakenByOthers(ad.companyId, ad.id);
+    if (others + parsed.value.slides.length > MAX_CAROUSEL_SLIDES) {
+      return fail("too_many_published");
+    }
     // Храним форму, а не разобранные значения: на одобрении слепок проходит ту же
     // проверку, что живая форма. Новая правка гасит прежнюю — ждущих правок у
     // материала не бывает двух (прецедент: новая просьба о сбросе пароля гасит
@@ -195,7 +221,10 @@ export async function submitAd(adId: string) {
   if (!userId) return fail("unauth");
   const ad = await prisma.companyAd.findUnique({
     where: { id: adId },
-    select: { id: true, companyId: true, status: true, title: true, mediaUrl: true },
+    select: {
+      id: true, companyId: true, status: true, title: true,
+      slides: true, mediaKind: true, mediaUrl: true, posterUrl: true,
+    },
   });
   if (!ad) return fail("not_found");
   const gate = await editorCompany(ad.companyId, userId);
@@ -203,11 +232,10 @@ export async function submitAd(adId: string) {
   if (!adSubmittable(ad.status as AdStatus)) return fail("not_submittable");
   if (!ad.mediaUrl || !ad.title.trim()) return fail("incomplete");
 
-  const rows = await prisma.companyAd.findMany({
-    where: { companyId: ad.companyId, id: { not: ad.id } },
-    select: { status: true },
-  });
-  if (adSlotsTaken(rows as { status: AdStatus }[]) >= MAX_PUBLISHED_ADS) {
+  // Места считаются в кадрах (слайс CE): материал на четыре кадра не встанет в
+  // очередь, если свободных мест три, — и это говорится отказом, а не обрезкой.
+  const others = await slotsTakenByOthers(ad.companyId, ad.id);
+  if (others + adSlides(ad).length > MAX_CAROUSEL_SLIDES) {
     return fail("too_many_published");
   }
 

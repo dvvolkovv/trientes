@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useFormatter, useTranslations } from "next-intl";
 import type { CardAd } from "@/lib/company-card/view";
-import { AD_SLIDE_SECONDS } from "@/lib/ads/rules";
+import { AD_SLIDE_SECONDS, adSlides } from "@/lib/ads/rules";
 
 /**
  * Баннер карточки предприятия (слайс BY) — решение владельца, два круга макетов.
@@ -12,7 +12,7 @@ import { AD_SLIDE_SECONDS } from "@/lib/ads/rules";
  * **Кадр чистый.** Поверх медиа не лежит ничего: ни текста, ни меток, ни кнопок.
  * Текст поверх фотографии нечитаем на светлом кадре, а кнопка поверх кадра отнимает у
  * кадра нажатие. Всё управление — одной полосой **под** баннером: слева точки (сколько
- * материалов и какой сейчас), справа кнопки 44 px.
+ * кадров и какой сейчас), справа кнопки 44 px.
  *
  * Нажатие на сам кадр ведёт **на страницу материала** (слайс BZ): кадр — самая большая
  * цель на экране, и за ним стоит всё, что с материалом можно сделать — место на карте,
@@ -21,6 +21,12 @@ import { AD_SLIDE_SECONDS } from "@/lib/ads/rules";
  *
  * Листание — родная прокрутка со снапом, а не свой разбор жеста: у навигатора свой
  * разбор уже есть (слайс AK), и второй внутри него спорил бы с ним за палец.
+ *
+ * **Кадры материала — позиции одной карусели** (слайс CE). У материала бывает до восьми
+ * кадров, они идут подряд и несут его текст, голос, промокод и действие: «подробнее» на
+ * любом кадре показывает один и тот же рассказ. Двух уровней листания нет осознанно —
+ * точки по материалам и кадры, сами меняющиеся внутри, читались бы как дёргающийся
+ * баннер.
  *
  * **Слайды сменяются сами** (слайс CB, решение владельца «до восьми, и чтобы они по
  * очереди перелистывались»), и у этого четыре границы, каждая из живого опыта:
@@ -44,7 +50,16 @@ export function AdBanner({ ads }: { ads: CardAd[] }) {
   const trackRef = useRef<HTMLDivElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const ad = ads[Math.min(index, ads.length - 1)];
+  /**
+   * Позиции карусели: пара «материал, кадр». Считается один раз на отрисовку —
+   * второй разбор кадров в обработчике прокрутки разошёлся бы с первым.
+   */
+  const frames = ads.flatMap((a) =>
+    adSlides(a).map((slide, i) => ({ ad: a, slide, key: `${a.id}:${i}` })),
+  );
+  const pos = Math.min(index, Math.max(0, frames.length - 1));
+  const frame = frames[pos];
+  const ad = frame?.ad ?? ads[0];
 
   /** Голос молчит, когда материал сменился: иначе слышно одно, а видно другое. */
   const stopVoice = useCallback(() => {
@@ -58,12 +73,17 @@ export function AdBanner({ ads }: { ads: CardAd[] }) {
 
   useEffect(() => stopVoice, [stopVoice]);
 
-  /** Смена материала: голос замолкает, ролик и «скопировано» сбрасываются. */
+  /**
+   * Смена позиции. Ролик и «скопировано» сбрасываются всегда, а голос замолкает
+   * только при переходе **к другому материалу**: внутри одного рассказа запись
+   * относится ко всем его кадрам, и глушить её на втором кадре значило бы обрывать
+   * фразу на полуслове.
+   */
   const changeIndex = useCallback(
-    (next: number) => {
+    (next: number, sameAd: boolean) => {
       setIndex((prev) => {
         if (prev === next) return prev;
-        stopVoice();
+        if (!sameAd) stopVoice();
         setPlaying(false);
         setCopied(false);
         return next;
@@ -76,8 +96,9 @@ export function AdBanner({ ads }: { ads: CardAd[] }) {
     const el = trackRef.current;
     if (!el) return;
     const next = Math.round(el.scrollLeft / Math.max(1, el.clientWidth));
-    changeIndex(Math.max(0, Math.min(ads.length - 1, next)));
-  }, [ads.length, changeIndex]);
+    const clamped = Math.max(0, Math.min(frames.length - 1, next));
+    changeIndex(clamped, frames[clamped]?.ad.id === frames[pos]?.ad.id);
+  }, [frames, pos, changeIndex]);
 
   const goTo = useCallback((i: number) => {
     const el = trackRef.current;
@@ -101,12 +122,12 @@ export function AdBanner({ ads }: { ads: CardAd[] }) {
   }, []);
 
   useEffect(() => {
-    if (ads.length < 2 || touched || !onScreen) return;
+    if (frames.length < 2 || touched || !onScreen) return;
     if (open || playing || speaking) return;
     if (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
-    const tm = setTimeout(() => goTo((index + 1) % ads.length), AD_SLIDE_SECONDS * 1000);
+    const tm = setTimeout(() => goTo((index + 1) % frames.length), AD_SLIDE_SECONDS * 1000);
     return () => clearTimeout(tm);
-  }, [ads.length, touched, onScreen, open, playing, speaking, index, goTo]);
+  }, [frames.length, touched, onScreen, open, playing, speaking, index, goTo]);
 
   /**
    * Озвучка: своя запись сильнее синтеза. Записи нет — текст читает синтез браузера на
@@ -167,12 +188,12 @@ export function AdBanner({ ads }: { ads: CardAd[] }) {
         onKeyDown={() => setTouched(true)}
         className="flex snap-x snap-mandatory overflow-x-auto scroll-smooth rounded-[22px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-        {ads.map((a, i) => (
-          <div key={a.id} className="w-full shrink-0 snap-center">
-            {a.mediaKind === "VIDEO" && playing && i === index ? (
+        {frames.map((f, i) => (
+          <div key={f.key} className="w-full shrink-0 snap-center">
+            {f.slide.kind === "VIDEO" && playing && i === pos ? (
               <video
-                src={a.mediaUrl}
-                poster={a.posterUrl ?? undefined}
+                src={f.slide.url}
+                poster={f.slide.posterUrl ?? undefined}
                 controls
                 autoPlay
                 playsInline
@@ -180,15 +201,15 @@ export function AdBanner({ ads }: { ads: CardAd[] }) {
               />
             ) : (
               <Link
-                href={a.href}
+                href={f.ad.href}
                 data-testid="ad-banner-frame"
-                aria-label={a.title}
+                aria-label={f.ad.title}
                 className="block aspect-[16/10] w-full overflow-hidden rounded-[22px] border border-hairline bg-bg-tint"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={a.mediaKind === "VIDEO" ? (a.posterUrl ?? a.mediaUrl) : a.mediaUrl}
-                  alt={a.title}
+                  src={f.slide.kind === "VIDEO" ? (f.slide.posterUrl ?? f.slide.url) : f.slide.url}
+                  alt={f.ad.title}
                   loading={i === 0 ? "eager" : "lazy"}
                   className="h-full w-full object-cover"
                 />
@@ -200,17 +221,17 @@ export function AdBanner({ ads }: { ads: CardAd[] }) {
 
       {/* Полоса управления — под баннером, и только здесь. */}
       <div className="mt-2.5 flex items-center gap-2">
-        {ads.length > 1 ? (
+        {frames.length > 1 ? (
           <div className="mr-auto flex items-center gap-1.5 pl-1" role="tablist" aria-label={t("ad.slides")}>
-            {ads.map((a, i) => (
+            {frames.map((f, i) => (
               <button
-                key={a.id}
+                key={f.key}
                 type="button"
                 role="tab"
-                aria-selected={i === index}
-                aria-label={t("ad.slide", { n: i + 1, total: ads.length })}
+                aria-selected={i === pos}
+                aria-label={t("ad.slide", { n: i + 1, total: frames.length })}
                 onClick={() => { setTouched(true); goTo(i); }}
-                className={`h-[7px] rounded-full transition-all ${i === index ? "w-[18px] bg-accent" : "w-[7px] bg-card-alt"}`}
+                className={`h-[7px] rounded-full transition-all ${i === pos ? "w-[18px] bg-accent" : "w-[7px] bg-card-alt"}`}
               />
             ))}
           </div>
@@ -218,7 +239,7 @@ export function AdBanner({ ads }: { ads: CardAd[] }) {
           <span className="mr-auto" />
         )}
 
-        {ad.mediaKind === "VIDEO" && !playing ? (
+        {frame?.slide.kind === "VIDEO" && !playing ? (
           <button
             type="button"
             onClick={() => setPlaying(true)}

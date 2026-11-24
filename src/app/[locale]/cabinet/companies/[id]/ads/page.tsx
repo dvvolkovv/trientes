@@ -4,8 +4,14 @@ import { getFormatter, getTranslations, setRequestLocale } from "next-intl/serve
 import { canEditSection, canSeeSection, getViewerCompanyById } from "@/lib/business";
 import { prisma } from "@/lib/prisma";
 import { pointScopeAllows } from "@/lib/company-team/permissions";
-import { MAX_PUBLISHED_ADS } from "@/lib/ads/rules";
-import { adEditMode, adSlotsTaken, readPendingPayload, type AdStatus } from "@/lib/ads/moderation";
+import { MAX_CAROUSEL_SLIDES, adSlides } from "@/lib/ads/rules";
+import {
+  adEditMode,
+  adSlotsTaken,
+  readPendingPayload,
+  type AdSlotRow,
+  type AdStatus,
+} from "@/lib/ads/moderation";
 import { AdForm, type AdFormValues } from "@/components/ads/ad-form";
 import { readTop100 } from "@/lib/snapshot";
 import { listSelfListedCards } from "@/lib/coin-card-directory";
@@ -72,7 +78,8 @@ export default async function CompanyAdsPage({
   const listed = company.status === "APPROVED" && !company.suspendedAt;
   // Занято — опубликованные **и** ждущие проверки: иначе потолок вскрылся бы в
   // момент одобрения, отказом по уже проверенному делу (слайс CC).
-  const taken = adSlotsTaken(ads as { status: AdStatus }[]);
+  // Места карусели считаются в кадрах (слайс CE), а не в материалах.
+  const taken = adSlotsTaken(ads as unknown as AdSlotRow[]);
   const editing = editId ? ads.find((a) => a.id === editId) ?? null : null;
   const day = (d: Date) => format.dateTime(d, { day: "numeric", month: "short" });
 
@@ -90,6 +97,7 @@ export default async function CompanyAdsPage({
         mediaKind: shown.mediaKind,
         mediaUrl: shown.mediaUrl,
         posterUrl: shown.posterUrl ?? "",
+        slides: adSlides(shown),
         audioUrl: shown.audioUrl ?? "",
         promoCode: shown.promoCode ?? "",
         startsAt: shown.startsAt ? shown.startsAt.toISOString().slice(0, 10) : "",
@@ -114,6 +122,16 @@ export default async function CompanyAdsPage({
     : null;
 
   const liveOrder = ads.filter((a) => a.status === "PUBLISHED").map((a) => a.id);
+  // Первый кадр материала в карусели: места считаются в кадрах, и «третий материал»
+  // человеку ничего не говорит про то, что он увидит (слайс CE).
+  const firstSlideOf = new Map<string, number>();
+  {
+    let used = 0;
+    for (const a of ads.filter((x) => x.status === "PUBLISHED")) {
+      firstSlideOf.set(a.id, used + 1);
+      used += adSlides(a).length;
+    }
+  }
   const rows: AdRow[] = ads.map((a) => ({
     id: a.id,
     kind: a.kind,
@@ -129,6 +147,8 @@ export default async function CompanyAdsPage({
     hasPending: a.pendingPayload !== null && a.pendingPayload !== undefined,
     rejectionReason: a.rejectionReason,
     position: liveOrder.indexOf(a.id) >= 0 ? liveOrder.indexOf(a.id) + 1 : undefined,
+    slides: adSlides(a).length,
+    firstSlide: firstSlideOf.get(a.id),
   }));
 
   return (
@@ -154,7 +174,7 @@ export default async function CompanyAdsPage({
       ) : null}
 
       <section className="mb-6 rounded-md border border-hairline p-3 text-sm">
-        <p>{t("liveCount", { count: taken, max: MAX_PUBLISHED_ADS })}</p>
+        <p>{t("liveCount", { count: taken, max: MAX_CAROUSEL_SLIDES })}</p>
         {/* Публикует модератор, и сказать это надо прямо: продавец ищет кнопку
             «опубликовать», которой больше нет. */}
         <p className="mt-1 text-muted">{t("moderationHint")}</p>

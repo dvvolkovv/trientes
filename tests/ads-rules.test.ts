@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
-  adInWindow, adTextHash, adVisible, adVoiceStale, isAdVoice, isOwnMedia, parseAdInput, type AdInput,
+  adInWindow, adSlides, adTextHash, adVisible, adVoiceStale, isAdVoice, isOwnMedia,
+  parseAdInput, takeAdsWithinSlides, MAX_AD_SLIDES, MAX_CAROUSEL_SLIDES, type AdInput,
 } from "@/lib/ads/rules";
 
 const MEDIA = "/uploads/ads/cmwcompany1/0123456789abcdef0123456789abcdef.jpg";
@@ -179,5 +180,84 @@ describe("озвучка материала (слайс BZ)", () => {
   it("голос синтеза — только из реестра", () => {
     expect(isAdVoice("alloy")).toBe(true);
     expect(isAdVoice("шептун")).toBe(false);
+  });
+});
+
+describe("кадры материала (слайс CE)", () => {
+  /** Имя файла придумываем мы: ровно 32 hex (см. `isOwnMedia`). */
+  const hex = (n: number) => (n.toString(16).padStart(2, "0") + "23456789abcdef0123456789abcdef").slice(0, 32);
+  const img = (n: number) => `/uploads/ads/cmwcompany1/${hex(n)}.jpg`;
+  const clip = "/uploads/ads/cmwcompany1/aa23456789abcdef0123456789abcdef.mp4";
+
+  it("берёт список кадров и выводит обложку из первого", () => {
+    // Второго автора у обложки нет: иначе в карусели один кадр, а в ленте новостей
+    // другой.
+    const r = parseAdInput({
+      ...base,
+      mediaUrl: "",
+      slides: [{ url: clip, posterUrl: img(3) }, { url: img(1) }, { url: img(2) }],
+    });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.value.slides).toHaveLength(3);
+    expect(r.value.mediaKind).toBe("VIDEO");
+    expect(r.value.mediaUrl).toBe(clip);
+    expect(r.value.posterUrl).toBe(img(3));
+  });
+
+  it("вид кадра читает из расширения файла, а не из слова формы", () => {
+    const r = parseAdInput({ ...base, mediaUrl: "", slides: [{ kind: "IMAGE", url: clip }] });
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.value.slides[0].kind).toBe("VIDEO");
+  });
+
+  it("заставку оставляет только ролику", () => {
+    // У фотографии заставка ничего не значит и показывалась бы вместо самого кадра.
+    const r = parseAdInput({ ...base, mediaUrl: "", slides: [{ url: img(1), posterUrl: img(2) }] });
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.value.slides[0].posterUrl).toBeNull();
+  });
+
+  it("повтор одного файла отбрасывает: это промах нажатия, а не замысел", () => {
+    const r = parseAdInput({ ...base, mediaUrl: "", slides: [{ url: img(1) }, { url: img(1) }] });
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.value.slides).toHaveLength(1);
+  });
+
+  it("чужой адрес кадром не считает и в списке", () => {
+    expect(parseAdInput({ ...base, mediaUrl: "", slides: [{ url: "https://evil.example/p.jpg" }] }))
+      .toMatchObject({ ok: false, reason: "media_invalid" });
+  });
+
+  it("девятый кадр отвергает вслух", () => {
+    const many = Array.from({ length: MAX_AD_SLIDES + 1 }, (_, i) => ({ url: img(i + 10) }));
+    expect(parseAdInput({ ...base, mediaUrl: "", slides: many }))
+      .toMatchObject({ ok: false, reason: "slides_too_many" });
+  });
+
+  it("пустой список читает как один кадр из обложки: слепки до слайса годны", () => {
+    const r = parseAdInput({ ...base, slides: [] });
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.value.slides).toEqual([{ kind: "IMAGE", url: MEDIA, posterUrl: null }]);
+  });
+
+  it("у записанного материала без кадров читает обложку", () => {
+    expect(adSlides({ slides: null, mediaKind: "IMAGE", mediaUrl: MEDIA, posterUrl: null }))
+      .toEqual([{ kind: "IMAGE", url: MEDIA, posterUrl: null }]);
+  });
+
+  it("в карусель материал влезает целиком или никак", () => {
+    // Кадры — один рассказ: обрезать его на третьем значит показать половину
+    // обещания, а перескочить к следующему материалу — переставить порядок молча.
+    const ad = (n: number) => ({
+      mediaKind: "IMAGE",
+      mediaUrl: MEDIA,
+      posterUrl: null,
+      slides: Array.from({ length: n }, (_, i) => ({ kind: "IMAGE", url: img(i + 20) })),
+    });
+    const taken = takeAdsWithinSlides([ad(5), ad(4), ad(2)]);
+    expect(taken).toHaveLength(1);
+    expect(takeAdsWithinSlides([ad(5), ad(3)])).toHaveLength(2);
+    expect(MAX_CAROUSEL_SLIDES).toBe(8);
   });
 });

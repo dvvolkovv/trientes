@@ -34,7 +34,12 @@ export async function CaseAd({
           <dl className="mt-3 flex flex-col">
             {diff.map((row) => (
               <div key={row.field} className="border-b border-hairline py-2 last:border-b-0">
-                <dt className="text-[11px] uppercase tracking-wider text-muted">{row.field}</dt>
+                {/* Код поля на экране — та же жалоба, что `TASK_CREATED` в журнале
+                    (живой прогон BF): новым полям положены слова. Незнакомое поле
+                    показывается как есть: список полей меняется чаще переводов. */}
+                <dt className="text-[11px] uppercase tracking-wider text-muted">
+                  {t.has(`case.ad.field.${row.field}`) ? t(`case.ad.field.${row.field}`) : row.field}
+                </dt>
                 <dd className="mt-0.5 break-words text-[12.5px]">
                   <span className="text-muted line-through">{row.from}</span>
                   <span className="mx-1.5 text-muted">→</span>

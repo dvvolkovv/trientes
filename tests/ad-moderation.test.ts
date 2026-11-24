@@ -9,7 +9,7 @@ import {
   readPendingPayload,
   type AdStatus,
 } from "@/lib/ads/moderation";
-import { MAX_PUBLISHED_ADS } from "@/lib/ads/rules";
+import { MAX_CAROUSEL_SLIDES } from "@/lib/ads/rules";
 import { CHECKLISTS } from "@/lib/cases/checklists";
 import { SLA_BUSINESS_DAYS } from "@/lib/cases/sla";
 import { SUBJECT_QUEUES } from "@/lib/authz/map";
@@ -63,7 +63,8 @@ describe("дорога материала", () => {
 });
 
 describe("места в карусели", () => {
-  const rows = (...statuses: AdStatus[]) => statuses.map((status) => ({ status }));
+  const one = { mediaKind: "IMAGE", mediaUrl: MEDIA, posterUrl: null };
+  const rows = (...statuses: AdStatus[]) => statuses.map((status) => ({ status, ...one }));
 
   it("занимают и опубликованные, и ждущие проверки", () => {
     // Иначе потолок вскрылся бы в момент одобрения — отказом по делу, которое
@@ -73,7 +74,26 @@ describe("места в карусели", () => {
 
   it("черновик, архив и отказ места не держат", () => {
     expect(adSlotsTaken(rows("DRAFT", "ARCHIVED", "REJECTED"))).toBe(0);
-    expect(adSlotsFree(rows("PUBLISHED"))).toBe(MAX_PUBLISHED_ADS - 1);
+    expect(adSlotsFree(rows("PUBLISHED"))).toBe(MAX_CAROUSEL_SLIDES - 1);
+  });
+
+  it("считаются кадры, а не материалы (слайс CE)", () => {
+    // Просьба владельца буквально: один материал на восемь кадров занимает карусель
+    // целиком. Считай материалы — и у числа «восемь» стало бы два смысла.
+    const four = {
+      status: "PUBLISHED" as AdStatus,
+      ...one,
+      slides: [
+        { kind: "IMAGE", url: MEDIA },
+        { kind: "IMAGE", url: MEDIA.replace("0123", "1123") },
+        { kind: "IMAGE", url: MEDIA.replace("0123", "2123") },
+        { kind: "VIDEO", url: MEDIA.replace("0123", "3123").replace(".png", ".mp4") },
+      ],
+    };
+    expect(adSlotsTaken([four])).toBe(4);
+    expect(adSlotsFree([four])).toBe(MAX_CAROUSEL_SLIDES - 4);
+    // Материал, заведённый до слайса, несёт один кадр из обложки — бэкфилла не было.
+    expect(adSlotsTaken([{ status: "PUBLISHED", ...one }])).toBe(1);
   });
 });
 

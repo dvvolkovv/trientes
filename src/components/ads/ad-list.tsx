@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { moveAd, setAdStatus, submitAd, withdrawAd } from "@/app/actions/company-ads";
-import { MAX_PUBLISHED_ADS } from "@/lib/ads/rules";
+import { MAX_CAROUSEL_SLIDES } from "@/lib/ads/rules";
 import { adSubmittable, adWithdrawable, type AdStatus } from "@/lib/ads/moderation";
 
 export type AdRow = {
@@ -22,6 +22,10 @@ export type AdRow = {
   rejectionReason: string | null;
   /** Место в карусели — ради него и нужны «выше»/«ниже». */
   position?: number;
+  /** Сколько кадров у материала (слайс CE): места карусели считаются в кадрах. */
+  slides: number;
+  /** Первый кадр материала в карусели; пусто — материал в карусель не вышел. */
+  firstSlide?: number;
 };
 
 const STATUS_CLASS: Record<AdStatus, string> = {
@@ -88,10 +92,20 @@ export function AdList({
               <div className="mt-1 truncate text-[14.5px] font-semibold">{ad.title}</div>
               {/* Место в карусели словами: голый номер «3.» не говорит, из скольких
                   и чего именно (та же жалоба, что на голые стрелки в AN). */}
-              {ad.status === "PUBLISHED" && ad.position ? (
+              {/* Места считаются в кадрах (слайс CE), поэтому материал занимает
+                  отрезок: «кадры 3–5 из 8». Один кадр — одно число. */}
+              {ad.status === "PUBLISHED" && ad.firstSlide ? (
                 <div className="text-[11.5px] text-accent">
-                  {t("slideNo", { n: ad.position, total: MAX_PUBLISHED_ADS })}
+                  {ad.slides > 1
+                    ? t("slideRange", {
+                        from: ad.firstSlide,
+                        to: ad.firstSlide + ad.slides - 1,
+                        total: MAX_CAROUSEL_SLIDES,
+                      })
+                    : t("slideNo", { n: ad.firstSlide, total: MAX_CAROUSEL_SLIDES })}
                 </div>
+              ) : ad.slides > 1 ? (
+                <div className="text-[11.5px] text-muted">{t("slideCount", { count: ad.slides })}</div>
               ) : null}
               {ad.window ? <div className="num text-[11.5px] text-muted">{ad.window}</div> : null}
             </div>

@@ -4,7 +4,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { auth } from "@/auth";
 import { canWrite, editorCompany } from "@/lib/products/editor-company";
-import { MAX_AD_AUDIO_BYTES, MAX_AD_IMAGE_BYTES, MAX_AD_VIDEO_BYTES } from "@/lib/ads/rules";
+import { MAX_AD_AUDIO_BYTES, MAX_AD_IMAGE_BYTES, MAX_AD_SLIDES, MAX_AD_VIDEO_BYTES } from "@/lib/ads/rules";
 import { isMp4 } from "@/lib/products/rules";
 
 export const runtime = "nodejs";
@@ -60,36 +60,44 @@ export async function POST(req: Request) {
   const gate = await editorCompany(companyId, userId);
   if (!canWrite(gate, "promos")) return NextResponse.json({ error: "forbidden" }, { status: 403 });
 
-  const file = form.get("file");
-  if (!(file instanceof File)) return NextResponse.json({ error: "no_file" }, { status: 400 });
+  // Несколько файлов за один запрос (слайс CE): мульти-выбор в поле кадров — это и
+  // есть просьба владельца «добавить много фотографий за один клик». Потолок тот же,
+  // что у материала: больше кадров карусель всё равно не покажет.
+  const files = form.getAll("file").filter((f): f is File => f instanceof File);
+  if (files.length === 0) return NextResponse.json({ error: "no_file" }, { status: 400 });
+  if (files.length > MAX_AD_SLIDES) return NextResponse.json({ error: "too_many" }, { status: 400 });
 
-  const bytes = Buffer.from(await file.arrayBuffer());
-  let ext: string | null = null;
+  const urls: string[] = [];
+  for (const file of files) {
+    const bytes = Buffer.from(await file.arrayBuffer());
+    let ext: string | null = null;
 
-  if (slot === "image") {
-    if (bytes.length > MAX_AD_IMAGE_BYTES) return NextResponse.json({ error: "too_large" }, { status: 400 });
-    ext = IMAGE[file.type] ?? null;
-  } else if (slot === "video") {
-    // Длительность не проверяем: `ffprobe` на машине нет, и выдумывать проверку,
-    // которой не делаем, нельзя (правило BB). Предел честно в байтах.
-    if (bytes.length > MAX_AD_VIDEO_BYTES) return NextResponse.json({ error: "too_large" }, { status: 400 });
-    if (!isMp4(bytes.subarray(0, 16))) return NextResponse.json({ error: "bad_type" }, { status: 400 });
-    ext = "mp4";
-  } else {
-    if (bytes.length > MAX_AD_AUDIO_BYTES) return NextResponse.json({ error: "too_large" }, { status: 400 });
-    ext = AUDIO[file.type] ?? null;
+    if (slot === "image") {
+      if (bytes.length > MAX_AD_IMAGE_BYTES) return NextResponse.json({ error: "too_large" }, { status: 400 });
+      ext = IMAGE[file.type] ?? null;
+    } else if (slot === "video") {
+      // Длительность не проверяем: `ffprobe` на машине нет, и выдумывать проверку,
+      // которой не делаем, нельзя (правило BB). Предел честно в байтах.
+      if (bytes.length > MAX_AD_VIDEO_BYTES) return NextResponse.json({ error: "too_large" }, { status: 400 });
+      if (!isMp4(bytes.subarray(0, 16))) return NextResponse.json({ error: "bad_type" }, { status: 400 });
+      ext = "mp4";
+    } else {
+      if (bytes.length > MAX_AD_AUDIO_BYTES) return NextResponse.json({ error: "too_large" }, { status: 400 });
+      ext = AUDIO[file.type] ?? null;
+    }
+
+    // Негодный файл отвергает **весь** запрос: принять половину пачки и промолчать о
+    // второй значило бы молчаливую потерю кадров.
+    if (!ext) return NextResponse.json({ error: "bad_type" }, { status: 400 });
+
+    const id = randomBytes(16).toString("hex");
+    const dir = join(ROOT, companyId);
+    await mkdir(dir, { recursive: true });
+    await writeFile(join(dir, `${id}.${ext}`), bytes);
+    urls.push(`/uploads/ads/${companyId}/${id}.${ext}`);
   }
 
-  if (!ext) return NextResponse.json({ error: "bad_type" }, { status: 400 });
-
-  const id = randomBytes(16).toString("hex");
-  const dir = join(ROOT, companyId);
-  await mkdir(dir, { recursive: true });
-  await writeFile(join(dir, `${id}.${ext}`), bytes);
-
-  return NextResponse.json({
-    ok: true,
-    url: `/uploads/ads/${companyId}/${id}.${ext}`,
-    size: bytes.length,
-  });
+  // `url` — первый адрес: его читают прежние вызовы (заставка, звук), и переписывать
+  // их ради одного слайса не стали.
+  return NextResponse.json({ ok: true, url: urls[0], urls });
 }

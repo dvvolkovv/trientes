@@ -11,19 +11,26 @@ import { parsePaymentMethods, type PaymentMethodKey } from "@/lib/payment-method
 import { SUPPORTED_LOCALES, type Locale } from "@/lib/locales";
 
 /**
- * Опубликованных материалов в карусели (решение владельца, слайс CB: «до восьми»).
- * Пятёрка слайса BY стояла на том, что шестую никто не долистает **пальцем**; с
- * автолистанием карусель показывает их сама, и потолок переехал туда, где он снова
- * про человека: восемь слайдов по семь секунд — минута, дольше баннер не смотрят.
+ * Кадров (слайдов) в карусели предприятия — считаются **кадры, а не материалы**
+ * (слайс CE, решение владельца «до восьми слайдов за один клик»).
+ *
+ * У слайса CB восемь означало восемь разных материалов, по кадру у каждого; просьба
+ * же была про один рассказ с восемью кадрами. Оставь потолок на материалах — и у
+ * числа «восемь» стало бы два смысла (восемь материалов × восемь кадров = шестьдесят
+ * четыре позиции). Теперь восемь — это восемь позиций, которые человек увидит: один
+ * материал вправе занять их все, восемь материалов по кадру — как было до слайса.
  */
-export const MAX_PUBLISHED_ADS = 8;
+export const MAX_CAROUSEL_SLIDES = 8;
+
+/** Кадров у одного материала: тот же потолок — больше карусель всё равно не покажет. */
+export const MAX_AD_SLIDES = 8;
 
 /**
- * Сколько секунд стоит слайд. Семь — чтобы успеть прочитать заголовок и решить,
- * нужен ли он; меньше читается как мигание. Листание останавливается навсегда, как
- * только человек тронул карусель сам: баннер, уезжающий из-под пальца, враждебен.
+ * Сколько секунд стоит кадр (решение владельца, слайс CE: «условно раз в 15 секунд»;
+ * у CB было семь). Листание останавливается навсегда, как только человек тронул
+ * карусель сам: баннер, уезжающий из-под пальца, враждебен.
  */
-export const AD_SLIDE_SECONDS = 7;
+export const AD_SLIDE_SECONDS = 15;
 
 /** Бумаг у одного объявления: это подкрепление сказанного, а не архив (правило BV). */
 export const AD_DOCS_MAX = 10;
@@ -102,6 +109,24 @@ export type AdKind = (typeof AD_KINDS)[number];
 export const AD_ACTIONS = ["NONE", "PRODUCT", "WEBSITE", "POINT"] as const;
 export type AdAction = (typeof AD_ACTIONS)[number];
 
+/**
+ * Кадр материала (слайс CE). Вид выводится из расширения файла, а не из заявленного
+ * слова: расширение ставим мы сами при загрузке, и доверять ему надёжнее, чем полю
+ * формы, — то же правило, которым BB читает тип картинки по первым байтам.
+ */
+export type AdSlide = {
+  kind: "IMAGE" | "VIDEO";
+  url: string;
+  /** Заставка ролика. Своя у каждого кадра: одна общая врала бы про остальные. */
+  posterUrl: string | null;
+};
+
+export type AdSlideInput = {
+  kind?: string | null;
+  url?: string | null;
+  posterUrl?: string | null;
+};
+
 export type AdInput = {
   kind: string;
   title: string;
@@ -110,6 +135,12 @@ export type AdInput = {
   mediaKind: string;
   mediaUrl: string;
   posterUrl?: string | null;
+  /**
+   * Кадры материала (слайс CE). Пусто — один кадр из обложки: так приходят слепки
+   * правок и скрипты, заведённые до слайса, и отвергать их было бы отказом по
+   * правилу, которого в момент сохранения не было.
+   */
+  slides?: AdSlideInput[] | null;
   audioUrl?: string | null;
   /** Запись сделана нашим синтезом (слайс BZ), а не прислана продавцом. */
   audioGenerated?: boolean | null;
@@ -147,9 +178,11 @@ export type AdValues = {
   title: string;
   body: string | null;
   language: Locale;
+  /** Обложка — первый кадр. Руками её не задают: автор значения один (слайс CE). */
   mediaKind: "IMAGE" | "VIDEO";
   mediaUrl: string;
   posterUrl: string | null;
+  slides: AdSlide[];
   audioUrl: string | null;
   audioGenerated: boolean;
   audioVoice: string | null;
@@ -191,6 +224,74 @@ function parseDay(raw: string, end: boolean): Date | null {
  */
 export function isOwnMedia(url: string): boolean {
   return /^\/uploads\/ads\/[A-Za-z0-9_-]+\/[a-f0-9]{32}\.(png|jpg|webp|mp4|mp3|m4a|ogg)$/.test(url);
+}
+
+/** Ролик ли это по расширению файла. Имя файла придумываем мы (`isOwnMedia`). */
+function isVideoUrl(url: string): boolean {
+  return /\.mp4$/i.test(url);
+}
+
+/**
+ * Кадры материала (слайс CE).
+ *
+ * Пришёл список — он и есть истина, а обложка выводится из первого кадра. Списка нет
+ * (слепок правки, сохранённый до слайса, или скрипт) — кадр один, из обложки: иначе
+ * прежняя форма отвергалась бы по правилу, которого в момент её сохранения не было.
+ *
+ * Повтор одного файла отбрасывается: один и тот же кадр дважды в карусели — это
+ * промах нажатия, а не замысел.
+ */
+export function parseAdSlides(
+  input: Pick<AdInput, "slides" | "mediaUrl" | "mediaKind" | "posterUrl">,
+): { ok: true; value: AdSlide[] } | { ok: false; reason: string } {
+  const raw = Array.isArray(input.slides) ? input.slides : null;
+  const list: AdSlideInput[] = raw && raw.length > 0
+    ? raw
+    : [{ url: input.mediaUrl, kind: input.mediaKind, posterUrl: input.posterUrl ?? null }];
+
+  const out: AdSlide[] = [];
+  for (const item of list) {
+    const url = (item?.url ?? "").trim();
+    if (!url) continue;
+    if (!isOwnMedia(url)) return { ok: false, reason: "media_invalid" };
+    if (out.some((s) => s.url === url)) continue;
+    const kind: AdSlide["kind"] = isVideoUrl(url) ? "VIDEO" : "IMAGE";
+    const poster = (item?.posterUrl ?? "").trim() || null;
+    if (poster && !isOwnMedia(poster)) return { ok: false, reason: "media_invalid" };
+    // Заставка принадлежит ролику: у фотографии она ничего не значит и в карусели
+    // показывалась бы вместо самого кадра.
+    out.push({ kind, url, posterUrl: kind === "VIDEO" ? poster : null });
+  }
+
+  if (out.length === 0) return { ok: false, reason: "media_required" };
+  if (out.length > MAX_AD_SLIDES) return { ok: false, reason: "slides_too_many" };
+  return { ok: true, value: out };
+}
+
+/**
+ * Кадры записанного материала. Пусто в колонке — материал заведён до слайса CE, и его
+ * единственный кадр читается из обложки; бэкфилла поэтому не было.
+ */
+export function adSlides(row: {
+  slides?: unknown;
+  mediaKind: string;
+  mediaUrl: string;
+  posterUrl: string | null;
+}): AdSlide[] {
+  const parsed = parseAdSlides({
+    slides: Array.isArray(row.slides) ? (row.slides as AdSlideInput[]) : null,
+    mediaUrl: row.mediaUrl,
+    mediaKind: row.mediaKind,
+    posterUrl: row.posterUrl,
+  });
+  if (parsed.ok) return parsed.value;
+  // Негодная запись не должна оставлять карточку без кадра вовсе: обложка в колонках
+  // проверена при сохранении.
+  return [{
+    kind: row.mediaKind === "VIDEO" ? "VIDEO" : "IMAGE",
+    url: row.mediaUrl,
+    posterUrl: row.posterUrl,
+  }];
 }
 
 type PlaceValues = Pick<
@@ -277,12 +378,14 @@ export function parseAdInput(input: AdInput): AdParse {
   const language = SUPPORTED_LOCALES.find((l) => l === input.language);
   if (!language) return fail("language_invalid");
 
-  const mediaKind = input.mediaKind === "VIDEO" ? "VIDEO" : "IMAGE";
-  const mediaUrl = (input.mediaUrl ?? "").trim();
-  if (!mediaUrl) return fail("media_required");
-  if (!isOwnMedia(mediaUrl)) return fail("media_invalid");
-  const posterUrl = (input.posterUrl ?? "").trim() || null;
-  if (posterUrl && !isOwnMedia(posterUrl)) return fail("media_invalid");
+  // Кадры — истина, обложка из первого (слайс CE): два автора одного значения
+  // разошлись бы в первый же день.
+  const slidesParsed = parseAdSlides(input);
+  if (!slidesParsed.ok) return fail(slidesParsed.reason);
+  const slides = slidesParsed.value;
+  const mediaKind = slides[0].kind;
+  const mediaUrl = slides[0].url;
+  const posterUrl = slides[0].posterUrl;
   const audioUrl = (input.audioUrl ?? "").trim() || null;
   if (audioUrl && !isOwnMedia(audioUrl)) return fail("media_invalid");
   const audioGenerated = Boolean(audioUrl && input.audioGenerated);
@@ -341,12 +444,49 @@ export function parseAdInput(input: AdInput): AdParse {
   return {
     ok: true,
     value: {
-      kind, title, body: body || null, language, mediaKind, mediaUrl, posterUrl,
+      kind, title, body: body || null, language, mediaKind, mediaUrl, posterUrl, slides,
       audioUrl, audioGenerated, audioVoice, audioTextHash,
       promoCode, startsAt, endsAt, eventAt, eventEndAt, ...place.value,
       action, productId, pointId, actionUrl,
     },
   };
+}
+
+/**
+ * Сколько позиций карусели занимает материал — это его кадры (слайс CE).
+ */
+export function adSlideCount(row: {
+  slides?: unknown;
+  mediaKind: string;
+  mediaUrl: string;
+  posterUrl: string | null;
+}): number {
+  return adSlides(row).length;
+}
+
+/**
+ * Материалы, которые влезают в карусель по кадрам (слайс CE).
+ *
+ * Материал целиком или никак: кадры — один рассказ, и обрезать его на третьем кадре
+ * значит показать половину обещания. Не влез — на нём обход и кончается: порядок
+ * карусели задан продавцом, и перескакивать через материал к следующему значило бы
+ * переставлять его порядок молча.
+ */
+export function takeAdsWithinSlides<T extends {
+  slides?: unknown;
+  mediaKind: string;
+  mediaUrl: string;
+  posterUrl: string | null;
+}>(ads: T[], max: number = MAX_CAROUSEL_SLIDES): T[] {
+  const out: T[] = [];
+  let used = 0;
+  for (const ad of ads) {
+    const n = adSlides(ad).length;
+    if (used + n > max) break;
+    out.push(ad);
+    used += n;
+  }
+  return out;
 }
 
 /**

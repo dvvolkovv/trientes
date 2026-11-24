@@ -7,7 +7,7 @@
  * живое нажатие в кабинете.
  */
 
-import { MAX_PUBLISHED_ADS, parseAdInput, type AdInput, type AdValues } from "./rules";
+import { adSlides, MAX_CAROUSEL_SLIDES, parseAdInput, type AdInput, type AdValues } from "./rules";
 
 export const AD_STATUSES = ["DRAFT", "PENDING", "PUBLISHED", "REJECTED", "ARCHIVED"] as const;
 export type AdStatus = (typeof AD_STATUSES)[number];
@@ -50,18 +50,32 @@ export function adWithdrawable(input: { status: AdStatus; hasPending: boolean })
 }
 
 /**
- * Занятые места карусели: опубликованные **плюс** ждущие проверки.
+ * Строка для счёта мест: место занимают **кадры**, а не материалы (слайс CE).
+ */
+export type AdSlotRow = {
+  status: AdStatus;
+  slides?: unknown;
+  mediaKind: string;
+  mediaUrl: string;
+  posterUrl: string | null;
+};
+
+/**
+ * Занятые места карусели: кадры опубликованных **плюс** ждущих проверки.
  *
  * Считать только опубликованные значило бы, что потолок вскрывается в момент
  * одобрения — отказом по делу, которое проверяющий уже проверил. Место занимает тот,
- * кто встал в очередь.
+ * кто встал в очередь. Считаем кадры: один материал с восемью кадрами занимает
+ * карусель целиком, и это ровно то, о чём просил владелец (слайс CE).
  */
-export function adSlotsTaken(rows: { status: AdStatus }[]): number {
-  return rows.filter((r) => r.status === "PUBLISHED" || r.status === "PENDING").length;
+export function adSlotsTaken(rows: AdSlotRow[]): number {
+  return rows
+    .filter((r) => r.status === "PUBLISHED" || r.status === "PENDING")
+    .reduce((sum, r) => sum + adSlides(r).length, 0);
 }
 
-export function adSlotsFree(rows: { status: AdStatus }[]): number {
-  return Math.max(0, MAX_PUBLISHED_ADS - adSlotsTaken(rows));
+export function adSlotsFree(rows: AdSlotRow[]): number {
+  return Math.max(0, MAX_CAROUSEL_SLIDES - adSlotsTaken(rows));
 }
 
 /** Виден ли материал продавцу как ждущий чужого решения — одна подпись на два случая. */
@@ -82,7 +96,7 @@ export function readPendingPayload(raw: unknown): AdValues | null {
 
 /** Поля, по которым модератору показывается «было → стало». */
 export const AD_DIFF_FIELDS = [
-  "kind", "title", "body", "language", "mediaKind", "mediaUrl", "posterUrl", "audioUrl",
+  "kind", "title", "body", "language", "slides", "mediaKind", "mediaUrl", "posterUrl", "audioUrl",
   "promoCode", "startsAt", "endsAt", "eventAt", "eventEndAt",
   "placeName", "placeAddress", "placeLat", "placeLon", "placePaymentMethods",
   "placeAcceptedCoinIds", "placeAcceptedCardIds",
@@ -94,7 +108,15 @@ export type AdDiffRow = { field: string; from: string; to: string };
 function show(v: unknown): string {
   if (v === null || v === undefined || v === "") return "—";
   if (v instanceof Date) return v.toISOString().slice(0, 10);
-  if (Array.isArray(v)) return v.length ? v.join(", ") : "—";
+  if (Array.isArray(v)) {
+    // Кадры (слайс CE) показываем счётом и видом: двадцать адресов файлов проверяющий
+    // всё равно не сличает глазами, а баннер над списком он уже посмотрел.
+    if (v.length > 0 && typeof v[0] === "object" && v[0] !== null && "url" in (v[0] as object)) {
+      const kinds = (v as { kind?: string }[]).map((s) => (s.kind === "VIDEO" ? "▶" : "▣")).join("");
+      return `${v.length} · ${kinds}`;
+    }
+    return v.length ? v.join(", ") : "—";
+  }
   return String(v);
 }
 

@@ -248,7 +248,7 @@ export default async function AdminCasePage({
       where: { id: c.subjectId },
       select: {
         id: true, companyId: true, kind: true, title: true, body: true, language: true,
-        mediaKind: true, mediaUrl: true, posterUrl: true, audioUrl: true, promoCode: true,
+        mediaKind: true, mediaUrl: true, posterUrl: true, slides: true, audioUrl: true, promoCode: true,
         startsAt: true, endsAt: true, eventAt: true, eventEndAt: true,
         placeName: true, placeAddress: true, placeLat: true, placeLon: true,
         placeAcceptedCoinIds: true, placeAcceptedCardIds: true, placePaymentMethods: true,
@@ -275,6 +275,9 @@ export default async function AdminCasePage({
               mediaKind: proposed.mediaKind,
               mediaUrl: proposed.mediaUrl,
               posterUrl: proposed.posterUrl,
+              // Кадры тоже предложенные: проверяющий смотрит тот баннер, который
+              // просят выпустить (слайс CE).
+              slides: proposed.slides,
               audioUrl: proposed.audioUrl,
               promoCode: proposed.promoCode,
               endsAt: proposed.endsAt ? proposed.endsAt.toISOString() : null,

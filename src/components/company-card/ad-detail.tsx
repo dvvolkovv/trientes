@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useFormatter, useTranslations } from "next-intl";
 import type { CardAd } from "@/lib/company-card/view";
+import { adSlides } from "@/lib/ads/rules";
 
 /**
  * Материал на своей странице (слайс BZ): медиа во всю ширину, текст целиком, голос и
@@ -12,12 +13,19 @@ import type { CardAd } from "@/lib/company-card/view";
  * Голос: своя запись сильнее синтеза (правило BY). Записи нет — читает браузер; не
  * умеет — кнопка молчит, но она есть: спрашивать `window` на отрисовке нельзя,
  * разметка сервера и браузера разошлась бы (живой прогон BY поймал ровно это).
+ *
+ * **Кадры листает человек, а не часы** (слайс CE). На страницу приходят читать, и
+ * уезжающий из-под глаз кадр мешает — в отличие от баннера, который обязан сам
+ * показать, что внутри. Поэтому тут лента со снапом и точки, без автохода.
  */
 export function AdDetail({ ad }: { ad: CardAd }) {
   const t = useTranslations("companyCard");
   const ta = useTranslations("adPage");
   const format = useFormatter();
   const [playing, setPlaying] = useState(false);
+  /** Какой кадр открыт: ролик играет только у него (слайс CE). */
+  const [frame, setFrame] = useState(0);
+  const trackRef = useRef<HTMLDivElement | null>(null);
   const [speaking, setSpeaking] = useState(false);
   const [copied, setCopied] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -66,6 +74,8 @@ export function AdDetail({ ad }: { ad: CardAd }) {
     }
   };
 
+  const slides = adSlides(ad);
+
   const day = (iso: string) => format.dateTime(new Date(iso), { day: "numeric", month: "long" });
   const eventLine = ad.eventAt
     ? ad.eventEndAt && ad.eventEndAt.slice(0, 10) !== ad.eventAt.slice(0, 10)
@@ -75,35 +85,76 @@ export function AdDetail({ ad }: { ad: CardAd }) {
 
   return (
     <article className="space-y-4">
-      {ad.mediaKind === "VIDEO" && playing ? (
-        <video
-          src={ad.mediaUrl}
-          poster={ad.posterUrl ?? undefined}
-          controls
-          autoPlay
-          playsInline
-          className="aspect-[16/10] w-full rounded-[22px] border border-hairline bg-black object-cover"
-        />
-      ) : (
-        <div className="relative">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={ad.mediaKind === "VIDEO" ? (ad.posterUrl ?? ad.mediaUrl) : ad.mediaUrl}
-            alt={ad.title}
-            className="aspect-[16/10] w-full rounded-[22px] border border-hairline bg-bg-tint object-cover"
-          />
-          {ad.mediaKind === "VIDEO" ? (
-            <button
-              type="button"
-              onClick={() => setPlaying(true)}
-              aria-label={t("ad.play")}
-              className="absolute inset-0 m-auto flex h-16 w-16 items-center justify-center rounded-full border border-hairline bg-card/90 text-[22px]"
-            >
-              ▶
-            </button>
-          ) : null}
+      <div>
+        <div
+          ref={trackRef}
+          onScroll={() => {
+            const el = trackRef.current;
+            if (!el) return;
+            const next = Math.round(el.scrollLeft / Math.max(1, el.clientWidth));
+            setFrame((prev) => {
+              const clamped = Math.max(0, Math.min(slides.length - 1, next));
+              if (clamped !== prev) setPlaying(false);
+              return clamped;
+            });
+          }}
+          className="flex snap-x snap-mandatory overflow-x-auto scroll-smooth rounded-[22px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {slides.map((s, i) => (
+            <div key={`${s.url}:${i}`} className="w-full shrink-0 snap-center">
+              {s.kind === "VIDEO" && playing && i === frame ? (
+                <video
+                  src={s.url}
+                  poster={s.posterUrl ?? undefined}
+                  controls
+                  autoPlay
+                  playsInline
+                  className="aspect-[16/10] w-full rounded-[22px] border border-hairline bg-black object-cover"
+                />
+              ) : (
+                <div className="relative">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={s.kind === "VIDEO" ? (s.posterUrl ?? s.url) : s.url}
+                    alt={ad.title}
+                    loading={i === 0 ? "eager" : "lazy"}
+                    className="aspect-[16/10] w-full rounded-[22px] border border-hairline bg-bg-tint object-cover"
+                  />
+                  {s.kind === "VIDEO" ? (
+                    <button
+                      type="button"
+                      onClick={() => { setFrame(i); setPlaying(true); }}
+                      aria-label={t("ad.play")}
+                      className="absolute inset-0 m-auto flex h-16 w-16 items-center justify-center rounded-full border border-hairline bg-card/90 text-[22px]"
+                    >
+                      ▶
+                    </button>
+                  ) : null}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
-      )}
+
+        {slides.length > 1 ? (
+          <div className="mt-2.5 flex items-center gap-1.5" role="tablist" aria-label={t("ad.slides")}>
+            {slides.map((s, i) => (
+              <button
+                key={`dot:${s.url}:${i}`}
+                type="button"
+                role="tab"
+                aria-selected={i === frame}
+                aria-label={t("ad.slide", { n: i + 1, total: slides.length })}
+                onClick={() => {
+                  const el = trackRef.current;
+                  if (el) el.scrollTo({ left: i * el.clientWidth, behavior: "smooth" });
+                }}
+                className={`h-[7px] rounded-full transition-all ${i === frame ? "w-[18px] bg-accent" : "w-[7px] bg-card-alt"}`}
+              />
+            ))}
+          </div>
+        ) : null}
+      </div>
 
       <div>
         <span className="inline-flex items-center rounded-full border border-accent/45 bg-accent/12 px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.1em] text-accent">
