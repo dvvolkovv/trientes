@@ -13,6 +13,8 @@ import {
   COINS_V2,
   PAIRS,
   QUOTE_OK,
+  QUOTE_OK_V3,
+  QUOTE_OK_V3_BUY,
   QUOTE_REFUSED,
   TICKERS,
   TICKERS_V2,
@@ -90,6 +92,32 @@ describe("decodeQuote", () => {
   it("отказ рантайма по границам заявки — не число, а код", () => {
     expect(decodeQuote(QUOTE_REFUSED)).toEqual({ error: "quote_refused", variant: 4 });
   });
+
+  it("читает ответ с шестым числом: рантайм дописал поле в конец", () => {
+    const q = decodeQuote(QUOTE_OK_V3);
+    if ("error" in q) throw new Error("ожидался Ok");
+    // Живое чтение 2026-11-25: 1 TAL отдаётся за 11 780,2504 USDT до вычетов.
+    expect(Number(q.price) / 1e18).toBeCloseTo(11780.2504, 4);
+    expect(q.net).toBe(q.gross - q.markupFee - q.networkFee);
+  });
+
+  it("лишние числа в конце не мешают, пока первые пять сходятся", () => {
+    const q = decodeQuote(QUOTE_OK_V3 + "ff".repeat(32));
+    if ("error" in q) throw new Error("ожидался Ok");
+    expect(Number(q.price) / 1e18).toBeCloseTo(11780.2504, 4);
+  });
+
+  it("поле, вставленное в начало, отвергается: арифметика не сходится", () => {
+    // Приписать поле в конец безопасно, вставить в начало — нет: тогда цена и
+    // выдача читались бы с чужих мест. Это ловит охранник, а не длина ответа.
+    const shifted = "0x00" + "00".repeat(16) + QUOTE_OK_V3.slice(4);
+    expect(() => decodeQuote(shifted)).toThrow();
+  });
+
+  it("не принимает ответ не из целых чисел и короче пяти", () => {
+    expect(() => decodeQuote(QUOTE_OK_V3.slice(0, 100))).toThrow();
+    expect(() => decodeQuote("0x00" + "00".repeat(16 * 4))).toThrow();
+  });
 });
 
 /** Узел-заглушка: отдаёт снимки реестра, а котировки — очередью ответов. */
@@ -143,6 +171,22 @@ describe("readPairPrice", () => {
     if ("error" in r) throw new Error(r.error);
     expect(r.price).toBeCloseTo(11929.6719, 4);
     expect(node.quoteCalls()).toBe(4);
+  });
+
+  it("ответ нового рантайма читается целиком: середина двух направлений", async () => {
+    const node = nodeOf([QUOTE_OK_V3, QUOTE_OK_V3_BUY]);
+    const r = await readPairPrice(REGISTRY, "TAL", "USDT", node.fetch);
+    if ("error" in r) throw new Error(r.error);
+    expect(r.price).toBeCloseTo((11780.2503819 + 11898.6448581) / 2, 4);
+    expect(r.spreadPct).toBeLessThan(2);
+  });
+
+  it("нечитаемый ответ котировки называет котировку, а не реестр", async () => {
+    const node = nodeOf(["0x00" + "00".repeat(16 * 4)]);
+    const r = await readPairPrice(REGISTRY, "TAL", "USDT", node.fetch);
+    expect(r).toEqual({ error: "quote_unreadable" });
+    // Перебор размеров заявки прекращается: сбой разбора не лечится суммой.
+    expect(node.quoteCalls()).toBe(1);
   });
 
   it("все размеры отвергнуты — честный код отказа, а не ноль", async () => {
