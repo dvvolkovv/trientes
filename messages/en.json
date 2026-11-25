@@ -2060,7 +2060,17 @@
     "companyCoinsHint": "Points without their own selection inherit these coins. Changing the set goes to a moderator.",
     "coinsInherited": "Nothing selected — this point shows the company set: {coins}",
     "paymentMethods": "Other ways to pay",
-    "bannerPreview": "This is how visitors see your banner. Tapping it opens the item."
+    "bannerPreview": "This is how visitors see your banner. Tapping it opens the item.",
+    "dashboard": {
+      "heading": "Working day",
+      "part": {
+        "sales": "sales",
+        "stock": "stock",
+        "tasks": "tasks",
+        "promos": "promos",
+        "customers": "messages"
+      }
+    }
   },
   "cabinet": {
     "kicker": "Section · Cabinet",
@@ -4865,7 +4875,8 @@
       "bad_form": "Could not read the upload.",
       "no_file": "Choose a file."
     },
-    "selfDrivenHint": "This supplier has no portal on Trientes, so you keep the order's statuses yourself: write down the date they gave you and mark the shipment when it leaves."
+    "selfDrivenHint": "This supplier has no portal on Trientes, so you keep the order's statuses yourself: write down the date they gave you and mark the shipment when it leaves.",
+    "ruleBelow": "below threshold"
   },
   "cabinetInterests": {
     "title": "Interests and routes",
@@ -5468,5 +5479,44 @@
         "failed": "Could not save. Try again."
       }
     }
+  },
+  "cabinetDashboard": {
+    "title": "Daily summary",
+    "subtitle": "The numbers of the working day. Each tile opens the section where the number can be broken down.",
+    "tile": {
+      "sales": "Sales today",
+      "stock": "Out of stock",
+      "tasks": "Open tasks",
+      "promos": "Running promos",
+      "customers": "Unread messages"
+    },
+    "sales": {
+      "week": "Last 7 days: {count}",
+      "noMoney": "no revenue today",
+      "cancelled": "cancelled: {count}"
+    },
+    "stock": {
+      "below": "below threshold: {count}",
+      "transit": "in transit: {count}"
+    },
+    "tasks": {
+      "mine": "yours: {count}",
+      "review": "on review: {count}",
+      "overdue": "overdue: {count}"
+    },
+    "promos": {
+      "left": "mailouts left today: {count}",
+      "live": "in the banner: {count}",
+      "pending": "on review: {count}"
+    },
+    "customers": {
+      "threads": "conversations: {count}"
+    },
+    "week": {
+      "heading": "Revenue over the last 7 days"
+    },
+    "timezoneNote": "Days are counted in {tz}.",
+    "timezoneMixed": "Your points are in different time zones, so the summary switched to UTC.",
+    "truncated": "Only the first receipts of the period are counted — see the reports section for the full picture."
   }
 }

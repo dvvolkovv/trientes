@@ -2060,7 +2060,17 @@
     "companyCoinsHint": "Punkte ohne eigene Auswahl erben diese Coins. Eine Änderung des Sets geht an einen Moderator",
     "coinsInherited": "Nichts ausgewählt — dieser Punkt zeigt das Unternehmens-Set: {coins}",
     "paymentMethods": "Weitere Zahlungsmöglichkeiten",
-    "bannerPreview": "So sehen Besucher dein Banner. Durch Tippen wird der Eintrag geöffnet."
+    "bannerPreview": "So sehen Besucher dein Banner. Durch Tippen wird der Eintrag geöffnet.",
+    "dashboard": {
+      "heading": "Arbeitstag",
+      "part": {
+        "sales": "Umsatz",
+        "stock": "Bestand",
+        "tasks": "Aufgaben",
+        "promos": "Aktionen",
+        "customers": "Nachrichten"
+      }
+    }
   },
   "cabinet": {
     "kicker": "Bereich · Kabinett",
@@ -4865,7 +4875,8 @@
       "bad_form": "Upload konnte nicht gelesen werden.",
       "no_file": "Wählen Sie eine Datei."
     },
-    "selfDrivenHint": "Dieser Lieferant hat kein Portal auf Trientes, daher pflegen Sie die Auftragsstatus selbst: Notieren Sie das von ihm genannte Datum und markieren Sie den Versand, sobald er erfolgt."
+    "selfDrivenHint": "Dieser Lieferant hat kein Portal auf Trientes, daher pflegen Sie die Auftragsstatus selbst: Notieren Sie das von ihm genannte Datum und markieren Sie den Versand, sobald er erfolgt.",
+    "ruleBelow": "unter dem Schwellenwert"
   },
   "cabinetInterests": {
     "title": "Interessen und Routen",
@@ -5468,5 +5479,44 @@
         "failed": "Konnte nicht gespeichert werden. Versuch es noch einmal."
       }
     }
+  },
+  "cabinetDashboard": {
+    "title": "Tagesübersicht",
+    "subtitle": "Die Zahlen des Arbeitstages. Jede Kachel öffnet den Bereich, in dem die Zahl aufgeschlüsselt werden kann.",
+    "tile": {
+      "sales": "Verkäufe heute",
+      "stock": "Nicht vorrätig",
+      "tasks": "Offene Aufgaben",
+      "promos": "Laufende Aktionen",
+      "customers": "Ungelesene Nachrichten"
+    },
+    "sales": {
+      "week": "Letzte 7 Tage: {count}",
+      "noMoney": "heute kein Umsatz",
+      "cancelled": "storniert: {count}"
+    },
+    "stock": {
+      "below": "unter dem Schwellenwert: {count}",
+      "transit": "im Transit: {count}"
+    },
+    "tasks": {
+      "mine": "Ihre: {count}",
+      "review": "in Prüfung: {count}",
+      "overdue": "überfällig: {count}"
+    },
+    "promos": {
+      "left": "heute verbleibende Mailings: {count}",
+      "live": "im Banner: {count}",
+      "pending": "in Prüfung: {count}"
+    },
+    "customers": {
+      "threads": "Unterhaltungen: {count}"
+    },
+    "week": {
+      "heading": "Umsatz der letzten 7 Tage"
+    },
+    "timezoneNote": "Tage werden in {tz} gezählt.",
+    "timezoneMixed": "Ihre Standorte liegen in unterschiedlichen Zeitzonen, daher wurde die Übersicht auf UTC umgestellt.",
+    "truncated": "Nur die ersten Belege des Zeitraums werden gezählt — siehe den Bereich Berichte für das vollständige Bild."
   }
 }

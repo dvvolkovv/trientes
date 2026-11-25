@@ -2060,7 +2060,17 @@
     "companyCoinsHint": "Lokacije bez vlastitog odabira nasljeđuju ove kovanice. Promjena skupa ide moderatoru.",
     "coinsInherited": "Ništa nije odabrano — ova lokacija prikazuje skup tvrtke: {coins}",
     "paymentMethods": "Drugi načini plaćanja",
-    "bannerPreview": "Ovako posjetitelji vide vaš banner. Dodirom se otvara stavka."
+    "bannerPreview": "Ovako posjetitelji vide vaš banner. Dodirom se otvara stavka.",
+    "dashboard": {
+      "heading": "Radni dan",
+      "part": {
+        "sales": "prodaja",
+        "stock": "zalihe",
+        "tasks": "zadaci",
+        "promos": "promocije",
+        "customers": "poruke"
+      }
+    }
   },
   "cabinet": {
     "kicker": "Odjeljak · Profil",
@@ -4865,7 +4875,8 @@
       "bad_form": "Nije moguće pročitati učitanu datoteku.",
       "no_file": "Odaberite datoteku."
     },
-    "selfDrivenHint": "Ovaj dobavljač nema portal na Trientesu, stoga sami vodite statuse narudžbe: zabilježite datum koji su vam dali i označite pošiljku kada bude otpremljena."
+    "selfDrivenHint": "Ovaj dobavljač nema portal na Trientesu, stoga sami vodite statuse narudžbe: zabilježite datum koji su vam dali i označite pošiljku kada bude otpremljena.",
+    "ruleBelow": "ispod praga"
   },
   "cabinetInterests": {
     "title": "Interesi i rute",
@@ -5468,5 +5479,44 @@
         "failed": "Nije moguće spremiti. Pokušajte ponovno."
       }
     }
+  },
+  "cabinetDashboard": {
+    "title": "Dnevni sažetak",
+    "subtitle": "Brojke radnog dana. Svaka pločica otvara odjeljak u kojem se broj može raščlaniti.",
+    "tile": {
+      "sales": "Prodaja danas",
+      "stock": "Nema na zalihi",
+      "tasks": "Otvoreni zadaci",
+      "promos": "Aktivne promocije",
+      "customers": "Nepročitane poruke"
+    },
+    "sales": {
+      "week": "Posljednjih 7 dana: {count}",
+      "noMoney": "danas nema prihoda",
+      "cancelled": "otkazano: {count}"
+    },
+    "stock": {
+      "below": "ispod praga: {count}",
+      "transit": "u tranzitu: {count}"
+    },
+    "tasks": {
+      "mine": "vaše: {count}",
+      "review": "na pregledu: {count}",
+      "overdue": "s istekom roka: {count}"
+    },
+    "promos": {
+      "left": "preostalih slanja e-pošte danas: {count}",
+      "live": "u banneru: {count}",
+      "pending": "na pregledu: {count}"
+    },
+    "customers": {
+      "threads": "razgovori: {count}"
+    },
+    "week": {
+      "heading": "Prihod u posljednjih 7 dana"
+    },
+    "timezoneNote": "Dani se broje u {tz}.",
+    "timezoneMixed": "Vaše lokacije su u različitim vremenskim zonama, pa je sažetak prebačen na UTC.",
+    "truncated": "Samo su prve potvrde u razdoblju uračunate — za potpunu sliku pogledati odjeljak izvješća."
   }
 }

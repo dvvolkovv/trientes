@@ -2060,7 +2060,17 @@
     "companyCoinsHint": "独自の選択がない拠点はこれらのコインを継承します。セットの変更はモデレーターに送られます",
     "coinsInherited": "何も選択されていません — この拠点は会社のセットを表示します: {coins}",
     "paymentMethods": "その他の支払い方法",
-    "bannerPreview": "このバナーは訪問者にこのように表示されます。タップするとアイテムが開きます。"
+    "bannerPreview": "このバナーは訪問者にこのように表示されます。タップするとアイテムが開きます。",
+    "dashboard": {
+      "heading": "営業日",
+      "part": {
+        "sales": "売上",
+        "stock": "在庫",
+        "tasks": "タスク",
+        "promos": "プロモ",
+        "customers": "メッセージ"
+      }
+    }
   },
   "cabinet": {
     "kicker": "セクション · キャビネット",
@@ -4865,7 +4875,8 @@
       "bad_form": "アップロードを読み取れませんでした。",
       "no_file": "ファイルを選択してください。"
     },
-    "selfDrivenHint": "この仕入先にはTrientes上のポータルがないため、注文のステータスはあなたが自分で管理します：相手から伝えられた日付を書き留め、出荷されたらマークしてください。"
+    "selfDrivenHint": "この仕入先にはTrientes上のポータルがないため、注文のステータスはあなたが自分で管理します：相手から伝えられた日付を書き留め、出荷されたらマークしてください。",
+    "ruleBelow": "しきい値未満"
   },
   "cabinetInterests": {
     "title": "関心とルート",
@@ -5468,5 +5479,44 @@
         "failed": "保存できませんでした。もう一度お試しください."
       }
     }
+  },
+  "cabinetDashboard": {
+    "title": "日次概要",
+    "subtitle": "営業日の数値。各タイルを開くと、その数値の内訳セクションが表示されます。",
+    "tile": {
+      "sales": "今日の売上",
+      "stock": "在庫切れ",
+      "tasks": "未対応タスク",
+      "promos": "実施中のプロモ",
+      "customers": "未読メッセージ"
+    },
+    "sales": {
+      "week": "過去7日間: {count}",
+      "noMoney": "本日の売上なし",
+      "cancelled": "キャンセル: {count}"
+    },
+    "stock": {
+      "below": "閾値未満: {count}",
+      "transit": "輸送中: {count}"
+    },
+    "tasks": {
+      "mine": "自分: {count}",
+      "review": "審査中: {count}",
+      "overdue": "期限超過: {count}"
+    },
+    "promos": {
+      "left": "本日の残り送信数: {count}",
+      "live": "バナー掲載中: {count}",
+      "pending": "審査中: {count}"
+    },
+    "customers": {
+      "threads": "会話: {count}"
+    },
+    "week": {
+      "heading": "過去7日間の売上"
+    },
+    "timezoneNote": "日付は{tz}基準で集計されます。",
+    "timezoneMixed": "拠点が異なるタイムゾーンにあるため、サマリーはUTCに切り替わりました。",
+    "truncated": "期間内の最初のレシートのみが集計対象です—全体像はレポートセクションを参照してください。"
   }
 }

@@ -59,6 +59,8 @@ const GLOSSARY: Record<string, string> = {
     "merchant → продавец; product passport → паспорт товара; offer → предложение",
     "rate (percentage) → ставка; shelf (sales warehouse) → полка",
     "customer → покупатель (never «клиент»); conversation / thread → диалог",
+    // Слайс CM: «Receipts today» перевелось как «Чеки оформления заказа сегодня».
+    "receipt (sales document) → чек (never «квитанция», never «оформление заказа»)",
     "pin (marker on the map) → метка (never «пин», never «булавка»)",
   ].join("\n"),
   hr: [

@@ -2060,7 +2060,17 @@
     "companyCoinsHint": "未单独选择的网点将继承这些币种。更改该集合将提交给审核员",
     "coinsInherited": "未选择任何项 — 此网点显示公司集合：{coins}",
     "paymentMethods": "其他支付方式",
-    "bannerPreview": "这是访客看到你的横幅的样子。点击它会打开该条目。"
+    "bannerPreview": "这是访客看到你的横幅的样子。点击它会打开该条目。",
+    "dashboard": {
+      "heading": "工作日",
+      "part": {
+        "sales": "销售",
+        "stock": "库存",
+        "tasks": "任务",
+        "promos": "促销",
+        "customers": "消息"
+      }
+    }
   },
   "cabinet": {
     "kicker": "板块 · 个人中心",
@@ -4865,7 +4875,8 @@
       "bad_form": "无法读取上传内容。",
       "no_file": "请选择文件。"
     },
-    "selfDrivenHint": "该供应商在 Trientes 上没有门户，因此订单状态由你自行维护：记下他们提供的日期，并在发货时进行标记。"
+    "selfDrivenHint": "该供应商在 Trientes 上没有门户，因此订单状态由你自行维护：记下他们提供的日期，并在发货时进行标记。",
+    "ruleBelow": "低于阈值"
   },
   "cabinetInterests": {
     "title": "兴趣与路线",
@@ -5468,5 +5479,44 @@
         "failed": "无法保存。请重试。"
       }
     }
+  },
+  "cabinetDashboard": {
+    "title": "每日摘要",
+    "subtitle": "工作日的数据。每个磁贴会打开可细分该数字的部分",
+    "tile": {
+      "sales": "今日销售",
+      "stock": "缺货",
+      "tasks": "未处理任务",
+      "promos": "进行中的促销",
+      "customers": "未读消息"
+    },
+    "sales": {
+      "week": "过去7天：{count}",
+      "noMoney": "今日无营收",
+      "cancelled": "已取消：{count}"
+    },
+    "stock": {
+      "below": "低于阈值：{count}",
+      "transit": "在途：{count}"
+    },
+    "tasks": {
+      "mine": "你的：{count}",
+      "review": "审核中：{count}",
+      "overdue": "逾期：{count}"
+    },
+    "promos": {
+      "left": "今日剩余邮件群发：{count}",
+      "live": "横幅中：{count}",
+      "pending": "审核中：{count}"
+    },
+    "customers": {
+      "threads": "会话：{count}"
+    },
+    "week": {
+      "heading": "最近7天收入"
+    },
+    "timezoneNote": "天数按{tz}计算。",
+    "timezoneMixed": "您的站点位于不同时区，因此摘要已切换为UTC。",
+    "truncated": "仅统计该期间的首批收据——完整情况请查看报表部分。"
   }
 }

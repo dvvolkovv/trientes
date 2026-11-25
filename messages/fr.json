@@ -2060,7 +2060,17 @@
     "companyCoinsHint": "Les points sans sélection propre héritent de ces cryptomonnaies. La modification de l'ensemble est transmise à un modérateur.",
     "coinsInherited": "Aucune sélection — ce point affiche l'ensemble de l'entreprise : {coins}",
     "paymentMethods": "Autres moyens de payer",
-    "bannerPreview": "Voici comment les visiteurs voient votre bannière. Un appui ouvre l'élément."
+    "bannerPreview": "Voici comment les visiteurs voient votre bannière. Un appui ouvre l'élément.",
+    "dashboard": {
+      "heading": "Journée de travail",
+      "part": {
+        "sales": "ventes",
+        "stock": "stock",
+        "tasks": "tâches",
+        "promos": "promos",
+        "customers": "messages"
+      }
+    }
   },
   "cabinet": {
     "kicker": "Section · Espace personnel",
@@ -4865,7 +4875,8 @@
       "bad_form": "Impossible de lire le téléversement.",
       "no_file": "Choisissez un fichier."
     },
-    "selfDrivenHint": "Ce fournisseur n'a pas de portail sur Trientes, vous gérez donc vous-même les statuts de la commande : notez la date qu'ils vous ont donnée et marquez l'expédition à son départ."
+    "selfDrivenHint": "Ce fournisseur n'a pas de portail sur Trientes, vous gérez donc vous-même les statuts de la commande : notez la date qu'ils vous ont donnée et marquez l'expédition à son départ.",
+    "ruleBelow": "sous le seuil"
   },
   "cabinetInterests": {
     "title": "Centres d’intérêt et itinéraires",
@@ -5304,7 +5315,7 @@
     "coinAmount": "Montant en devise",
     "rate": "Taux de change par pièce",
     "coinStated": "La devise, le taux et le montant sont ceux que vous indiquez : la plateforme ne voit pas le paiement lui-même",
-    "note": "Note",
+    "note": "Remarque",
     "discount": "Remise",
     "total": "Total",
     "cashback": "Cashback",
@@ -5468,5 +5479,44 @@
         "failed": "Enregistrement impossible. Réessayez."
       }
     }
+  },
+  "cabinetDashboard": {
+    "title": "Résumé quotidien",
+    "subtitle": "Les chiffres de la journée de travail. Chaque tuile ouvre la section où le chiffre peut être détaillé.",
+    "tile": {
+      "sales": "Ventes aujourd'hui",
+      "stock": "Rupture de stock",
+      "tasks": "Tâches ouvertes",
+      "promos": "Promotions en cours",
+      "customers": "Messages non lus"
+    },
+    "sales": {
+      "week": "7 derniers jours : {count}",
+      "noMoney": "aucun revenu aujourd’hui",
+      "cancelled": "annulés : {count}"
+    },
+    "stock": {
+      "below": "sous le seuil : {count}",
+      "transit": "en transit : {count}"
+    },
+    "tasks": {
+      "mine": "les vôtres : {count}",
+      "review": "en cours d’examen : {count}",
+      "overdue": "en retard : {count}"
+    },
+    "promos": {
+      "left": "envois restants aujourd’hui : {count}",
+      "live": "dans la bannière : {count}",
+      "pending": "en cours d’examen : {count}"
+    },
+    "customers": {
+      "threads": "conversations : {count}"
+    },
+    "week": {
+      "heading": "Chiffre d’affaires des 7 derniers jours"
+    },
+    "timezoneNote": "Les jours sont comptés en {tz}.",
+    "timezoneMixed": "Vos points sont dans des fuseaux horaires différents, le récapitulatif est donc passé en UTC.",
+    "truncated": "Seuls les premiers reçus de la période sont comptés — consultez la section Rapports pour une vue d’ensemble."
   }
 }

@@ -2060,7 +2060,17 @@
     "companyCoinsHint": "Pontos sem seleção própria herdam essas moedas. Alterar o conjunto vai para um moderador",
     "coinsInherited": "Nada selecionado — este ponto mostra o conjunto da empresa: {coins}",
     "paymentMethods": "Outras formas de pagar",
-    "bannerPreview": "É assim que os visitantes veem seu banner. Ao tocar nele, o item é aberto."
+    "bannerPreview": "É assim que os visitantes veem seu banner. Ao tocar nele, o item é aberto.",
+    "dashboard": {
+      "heading": "Dia de trabalho",
+      "part": {
+        "sales": "vendas",
+        "stock": "estoque",
+        "tasks": "tarefas",
+        "promos": "promoções",
+        "customers": "mensagens"
+      }
+    }
   },
   "cabinet": {
     "kicker": "Seção · Painel",
@@ -4865,7 +4875,8 @@
       "bad_form": "Não foi possível ler o upload.",
       "no_file": "Escolha um arquivo."
     },
-    "selfDrivenHint": "Este fornecedor não tem portal na Trientes, então você mantém os status do pedido por conta própria: anote a data que eles informaram e marque o envio quando ele sair."
+    "selfDrivenHint": "Este fornecedor não tem portal na Trientes, então você mantém os status do pedido por conta própria: anote a data que eles informaram e marque o envio quando ele sair.",
+    "ruleBelow": "abaixo do limite"
   },
   "cabinetInterests": {
     "title": "Interesses e rotas",
@@ -5468,5 +5479,44 @@
         "failed": "Não foi possível salvar. Tente novamente."
       }
     }
+  },
+  "cabinetDashboard": {
+    "title": "Resumo diário",
+    "subtitle": "Os números do dia de trabalho. Cada bloco abre a seção onde o número pode ser detalhado.",
+    "tile": {
+      "sales": "Vendas hoje",
+      "stock": "Sem estoque",
+      "tasks": "Tarefas abertas",
+      "promos": "Promoções ativas",
+      "customers": "Mensagens não lidas"
+    },
+    "sales": {
+      "week": "Últimos 7 dias: {count}",
+      "noMoney": "sem receita hoje",
+      "cancelled": "cancelados: {count}"
+    },
+    "stock": {
+      "below": "abaixo do limite: {count}",
+      "transit": "em trânsito: {count}"
+    },
+    "tasks": {
+      "mine": "suas: {count}",
+      "review": "em revisão: {count}",
+      "overdue": "atrasadas: {count}"
+    },
+    "promos": {
+      "left": "envios restantes hoje: {count}",
+      "live": "no banner: {count}",
+      "pending": "em revisão: {count}"
+    },
+    "customers": {
+      "threads": "conversas: {count}"
+    },
+    "week": {
+      "heading": "Receita nos últimos 7 dias"
+    },
+    "timezoneNote": "Os dias são contados em {tz}.",
+    "timezoneMixed": "Seus pontos estão em fusos horários diferentes, então o resumo mudou para UTC.",
+    "truncated": "Apenas os primeiros recibos do período são contados — veja a seção de relatórios para a visão completa."
   }
 }

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { deleteReorderRule, saveReorderRule } from "@/app/actions/supply";
 import { effectiveOption } from "@/lib/supply/select";
+import { belowThreshold } from "@/lib/supply/reorder";
 
 export type RuleRow = {
   id: string;
@@ -67,7 +68,16 @@ export function ReorderRules({
         <ul className="flex flex-col gap-2 mb-3">
           {rows.map((r) => (
             <li key={r.id} className="border border-hairline rounded-lg p-3">
-              <div className="text-sm font-medium">{r.productName}</div>
+              <div className="text-sm font-medium">
+                {r.productName}{" "}
+                {/* Порог достигнут — то же сравнение, которым сводка CM считает число
+                    «ниже порога»: иначе число на плитке нечем разобрать глазом здесь. */}
+                {belowThreshold(r) ? (
+                  <span className="ml-2 rounded-full bg-accent px-2 py-0.5 text-[10.5px] font-bold text-accent-foreground">
+                    {t("ruleBelow")}
+                  </span>
+                ) : null}
+              </div>
               <div className="text-[11px] text-muted num">
                 {r.warehouseName} · {t("ruleThreshold", { min: r.minQty, target: r.targetQty })} ·{" "}
                 {t("ruleOnHand", { qty: r.onHand })} · {r.supplierName}

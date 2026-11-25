@@ -2060,7 +2060,17 @@
     "companyCoinsHint": "Miesta bez vlastného výberu zdedia tieto mince. Zmena sady ide moderátorovi.",
     "coinsInherited": "Nič nie je vybrané — toto miesto zobrazuje sadu spoločnosti: {coins}",
     "paymentMethods": "Iné spôsoby platby",
-    "bannerPreview": "Takto návštevníci vidia váš banner. Ťuknutím sa položka otvorí"
+    "bannerPreview": "Takto návštevníci vidia váš banner. Ťuknutím sa položka otvorí",
+    "dashboard": {
+      "heading": "Pracovný deň",
+      "part": {
+        "sales": "predaje",
+        "stock": "zásoby",
+        "tasks": "úlohy",
+        "promos": "promo akcie",
+        "customers": "správy"
+      }
+    }
   },
   "cabinet": {
     "kicker": "Sekcia · Profil",
@@ -4865,7 +4875,8 @@
       "bad_form": "Nahraný súbor sa nepodarilo prečítať.",
       "no_file": "Vyberte súbor."
     },
-    "selfDrivenHint": "Tento dodávateľ nemá portál na Trientes, preto si stavy objednávky vediete sami: zapíšte si dátum, ktorý vám poskytol, a označte zásielku pri odoslaní."
+    "selfDrivenHint": "Tento dodávateľ nemá portál na Trientes, preto si stavy objednávky vediete sami: zapíšte si dátum, ktorý vám poskytol, a označte zásielku pri odoslaní.",
+    "ruleBelow": "pod hranicou"
   },
   "cabinetInterests": {
     "title": "Záujmy a trasy",
@@ -5468,5 +5479,44 @@
         "failed": "Uloženie zlyhalo. Skúste to znova."
       }
     }
+  },
+  "cabinetDashboard": {
+    "title": "Denný prehľad",
+    "subtitle": "Čísla pracovného dňa. Každá dlaždica otvorí sekciu, kde sa číslo dá podrobnejšie rozobrať.",
+    "tile": {
+      "sales": "Dnešné predaje",
+      "stock": "Vypredané",
+      "tasks": "Otvorené úlohy",
+      "promos": "Prebiehajúce promoakcie",
+      "customers": "Neprečítané správy"
+    },
+    "sales": {
+      "week": "Posledných 7 dní: {count}",
+      "noMoney": "dnes žiadne tržby",
+      "cancelled": "zrušené: {count}"
+    },
+    "stock": {
+      "below": "pod hranicou: {count}",
+      "transit": "v preprave: {count}"
+    },
+    "tasks": {
+      "mine": "vaše: {count}",
+      "review": "na kontrole: {count}",
+      "overdue": "po termíne: {count}"
+    },
+    "promos": {
+      "left": "dnes zostáva rozoslaní: {count}",
+      "live": "v bannere: {count}",
+      "pending": "na kontrole: {count}"
+    },
+    "customers": {
+      "threads": "konverzácie: {count}"
+    },
+    "week": {
+      "heading": "Tržby za posledných 7 dní"
+    },
+    "timezoneNote": "Dni sa počítajú v {tz}.",
+    "timezoneMixed": "Vaše miesta sú v rôznych časových pásmach, preto sa prehľad prepol na UTC.",
+    "truncated": "Započítané sú len prvé účtenky obdobia — pre úplný obraz pozrite sekciu reportov."
   }
 }

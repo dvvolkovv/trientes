@@ -4,7 +4,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { readTop100 } from "@/lib/snapshot";
 import { listSelfListedCards } from "@/lib/coin-card-directory";
-import { getViewerCompanyById, canEditSection, canManageMembers } from "@/lib/business";
+import { getViewerCompanyById, canEditSection, canManageMembers, canSeeSection } from "@/lib/business";
 import { CompanyProfileForm } from "@/components/business/company-profile-form";
 import { CompanyCard } from "@/components/business/company-card";
 import { DeletionRequestsSection } from "@/components/business/deletion-requests-section";
@@ -14,6 +14,7 @@ import { CabinetTile, TILE_GRID } from "@/components/cabinet/cabinet-tile";
 import { ADMIN_COLUMN } from "@/lib/admin-ui";
 import { parseChanges } from "@/lib/company-edit";
 import { visibleGroups, visibleTiles, GROUP_ICONS } from "@/lib/cabinet/company-nav";
+import { visibleDashCards } from "@/lib/dashboard/cards";
 import { NOT_DELETED, LIVE_POINT } from "@/lib/soft-delete";
 import { CompanyDocsSection } from "@/components/business/company-docs-section";
 import { AttentionBlock } from "@/components/business/attention-block";
@@ -47,6 +48,9 @@ export default async function CompanyManagementPage({
   const { edit: editParam, kyb: kybParam } = await searchParams;
   setRequestLocale(locale);
   const t = await getTranslations("business");
+  // Подпись плитки сводки читается из её же области: одна вещь двумя словами — та же
+  // болезнь, что «Сообщения клиентов» против «Сообщения покупателей» в BQ.
+  const td = await getTranslations("cabinetDashboard");
   const { userId, company, role, permissions } = await getViewerCompanyById(id);
   if (!userId) redirect(`/${locale}/login`);
   if (!company) notFound();
@@ -75,7 +79,8 @@ export default async function CompanyManagementPage({
 
   const gate = { permissions, isOwner };
   const groups = visibleGroups(gate);
-  const counts = groups.length > 0 ? await countsFor(company.id) : null;
+  const dashCards = visibleDashCards(permissions);
+  const counts = groups.length > 0 ? await countsFor(company.id, canSeeSection(permissions, "sales")) : null;
 
   // Публичные документы и умолчание точного адреса (слайс BU). Умолчание зависит
   // от того, есть ли у предприятия физические точки: у онлайн-предприятия адрес
@@ -242,6 +247,25 @@ export default async function CompanyManagementPage({
             </section>
           ) : null}
 
+          {/* Сводка рабочего дня (слайс CM). Своя страница, а не блок здесь: хаб — это
+              паспорт предприятия, а сводку открывают каждое утро и кладут в закладку.
+              Число на плитке дешёвое — чеки за сутки; всю сводку ради одной плитки
+              считать незачем (§ 9 спеки). */}
+          {dashCards.length > 0 ? (
+            <section className="space-y-3">
+              <h2 className="text-[13px] uppercase tracking-[0.2em] text-muted">{t("dashboard.heading")}</h2>
+              <div className={TILE_GRID}>
+                <CabinetTile
+                  href={`${base}/dashboard`}
+                  icon="📈"
+                  label={td("title")}
+                  value={counts?.todaySales ?? null}
+                  hint={dashCards.map((card) => t(`dashboard.part.${card.key}`)).join(" · ")}
+                />
+              </div>
+            </section>
+          ) : null}
+
           {groups.length > 0 && counts ? (
             <section className="space-y-3">
               <h2 className="text-[13px] uppercase tracking-[0.2em] text-muted">{t("groups.heading")}</h2>
@@ -281,9 +305,16 @@ export default async function CompanyManagementPage({
   );
 }
 
-async function countsFor(companyId: string) {
-  const pendingPoints = await prisma.companyPoint.count({
-    where: { companyId, status: "PENDING", ...NOT_DELETED },
-  });
-  return { pendingPoints };
+async function countsFor(companyId: string, seeSales: boolean) {
+  // Число на плитке сводки — чеки за сутки, и только тому, у кого есть право на
+  // кассу: выручка и её чеки — сведения раздела, а не хаба (правило CM, § 3).
+  const since = new Date();
+  since.setUTCHours(0, 0, 0, 0);
+  const [pendingPoints, todaySales] = await Promise.all([
+    prisma.companyPoint.count({ where: { companyId, status: "PENDING", ...NOT_DELETED } }),
+    seeSales
+      ? prisma.sale.count({ where: { companyId, status: "COMPLETED", createdAt: { gte: since } } })
+      : Promise.resolve(null),
+  ]);
+  return { pendingPoints, todaySales };
 }

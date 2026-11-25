@@ -2060,7 +2060,17 @@
     "companyCoinsHint": "Kendi seçimi olmayan noktalar bu coinleri devralır. Seti değiştirmek moderatöre gider.",
     "coinsInherited": "Hiçbir şey seçilmedi — bu nokta şirket setini gösterir: {coins}",
     "paymentMethods": "Diğer ödeme yöntemleri",
-    "bannerPreview": "Ziyaretçiler afişinizi bu şekilde görür. Üzerine dokunmak öğeyi açar."
+    "bannerPreview": "Ziyaretçiler afişinizi bu şekilde görür. Üzerine dokunmak öğeyi açar.",
+    "dashboard": {
+      "heading": "Çalışma günü",
+      "part": {
+        "sales": "satışlar",
+        "stock": "stok",
+        "tasks": "görevler",
+        "promos": "promosyonlar",
+        "customers": "mesajlar"
+      }
+    }
   },
   "cabinet": {
     "kicker": "Bölüm · Kabin",
@@ -4865,7 +4875,8 @@
       "bad_form": "Yükleme okunamadı.",
       "no_file": "Bir dosya seçin."
     },
-    "selfDrivenHint": "Bu tedarikçinin Trientes'te bir portalı yok, bu yüzden sipariş durumlarını kendin takip edersin: verdikleri tarihi not al ve sevkiyat yola çıktığında işaretle."
+    "selfDrivenHint": "Bu tedarikçinin Trientes'te bir portalı yok, bu yüzden sipariş durumlarını kendin takip edersin: verdikleri tarihi not al ve sevkiyat yola çıktığında işaretle.",
+    "ruleBelow": "eşik altında"
   },
   "cabinetInterests": {
     "title": "İlgi alanları ve rotalar",
@@ -5468,5 +5479,44 @@
         "failed": "Kaydedilemedi. Tekrar deneyin."
       }
     }
+  },
+  "cabinetDashboard": {
+    "title": "Günlük özet",
+    "subtitle": "Çalışma gününün rakamları. Her kart, sayının ayrıntılandırılabildiği bölümü açar.",
+    "tile": {
+      "sales": "Bugünkü satışlar",
+      "stock": "Stokta yok",
+      "tasks": "Açık görevler",
+      "promos": "Devam eden promosyonlar",
+      "customers": "Okunmamış mesajlar"
+    },
+    "sales": {
+      "week": "Son 7 gün: {count}",
+      "noMoney": "bugün gelir yok",
+      "cancelled": "iptal: {count}"
+    },
+    "stock": {
+      "below": "eşik altında: {count}",
+      "transit": "yolda: {count}"
+    },
+    "tasks": {
+      "mine": "sizinkiler: {count}",
+      "review": "incelemede: {count}",
+      "overdue": "gecikmiş: {count}"
+    },
+    "promos": {
+      "left": "bugün kalan gönderimler: {count}",
+      "live": "bannerda: {count}",
+      "pending": "incelemede: {count}"
+    },
+    "customers": {
+      "threads": "sohbetler: {count}"
+    },
+    "week": {
+      "heading": "Son 7 gündeki gelir"
+    },
+    "timezoneNote": "Günler {tz} saat diliminde sayılır.",
+    "timezoneMixed": "Noktalarınız farklı saat dilimlerinde, bu yüzden özet UTC'ye geçti.",
+    "truncated": "Dönemin yalnızca ilk tahsilatları sayıldı — tam resim için raporlar bölümüne bakın."
   }
 }
