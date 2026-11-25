@@ -1843,7 +1843,8 @@
       "chat": "Team-Chat",
       "customers": "Kundenmitteilungen",
       "ads": "Kartenbanner",
-      "sales": "Kasse"
+      "sales": "Kasse",
+      "reports": "Berichte"
     },
     "tileUnit": {
       "points": "{count} auf der Karte",
@@ -1858,7 +1859,8 @@
       "chat": "{count} Nachrichten",
       "customers": "Unterhaltungen: {count}",
       "ads": "{count} aktiv",
-      "sales": "Belege heute"
+      "sales": "Belege heute",
+      "reports": "Belege in 30 Tagen"
     },
     "tileEmpty": "noch nichts",
     "tileBadge": {
@@ -4382,7 +4384,8 @@
         "marketing": "Marketingmanager",
         "observer": "Beobachter",
         "hr": "HR",
-        "cashier": "Kassierer"
+        "cashier": "Kassierer",
+        "accountant": "Buchhalter"
       },
       "sections": {
         "card": "Shop-Karte",
@@ -4395,7 +4398,8 @@
         "supply": "Lieferanten und Bestellungen",
         "customers": "Kundennachrichten",
         "hiring": "Einstellung: Einladungslinks",
-        "sales": "Kasse und Belege"
+        "sales": "Kasse und Belege",
+        "reports": "Berichte und Export"
       },
       "levels": {
         "NONE": "Kein Zugriff",
@@ -4519,7 +4523,10 @@
       "AD_REJECTED": "Banner-Element vom Moderator abgelehnt",
       "AD_DELETED": "Banner-Element gelöscht",
       "SALE_RECORDED": "Verkauf erfasst",
-      "SALE_CANCELLED": "Beleg storniert"
+      "SALE_CANCELLED": "Beleg storniert",
+      "REPORT_EXPORTED": "Bericht exportiert",
+      "API_KEY_CREATED": "API-Schlüssel erstellt",
+      "API_KEY_REVOKED": "API-Schlüssel widerrufen"
     }
   },
   "cabinetTasks": {
@@ -4921,7 +4928,7 @@
     "sending": "Wird gesendet…",
     "cancel": "Abbrechen",
     "empty": "Noch keine Nachrichten.",
-    "store": "Shop",
+    "store": "Laden",
     "customer": "Kunde",
     "withdraw": "Zurückziehen",
     "withdrawn": "Nachricht zurückgezogen",
@@ -5387,6 +5394,79 @@
       "already_yours": "Dieser Beleg ist bereits in deiner Ablage.",
       "company_not_listed": "Dieser Verkäufer ist derzeit nicht im Plattform-Schaufenster, daher kann der Beleg nicht gespeichert werden.",
       "link_expired": "Der Link ist abgelaufen. Bitte den Verkäufer, den QR-Code erneut zu zeigen."
+    }
+  },
+  "cabinetReports": {
+    "title": "Berichte",
+    "subtitle": "Verkäufe, Rabatte und deklarierter Cashback über einen Zeitraum, bereit für Ihren Steuerberater.",
+    "range": {
+      "today": "Heute",
+      "week": "7 Tage",
+      "month": "30 Tage",
+      "custom": "Benutzerdefiniert"
+    },
+    "fromLabel": "Von",
+    "toLabel": "Bis",
+    "apply": "Anzeigen",
+    "timezoneNote": "Tage werden in {tz} gezählt.",
+    "timezoneMixed": "Ihre Standorte liegen in unterschiedlichen Zeitzonen, daher fällt der Bericht auf UTC zurück.",
+    "truncated": "Es werden nur die ersten {max} Belege dieses Zeitraums gezählt. Wählen Sie einen kürzeren Zeitraum, um alle zu sehen.",
+    "empty": "Keine Belege in diesem Zeitraum.",
+    "currencyHeading": "In {currency}",
+    "metric": {
+      "receipts": "Belege",
+      "revenue": "Eingenommen",
+      "listTotal": "Zu Listenpreisen",
+      "discount": "Gewährte Rabatte",
+      "cashback": "Deklarierter Cashback",
+      "cancelled": "Stornierte Belege"
+    },
+    "cashbackNote": "Cashback ist hier das, was Sie zugesagt haben, nicht ausgezahltes Geld: Die Plattform hat noch kein Wallet.",
+    "feesNote": "Die Plattform erhebt keine Gebühr auf Ihre Verkäufe, daher gibt es keine Gebühren-Spalte. Die Zahlung selbst erfolgt außerhalb der Plattform.",
+    "byDay": "Nach Tag",
+    "byPayment": "Nach Zahlungsmethode",
+    "byPoint": "Nach Verkaufsstelle",
+    "byCashier": "Nach Kassierer",
+    "topProducts": "Top-Produkte",
+    "noPoint": "Keine Verkaufsstelle",
+    "noCashier": "Unbekannt",
+    "payment": {
+      "CASH": "Bar",
+      "CARD": "Karte",
+      "TRANSFER": "Überweisung",
+      "CRYPTO": "Krypto",
+      "OTHER": "Sonstiges"
+    },
+    "exportHeading": "Export",
+    "exportHint": "Zwei Dateien für den gewählten Zeitraum: eine Zeile pro Beleg oder eine Zeile pro Belegposition. CSV, UTF-8, Spaltennamen auf Englisch, damit jedes Buchhaltungstool sie lesen kann.",
+    "exportReceipts": "Belege herunterladen",
+    "exportLines": "Positionen herunterladen",
+    "exportForbidden": "Du kannst die Zahlen hier lesen, aber zum Herunterladen der Datei brauchst du das Exportrecht — bitte den Inhaber darum.",
+    "api": {
+      "heading": "API für dein Buchhaltungssystem",
+      "hint": "Ein schreibgeschützter Schlüssel erlaubt deiner Kasse oder deinem Buchhaltungstool, Belege und die Zusammenfassung abzurufen. Darüber kann nichts geschrieben werden: Belege entstehen an der Kasse.",
+      "namePlaceholder": "Wofür ist er — z. B. Buchhaltungssoftware",
+      "create": "Schlüssel ausgeben",
+      "created": "ausgegeben {at}",
+      "lastUsed": "zuletzt verwendet {at}",
+      "neverUsed": "nie verwendet",
+      "revoke": "Widerrufen",
+      "revokeConfirm": "Diesen Schlüssel widerrufen",
+      "revoked": "widerrufen {at}",
+      "reasonPlaceholder": "Warum widerrufst du ihn?",
+      "freshHeading": "Hier ist der Schlüssel",
+      "freshOnce": "Jetzt kopieren: Wir bewahren nur seinen Fingerabdruck auf, daher kannst du ihn nur dieses eine Mal sehen.",
+      "docsHeading": "So rufst du ihn auf",
+      "docsNote": "Datumsangaben sind Tage in der Zeitzone deiner Standorte. Beträge in unterschiedlichen Währungen werden nie addiert: die Plattform kennt den Wechselkurs eines Verkaufs nicht.",
+      "error": {
+        "unauth": "Bitte melde dich erneut an.",
+        "forbidden": "Nur der Inhaber kann Schlüssel ausgeben und widerrufen.",
+        "name_invalid": "Gib dem Schlüssel einen Namen mit 2 bis 60 Zeichen.",
+        "too_many": "Fünf aktive Schlüssel sind das Limit. Widerrufe einen, den du nicht mehr nutzt.",
+        "reason_required": "Sag in wenigen Worten, warum der Schlüssel widerrufen wird.",
+        "not_found": "Dieser Schlüssel ist bereits widerrufen.",
+        "failed": "Konnte nicht gespeichert werden. Versuch es noch einmal."
+      }
     }
   }
 }

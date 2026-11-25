@@ -149,6 +149,20 @@ async function countTiles(
       })(),
     );
   }
+  if (want.has("reports")) {
+    jobs.push(
+      (async () => {
+        // Число — исполненные чеки за 30 дней: отчётность читают месяцем, а не днём,
+        // и это ровно тот период, который открывается на странице по умолчанию.
+        const since = new Date(Date.now() - 30 * 24 * 3600 * 1000);
+        out.reports = {
+          value: await prisma.sale.count({
+            where: { companyId, status: "COMPLETED", createdAt: { gte: since } },
+          }),
+        };
+      })(),
+    );
+  }
   if (want.has("warehouses")) {
     jobs.push(
       (async () => {

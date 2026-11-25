@@ -1843,7 +1843,8 @@
       "chat": "Takım sohbeti",
       "customers": "Müşteri mesajları",
       "ads": "Kart afişi",
-      "sales": "Kasa"
+      "sales": "Kasa",
+      "reports": "Raporlar"
     },
     "tileUnit": {
       "points": "{count} haritada",
@@ -1858,7 +1859,8 @@
       "chat": "{count} mesaj",
       "customers": "Sohbetler: {count}",
       "ads": "{count} canlı",
-      "sales": "bugünkü makbuzlar"
+      "sales": "bugünkü makbuzlar",
+      "reports": "30 günde makbuz"
     },
     "tileEmpty": "henüz bir şey yok",
     "tileBadge": {
@@ -4382,7 +4384,8 @@
         "marketing": "Pazarlamacı",
         "observer": "Gözlemci",
         "hr": "İK",
-        "cashier": "Kasiyer"
+        "cashier": "Kasiyer",
+        "accountant": "Muhasebeci"
       },
       "sections": {
         "card": "Mağaza kartı",
@@ -4395,7 +4398,8 @@
         "supply": "Tedarikçiler ve siparişler",
         "customers": "Müşteri mesajları",
         "hiring": "İşe alım: davet bağlantıları",
-        "sales": "Kasa ve fişler"
+        "sales": "Kasa ve fişler",
+        "reports": "Raporlar ve dışa aktarma"
       },
       "levels": {
         "NONE": "Erişim yok",
@@ -4519,7 +4523,10 @@
       "AD_REJECTED": "Banner öğesi bir moderatör tarafından reddedildi",
       "AD_DELETED": "Banner öğesi silindi",
       "SALE_RECORDED": "Satış kaydedildi",
-      "SALE_CANCELLED": "Fiş iptal edildi"
+      "SALE_CANCELLED": "Fiş iptal edildi",
+      "REPORT_EXPORTED": "Rapor dışa aktarıldı",
+      "API_KEY_CREATED": "API anahtarı oluşturuldu",
+      "API_KEY_REVOKED": "API anahtarı iptal edildi"
     }
   },
   "cabinetTasks": {
@@ -5353,7 +5360,7 @@
     "mySubtitle": "Satıcılardan kaydettiğiniz fişler. Satıcının kaydettiği şekilde saklanırlar.",
     "myEmpty": "Henüz fiş yok. Satın alımdan sonra satıcı size bir bağlantı veya QR kodu verir.",
     "bearerHint": "Bu bağlantıya sahip olan herkes fişi okuyabilir — kâğıt fiş gibi saklayın.",
-    "number": "No. {number}",
+    "number": "No: {number}",
     "cancelled": "Satıcı tarafından iptal edildi",
     "wasPrice": "raf fiyatı {price}",
     "discount": "İndirim",
@@ -5387,6 +5394,79 @@
       "already_yours": "Bu fiş zaten dolabınızda.",
       "company_not_listed": "Bu satıcı şu anda platform vitrini listesinde değil, bu yüzden makbuz kaydedilemez.",
       "link_expired": "Bağlantının süresi dolmuş. Satıcıdan QR kodunu yeniden göstermesini isteyin."
+    }
+  },
+  "cabinetReports": {
+    "title": "Raporlar",
+    "subtitle": "Belirli bir dönemdeki satışlar, indirimler ve beyan edilen cashback; mali müşavirinize teslim etmeye hazır.",
+    "range": {
+      "today": "Bugün",
+      "week": "7 gün",
+      "month": "30 gün",
+      "custom": "Özel"
+    },
+    "fromLabel": "Başlangıç",
+    "toLabel": "Bitiş",
+    "apply": "Göster",
+    "timezoneNote": "Günler {tz} saat dilimine göre sayılır.",
+    "timezoneMixed": "Noktalarınız farklı saat dilimlerindedir, bu yüzden rapor UTC'ye döner.",
+    "truncated": "Bu dönemde yalnızca ilk {max} fiş sayılır. Hepsini görmek için daha kısa bir dönem seçin.",
+    "empty": "Bu dönemde fiş yok.",
+    "currencyHeading": "{currency} cinsinden",
+    "metric": {
+      "receipts": "Fişler",
+      "revenue": "Tahsilat",
+      "listTotal": "Liste fiyatlarıyla",
+      "discount": "Verilen indirimler",
+      "cashback": "Beyan edilen cashback",
+      "cancelled": "İptal edilen fişler"
+    },
+    "cashbackNote": "Buradaki cashback, ödediğiniz para değil; söz verdiğiniz tutardır: platformun henüz cüzdanı yok.",
+    "feesNote": "Platform satışlarınızdan ücret almaz, bu yüzden bir ücret sütunu yoktur. Ödemenin kendisi platform dışında gerçekleşir.",
+    "byDay": "Güne göre",
+    "byPayment": "Ödeme yöntemine göre",
+    "byPoint": "Satış noktasına göre",
+    "byCashier": "Kasiyere göre",
+    "topProducts": "En çok satan ürünler",
+    "noPoint": "Nokta yok",
+    "noCashier": "Bilinmiyor",
+    "payment": {
+      "CASH": "Nakit",
+      "CARD": "Kart",
+      "TRANSFER": "Havale",
+      "CRYPTO": "Kripto",
+      "OTHER": "Diğer"
+    },
+    "exportHeading": "Dışa aktar",
+    "exportHint": "Seçilen dönem için iki dosya: fiş başına bir satır veya fiş satırı başına bir satır. CSV, UTF-8, sütun adları İngilizce, böylece herhangi bir muhasebe aracı bunları okuyabilir.",
+    "exportReceipts": "Fişleri indir",
+    "exportLines": "Satırları indir",
+    "exportForbidden": "Rakamları burada okuyabilirsiniz, ama dosya indirmek için dışa aktarma yetkisi gerekir — bunun için sahibinden isteyin.",
+    "api": {
+      "heading": "Muhasebe sisteminiz için API",
+      "hint": "Salt-okunur bir anahtar, yazar kasa ya da muhasebe aracınızın fişleri ve özeti çekmesine izin verir. Üzerinden hiçbir şey yazılamaz: fişler yazar kasada oluşturulur.",
+      "namePlaceholder": "Ne için — örn. muhasebecinin yazılımı",
+      "create": "Anahtar oluştur",
+      "created": "verildi {at}",
+      "lastUsed": "son kullanıldı {at}",
+      "neverUsed": "hiç kullanılmadı",
+      "revoke": "İptal et",
+      "revokeConfirm": "Bu anahtarı iptal et",
+      "revoked": "iptal edildi {at}",
+      "reasonPlaceholder": "Neden iptal ediyorsunuz?",
+      "freshHeading": "İşte anahtar",
+      "freshOnce": "Şimdi kopyalayın: yalnızca parmak izini saklarız, bu yüzden onu görebileceğiniz tek zaman budur.",
+      "docsHeading": "Nasıl çağrılır",
+      "docsNote": "Tarihler, noktalarınızın saat dilimindeki günlerdir. Farklı para birimlerinin tutarları asla toplanmaz: platform bir satışın döviz kuruna tanık olmadı.",
+      "error": {
+        "unauth": "Lütfen tekrar oturum açın.",
+        "forbidden": "Yalnızca sahibi anahtar oluşturabilir ve iptal edebilir.",
+        "name_invalid": "Anahtara 2 ila 60 karakterlik bir ad verin.",
+        "too_many": "Beş canlı anahtar sınırdır. Artık kullanmadığınız birini iptal edin.",
+        "reason_required": "Kısaca anahtarın neden iptal edildiğini söyleyin.",
+        "not_found": "O anahtar zaten iptal edilmiş.",
+        "failed": "Kaydedilemedi. Tekrar deneyin."
+      }
     }
   }
 }

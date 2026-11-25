@@ -1843,7 +1843,8 @@
       "chat": "Chat da equipe",
       "customers": "Mensagens de clientes",
       "ads": "Banner de cartão",
-      "sales": "Caixa"
+      "sales": "Caixa",
+      "reports": "Relatórios"
     },
     "tileUnit": {
       "points": "{count} no mapa",
@@ -1858,7 +1859,8 @@
       "chat": "{count} mensagens",
       "customers": "Conversas: {count}",
       "ads": "{count} no ar",
-      "sales": "recibos hoje"
+      "sales": "recibos hoje",
+      "reports": "recibos em 30 dias"
     },
     "tileEmpty": "ainda nada",
     "tileBadge": {
@@ -4382,7 +4384,8 @@
         "marketing": "Marketing",
         "observer": "Observador",
         "hr": "RH",
-        "cashier": "Caixa"
+        "cashier": "Caixa",
+        "accountant": "Contador"
       },
       "sections": {
         "card": "Ficha da loja",
@@ -4395,7 +4398,8 @@
         "supply": "Fornecedores e pedidos",
         "customers": "Mensagens de clientes",
         "hiring": "Contratação: links de convite",
-        "sales": "Caixa e recibos"
+        "sales": "Caixa e recibos",
+        "reports": "Relatórios e exportação"
       },
       "levels": {
         "NONE": "Sem acesso",
@@ -4519,7 +4523,10 @@
       "AD_REJECTED": "Item de banner rejeitado por um moderador",
       "AD_DELETED": "Item do banner excluído",
       "SALE_RECORDED": "Venda registrada",
-      "SALE_CANCELLED": "Recibo cancelado"
+      "SALE_CANCELLED": "Recibo cancelado",
+      "REPORT_EXPORTED": "Relatório exportado",
+      "API_KEY_CREATED": "Chave de API emitida",
+      "API_KEY_REVOKED": "Chave de API revogada"
     }
   },
   "cabinetTasks": {
@@ -5387,6 +5394,79 @@
       "already_yours": "Este recibo já está no seu painel.",
       "company_not_listed": "Este vendedor não está na vitrine da plataforma no momento, portanto o recibo não pode ser salvo.",
       "link_expired": "O link expirou. Peça ao vendedor para mostrar o código QR novamente."
+    }
+  },
+  "cabinetReports": {
+    "title": "Relatórios",
+    "subtitle": "Vendas, descontos e cashback declarado em um período, pronto para entregar ao seu contador.",
+    "range": {
+      "today": "Hoje",
+      "week": "7 dias",
+      "month": "30 dias",
+      "custom": "Personalizado"
+    },
+    "fromLabel": "De",
+    "toLabel": "Até",
+    "apply": "Mostrar",
+    "timezoneNote": "Os dias são contados em {tz}.",
+    "timezoneMixed": "Seus pontos ficam em fusos horários diferentes, então o relatório usa UTC.",
+    "truncated": "Apenas os primeiros {max} recibos deste período são contados. Escolha um período menor para ver todos.",
+    "empty": "Nenhum recibo neste período.",
+    "currencyHeading": "Em {currency}",
+    "metric": {
+      "receipts": "Recibos",
+      "revenue": "Recebido",
+      "listTotal": "A preços de tabela",
+      "discount": "Descontos concedidos",
+      "cashback": "Cashback declarado",
+      "cancelled": "Recibos cancelados"
+    },
+    "cashbackNote": "Cashback aqui é o que você prometeu, não o dinheiro pago: a plataforma ainda não tem carteira.",
+    "feesNote": "A plataforma não cobra taxa nas suas vendas, então não há coluna de taxa. O pagamento em si acontece fora da plataforma.",
+    "byDay": "Por dia",
+    "byPayment": "Por forma de pagamento",
+    "byPoint": "Por ponto de venda",
+    "byCashier": "Por caixa",
+    "topProducts": "Produtos mais vendidos",
+    "noPoint": "Sem ponto",
+    "noCashier": "Desconhecido",
+    "payment": {
+      "CASH": "Dinheiro",
+      "CARD": "Cartão",
+      "TRANSFER": "Transferência",
+      "CRYPTO": "Cripto",
+      "OTHER": "Outro"
+    },
+    "exportHeading": "Exportar",
+    "exportHint": "Dois arquivos para o período selecionado: uma linha por recibo, ou uma linha por item do recibo. CSV, UTF-8, nomes de colunas em inglês para que qualquer ferramenta contábil possa lê-los.",
+    "exportReceipts": "Baixar recibos",
+    "exportLines": "Baixar linhas",
+    "exportForbidden": "Você pode ver os números aqui, mas baixar o arquivo exige o direito de exportação — peça ao proprietário.",
+    "api": {
+      "heading": "API para seu sistema contábil",
+      "hint": "Uma chave somente leitura permite que seu caixa ou ferramenta contábil busque recibos e o resumo. Nada pode ser escrito por ela: os recibos são criados no caixa.",
+      "namePlaceholder": "Para que é — ex.: software do contador",
+      "create": "Emitir uma chave",
+      "created": "emitida em {at}",
+      "lastUsed": "usada pela última vez em {at}",
+      "neverUsed": "nunca usada",
+      "revoke": "Revogar",
+      "revokeConfirm": "Revogar esta chave",
+      "revoked": "revogada em {at}",
+      "reasonPlaceholder": "Por que você está revogando a chave?",
+      "freshHeading": "Aqui está a chave",
+      "freshOnce": "Copie agora: guardamos apenas a sua impressão digital, então esta é a única vez que você poderá vê-la.",
+      "docsHeading": "Como chamá-la",
+      "docsNote": "Datas são dias no fuso horário dos seus pontos. Valores de diferentes moedas nunca são somados: a plataforma não presenciou a taxa de câmbio de uma venda.",
+      "error": {
+        "unauth": "Faça login novamente.",
+        "forbidden": "Somente o proprietário pode emitir e revogar chaves.",
+        "name_invalid": "Dê à chave um nome de 2 a 60 caracteres.",
+        "too_many": "Cinco chaves ativas é o limite. Revogue uma que você não usa mais.",
+        "reason_required": "Diga em poucas palavras por que a chave está sendo revogada.",
+        "not_found": "Essa chave já foi revogada.",
+        "failed": "Não foi possível salvar. Tente novamente."
+      }
     }
   }
 }

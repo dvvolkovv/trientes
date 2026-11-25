@@ -1843,7 +1843,8 @@
       "chat": "Tímový chat",
       "customers": "Správy od zákazníkov",
       "ads": "Baner karty",
-      "sales": "Pokladňa"
+      "sales": "Pokladňa",
+      "reports": "Prehľady"
     },
     "tileUnit": {
       "points": "{count} na mape",
@@ -1858,7 +1859,8 @@
       "chat": "{count} správ",
       "customers": "Konverzácie: {count}",
       "ads": "{count} aktívne",
-      "sales": "účtenky dnes"
+      "sales": "účtenky dnes",
+      "reports": "účtenky za 30 dní"
     },
     "tileEmpty": "zatiaľ nič",
     "tileBadge": {
@@ -4382,7 +4384,8 @@
         "marketing": "Marketér",
         "observer": "Pozorovateľ",
         "hr": "HR",
-        "cashier": "Pokladník"
+        "cashier": "Pokladník",
+        "accountant": "Účtovník"
       },
       "sections": {
         "card": "Karta obchodu",
@@ -4395,7 +4398,8 @@
         "supply": "Dodávatelia a objednávky",
         "customers": "Správy od zákazníkov",
         "hiring": "Nábor: odkazy na pozvánky",
-        "sales": "Pokladňa a účtenky"
+        "sales": "Pokladňa a účtenky",
+        "reports": "Prehľady a export"
       },
       "levels": {
         "NONE": "Bez prístupu",
@@ -4519,7 +4523,10 @@
       "AD_REJECTED": "Bannerová položka zamietnutá moderátorom",
       "AD_DELETED": "Položka banneru odstránená",
       "SALE_RECORDED": "Predaj zaznamenaný",
-      "SALE_CANCELLED": "Účtenka zrušená"
+      "SALE_CANCELLED": "Účtenka zrušená",
+      "REPORT_EXPORTED": "Prehľad exportovaný",
+      "API_KEY_CREATED": "API kľúč vydaný",
+      "API_KEY_REVOKED": "API kľúč zrušený"
     }
   },
   "cabinetTasks": {
@@ -5387,6 +5394,79 @@
       "already_yours": "Táto účtenka je už vo vašom profile.",
       "company_not_listed": "Tento predajca momentálne nie je zaradený na platforme, preto účtenku nemožno uložiť.",
       "link_expired": "Platnosť odkazu vypršala. Požiadajte predajcu, aby znova ukázal QR kód."
+    }
+  },
+  "cabinetReports": {
+    "title": "Prehľady",
+    "subtitle": "Predaje, zľavy a deklarovaný cashback za obdobie, pripravené odovzdať vášmu daňovému poradcovi.",
+    "range": {
+      "today": "Dnes",
+      "week": "7 dní",
+      "month": "30 dní",
+      "custom": "Vlastné"
+    },
+    "fromLabel": "Od",
+    "toLabel": "Do",
+    "apply": "Zobraziť",
+    "timezoneNote": "Dni sa počítajú v {tz}.",
+    "timezoneMixed": "Vaše miesta sú v rôznych časových pásmach, preto sa prehľad prejde na UTC.",
+    "truncated": "Započítaných je len prvých {max} účteniek tohto obdobia. Vyberte kratšie obdobie, aby ste videli všetky.",
+    "empty": "V tomto období nie sú žiadne účtenky.",
+    "currencyHeading": "V {currency}",
+    "metric": {
+      "receipts": "Účtenky",
+      "revenue": "Tržby",
+      "listTotal": "Podľa cenníka",
+      "discount": "Poskytnuté zľavy",
+      "cashback": "Deklarovaný cashback",
+      "cancelled": "Stornované účtenky"
+    },
+    "cashbackNote": "Cashback je tu to, čo ste sľúbili, nie vyplatené peniaze: platforma zatiaľ nemá peňaženku.",
+    "feesNote": "Platforma si z vašich predajov neberie žiadny poplatok, preto tu nie je stĺpec s poplatkami. Samotná platba prebieha mimo platformy.",
+    "byDay": "Podľa dňa",
+    "byPayment": "Podľa spôsobu platby",
+    "byPoint": "Podľa miesta predaja",
+    "byCashier": "Podľa pokladníka",
+    "topProducts": "Top produkty",
+    "noPoint": "Žiadne miesto",
+    "noCashier": "Neznáme",
+    "payment": {
+      "CASH": "Hotovosť",
+      "CARD": "Karta",
+      "TRANSFER": "Prevod",
+      "CRYPTO": "Krypto",
+      "OTHER": "Iné"
+    },
+    "exportHeading": "Export",
+    "exportHint": "Dva súbory za vybrané obdobie: jeden riadok na účtenku alebo jeden riadok na položku účtenky. CSV, UTF-8, názvy stĺpcov v angličtine, aby ich vedel prečítať každý účtovný nástroj.",
+    "exportReceipts": "Stiahnuť účtenky",
+    "exportLines": "Stiahnuť položky",
+    "exportForbidden": "Tu si môžete pozrieť čísla, ale na stiahnutie súboru potrebujete právo na export — požiadajte oň vlastníka.",
+    "api": {
+      "heading": "API pre váš účtovný systém",
+      "hint": "Kľúč len na čítanie umožní vašej pokladni alebo účtovnému nástroju sťahovať účtenky a súhrn. Cez tento kľúč sa nič nezapisuje: účtenky vznikajú v pokladni.",
+      "namePlaceholder": "Na čo slúži — napr. softvér účtovníka",
+      "create": "Vygenerovať kľúč",
+      "created": "vygenerovaný {at}",
+      "lastUsed": "naposledy použitý {at}",
+      "neverUsed": "nikdy nepoužitý",
+      "revoke": "Zneplatniť",
+      "revokeConfirm": "Zneplatniť tento kľúč",
+      "revoked": "zneplatnený {at}",
+      "reasonPlaceholder": "Prečo ho zneplatňujete?",
+      "freshHeading": "Tu je kľúč",
+      "freshOnce": "Skopírujte si ho teraz: uchovávame len jeho odtlačok, takže toto je jediný moment, keď ho môžete vidieť.",
+      "docsHeading": "Ako ho volať",
+      "docsNote": "Dátumy sú dni v časovom pásme vašich miest. Čiastky v rôznych menách sa nikdy nesčítavajú: platforma nepozná kurz konkrétneho predaja.",
+      "error": {
+        "unauth": "Prihláste sa, prosím, znova.",
+        "forbidden": "Kľúče môže generovať a zneplatňovať len vlastník.",
+        "name_invalid": "Zadajte kľúču názov s dĺžkou 2 až 60 znakov.",
+        "too_many": "Limit je päť aktívnych kľúčov. Zneplatnite jeden, ktorý už nepoužívate.",
+        "reason_required": "V krátkosti uveďte, prečo sa kľúč zneplatňuje.",
+        "not_found": "Tento kľúč je už zneplatnený.",
+        "failed": "Uloženie zlyhalo. Skúste to znova."
+      }
     }
   }
 }

@@ -1843,7 +1843,8 @@
       "chat": "チームチャット",
       "customers": "カスタマーメッセージ",
       "ads": "カードバナー",
-      "sales": "レジ"
+      "sales": "レジ",
+      "reports": "レポート"
     },
     "tileUnit": {
       "points": "{count}件（地図上）",
@@ -1858,7 +1859,8 @@
       "chat": "{count}件のメッセージ",
       "customers": "会話数: {count}",
       "ads": "{count}件配信中",
-      "sales": "本日のレシート数"
+      "sales": "本日のレシート数",
+      "reports": "30日間のレシート"
     },
     "tileEmpty": "まだありません",
     "tileBadge": {
@@ -4382,7 +4384,8 @@
         "marketing": "マーケター",
         "observer": "オブザーバー",
         "hr": "人事",
-        "cashier": "レジ係"
+        "cashier": "レジ係",
+        "accountant": "経理担当者"
       },
       "sections": {
         "card": "店舗カード",
@@ -4395,7 +4398,8 @@
         "supply": "仕入先と発注",
         "customers": "顧客メッセージ",
         "hiring": "採用: 招待リンク",
-        "sales": "レジとレシート"
+        "sales": "レジとレシート",
+        "reports": "レポートとエクスポート"
       },
       "levels": {
         "NONE": "アクセスなし",
@@ -4519,7 +4523,10 @@
       "AD_REJECTED": "バナー項目がモデレーターに却下された",
       "AD_DELETED": "バナー項目が削除されました",
       "SALE_RECORDED": "販売を記録しました",
-      "SALE_CANCELLED": "レシートを取り消しました"
+      "SALE_CANCELLED": "レシートを取り消しました",
+      "REPORT_EXPORTED": "レポートをエクスポートしました",
+      "API_KEY_CREATED": "APIキーを発行しました",
+      "API_KEY_REVOKED": "APIキーを取り消しました"
     }
   },
   "cabinetTasks": {
@@ -5387,6 +5394,79 @@
       "already_yours": "このレシートは既にあなたのマイページにあります。",
       "company_not_listed": "この販売者は現在プラットフォームの掲載一覧にないため、レシートを保存できません。",
       "link_expired": "リンクの有効期限が切れました。販売者にQRコードの提示をもう一度依頼してください."
+    }
+  },
+  "cabinetReports": {
+    "title": "レポート",
+    "subtitle": "期間中の売上、割引、申告済みキャッシュバックを集計。税理士にそのまま渡せます。",
+    "range": {
+      "today": "今日",
+      "week": "7日間",
+      "month": "30日間",
+      "custom": "カスタム"
+    },
+    "fromLabel": "開始",
+    "toLabel": "終了",
+    "apply": "表示",
+    "timezoneNote": "日付は{tz}で集計されます。",
+    "timezoneMixed": "拠点が異なるタイムゾーンにあるため、レポートはUTCにフォールバックします。",
+    "truncated": "この期間の最初の{max}件のレシートのみが集計されます。すべてを表示するには、より短い期間を選択してください。",
+    "empty": "この期間のレシートはありません。",
+    "currencyHeading": "{currency}建て",
+    "metric": {
+      "receipts": "レシート",
+      "revenue": "売上",
+      "listTotal": "定価ベース",
+      "discount": "付与した割引",
+      "cashback": "宣言したキャッシュバック",
+      "cancelled": "キャンセルされたレシート"
+    },
+    "cashbackNote": "ここでのキャッシュバックは支払済み金額ではなく、あなたが約束した額を指します。プラットフォームにはまだウォレットがありません。",
+    "feesNote": "このプラットフォームはあなたの販売に手数料を取りません。そのため手数料の列はありません。支払い自体はプラットフォーム外で行われます。",
+    "byDay": "日別",
+    "byPayment": "支払い方法別",
+    "byPoint": "販売拠点別",
+    "byCashier": "レジ担当者別",
+    "topProducts": "上位商品",
+    "noPoint": "拠点なし",
+    "noCashier": "不明",
+    "payment": {
+      "CASH": "現金",
+      "CARD": "カード",
+      "TRANSFER": "振込",
+      "CRYPTO": "暗号資産",
+      "OTHER": "その他"
+    },
+    "exportHeading": "エクスポート",
+    "exportHint": "選択期間用に2つのファイル：レシートごとに1行、またはレシート行ごとに1行。CSV、UTF-8、列名は英語なので、どの会計ツールでも読み取れます。",
+    "exportReceipts": "レシートをダウンロード",
+    "exportLines": "行をダウンロード",
+    "exportForbidden": "ここで数値は閲覧できますが、ファイルのダウンロードにはエクスポート権限が必要です。オーナーに依頼してください。",
+    "api": {
+      "heading": "会計システム向けAPI",
+      "hint": "読み取り専用キーにより、レジや会計ツールがレシートとサマリーを取得できます。これを通じて書き込みはできません。レシートはレジで作成されます。",
+      "namePlaceholder": "用途（例：会計士のソフト）",
+      "create": "キーを発行",
+      "created": "発行 {at}",
+      "lastUsed": "最終使用 {at}",
+      "neverUsed": "未使用",
+      "revoke": "無効化",
+      "revokeConfirm": "このキーを無効化",
+      "revoked": "無効化 {at}",
+      "reasonPlaceholder": "なぜ無効化するのですか?",
+      "freshHeading": "キーはこちら",
+      "freshOnce": "今すぐコピーしてください。指紋のみを保持するため、表示されるのは今回限りです。",
+      "docsHeading": "呼び出し方",
+      "docsNote": "日付は、あなたのポイントのタイムゾーンでの日単位です。異なる通貨の金額は決して合算されません。プラットフォームは販売時の為替レートを確認していません。",
+      "error": {
+        "unauth": "もう一度サインインしてください。",
+        "forbidden": "キーの発行と無効化は所有者のみが行えます。",
+        "name_invalid": "キー名は2〜60文字で指定してください。",
+        "too_many": "有効なキーは最大5個です。使っていないものを無効化してください。",
+        "reason_required": "キーを無効化する理由を簡潔に記入してください。",
+        "not_found": "そのキーはすでに無効化されています。",
+        "failed": "保存できませんでした。もう一度お試しください."
+      }
     }
   }
 }

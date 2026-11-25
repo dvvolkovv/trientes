@@ -24,6 +24,14 @@
  * легаси-редактор, уже правящий цену и остаток, не получает с ней власти ни над
  * командой, ни над чужими деньгами.
  *
+ * Двенадцатый раздел `reports` — слайс CL, отчётность: ТЗ 6.6 прямо называет
+ * «отчётность» разделом доступов, и BE его не завёл по тому же правилу «право, за
+ * которым нет действий, — обещание, а не доступ». Уровни тут значат разное:
+ * `VIEW` смотрит сводку на экране, `EDIT` **выгружает файл** — вынос данных за
+ * пределы платформы это другое действие, и каждая выгрузка ложится в журнал.
+ * В наследие фазы 10 раздел входит, как `sales`: легаси-редактор уже видит каждый
+ * чек, и сводка над теми же чеками новой власти ему не даёт.
+ *
  * Девятый раздел `customers` появился в BQ вместе с перепиской покупателя: ТЗ 6.6 прямо
  * говорит «сотрудники **с нужной ролью** отвечают на сообщения покупателей». Общий чат
  * команды (BP) раздела прав не получил — комната принадлежит команде, — а внешняя
@@ -34,7 +42,7 @@
 /** Ролей на предприятие — столько, сколько читает человек в списке. */
 export const MAX_TEAM_ROLES = 20;
 
-export const TEAM_SECTIONS = ["card", "points", "products", "warehouses", "pricing", "tasks", "promos", "supply", "customers", "hiring", "sales"] as const;
+export const TEAM_SECTIONS = ["card", "points", "products", "warehouses", "pricing", "tasks", "promos", "supply", "customers", "hiring", "sales", "reports"] as const;
 export type TeamSection = (typeof TEAM_SECTIONS)[number];
 
 /** Уровней два; отсутствие строки — запрет по умолчанию, как очередь без гранта в AS. */
@@ -112,15 +120,19 @@ export function visibleSections(perms: TeamPermissions): TeamSection[] {
 }
 
 /**
- * Шаблоны ролей из ТЗ 6.6. Кассира и бухгалтера не заводим: кассы и отчётности в проекте
- * нет, а шаблон с пустым набором прав — насмешка. Шаблон только заполняет галочки формы;
+ * Шаблоны ролей из ТЗ 6.6. Кассир появился с кассой (CK), бухгалтер — с отчётностью
+ * (CL): до них шаблон с пустым набором прав был бы насмешкой. Шаблон только заполняет галочки формы;
  * сохранённая роль хранит свой набор и от шаблона больше не зависит.
  */
 export const ROLE_TEMPLATES: { key: string; permissions: TeamPermissions }[] = [
-  { key: "manager", permissions: { card: "EDIT", points: "EDIT", products: "EDIT", warehouses: "EDIT", pricing: "EDIT", tasks: "EDIT", promos: "EDIT", supply: "EDIT", customers: "EDIT", hiring: "EDIT", sales: "EDIT" } },
+  { key: "manager", permissions: { card: "EDIT", points: "EDIT", products: "EDIT", warehouses: "EDIT", pricing: "EDIT", tasks: "EDIT", promos: "EDIT", supply: "EDIT", customers: "EDIT", hiring: "EDIT", sales: "EDIT", reports: "EDIT" } },
   // Кассир проводит продажи и больше не делает ничего: товар ему надо видеть, чтобы
   // выбрать строку чека, а цену ставит предложение продавца, не он.
   { key: "cashier", permissions: { sales: "EDIT", products: "VIEW" } },
+  // Бухгалтер из ТЗ 6.6 — второй шаблон, которого BE не завёл («отчётности в проекте
+  // нет»). Он уносит цифры консультанту, поэтому `reports: EDIT`; чеки ему надо
+  // видеть, но кассой он не работает, и товар — только читать.
+  { key: "accountant", permissions: { reports: "EDIT", sales: "VIEW", products: "VIEW" } },
   // Кадровик зовёт людей и больше не делает ничего: витрина, склад и цена к найму
   // отношения не имеют.
   { key: "hr", permissions: { hiring: "EDIT", tasks: "VIEW" } },
@@ -129,7 +141,7 @@ export const ROLE_TEMPLATES: { key: string; permissions: TeamPermissions }[] = [
   { key: "stock", permissions: { points: "VIEW", products: "VIEW", warehouses: "EDIT", tasks: "VIEW", supply: "VIEW" } },
   // Маркетолог и есть голос магазина — переписку с покупателем ведёт он.
   { key: "marketing", permissions: { card: "EDIT", products: "VIEW", pricing: "EDIT", tasks: "VIEW", promos: "EDIT", customers: "EDIT" } },
-  { key: "observer", permissions: { card: "VIEW", points: "VIEW", products: "VIEW", warehouses: "VIEW", pricing: "VIEW", tasks: "VIEW", promos: "VIEW", supply: "VIEW", customers: "VIEW", hiring: "VIEW", sales: "VIEW" } },
+  { key: "observer", permissions: { card: "VIEW", points: "VIEW", products: "VIEW", warehouses: "VIEW", pricing: "VIEW", tasks: "VIEW", promos: "VIEW", supply: "VIEW", customers: "VIEW", hiring: "VIEW", sales: "VIEW", reports: "VIEW" } },
 ];
 
 /**

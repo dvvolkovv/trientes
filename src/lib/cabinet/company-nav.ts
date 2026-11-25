@@ -53,6 +53,9 @@ export const COMPANY_TILES: CompanyTileDef[] = [
 
   // Касса (слайс CK). Группа «хозяйство»: продажа — операционная работа, а не витрина.
   { key: "sales", group: "household", icon: "🧾", section: "sales", path: "sales" },
+  // Отчётность (слайс CL). Та же группа «хозяйство», рядом с кассой: сводка считается
+  // по её чекам, и смотрят их один за другим.
+  { key: "reports", group: "household", icon: "📊", section: "reports", path: "reports" },
   { key: "warehouses", group: "household", icon: "🏬", section: "warehouses", path: "warehouses" },
   { key: "supply", group: "household", icon: "🚚", section: "supply", path: "supply" },
 

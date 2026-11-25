@@ -101,7 +101,12 @@ export type CompanyAction =
   // Слайс CK: касса. Чек неизменяем, поэтому «правки» среди кодов нет — только запись
   // и отмена со встречным движением.
   | "SALE_RECORDED"
-  | "SALE_CANCELLED";
+  | "SALE_CANCELLED"
+  // Слайс CL: отчётность. Выгрузка — вынос данных за пределы платформы, и журнал
+  // отвечает на вопрос «кто и когда унёс»; ключ API — выдача доступа мимо кабинета.
+  | "REPORT_EXPORTED"
+  | "API_KEY_CREATED"
+  | "API_KEY_REVOKED";
 
 export async function logCompanyAction(input: {
   companyId: string;

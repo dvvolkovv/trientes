@@ -1843,7 +1843,8 @@
       "chat": "Chat d'équipe",
       "customers": "Messages clients",
       "ads": "Bannière de carte",
-      "sales": "Caisse"
+      "sales": "Caisse",
+      "reports": "Rapports"
     },
     "tileUnit": {
       "points": "{count} sur la carte",
@@ -1858,7 +1859,8 @@
       "chat": "{count} messages",
       "customers": "Conversations : {count}",
       "ads": "{count} en cours",
-      "sales": "reçus aujourd'hui"
+      "sales": "reçus aujourd'hui",
+      "reports": "reçus sur 30 jours"
     },
     "tileEmpty": "rien pour l’instant",
     "tileBadge": {
@@ -4382,7 +4384,8 @@
         "marketing": "Responsable marketing",
         "observer": "Observateur",
         "hr": "RH",
-        "cashier": "Caissier"
+        "cashier": "Caissier",
+        "accountant": "Comptable"
       },
       "sections": {
         "card": "Fiche boutique",
@@ -4395,7 +4398,8 @@
         "supply": "Fournisseurs et commandes",
         "customers": "Messages clients",
         "hiring": "Recrutement: liens d'invitation",
-        "sales": "Caisse et reçus"
+        "sales": "Caisse et reçus",
+        "reports": "Rapports et export"
       },
       "levels": {
         "NONE": "Aucun accès",
@@ -4519,7 +4523,10 @@
       "AD_REJECTED": "Élément de bannière refusé par un modérateur",
       "AD_DELETED": "Élément de bannière supprimé",
       "SALE_RECORDED": "Vente enregistrée",
-      "SALE_CANCELLED": "Reçu annulé"
+      "SALE_CANCELLED": "Reçu annulé",
+      "REPORT_EXPORTED": "Rapport exporté",
+      "API_KEY_CREATED": "Clé API émise",
+      "API_KEY_REVOKED": "Clé API révoquée"
     }
   },
   "cabinetTasks": {
@@ -5387,6 +5394,79 @@
       "already_yours": "Ce reçu est déjà dans votre espace.",
       "company_not_listed": "Ce vendeur n’est pas actuellement sur la vitrine de la plateforme, le reçu ne peut donc pas être enregistré.",
       "link_expired": "Le lien a expiré. Demandez au vendeur d’afficher à nouveau le code QR."
+    }
+  },
+  "cabinetReports": {
+    "title": "Rapports",
+    "subtitle": "Ventes, remises et cashback déclaré sur une période, prêt à remettre à votre conseiller fiscal",
+    "range": {
+      "today": "Aujourd'hui",
+      "week": "7 jours",
+      "month": "30 jours",
+      "custom": "Personnalisé"
+    },
+    "fromLabel": "De",
+    "toLabel": "À",
+    "apply": "Afficher",
+    "timezoneNote": "Les jours sont comptés en {tz}.",
+    "timezoneMixed": "Vos points se trouvent dans des fuseaux horaires différents, le rapport revient donc à l'UTC.",
+    "truncated": "Seuls les {max} premiers reçus de cette période sont comptés. Choisissez une période plus courte pour tous les voir.",
+    "empty": "Aucun reçu dans cette période.",
+    "currencyHeading": "En {currency}",
+    "metric": {
+      "receipts": "Reçus",
+      "revenue": "Encaissements",
+      "listTotal": "Aux prix catalogue",
+      "discount": "Remises accordées",
+      "cashback": "Cashback déclaré",
+      "cancelled": "Reçus annulés"
+    },
+    "cashbackNote": "Ici, le cashback correspond à ce que vous avez promis, pas à de l'argent versé: la plateforme n'a pas encore de portefeuille.",
+    "feesNote": "La plateforme ne prend aucun frais sur vos ventes, il n'y a donc pas de colonne de frais. Le paiement lui-même a lieu en dehors de la plateforme.",
+    "byDay": "Par jour",
+    "byPayment": "Par mode de paiement",
+    "byPoint": "Par point de vente",
+    "byCashier": "Par caissier",
+    "topProducts": "Meilleurs produits",
+    "noPoint": "Aucun point",
+    "noCashier": "Inconnu",
+    "payment": {
+      "CASH": "Espèces",
+      "CARD": "Carte",
+      "TRANSFER": "Virement",
+      "CRYPTO": "Crypto",
+      "OTHER": "Autre"
+    },
+    "exportHeading": "Export",
+    "exportHint": "Deux fichiers pour la période sélectionnée: une ligne par reçu, ou une ligne par ligne de reçu. CSV, UTF-8, noms de colonnes en anglais pour que tout outil comptable puisse les lire.",
+    "exportReceipts": "Télécharger les reçus",
+    "exportLines": "Télécharger les lignes",
+    "exportForbidden": "Vous pouvez lire les chiffres ici, mais le téléchargement du fichier nécessite le droit d'exportation - demandez-le au propriétaire.",
+    "api": {
+      "heading": "API pour votre système comptable",
+      "hint": "Une clé en lecture seule permet à votre caisse ou outil comptable d'extraire les reçus et le récapitulatif. Rien ne peut être écrit via celle-ci: les reçus sont créés à la caisse.",
+      "namePlaceholder": "À quoi sert-elle - p. ex. logiciel du comptable",
+      "create": "Émettre une clé",
+      "created": "émise {at}",
+      "lastUsed": "dernière utilisation {at}",
+      "neverUsed": "jamais utilisée",
+      "revoke": "Révoquer",
+      "revokeConfirm": "Révoquer cette clé",
+      "revoked": "révoquée le {at}",
+      "reasonPlaceholder": "Pourquoi la révoquez-vous ?",
+      "freshHeading": "Voici la clé",
+      "freshOnce": "Copiez-la maintenant : nous ne conservons que son empreinte, c'est donc la seule fois où vous pourrez la voir.",
+      "docsHeading": "Comment l'appeler",
+      "docsNote": "Les dates sont des jours dans le fuseau horaire de vos points. Les montants de devises différentes ne sont jamais additionnés : la plateforme n'a pas constaté le taux de change d'une vente.",
+      "error": {
+        "unauth": "Veuillez vous reconnecter.",
+        "forbidden": "Seul le propriétaire peut émettre et révoquer des clés.",
+        "name_invalid": "Donnez à la clé un nom de 2 à 60 caractères.",
+        "too_many": "La limite est de cinq clés actives. Révoquez-en une que vous n'utilisez plus.",
+        "reason_required": "Dites en quelques mots pourquoi la clé est révoquée.",
+        "not_found": "Cette clé est déjà révoquée.",
+        "failed": "Enregistrement impossible. Réessayez."
+      }
     }
   }
 }

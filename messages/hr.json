@@ -1843,7 +1843,8 @@
       "chat": "Timski chatu",
       "customers": "Poruke kupaca",
       "ads": "Baner kartice",
-      "sales": "Blagajna"
+      "sales": "Blagajna",
+      "reports": "Izvješća"
     },
     "tileUnit": {
       "points": "{count} na karti",
@@ -1858,7 +1859,8 @@
       "chat": "{count} poruka",
       "customers": "Razgovori: {count}",
       "ads": "{count} uživo",
-      "sales": "računi danas"
+      "sales": "računi danas",
+      "reports": "računa u 30 dana"
     },
     "tileEmpty": "još ništa",
     "tileBadge": {
@@ -4382,7 +4384,8 @@
         "marketing": "Marketinški stručnjak",
         "observer": "Promatrač",
         "hr": "HR",
-        "cashier": "Blagajnik"
+        "cashier": "Blagajnik",
+        "accountant": "Računovođa"
       },
       "sections": {
         "card": "Kartica trgovine",
@@ -4395,7 +4398,8 @@
         "supply": "Dobavljači i narudžbe",
         "customers": "Poruke kupaca",
         "hiring": "Zapošljavanje: pozivne poveznice",
-        "sales": "Blagajna i računi"
+        "sales": "Blagajna i računi",
+        "reports": "Izvješća i izvoz"
       },
       "levels": {
         "NONE": "Bez pristupa",
@@ -4519,7 +4523,10 @@
       "AD_REJECTED": "Stavka bannera odbijena od strane moderatora",
       "AD_DELETED": "Stavka banera izbrisana",
       "SALE_RECORDED": "Prodaja zabilježena",
-      "SALE_CANCELLED": "Račun poništen"
+      "SALE_CANCELLED": "Račun poništen",
+      "REPORT_EXPORTED": "Izvješće izvezeno",
+      "API_KEY_CREATED": "API ključ izdan",
+      "API_KEY_REVOKED": "API ključ opozvan"
     }
   },
   "cabinetTasks": {
@@ -5387,6 +5394,79 @@
       "already_yours": "Ovaj je račun već u vašem profilu.",
       "company_not_listed": "Ovaj prodavatelj trenutačno nije na izlogu platforme, pa se račun ne može spremiti.",
       "link_expired": "Poveznica je istekla. Zamolite prodavatelja da ponovno pokaže QR kod."
+    }
+  },
+  "cabinetReports": {
+    "title": "Izvješća",
+    "subtitle": "Prodaja, popusti i prijavljeni cashback tijekom razdoblja, spremno za predaju vašem poreznom savjetniku.",
+    "range": {
+      "today": "Danas",
+      "week": "7 dana",
+      "month": "30 dana",
+      "custom": "Prilagođeno"
+    },
+    "fromLabel": "Od",
+    "toLabel": "Do",
+    "apply": "Prikaži",
+    "timezoneNote": "Dani se računaju u {tz}.",
+    "timezoneMixed": "Vaše lokacije nalaze se u različitim vremenskim zonama, pa se izvješće vraća na UTC.",
+    "truncated": "Broje se samo prvih {max} računa u ovom razdoblju. Odaberite kraće razdoblje da biste vidjeli sve.",
+    "empty": "U ovom razdoblju nema računa.",
+    "currencyHeading": "U {currency}",
+    "metric": {
+      "receipts": "Računi",
+      "revenue": "Naplaćeno",
+      "listTotal": "Po cjeniku",
+      "discount": "Odobreni popusti",
+      "cashback": "Prijavljen cashback",
+      "cancelled": "Stornirani računi"
+    },
+    "cashbackNote": "Cashback ovdje je ono što ste obećali, a ne isplaćen novac: platforma još nema novčanik.",
+    "feesNote": "Platforma ne uzima naknadu na vašu prodaju, zato nema stupca za naknadu. Samo plaćanje odvija se izvan platforme.",
+    "byDay": "Po danu",
+    "byPayment": "Po načinu plaćanja",
+    "byPoint": "Po lokaciji",
+    "byCashier": "Po blagajniku",
+    "topProducts": "Najprodavaniji proizvodi",
+    "noPoint": "Bez lokacije",
+    "noCashier": "Nepoznato",
+    "payment": {
+      "CASH": "Gotovina",
+      "CARD": "Kartica",
+      "TRANSFER": "Bankovni prijenos",
+      "CRYPTO": "Kripto",
+      "OTHER": "Ostalo"
+    },
+    "exportHeading": "Izvoz",
+    "exportHint": "Dvije datoteke za odabrano razdoblje: po jedan redak po računu ili po jedan redak po stavci računa. CSV, UTF-8, nazivi stupaca na engleskom kako bi ih svaki računovodstveni alat mogao čitati.",
+    "exportReceipts": "Preuzmi račune",
+    "exportLines": "Preuzmi stavke",
+    "exportForbidden": "Brojeve možete pročitati ovdje, ali preuzimanje datoteke zahtijeva pravo izvoza — zatražite ga od vlasnika.",
+    "api": {
+      "heading": "API za vaš računovodstveni sustav",
+      "hint": "Ključ samo za čitanje omogućuje vašoj blagajni ili računovodstvenom alatu dohvat računa i sažetka. Kroz njega se ništa ne može upisivati: računi se kreiraju na blagajni.",
+      "namePlaceholder": "Čemu služi — npr. računovodstveni softver",
+      "create": "Izdaj ključ",
+      "created": "izdan {at}",
+      "lastUsed": "zadnji put korišten {at}",
+      "neverUsed": "nikad korišten",
+      "revoke": "Povuci",
+      "revokeConfirm": "Povuci ovaj ključ",
+      "revoked": "povučen {at}",
+      "reasonPlaceholder": "Zašto ga povlačite?",
+      "freshHeading": "Evo ključa",
+      "freshOnce": "Kopirajte sada: zadržavamo samo njegov otisak, tako da je ovo jedini put kada ga možete vidjeti.",
+      "docsHeading": "Kako ga pozvati",
+      "docsNote": "Datumi su dani u vremenskoj zoni vaših lokacija. Iznosi u različitim valutama se nikada ne zbrajaju: platforma nije zabilježila tečaj prodaje.",
+      "error": {
+        "unauth": "Molimo, prijavite se ponovno.",
+        "forbidden": "Samo vlasnik može izdavati i opozivati ključeve.",
+        "name_invalid": "Dajte ključu naziv od 2 do 60 znakova.",
+        "too_many": "Pet aktivnih ključeva je ograničenje. Opozovite onaj koji više ne koristite.",
+        "reason_required": "Navedite ukratko zašto se ključ opoziva.",
+        "not_found": "Taj je ključ već opozvan.",
+        "failed": "Nije moguće spremiti. Pokušajte ponovno."
+      }
     }
   }
 }

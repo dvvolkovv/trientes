@@ -1843,7 +1843,8 @@
       "chat": "团队聊天",
       "customers": "客户消息",
       "ads": "卡片横幅",
-      "sales": "收银"
+      "sales": "收银",
+      "reports": "报告"
     },
     "tileUnit": {
       "points": "地图上{count}个",
@@ -1858,7 +1859,8 @@
       "chat": "{count} 条消息",
       "customers": "对话：{count}",
       "ads": "{count} 个在线",
-      "sales": "今日收据"
+      "sales": "今日收据",
+      "reports": "30天内的收据"
     },
     "tileEmpty": "尚无内容",
     "tileBadge": {
@@ -4382,7 +4384,8 @@
         "marketing": "营销人员",
         "observer": "观察者",
         "hr": "人力资源",
-        "cashier": "收银员"
+        "cashier": "收银员",
+        "accountant": "会计"
       },
       "sections": {
         "card": "店铺卡片",
@@ -4395,7 +4398,8 @@
         "supply": "供应商与订单",
         "customers": "顾客消息",
         "hiring": "招聘: 邀请链接",
-        "sales": "收银与小票"
+        "sales": "收银与小票",
+        "reports": "报表与导出"
       },
       "levels": {
         "NONE": "无访问权限",
@@ -4519,7 +4523,10 @@
       "AD_REJECTED": "横幅条目已被审核员拒绝",
       "AD_DELETED": "横幅条目已删除",
       "SALE_RECORDED": "已记录销售",
-      "SALE_CANCELLED": "小票已取消"
+      "SALE_CANCELLED": "小票已取消",
+      "REPORT_EXPORTED": "报表已导出",
+      "API_KEY_CREATED": "API 密钥已生成",
+      "API_KEY_REVOKED": "API 密钥已撤销"
     }
   },
   "cabinetTasks": {
@@ -5387,6 +5394,79 @@
       "already_yours": "此收据已在你的收据库中。",
       "company_not_listed": "该卖家目前未在平台展示中，因此无法保存此收据。",
       "link_expired": "链接已过期。请让卖家重新出示二维码。"
+    }
+  },
+  "cabinetReports": {
+    "title": "报表",
+    "subtitle": "在一段时间内的销售、折扣和已申报返现，准备好交给您的税务顾问。",
+    "range": {
+      "today": "今天",
+      "week": "7 天",
+      "month": "30 天",
+      "custom": "自定义"
+    },
+    "fromLabel": "从",
+    "toLabel": "至",
+    "apply": "显示",
+    "timezoneNote": "天数按 {tz} 计算。",
+    "timezoneMixed": "您的网点位于不同时区，因此报告将退回到 UTC。",
+    "truncated": "本期仅统计前 {max} 张收据。选择更短的时间范围即可查看全部。",
+    "empty": "本期无收据。",
+    "currencyHeading": "以 {currency} 计",
+    "metric": {
+      "receipts": "收据",
+      "revenue": "实收",
+      "listTotal": "按标价",
+      "discount": "已给折扣",
+      "cashback": "已承诺返现",
+      "cancelled": "作废收据"
+    },
+    "cashbackNote": "这里的返现指你承诺的金额，而非已支付的款项：平台尚无钱包功能。",
+    "feesNote": "平台不对你的销售收取费用，因此没有费用列。付款本身在平台外完成。",
+    "byDay": "按日",
+    "byPayment": "按支付方式",
+    "byPoint": "按销售点",
+    "byCashier": "按收银员",
+    "topProducts": "热销商品",
+    "noPoint": "无销售点",
+    "noCashier": "未知",
+    "payment": {
+      "CASH": "现金",
+      "CARD": "银行卡",
+      "TRANSFER": "转账",
+      "CRYPTO": "加密货币",
+      "OTHER": "其他"
+    },
+    "exportHeading": "导出",
+    "exportHint": "选定期间提供两个文件：每张收据一行，或每条收据明细一行。CSV、UTF-8，列名为英文，方便任何财务工具读取。",
+    "exportReceipts": "下载收据",
+    "exportLines": "下载明细行",
+    "exportForbidden": "你可以在此查看数据，但下载文件需要导出权限 — 向所有者申请。",
+    "api": {
+      "heading": "面向你的财务系统的 API",
+      "hint": "只读密钥允许你的收银机或财务工具拉取收据和汇总。它不能写入任何内容：收据在收银机上创建。",
+      "namePlaceholder": "用途是什么 — 例如会计软件",
+      "create": "签发密钥",
+      "created": "签发于 {at}",
+      "lastUsed": "上次使用于 {at}",
+      "neverUsed": "从未使用",
+      "revoke": "撤销",
+      "revokeConfirm": "撤销此密钥",
+      "revoked": "撤销于 {at}",
+      "reasonPlaceholder": "为什么要撤销它？",
+      "freshHeading": "这是密钥",
+      "freshOnce": "现在就复制：我们只保存其指纹，因此这是你唯一一次能看到它。",
+      "docsHeading": "如何调用",
+      "docsNote": "日期按你的各销售点的时区计天。不同货币的金额不会相加：平台未见证该笔销售的汇率。",
+      "error": {
+        "unauth": "请重新登录。",
+        "forbidden": "只有所有者可以签发和撤销密钥。",
+        "name_invalid": "为该密钥设置一个 2 到 60 个字符的名称。",
+        "too_many": "在用密钥最多为 5 个。撤销一个你不再使用的。",
+        "reason_required": "请简要说明撤销该密钥的原因。",
+        "not_found": "该密钥已被撤销。",
+        "failed": "无法保存。请重试。"
+      }
     }
   }
 }

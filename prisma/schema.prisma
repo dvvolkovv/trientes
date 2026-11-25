@@ -72,6 +72,10 @@ model User {
   chatMessages             CompanyChatMessage[]      @relation("CompanyChatAuthor")
   companyAds               CompanyAd[]               @relation("CompanyAdAuthor")
   sales                    Sale[]                    @relation("SaleBuyer")
+
+  /// Ключи API предприятий: кто выдал и кто отозвал (слайс CL).
+  apiKeysCreated           MerchantApiKey[]          @relation("ApiKeyAuthor")
+  apiKeysRevoked           MerchantApiKey[]          @relation("ApiKeyRevoker")
   salesRecorded            Sale[]                    @relation("SaleAuthor")
   companyAdDecisions       CompanyAd[]               @relation("CompanyAdModerator")
   chatReads                CompanyChatRead[]
@@ -1090,6 +1094,9 @@ model Company {
 
   /// Переписка с покупателями (BQ). Первая дверь снаружи внутрь кабинета.
   customerThreads CustomerThread[]
+
+  /// Ключи read-only API для учётных систем мерчанта (слайс CL, ТЗ 6.4).
+  apiKeys MerchantApiKey[]
 
   @@index([ownerUserId])
   @@index([status, createdAt])
@@ -3359,4 +3366,40 @@ model SaleLine {
 
   @@index([saleId])
   @@index([productId])
+}
+
+/// Ключ read-only API предприятия (слайс CL, ТЗ 6.4 «API для интеграции с кассами и
+/// учётными системами мерчанта»). В базе только sha256 и восемь знаков начала для
+/// опознания строки в списке: показывается ключ один раз, повторно его не узнать
+/// (прецедент — ссылка чека в CK и приглашение сотрудника в AS).
+///
+/// Выдаёт и отзывает только владелец: ключ читает все продажи предприятия мимо
+/// кабинета, то есть это выдача прав, а не работа с данными. Отзыв строку не удаляет —
+/// по журналу должно читаться, какой ключ работал.
+model MerchantApiKey {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  /// Имя, которое дал владелец: «1С бухгалтера», «касса на Длоугой».
+  name String
+
+  /// Первые восемь знаков самого ключа — чтобы человек узнал свою строку в списке.
+  prefix  String
+  keyHash String @unique
+
+  createdById String?
+  createdBy   User?   @relation("ApiKeyAuthor", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+
+  /// Обновляется не чаще раза в минуту: запись в базу на каждый запрос — лишняя точка
+  /// отказа на горячем пути (прецедент `rate-gate` в BL).
+  lastUsedAt DateTime?
+
+  revokedAt     DateTime?
+  revokedById   String?
+  revokedBy     User?     @relation("ApiKeyRevoker", fields: [revokedById], references: [id], onDelete: SetNull)
+  revokeReason  String?
+
+  @@index([companyId, revokedAt])
 }

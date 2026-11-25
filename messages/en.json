@@ -1843,7 +1843,8 @@
       "chat": "Team chat",
       "customers": "Customer messages",
       "ads": "Card banner",
-      "sales": "Till"
+      "sales": "Till",
+      "reports": "Reports"
     },
     "tileUnit": {
       "points": "{count} on the map",
@@ -1858,7 +1859,8 @@
       "chat": "{count} messages",
       "customers": "Conversations: {count}",
       "ads": "{count} live",
-      "sales": "receipts today"
+      "sales": "receipts today",
+      "reports": "receipts in 30 days"
     },
     "tileEmpty": "nothing yet",
     "tileBadge": {
@@ -4382,7 +4384,8 @@
         "marketing": "Marketer",
         "observer": "Observer",
         "hr": "HR",
-        "cashier": "Cashier"
+        "cashier": "Cashier",
+        "accountant": "Accountant"
       },
       "sections": {
         "card": "Shop card",
@@ -4395,7 +4398,8 @@
         "supply": "Suppliers and orders",
         "customers": "Customer messages",
         "hiring": "Hiring: invite links",
-        "sales": "Till and receipts"
+        "sales": "Till and receipts",
+        "reports": "Reports and export"
       },
       "levels": {
         "NONE": "No access",
@@ -4519,7 +4523,10 @@
       "AD_REJECTED": "Banner item rejected by a moderator",
       "AD_DELETED": "Banner item deleted",
       "SALE_RECORDED": "Sale recorded",
-      "SALE_CANCELLED": "Receipt cancelled"
+      "SALE_CANCELLED": "Receipt cancelled",
+      "REPORT_EXPORTED": "Report exported",
+      "API_KEY_CREATED": "API key issued",
+      "API_KEY_REVOKED": "API key revoked"
     }
   },
   "cabinetTasks": {
@@ -5387,6 +5394,79 @@
       "already_yours": "This receipt is already in your cabinet.",
       "company_not_listed": "This seller is not on the platform showcase right now, so the receipt cannot be saved.",
       "link_expired": "The link has expired. Ask the seller to show the QR code again."
+    }
+  },
+  "cabinetReports": {
+    "title": "Reports",
+    "subtitle": "Sales, discounts and declared cashback over a period, ready to hand to your tax adviser.",
+    "range": {
+      "today": "Today",
+      "week": "7 days",
+      "month": "30 days",
+      "custom": "Custom"
+    },
+    "fromLabel": "From",
+    "toLabel": "To",
+    "apply": "Show",
+    "timezoneNote": "Days are counted in {tz}.",
+    "timezoneMixed": "Your points sit in different time zones, so the report falls back to UTC.",
+    "truncated": "Only the first {max} receipts of this period are counted. Pick a shorter period to see every one of them.",
+    "empty": "No receipts in this period.",
+    "currencyHeading": "In {currency}",
+    "metric": {
+      "receipts": "Receipts",
+      "revenue": "Taken",
+      "listTotal": "At list prices",
+      "discount": "Discounts given",
+      "cashback": "Cashback declared",
+      "cancelled": "Cancelled receipts"
+    },
+    "cashbackNote": "Cashback here is what you promised, not money paid out: the platform has no wallet yet.",
+    "feesNote": "The platform takes no fee on your sales, so there is no fee column. Payment itself happens outside the platform.",
+    "byDay": "By day",
+    "byPayment": "By payment method",
+    "byPoint": "By point of sale",
+    "byCashier": "By cashier",
+    "topProducts": "Top products",
+    "noPoint": "No point",
+    "noCashier": "Unknown",
+    "payment": {
+      "CASH": "Cash",
+      "CARD": "Card",
+      "TRANSFER": "Transfer",
+      "CRYPTO": "Crypto",
+      "OTHER": "Other"
+    },
+    "exportHeading": "Export",
+    "exportHint": "Two files for the selected period: one row per receipt, or one row per receipt line. CSV, UTF-8, column names in English so any accounting tool can read them.",
+    "exportReceipts": "Download receipts",
+    "exportLines": "Download lines",
+    "exportForbidden": "You can read the numbers here, but downloading the file needs the export right — ask the owner for it.",
+    "api": {
+      "heading": "API for your accounting system",
+      "hint": "A read-only key lets your till or accounting tool pull receipts and the summary. Nothing can be written through it: receipts are created at the till.",
+      "namePlaceholder": "What is it for — e.g. accountant's software",
+      "create": "Issue a key",
+      "created": "issued {at}",
+      "lastUsed": "last used {at}",
+      "neverUsed": "never used",
+      "revoke": "Revoke",
+      "revokeConfirm": "Revoke this key",
+      "revoked": "revoked {at}",
+      "reasonPlaceholder": "Why are you revoking it?",
+      "freshHeading": "Here is the key",
+      "freshOnce": "Copy it now: we keep only its fingerprint, so this is the only time you can see it.",
+      "docsHeading": "How to call it",
+      "docsNote": "Dates are days in your points' time zone. Amounts of different currencies are never added up: the platform did not witness the exchange rate of a sale.",
+      "error": {
+        "unauth": "Please sign in again.",
+        "forbidden": "Only the owner can issue and revoke keys.",
+        "name_invalid": "Give the key a name of 2 to 60 characters.",
+        "too_many": "Five live keys is the limit. Revoke one you no longer use.",
+        "reason_required": "Say in a few words why the key is being revoked.",
+        "not_found": "That key is already revoked.",
+        "failed": "Could not save. Try again."
+      }
     }
   }
 }
