@@ -1842,7 +1842,8 @@
       "journal": "Dnevnik aktivnosti",
       "chat": "Timski chatu",
       "customers": "Poruke kupaca",
-      "ads": "Baner kartice"
+      "ads": "Baner kartice",
+      "sales": "Blagajna"
     },
     "tileUnit": {
       "points": "{count} na karti",
@@ -1856,7 +1857,8 @@
       "journal": "{count} unosa",
       "chat": "{count} poruka",
       "customers": "Razgovori: {count}",
-      "ads": "{count} uživo"
+      "ads": "{count} uživo",
+      "sales": "računi danas"
     },
     "tileEmpty": "još ništa",
     "tileBadge": {
@@ -2274,7 +2276,8 @@
         "interests": "Što prikazivati duž rute",
         "loyalty": "Vaša razina i povrat novca",
         "admin": "Redovi i slučajevi",
-        "appearance": "Boja obruba svake pločice"
+        "appearance": "Boja obruba svake pločice",
+        "receipts": "Računi za vaše kupnje"
       }
     },
     "appearance": {
@@ -4378,7 +4381,8 @@
         "stock": "Skladištar",
         "marketing": "Marketinški stručnjak",
         "observer": "Promatrač",
-        "hr": "HR"
+        "hr": "HR",
+        "cashier": "Blagajnik"
       },
       "sections": {
         "card": "Kartica trgovine",
@@ -4390,7 +4394,8 @@
         "promos": "Ponude i slanja e-poštom",
         "supply": "Dobavljači i narudžbe",
         "customers": "Poruke kupaca",
-        "hiring": "Zapošljavanje: pozivne poveznice"
+        "hiring": "Zapošljavanje: pozivne poveznice",
+        "sales": "Blagajna i računi"
       },
       "levels": {
         "NONE": "Bez pristupa",
@@ -4512,7 +4517,9 @@
       "AD_CHANGES_SUBMITTED": "Promjene stavke bannera poslane na pregled",
       "AD_APPROVED": "Stavka bannera odobrena od strane moderatora",
       "AD_REJECTED": "Stavka bannera odbijena od strane moderatora",
-      "AD_DELETED": "Stavka banera izbrisana"
+      "AD_DELETED": "Stavka banera izbrisana",
+      "SALE_RECORDED": "Prodaja zabilježena",
+      "SALE_CANCELLED": "Račun poništen"
     }
   },
   "cabinetTasks": {
@@ -5261,6 +5268,125 @@
       "subject_gone": "Ta stranica više ne postoji.",
       "unauth": "Najprije se prijavite.",
       "failed": "Nije moguće prihvatiti poziv."
+    }
+  },
+  "cabinetSales": {
+    "title": "Blagajna",
+    "subtitle": "Evidentirati prodaju: roba se skida s police i kupac dobiva račun. Samo plaćanje odvija se izvan platforme.",
+    "tillHeading": "Nova prodaja",
+    "shelf": "Polica",
+    "noShelf": "Bez police (samo usluge)",
+    "noShelves": "Još nema polica — dodajte jednu u Skladištima da biste prodavali robu.",
+    "find": "Proizvod",
+    "findPlaceholder": "Počnite upisivati naziv",
+    "onShelf": "{qty} na polici",
+    "serviceLine": "usluga, bez zaliha",
+    "noOffers": "Još nema proizvoda s cijenom. Najprije postavite cijenu za proizvod.",
+    "qty": "Količina",
+    "price": "Cijena",
+    "removeLine": "Ukloniti",
+    "payment": "Plaćeno s",
+    "paymentKind": {
+      "CASH": "Gotovina",
+      "CARD": "Kartica",
+      "TRANSFER": "Prijenos",
+      "CRYPTO": "Kripto",
+      "OTHER": "Drugo"
+    },
+    "coin": "Kovanica",
+    "coinAmount": "Iznos u kovanici",
+    "rate": "Tečaj po kovanici",
+    "coinStated": "Kovanicu, tečaj i iznos navodite vi: platforma ne vidi samo plaćanje",
+    "note": "Napomena",
+    "discount": "Popust",
+    "total": "Ukupno",
+    "cashback": "Povrat novca",
+    "record": "Evidentirati račun",
+    "saving": "Evidentiranje…",
+    "doneHeading": "Račun br. {number} evidentiran",
+    "doneHint": "Pokažite QR kod kupcu — račun se otvara na njihovu telefonu i mogu ga spremiti u svoj profil",
+    "shareTitle": "Vaš račun",
+    "shareText": "Račun br. {number}",
+    "openReceipt": "Otvoriti račun",
+    "newSale": "Nova prodaja",
+    "showAgain": "Ponovno prikazati QR",
+    "reissueHint": "Ovo je nova poveznica; prethodna više ne radi",
+    "alreadyClaimed": "Kupac je već spremio ovaj račun u svoj profil",
+    "cancel": "Otkazati račun",
+    "cancelReason": "Zašto je otkazan?",
+    "cancelConfirm": "Otkazati i vratiti robu na policu",
+    "cancelledMark": "otkazan",
+    "listHeading": "Računi",
+    "listEmpty": "Još nema prodaja.",
+    "rowNumber": "Račun br. {number}",
+    "rowLines": "Stavke: {count}",
+    "rowClaimed": "spremio kupac",
+    "readOnly": "Možete čitati račune ove tvrtke, ali ne i evidentirati prodaje.",
+    "error": {
+      "already_cancelled": "Ovaj je račun već otkazan.",
+      "already_claimed": "Ovaj je račun već spremio kupac.",
+      "coin_required": "Navedite kovanicu u kojoj je kupac platio.",
+      "currency_mismatch": "Sve stavke jednog računa moraju imati istu valutu.",
+      "currency_unknown": "Cijena tog proizvoda je u valuti koju blagajna ne može ispisati.",
+      "daily_limit": "Dnevni limit računa dosegnut. Blagajna se ponovno otvara sutra.",
+      "duplicate_line": "Taj je proizvod već na računu — promijenite umjesto toga njegovu količinu.",
+      "forbidden": "Nemate pravo koristiti blagajnu u ovoj tvrtki.",
+      "insufficient_stock": "Nema dovoljno zaliha na toj polici.",
+      "lines_required": "Dodajte barem jednu stavku na račun.",
+      "not_found": "Račun nije pronađen.",
+      "offer_missing": "Taj proizvod nema aktivnu cijenu od ove tvrtke.",
+      "payment_invalid": "Odaberite kako je kupac platio.",
+      "price_above_list": "Cijena ne smije biti viša od objavljene.",
+      "price_invalid": "Cijena mora biti broj veći od nule.",
+      "qty_invalid": "Količina mora biti broj veći od nule.",
+      "rate_invalid": "Tečaj i iznos u kovanici moraju biti brojevi veći od nule.",
+      "reason_required": "Navedite razlog u nekoliko riječi.",
+      "shelf_required": "Roba izlazi s police — odaberite jednu.",
+      "too_many_lines": "Previše stavki na jednom računu.",
+      "unauth": "Prijavite se ponovno.",
+      "warehouse_unknown": "Ta polica nije dostupna."
+    }
+  },
+  "receipt": {
+    "title": "Račun",
+    "myTitle": "Moji računi",
+    "mySubtitle": "Računi koje ste spremili od prodavatelja. Čuvaju se onako kako ih je prodavatelj zabilježio.",
+    "myEmpty": "Još nema računa. Prodavatelj vam daje poveznicu ili QR kod nakon kupnje.",
+    "bearerHint": "Tko god ima ovu poveznicu može pročitati račun — čuvajte je kao papirnati račun.",
+    "number": "Br. {number}",
+    "cancelled": "Otkazano od prodavatelja",
+    "wasPrice": "cijena na polici {price}",
+    "discount": "Popust",
+    "total": "Ukupno",
+    "payment": "Plaćeno s",
+    "paymentKind": {
+      "CASH": "Gotovina",
+      "CARD": "Kartica",
+      "TRANSFER": "Prijenos",
+      "CRYPTO": "Kripto",
+      "OTHER": "Drugo"
+    },
+    "inCoin": "U kovanici",
+    "rate": "po {rate} za kovanicu",
+    "coinStated": "Kovanicu i tečaj određuje prodavatelj: platforma nije nadzirala ovu uplatu.",
+    "cashback": "Povrat novca na ovu kupnju: {amount}",
+    "cashbackPending": "Po objavljenoj stopi prodavatelja. Pripisivanje započinje u novčaniku platforme.",
+    "outsidePlatform": "Plaćanje se odvija izvan platforme; za prodaju je odgovoran prodavatelj.",
+    "cashier": "Blagajnik: {name}",
+    "save": "Spremiti u moj profil",
+    "saving": "Spremanje…",
+    "signInToSave": "Prijavite se kako biste spremili ovaj račun u svoj profil.",
+    "signIn": "Prijava",
+    "openMyReceipts": "Otvoriti moje račune",
+    "alreadyMine": "Ovaj je račun u vašem profilu.",
+    "claimedByOther": "Ovaj je račun već spremio drugi kupac.",
+    "error": {
+      "unauth": "Prijavite se ponovno.",
+      "not_found": "Račun nije pronađen.",
+      "already_claimed": "Ovaj je račun već spremio drugi kupac.",
+      "already_yours": "Ovaj je račun već u vašem profilu.",
+      "company_not_listed": "Ovaj prodavatelj trenutačno nije na izlogu platforme, pa se račun ne može spremiti.",
+      "link_expired": "Poveznica je istekla. Zamolite prodavatelja da ponovno pokaže QR kod."
     }
   }
 }

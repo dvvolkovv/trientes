@@ -1842,7 +1842,8 @@
       "journal": "活动日志",
       "chat": "团队聊天",
       "customers": "客户消息",
-      "ads": "卡片横幅"
+      "ads": "卡片横幅",
+      "sales": "收银"
     },
     "tileUnit": {
       "points": "地图上{count}个",
@@ -1856,7 +1857,8 @@
       "journal": "{count}条",
       "chat": "{count} 条消息",
       "customers": "对话：{count}",
-      "ads": "{count} 个在线"
+      "ads": "{count} 个在线",
+      "sales": "今日收据"
     },
     "tileEmpty": "尚无内容",
     "tileBadge": {
@@ -2274,7 +2276,8 @@
         "interests": "沿途显示什么",
         "loyalty": "您的等级和返现",
         "admin": "队列和案件",
-        "appearance": "每个卡片的描边颜色"
+        "appearance": "每个卡片的描边颜色",
+        "receipts": "您的购买收据"
       }
     },
     "appearance": {
@@ -4378,7 +4381,8 @@
         "stock": "仓库管理员",
         "marketing": "营销人员",
         "observer": "观察者",
-        "hr": "HR"
+        "hr": "人力资源",
+        "cashier": "收银员"
       },
       "sections": {
         "card": "店铺卡片",
@@ -4390,7 +4394,8 @@
         "promos": "优惠与群发",
         "supply": "供应商与订单",
         "customers": "顾客消息",
-        "hiring": "招聘: 邀请链接"
+        "hiring": "招聘: 邀请链接",
+        "sales": "收银与小票"
       },
       "levels": {
         "NONE": "无访问权限",
@@ -4512,7 +4517,9 @@
       "AD_CHANGES_SUBMITTED": "横幅条目更改已提交审核",
       "AD_APPROVED": "横幅条目已被审核员批准",
       "AD_REJECTED": "横幅条目已被审核员拒绝",
-      "AD_DELETED": "横幅条目已删除"
+      "AD_DELETED": "横幅条目已删除",
+      "SALE_RECORDED": "已记录销售",
+      "SALE_CANCELLED": "小票已取消"
     }
   },
   "cabinetTasks": {
@@ -5261,6 +5268,125 @@
       "subject_gone": "该页面已不存在。",
       "unauth": "请先登录。",
       "failed": "无法接受该邀请。"
+    }
+  },
+  "cabinetSales": {
+    "title": "收银台",
+    "subtitle": "登记一笔销售：商品从货架出库，客户获得小票。付款本身在平台外完成。",
+    "tillHeading": "新销售",
+    "shelf": "货架",
+    "noShelf": "无货架（仅服务）",
+    "noShelves": "尚无货架——在仓库中添加后即可销售商品。",
+    "find": "商品",
+    "findPlaceholder": "开始输入名称",
+    "onShelf": "货架上有 {qty}",
+    "serviceLine": "服务，无库存",
+    "noOffers": "尚无定价的商品。请先为商品设置价格。",
+    "qty": "数量",
+    "price": "价格",
+    "removeLine": "移除",
+    "payment": "支付方式",
+    "paymentKind": {
+      "CASH": "现金",
+      "CARD": "卡",
+      "TRANSFER": "转账",
+      "CRYPTO": "加密货币",
+      "OTHER": "其他"
+    },
+    "coin": "币种",
+    "coinAmount": "以币计金额",
+    "rate": "每枚币的汇率",
+    "coinStated": "币种、汇率和金额由你填写；平台无法看到付款本身。",
+    "note": "备注",
+    "discount": "折扣",
+    "total": "总计",
+    "cashback": "返现",
+    "record": "记录收据",
+    "saving": "记录中…",
+    "doneHeading": "收据编号 {number} 已记录",
+    "doneHint": "显示二维码给客户——收据会在他们的手机上打开，并且他们可以将其保存在个人柜中。",
+    "shareTitle": "你的收据",
+    "shareText": "收据编号 {number}",
+    "openReceipt": "打开收据",
+    "newSale": "新销售",
+    "showAgain": "再次显示二维码",
+    "reissueHint": "这是一个新链接；之前的已失效。",
+    "alreadyClaimed": "客户已将此收据保存在他们的个人柜中。",
+    "cancel": "取消收据",
+    "cancelReason": "为什么取消？",
+    "cancelConfirm": "取消并将商品退回货架",
+    "cancelledMark": "已取消",
+    "listHeading": "收据",
+    "listEmpty": "还没有销售。",
+    "rowNumber": "收据编号 {number}",
+    "rowLines": "行数：{count}",
+    "rowClaimed": "已被客户保存",
+    "readOnly": "你可以读取此公司的收据，但不能记录销售。",
+    "error": {
+      "already_cancelled": "此收据已被取消。",
+      "already_claimed": "此收据已被客户保存。",
+      "coin_required": "请注明客户支付的币种。",
+      "currency_mismatch": "同一收据的所有行必须使用同一种货币。",
+      "currency_unknown": "该商品的价格使用了此收银机无法打印的货币。",
+      "daily_limit": "已达到每日收据数量上限。收银机将于明天重新开启。",
+      "duplicate_line": "该商品已在收据中——请改为调整数量。",
+      "forbidden": "你没有在该公司使用收银台的权限。",
+      "insufficient_stock": "该货架库存不足。",
+      "lines_required": "请在收据中至少添加一行。",
+      "not_found": "未找到收据。",
+      "offer_missing": "该商品在此公司无有效价格。",
+      "payment_invalid": "请选择客户的付款方式。",
+      "price_above_list": "价格不得高于发布价。",
+      "price_invalid": "价格必须是大于零的数字。",
+      "qty_invalid": "数量必须是大于零的数字。",
+      "rate_invalid": "汇率和币数量必须是大于零的数字。",
+      "reason_required": "请简要说明原因。",
+      "shelf_required": "商品从某个货架出库——请选择一个。",
+      "too_many_lines": "单张收据的行数过多。",
+      "unauth": "请重新登录。",
+      "warehouse_unknown": "该货架不可用。"
+    }
+  },
+  "receipt": {
+    "title": "收据",
+    "myTitle": "我的收据",
+    "mySubtitle": "你从卖家保存的收据。我们按卖家记录的原样保留。",
+    "myEmpty": "暂无收据。购买后，卖家会给你一个链接或二维码。",
+    "bearerHint": "拥有此链接的人都能查看收据——请像保存纸质收据一样妥善保管。",
+    "number": "编号 {number}",
+    "cancelled": "已被卖家取消",
+    "wasPrice": "标价 {price}",
+    "discount": "折扣",
+    "total": "合计",
+    "payment": "支付方式",
+    "paymentKind": {
+      "CASH": "现金",
+      "CARD": "银行卡",
+      "TRANSFER": "转账",
+      "CRYPTO": "加密货币",
+      "OTHER": "其他"
+    },
+    "inCoin": "以币",
+    "rate": "按每枚币 {rate}",
+    "coinStated": "币种和汇率由卖方指定：平台未观察到此笔付款.",
+    "cashback": "本次购买返现: {amount}",
+    "cashbackPending": "以卖家发布的汇率。入账自平台钱包开始。",
+    "outsidePlatform": "付款发生在平台外；卖家对本次交易负责。",
+    "cashier": "收银员: {name}",
+    "save": "保存到我的个人中心",
+    "saving": "正在保存…",
+    "signInToSave": "登录以将此收据保存到你的收据库。",
+    "signIn": "登录",
+    "openMyReceipts": "打开我的收据",
+    "alreadyMine": "此收据已在你的收据库中。",
+    "claimedByOther": "此收据已被其他客户保存。",
+    "error": {
+      "unauth": "请重新登录。",
+      "not_found": "未找到收据。",
+      "already_claimed": "此收据已被其他客户保存。",
+      "already_yours": "此收据已在你的收据库中。",
+      "company_not_listed": "该卖家目前未在平台展示中，因此无法保存此收据。",
+      "link_expired": "链接已过期。请让卖家重新出示二维码。"
     }
   }
 }

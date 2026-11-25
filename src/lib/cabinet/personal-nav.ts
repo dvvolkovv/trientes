@@ -40,7 +40,8 @@ export type CabinetCounter =
   | "exchanges"
   | "messages"
   | "subscriptions"
-  | "alerts";
+  | "alerts"
+  | "receipts";
 
 export const CABINET_TILES: CabinetTileDef[] = [
   {
@@ -86,6 +87,16 @@ export const CABINET_TILES: CabinetTileDef[] = [
     icon: "📣",
     labelKey: "promos.subscriptions.title",
     counter: "subscriptions",
+  },
+  // Чеки покупок (слайс CK): их привязывает сам покупатель, перейдя по ссылке
+  // продавца. Плитка стоит рядом с кэшбэком — это про одни и те же покупки.
+  {
+    key: "receipts",
+    path: "receipts",
+    icon: "🧾",
+    labelKey: "receipt.myTitle",
+    hintKey: "cabinet.hub.hint.receipts",
+    counter: "receipts",
   },
   {
     key: "loyalty",

@@ -136,6 +136,19 @@ async function countTiles(
       })(),
     );
   }
+  if (want.has("sales")) {
+    jobs.push(
+      (async () => {
+        // Число — чеки за сутки: «всего за всё время» на плитке кассы не говорит ничего
+        // о сегодняшней работе, а именно её открывают утром.
+        const since = new Date();
+        since.setUTCHours(0, 0, 0, 0);
+        out.sales = {
+          value: await prisma.sale.count({ where: { companyId, status: "COMPLETED", createdAt: { gte: since } } }),
+        };
+      })(),
+    );
+  }
   if (want.has("warehouses")) {
     jobs.push(
       (async () => {

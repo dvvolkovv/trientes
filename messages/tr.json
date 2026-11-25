@@ -1842,7 +1842,8 @@
       "journal": "Etkinlik günlüğü",
       "chat": "Takım sohbeti",
       "customers": "Müşteri mesajları",
-      "ads": "Kart afişi"
+      "ads": "Kart afişi",
+      "sales": "Kasa"
     },
     "tileUnit": {
       "points": "{count} haritada",
@@ -1856,7 +1857,8 @@
       "journal": "{count} kayıt",
       "chat": "{count} mesaj",
       "customers": "Sohbetler: {count}",
-      "ads": "{count} canlı"
+      "ads": "{count} canlı",
+      "sales": "bugünkü makbuzlar"
     },
     "tileEmpty": "henüz bir şey yok",
     "tileBadge": {
@@ -2274,7 +2276,8 @@
         "interests": "Rota boyunca ne gösterilsin",
         "loyalty": "Seviyeniz ve nakit iade",
         "admin": "Kuyruklar ve vakalar",
-        "appearance": "Her kutucuğun kenarlık rengi"
+        "appearance": "Her kutucuğun kenarlık rengi",
+        "receipts": "Satın alımlarınızın makbuzları"
       }
     },
     "appearance": {
@@ -4378,7 +4381,8 @@
         "stock": "Depo sorumlusu",
         "marketing": "Pazarlamacı",
         "observer": "Gözlemci",
-        "hr": "HR"
+        "hr": "İK",
+        "cashier": "Kasiyer"
       },
       "sections": {
         "card": "Mağaza kartı",
@@ -4390,7 +4394,8 @@
         "promos": "Teklifler ve gönderimler",
         "supply": "Tedarikçiler ve siparişler",
         "customers": "Müşteri mesajları",
-        "hiring": "İşe alım: davet bağlantıları"
+        "hiring": "İşe alım: davet bağlantıları",
+        "sales": "Kasa ve fişler"
       },
       "levels": {
         "NONE": "Erişim yok",
@@ -4512,7 +4517,9 @@
       "AD_CHANGES_SUBMITTED": "Banner öğesi değişiklikleri incelemeye gönderildi",
       "AD_APPROVED": "Banner öğesi bir moderatör tarafından onaylandı",
       "AD_REJECTED": "Banner öğesi bir moderatör tarafından reddedildi",
-      "AD_DELETED": "Banner öğesi silindi"
+      "AD_DELETED": "Banner öğesi silindi",
+      "SALE_RECORDED": "Satış kaydedildi",
+      "SALE_CANCELLED": "Fiş iptal edildi"
     }
   },
   "cabinetTasks": {
@@ -5261,6 +5268,125 @@
       "subject_gone": "Bu sayfa artık mevcut değil.",
       "unauth": "Önce oturum açın.",
       "failed": "Davet kabul edilemedi."
+    }
+  },
+  "cabinetSales": {
+    "title": "Kasa",
+    "subtitle": "Bir satış kaydedin: ürünler raftan çıkar ve müşteri bir fiş alır. Ödemenin kendisi platform dışında gerçekleşir.",
+    "tillHeading": "Yeni satış",
+    "shelf": "Raf",
+    "noShelf": "Raf yok (yalnızca hizmetler)",
+    "noShelves": "Henüz raf yok — ürün satmak için Depolar'da bir tane ekleyin.",
+    "find": "Ürün",
+    "findPlaceholder": "Adı yazmaya başlayın",
+    "onShelf": "{qty} rafta",
+    "serviceLine": "hizmet, stok yok",
+    "noOffers": "Henüz fiyatlandırılmış ürün yok. Önce bir ürüne fiyat belirleyin.",
+    "qty": "Miktar",
+    "price": "Fiyat",
+    "removeLine": "Kaldır",
+    "payment": "Ödeme şekli",
+    "paymentKind": {
+      "CASH": "Nakit",
+      "CARD": "Kart",
+      "TRANSFER": "Banka transferi",
+      "CRYPTO": "Kripto",
+      "OTHER": "Diğer"
+    },
+    "coin": "Coin",
+    "coinAmount": "Coin cinsinden tutar",
+    "rate": "Coin başına kur",
+    "coinStated": "Coin, kur ve tutar sizin beyanınızdır: platform ödemenin kendisini görmez.",
+    "note": "Not",
+    "discount": "İndirim",
+    "total": "Toplam",
+    "cashback": "Nakit iadesi",
+    "record": "Fişi kaydet",
+    "saving": "Kaydediliyor…",
+    "doneHeading": "Fiş No. {number} kaydedildi",
+    "doneHint": "QR kodu müşteriye gösterin — fiş telefonunda açılır ve panelinde saklayabilir.",
+    "shareTitle": "Fişiniz",
+    "shareText": "Fiş No. {number}",
+    "openReceipt": "Fişi aç",
+    "newSale": "Yeni satış",
+    "showAgain": "QR'yi tekrar göster",
+    "reissueHint": "Bu yeni bir bağlantı; önceki artık çalışmıyor.",
+    "alreadyClaimed": "Müşteri bu fişi zaten paneline kaydetti.",
+    "cancel": "Fişi iptal et",
+    "cancelReason": "Neden iptal ediliyor?",
+    "cancelConfirm": "İptal et ve ürünleri rafa geri koy",
+    "cancelledMark": "iptal edildi",
+    "listHeading": "Fişler",
+    "listEmpty": "Henüz satış yok.",
+    "rowNumber": "Fiş No. {number}",
+    "rowLines": "Satır: {count}",
+    "rowClaimed": "müşteri tarafından kaydedildi",
+    "readOnly": "Bu şirkete ait fişleri okuyabilirsiniz, ancak satış kaydı yapamazsınız.",
+    "error": {
+      "already_cancelled": "Bu fiş zaten iptal edildi.",
+      "already_claimed": "Bu fiş zaten bir müşteri tarafından kaydedildi.",
+      "coin_required": "Müşterinin hangi coin ile ödediğini belirtin.",
+      "currency_mismatch": "Bir fişteki tüm satırlar aynı para biriminde olmalıdır.",
+      "currency_unknown": "O ürünün fiyatı, kasanın yazdıramadığı bir para biriminde.",
+      "daily_limit": "Günlük fiş limiti doldu. Kasa yarın yeniden açılacak.",
+      "duplicate_line": "O ürün fişte zaten var — bunun yerine miktarını değiştirin.",
+      "forbidden": "Bu şirkette kasayı kullanma yetkiniz yok.",
+      "insufficient_stock": "O rafta yeterli stok yok.",
+      "lines_required": "Fişe en az bir satır ekleyin.",
+      "not_found": "Fiş bulunamadı.",
+      "offer_missing": "Bu ürünün bu şirketten aktif bir fiyatı yok.",
+      "payment_invalid": "Müşterinin nasıl ödediğini seçin.",
+      "price_above_list": "Fiyat, yayımlanan fiyattan yüksek olamaz.",
+      "price_invalid": "Fiyat, sıfırdan büyük bir sayı olmalıdır.",
+      "qty_invalid": "Miktar, sıfırdan büyük bir sayı olmalıdır.",
+      "rate_invalid": "Kur ve coin miktarı sıfırdan büyük sayılar olmalıdır.",
+      "reason_required": "Kısaca nedenini söyleyin.",
+      "shelf_required": "Ürünler bir raftan çıkar — birini seçin.",
+      "too_many_lines": "Bir fişte çok fazla satır var.",
+      "unauth": "Lütfen yeniden oturum açın.",
+      "warehouse_unknown": "O raf kullanılamıyor."
+    }
+  },
+  "receipt": {
+    "title": "Fiş",
+    "myTitle": "Fişlerim",
+    "mySubtitle": "Satıcılardan kaydettiğiniz fişler. Satıcının kaydettiği şekilde saklanırlar.",
+    "myEmpty": "Henüz fiş yok. Satın alımdan sonra satıcı size bir bağlantı veya QR kodu verir.",
+    "bearerHint": "Bu bağlantıya sahip olan herkes fişi okuyabilir — kâğıt fiş gibi saklayın.",
+    "number": "No. {number}",
+    "cancelled": "Satıcı tarafından iptal edildi",
+    "wasPrice": "raf fiyatı {price}",
+    "discount": "İndirim",
+    "total": "Toplam",
+    "payment": "Şununla ödendi",
+    "paymentKind": {
+      "CASH": "Nakit",
+      "CARD": "Kart",
+      "TRANSFER": "Havale",
+      "CRYPTO": "Kripto",
+      "OTHER": "Diğer"
+    },
+    "inCoin": "Coin cinsinden",
+    "rate": "coin başına {rate}",
+    "coinStated": "Coin ve kur satıcı tarafından belirtilmiştir: platform bu ödemeyi gözlemlemedi.",
+    "cashback": "Bu alışverişte nakit iadesi: {amount}",
+    "cashbackPending": "Satıcının yayınladığı kurdan. Alacak kaydı platform cüzdanıyla başlar.",
+    "outsidePlatform": "Ödeme platform dışında gerçekleşir; satıştan satıcı sorumludur.",
+    "cashier": "Kasiyer: {name}",
+    "save": "Dolabıma kaydet",
+    "saving": "Kaydediliyor…",
+    "signInToSave": "Bu fişi dolabınızda tutmak için oturum açın.",
+    "signIn": "Oturum aç",
+    "openMyReceipts": "Fişlerimi aç",
+    "alreadyMine": "Bu fiş dolabınızda.",
+    "claimedByOther": "Bu fiş zaten başka bir müşteri tarafından kaydedildi.",
+    "error": {
+      "unauth": "Lütfen yeniden oturum açın.",
+      "not_found": "Fiş bulunamadı.",
+      "already_claimed": "Bu fiş zaten başka bir müşteri tarafından kaydedildi.",
+      "already_yours": "Bu fiş zaten dolabınızda.",
+      "company_not_listed": "Bu satıcı şu anda platform vitrini listesinde değil, bu yüzden makbuz kaydedilemez.",
+      "link_expired": "Bağlantının süresi dolmuş. Satıcıdan QR kodunu yeniden göstermesini isteyin."
     }
   }
 }

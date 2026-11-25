@@ -328,7 +328,7 @@
     },
     "addCoin": {
       "heading": "銘柄を手動で追加",
-      "coingeckoId": "CoinGecko ID",
+      "coingeckoId": "CoinGeckoのID",
       "symbol": "ティッカー",
       "name": "名称",
       "add": "追加",
@@ -1842,7 +1842,8 @@
       "journal": "アクティビティログ",
       "chat": "チームチャット",
       "customers": "カスタマーメッセージ",
-      "ads": "カードバナー"
+      "ads": "カードバナー",
+      "sales": "レジ"
     },
     "tileUnit": {
       "points": "{count}件（地図上）",
@@ -1856,7 +1857,8 @@
       "journal": "{count}件の記録",
       "chat": "{count}件のメッセージ",
       "customers": "会話数: {count}",
-      "ads": "{count}件配信中"
+      "ads": "{count}件配信中",
+      "sales": "本日のレシート数"
     },
     "tileEmpty": "まだありません",
     "tileBadge": {
@@ -2274,7 +2276,8 @@
         "interests": "ルート沿いに表示する内容",
         "loyalty": "あなたのレベルとキャッシュバック",
         "admin": "キューと案件",
-        "appearance": "各タイルの枠線の色"
+        "appearance": "各タイルの枠線の色",
+        "receipts": "購入のレシート"
       }
     },
     "appearance": {
@@ -4378,7 +4381,8 @@
         "stock": "倉庫管理者",
         "marketing": "マーケター",
         "observer": "オブザーバー",
-        "hr": "HR"
+        "hr": "人事",
+        "cashier": "レジ係"
       },
       "sections": {
         "card": "店舗カード",
@@ -4390,7 +4394,8 @@
         "promos": "オファーと配信",
         "supply": "仕入先と発注",
         "customers": "顧客メッセージ",
-        "hiring": "採用: 招待リンク"
+        "hiring": "採用: 招待リンク",
+        "sales": "レジとレシート"
       },
       "levels": {
         "NONE": "アクセスなし",
@@ -4512,7 +4517,9 @@
       "AD_CHANGES_SUBMITTED": "バナー項目の変更を審査に提出",
       "AD_APPROVED": "バナー項目がモデレーターに承認された",
       "AD_REJECTED": "バナー項目がモデレーターに却下された",
-      "AD_DELETED": "バナー項目が削除されました"
+      "AD_DELETED": "バナー項目が削除されました",
+      "SALE_RECORDED": "販売を記録しました",
+      "SALE_CANCELLED": "レシートを取り消しました"
     }
   },
   "cabinetTasks": {
@@ -5261,6 +5268,125 @@
       "subject_gone": "そのページはもう存在しません。",
       "unauth": "まずサインインしてください。",
       "failed": "招待を承諾できませんでした。"
+    }
+  },
+  "cabinetSales": {
+    "title": "レジ",
+    "subtitle": "販売を記録します。商品は棚から出庫され、顧客はレシートを受け取ります。支払い自体はプラットフォーム外で行われます。",
+    "tillHeading": "新規販売",
+    "shelf": "棚",
+    "noShelf": "棚なし（サービスのみ）",
+    "noShelves": "まだ棚がありません — 商品を販売するには倉庫で棚を追加してください。",
+    "find": "商品",
+    "findPlaceholder": "名前の入力を開始",
+    "onShelf": "棚に{qty}",
+    "serviceLine": "サービス、在庫なし",
+    "noOffers": "まだ価格設定された商品がありません。まず商品の価格を設定してください。",
+    "qty": "数量",
+    "price": "価格",
+    "removeLine": "削除",
+    "payment": "支払い方法",
+    "paymentKind": {
+      "CASH": "現金",
+      "CARD": "カード",
+      "TRANSFER": "振込",
+      "CRYPTO": "暗号資産",
+      "OTHER": "その他"
+    },
+    "coin": "コイン",
+    "coinAmount": "コイン建て金額",
+    "rate": "コインあたりの為替レート",
+    "coinStated": "コイン、レート、金額はあなたが申告するものです：プラットフォームには支払い自体が見えません。",
+    "note": "メモ",
+    "discount": "割引",
+    "total": "合計",
+    "cashback": "キャッシュバック",
+    "record": "レシートを記録",
+    "saving": "記録中…",
+    "doneHeading": "レシートNo.{number}を記録しました",
+    "doneHint": "QRコードをお客様に見せてください — レシートは相手のスマートフォンで開き、キャビネットに保存できます。",
+    "shareTitle": "あなたのレシート",
+    "shareText": "レシートNo.{number}",
+    "openReceipt": "レシートを開く",
+    "newSale": "新規販売",
+    "showAgain": "QRをもう一度表示",
+    "reissueHint": "これは新しいリンクです；以前のものはもう機能しません。",
+    "alreadyClaimed": "このレシートはすでにお客様のキャビネットに保存されています。",
+    "cancel": "レシートを取り消す",
+    "cancelReason": "取り消しの理由は？",
+    "cancelConfirm": "取り消して商品を棚に戻す",
+    "cancelledMark": "キャンセル済み",
+    "listHeading": "レシート",
+    "listEmpty": "まだ販売がありません。",
+    "rowNumber": "レシート番号 {number}",
+    "rowLines": "行数: {count}",
+    "rowClaimed": "顧客が保存済み",
+    "readOnly": "この会社のレシートは閲覧できますが、販売の記録はできません。",
+    "error": {
+      "already_cancelled": "このレシートは既にキャンセルされています。",
+      "already_claimed": "このレシートは既に顧客に保存されています。",
+      "coin_required": "顧客が支払ったコインを指定してください。",
+      "currency_mismatch": "1つのレシート内のすべての行は同じ通貨でなければなりません。",
+      "currency_unknown": "その商品の価格はレジが印刷できない通貨です。",
+      "daily_limit": "1日のレシート上限に達しました。レジは明日また利用できます。",
+      "duplicate_line": "その商品は既にレシートにあります—数量を変更してください。",
+      "forbidden": "この会社のレジを使用する権限がありません。",
+      "insufficient_stock": "その棚の在庫が不足しています。",
+      "lines_required": "レシートに少なくとも1行追加してください。",
+      "not_found": "レシートが見つかりません。",
+      "offer_missing": "その商品にはこの会社の有効な価格がありません。",
+      "payment_invalid": "顧客の支払方法を選択してください。",
+      "price_above_list": "価格は公開価格を上回ることはできません。",
+      "price_invalid": "価格は0より大きい数値でなければなりません。",
+      "qty_invalid": "数量は0より大きい数値でなければなりません。",
+      "rate_invalid": "レートとコイン数量は0より大きい数値でなければなりません。",
+      "reason_required": "理由を短く記入してください。",
+      "shelf_required": "商品は棚から出庫されます—棚を選択してください。",
+      "too_many_lines": "1つのレシートの行数が多すぎます。",
+      "unauth": "もう一度サインインしてください。",
+      "warehouse_unknown": "その棚は利用できません。"
+    }
+  },
+  "receipt": {
+    "title": "レシート",
+    "myTitle": "自分のレシート",
+    "mySubtitle": "販売者から保存したレシート。販売者が記録したとおりに保持されます。",
+    "myEmpty": "まだレシートはありません。購入後に販売者からリンクまたはQRコードが渡されます。",
+    "bearerHint": "このリンクを持つ人はレシートを閲覧できます—紙のレシート同様に保管してください。",
+    "number": "番号 {number}",
+    "cancelled": "販売者によりキャンセル",
+    "wasPrice": "店頭価格 {price}",
+    "discount": "割引",
+    "total": "合計",
+    "payment": "支払い方法",
+    "paymentKind": {
+      "CASH": "現金",
+      "CARD": "カード",
+      "TRANSFER": "振込",
+      "CRYPTO": "暗号資産",
+      "OTHER": "その他"
+    },
+    "inCoin": "コイン建て",
+    "rate": "1コインあたり {rate}",
+    "coinStated": "コインと為替レートは販売者が指定したものです: プラットフォームはこの支払いを確認していません.",
+    "cashback": "この購入のキャッシュバック：{amount}",
+    "cashbackPending": "販売者が公開したレートで。付与はプラットフォームのウォレットから始まります。",
+    "outsidePlatform": "支払いはプラットフォーム外で行われます。販売者が販売に責任を負います。",
+    "cashier": "レジ担当者：{name}",
+    "save": "マイページに保存",
+    "saving": "保存中…",
+    "signInToSave": "このレシートをマイページに保存するにはサインインしてください。",
+    "signIn": "サインイン",
+    "openMyReceipts": "マイレシートを開く",
+    "alreadyMine": "このレシートはあなたのマイページにあります。",
+    "claimedByOther": "このレシートは別の購入者により既に保存されています。",
+    "error": {
+      "unauth": "もう一度サインインしてください。",
+      "not_found": "レシートが見つかりません。",
+      "already_claimed": "このレシートは別の購入者により既に保存されています。",
+      "already_yours": "このレシートは既にあなたのマイページにあります。",
+      "company_not_listed": "この販売者は現在プラットフォームの掲載一覧にないため、レシートを保存できません。",
+      "link_expired": "リンクの有効期限が切れました。販売者にQRコードの提示をもう一度依頼してください."
     }
   }
 }

@@ -18,6 +18,12 @@
  * кого угодно кем угодно, то есть запрет `self_grant` обходился бы через второго
  * человека.
  *
+ * Одиннадцатый раздел `sales` — слайс CK, касса: это и есть кассир из ТЗ 6.6, которого
+ * BE не завёл («кассы нет, а шаблон с пустым набором прав — насмешка»). В наследие фазы
+ * 10 он, в отличие от `hiring`, **входит**: касса — обычная работа предприятия, и
+ * легаси-редактор, уже правящий цену и остаток, не получает с ней власти ни над
+ * командой, ни над чужими деньгами.
+ *
  * Девятый раздел `customers` появился в BQ вместе с перепиской покупателя: ТЗ 6.6 прямо
  * говорит «сотрудники **с нужной ролью** отвечают на сообщения покупателей». Общий чат
  * команды (BP) раздела прав не получил — комната принадлежит команде, — а внешняя
@@ -28,7 +34,7 @@
 /** Ролей на предприятие — столько, сколько читает человек в списке. */
 export const MAX_TEAM_ROLES = 20;
 
-export const TEAM_SECTIONS = ["card", "points", "products", "warehouses", "pricing", "tasks", "promos", "supply", "customers", "hiring"] as const;
+export const TEAM_SECTIONS = ["card", "points", "products", "warehouses", "pricing", "tasks", "promos", "supply", "customers", "hiring", "sales"] as const;
 export type TeamSection = (typeof TEAM_SECTIONS)[number];
 
 /** Уровней два; отсутствие строки — запрет по умолчанию, как очередь без гранта в AS. */
@@ -111,15 +117,19 @@ export function visibleSections(perms: TeamPermissions): TeamSection[] {
  * сохранённая роль хранит свой набор и от шаблона больше не зависит.
  */
 export const ROLE_TEMPLATES: { key: string; permissions: TeamPermissions }[] = [
-  { key: "manager", permissions: { card: "EDIT", points: "EDIT", products: "EDIT", warehouses: "EDIT", pricing: "EDIT", tasks: "EDIT", promos: "EDIT", supply: "EDIT", customers: "EDIT", hiring: "EDIT" } },
+  { key: "manager", permissions: { card: "EDIT", points: "EDIT", products: "EDIT", warehouses: "EDIT", pricing: "EDIT", tasks: "EDIT", promos: "EDIT", supply: "EDIT", customers: "EDIT", hiring: "EDIT", sales: "EDIT" } },
+  // Кассир проводит продажи и больше не делает ничего: товар ему надо видеть, чтобы
+  // выбрать строку чека, а цену ставит предложение продавца, не он.
+  { key: "cashier", permissions: { sales: "EDIT", products: "VIEW" } },
   // Кадровик зовёт людей и больше не делает ничего: витрина, склад и цена к найму
   // отношения не имеют.
   { key: "hr", permissions: { hiring: "EDIT", tasks: "VIEW" } },
   // Кладовщик видит, что едет на его полку, но не заказывает: заказ — обещание денег.
+  // Кассы у него тоже нет: уход товара по чеку — работа кассира.
   { key: "stock", permissions: { points: "VIEW", products: "VIEW", warehouses: "EDIT", tasks: "VIEW", supply: "VIEW" } },
   // Маркетолог и есть голос магазина — переписку с покупателем ведёт он.
   { key: "marketing", permissions: { card: "EDIT", products: "VIEW", pricing: "EDIT", tasks: "VIEW", promos: "EDIT", customers: "EDIT" } },
-  { key: "observer", permissions: { card: "VIEW", points: "VIEW", products: "VIEW", warehouses: "VIEW", pricing: "VIEW", tasks: "VIEW", promos: "VIEW", supply: "VIEW", customers: "VIEW", hiring: "VIEW" } },
+  { key: "observer", permissions: { card: "VIEW", points: "VIEW", products: "VIEW", warehouses: "VIEW", pricing: "VIEW", tasks: "VIEW", promos: "VIEW", supply: "VIEW", customers: "VIEW", hiring: "VIEW", sales: "VIEW" } },
 ];
 
 /**

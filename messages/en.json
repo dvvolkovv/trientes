@@ -1842,7 +1842,8 @@
       "journal": "Activity log",
       "chat": "Team chat",
       "customers": "Customer messages",
-      "ads": "Card banner"
+      "ads": "Card banner",
+      "sales": "Till"
     },
     "tileUnit": {
       "points": "{count} on the map",
@@ -1856,7 +1857,8 @@
       "journal": "{count} entries",
       "chat": "{count} messages",
       "customers": "Conversations: {count}",
-      "ads": "{count} live"
+      "ads": "{count} live",
+      "sales": "receipts today"
     },
     "tileEmpty": "nothing yet",
     "tileBadge": {
@@ -2274,7 +2276,8 @@
         "interests": "What to show along a route",
         "loyalty": "Your level and cashback",
         "admin": "Queues and cases",
-        "appearance": "Outline colour of each tile"
+        "appearance": "Outline colour of each tile",
+        "receipts": "Receipts from your purchases"
       }
     },
     "appearance": {
@@ -4378,7 +4381,8 @@
         "stock": "Warehouse keeper",
         "marketing": "Marketer",
         "observer": "Observer",
-        "hr": "HR"
+        "hr": "HR",
+        "cashier": "Cashier"
       },
       "sections": {
         "card": "Shop card",
@@ -4390,7 +4394,8 @@
         "promos": "Offers and mailings",
         "supply": "Suppliers and orders",
         "customers": "Customer messages",
-        "hiring": "Hiring: invite links"
+        "hiring": "Hiring: invite links",
+        "sales": "Till and receipts"
       },
       "levels": {
         "NONE": "No access",
@@ -4512,7 +4517,9 @@
       "AD_CHANGES_SUBMITTED": "Banner item changes sent for review",
       "AD_APPROVED": "Banner item approved by a moderator",
       "AD_REJECTED": "Banner item rejected by a moderator",
-      "AD_DELETED": "Banner item deleted"
+      "AD_DELETED": "Banner item deleted",
+      "SALE_RECORDED": "Sale recorded",
+      "SALE_CANCELLED": "Receipt cancelled"
     }
   },
   "cabinetTasks": {
@@ -5261,6 +5268,125 @@
       "subject_gone": "That page no longer exists.",
       "unauth": "Sign in first.",
       "failed": "Could not accept the invite."
+    }
+  },
+  "cabinetSales": {
+    "title": "Till",
+    "subtitle": "Record a sale: goods leave the shelf and the customer gets a receipt. Payment itself happens outside the platform.",
+    "tillHeading": "New sale",
+    "shelf": "Shelf",
+    "noShelf": "No shelf (services only)",
+    "noShelves": "No shelves yet — add one in Warehouses to sell goods.",
+    "find": "Product",
+    "findPlaceholder": "Start typing the name",
+    "onShelf": "{qty} on the shelf",
+    "serviceLine": "service, no stock",
+    "noOffers": "No priced products yet. Set a price for a product first.",
+    "qty": "Quantity",
+    "price": "Price",
+    "removeLine": "Remove",
+    "payment": "Paid with",
+    "paymentKind": {
+      "CASH": "Cash",
+      "CARD": "Card",
+      "TRANSFER": "Transfer",
+      "CRYPTO": "Crypto",
+      "OTHER": "Other"
+    },
+    "coin": "Coin",
+    "coinAmount": "Amount in coin",
+    "rate": "Exchange rate per coin",
+    "coinStated": "The coin, rate and amount are what you state: the platform does not see the payment itself.",
+    "note": "Note",
+    "discount": "Discount",
+    "total": "Total",
+    "cashback": "Cashback",
+    "record": "Record receipt",
+    "saving": "Recording…",
+    "doneHeading": "Receipt No. {number} recorded",
+    "doneHint": "Show the QR code to the customer — the receipt opens on their phone and they can keep it in their cabinet.",
+    "shareTitle": "Your receipt",
+    "shareText": "Receipt No. {number}",
+    "openReceipt": "Open receipt",
+    "newSale": "New sale",
+    "showAgain": "Show QR again",
+    "reissueHint": "This is a new link; the previous one no longer works.",
+    "alreadyClaimed": "The customer has already saved this receipt in their cabinet.",
+    "cancel": "Cancel receipt",
+    "cancelReason": "Why is it cancelled?",
+    "cancelConfirm": "Cancel and return goods to the shelf",
+    "cancelledMark": "cancelled",
+    "listHeading": "Receipts",
+    "listEmpty": "No sales yet.",
+    "rowNumber": "Receipt No. {number}",
+    "rowLines": "Lines: {count}",
+    "rowClaimed": "saved by the customer",
+    "readOnly": "You can read the receipts of this company, but not record sales.",
+    "error": {
+      "already_cancelled": "This receipt is already cancelled.",
+      "already_claimed": "This receipt is already saved by a customer.",
+      "coin_required": "Name the coin the customer paid in.",
+      "currency_mismatch": "All lines of one receipt must share a currency.",
+      "currency_unknown": "The price of that product is in a currency the till cannot print.",
+      "daily_limit": "Daily receipt limit reached. The till opens again tomorrow.",
+      "duplicate_line": "That product is already in the receipt — change its quantity instead.",
+      "forbidden": "You do not have the right to use the till in this company.",
+      "insufficient_stock": "Not enough stock on that shelf.",
+      "lines_required": "Add at least one line to the receipt.",
+      "not_found": "Receipt not found.",
+      "offer_missing": "That product has no active price from this company.",
+      "payment_invalid": "Choose how the customer paid.",
+      "price_above_list": "The price cannot be higher than the published one.",
+      "price_invalid": "Price must be a number greater than zero.",
+      "qty_invalid": "Quantity must be a number greater than zero.",
+      "rate_invalid": "Rate and coin amount must be numbers greater than zero.",
+      "reason_required": "Say why in a few words.",
+      "shelf_required": "Goods leave a shelf — choose one.",
+      "too_many_lines": "Too many lines in one receipt.",
+      "unauth": "Please sign in again.",
+      "warehouse_unknown": "That shelf is not available."
+    }
+  },
+  "receipt": {
+    "title": "Receipt",
+    "myTitle": "My receipts",
+    "mySubtitle": "Receipts you saved from sellers. They are kept as the seller recorded them.",
+    "myEmpty": "No receipts yet. A seller gives you a link or a QR code after a purchase.",
+    "bearerHint": "Whoever holds this link can read the receipt — keep it as you would keep a paper one.",
+    "number": "No. {number}",
+    "cancelled": "Cancelled by the seller",
+    "wasPrice": "shelf price {price}",
+    "discount": "Discount",
+    "total": "Total",
+    "payment": "Paid with",
+    "paymentKind": {
+      "CASH": "Cash",
+      "CARD": "Card",
+      "TRANSFER": "Transfer",
+      "CRYPTO": "Crypto",
+      "OTHER": "Other"
+    },
+    "inCoin": "In coin",
+    "rate": "at {rate} per coin",
+    "coinStated": "The coin and the exchange rate are stated by the seller: the platform did not observe this payment.",
+    "cashback": "Cashback on this purchase: {amount}",
+    "cashbackPending": "At the seller's published rate. Crediting starts with the platform wallet.",
+    "outsidePlatform": "Payment happens outside the platform; the seller is responsible for the sale.",
+    "cashier": "Cashier: {name}",
+    "save": "Save to my cabinet",
+    "saving": "Saving…",
+    "signInToSave": "Sign in to keep this receipt in your cabinet.",
+    "signIn": "Sign in",
+    "openMyReceipts": "Open my receipts",
+    "alreadyMine": "This receipt is in your cabinet.",
+    "claimedByOther": "This receipt is already saved by another customer.",
+    "error": {
+      "unauth": "Please sign in again.",
+      "not_found": "Receipt not found.",
+      "already_claimed": "This receipt is already saved by another customer.",
+      "already_yours": "This receipt is already in your cabinet.",
+      "company_not_listed": "This seller is not on the platform showcase right now, so the receipt cannot be saved.",
+      "link_expired": "The link has expired. Ask the seller to show the QR code again."
     }
   }
 }

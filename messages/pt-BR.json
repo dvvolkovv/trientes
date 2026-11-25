@@ -1842,7 +1842,8 @@
       "journal": "Registro de atividades",
       "chat": "Chat da equipe",
       "customers": "Mensagens de clientes",
-      "ads": "Banner de cartão"
+      "ads": "Banner de cartão",
+      "sales": "Caixa"
     },
     "tileUnit": {
       "points": "{count} no mapa",
@@ -1856,7 +1857,8 @@
       "journal": "{count} entradas",
       "chat": "{count} mensagens",
       "customers": "Conversas: {count}",
-      "ads": "{count} no ar"
+      "ads": "{count} no ar",
+      "sales": "recibos hoje"
     },
     "tileEmpty": "ainda nada",
     "tileBadge": {
@@ -2274,7 +2276,8 @@
         "interests": "O que mostrar ao longo de uma rota",
         "loyalty": "Seu nível e cashback",
         "admin": "Filas e casos",
-        "appearance": "Cor do contorno de cada bloco"
+        "appearance": "Cor do contorno de cada bloco",
+        "receipts": "Recibos de suas compras"
       }
     },
     "appearance": {
@@ -4378,7 +4381,8 @@
         "stock": "Estoquista",
         "marketing": "Marketing",
         "observer": "Observador",
-        "hr": "RH"
+        "hr": "RH",
+        "cashier": "Caixa"
       },
       "sections": {
         "card": "Ficha da loja",
@@ -4390,7 +4394,8 @@
         "promos": "Ofertas e envios",
         "supply": "Fornecedores e pedidos",
         "customers": "Mensagens de clientes",
-        "hiring": "Contratação: links de convite"
+        "hiring": "Contratação: links de convite",
+        "sales": "Caixa e recibos"
       },
       "levels": {
         "NONE": "Sem acesso",
@@ -4512,7 +4517,9 @@
       "AD_CHANGES_SUBMITTED": "Alterações do item de banner enviadas para revisão",
       "AD_APPROVED": "Item de banner aprovado por um moderador",
       "AD_REJECTED": "Item de banner rejeitado por um moderador",
-      "AD_DELETED": "Item do banner excluído"
+      "AD_DELETED": "Item do banner excluído",
+      "SALE_RECORDED": "Venda registrada",
+      "SALE_CANCELLED": "Recibo cancelado"
     }
   },
   "cabinetTasks": {
@@ -5261,6 +5268,125 @@
       "subject_gone": "Essa página não existe mais.",
       "unauth": "Entre primeiro.",
       "failed": "Não foi possível aceitar o convite."
+    }
+  },
+  "cabinetSales": {
+    "title": "Caixa",
+    "subtitle": "Registrar uma venda: os produtos saem da prateleira e o cliente recebe um recibo. O pagamento em si ocorre fora da plataforma.",
+    "tillHeading": "Nova venda",
+    "shelf": "Prateleira",
+    "noShelf": "Sem prateleira (apenas serviços)",
+    "noShelves": "Ainda não há prateleiras — adicione uma em Depósitos para vender produtos.",
+    "find": "Produto",
+    "findPlaceholder": "Comece a digitar o nome",
+    "onShelf": "{qty} na prateleira",
+    "serviceLine": "serviço, sem estoque",
+    "noOffers": "Ainda não há produtos com preço. Defina um preço para um produto primeiro.",
+    "qty": "Quantidade",
+    "price": "Preço",
+    "removeLine": "Remover",
+    "payment": "Pago com",
+    "paymentKind": {
+      "CASH": "Dinheiro",
+      "CARD": "Cartão",
+      "TRANSFER": "Transferência",
+      "CRYPTO": "Cripto",
+      "OTHER": "Outro"
+    },
+    "coin": "Moeda",
+    "coinAmount": "Quantidade na moeda",
+    "rate": "Taxa de câmbio por moeda",
+    "coinStated": "A moeda, a cotação e o valor são os que você informa: a plataforma não vê o pagamento em si.",
+    "note": "Observação",
+    "discount": "Desconto",
+    "total": "Total",
+    "cashback": "Cashback",
+    "record": "Registrar recibo",
+    "saving": "Registrando…",
+    "doneHeading": "Recibo nº {number} registrado",
+    "doneHint": "Mostre o código QR ao cliente — o recibo abre no celular dele e ele pode guardá-lo no painel.",
+    "shareTitle": "Seu recibo",
+    "shareText": "Recibo nº {number}",
+    "openReceipt": "Abrir recibo",
+    "newSale": "Nova venda",
+    "showAgain": "Mostrar QR novamente",
+    "reissueHint": "Este é um novo link; o anterior não funciona mais.",
+    "alreadyClaimed": "O cliente já salvou este recibo no painel.",
+    "cancel": "Cancelar recibo",
+    "cancelReason": "Por que foi cancelado?",
+    "cancelConfirm": "Cancelar e devolver os produtos à prateleira",
+    "cancelledMark": "cancelado",
+    "listHeading": "Recibos",
+    "listEmpty": "Ainda não há vendas.",
+    "rowNumber": "Recibo nº {number}",
+    "rowLines": "Linhas: {count}",
+    "rowClaimed": "salvo pelo cliente",
+    "readOnly": "Você pode ler os recibos desta empresa, mas não registrar vendas.",
+    "error": {
+      "already_cancelled": "Este recibo já foi cancelado.",
+      "already_claimed": "Este recibo já foi salvo por um cliente.",
+      "coin_required": "Informe a moeda em que o cliente pagou.",
+      "currency_mismatch": "Todas as linhas de um recibo devem usar a mesma moeda.",
+      "currency_unknown": "O preço desse produto está em uma moeda que o caixa não pode imprimir.",
+      "daily_limit": "Limite diário de recibos atingido. O caixa reabre amanhã.",
+      "duplicate_line": "Esse produto já está no recibo — altere a quantidade.",
+      "forbidden": "Você não tem permissão para usar o caixa nesta empresa.",
+      "insufficient_stock": "Estoque insuficiente nessa prateleira.",
+      "lines_required": "Adicione pelo menos uma linha ao recibo.",
+      "not_found": "Recibo não encontrado.",
+      "offer_missing": "Esse produto não tem preço ativo desta empresa.",
+      "payment_invalid": "Escolha como o cliente pagou.",
+      "price_above_list": "O preço não pode ser maior que o publicado.",
+      "price_invalid": "O preço deve ser um número maior que zero.",
+      "qty_invalid": "A quantidade deve ser um número maior que zero.",
+      "rate_invalid": "A taxa e a quantidade de moeda devem ser números maiores que zero.",
+      "reason_required": "Diga o motivo em poucas palavras.",
+      "shelf_required": "As mercadorias saem de uma prateleira — escolha uma.",
+      "too_many_lines": "Linhas demais em um recibo.",
+      "unauth": "Por favor, faça login novamente.",
+      "warehouse_unknown": "Essa prateleira não está disponível."
+    }
+  },
+  "receipt": {
+    "title": "Recibo",
+    "myTitle": "Meus recibos",
+    "mySubtitle": "Recibos que você salvou de vendedores. Eles são mantidos como o vendedor os registrou.",
+    "myEmpty": "Ainda não há recibos. Um vendedor fornece um link ou um QR code após uma compra.",
+    "bearerHint": "Quem tiver este link pode ler o recibo — guarde-o como guardaria um recibo em papel.",
+    "number": "Nº {number}",
+    "cancelled": "Cancelado pelo vendedor",
+    "wasPrice": "preço de prateleira {price}",
+    "discount": "Desconto",
+    "total": "Total",
+    "payment": "Pago com",
+    "paymentKind": {
+      "CASH": "Dinheiro",
+      "CARD": "Cartão",
+      "TRANSFER": "Transferência",
+      "CRYPTO": "Cripto",
+      "OTHER": "Outro"
+    },
+    "inCoin": "Em moeda",
+    "rate": "a {rate} por moeda",
+    "coinStated": "A moeda e a taxa de câmbio são informadas pelo vendedor: a plataforma não observou este pagamento.",
+    "cashback": "Cashback nesta compra: {amount}",
+    "cashbackPending": "Na taxa publicada pelo vendedor. O crédito começa na carteira da plataforma.",
+    "outsidePlatform": "O pagamento ocorre fora da plataforma; o vendedor é responsável pela venda.",
+    "cashier": "Caixa: {name}",
+    "save": "Salvar no meu painel",
+    "saving": "Salvando…",
+    "signInToSave": "Faça login para manter este recibo no seu painel.",
+    "signIn": "Fazer login",
+    "openMyReceipts": "Abrir meus recibos",
+    "alreadyMine": "Este recibo está no seu painel.",
+    "claimedByOther": "Este recibo já foi salvo por outro cliente.",
+    "error": {
+      "unauth": "Por favor, faça login novamente.",
+      "not_found": "Recibo não encontrado.",
+      "already_claimed": "Este recibo já foi salvo por outro cliente.",
+      "already_yours": "Este recibo já está no seu painel.",
+      "company_not_listed": "Este vendedor não está na vitrine da plataforma no momento, portanto o recibo não pode ser salvo.",
+      "link_expired": "O link expirou. Peça ao vendedor para mostrar o código QR novamente."
     }
   }
 }

@@ -51,6 +51,8 @@ export const COMPANY_TILES: CompanyTileDef[] = [
   // Переписка с покупателем — лицо магазина наружу, поэтому витрина, а не «порядок» (BQ).
   { key: "customers", group: "showcase", icon: "✉️", section: "customers", path: "inbox" },
 
+  // Касса (слайс CK). Группа «хозяйство»: продажа — операционная работа, а не витрина.
+  { key: "sales", group: "household", icon: "🧾", section: "sales", path: "sales" },
   { key: "warehouses", group: "household", icon: "🏬", section: "warehouses", path: "warehouses" },
   { key: "supply", group: "household", icon: "🚚", section: "supply", path: "supply" },
 

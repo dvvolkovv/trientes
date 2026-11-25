@@ -32,7 +32,7 @@ export default async function CabinetPage({ params }: { params: Promise<{ locale
   const isStaff = isStaffRole(user.role as ViewerRole);
   const userId = user.id;
 
-  const [cases, companies, coins, exchanges, messages, unread, subscriptions, priceAlerts, geoAlerts] =
+  const [cases, companies, coins, exchanges, messages, unread, subscriptions, priceAlerts, geoAlerts, receipts] =
     await Promise.all([
       prisma.complianceCase.count({ where: { applicantUserId: userId } }),
       prisma.companyMember.count({ where: { userId } }),
@@ -53,6 +53,7 @@ export default async function CabinetPage({ params }: { params: Promise<{ locale
       prisma.companyFollow.count({ where: { userId } }),
       prisma.priceAlert.count({ where: { userId } }),
       prisma.geoAlert.count({ where: { userId } }),
+      prisma.sale.count({ where: { buyerUserId: userId } }),
     ]);
 
   const counts: Record<CabinetCounter, number> = {
@@ -63,6 +64,7 @@ export default async function CabinetPage({ params }: { params: Promise<{ locale
     messages,
     subscriptions,
     alerts: priceAlerts + geoAlerts,
+    receipts,
   };
 
   return (

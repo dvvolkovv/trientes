@@ -71,6 +71,8 @@ model User {
   tasksClosed              CompanyTask[]             @relation("CompanyTaskCloser")
   chatMessages             CompanyChatMessage[]      @relation("CompanyChatAuthor")
   companyAds               CompanyAd[]               @relation("CompanyAdAuthor")
+  sales                    Sale[]                    @relation("SaleBuyer")
+  salesRecorded            Sale[]                    @relation("SaleAuthor")
   companyAdDecisions       CompanyAd[]               @relation("CompanyAdModerator")
   chatReads                CompanyChatRead[]
   customerThreads          CustomerThread[]          @relation("CustomerThreadCustomer")
@@ -1065,6 +1067,12 @@ model Company {
   /// Рекламные материалы баннера карточки (слайс BY).
   ads CompanyAd[]
 
+  /// Касса (слайс CK). Счётчик номеров чеков — сквозной по предприятию: растёт
+  /// `increment`-ом внутри транзакции продажи, поэтому два кассира номера не повторят.
+  /// Сброса по годам нет — он требует второго счётчика, а год виден в дате чека.
+  saleSeq Int    @default(0)
+  sales   Sale[]
+
   // Поставки (BI). «Заказы нам» читаются через `Supplier.supplierCompany`: заказ
   // принадлежит покупателю, а поставщик — его адресат, а не второй владелец.
   suppliers    Supplier[]    @relation("SupplierOwner")
@@ -1230,6 +1238,7 @@ model CompanyPoint {
   ads             CompanyAd[]
   // Полки, стоящие на этой точке (слайс BC).
   warehouses      Warehouse[]
+  sales           Sale[]
   // Участки сотрудников, в которые входит эта точка (слайс BE).
   memberScopes    CompanyMemberPoint[]
   tasks           CompanyTask[]
@@ -2515,6 +2524,7 @@ model Product {
   ads          CompanyAd[]
   supplyLines  SupplyOrderLine[]
   reorderRules ReorderRule[]
+  saleLines    SaleLine[]
 
   @@index([category, createdAt])
   @@index([ownerCompanyId])
@@ -2679,6 +2689,7 @@ model Warehouse {
   tasks        CompanyTask[]
   supplyOrders SupplyOrder[]   @relation("SupplyOrderWarehouse")
   reorderRules ReorderRule[]   @relation("ReorderRuleWarehouse")
+  Sale         Sale[]
 
   @@index([companyId, kind])
   @@index([pointId])
@@ -2751,6 +2762,11 @@ model StockMovement {
   /// Связь рвётся, а не каскадит — документ может уйти, движение остаётся.
   supplyLineId String?
   supplyLine   SupplyOrderLine? @relation("MovementSupplyLine", fields: [supplyLineId], references: [id], onDelete: SetNull)
+
+  /// Расход по чеку кассы (слайс CK) — тот же мотив, что `supplyLineId`: иначе через
+  /// месяц не ответить, откуда взялся расход с полки.
+  saleId String?
+  sale   Sale?   @relation("MovementSale", fields: [saleId], references: [id], onDelete: SetNull)
 
   createdById String?
   createdBy   User?   @relation("StockMovementAuthor", fields: [createdById], references: [id], onDelete: SetNull)
@@ -3233,4 +3249,114 @@ model CompanyAd {
   updatedAt   DateTime @updatedAt
 
   @@index([companyId, status, sortOrder])
+}
+
+/// Способ оплаты чека (слайс CK). Это **заявление продавца**, а не наблюдённый нами
+/// факт: денег сайт не двигает, эквайринг в ТЗ исключён из объёма разработки.
+enum SalePayment {
+  CASH
+  CARD
+  TRANSFER
+  CRYPTO
+  OTHER
+}
+
+enum SaleStatus {
+  COMPLETED
+  CANCELLED
+}
+
+/// Чек продажи (ТЗ 6.3). Продажа — не платёж: это уход товара с полки и чек, а деньги
+/// идут мимо нас. Чек неизменяем: правка меняла бы то, что покупатель уже держит в
+/// руках, — ошибку исправляет отмена со встречным движением.
+model Sale {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  /// Номер в сквозной нумерации предприятия (`Company.saleSeq`).
+  number Int
+
+  /// Полка, с которой ушёл товар. Связь рвётся, а не каскадит: архив склада не должен
+  /// стирать чек. Чек только из услуг полки не имеет вовсе.
+  warehouseId String?
+  warehouse   Warehouse?    @relation(fields: [warehouseId], references: [id], onDelete: SetNull)
+  /// Точка продажи — для участков сотрудников и будущих отчётов по точкам.
+  pointId     String?
+  point       CompanyPoint? @relation(fields: [pointId], references: [id], onDelete: SetNull)
+
+  /// Валюта чека одна: две валюты в одном чеке означали бы сумму, которой нет.
+  currency String
+
+  /// Сумма по витринным ценам и фактическая. Скидка выводится вычитанием, а не хранится
+  /// третьим числом, которое разошлось бы с первыми двумя.
+  listTotal     Decimal @db.Decimal(18, 2)
+  total         Decimal @db.Decimal(18, 2)
+  /// Посчитанный кэшбэк по ставкам продавца на момент продажи. Начисления нет: кошелька
+  /// платформы нет, и строка «вам начислено» была бы обещанием денег (решение BD).
+  cashbackTotal Decimal @db.Decimal(18, 2)
+
+  payment SalePayment
+
+  /// Факты платежа в крипте — так, как их назвал продавец, и так же подписаны в чеке.
+  payCoin       String?
+  payRate       Decimal? @db.Decimal(24, 8)
+  payCoinAmount Decimal? @db.Decimal(28, 8)
+  payNote       String?  @db.Text
+
+  status        SaleStatus @default(COMPLETED)
+  cancelledAt   DateTime?
+  cancelReason  String?
+  cancelledById String?
+
+  /// Копия покупателю. В базе только sha256 ссылки: дамп таблицы не должен давать
+  /// чужие чеки. Ссылка — предъявитель, как бумажный чек.
+  receiptTokenHash String?   @unique
+  receiptExpiresAt DateTime?
+
+  /// Покупатель привязывает чек сам, перейдя по ссылке: набери продавец чужой логин — и
+  /// любой кабинет можно засыпать чеками.
+  buyerUserId    String?
+  buyerUser      User?     @relation("SaleBuyer", fields: [buyerUserId], references: [id], onDelete: SetNull)
+  buyerClaimedAt DateTime?
+
+  note String? @db.Text
+
+  createdById String?
+  createdBy   User?   @relation("SaleAuthor", fields: [createdById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  lines     SaleLine[]
+  movements StockMovement[] @relation("MovementSale")
+
+  @@unique([companyId, number])
+  @@index([companyId, createdAt])
+  @@index([buyerUserId, createdAt])
+  @@index([pointId, createdAt])
+}
+
+/// Строка чека — снимок на момент продажи: паспорт потом правят, ставку меняют, а чек
+/// обязан остаться тем, что видел покупатель.
+model SaleLine {
+  id     String @id @default(cuid())
+  saleId String
+  sale   Sale   @relation(fields: [saleId], references: [id], onDelete: Cascade)
+
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  name String
+  unit String
+
+  qty       Decimal @db.Decimal(18, 3)
+  /// Витринная цена предложения и фактическая: скидка — их разница.
+  listPrice Decimal @db.Decimal(18, 2)
+  price     Decimal @db.Decimal(18, 2)
+
+  cashbackPercent Decimal? @db.Decimal(5, 2)
+  cashbackAmount  Decimal  @db.Decimal(18, 2)
+
+  @@index([saleId])
+  @@index([productId])
 }

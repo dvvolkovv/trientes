@@ -174,7 +174,7 @@
     "readMore": "Mehr lesen",
     "showLess": "Weniger",
     "loading": "Lädt…",
-    "website": "Website",
+    "website": "Webseite",
     "explorer": "Explorer",
     "whitepaper": "Whitepaper",
     "github": "GitHub",
@@ -1842,7 +1842,8 @@
       "journal": "Aktivitätsprotokoll",
       "chat": "Team-Chat",
       "customers": "Kundenmitteilungen",
-      "ads": "Kartenbanner"
+      "ads": "Kartenbanner",
+      "sales": "Kasse"
     },
     "tileUnit": {
       "points": "{count} auf der Karte",
@@ -1856,7 +1857,8 @@
       "journal": "{count} Einträge",
       "chat": "{count} Nachrichten",
       "customers": "Unterhaltungen: {count}",
-      "ads": "{count} aktiv"
+      "ads": "{count} aktiv",
+      "sales": "Belege heute"
     },
     "tileEmpty": "noch nichts",
     "tileBadge": {
@@ -2274,7 +2276,8 @@
         "interests": "Was entlang einer Route angezeigt wird",
         "loyalty": "Ihr Level und Cashback",
         "admin": "Warteschlangen und Fälle",
-        "appearance": "Konturfarbe jeder Kachel"
+        "appearance": "Konturfarbe jeder Kachel",
+        "receipts": "Belege Ihrer Einkäufe"
       }
     },
     "appearance": {
@@ -2825,7 +2828,7 @@
       "symbolHint": "Kurzcode, z. B. BTC",
       "tagline": "Slogan",
       "taglineHint": "Eine Zeile, bis 120 Zeichen",
-      "website": "Website",
+      "website": "Webseite",
       "description": "Beschreibung",
       "descriptionHint": "Mindestens 120 Zeichen, damit es zählt",
       "logo": "Logo",
@@ -4378,7 +4381,8 @@
         "stock": "Lagerverwalter",
         "marketing": "Marketingmanager",
         "observer": "Beobachter",
-        "hr": "HR"
+        "hr": "HR",
+        "cashier": "Kassierer"
       },
       "sections": {
         "card": "Shop-Karte",
@@ -4390,7 +4394,8 @@
         "promos": "Angebote und Mailings",
         "supply": "Lieferanten und Bestellungen",
         "customers": "Kundennachrichten",
-        "hiring": "Einstellung: Einladungslinks"
+        "hiring": "Einstellung: Einladungslinks",
+        "sales": "Kasse und Belege"
       },
       "levels": {
         "NONE": "Kein Zugriff",
@@ -4512,7 +4517,9 @@
       "AD_CHANGES_SUBMITTED": "Änderungen am Banner-Element zur Prüfung eingereicht",
       "AD_APPROVED": "Banner-Element von einem Moderator genehmigt",
       "AD_REJECTED": "Banner-Element vom Moderator abgelehnt",
-      "AD_DELETED": "Banner-Element gelöscht"
+      "AD_DELETED": "Banner-Element gelöscht",
+      "SALE_RECORDED": "Verkauf erfasst",
+      "SALE_CANCELLED": "Beleg storniert"
     }
   },
   "cabinetTasks": {
@@ -5261,6 +5268,125 @@
       "subject_gone": "Diese Seite existiert nicht mehr.",
       "unauth": "Melde dich zuerst an.",
       "failed": "Konnte die Einladung nicht annehmen."
+    }
+  },
+  "cabinetSales": {
+    "title": "Kasse",
+    "subtitle": "Einen Verkauf erfassen: Waren verlassen das Regal und der Kunde erhält einen Beleg. Die Zahlung selbst erfolgt außerhalb der Plattform.",
+    "tillHeading": "Neuer Verkauf",
+    "shelf": "Regal",
+    "noShelf": "Kein Regal (nur Dienstleistungen)",
+    "noShelves": "Noch keine Regale — füge unter Lager eines hinzu, um Waren zu verkaufen.",
+    "find": "Produkt",
+    "findPlaceholder": "Beginne, den Namen einzugeben",
+    "onShelf": "{qty} im Regal",
+    "serviceLine": "Dienstleistung, kein Bestand",
+    "noOffers": "Noch keine Produkte mit Preis. Lege zuerst einen Preis für ein Produkt fest.",
+    "qty": "Menge",
+    "price": "Preis",
+    "removeLine": "Entfernen",
+    "payment": "Bezahlt mit",
+    "paymentKind": {
+      "CASH": "Bar",
+      "CARD": "Karte",
+      "TRANSFER": "Überweisung",
+      "CRYPTO": "Krypto",
+      "OTHER": "Sonstiges"
+    },
+    "coin": "Coin",
+    "coinAmount": "Betrag in Coin",
+    "rate": "Wechselkurs pro Coin",
+    "coinStated": "Coin, Kurs und Betrag stammen von dir: Die Plattform sieht die Zahlung selbst nicht.",
+    "note": "Notiz",
+    "discount": "Rabatt",
+    "total": "Gesamt",
+    "cashback": "Cashback",
+    "record": "Beleg erfassen",
+    "saving": "Wird erfasst…",
+    "doneHeading": "Beleg Nr. {number} erfasst",
+    "doneHint": "Zeigen Sie dem Kunden den QR-Code — der Beleg öffnet sich auf seinem Handy und er kann ihn in seiner Ablage behalten.",
+    "shareTitle": "Ihr Beleg",
+    "shareText": "Beleg Nr. {number}",
+    "openReceipt": "Beleg öffnen",
+    "newSale": "Neuer Verkauf",
+    "showAgain": "QR erneut anzeigen",
+    "reissueHint": "Dies ist ein neuer Link; der vorherige funktioniert nicht mehr.",
+    "alreadyClaimed": "Der Kunde hat diesen Beleg bereits in seiner Ablage gespeichert.",
+    "cancel": "Beleg stornieren",
+    "cancelReason": "Warum wird storniert?",
+    "cancelConfirm": "Stornieren und Waren zurück ins Regal legen",
+    "cancelledMark": "storniert",
+    "listHeading": "Belege",
+    "listEmpty": "Noch keine Verkäufe.",
+    "rowNumber": "Beleg Nr. {number}",
+    "rowLines": "Positionen: {count}",
+    "rowClaimed": "vom Kunden gespeichert",
+    "readOnly": "Sie können die Belege dieses Unternehmens lesen, aber keine Verkäufe erfassen.",
+    "error": {
+      "already_cancelled": "Dieser Beleg ist bereits storniert.",
+      "already_claimed": "Dieser Beleg wurde bereits von einem Kunden gespeichert.",
+      "coin_required": "Nennen Sie die Coin, in der der Kunde bezahlt hat.",
+      "currency_mismatch": "Alle Positionen eines Belegs müssen dieselbe Währung haben.",
+      "currency_unknown": "Der Preis dieses Produkts ist in einer Währung, die die Kasse nicht drucken kann.",
+      "daily_limit": "Tageslimit für Belege erreicht. Die Kasse öffnet morgen wieder.",
+      "duplicate_line": "Dieses Produkt ist bereits im Beleg — ändern Sie stattdessen die Menge.",
+      "forbidden": "Sie sind nicht berechtigt, die Kasse in diesem Unternehmen zu benutzen.",
+      "insufficient_stock": "Nicht genug Bestand in diesem Regal.",
+      "lines_required": "Fügen Sie dem Beleg mindestens eine Position hinzu.",
+      "not_found": "Beleg nicht gefunden.",
+      "offer_missing": "Dieses Produkt hat keinen aktiven Preis von diesem Unternehmen.",
+      "payment_invalid": "Wählen Sie, wie der Kunde bezahlt hat.",
+      "price_above_list": "Der Preis darf nicht höher als der veröffentlichte sein.",
+      "price_invalid": "Der Preis muss eine Zahl größer als null sein.",
+      "qty_invalid": "Die Menge muss eine Zahl größer als null sein.",
+      "rate_invalid": "Kurs und Coin-Betrag müssen Zahlen größer als null sein.",
+      "reason_required": "Sagen Sie in wenigen Worten, warum.",
+      "shelf_required": "Waren verlassen ein Regal — wählen Sie eines.",
+      "too_many_lines": "Zu viele Positionen in einem Beleg.",
+      "unauth": "Bitte melde dich erneut an.",
+      "warehouse_unknown": "Dieses Regal ist nicht verfügbar."
+    }
+  },
+  "receipt": {
+    "title": "Beleg",
+    "myTitle": "Meine Belege",
+    "mySubtitle": "Belege, die du von Verkäufern gespeichert hast. Sie bleiben so erhalten, wie der Verkäufer sie erfasst hat.",
+    "myEmpty": "Noch keine Belege. Ein Verkäufer gibt dir nach einem Kauf einen Link oder einen QR-Code.",
+    "bearerHint": "Wer diesen Link besitzt, kann den Beleg lesen — behandle ihn wie einen Papierbeleg.",
+    "number": "Nr. {number}",
+    "cancelled": "Vom Verkäufer storniert",
+    "wasPrice": "Regalpreis {price}",
+    "discount": "Rabatt",
+    "total": "Gesamt",
+    "payment": "Bezahlt mit",
+    "paymentKind": {
+      "CASH": "Bar",
+      "CARD": "Karte",
+      "TRANSFER": "Überweisung",
+      "CRYPTO": "Krypto",
+      "OTHER": "Sonstiges"
+    },
+    "inCoin": "In Coin",
+    "rate": "zu {rate} pro Coin",
+    "coinStated": "Die Coin und der Wechselkurs werden vom Verkäufer angegeben: die Plattform hat diese Zahlung nicht beobachtet.",
+    "cashback": "Cashback für diesen Kauf: {amount}",
+    "cashbackPending": "Zum vom Verkäufer veröffentlichten Kurs. Die Gutschrift beginnt mit dem Plattform-Wallet.",
+    "outsidePlatform": "Die Zahlung erfolgt außerhalb der Plattform; der Verkäufer ist für den Verkauf verantwortlich.",
+    "cashier": "Kassierer: {name}",
+    "save": "In meiner Ablage speichern",
+    "saving": "Speichern…",
+    "signInToSave": "Melde dich an, um diesen Beleg in deiner Ablage zu behalten.",
+    "signIn": "Anmelden",
+    "openMyReceipts": "Meine Belege öffnen",
+    "alreadyMine": "Dieser Beleg ist in deiner Ablage.",
+    "claimedByOther": "Dieser Beleg wurde bereits von einem anderen Kunden gespeichert.",
+    "error": {
+      "unauth": "Bitte melde dich erneut an.",
+      "not_found": "Beleg nicht gefunden.",
+      "already_claimed": "Dieser Beleg wurde bereits von einem anderen Kunden gespeichert.",
+      "already_yours": "Dieser Beleg ist bereits in deiner Ablage.",
+      "company_not_listed": "Dieser Verkäufer ist derzeit nicht im Plattform-Schaufenster, daher kann der Beleg nicht gespeichert werden.",
+      "link_expired": "Der Link ist abgelaufen. Bitte den Verkäufer, den QR-Code erneut zu zeigen."
     }
   }
 }

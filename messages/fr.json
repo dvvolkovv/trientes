@@ -1842,7 +1842,8 @@
       "journal": "Journal d’activité",
       "chat": "Chat d'équipe",
       "customers": "Messages clients",
-      "ads": "Bannière de carte"
+      "ads": "Bannière de carte",
+      "sales": "Caisse"
     },
     "tileUnit": {
       "points": "{count} sur la carte",
@@ -1856,7 +1857,8 @@
       "journal": "{count} entrées",
       "chat": "{count} messages",
       "customers": "Conversations : {count}",
-      "ads": "{count} en cours"
+      "ads": "{count} en cours",
+      "sales": "reçus aujourd'hui"
     },
     "tileEmpty": "rien pour l’instant",
     "tileBadge": {
@@ -2274,7 +2276,8 @@
         "interests": "Ce qu'afficher le long d'un itinéraire",
         "loyalty": "Votre niveau et votre cashback",
         "admin": "Files d'attente et dossiers",
-        "appearance": "Couleur du contour de chaque tuile"
+        "appearance": "Couleur du contour de chaque tuile",
+        "receipts": "Reçus de vos achats"
       }
     },
     "appearance": {
@@ -4378,7 +4381,8 @@
         "stock": "Magasinier",
         "marketing": "Responsable marketing",
         "observer": "Observateur",
-        "hr": "RH"
+        "hr": "RH",
+        "cashier": "Caissier"
       },
       "sections": {
         "card": "Fiche boutique",
@@ -4390,7 +4394,8 @@
         "promos": "Offres et envois",
         "supply": "Fournisseurs et commandes",
         "customers": "Messages clients",
-        "hiring": "Recrutement: liens d'invitation"
+        "hiring": "Recrutement: liens d'invitation",
+        "sales": "Caisse et reçus"
       },
       "levels": {
         "NONE": "Aucun accès",
@@ -4512,7 +4517,9 @@
       "AD_CHANGES_SUBMITTED": "Modifications de l'élément de bannière envoyées pour examen",
       "AD_APPROVED": "Élément de bannière approuvé par un modérateur",
       "AD_REJECTED": "Élément de bannière refusé par un modérateur",
-      "AD_DELETED": "Élément de bannière supprimé"
+      "AD_DELETED": "Élément de bannière supprimé",
+      "SALE_RECORDED": "Vente enregistrée",
+      "SALE_CANCELLED": "Reçu annulé"
     }
   },
   "cabinetTasks": {
@@ -5261,6 +5268,125 @@
       "subject_gone": "Cette page n’existe plus.",
       "unauth": "Connectez-vous d’abord.",
       "failed": "Impossible d’accepter l’invitation."
+    }
+  },
+  "cabinetSales": {
+    "title": "Caisse",
+    "subtitle": "Enregistrer une vente : les articles quittent l’étagère et le client reçoit un reçu. Le paiement a lieu en dehors de la plateforme",
+    "tillHeading": "Nouvelle vente",
+    "shelf": "Rayon",
+    "noShelf": "Aucun rayon (services uniquement)",
+    "noShelves": "Aucun rayon pour l’instant — ajoutez-en un dans Entrepôts pour vendre des marchandises",
+    "find": "Produit",
+    "findPlaceholder": "Commencez à saisir le nom",
+    "onShelf": "{qty} en rayon",
+    "serviceLine": "service, pas de stock",
+    "noOffers": "Aucun produit tarifé pour l’instant. Définissez d’abord un prix pour un produit",
+    "qty": "Quantité",
+    "price": "Prix",
+    "removeLine": "Supprimer",
+    "payment": "Payé par",
+    "paymentKind": {
+      "CASH": "Espèces",
+      "CARD": "Carte",
+      "TRANSFER": "Virement",
+      "CRYPTO": "Crypto",
+      "OTHER": "Autre"
+    },
+    "coin": "Devise",
+    "coinAmount": "Montant en devise",
+    "rate": "Taux de change par pièce",
+    "coinStated": "La devise, le taux et le montant sont ceux que vous indiquez : la plateforme ne voit pas le paiement lui-même",
+    "note": "Note",
+    "discount": "Remise",
+    "total": "Total",
+    "cashback": "Cashback",
+    "record": "Enregistrer le reçu",
+    "saving": "Enregistrement…",
+    "doneHeading": "Reçu n° {number} enregistré",
+    "doneHint": "Montrez le code QR au client — le reçu s’ouvre sur son téléphone et il peut le conserver dans son espace",
+    "shareTitle": "Votre reçu",
+    "shareText": "Reçu n° {number}",
+    "openReceipt": "Ouvrir le reçu",
+    "newSale": "Nouvelle vente",
+    "showAgain": "Afficher le QR à nouveau",
+    "reissueHint": "Ceci est un nouveau lien ; le précédent ne fonctionne plus",
+    "alreadyClaimed": "Le client a déjà enregistré ce reçu dans son espace",
+    "cancel": "Annuler le reçu",
+    "cancelReason": "Pourquoi est-il annulé ?",
+    "cancelConfirm": "Annuler et remettre les articles en rayon",
+    "cancelledMark": "annulé",
+    "listHeading": "Reçus",
+    "listEmpty": "Aucune vente pour le moment.",
+    "rowNumber": "Reçu n° {number}",
+    "rowLines": "Lignes : {count}",
+    "rowClaimed": "enregistré par le client",
+    "readOnly": "Vous pouvez consulter les reçus de cette entreprise, mais pas enregistrer de ventes",
+    "error": {
+      "already_cancelled": "Ce reçu est déjà annulé.",
+      "already_claimed": "Ce reçu est déjà enregistré par un client.",
+      "coin_required": "Indiquez la devise dans laquelle le client a payé.",
+      "currency_mismatch": "Toutes les lignes d’un reçu doivent partager la même devise.",
+      "currency_unknown": "Le prix de ce produit est dans une devise que la caisse ne peut pas imprimer.",
+      "daily_limit": "Limite quotidienne de reçus atteinte. La caisse rouvre demain.",
+      "duplicate_line": "Ce produit figure déjà sur le reçu — modifiez plutôt sa quantité.",
+      "forbidden": "Vous n'avez pas le droit d'utiliser la caisse dans cette entreprise.",
+      "insufficient_stock": "Pas assez de stock sur cette étagère.",
+      "lines_required": "Ajoutez au moins une ligne au reçu.",
+      "not_found": "Reçu introuvable.",
+      "offer_missing": "Ce produit n'a pas de prix actif de cette entreprise.",
+      "payment_invalid": "Choisissez comment le client a payé.",
+      "price_above_list": "Le prix ne peut pas être supérieur au prix publié.",
+      "price_invalid": "Le prix doit être un nombre supérieur à zéro.",
+      "qty_invalid": "La quantité doit être un nombre supérieur à zéro.",
+      "rate_invalid": "Le taux et le montant en cryptomonnaie doivent être des nombres supérieurs à zéro.",
+      "reason_required": "Dites pourquoi en quelques mots.",
+      "shelf_required": "Les marchandises sortent d'une étagère — choisissez-en une.",
+      "too_many_lines": "Trop de lignes dans un seul reçu.",
+      "unauth": "Veuillez vous reconnecter.",
+      "warehouse_unknown": "Cette étagère n'est pas disponible."
+    }
+  },
+  "receipt": {
+    "title": "Reçu",
+    "myTitle": "Mes reçus",
+    "mySubtitle": "Reçus que vous avez enregistrés auprès de vendeurs. Ils sont conservés tels que le vendeur les a enregistrés.",
+    "myEmpty": "Pas encore de reçus. Un vendeur vous donne un lien ou un code QR après un achat.",
+    "bearerHint": "Quiconque détient ce lien peut lire le reçu — conservez-le comme vous le feriez pour un reçu papier.",
+    "number": "N° {number}",
+    "cancelled": "Annulé par le vendeur",
+    "wasPrice": "prix en rayon {price}",
+    "discount": "Remise",
+    "total": "Total",
+    "payment": "Payé avec",
+    "paymentKind": {
+      "CASH": "Espèces",
+      "CARD": "Carte",
+      "TRANSFER": "Virement",
+      "CRYPTO": "Crypto",
+      "OTHER": "Autre"
+    },
+    "inCoin": "En cryptomonnaie",
+    "rate": "à {rate} par pièce",
+    "coinStated": "La devise et le taux de change sont indiqués par le vendeur : la plateforme n'a pas observé ce paiement.",
+    "cashback": "Cashback sur cet achat : {amount}",
+    "cashbackPending": "Au taux publié par le vendeur. Le crédit commence avec le portefeuille de la plateforme.",
+    "outsidePlatform": "Le paiement a lieu en dehors de la plateforme ; le vendeur est responsable de la vente.",
+    "cashier": "Caissier : {name}",
+    "save": "Enregistrer dans mon espace",
+    "saving": "Enregistrement…",
+    "signInToSave": "Connectez-vous pour conserver ce reçu dans votre espace.",
+    "signIn": "Se connecter",
+    "openMyReceipts": "Ouvrir mes reçus",
+    "alreadyMine": "Ce reçu est dans votre espace.",
+    "claimedByOther": "Ce reçu est déjà enregistré par un autre client.",
+    "error": {
+      "unauth": "Veuillez vous reconnecter.",
+      "not_found": "Reçu introuvable.",
+      "already_claimed": "Ce reçu est déjà enregistré par un autre client.",
+      "already_yours": "Ce reçu est déjà dans votre espace.",
+      "company_not_listed": "Ce vendeur n’est pas actuellement sur la vitrine de la plateforme, le reçu ne peut donc pas être enregistré.",
+      "link_expired": "Le lien a expiré. Demandez au vendeur d’afficher à nouveau le code QR."
     }
   }
 }

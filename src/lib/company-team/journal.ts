@@ -97,7 +97,11 @@ export type CompanyAction =
   | "DOCUMENT_PUBLISHED"
   | "DOCUMENT_UNPUBLISHED"
   | "DOCUMENT_DELETED"
-  | "PUBLIC_FIELDS_SET";
+  | "PUBLIC_FIELDS_SET"
+  // Слайс CK: касса. Чек неизменяем, поэтому «правки» среди кодов нет — только запись
+  // и отмена со встречным движением.
+  | "SALE_RECORDED"
+  | "SALE_CANCELLED";
 
 export async function logCompanyAction(input: {
   companyId: string;

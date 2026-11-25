@@ -328,7 +328,7 @@
     },
     "addCoin": {
       "heading": "Pridať mincu ručne",
-      "coingeckoId": "CoinGecko ID",
+      "coingeckoId": "ID CoinGecko",
       "symbol": "Symbol",
       "name": "Názov",
       "add": "Pridať",
@@ -1842,7 +1842,8 @@
       "journal": "Záznam aktivít",
       "chat": "Tímový chat",
       "customers": "Správy od zákazníkov",
-      "ads": "Baner karty"
+      "ads": "Baner karty",
+      "sales": "Pokladňa"
     },
     "tileUnit": {
       "points": "{count} na mape",
@@ -1856,7 +1857,8 @@
       "journal": "{count} záznamov",
       "chat": "{count} správ",
       "customers": "Konverzácie: {count}",
-      "ads": "{count} aktívne"
+      "ads": "{count} aktívne",
+      "sales": "účtenky dnes"
     },
     "tileEmpty": "zatiaľ nič",
     "tileBadge": {
@@ -2274,7 +2276,8 @@
         "interests": "Čo zobrazovať pozdĺž trasy",
         "loyalty": "Vaša úroveň a cashback",
         "admin": "Fronty a prípady",
-        "appearance": "Farba obrysu každej dlaždice"
+        "appearance": "Farba obrysu každej dlaždice",
+        "receipts": "Účtenky z vašich nákupov"
       }
     },
     "appearance": {
@@ -4378,7 +4381,8 @@
         "stock": "Skladník",
         "marketing": "Marketér",
         "observer": "Pozorovateľ",
-        "hr": "HR"
+        "hr": "HR",
+        "cashier": "Pokladník"
       },
       "sections": {
         "card": "Karta obchodu",
@@ -4390,7 +4394,8 @@
         "promos": "Ponuky a rozosielanie",
         "supply": "Dodávatelia a objednávky",
         "customers": "Správy od zákazníkov",
-        "hiring": "Nábor: odkazy na pozvánky"
+        "hiring": "Nábor: odkazy na pozvánky",
+        "sales": "Pokladňa a účtenky"
       },
       "levels": {
         "NONE": "Bez prístupu",
@@ -4512,7 +4517,9 @@
       "AD_CHANGES_SUBMITTED": "Zmeny bannerovej položky odoslané na kontrolu",
       "AD_APPROVED": "Bannerová položka schválená moderátorom",
       "AD_REJECTED": "Bannerová položka zamietnutá moderátorom",
-      "AD_DELETED": "Položka banneru odstránená"
+      "AD_DELETED": "Položka banneru odstránená",
+      "SALE_RECORDED": "Predaj zaznamenaný",
+      "SALE_CANCELLED": "Účtenka zrušená"
     }
   },
   "cabinetTasks": {
@@ -5261,6 +5268,125 @@
       "subject_gone": "Tá stránka už neexistuje.",
       "unauth": "Najprv sa prihláste.",
       "failed": "Pozvánku sa nepodarilo prijať."
+    }
+  },
+  "cabinetSales": {
+    "title": "Pokladňa",
+    "subtitle": "Zaznamenajte predaj: tovar odíde z police a zákazník dostane účtenku. Platba samotná prebieha mimo platformy.",
+    "tillHeading": "Nový predaj",
+    "shelf": "Polica",
+    "noShelf": "Bez police (iba služby)",
+    "noShelves": "Zatiaľ žiadne police — pridajte policu v Skladoch, aby ste mohli predávať tovar.",
+    "find": "Produkt",
+    "findPlaceholder": "Začnite písať názov",
+    "onShelf": "{qty} na polici",
+    "serviceLine": "služba, bez zásob",
+    "noOffers": "Zatiaľ žiadne produkty s cenou. Najprv nastavte cenu produktu.",
+    "qty": "Množstvo",
+    "price": "Cena",
+    "removeLine": "Odstrániť",
+    "payment": "Zaplatené",
+    "paymentKind": {
+      "CASH": "Hotovosť",
+      "CARD": "Karta",
+      "TRANSFER": "Prevod",
+      "CRYPTO": "Krypto",
+      "OTHER": "Iné"
+    },
+    "coin": "Minca",
+    "coinAmount": "Suma v minci",
+    "rate": "Výmenný kurz za mincu",
+    "coinStated": "Mincu, kurz aj sumu určujete vy: platforma samotnú platbu nevidí.",
+    "note": "Poznámka",
+    "discount": "Zľava",
+    "total": "Spolu",
+    "cashback": "Cashback",
+    "record": "Zaznamenať účtenku",
+    "saving": "Ukladanie…",
+    "doneHeading": "Účtenka č. {number} zaznamenaná",
+    "doneHint": "Ukážte zákazníkovi QR kód — účtenka sa otvorí v jeho telefóne a môže si ju ponechať vo svojom profile.",
+    "shareTitle": "Vaša účtenka",
+    "shareText": "Účtenka č. {number}",
+    "openReceipt": "Otvoriť účtenku",
+    "newSale": "Nový predaj",
+    "showAgain": "Zobraziť QR znova",
+    "reissueHint": "Toto je nový odkaz; predchádzajúci už nefunguje.",
+    "alreadyClaimed": "Zákazník si túto účtenku už uložil do svojho profilu.",
+    "cancel": "Zrušiť účtenku",
+    "cancelReason": "Prečo je zrušená?",
+    "cancelConfirm": "Zrušiť a vrátiť tovar na policu",
+    "cancelledMark": "zrušené",
+    "listHeading": "Účtenky",
+    "listEmpty": "Zatiaľ žiadne predaje.",
+    "rowNumber": "Účtenka č. {number}",
+    "rowLines": "Položky: {count}",
+    "rowClaimed": "uložené zákazníkom",
+    "readOnly": "Môžete si prezerať účtenky tejto firmy, ale nemôžete zaznamenávať predaje.",
+    "error": {
+      "already_cancelled": "Táto účtenka je už zrušená.",
+      "already_claimed": "Táto účtenka je už uložená zákazníkom.",
+      "coin_required": "Uveďte mincu, v ktorej zákazník zaplatil.",
+      "currency_mismatch": "Všetky položky jednej účtenky musia mať rovnakú menu.",
+      "currency_unknown": "Cena toho produktu je v mene, ktorú pokladňa nevie vytlačiť.",
+      "daily_limit": "Denný limit účteniek dosiahnutý. Pokladňa sa znovu otvorí zajtra.",
+      "duplicate_line": "Tento produkt už je v účtenke — namiesto toho zmeňte jeho množstvo.",
+      "forbidden": "Nemáte oprávnenie používať pokladňu v tejto firme.",
+      "insufficient_stock": "Na tej polici nie je dostatok zásob.",
+      "lines_required": "Pridajte do účtenky aspoň jednu položku.",
+      "not_found": "Účtenka sa nenašla.",
+      "offer_missing": "Tento produkt nemá od tejto firmy aktívnu cenu.",
+      "payment_invalid": "Vyberte, ako zákazník zaplatil.",
+      "price_above_list": "Cena nemôže byť vyššia než zverejnená.",
+      "price_invalid": "Cena musí byť číslo väčšie než nula.",
+      "qty_invalid": "Množstvo musí byť číslo väčšie než nula.",
+      "rate_invalid": "Kurz a množstvo mince musia byť čísla väčšie než nula.",
+      "reason_required": "V pár slovách uveďte dôvod.",
+      "shelf_required": "Tovar odchádza z police — vyberte policu.",
+      "too_many_lines": "Príliš veľa položiek v jednej účtenke.",
+      "unauth": "Prosím, prihláste sa znova.",
+      "warehouse_unknown": "Táto polica nie je dostupná."
+    }
+  },
+  "receipt": {
+    "title": "Účtenka",
+    "myTitle": "Moje účtenky",
+    "mySubtitle": "Účtenky, ktoré ste si uložili od predajcov. Uchovávajú sa tak, ako ich zaevidoval predajca.",
+    "myEmpty": "Zatiaľ žiadne účtenky. Predajca vám po nákupe dá odkaz alebo QR kód.",
+    "bearerHint": "Kto má tento odkaz, môže si účtenku prečítať — chráňte ho rovnako ako papierovú.",
+    "number": "Č. {number}",
+    "cancelled": "Zrušené predajcom",
+    "wasPrice": "regálová cena {price}",
+    "discount": "Zľava",
+    "total": "Spolu",
+    "payment": "Zaplatené",
+    "paymentKind": {
+      "CASH": "Hotovosť",
+      "CARD": "Karta",
+      "TRANSFER": "Prevod",
+      "CRYPTO": "Krypto",
+      "OTHER": "Iné"
+    },
+    "inCoin": "V minci",
+    "rate": "pri kurze {rate} za mincu",
+    "coinStated": "Minca a výmenný kurz sú uvedené predajcom: platforma túto platbu nezaznamenala.",
+    "cashback": "Cashback za tento nákup: {amount}",
+    "cashbackPending": "Podľa kurzu uverejneného predajcom. Pripisovanie sa začne s peňaženkou platformy.",
+    "outsidePlatform": "Platba prebieha mimo platformy; za predaj zodpovedá predajca.",
+    "cashier": "Pokladník: {name}",
+    "save": "Uložiť do môjho profilu",
+    "saving": "Ukladá sa…",
+    "signInToSave": "Na uloženie tejto účtenky do profilu sa prihláste.",
+    "signIn": "Prihlásiť sa",
+    "openMyReceipts": "Otvoriť moje účtenky",
+    "alreadyMine": "Táto účtenka je vo vašom profile.",
+    "claimedByOther": "Túto účtenku už má uloženú iný zákazník.",
+    "error": {
+      "unauth": "Prosím, prihláste sa znova.",
+      "not_found": "Účtenka sa nenašla.",
+      "already_claimed": "Túto účtenku už má uloženú iný zákazník.",
+      "already_yours": "Táto účtenka je už vo vašom profile.",
+      "company_not_listed": "Tento predajca momentálne nie je zaradený na platforme, preto účtenku nemožno uložiť.",
+      "link_expired": "Platnosť odkazu vypršala. Požiadajte predajcu, aby znova ukázal QR kód."
     }
   }
 }
