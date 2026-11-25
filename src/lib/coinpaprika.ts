@@ -105,8 +105,10 @@ export const CP_TO_CG_ALIAS: Record<string, string> = {
   "balancer-v2":              "balancer",
   "balancer-v2-polygon":      "balancer_polygon",
   "binance-us":               "binance_us",
+  "btc-alpha":                "btc_alpha",
   "bitcointry":               "bitcointry_exchange",
   "btc-markets":              "btcmarkets",
+  "bybit-spot":               "bybit_spot",
   "bullish":                  "bullish_com",
   "bvox":                     "bitvenus_spot",
   "cexio":                    "cex",
@@ -127,6 +129,7 @@ export const CP_TO_CG_ALIAS: Record<string, string> = {
   "namiexchange":             "nami_exchange",
   "nonkycio":                 "nonkyc_io",
   "okx":                      "okex",
+  "ondo-global-markets":      "ondo_global_markets",
   "p2b":                      "p2pb2b",
   "quickswap-v3":             "quickswap_v3",
   "safetrade":                "safe_trade",
@@ -146,6 +149,35 @@ export const CP_TO_CG_ALIAS: Record<string, string> = {
 
 export function resolveCpId(cpId: string): string {
   return CP_TO_CG_ALIAS[cpId] ?? cpId;
+}
+
+const normalizeId = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+/**
+ * Какая наша строка каталога отвечает бирже CoinPaprika — или никакая.
+ *
+ * Пришпиленной карты мало, и это видно живым обходом: 25 ноября в каталоге
+ * стояли `bybit-spot` и `bybit_spot`, `btc-alpha` и `btc_alpha`,
+ * `ondo-global-markets` и `ondo_global_markets` — одна биржа двумя строками,
+ * потому что у CoinPaprika в ключах дефис, а у CoinGecko подчёркивание, и
+ * нового такого ключа карта, писанная руками, не знает по построению.
+ *
+ * Порядок тот же, что у Coinlore в слайсе BL: пришпиленный псевдоним → точный
+ * ключ → единственное совпадение ключа без разделителей → отказ. **По имени не
+ * опознаём вовсе**: у служб имена одной биржи расходятся (`BTC-Alpha` против
+ * `ALP.COM`, `Ondo Global Markets` против `Ondo Stocks`), а похожие имена носят
+ * разные площадки. Неоднозначность — отказ, а не выбор первого: строку заведёт
+ * сам прогон, и двойник честнее слияния разных бирж.
+ */
+export function matchCpExchangeId(cpId: string, ourIds: readonly string[]): string | null {
+  const alias = CP_TO_CG_ALIAS[cpId];
+  if (alias) return ourIds.includes(alias) ? alias : null;
+
+  if (ourIds.includes(cpId)) return cpId;
+
+  const key = normalizeId(cpId);
+  const same = ourIds.filter((id) => normalizeId(id) === key);
+  return same.length === 1 ? same[0] : null;
 }
 
 export async function fetchCoinPaprikaExchanges(): Promise<CoinPaprikaExchange[]> {

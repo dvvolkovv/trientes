@@ -557,6 +557,7 @@ describe("syncCoinPaprikaExchanges", () => {
     const creates: any[] = [];
     const fakePrisma = {
       exchange: {
+        findMany: vi.fn(async () => Object.keys(existing).map((id) => ({ id }))),
         findUnique: vi.fn(async ({ where }: any) => existing[where.id] ?? null),
         update: vi.fn(async ({ where, data }: any) => { updates.push({ id: where.id, data }); return {}; }),
         create: vi.fn(async ({ data }: any) => { creates.push(data); return {}; }),
@@ -597,9 +598,68 @@ describe("syncCoinPaprikaExchanges", () => {
     expect(creates[0].logoUrl).toBe("https://static.coinpaprika.com/exchange/xeggex/logo.png");
   });
 
+  it("строку, различающуюся только разделителем, обновляет, а не плодит двойника", async () => {
+    // Живой случай 25 ноября: у CoinPaprika `bybit-spot`, у нас `bybit_spot` —
+    // карта псевдонимов писана руками и нового такого ключа не знает, поэтому
+    // прогон заводил вторую строку той же биржи.
+    const cpTwin: CoinPaprikaExchange = { ...cpNew, id: "freshdex-spot", name: "FreshDEX (Spot)" };
+    const existing: Record<string, any> = {
+      freshdex_spot: {
+        id: "freshdex_spot", name: "FreshDEX", description: null, exchangeType: null,
+        currencies: null, pairsCount: null, fiats: [], socials: null, source: "cg",
+      },
+    };
+    const updates: any[] = [];
+    const creates: any[] = [];
+    const result = await syncCoinPaprikaExchanges({
+      fetchAll: async () => [cpTwin],
+      fetchDetail: async () => null,
+      prisma: {
+        exchange: {
+          findMany: vi.fn(async () => Object.keys(existing).map((id) => ({ id }))),
+          findUnique: vi.fn(async ({ where }: any) => existing[where.id] ?? null),
+          update: vi.fn(async ({ where, data }: any) => { updates.push({ id: where.id, data }); return {}; }),
+          create: vi.fn(async ({ data }: any) => { creates.push(data); return {}; }),
+        },
+        exchangeMarket: { upsert: vi.fn(async () => ({})) },
+      } as never,
+      minVolumeUsd: 100_000,
+      btcUsd: 50_000,
+      detailCallBudget: 100,
+    });
+
+    expect(result.created).toBe(0);
+    expect(result.enriched).toBe(1);
+    expect(creates).toHaveLength(0);
+    expect(updates[0].id).toBe("freshdex_spot");
+  });
+
+  it("незнакомую биржу заводит под её же ключом, а не притягивает к похожей", async () => {
+    const creates: any[] = [];
+    const result = await syncCoinPaprikaExchanges({
+      fetchAll: async () => [cpNew],
+      fetchDetail: async () => null,
+      prisma: {
+        exchange: {
+          findMany: vi.fn(async () => [{ id: "binance" }, { id: "gdax" }]),
+          findUnique: vi.fn(async () => null),
+          update: vi.fn(async () => ({})),
+          create: vi.fn(async ({ data }: any) => { creates.push(data); return {}; }),
+        },
+        exchangeMarket: { upsert: vi.fn(async () => ({})) },
+      } as never,
+      minVolumeUsd: 100_000,
+      btcUsd: 50_000,
+      detailCallBudget: 100,
+    });
+    expect(result.created).toBe(1);
+    expect(creates[0].id).toBe("xeggex");
+  });
+
   it("skips rows under the volume threshold", async () => {
     const fakePrisma = {
       exchange: {
+        findMany: vi.fn(async () => []),
         findUnique: vi.fn(),
         update: vi.fn(),
         create: vi.fn(),
@@ -624,6 +684,7 @@ describe("syncCoinPaprikaExchanges", () => {
     const updates: any[] = [];
     const fakePrisma = {
       exchange: {
+        findMany: vi.fn(async () => Object.keys(existing).map((id) => ({ id }))),
         findUnique: vi.fn(async ({ where }: any) => existing[where.id] ?? null),
         update: vi.fn(async ({ where, data }: any) => { updates.push({ id: where.id, data }); return {}; }),
         create: vi.fn(),
@@ -812,6 +873,7 @@ describe("syncCoinPaprikaExchanges — исчерпанный запас на п
   });
   const prismaStub = () => ({
     exchange: {
+      findMany: async () => [{ id: "a" }, { id: "b" }, { id: "c" }],
       findUnique: async () => ({
         id: "a",
         description: "есть",

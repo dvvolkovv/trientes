@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { exchangeDedupeKey, findExchangeDupes, remapMarketId } from "@/lib/exchange-dedupe";
+import { exchangeDedupeKey, exchangeIdKey, findExchangeDupes, remapMarketId } from "@/lib/exchange-dedupe";
 import { CP_TO_CG_ALIAS, resolveCpId } from "@/lib/coinpaprika";
 
 /**
@@ -57,6 +57,49 @@ describe("findExchangeDupes", () => {
     expect(refused[0].reason).toBe("many_cg_rows");
   });
 
+  it("ключ, различающийся только разделителем, — та же биржа, хоть имена разные", () => {
+    // Живой обход 25 ноября: трое двойников пережили слияние 21 ноября, потому
+    // что искали по имени, а у них имена разные — «Bybit (Spot)» против
+    // «Bybit», «BTC-Alpha» против «ALP.COM», «Ondo Global Markets» против
+    // «Ondo Stocks». Совпал у них ключ: дефис против подчёркивания.
+    const { groups, refused } = findExchangeDupes([
+      row("bybit_spot", "Bybit", "cg"),
+      row("bybit-spot", "Bybit (Spot)", "cp"),
+      row("btc_alpha", "ALP.COM", "cg"),
+      row("btc-alpha", "BTC-Alpha", "cp"),
+      row("kraken", "Kraken", "cg"),
+    ]);
+    expect(refused).toEqual([]);
+    expect(groups.map((g) => [g.canonical.id, g.merged.map((m) => m.id)])).toEqual([
+      ["btc_alpha", ["btc-alpha"]],
+      ["bybit_spot", ["bybit-spot"]],
+    ]);
+  });
+
+  it("разные площадки одного бренда ключом не сливаются", () => {
+    // `uniswap_v3` и `uniswap-v3-bsc` — разные сети, и ни имя, ни ключ их не
+    // путают: у ключа без разделителей `uniswapv3` против `uniswapv3bsc`.
+    const { groups } = findExchangeDupes([
+      row("uniswap_v3", "Uniswap V3 (Ethereum)", "cg"),
+      row("uniswap-v3-bsc", "Uniswap V3 (BSC)", "cg"),
+    ]);
+    expect(groups).toEqual([]);
+  });
+
+  it("группа собирается по имени и по ключу разом, а правило главной одно", () => {
+    // Имя связывает a и b, ключ — b и c: это одна биржа тремя строками, и
+    // главной остаётся единственная строка CoinGecko.
+    const { groups, refused } = findExchangeDupes([
+      row("alpha_x", "Alpha X", "cg"),
+      row("alphax", "Alpha X", "cp"),
+      row("alpha-x", "Alpha X Pro", "cp"),
+    ]);
+    expect(refused).toEqual([]);
+    expect(groups).toHaveLength(1);
+    expect(groups[0].canonical.id).toBe("alpha_x");
+    expect(groups[0].merged.map((r) => r.id).sort()).toEqual(["alpha-x", "alphax"]);
+  });
+
   it("одиночная строка группой не считается", () => {
     expect(findExchangeDupes([row("kraken", "Kraken", "cg")])).toEqual({ groups: [], refused: [] });
   });
@@ -83,8 +126,8 @@ describe("remapMarketId", () => {
  * тестом: цепочка или ключ, равный значению, тихо вернули бы вторую строку.
  */
 describe("CP_TO_CG_ALIAS", () => {
-  it("все 41 найденных расхождения плюс Coinbase", () => {
-    expect(Object.keys(CP_TO_CG_ALIAS)).toHaveLength(42);
+  it("41 расхождение слияния 21 ноября, Coinbase и трое двойников 25 ноября", () => {
+    expect(Object.keys(CP_TO_CG_ALIAS)).toHaveLength(45);
   });
 
   it("ни один ключ не ведёт в себя", () => {
@@ -101,5 +144,16 @@ describe("CP_TO_CG_ALIAS", () => {
   it("две биржи не ведут в одну строку", () => {
     const targets = Object.values(CP_TO_CG_ALIAS);
     expect(new Set(targets).size).toBe(targets.length);
+  });
+});
+
+describe("exchangeIdKey", () => {
+  it("разделители ключа значения не имеют", () => {
+    expect(exchangeIdKey("bybit-spot")).toBe(exchangeIdKey("bybit_spot"));
+    expect(exchangeIdKey("Gate.IO")).toBe("gateio");
+  });
+
+  it("разные ключи разными и остаются", () => {
+    expect(exchangeIdKey("uniswap_v3")).not.toBe(exchangeIdKey("uniswap-v3-bsc"));
   });
 });

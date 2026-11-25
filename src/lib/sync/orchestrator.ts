@@ -4,7 +4,7 @@ import type { FearGreed } from "@/lib/fear-greed";
 import { isMarketSymbol, marketFetchOrder, type MarketAskedAt, type MarketInstrument, type MarketQuote, type MarketSweep } from "@/lib/markets";
 import { KEYS, TTL } from "./keys";
 import { mergeCuratedExchanges } from "@/lib/curated-exchanges";
-import { cpTypeToExchangeType, resolveCpId, type CoinPaprikaExchange, type CoinPaprikaExchangeDetail, type CoinPaprikaMarket } from "@/lib/coinpaprika";
+import { cpTypeToExchangeType, matchCpExchangeId, type CoinPaprikaExchange, type CoinPaprikaExchangeDetail, type CoinPaprikaMarket } from "@/lib/coinpaprika";
 import { CgHttpError } from "@/lib/coingecko-http";
 import { isCpQuotaError } from "@/lib/coinpaprika-http";
 import { PAIR_MAX_AGE_MS, matchExchange, type CoinloreExchange, type CoinlorePair } from "@/lib/coinlore";
@@ -562,6 +562,7 @@ export async function syncCoinPaprikaExchanges(deps: {
   fetchDetail: (id: string) => Promise<CoinPaprikaExchangeDetail | null>;
   prisma: {
     exchange: {
+      findMany(args: { select: { id: true } }): Promise<{ id: string }[]>;
       findUnique(args: { where: { id: string } }): Promise<{ id: string; description: string | null; exchangeType: string | null; currencies: number | null; pairsCount: number | null; fiats: string[]; socials: unknown; source: string } | null>;
       update(args: { where: { id: string }; data: Record<string, unknown> }): Promise<unknown>;
       create(args: { data: Record<string, unknown> }): Promise<unknown>;
@@ -582,6 +583,9 @@ export async function syncCoinPaprikaExchanges(deps: {
   const allRaw = await deps.fetchAll();
   // Sort by volume desc so top exchanges get fresh detail first within rate-limit budget.
   const all = [...allRaw].sort((a, b) => b.volume24hUsd - a.volume24hUsd);
+  // Ключи каталога — одним запросом до обхода: по ним опознаётся строка биржи,
+  // когда ключи служб разошлись разделителем (`bybit-spot` против `bybit_spot`).
+  const ourIds = (await deps.prisma.exchange.findMany({ select: { id: true } })).map((r) => r.id);
   let created = 0, enriched = 0, skipped = 0, marketsUpserted = 0, detailsAttempted = 0, detailsOk = 0;
   // Исчерпанный запас месяца — отказ всей службе: спрашивать о следующей бирже
   // бессмысленно, а числа из списка уже у нас одним запросом, и записать их надо
@@ -593,7 +597,9 @@ export async function syncCoinPaprikaExchanges(deps: {
       skipped++;
       continue;
     }
-    const targetId = resolveCpId(cp.id);
+    // Нет нашей строки — заводим под ключом службы; опознание чужой строки
+    // своей догадкой не делаем (разбор в `matchCpExchangeId`).
+    const targetId = matchCpExchangeId(cp.id, ourIds) ?? cp.id;
     const existing = await deps.prisma.exchange.findUnique({ where: { id: targetId } });
     const wantDetail = !quotaExhausted && detailsAttempted < deps.detailCallBudget;
     let detail: CoinPaprikaExchangeDetail | null = null;
@@ -632,7 +638,7 @@ export async function syncCoinPaprikaExchanges(deps: {
     } else {
       const websiteUrl = pickFirst(cp.links.website) ?? null;
       const create: Record<string, unknown> = {
-        id: cp.id,
+        id: targetId,
         name: cp.name,
         logoUrl: `https://static.coinpaprika.com/exchange/${cp.id}/logo.png`,
         country: null,
@@ -653,6 +659,7 @@ export async function syncCoinPaprikaExchanges(deps: {
         marketsFetchedAt: detail && detail.markets.length > 0 ? new Date() : null,
       };
       await deps.prisma.exchange.create({ data: create });
+      ourIds.push(targetId);
       created++;
     }
 

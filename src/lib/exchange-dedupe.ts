@@ -27,6 +27,23 @@ export function exchangeDedupeKey(name: string): string {
   return name.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
+/**
+ * Второй ключ сравнения — сам идентификатор без разделителей.
+ *
+ * Имени мало, и это показал живой обход 25 ноября: слияние 21 ноября убрало
+ * 41 пару, но трое двойников уцелели, потому что **имена у них разные** —
+ * `bybit-spot` зовётся «Bybit (Spot)» против нашего «Bybit», `btc-alpha` —
+ * «BTC-Alpha» против «ALP.COM», `ondo-global-markets` — «Ondo Global Markets»
+ * против «Ondo Stocks». Совпадал у них ключ: у CoinPaprika в ключах дефис, у
+ * CoinGecko подчёркивание.
+ *
+ * Разные площадки одного бренда этим ключом не слипаются: `uniswap_v3` и
+ * `uniswap-v3-bsc` дают `uniswapv3` и `uniswapv3bsc` — сеть в ключе остаётся.
+ */
+export function exchangeIdKey(id: string): string {
+  return id.toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
 export type DedupeRow = { id: string; name: string; source: string | null };
 
 export type DedupeGroup = {
@@ -50,19 +67,45 @@ export type DedupeRefusal = { key: string; rows: DedupeRow[]; reason: "no_cg_row
  * действительно неоднозначно, догадка слила бы разные биржи в одну.
  */
 export function findExchangeDupes(rows: DedupeRow[]): { groups: DedupeGroup[]; refused: DedupeRefusal[] } {
+  // Две строки — одна биржа, если их связывает **любой** из двух ключей: имя
+  // или идентификатор без разделителей. Поэтому группы собираются объединением,
+  // а не раскладкой по одному ключу: одна биржа бывает связана по имени с
+  // одной строкой и по ключу с другой, и две раскладки предложили бы два
+  // несогласных слияния одной биржи.
+  const parent = new Map<string, string>();
+  const find = (x: string): string => {
+    let root = x;
+    while (parent.get(root) !== root) root = parent.get(root) ?? root;
+    return root;
+  };
+  const union = (a: string, b: string) => {
+    const ra = find(a), rb = find(b);
+    if (ra !== rb) parent.set(rb, ra);
+  };
+  for (const r of rows) parent.set(r.id, r.id);
+  const firstBy = new Map<string, string>();
+  for (const r of rows) {
+    for (const k of [`name:${exchangeDedupeKey(r.name)}`, `id:${exchangeIdKey(r.id)}`]) {
+      if (k.endsWith(":")) continue;
+      const seen = firstBy.get(k);
+      if (seen) union(seen, r.id);
+      else firstBy.set(k, r.id);
+    }
+  }
+
   const byKey = new Map<string, DedupeRow[]>();
   for (const r of rows) {
-    const k = exchangeDedupeKey(r.name);
-    if (!k) continue;
-    const bucket = byKey.get(k);
+    const root = find(r.id);
+    const bucket = byKey.get(root);
     if (bucket) bucket.push(r);
-    else byKey.set(k, [r]);
+    else byKey.set(root, [r]);
   }
 
   const groups: DedupeGroup[] = [];
   const refused: DedupeRefusal[] = [];
-  for (const [key, bucket] of [...byKey.entries()].sort(([a], [b]) => a.localeCompare(b))) {
+  for (const [root, bucket] of [...byKey.entries()].sort(([a], [b]) => a.localeCompare(b))) {
     if (bucket.length < 2) continue;
+    const key = exchangeDedupeKey(bucket.find((r) => r.id === root)?.name ?? root);
     const cg = bucket.filter((r) => r.source === "cg");
     if (cg.length === 0) {
       refused.push({ key, rows: bucket, reason: "no_cg_row" });
