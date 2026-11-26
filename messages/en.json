@@ -1845,7 +1845,8 @@
       "ads": "Card banner",
       "sales": "Till",
       "reports": "Reports",
-      "crm": "Customers"
+      "crm": "Customers",
+      "automation": "Automation"
     },
     "tileUnit": {
       "points": "{count} on the map",
@@ -1862,7 +1863,8 @@
       "ads": "{count} live",
       "sales": "receipts today",
       "reports": "receipts in 30 days",
-      "crm": "buyers: {count}"
+      "crm": "buyers: {count}",
+      "automation": "rules: {count}"
     },
     "tileEmpty": "nothing yet",
     "tileBadge": {
@@ -3790,6 +3792,9 @@
         "subject": "{company} answered you",
         "body": "{company} replied to your message."
       }
+    },
+    "automation": {
+      "subject": "{company}: {rule}"
     }
   },
   "captcha": {
@@ -4411,7 +4416,8 @@
         "customers": "Customer messages",
         "hiring": "Hiring: invite links",
         "sales": "Till and receipts",
-        "reports": "Reports and export"
+        "reports": "Reports and export",
+        "automation": "Automation"
       },
       "levels": {
         "NONE": "No access",
@@ -4538,7 +4544,13 @@
       "SALE_CANCELLED": "Receipt cancelled",
       "REPORT_EXPORTED": "Report exported",
       "API_KEY_CREATED": "API key issued",
-      "API_KEY_REVOKED": "API key revoked"
+      "API_KEY_REVOKED": "API key revoked",
+      "RULE_SAVED": "Automation rule saved",
+      "RULE_TOGGLED": "Automation rule switched",
+      "RULE_DELETED": "Automation rule deleted",
+      "WEBHOOK_CREATED": "Outbound events: endpoint added",
+      "WEBHOOK_TOGGLED": "Outbound events: endpoint switched",
+      "WEBHOOK_DELETED": "Outbound events: endpoint removed"
     }
   },
   "cabinetTasks": {
@@ -5580,6 +5592,158 @@
       "noHistory": "No receipts yet.",
       "cancelledBadge": "cancelled",
       "openThread": "Open the conversation"
+    }
+  },
+  "cabinetAutomation": {
+    "title": "Automation",
+    "subtitle": "Rules that answer what happens in your shop: a sale, an empty shelf, a delivery, a buyer’s message.",
+    "rules": {
+      "heading": "If — then rules",
+      "hint": "Pick what happens, narrow it down if you need to, and say what should follow.",
+      "oneStep": "A rule answers a fact once. What the rule itself does never starts another rule — so two rules can never chase each other in circles.",
+      "sentence": "If {trigger} — then {action}",
+      "empty": "No rules yet.",
+      "add": "Add a rule",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deleteConfirm": "Delete — tap again",
+      "enable": "Switch on",
+      "disable": "Switch off",
+      "enabled": "On",
+      "disabled": "Off",
+      "fired": "Fired: {count}",
+      "lastFired": "last time {at}",
+      "never": "has not fired yet",
+      "dailyLimit": "One rule fires at most {count} times a day. Beyond that the run is recorded with its reason instead of acting.",
+      "readOnly": "You can read the rules here, but changing them needs the Automation right at edit level."
+    },
+    "builder": {
+      "name": "Rule name",
+      "namePlaceholder": "Shelf runs out — tell the stockkeeper",
+      "trigger": "If this happens",
+      "conditions": "Only when",
+      "action": "Then do this",
+      "any": "any",
+      "anyValue": "any amount",
+      "vars": "You can use in the text: {list}",
+      "save": "Save rule",
+      "cancel": "Cancel"
+    },
+    "trigger": {
+      "SALE_RECORDED": "A sale is recorded",
+      "SALE_CANCELLED": "A receipt is cancelled",
+      "STOCK_LOW": "Stock drops to the re-order level",
+      "STOCK_OUT": "Stock runs out",
+      "ORDER_RECEIVED": "A supplier order is fully received",
+      "CUSTOMER_MESSAGE": "A buyer writes to the shop"
+    },
+    "action": {
+      "CREATE_TASK": "Create a task",
+      "NOTIFY_MEMBER": "Notify a team member"
+    },
+    "field": {
+      "minTotal": "Receipt total is at least",
+      "payment": "Payment method",
+      "pointId": "Point of sale",
+      "warehouseId": "Warehouse or shelf",
+      "productId": "Product",
+      "supplierId": "Supplier",
+      "firstMessage": "Start of a conversation",
+      "firstMessageOnly": "only the first message"
+    },
+    "payment": {
+      "CASH": "Cash",
+      "CARD": "Card",
+      "TRANSFER": "Bank transfer",
+      "CRYPTO": "Crypto",
+      "OTHER": "Other"
+    },
+    "priority": {
+      "LOW": "Low",
+      "NORMAL": "Normal",
+      "HIGH": "High",
+      "URGENT": "Urgent"
+    },
+    "task": {
+      "title": "Task title",
+      "titlePlaceholder": "Restock {product} on {warehouse}",
+      "details": "Details",
+      "priority": "Priority",
+      "dueDays": "Due in days (up to {max})",
+      "dueEmpty": "no due date",
+      "assignee": "Assign to",
+      "unassigned": "whoever picks it up",
+      "noAuthorNote": "A task created by a rule has no author: a rule is not a person. Accepting such work needs the Tasks right at edit level."
+    },
+    "notify": {
+      "text": "Message",
+      "textPlaceholder": "Big sale {number} for {total} {currency}",
+      "recipients": "Who to notify",
+      "ownersFallback": "Nobody picked — owners get it: a message addressed to no one must not wake the whole team."
+    },
+    "run": {
+      "DONE": "acted",
+      "SKIPPED": "skipped",
+      "FAILED": "failed"
+    },
+    "runReason": {
+      "daily_limit": "daily limit for this rule reached",
+      "too_many_open": "too many open tasks",
+      "daily_tasks": "daily task limit reached",
+      "params_invalid": "the rule settings could not be read",
+      "assignee_gone": "the assignee has left the team — the task went unassigned",
+      "recipients_gone": "the named members have left — owners were notified",
+      "no_recipients": "nobody to notify",
+      "action_unknown": "this action no longer exists"
+    },
+    "events": {
+      "heading": "Latest events",
+      "hint": "This is the answer to “why did my rule not fire”: the facts your shop recorded, newest first. Kept for 30 days.",
+      "empty": "Nothing has happened yet.",
+      "fromRule": "from a rule"
+    },
+    "hooks": {
+      "heading": "Outbound events",
+      "hint": "Send each event to your own system as a signed request. Only the owner can add or remove endpoints: the data leaves the platform.",
+      "readOnlyNote": "Outbound only. Nothing can be written back through it: a receipt is created by the till and stock by the warehouse, and a second author of the same record is how numbers start to disagree.",
+      "notConfigured": "Outbound events are not configured on this server yet. Nothing is hidden here — there is simply nothing to sign requests with, and an endpoint that never delivers would be worse than none.",
+      "url": "Endpoint address (https only)",
+      "events": "Which events to send",
+      "create": "Add endpoint",
+      "freshHeading": "Signing secret",
+      "freshOnce": "Shown once. Keep it: the signature of every request is computed with it, and we cannot show it again.",
+      "lastDelivered": "delivered {at}",
+      "never": "nothing delivered yet",
+      "lastError": "Last error: {error}",
+      "attempts": "attempts: {count}",
+      "status": {
+        "PENDING": "queued",
+        "DELIVERED": "delivered",
+        "FAILED": "given up"
+      },
+      "docsHeading": "How it arrives",
+      "docsNote": "Retries go 1 min, 5 min, 30 min, 2 h, 6 h. A 4xx answer means your system said no and we stop; 5xx, 429 and timeouts are treated as a connection problem and retried."
+    },
+    "error": {
+      "unauth": "Please sign in again.",
+      "forbidden": "This needs the Automation right at edit level.",
+      "not_found": "Not found.",
+      "name_required": "Give the rule a name — you will look for it by that name.",
+      "trigger_invalid": "Pick what the rule answers to.",
+      "action_invalid": "Pick what the rule should do.",
+      "title_required": "Write the task title.",
+      "text_required": "Write the message.",
+      "text_too_long": "That is too long.",
+      "priority_invalid": "Pick a priority.",
+      "due_invalid": "Days must be a whole number, 0 or more.",
+      "too_many_rules": "The limit of rules for one company is reached. Delete one you no longer need.",
+      "not_configured": "Outbound events are not configured on this server.",
+      "events_required": "Pick at least one event to send.",
+      "url_required": "Write a full address, starting with https://",
+      "url_not_https": "Only https: the request carries your sales, and over http it travels in the open.",
+      "url_private": "That address points inside a private network, not at the internet. We will not send there.",
+      "url_too_long": "That address is too long.",
+      "too_many": "The limit of endpoints for one company is reached."
     }
   }
 }

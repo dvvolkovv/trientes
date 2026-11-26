@@ -1845,7 +1845,8 @@
       "ads": "卡片横幅",
       "sales": "收银",
       "reports": "报告",
-      "crm": "客户"
+      "crm": "客户",
+      "automation": "自动化"
     },
     "tileUnit": {
       "points": "地图上{count}个",
@@ -1862,7 +1863,8 @@
       "ads": "{count} 个在线",
       "sales": "今日收据",
       "reports": "30天内的收据",
-      "crm": "买家: {count}"
+      "crm": "买家: {count}",
+      "automation": "规则: {count}"
     },
     "tileEmpty": "尚无内容",
     "tileBadge": {
@@ -3790,6 +3792,9 @@
         "subject": "{company} 回复了您",
         "body": "{company} 回复了您的消息。"
       }
+    },
+    "automation": {
+      "subject": "{company}: {rule}"
     }
   },
   "captcha": {
@@ -4411,7 +4416,8 @@
         "customers": "顾客消息",
         "hiring": "招聘: 邀请链接",
         "sales": "收银与小票",
-        "reports": "报表与导出"
+        "reports": "报表与导出",
+        "automation": "自动化"
       },
       "levels": {
         "NONE": "无访问权限",
@@ -4538,7 +4544,13 @@
       "SALE_CANCELLED": "小票已取消",
       "REPORT_EXPORTED": "报表已导出",
       "API_KEY_CREATED": "API 密钥已生成",
-      "API_KEY_REVOKED": "API 密钥已撤销"
+      "API_KEY_REVOKED": "API 密钥已撤销",
+      "RULE_SAVED": "已保存自动化规则",
+      "RULE_TOGGLED": "已切换自动化规则",
+      "RULE_DELETED": "已删除自动化规则",
+      "WEBHOOK_CREATED": "出站事件: 已添加端点",
+      "WEBHOOK_TOGGLED": "出站事件: 已切换端点",
+      "WEBHOOK_DELETED": "出站事件: 已移除端点"
     }
   },
   "cabinetTasks": {
@@ -5580,6 +5592,158 @@
       "noHistory": "尚无小票。",
       "cancelledBadge": "已取消",
       "openThread": "打开对话"
+    }
+  },
+  "cabinetAutomation": {
+    "title": "自动化",
+    "subtitle": "用于响应你店铺里发生的事情的规则：一笔销售、货架空了、一次发货、买家的消息。",
+    "rules": {
+      "heading": "如果—那么规则",
+      "hint": "选择要发生的事件，必要时加以限定，并指定应当跟随的动作。",
+      "oneStep": "每条规则仅对一次事实作出响应。规则自身的动作不会触发另一条规则——因此两条规则永远不会相互追逐成环。",
+      "sentence": "如果 {trigger} — 那么 {action}",
+      "empty": "尚无规则。",
+      "add": "添加规则",
+      "edit": "编辑",
+      "delete": "删除",
+      "deleteConfirm": "删除—请再次点击",
+      "enable": "开启",
+      "disable": "关闭",
+      "enabled": "开",
+      "disabled": "关",
+      "fired": "已触发：{count}",
+      "lastFired": "上次 {at}",
+      "never": "尚未触发",
+      "dailyLimit": "每条规则每天最多触发{count}次。超过后将仅记录运行及其原因而不执行操作。",
+      "readOnly": "你可以在此查看规则，但修改需要自动化的编辑权限。"
+    },
+    "builder": {
+      "name": "规则名称",
+      "namePlaceholder": "货架售罄 — 通知库管",
+      "trigger": "如果发生以下情况",
+      "conditions": "仅当",
+      "action": "则执行",
+      "any": "任意",
+      "anyValue": "任意金额",
+      "vars": "可在文本中使用：{list}",
+      "save": "保存规则",
+      "cancel": "取消"
+    },
+    "trigger": {
+      "SALE_RECORDED": "记录了一笔销售",
+      "SALE_CANCELLED": "收据被取消",
+      "STOCK_LOW": "库存降至补货阈值",
+      "STOCK_OUT": "库存耗尽",
+      "ORDER_RECEIVED": "供应商订单已全部收货",
+      "CUSTOMER_MESSAGE": "买家向商店发送消息"
+    },
+    "action": {
+      "CREATE_TASK": "创建任务",
+      "NOTIFY_MEMBER": "通知团队成员"
+    },
+    "field": {
+      "minTotal": "收据总额至少为",
+      "payment": "支付方式",
+      "pointId": "销售点",
+      "warehouseId": "仓库或货架",
+      "productId": "商品",
+      "supplierId": "供应商",
+      "firstMessage": "会话开始",
+      "firstMessageOnly": "仅首条消息"
+    },
+    "payment": {
+      "CASH": "现金",
+      "CARD": "银行卡",
+      "TRANSFER": "银行转账",
+      "CRYPTO": "加密货币",
+      "OTHER": "其他"
+    },
+    "priority": {
+      "LOW": "低",
+      "NORMAL": "普通",
+      "HIGH": "高",
+      "URGENT": "紧急"
+    },
+    "task": {
+      "title": "任务标题",
+      "titlePlaceholder": "在{warehouse}补货{product}",
+      "details": "详情",
+      "priority": "优先级",
+      "dueDays": "距截止天数（最多{max}）",
+      "dueEmpty": "无截止日期",
+      "assignee": "指派给",
+      "unassigned": "任意领取者",
+      "noAuthorNote": "由规则创建的任务没有作者：规则不是人。接受此类工作需要任务的编辑级权限。"
+    },
+    "notify": {
+      "text": "消息",
+      "textPlaceholder": "大促第{number}单，金额{total} {currency}",
+      "recipients": "通知对象",
+      "ownersFallback": "未选择任何人—将通知所有者：不应让发给“无人”的消息惊动整个团队。"
+    },
+    "run": {
+      "DONE": "已执行",
+      "SKIPPED": "已跳过",
+      "FAILED": "失败"
+    },
+    "runReason": {
+      "daily_limit": "已达到此规则的每日上限",
+      "too_many_open": "未完成的任务过多",
+      "daily_tasks": "已达到每日任务上限",
+      "params_invalid": "无法读取规则设置",
+      "assignee_gone": "受派人已离开团队—任务改为未指派",
+      "recipients_gone": "指定成员已离开—已通知所有者",
+      "no_recipients": "无可通知对象",
+      "action_unknown": "此操作已不存在"
+    },
+    "events": {
+      "heading": "最新事件",
+      "hint": "这是“我的规则为何未触发”的答案：你店铺记录的事实，按最新优先排列。保留30天。",
+      "empty": "尚无事件发生。",
+      "fromRule": "来自规则"
+    },
+    "hooks": {
+      "heading": "出站事件",
+      "hint": "将每个事件以已签名的请求发送到你的系统。仅所有者可添加或移除端点：这些数据将离开平台。",
+      "readOnlyNote": "仅出站。无法通过它写回：小票由收银产生，库存由仓库产生；同一记录出现第二个作者，就会导致数字不一致。",
+      "notConfigured": "此服务器尚未配置出站事件。这里并未隐藏任何内容—只是没有可用于签名请求的东西，而一个从不投递的端点比没有端点更糟。",
+      "url": "端点地址（仅限 https）",
+      "events": "要发送哪些事件",
+      "create": "添加端点",
+      "freshHeading": "签名密钥",
+      "freshOnce": "仅显示一次。请妥善保管：每个请求的签名都用它计算，我们无法再次显示。",
+      "lastDelivered": "已于{at}投递",
+      "never": "尚未送达",
+      "lastError": "上次错误：{error}",
+      "attempts": "尝试次数：{count}",
+      "status": {
+        "PENDING": "排队中",
+        "DELIVERED": "已送达",
+        "FAILED": "已放弃"
+      },
+      "docsHeading": "如何送达",
+      "docsNote": "重试间隔为 1 分钟、5 分钟、30 分钟、2 小时、6 小时。4xx 响应表示你的系统拒绝，我们会停止；5xx、429 和超时被视为连接问题并会重试。"
+    },
+    "error": {
+      "unauth": "请重新登录。",
+      "forbidden": "此项需要自动化权限（编辑级别）。",
+      "not_found": "未找到。",
+      "name_required": "请为该规则命名——你将通过此名称进行查找。",
+      "trigger_invalid": "请选择规则响应的内容。",
+      "action_invalid": "请选择规则应执行的操作。",
+      "title_required": "填写任务标题。",
+      "text_required": "填写消息。",
+      "text_too_long": "长度过长。",
+      "priority_invalid": "请选择优先级。",
+      "due_invalid": "天数必须为大于等于 0 的整数。",
+      "too_many_rules": "已达到单个公司的规则上限。请删除不再需要的规则。",
+      "not_configured": "此服务器未配置出站事件。",
+      "events_required": "请至少选择一个要发送的事件。",
+      "url_required": "请填写完整地址，以 https:// 开头",
+      "url_not_https": "只能使用 https：请求包含你的销售数据，通过 http 会明文传输。",
+      "url_private": "该地址指向私有网络而非互联网。我们不会发送到那里。",
+      "url_too_long": "该地址过长。",
+      "too_many": "已达到单个公司的端点上限。"
     }
   }
 }

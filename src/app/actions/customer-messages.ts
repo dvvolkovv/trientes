@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { emitCompanyEvent } from "@/lib/automation/emit";
 import { editorCompany } from "@/lib/products/editor-company";
 import { can } from "@/lib/company-team/permissions";
 import { logCompanyAction } from "@/lib/company-team/journal";
@@ -155,6 +156,23 @@ export async function messageStore(companyId: string, body: string) {
       body: text,
     });
   }
+
+  // Событие автоматизации (CO). «Начало разговора» — то же число, которым решается,
+  // уходит ли письмо смене: второго правила «первое ли это сообщение» не заводим.
+  // Наружу человек виден `@именем-входа` (решение BT), им он назван и внутри события.
+  const who = await prisma.user.findUnique({ where: { id: userId }, select: { username: true } });
+  const username = who?.username ?? null;
+  await emitCompanyEvent({
+    companyId,
+    kind: "CUSTOMER_MESSAGE",
+    subject: username ? `@${username}` : null,
+    actorUserId: userId,
+    data: {
+      threadId,
+      customerName: username ? `@${username}` : null,
+      firstMessage: notifiesStaff({ storeUnreadBefore }),
+    },
+  });
 
   touchStore(companyId, threadId);
   touchCustomer(threadId);

@@ -7,7 +7,8 @@ import { prisma } from "@/lib/prisma";
 import { canWrite, editorCompany, type CompanyGate } from "@/lib/products/editor-company";
 import { movementScopeAllows, pointScopeAllows } from "@/lib/company-team/permissions";
 import { logCompanyAction } from "@/lib/company-team/journal";
-import { NegativeBalance, applyDeltas } from "@/lib/warehouse/apply";
+import { NegativeBalance, applyDeltas, type AppliedDelta } from "@/lib/warehouse/apply";
+import { emitStockCrossings } from "@/lib/automation/stock-emit";
 import {
   DAILY_MOVEMENTS,
   canArchiveWarehouse,
@@ -266,6 +267,7 @@ export async function recordMovement(companyId: string, input: MovementFormInput
   const enough = checkStock(plan.deltas, have, input.kind as MoveKind);
   if (!enough.ok) return fail(enough.reason);
 
+  const applied: AppliedDelta[] = [];
   try {
     const movement = await prisma.$transaction(async (tx) => {
       const created = await tx.stockMovement.create({
@@ -287,7 +289,7 @@ export async function recordMovement(companyId: string, input: MovementFormInput
         },
         select: { id: true },
       });
-      await applyDeltas(tx, product.id, plan.deltas, input.kind as MoveKind);
+      applied.push(...(await applyDeltas(tx, product.id, plan.deltas, input.kind as MoveKind)));
       return created;
     });
     await logCompanyAction({
@@ -297,6 +299,9 @@ export async function recordMovement(companyId: string, input: MovementFormInput
       subject: product.slug,
       meta: { kind: input.kind, qty, status: plan.status },
     });
+    // Пересечение порога остатка (CO) — после коммита: откатившийся расход факта не
+    // оставляет.
+    await emitStockCrossings({ companyId, actorUserId: userId, applied });
     revalidatePath(`/[locale]/cabinet/companies/${companyId}/warehouses`, "page");
     revalidatePath(`/[locale]/product/${product.slug}`, "page");
     return { ok: true as const, id: movement.id, status: plan.status };

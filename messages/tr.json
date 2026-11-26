@@ -1845,7 +1845,8 @@
       "ads": "Kart afişi",
       "sales": "Kasa",
       "reports": "Raporlar",
-      "crm": "Müşteriler"
+      "crm": "Müşteriler",
+      "automation": "Otomasyon"
     },
     "tileUnit": {
       "points": "{count} haritada",
@@ -1862,7 +1863,8 @@
       "ads": "{count} canlı",
       "sales": "bugünkü makbuzlar",
       "reports": "30 günde makbuz",
-      "crm": "alıcılar: {count}"
+      "crm": "alıcılar: {count}",
+      "automation": "kurallar: {count}"
     },
     "tileEmpty": "henüz bir şey yok",
     "tileBadge": {
@@ -3790,6 +3792,9 @@
         "subject": "{company} size yanıt verdi",
         "body": "{company} mesajınızı yanıtladı."
       }
+    },
+    "automation": {
+      "subject": "{company}: {rule}"
     }
   },
   "captcha": {
@@ -4411,7 +4416,8 @@
         "customers": "Müşteri mesajları",
         "hiring": "İşe alım: davet bağlantıları",
         "sales": "Kasa ve fişler",
-        "reports": "Raporlar ve dışa aktarma"
+        "reports": "Raporlar ve dışa aktarma",
+        "automation": "Otomasyon"
       },
       "levels": {
         "NONE": "Erişim yok",
@@ -4538,7 +4544,13 @@
       "SALE_CANCELLED": "Fiş iptal edildi",
       "REPORT_EXPORTED": "Rapor dışa aktarıldı",
       "API_KEY_CREATED": "API anahtarı oluşturuldu",
-      "API_KEY_REVOKED": "API anahtarı iptal edildi"
+      "API_KEY_REVOKED": "API anahtarı iptal edildi",
+      "RULE_SAVED": "Otomasyon kuralı kaydedildi",
+      "RULE_TOGGLED": "Otomasyon kuralı değiştirildi",
+      "RULE_DELETED": "Otomasyon kuralı silindi",
+      "WEBHOOK_CREATED": "Giden olaylar: uç nokta eklendi",
+      "WEBHOOK_TOGGLED": "Giden olaylar: uç nokta değiştirildi",
+      "WEBHOOK_DELETED": "Giden olaylar: uç nokta kaldırıldı"
     }
   },
   "cabinetTasks": {
@@ -5580,6 +5592,158 @@
       "noHistory": "Henüz fiş yok.",
       "cancelledBadge": "iptal",
       "openThread": "Sohbeti aç"
+    }
+  },
+  "cabinetAutomation": {
+    "title": "Otomasyon",
+    "subtitle": "Mağazanızda ne olduğuna yanıt veren kurallar: bir satış, boşalan raf, bir teslimat, bir alıcıdan mesaj.",
+    "rules": {
+      "heading": "Eğer — o zaman kuralları",
+      "hint": "Ne olduğunu seçin, gerekirse daraltın ve ne olacağını belirtin.",
+      "oneStep": "Bir kural bir olguya bir kez yanıt verir. Kuralın kendi yaptığı asla başka bir kuralı başlatmaz — böylece iki kural asla birbirini kovalayamaz.",
+      "sentence": "Eğer {trigger} — o zaman {action}",
+      "empty": "Henüz kural yok.",
+      "add": "Kural ekle",
+      "edit": "Düzenle",
+      "delete": "Sil",
+      "deleteConfirm": "Sil — tekrar dokunun",
+      "enable": "Aç",
+      "disable": "Kapat",
+      "enabled": "Açık",
+      "disabled": "Kapalı",
+      "fired": "Tetiklendi: {count}",
+      "lastFired": "son kez {at}",
+      "never": "henüz tetiklenmedi",
+      "dailyLimit": "Bir kural günde en fazla {count} kez tetiklenir. Bunun ötesinde çalıştırma, eyleme geçmek yerine gerekçesiyle kaydedilir.",
+      "readOnly": "Kuralları burada okuyabilirsiniz, ancak onları değiştirmek için düzenleme düzeyinde Otomasyon yetkisi gerekir."
+    },
+    "builder": {
+      "name": "Kural adı",
+      "namePlaceholder": "Raf bitiyor — stok görevlisine haber ver",
+      "trigger": "Şu olursa",
+      "conditions": "Yalnızca şu durumda",
+      "action": "Sonra şunu yap",
+      "any": "herhangi",
+      "anyValue": "herhangi bir tutar",
+      "vars": "Metinde kullanabilirsiniz: {list}",
+      "save": "Kuralı kaydet",
+      "cancel": "İptal"
+    },
+    "trigger": {
+      "SALE_RECORDED": "Bir satış kaydedildi",
+      "SALE_CANCELLED": "Bir fiş iptal edildi",
+      "STOCK_LOW": "Stok yeniden sipariş seviyesine düşer",
+      "STOCK_OUT": "Stok tükenir",
+      "ORDER_RECEIVED": "Bir tedarikçi siparişi tamamen teslim alındı",
+      "CUSTOMER_MESSAGE": "Bir alıcı mağazaya mesaj yazar"
+    },
+    "action": {
+      "CREATE_TASK": "Görev oluştur",
+      "NOTIFY_MEMBER": "Bir ekip üyesini bilgilendir"
+    },
+    "field": {
+      "minTotal": "Fiş toplamı en az",
+      "payment": "Ödeme yöntemi",
+      "pointId": "Satış noktası",
+      "warehouseId": "Depo veya raf",
+      "productId": "Ürün",
+      "supplierId": "Tedarikçi",
+      "firstMessage": "Sohbetin başlangıcı",
+      "firstMessageOnly": "yalnızca ilk mesaj"
+    },
+    "payment": {
+      "CASH": "Nakit",
+      "CARD": "Kart",
+      "TRANSFER": "Banka havalesi",
+      "CRYPTO": "Kripto",
+      "OTHER": "Diğer"
+    },
+    "priority": {
+      "LOW": "Düşük",
+      "NORMAL": "Normal",
+      "HIGH": "Yüksek",
+      "URGENT": "Acil"
+    },
+    "task": {
+      "title": "Görev başlığı",
+      "titlePlaceholder": "{warehouse} için {product} stoğunu yenile",
+      "details": "Ayrıntılar",
+      "priority": "Öncelik",
+      "dueDays": "Gün sayısı (en fazla {max})",
+      "dueEmpty": "son tarih yok",
+      "assignee": "Şuna ata",
+      "unassigned": "kim alırsa",
+      "noAuthorNote": "Bir kural tarafından oluşturulan görevin yazarı yoktur: kural bir kişi değildir. Böyle bir işi kabul etmek için Görevler yetkisinin düzenleme düzeyinde olması gerekir."
+    },
+    "notify": {
+      "text": "Mesaj",
+      "textPlaceholder": "Büyük satış {number} için {total} {currency}",
+      "recipients": "Kime bildirilsin",
+      "ownersFallback": "Kimse seçilmedi — sahiplere gider: kimseye yönelik olmayan bir mesaj tüm ekibi uyandırmamalı."
+    },
+    "run": {
+      "DONE": "uygulandı",
+      "SKIPPED": "atlandı",
+      "FAILED": "başarısız"
+    },
+    "runReason": {
+      "daily_limit": "bu kural için günlük sınıra ulaşıldı",
+      "too_many_open": "çok fazla açık görev",
+      "daily_tasks": "günlük görev sınırına ulaşıldı",
+      "params_invalid": "kural ayarları okunamadı",
+      "assignee_gone": "atanan kişi ekipten ayrıldı — görev atamasız kaldı",
+      "recipients_gone": "adı geçen üyeler ayrıldı — sahiplere bildirildi",
+      "no_recipients": "bildirilecek kimse yok",
+      "action_unknown": "bu eylem artık yok"
+    },
+    "events": {
+      "heading": "Son olaylar",
+      "hint": "“Kuralım neden tetiklenmedi” sorusunun cevabı: mağazanızın kaydettiği olgular, en yenisi önce. 30 gün saklanır.",
+      "empty": "Henüz hiçbir şey olmadı.",
+      "fromRule": "bir kuraldan"
+    },
+    "hooks": {
+      "heading": "Giden olaylar",
+      "hint": "Her olayı imzalı bir istek olarak kendi sisteminize gönderin. Uç noktaları yalnızca sahibi ekleyebilir veya kaldırabilir: veriler platformdan çıkar.",
+      "readOnlyNote": "Yalnızca giden. Üzerinden geri yazılamaz: makbuz kasada, stok depoda oluşturulur; aynı kayda ikinci bir yazar eklenmesi sayıları çelişkili hale getirir.",
+      "notConfigured": "Bu sunucuda giden olaylar henüz yapılandırılmadı. Burada hiçbir şey gizlenmiyor — istekleri imzalamak için basitçe hiçbir şey yok ve hiç teslim etmeyen bir uç nokta, hiç olmamasından daha kötü olurdu.",
+      "url": "Uç nokta adresi (yalnızca https)",
+      "events": "Hangi olaylar gönderilsin",
+      "create": "Uç nokta ekle",
+      "freshHeading": "İmzalama gizli anahtarı",
+      "freshOnce": "Yalnızca bir kez gösterilir. Saklayın: her isteğin imzası bununla hesaplanır ve bunu tekrar gösteremeyiz.",
+      "lastDelivered": "teslim edildi {at}",
+      "never": "henüz hiçbir şey teslim edilmedi",
+      "lastError": "Son hata: {error}",
+      "attempts": "deneme: {count}",
+      "status": {
+        "PENDING": "kuyruğa alındı",
+        "DELIVERED": "teslim edildi",
+        "FAILED": "vazgeçildi"
+      },
+      "docsHeading": "Nasıl ulaşır",
+      "docsNote": "Yeniden denemeler 1 dk, 5 dk, 30 dk, 2 sa, 6 sa aralıklarıyla gider. 4xx cevabı sisteminizin reddettiği anlamına gelir ve dururuz; 5xx, 429 ve zaman aşımı bağlantı sorunu olarak görülür ve yeniden denenir."
+    },
+    "error": {
+      "unauth": "Lütfen yeniden oturum açın.",
+      "forbidden": "Bunun için düzenleme düzeyinde Otomasyon yetkisi gerekir.",
+      "not_found": "Bulunamadı.",
+      "name_required": "Kurala bir ad verin — onu bu adla arayacaksınız.",
+      "trigger_invalid": "Kuralın neye yanıt vereceğini seçin.",
+      "action_invalid": "Kuralın ne yapması gerektiğini seçin.",
+      "title_required": "Görev başlığını yazın.",
+      "text_required": "Mesajı yazın.",
+      "text_too_long": "Bu çok uzun.",
+      "priority_invalid": "Bir öncelik seçin.",
+      "due_invalid": "Gün sayısı 0 veya daha büyük bir tam sayı olmalıdır.",
+      "too_many_rules": "Bir şirket için kural sınırına ulaşıldı. Artık ihtiyaç duymadığınız birini silin.",
+      "not_configured": "Giden olaylar bu sunucuda yapılandırılmadı.",
+      "events_required": "Göndermek için en az bir olay seçin.",
+      "url_required": "https:// ile başlayan tam bir adres yazın",
+      "url_not_https": "Yalnızca https: İstek satışlarınızı taşır ve http üzerinden açıkta iletilir.",
+      "url_private": "Bu adres internete değil özel bir ağın içine işaret ediyor. Oraya göndermeyeceğiz.",
+      "url_too_long": "Bu adres çok uzun.",
+      "too_many": "Bir şirket için uç nokta sınırına ulaşıldı."
     }
   }
 }

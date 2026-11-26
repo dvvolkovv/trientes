@@ -73,6 +73,9 @@ export const COMPANY_TILES: CompanyTileDef[] = [
   // Чат виден каждому члену и своего раздела прав не имеет: комната принадлежит
   // команде, а право, умеющее только замолчать человека, — управление, не доступ (BP).
   { key: "chat", group: "order", icon: "💬", section: "card", path: "chat", everyone: true },
+  // Автоматизация (слайс CO, ТЗ 6.7). Группа «порядок»: правило — это распорядок
+  // работы, а не витрина. Исходящие оповещения внутри страницы видит только владелец.
+  { key: "automation", group: "order", icon: "⚙️", section: "automation", path: "automation" },
   { key: "journal", group: "order", icon: "🧾", section: "card", path: "journal", ownerOnly: true },
 ];
 

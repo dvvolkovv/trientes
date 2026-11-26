@@ -1845,7 +1845,8 @@
       "ads": "Banner de cartão",
       "sales": "Caixa",
       "reports": "Relatórios",
-      "crm": "Clientes"
+      "crm": "Clientes",
+      "automation": "Automação"
     },
     "tileUnit": {
       "points": "{count} no mapa",
@@ -1862,7 +1863,8 @@
       "ads": "{count} no ar",
       "sales": "recibos hoje",
       "reports": "recibos em 30 dias",
-      "crm": "compradores: {count}"
+      "crm": "compradores: {count}",
+      "automation": "regras: {count}"
     },
     "tileEmpty": "ainda nada",
     "tileBadge": {
@@ -3790,6 +3792,9 @@
         "subject": "{company} respondeu a você",
         "body": "{company} respondeu à sua mensagem."
       }
+    },
+    "automation": {
+      "subject": "{company}: {rule}"
     }
   },
   "captcha": {
@@ -4411,7 +4416,8 @@
         "customers": "Mensagens de clientes",
         "hiring": "Contratação: links de convite",
         "sales": "Caixa e recibos",
-        "reports": "Relatórios e exportação"
+        "reports": "Relatórios e exportação",
+        "automation": "Automação"
       },
       "levels": {
         "NONE": "Sem acesso",
@@ -4538,7 +4544,13 @@
       "SALE_CANCELLED": "Recibo cancelado",
       "REPORT_EXPORTED": "Relatório exportado",
       "API_KEY_CREATED": "Chave de API emitida",
-      "API_KEY_REVOKED": "Chave de API revogada"
+      "API_KEY_REVOKED": "Chave de API revogada",
+      "RULE_SAVED": "Regra de automação salva",
+      "RULE_TOGGLED": "Regra de automação alternada",
+      "RULE_DELETED": "Regra de automação excluída",
+      "WEBHOOK_CREATED": "Eventos de saída: endpoint adicionado",
+      "WEBHOOK_TOGGLED": "Eventos de saída: endpoint alternado",
+      "WEBHOOK_DELETED": "Eventos de saída: endpoint removido"
     }
   },
   "cabinetTasks": {
@@ -5580,6 +5592,158 @@
       "noHistory": "Ainda não há recibos.",
       "cancelledBadge": "cancelado",
       "openThread": "Abrir a conversa"
+    }
+  },
+  "cabinetAutomation": {
+    "title": "Automação",
+    "subtitle": "Regras que respondem ao que acontece na sua loja: uma venda, uma prateleira vazia, uma entrega, uma mensagem de um comprador.",
+    "rules": {
+      "heading": "Regras se — então",
+      "hint": "Escolha o que acontece, restrinja se precisar e diga o que deve acontecer em seguida.",
+      "oneStep": "Uma regra responde a um fato uma vez. O que a própria regra faz nunca inicia outra regra — assim, duas regras nunca ficarão se acionando em círculos.",
+      "sentence": "Se {trigger} — então {action}",
+      "empty": "Ainda não há regras.",
+      "add": "Adicionar uma regra",
+      "edit": "Editar",
+      "delete": "Excluir",
+      "deleteConfirm": "Excluir — toque novamente",
+      "enable": "Ativar",
+      "disable": "Desativar",
+      "enabled": "Ativada",
+      "disabled": "Desativada",
+      "fired": "Acionada: {count}",
+      "lastFired": "última vez em {at}",
+      "never": "ainda não foi acionada",
+      "dailyLimit": "Uma regra é acionada no máximo {count} vezes por dia. Depois disso, a execução é registrada com seu motivo em vez de agir.",
+      "readOnly": "Você pode ler as regras aqui, mas para alterá-las é necessário o direito de Automação no nível de edição."
+    },
+    "builder": {
+      "name": "Nome da regra",
+      "namePlaceholder": "Prateleira esgotou — avisar o estoquista",
+      "trigger": "Se isso acontecer",
+      "conditions": "Somente quando",
+      "action": "Então faça isso",
+      "any": "qualquer",
+      "anyValue": "qualquer valor",
+      "vars": "Você pode usar no texto: {list}",
+      "save": "Salvar regra",
+      "cancel": "Cancelar"
+    },
+    "trigger": {
+      "SALE_RECORDED": "Uma venda é registrada",
+      "SALE_CANCELLED": "Um recibo é cancelado",
+      "STOCK_LOW": "O estoque cai para o nível de reposição",
+      "STOCK_OUT": "O estoque acaba",
+      "ORDER_RECEIVED": "Um pedido ao fornecedor é totalmente recebido",
+      "CUSTOMER_MESSAGE": "Um comprador escreve para a loja"
+    },
+    "action": {
+      "CREATE_TASK": "Criar uma tarefa",
+      "NOTIFY_MEMBER": "Notificar um membro da equipe"
+    },
+    "field": {
+      "minTotal": "Total do recibo é pelo menos",
+      "payment": "Forma de pagamento",
+      "pointId": "Ponto de venda",
+      "warehouseId": "Depósito ou prateleira",
+      "productId": "Produto",
+      "supplierId": "Fornecedor",
+      "firstMessage": "Início de uma conversa",
+      "firstMessageOnly": "apenas a primeira mensagem"
+    },
+    "payment": {
+      "CASH": "Dinheiro",
+      "CARD": "Cartão",
+      "TRANSFER": "Transferência bancária",
+      "CRYPTO": "Cripto",
+      "OTHER": "Outro"
+    },
+    "priority": {
+      "LOW": "Baixa",
+      "NORMAL": "Normal",
+      "HIGH": "Alta",
+      "URGENT": "Urgente"
+    },
+    "task": {
+      "title": "Título da tarefa",
+      "titlePlaceholder": "Repor {product} em {warehouse}",
+      "details": "Detalhes",
+      "priority": "Prioridade",
+      "dueDays": "Vence em dias (até {max})",
+      "dueEmpty": "sem prazo",
+      "assignee": "Atribuir a",
+      "unassigned": "quem pegar",
+      "noAuthorNote": "Uma tarefa criada por uma regra não tem autor: uma regra não é uma pessoa. Aceitar esse trabalho exige o direito Tasks no nível de edição."
+    },
+    "notify": {
+      "text": "Mensagem",
+      "textPlaceholder": "Grande promoção {number} por {total} {currency}",
+      "recipients": "Quem notificar",
+      "ownersFallback": "Ninguém escolhido — os proprietários recebem: uma mensagem endereçada a ninguém não deve acordar a equipe inteira."
+    },
+    "run": {
+      "DONE": "executada",
+      "SKIPPED": "ignorada",
+      "FAILED": "falhou"
+    },
+    "runReason": {
+      "daily_limit": "limite diário para esta regra atingido",
+      "too_many_open": "tarefas demais em aberto",
+      "daily_tasks": "limite diário de tarefas atingido",
+      "params_invalid": "as configurações da regra não puderam ser lidas",
+      "assignee_gone": "o responsável saiu da equipe — a tarefa ficou sem atribuição",
+      "recipients_gone": "os membros nomeados saíram — os proprietários foram notificados",
+      "no_recipients": "ninguém para notificar",
+      "action_unknown": "esta ação não existe mais"
+    },
+    "events": {
+      "heading": "Eventos mais recentes",
+      "hint": "Esta é a resposta para “por que minha regra não disparou”: os fatos que sua loja registrou, do mais novo para o mais antigo. Mantidos por 30 dias.",
+      "empty": "Nada aconteceu ainda.",
+      "fromRule": "de uma regra"
+    },
+    "hooks": {
+      "heading": "Eventos de saída",
+      "hint": "Envie cada evento para o seu próprio sistema como uma requisição assinada. Apenas o proprietário pode adicionar ou remover endpoints: os dados saem da plataforma.",
+      "readOnlyNote": "Somente saída. Nada pode ser escrito de volta por ele: um recibo é criado pelo caixa e o estoque pelo armazém, e um segundo autor do mesmo registro é como os números começam a divergir.",
+      "notConfigured": "Eventos de saída ainda não estão configurados neste servidor. Nada está oculto aqui — simplesmente não há nada com que assinar as requisições, e um endpoint que nunca entrega seria pior do que nenhum.",
+      "url": "Endereço do endpoint (apenas https)",
+      "events": "Quais eventos enviar",
+      "create": "Adicionar endpoint",
+      "freshHeading": "Segredo de assinatura",
+      "freshOnce": "Mostrado uma vez. Guarde-o: a assinatura de cada requisição é calculada com ele, e não podemos mostrá-lo novamente.",
+      "lastDelivered": "entregue {at}",
+      "never": "nada entregue ainda",
+      "lastError": "Último erro: {error}",
+      "attempts": "tentativas: {count}",
+      "status": {
+        "PENDING": "na fila",
+        "DELIVERED": "entregue",
+        "FAILED": "abandonado"
+      },
+      "docsHeading": "Como chega",
+      "docsNote": "As novas tentativas ocorrem em 1 min, 5 min, 30 min, 2 h, 6 h. Uma resposta 4xx significa que seu sistema recusou e nós paramos; 5xx, 429 e timeouts são tratados como problema de conexão e serão tentados novamente."
+    },
+    "error": {
+      "unauth": "Faça login novamente.",
+      "forbidden": "Isso requer a permissão Automação no nível de edição.",
+      "not_found": "Não encontrado.",
+      "name_required": "Dê um nome à regra — você vai procurá-la por esse nome.",
+      "trigger_invalid": "Escolha ao que a regra responde.",
+      "action_invalid": "Escolha o que a regra deve fazer.",
+      "title_required": "Escreva o título da tarefa.",
+      "text_required": "Escreva a mensagem.",
+      "text_too_long": "Isso é longo demais.",
+      "priority_invalid": "Escolha uma prioridade.",
+      "due_invalid": "Os dias devem ser um número inteiro, 0 ou mais.",
+      "too_many_rules": "O limite de regras para uma empresa foi atingido. Exclua uma que você não precisa mais.",
+      "not_configured": "Eventos de saída não estão configurados neste servidor.",
+      "events_required": "Escolha pelo menos um evento para enviar.",
+      "url_required": "Escreva um endereço completo, começando com https://",
+      "url_not_https": "Apenas https: a requisição carrega suas vendas e, em http, trafega em aberto.",
+      "url_private": "Esse endereço aponta para dentro de uma rede privada, não para a internet. Não enviaremos para lá.",
+      "url_too_long": "Esse endereço é longo demais.",
+      "too_many": "O limite de endpoints para uma empresa foi atingido."
     }
   }
 }

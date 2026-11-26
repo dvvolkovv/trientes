@@ -29,7 +29,8 @@ describe("раздел найма", () => {
     expect(can(viewer, "hiring", "VIEW")).toBe(false);
     // Всё прочее наследие сохранено дословно (правило BE).
     for (const section of TEAM_SECTIONS) {
-      if (section === "hiring") continue;
+      // `automation` (CO) исключён из наследия по тому же разбору, что `hiring`.
+      if (section === "hiring" || section === "automation") continue;
       expect(can(editor, section, "EDIT"), section).toBe(true);
       expect(can(viewer, section, "VIEW"), section).toBe(true);
     }

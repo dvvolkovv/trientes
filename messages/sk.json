@@ -1845,7 +1845,8 @@
       "ads": "Baner karty",
       "sales": "Pokladňa",
       "reports": "Prehľady",
-      "crm": "Zákazníci"
+      "crm": "Zákazníci",
+      "automation": "Automatizácia"
     },
     "tileUnit": {
       "points": "{count} na mape",
@@ -1862,7 +1863,8 @@
       "ads": "{count} aktívne",
       "sales": "účtenky dnes",
       "reports": "účtenky za 30 dní",
-      "crm": "kupujúci: {count}"
+      "crm": "kupujúci: {count}",
+      "automation": "pravidlá: {count}"
     },
     "tileEmpty": "zatiaľ nič",
     "tileBadge": {
@@ -3790,6 +3792,9 @@
         "subject": "Spoločnosť {company} vám odpovedala",
         "body": "Spoločnosť {company} odpovedala na vašu správu."
       }
+    },
+    "automation": {
+      "subject": "{company}: {rule}"
     }
   },
   "captcha": {
@@ -4411,7 +4416,8 @@
         "customers": "Správy od zákazníkov",
         "hiring": "Nábor: odkazy na pozvánky",
         "sales": "Pokladňa a účtenky",
-        "reports": "Prehľady a export"
+        "reports": "Prehľady a export",
+        "automation": "Automatizácia"
       },
       "levels": {
         "NONE": "Bez prístupu",
@@ -4538,7 +4544,13 @@
       "SALE_CANCELLED": "Účtenka zrušená",
       "REPORT_EXPORTED": "Prehľad exportovaný",
       "API_KEY_CREATED": "API kľúč vydaný",
-      "API_KEY_REVOKED": "API kľúč zrušený"
+      "API_KEY_REVOKED": "API kľúč zrušený",
+      "RULE_SAVED": "Pravidlo automatizácie uložené",
+      "RULE_TOGGLED": "Pravidlo automatizácie prepnuté",
+      "RULE_DELETED": "Pravidlo automatizácie odstránené",
+      "WEBHOOK_CREATED": "Odchádzajúce udalosti: pridaný koncový bod",
+      "WEBHOOK_TOGGLED": "Odchádzajúce udalosti: prepnutý koncový bod",
+      "WEBHOOK_DELETED": "Odchádzajúce udalosti: odstránený koncový bod"
     }
   },
   "cabinetTasks": {
@@ -5580,6 +5592,158 @@
       "noHistory": "Zatiaľ žiadne účtenky.",
       "cancelledBadge": "zrušené",
       "openThread": "Otvoriť konverzáciu"
+    }
+  },
+  "cabinetAutomation": {
+    "title": "Automatizácia",
+    "subtitle": "Pravidlá, ktoré odpovedajú na to, čo sa deje vo vašom obchode: predaj, prázdna polica, dodávka, správa od kupujúceho.",
+    "rules": {
+      "heading": "Pravidlá typu Ak — potom",
+      "hint": "Vyberte, čo sa stane, zúžte výber, ak treba, a určte, čo má nasledovať.",
+      "oneStep": "Pravidlo reaguje na fakt raz. To, čo pravidlo samo vykoná, nikdy nespúšťa ďalšie pravidlo — takže dve pravidlá sa nikdy nemôžu navzájom naháňať dookola.",
+      "sentence": "Ak {trigger} — potom {action}",
+      "empty": "Zatiaľ žiadne pravidlá.",
+      "add": "Pridať pravidlo",
+      "edit": "Upraviť",
+      "delete": "Odstrániť",
+      "deleteConfirm": "Odstrániť — ťuknite znova",
+      "enable": "Zapnúť",
+      "disable": "Vypnúť",
+      "enabled": "Zapnuté",
+      "disabled": "Vypnuté",
+      "fired": "Spustenia: {count}",
+      "lastFired": "naposledy {at}",
+      "never": "zatiaľ nebolo spustené",
+      "dailyLimit": "Jedno pravidlo sa spustí najviac {count}-krát denne. Po prekročení sa spustenie iba zaznamená s dôvodom, namiesto vykonania akcie.",
+      "readOnly": "Pravidlá si tu môžete prezerať, ale na ich zmeny potrebujete oprávnenie Automatizácia na úrovni úprav."
+    },
+    "builder": {
+      "name": "Názov pravidla",
+      "namePlaceholder": "Dochádza tovar na polici — oznámte skladníkovi",
+      "trigger": "Ak sa toto stane",
+      "conditions": "Len vtedy, keď",
+      "action": "Potom urobte toto",
+      "any": "akékoľvek",
+      "anyValue": "akákoľvek suma",
+      "vars": "V texte môžete použiť: {list}",
+      "save": "Uložiť pravidlo",
+      "cancel": "Zrušiť"
+    },
+    "trigger": {
+      "SALE_RECORDED": "Je zaevidovaný predaj",
+      "SALE_CANCELLED": "Účtenka je zrušená",
+      "STOCK_LOW": "Zásoby klesnú na doobjednávaciu úroveň",
+      "STOCK_OUT": "Zásoby sa minú",
+      "ORDER_RECEIVED": "Dodávateľská objednávka je úplne prijatá",
+      "CUSTOMER_MESSAGE": "Kupujúci napíše do obchodu"
+    },
+    "action": {
+      "CREATE_TASK": "Vytvoriť úlohu",
+      "NOTIFY_MEMBER": "Upozorniť člena tímu"
+    },
+    "field": {
+      "minTotal": "Celková suma účtenky je najmenej",
+      "payment": "Spôsob platby",
+      "pointId": "Miesto predaja",
+      "warehouseId": "Sklad alebo polica",
+      "productId": "Produkt",
+      "supplierId": "Dodávateľ",
+      "firstMessage": "Začiatok konverzácie",
+      "firstMessageOnly": "iba prvá správa"
+    },
+    "payment": {
+      "CASH": "Hotovosť",
+      "CARD": "Karta",
+      "TRANSFER": "Bankový prevod",
+      "CRYPTO": "Krypto",
+      "OTHER": "Iné"
+    },
+    "priority": {
+      "LOW": "Nízka",
+      "NORMAL": "Normálna",
+      "HIGH": "Vysoká",
+      "URGENT": "Súrne"
+    },
+    "task": {
+      "title": "Názov úlohy",
+      "titlePlaceholder": "Doplniť {product} na {warehouse}",
+      "details": "Podrobnosti",
+      "priority": "Priorita",
+      "dueDays": "Termín za dní (do {max})",
+      "dueEmpty": "bez termínu",
+      "assignee": "Priradiť komu",
+      "unassigned": "komukoľvek, kto si ju vezme",
+      "noAuthorNote": "Úloha vytvorená pravidlom nemá autora: pravidlo nie je osoba. Prevzatie takejto práce vyžaduje oprávnenie Úlohy na úrovni úprav."
+    },
+    "notify": {
+      "text": "Správa",
+      "textPlaceholder": "Veľký predaj {number} za {total} {currency}",
+      "recipients": "Koho upozorniť",
+      "ownersFallback": "Nikto nebol vybraný — dostanú to vlastníci: správa adresovaná nikomu nemá zobudiť celý tím."
+    },
+    "run": {
+      "DONE": "vykonané",
+      "SKIPPED": "preskočené",
+      "FAILED": "zlyhané"
+    },
+    "runReason": {
+      "daily_limit": "dosiahnutý denný limit pre toto pravidlo",
+      "too_many_open": "príliš veľa otvorených úloh",
+      "daily_tasks": "dosiahnutý denný limit úloh",
+      "params_invalid": "nastavenia pravidla sa nepodarilo načítať",
+      "assignee_gone": "pridelený člen odišiel z tímu — úloha zostala nepridelená",
+      "recipients_gone": "uvedení členovia odišli — vlastníci boli upozornení",
+      "no_recipients": "nie je koho upozorniť",
+      "action_unknown": "táto akcia už neexistuje"
+    },
+    "events": {
+      "heading": "Najnovšie udalosti",
+      "hint": "Toto je odpoveď na „prečo sa moje pravidlo nespustilo“: fakty, ktoré váš obchod zaznamenal, od najnovších. Uchovávané 30 dní.",
+      "empty": "Zatiaľ sa nič nestalo.",
+      "fromRule": "z pravidla"
+    },
+    "hooks": {
+      "heading": "Odchádzajúce udalosti",
+      "hint": "Posielajte každú udalosť do vlastného systému ako podpísanú žiadosť. Koncové body môže pridávať alebo odstraňovať len vlastník: údaje opúšťajú platformu.",
+      "readOnlyNote": "Iba odchádzajúce. Cez to sa nedá nič zapisovať: účtenku vytvára pokladňa a stav zásob sklad; druhý autor toho istého záznamu je spôsob, ako sa čísla začnú rozchádzať.",
+      "notConfigured": "Odchádzajúce udalosti na tomto serveri ešte nie sú nastavené. Nič tu nie je skryté — jednoducho nemáme čím podpisovať požiadavky a koncový bod, ktorý nikdy nedoručí, by bol horší ako žiadny.",
+      "url": "Adresa koncového bodu (iba https)",
+      "events": "Ktoré udalosti posielať",
+      "create": "Pridať koncový bod",
+      "freshHeading": "Tajomstvo na podpisovanie",
+      "freshOnce": "Zobrazené iba raz. Uschovajte si ho: podpis každej požiadavky sa počíta pomocou neho a znova ho nevieme zobraziť.",
+      "lastDelivered": "doručené {at}",
+      "never": "zatiaľ nič nedoručené",
+      "lastError": "Posledná chyba: {error}",
+      "attempts": "pokusy: {count}",
+      "status": {
+        "PENDING": "vo fronte",
+        "DELIVERED": "doručené",
+        "FAILED": "vzdané"
+      },
+      "docsHeading": "Ako to prichádza",
+      "docsNote": "Opakovania idú po 1 min, 5 min, 30 min, 2 h, 6 h. Odpoveď 4xx znamená, že váš systém odmietol a my sa zastavíme; 5xx, 429 a vypršanie času sa považujú za problém spojenia a opakujú sa."
+    },
+    "error": {
+      "unauth": "Prihláste sa znova.",
+      "forbidden": "Na toto je potrebné oprávnenie Automatizácia na úrovni úprav.",
+      "not_found": "Nenašlo sa.",
+      "name_required": "Zadajte pravidlu názov — budete ho podľa neho hľadať.",
+      "trigger_invalid": "Vyberte, na čo pravidlo reaguje.",
+      "action_invalid": "Vyberte, čo má pravidlo urobiť.",
+      "title_required": "Napíšte názov úlohy.",
+      "text_required": "Napíšte správu.",
+      "text_too_long": "To je príliš dlhé.",
+      "priority_invalid": "Vyberte prioritu.",
+      "due_invalid": "Dni musia byť celé číslo, 0 alebo viac.",
+      "too_many_rules": "Limit pravidiel pre jednu spoločnosť bol dosiahnutý. Odstráňte jedno, ktoré už nepotrebujete.",
+      "not_configured": "Odchádzajúce udalosti nie sú na tomto serveri nakonfigurované.",
+      "events_required": "Vyberte aspoň jednu udalosť na odoslanie.",
+      "url_required": "Napíšte úplnú adresu, začínajúcu na https://",
+      "url_not_https": "Iba https: požiadavka nesie vaše predaje a cez http putuje otvorene.",
+      "url_private": "Tá adresa smeruje do súkromnej siete, nie na internet. Tam nebudeme posielať.",
+      "url_too_long": "Tá adresa je príliš dlhá.",
+      "too_many": "Limit koncových bodov pre jednu spoločnosť bol dosiahnutý."
     }
   }
 }

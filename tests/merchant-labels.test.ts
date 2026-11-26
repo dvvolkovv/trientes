@@ -43,6 +43,8 @@ const ACTIONS: CompanyAction[] = [
   "PUBLIC_FIELDS_SET",
   "SALE_RECORDED", "SALE_CANCELLED",
   "REPORT_EXPORTED", "API_KEY_CREATED", "API_KEY_REVOKED",
+  "RULE_SAVED", "RULE_TOGGLED", "RULE_DELETED",
+  "WEBHOOK_CREATED", "WEBHOOK_TOGGLED", "WEBHOOK_DELETED",
 ];
 
 describe("подписи разделов и журнала", () => {

@@ -229,6 +229,16 @@ async function countTiles(
       })(),
     );
   }
+  if (want.has("automation")) {
+    jobs.push(
+      (async () => {
+        // Число на плитке — включённые правила: выключенное правило ничего не делает, и
+        // считать его как работающее значило бы соврать числом.
+        out.automation = { value: await prisma.companyRule.count({ where: { companyId, enabled: true } }) };
+      })(),
+    );
+  }
+
   if (want.has("journal")) {
     jobs.push(
       (async () => {

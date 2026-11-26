@@ -1845,7 +1845,8 @@
       "ads": "Bannière de carte",
       "sales": "Caisse",
       "reports": "Rapports",
-      "crm": "Clients"
+      "crm": "Clients",
+      "automation": "Automatisation"
     },
     "tileUnit": {
       "points": "{count} sur la carte",
@@ -1862,7 +1863,8 @@
       "ads": "{count} en cours",
       "sales": "reçus aujourd'hui",
       "reports": "reçus sur 30 jours",
-      "crm": "acheteurs: {count}"
+      "crm": "acheteurs: {count}",
+      "automation": "règles: {count}"
     },
     "tileEmpty": "rien pour l’instant",
     "tileBadge": {
@@ -3790,6 +3792,9 @@
         "subject": "{company} vous a répondu",
         "body": "{company} a répondu à votre message."
       }
+    },
+    "automation": {
+      "subject": "{company}: {rule}"
     }
   },
   "captcha": {
@@ -4411,7 +4416,8 @@
         "customers": "Messages clients",
         "hiring": "Recrutement: liens d'invitation",
         "sales": "Caisse et reçus",
-        "reports": "Rapports et export"
+        "reports": "Rapports et export",
+        "automation": "Automatisation"
       },
       "levels": {
         "NONE": "Aucun accès",
@@ -4538,7 +4544,13 @@
       "SALE_CANCELLED": "Reçu annulé",
       "REPORT_EXPORTED": "Rapport exporté",
       "API_KEY_CREATED": "Clé API émise",
-      "API_KEY_REVOKED": "Clé API révoquée"
+      "API_KEY_REVOKED": "Clé API révoquée",
+      "RULE_SAVED": "Règle d’automatisation enregistrée",
+      "RULE_TOGGLED": "Règle d’automatisation basculée",
+      "RULE_DELETED": "Règle d’automatisation supprimée",
+      "WEBHOOK_CREATED": "Événements sortants: point de terminaison ajouté",
+      "WEBHOOK_TOGGLED": "Événements sortants: point de terminaison basculé",
+      "WEBHOOK_DELETED": "Événements sortants: point de terminaison supprimé"
     }
   },
   "cabinetTasks": {
@@ -5580,6 +5592,158 @@
       "noHistory": "Pas encore de reçus.",
       "cancelledBadge": "annulé",
       "openThread": "Ouvrir la conversation"
+    }
+  },
+  "cabinetAutomation": {
+    "title": "Automatisation",
+    "subtitle": "Des règles qui répondent à ce qui arrive dans votre boutique : une vente, un rayon vide, une livraison, le message d’un acheteur.",
+    "rules": {
+      "heading": "Règles si — alors",
+      "hint": "Choisissez ce qui se produit, affinez si besoin, et indiquez ce qui doit suivre.",
+      "oneStep": "Une règle répond à un fait une fois. Ce que fait la règle en elle‑même ne déclenche jamais une autre règle — ainsi, deux règles ne peuvent jamais se poursuivre en boucle.",
+      "sentence": "Si {trigger} — alors {action}",
+      "empty": "Aucune règle pour l’instant.",
+      "add": "Ajouter une règle",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "deleteConfirm": "Supprimer — appuyez à nouveau",
+      "enable": "Activer",
+      "disable": "Désactiver",
+      "enabled": "Activé",
+      "disabled": "Désactivé",
+      "fired": "Déclenchements : {count}",
+      "lastFired": "dernière fois {at}",
+      "never": "n’a pas encore été déclenchée",
+      "dailyLimit": "Une règle se déclenche au plus {count} fois par jour. Au‑delà, l’exécution est enregistrée avec sa raison au lieu d’agir.",
+      "readOnly": "Vous pouvez lire les règles ici, mais les modifier nécessite le droit Automatisation au niveau édition."
+    },
+    "builder": {
+      "name": "Nom de la règle",
+      "namePlaceholder": "Le rayon est en rupture — prévenir le magasinier",
+      "trigger": "Si cela se produit",
+      "conditions": "Seulement si",
+      "action": "Alors faites ceci",
+      "any": "n’importe lequel",
+      "anyValue": "n’importe quel montant",
+      "vars": "Vous pouvez utiliser dans le texte : {list}",
+      "save": "Enregistrer la règle",
+      "cancel": "Annuler"
+    },
+    "trigger": {
+      "SALE_RECORDED": "Une vente est enregistrée",
+      "SALE_CANCELLED": "Un reçu est annulé",
+      "STOCK_LOW": "Le stock passe au niveau de réapprovisionnement",
+      "STOCK_OUT": "Le stock est épuisé",
+      "ORDER_RECEIVED": "Une commande fournisseur est entièrement reçue",
+      "CUSTOMER_MESSAGE": "Un acheteur écrit à la boutique"
+    },
+    "action": {
+      "CREATE_TASK": "Créer une tâche",
+      "NOTIFY_MEMBER": "Notifier un membre de l’équipe"
+    },
+    "field": {
+      "minTotal": "Le total du reçu est d’au moins",
+      "payment": "Mode de paiement",
+      "pointId": "Point de vente",
+      "warehouseId": "Entrepôt ou étagère",
+      "productId": "Produit",
+      "supplierId": "Fournisseur",
+      "firstMessage": "Début d’une conversation",
+      "firstMessageOnly": "uniquement le premier message"
+    },
+    "payment": {
+      "CASH": "Espèces",
+      "CARD": "Carte",
+      "TRANSFER": "Virement bancaire",
+      "CRYPTO": "Crypto",
+      "OTHER": "Autre"
+    },
+    "priority": {
+      "LOW": "Faible",
+      "NORMAL": "Normal",
+      "HIGH": "Élevée",
+      "URGENT": "Urgent"
+    },
+    "task": {
+      "title": "Titre de la tâche",
+      "titlePlaceholder": "Réapprovisionner {product} dans {warehouse}",
+      "details": "Détails",
+      "priority": "Priorité",
+      "dueDays": "Échéance en jours (jusqu’à {max})",
+      "dueEmpty": "pas d’échéance",
+      "assignee": "Affecter à",
+      "unassigned": "à quiconque le prendra",
+      "noAuthorNote": "Une tâche créée par une règle n’a pas d’auteur : une règle n’est pas une personne. Accepter ce travail nécessite le droit Tâches au niveau modification."
+    },
+    "notify": {
+      "text": "Message",
+      "textPlaceholder": "Vente importante {number} pour {total} {currency}",
+      "recipients": "Qui notifier",
+      "ownersFallback": "Personne sélectionné — les propriétaires le reçoivent : un message adressé à personne ne doit pas réveiller toute l’équipe."
+    },
+    "run": {
+      "DONE": "exécuté",
+      "SKIPPED": "ignoré",
+      "FAILED": "échoué"
+    },
+    "runReason": {
+      "daily_limit": "limite quotidienne pour cette règle atteinte",
+      "too_many_open": "trop de tâches ouvertes",
+      "daily_tasks": "limite quotidienne de tâches atteinte",
+      "params_invalid": "impossible de lire les paramètres de la règle",
+      "assignee_gone": "le responsable a quitté l’équipe — la tâche n’est plus assignée",
+      "recipients_gone": "les membres nommés sont partis — les propriétaires ont été notifiés",
+      "no_recipients": "personne à notifier",
+      "action_unknown": "cette action n’existe plus"
+    },
+    "events": {
+      "heading": "Derniers événements",
+      "hint": "Voici la réponse à « pourquoi ma règle n’a pas été déclenchée » : les faits enregistrés par votre boutique, du plus récent au plus ancien. Conservés pendant 30 jours.",
+      "empty": "Il ne s’est encore rien passé.",
+      "fromRule": "depuis une règle"
+    },
+    "hooks": {
+      "heading": "Événements sortants",
+      "hint": "Envoyez chaque événement vers votre propre système sous forme de requête signée. Seul le propriétaire peut ajouter ou supprimer des points de terminaison : les données quittent la plateforme.",
+      "readOnlyNote": "Sortant uniquement. Rien ne peut être écrit en retour par ce biais : un reçu est créé par la caisse et le stock par l’entrepôt, et un second auteur du même enregistrement est la meilleure façon de faire diverger les chiffres.",
+      "notConfigured": "Les événements sortants ne sont pas encore configurés sur ce serveur. Rien n’est caché ici — il n’y a simplement rien pour signer les requêtes, et un point de terminaison qui ne livre jamais serait pire que pas de point de terminaison.",
+      "url": "Adresse du point de terminaison (https uniquement)",
+      "events": "Quels événements envoyer",
+      "create": "Ajouter un point de terminaison",
+      "freshHeading": "Secret de signature",
+      "freshOnce": "Affiché une seule fois. Conservez-le : la signature de chaque requête est calculée avec lui, et nous ne pouvons pas l’afficher de nouveau.",
+      "lastDelivered": "livré {at}",
+      "never": "rien n’a encore été livré",
+      "lastError": "Dernière erreur : {error}",
+      "attempts": "tentatives : {count}",
+      "status": {
+        "PENDING": "en file d’attente",
+        "DELIVERED": "livré",
+        "FAILED": "abandonné"
+      },
+      "docsHeading": "Comment cela arrive",
+      "docsNote": "Les nouvelles tentatives se font à 1 min, 5 min, 30 min, 2 h, 6 h. Une réponse 4xx signifie que votre système a refusé et nous arrêtons ; 5xx, 429 et les dépassements de délai sont traités comme un problème de connexion et réessayés."
+    },
+    "error": {
+      "unauth": "Veuillez vous reconnecter.",
+      "forbidden": "Cela nécessite le droit Automatisation au niveau modification.",
+      "not_found": "Introuvable.",
+      "name_required": "Donnez un nom à la règle — vous la rechercherez par ce nom.",
+      "trigger_invalid": "Choisissez à quoi la règle répond.",
+      "action_invalid": "Choisissez ce que la règle doit faire.",
+      "title_required": "Saisissez le titre de la tâche.",
+      "text_required": "Saisissez le message.",
+      "text_too_long": "C’est trop long.",
+      "priority_invalid": "Choisissez une priorité.",
+      "due_invalid": "Les jours doivent être un nombre entier, supérieur ou égal à 0.",
+      "too_many_rules": "La limite de règles pour une entreprise est atteinte. Supprimez-en une dont vous n’avez plus besoin.",
+      "not_configured": "Les événements sortants ne sont pas configurés sur ce serveur.",
+      "events_required": "Choisissez au moins un événement à envoyer.",
+      "url_required": "Saisissez une adresse complète, commençant par https://",
+      "url_not_https": "Uniquement https : la requête transporte vos ventes, et en http elle circule en clair.",
+      "url_private": "Cette adresse pointe vers un réseau privé, pas vers Internet. Nous n’y enverrons pas.",
+      "url_too_long": "Cette adresse est trop longue.",
+      "too_many": "La limite de points de terminaison pour une entreprise est atteinte."
     }
   }
 }

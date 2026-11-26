@@ -32,6 +32,13 @@
  * В наследие фазы 10 раздел входит, как `sales`: легаси-редактор уже видит каждый
  * чек, и сводка над теми же чеками новой власти ему не даёт.
  *
+ * Тринадцатый раздел `automation` — слайс CO, ТЗ 6.7 «конструктор правил «если — то»».
+ * В наследие фазы 10 он **не входит** (как `hiring` и в отличие от `sales` и `reports`):
+ * правило действует **без человека** — само ставит задачи и само будит людей, — и
+ * живым членам, заведённым до того, как раздел появился, этого права никто не давал.
+ * Исходящие оповещения наружу при этом остаются у владельца и правами не настраиваются:
+ * данные уходят за пределы платформы, то есть это выдача прав (решение CL о ключах API).
+ *
  * Девятый раздел `customers` появился в BQ вместе с перепиской покупателя: ТЗ 6.6 прямо
  * говорит «сотрудники **с нужной ролью** отвечают на сообщения покупателей». Общий чат
  * команды (BP) раздела прав не получил — комната принадлежит команде, — а внешняя
@@ -42,7 +49,7 @@
 /** Ролей на предприятие — столько, сколько читает человек в списке. */
 export const MAX_TEAM_ROLES = 20;
 
-export const TEAM_SECTIONS = ["card", "points", "products", "warehouses", "pricing", "tasks", "promos", "supply", "customers", "hiring", "sales", "reports"] as const;
+export const TEAM_SECTIONS = ["card", "points", "products", "warehouses", "pricing", "tasks", "promos", "supply", "customers", "hiring", "sales", "reports", "automation"] as const;
 export type TeamSection = (typeof TEAM_SECTIONS)[number];
 
 /** Уровней два; отсутствие строки — запрет по умолчанию, как очередь без гранта в AS. */
@@ -79,12 +86,14 @@ export const ALL_EDIT: TeamPermissions = fill("EDIT");
 export const ALL_VIEW: TeamPermissions = fill("VIEW");
 
 /**
- * Что получает член **без своей роли** — наследие фазы 10. `hiring` сюда не входит:
+ * Что получает член **без своей роли** — наследие фазы 10. `hiring` и `automation` сюда
+ * не входят:
  * эти члены заведены до того, как раздел появился, и никто не решал давать им право
- * звать людей в команду. Молчаливое расширение прав живого редактора было бы ровно
- * тем, от чего охраняет запрет по умолчанию.
+ * звать людей в команду и заводить правила, которые действуют без человека. Молчаливое
+ * расширение прав живого редактора было бы ровно тем, от чего охраняет запрет по
+ * умолчанию.
  */
-const LEGACY_SECTIONS = TEAM_SECTIONS.filter((s) => s !== "hiring");
+const LEGACY_SECTIONS = TEAM_SECTIONS.filter((s) => s !== "hiring" && s !== "automation");
 const LEGACY_EDIT: TeamPermissions = fill("EDIT", LEGACY_SECTIONS);
 const LEGACY_VIEW: TeamPermissions = fill("VIEW", LEGACY_SECTIONS);
 
@@ -125,7 +134,7 @@ export function visibleSections(perms: TeamPermissions): TeamSection[] {
  * сохранённая роль хранит свой набор и от шаблона больше не зависит.
  */
 export const ROLE_TEMPLATES: { key: string; permissions: TeamPermissions }[] = [
-  { key: "manager", permissions: { card: "EDIT", points: "EDIT", products: "EDIT", warehouses: "EDIT", pricing: "EDIT", tasks: "EDIT", promos: "EDIT", supply: "EDIT", customers: "EDIT", hiring: "EDIT", sales: "EDIT", reports: "EDIT" } },
+  { key: "manager", permissions: { card: "EDIT", points: "EDIT", products: "EDIT", warehouses: "EDIT", pricing: "EDIT", tasks: "EDIT", promos: "EDIT", supply: "EDIT", customers: "EDIT", hiring: "EDIT", sales: "EDIT", reports: "EDIT", automation: "EDIT" } },
   // Кассир проводит продажи и больше не делает ничего: товар ему надо видеть, чтобы
   // выбрать строку чека, а цену ставит предложение продавца, не он.
   { key: "cashier", permissions: { sales: "EDIT", products: "VIEW" } },
@@ -141,7 +150,7 @@ export const ROLE_TEMPLATES: { key: string; permissions: TeamPermissions }[] = [
   { key: "stock", permissions: { points: "VIEW", products: "VIEW", warehouses: "EDIT", tasks: "VIEW", supply: "VIEW" } },
   // Маркетолог и есть голос магазина — переписку с покупателем ведёт он.
   { key: "marketing", permissions: { card: "EDIT", products: "VIEW", pricing: "EDIT", tasks: "VIEW", promos: "EDIT", customers: "EDIT" } },
-  { key: "observer", permissions: { card: "VIEW", points: "VIEW", products: "VIEW", warehouses: "VIEW", pricing: "VIEW", tasks: "VIEW", promos: "VIEW", supply: "VIEW", customers: "VIEW", hiring: "VIEW", sales: "VIEW", reports: "VIEW" } },
+  { key: "observer", permissions: { card: "VIEW", points: "VIEW", products: "VIEW", warehouses: "VIEW", pricing: "VIEW", tasks: "VIEW", promos: "VIEW", supply: "VIEW", customers: "VIEW", hiring: "VIEW", sales: "VIEW", reports: "VIEW", automation: "VIEW" } },
 ];
 
 /**

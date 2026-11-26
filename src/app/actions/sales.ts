@@ -7,7 +7,9 @@ import { prisma } from "@/lib/prisma";
 import { editorCompany } from "@/lib/products/editor-company";
 import { pointScopeAllows } from "@/lib/company-team/permissions";
 import { logCompanyAction } from "@/lib/company-team/journal";
-import { NegativeBalance, applyDeltas } from "@/lib/warehouse/apply";
+import { NegativeBalance, applyDeltas, type AppliedDelta } from "@/lib/warehouse/apply";
+import { emitCompanyEvent } from "@/lib/automation/emit";
+import { emitStockCrossings } from "@/lib/automation/stock-emit";
 import { readTillProducts } from "@/lib/sales/read";
 import {
   cancelAllowed,
@@ -101,6 +103,7 @@ export async function recordSale(companyId: string, locale: string, input: SaleF
 
   const token = generateReceiptToken();
 
+  const applied: AppliedDelta[] = [];
   try {
     const created = await prisma.$transaction(async (tx) => {
       // Номер — `increment` по строке предприятия: строка блокируется, два кассира
@@ -158,7 +161,7 @@ export async function recordSale(companyId: string, locale: string, input: SaleF
             createdById: userId,
           },
         });
-        await applyDeltas(tx, d.productId, [{ warehouseId: warehouse!.id, delta: -d.qty }], "ISSUE");
+        applied.push(...(await applyDeltas(tx, d.productId, [{ warehouseId: warehouse!.id, delta: -d.qty }], "ISSUE")));
       }
       return row;
     });
@@ -170,6 +173,29 @@ export async function recordSale(companyId: string, locale: string, input: SaleF
       subject: `#${created.number}`,
       meta: { total: sale.totals.total, currency: sale.totals.currency, lines: sale.lines.length },
     });
+    // События автоматизации (CO) — **после коммита**: откатившаяся продажа факта не
+    // оставляет, а оповещение о том, чего не было, хуже молчания.
+    const point = warehouse?.pointId
+      ? await prisma.companyPoint.findUnique({ where: { id: warehouse.pointId }, select: { name: true } })
+      : null;
+    await emitCompanyEvent({
+      companyId,
+      kind: "SALE_RECORDED",
+      subject: `#${created.number}`,
+      actorUserId: userId,
+      data: {
+        number: created.number,
+        total: sale.totals.total,
+        currency: sale.totals.currency,
+        payment: sale.payment,
+        cashbackTotal: sale.totals.cashbackTotal,
+        pointId: warehouse?.pointId ?? null,
+        pointName: point?.name ?? null,
+        warehouseId: warehouse?.id ?? null,
+        lines: sale.lines.map((l) => ({ productId: l.productId, name: l.name, qty: l.qty })),
+      },
+    });
+    await emitStockCrossings({ companyId, actorUserId: userId, applied });
     revalidatePath(`/[locale]/cabinet/companies/${companyId}/sales`, "page");
     for (const l of sale.lines) {
       const offer = offers.find((o) => o.productId === l.productId);
@@ -245,6 +271,26 @@ export async function cancelSale(companyId: string, saleId: string, reason: stri
     action: "SALE_CANCELLED",
     subject: `#${sale.number}`,
     meta: { reason: note },
+  });
+  // Возврат товара порога не пересекает (остаток растёт), поэтому событий остатка тут
+  // нет — только сам факт отмены.
+  const total = await prisma.sale.findUnique({
+    where: { id: sale.id },
+    select: { total: true, currency: true },
+  });
+  await emitCompanyEvent({
+    companyId,
+    kind: "SALE_CANCELLED",
+    subject: `#${sale.number}`,
+    actorUserId: userId,
+    data: {
+      number: sale.number,
+      total: total ? Number(total.total) : undefined,
+      currency: total?.currency,
+      pointId: sale.pointId,
+      warehouseId: sale.warehouseId,
+      reason: note,
+    },
   });
   revalidatePath(`/[locale]/cabinet/companies/${companyId}/sales`, "page");
   return { ok: true as const };

@@ -1845,7 +1845,8 @@
       "ads": "Baner kartice",
       "sales": "Blagajna",
       "reports": "Izvješća",
-      "crm": "Kupci"
+      "crm": "Kupci",
+      "automation": "Automatizacija"
     },
     "tileUnit": {
       "points": "{count} na karti",
@@ -1862,7 +1863,8 @@
       "ads": "{count} uživo",
       "sales": "računi danas",
       "reports": "računa u 30 dana",
-      "crm": "kupci: {count}"
+      "crm": "kupci: {count}",
+      "automation": "pravila: {count}"
     },
     "tileEmpty": "još ništa",
     "tileBadge": {
@@ -3790,6 +3792,9 @@
         "subject": "Tvrtka {company} vam je odgovorila",
         "body": "Tvrtka {company} je odgovorila na vašu poruku."
       }
+    },
+    "automation": {
+      "subject": "{company}: {rule}"
     }
   },
   "captcha": {
@@ -4411,7 +4416,8 @@
         "customers": "Poruke kupaca",
         "hiring": "Zapošljavanje: pozivne poveznice",
         "sales": "Blagajna i računi",
-        "reports": "Izvješća i izvoz"
+        "reports": "Izvješća i izvoz",
+        "automation": "Automatizacija"
       },
       "levels": {
         "NONE": "Bez pristupa",
@@ -4538,7 +4544,13 @@
       "SALE_CANCELLED": "Račun poništen",
       "REPORT_EXPORTED": "Izvješće izvezeno",
       "API_KEY_CREATED": "API ključ izdan",
-      "API_KEY_REVOKED": "API ključ opozvan"
+      "API_KEY_REVOKED": "API ključ opozvan",
+      "RULE_SAVED": "Pravilo automatizacije spremljeno",
+      "RULE_TOGGLED": "Pravilo automatizacije uključeno/isključeno",
+      "RULE_DELETED": "Pravilo automatizacije izbrisano",
+      "WEBHOOK_CREATED": "Odlazni događaji: dodana krajnja točka",
+      "WEBHOOK_TOGGLED": "Odlazni događaji: krajnja točka uključena/isključena",
+      "WEBHOOK_DELETED": "Odlazni događaji: uklonjena krajnja točka"
     }
   },
   "cabinetTasks": {
@@ -5580,6 +5592,158 @@
       "noHistory": "Još nema računa.",
       "cancelledBadge": "otkazano",
       "openThread": "Otvoriti razgovor"
+    }
+  },
+  "cabinetAutomation": {
+    "title": "Automatizacija",
+    "subtitle": "Pravila koja odgovaraju na to što se događa u vašoj trgovini: prodaja, prazna polica, dostava, poruka kupca.",
+    "rules": {
+      "heading": "Pravila ako — onda",
+      "hint": "Odabrati što se događa, po potrebi suziti, i navesti što treba uslijediti.",
+      "oneStep": "Pravilo odgovara na činjenicu jednom. Ono što samo pravilo učini nikada ne pokreće drugo pravilo — tako se dva pravila ne mogu vrtjeti jedno za drugim u krug.",
+      "sentence": "Ako {trigger} — onda {action}",
+      "empty": "Još nema pravila.",
+      "add": "Dodati pravilo",
+      "edit": "Uredi",
+      "delete": "Izbriši",
+      "deleteConfirm": "Izbriši — dodirnite ponovno",
+      "enable": "Uključi",
+      "disable": "Isključi",
+      "enabled": "Uključeno",
+      "disabled": "Isključeno",
+      "fired": "Pokrenuto: {count}",
+      "lastFired": "zadnji put {at}",
+      "never": "još nije pokrenuto",
+      "dailyLimit": "Jedno se pravilo može pokrenuti najviše {count} puta dnevno. Nakon toga se pokretanje bilježi s razlogom umjesto izvođenja radnje.",
+      "readOnly": "Pravila možete vidjeti ovdje, ali za izmjene je potrebna ovlast Automatizacija na razini uređivanja."
+    },
+    "builder": {
+      "name": "Naziv pravila",
+      "namePlaceholder": "Polica se isprazni — obavijestiti skladištara",
+      "trigger": "Ako se ovo dogodi",
+      "conditions": "Samo kada",
+      "action": "Tada učiniti ovo",
+      "any": "bilo koji",
+      "anyValue": "bilo koji iznos",
+      "vars": "U tekstu možete koristiti: {list}",
+      "save": "Spremi pravilo",
+      "cancel": "Odustani"
+    },
+    "trigger": {
+      "SALE_RECORDED": "Prodaja je zabilježena",
+      "SALE_CANCELLED": "Račun je poništen",
+      "STOCK_LOW": "Zaliha padne na razinu dopune",
+      "STOCK_OUT": "Zaliha se isprazni",
+      "ORDER_RECEIVED": "Narudžba dobavljača je u potpunosti zaprimljena",
+      "CUSTOMER_MESSAGE": "Kupac piše trgovini"
+    },
+    "action": {
+      "CREATE_TASK": "Stvoriti zadatak",
+      "NOTIFY_MEMBER": "Obavijestiti člana tima"
+    },
+    "field": {
+      "minTotal": "Ukupan iznos računa je najmanje",
+      "payment": "Način plaćanja",
+      "pointId": "Lokacija",
+      "warehouseId": "Skladište ili polica",
+      "productId": "Proizvod",
+      "supplierId": "Dobavljač",
+      "firstMessage": "Početak razgovora",
+      "firstMessageOnly": "samo prva poruka"
+    },
+    "payment": {
+      "CASH": "Gotovina",
+      "CARD": "Kartica",
+      "TRANSFER": "Bankovni prijenos",
+      "CRYPTO": "Kripto",
+      "OTHER": "Ostalo"
+    },
+    "priority": {
+      "LOW": "Niska",
+      "NORMAL": "Normalna",
+      "HIGH": "Visoka",
+      "URGENT": "Hitna"
+    },
+    "task": {
+      "title": "Naslov zadatka",
+      "titlePlaceholder": "Dopuniti zalihe {product} u {warehouse}",
+      "details": "Detalji",
+      "priority": "Prioritet",
+      "dueDays": "Rok u danima (do {max})",
+      "dueEmpty": "bez roka",
+      "assignee": "Dodijeliti",
+      "unassigned": "tko god preuzme",
+      "noAuthorNote": "Zadatak koji je stvorilo pravilo nema autora: pravilo nije osoba. Prihvaćanje takvog posla zahtijeva pravo Zadaci na razini uređivanja."
+    },
+    "notify": {
+      "text": "Poruka",
+      "textPlaceholder": "Velika prodaja {number} za {total} {currency}",
+      "recipients": "Koga obavijestiti",
+      "ownersFallback": "Nitko nije odabran — vlasnici će je dobiti: poruka upućena nikome ne smije buditi cijeli tim."
+    },
+    "run": {
+      "DONE": "izvedeno",
+      "SKIPPED": "preskočeno",
+      "FAILED": "neuspješno"
+    },
+    "runReason": {
+      "daily_limit": "dnevni limit za ovo pravilo dosegnut",
+      "too_many_open": "previše otvorenih zadataka",
+      "daily_tasks": "dnevni limit zadataka dosegnut",
+      "params_invalid": "postavke pravila nije bilo moguće pročitati",
+      "assignee_gone": "osoba kojoj je dodijeljeno napustila je tim — zadatak je ostao nedodijeljen",
+      "recipients_gone": "navedeni članovi su otišli — vlasnici su obaviješteni",
+      "no_recipients": "nema koga obavijestiti",
+      "action_unknown": "ova radnja više ne postoji"
+    },
+    "events": {
+      "heading": "Najnoviji događaji",
+      "hint": "Ovo je odgovor na „zašto se moje pravilo nije pokrenulo”: činjenice koje je vaša trgovina zabilježila, najnovije prve. Čuvaju se 30 dana.",
+      "empty": "Još se ništa nije dogodilo.",
+      "fromRule": "iz pravila"
+    },
+    "hooks": {
+      "heading": "Odlazni događaji",
+      "hint": "Slati svaki događaj u vlastiti sustav kao potpisan zahtjev. Samo vlasnik može dodavati ili uklanjati krajnje točke: podaci napuštaju platformu.",
+      "readOnlyNote": "Samo odlazno. Putem toga se ništa ne može zapisivati natrag: račun izdaje blagajna, a zalihu skladište, i drugi autor istog zapisa je način na koji brojevi počinju odstupati.",
+      "notConfigured": "Odlazni događaji još nisu konfigurirani na ovom poslužitelju. Ovdje ništa nije skriveno — jednostavno nema čime potpisati zahtjeve, a krajnja točka koja nikad ne isporučuje bila bi gora od nikakve.",
+      "url": "Adresa krajnje točke (samo https)",
+      "events": "Koje događaje slati",
+      "create": "Dodati krajnju točku",
+      "freshHeading": "Tajna za potpisivanje",
+      "freshOnce": "Prikazuje se jednom. Sačuvati: potpis svakog zahtjeva izračunava se njome, i ne možemo je ponovno prikazati.",
+      "lastDelivered": "isporučeno {at}",
+      "never": "još ništa nije isporučeno",
+      "lastError": "Posljednja pogreška: {error}",
+      "attempts": "pokušaji: {count}",
+      "status": {
+        "PENDING": "u redu čekanja",
+        "DELIVERED": "isporučeno",
+        "FAILED": "odustali"
+      },
+      "docsHeading": "Kako pristiže",
+      "docsNote": "Pokušaji ponavljanja idu 1 min, 5 min, 30 min, 2 h, 6 h. Odgovor 4xx znači da je vaš sustav odbio i tu se zaustavljamo; 5xx, 429 i isteci vremena tretiraju se kao problem s vezom i ponovno se pokušavaju."
+    },
+    "error": {
+      "unauth": "Prijavite se ponovno.",
+      "forbidden": "Za ovo je potrebno pravo Automatizacije na razini uređivanja.",
+      "not_found": "Nije pronađeno.",
+      "name_required": "Dajte pravilu naziv — po njemu ćete ga tražiti.",
+      "trigger_invalid": "Odaberite na što pravilo reagira.",
+      "action_invalid": "Odaberite što pravilo treba učiniti.",
+      "title_required": "Napišite naslov zadatka.",
+      "text_required": "Napišite poruku.",
+      "text_too_long": "Predugo je.",
+      "priority_invalid": "Odaberite prioritet.",
+      "due_invalid": "Dani moraju biti cijeli broj, 0 ili više.",
+      "too_many_rules": "Dosegnuto je ograničenje broja pravila za jednu tvrtku. Izbrišite jedno koje vam više ne treba.",
+      "not_configured": "Odlazni događaji nisu konfigurirani na ovom poslužitelju.",
+      "events_required": "Odaberite barem jedan događaj za slanje.",
+      "url_required": "Napišite punu adresu, koja počinje s https://",
+      "url_not_https": "Samo https: zahtjev nosi vaše prodaje, a preko http-a putuje otvoreno.",
+      "url_private": "Ta adresa pokazuje unutar privatne mreže, a ne na internet. Nećemo tamo slati.",
+      "url_too_long": "Ta je adresa preduga.",
+      "too_many": "Dosegnuto je ograničenje broja krajnjih točaka za jednu tvrtku."
     }
   }
 }

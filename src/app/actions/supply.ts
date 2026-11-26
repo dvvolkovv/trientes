@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { editorCompany, type CompanyGate } from "@/lib/products/editor-company";
 import { can, pointScopeAllows } from "@/lib/company-team/permissions";
 import { logCompanyAction } from "@/lib/company-team/journal";
+import { emitCompanyEvent } from "@/lib/automation/emit";
 import { applyDeltas } from "@/lib/warehouse/apply";
 import { notifySupplyEvent, supplyManagers } from "@/lib/supply/notify";
 import { parseDocs, type SupplyDoc } from "@/lib/supply/docs";
@@ -548,6 +549,34 @@ export async function receiveOrderLine(orderId: string, lineId: string, qtyRaw: 
     subject: line.product.slug,
     meta: { qty, full },
   });
+  // Событие — только на **полном** приёме: приёмка идёт построчно, и пять оповещений об
+  // одном привозе читались бы как пять привозов.
+  if (full) {
+    const order = await prisma.supplyOrder.findUnique({
+      where: { id: orderId },
+      select: { warehouseId: true, supplier: { select: { id: true, name: true } } },
+    });
+    const warehouse = order?.warehouseId
+      ? await prisma.warehouse.findUnique({
+          where: { id: order.warehouseId },
+          select: { name: true, pointId: true },
+        })
+      : null;
+    await emitCompanyEvent({
+      companyId: ctx.order.companyId,
+      kind: "ORDER_RECEIVED",
+      subject: order?.supplier?.name ?? null,
+      actorUserId: userId,
+      data: {
+        orderId,
+        supplierId: order?.supplier?.id ?? null,
+        supplierName: order?.supplier?.name ?? null,
+        warehouseId: order?.warehouseId ?? null,
+        warehouseName: warehouse?.name ?? null,
+        pointId: warehouse?.pointId ?? null,
+      },
+    });
+  }
   touch(ctx.order.companyId, orderId);
   revalidatePath(`/[locale]/product/${line.product.slug}`, "page");
   return { ok: true as const, full };

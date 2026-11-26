@@ -1845,7 +1845,8 @@
       "ads": "カードバナー",
       "sales": "レジ",
       "reports": "レポート",
-      "crm": "顧客"
+      "crm": "顧客",
+      "automation": "自動化"
     },
     "tileUnit": {
       "points": "{count}件（地図上）",
@@ -1862,7 +1863,8 @@
       "ads": "{count}件配信中",
       "sales": "本日のレシート数",
       "reports": "30日間のレシート",
-      "crm": "購入者: {count}"
+      "crm": "購入者: {count}",
+      "automation": "ルール: {count}"
     },
     "tileEmpty": "まだありません",
     "tileBadge": {
@@ -3790,6 +3792,9 @@
         "subject": "{company}から返信がありました",
         "body": "{company}があなたのメッセージに返信しました。"
       }
+    },
+    "automation": {
+      "subject": "{company}: {rule}"
     }
   },
   "captcha": {
@@ -4411,7 +4416,8 @@
         "customers": "顧客メッセージ",
         "hiring": "採用: 招待リンク",
         "sales": "レジとレシート",
-        "reports": "レポートとエクスポート"
+        "reports": "レポートとエクスポート",
+        "automation": "自動化"
       },
       "levels": {
         "NONE": "アクセスなし",
@@ -4538,7 +4544,13 @@
       "SALE_CANCELLED": "レシートを取り消しました",
       "REPORT_EXPORTED": "レポートをエクスポートしました",
       "API_KEY_CREATED": "APIキーを発行しました",
-      "API_KEY_REVOKED": "APIキーを取り消しました"
+      "API_KEY_REVOKED": "APIキーを取り消しました",
+      "RULE_SAVED": "自動化ルールを保存しました",
+      "RULE_TOGGLED": "自動化ルールを切り替えました",
+      "RULE_DELETED": "自動化ルールを削除しました",
+      "WEBHOOK_CREATED": "送信イベント: エンドポイントを追加しました",
+      "WEBHOOK_TOGGLED": "送信イベント: エンドポイントを切り替えました",
+      "WEBHOOK_DELETED": "送信イベント: エンドポイントを削除しました"
     }
   },
   "cabinetTasks": {
@@ -5580,6 +5592,158 @@
       "noHistory": "まだ領収書はありません。",
       "cancelledBadge": "キャンセル済み",
       "openThread": "会話を開く"
+    }
+  },
+  "cabinetAutomation": {
+    "title": "自動化",
+    "subtitle": "ショップでの出来事に応答するルール: 売上、棚の空き、入荷、購入者からのメッセージ。",
+    "rules": {
+      "heading": "If — then ルール",
+      "hint": "起きる事象を選び、必要なら条件を絞り、続いて行うことを指定します。",
+      "oneStep": "1つのルールは事実に1度だけ応答します。ルールが行う処理が別のルールを開始することはありません—したがって、2つのルールが互いに堂々巡りすることはありません。",
+      "sentence": "もし{trigger} — なら {action}",
+      "empty": "まだルールがありません。",
+      "add": "ルールを追加",
+      "edit": "編集",
+      "delete": "削除",
+      "deleteConfirm": "削除 — もう一度タップ",
+      "enable": "オンにする",
+      "disable": "オフにする",
+      "enabled": "オン",
+      "disabled": "オフ",
+      "fired": "実行: {count}",
+      "lastFired": "前回 {at}",
+      "never": "まだ実行されていない",
+      "dailyLimit": "1つのルールは1日に最大{count}回まで実行されます。それ以降は、動作の代わりに理由付きで記録されます。",
+      "readOnly": "ここではルールを閲覧できますが、変更するには自動化の編集権限が必要です。"
+    },
+    "builder": {
+      "name": "ルール名",
+      "namePlaceholder": "棚が在庫切れ — 在庫担当に知らせる",
+      "trigger": "これが起きたら",
+      "conditions": "次の場合のみ",
+      "action": "次を実行",
+      "any": "任意",
+      "anyValue": "任意の金額",
+      "vars": "テキストで使用可能: {list}",
+      "save": "ルールを保存",
+      "cancel": "キャンセル"
+    },
+    "trigger": {
+      "SALE_RECORDED": "売上が記録される",
+      "SALE_CANCELLED": "レシートが取り消される",
+      "STOCK_LOW": "在庫が再発注点まで下がる",
+      "STOCK_OUT": "在庫が切れる",
+      "ORDER_RECEIVED": "仕入れ発注が全量入荷する",
+      "CUSTOMER_MESSAGE": "購入者がショップにメッセージを送る"
+    },
+    "action": {
+      "CREATE_TASK": "タスクを作成",
+      "NOTIFY_MEMBER": "チームメンバーに通知"
+    },
+    "field": {
+      "minTotal": "レシート合計が少なくとも",
+      "payment": "支払い方法",
+      "pointId": "販売拠点",
+      "warehouseId": "倉庫または棚",
+      "productId": "商品",
+      "supplierId": "仕入先",
+      "firstMessage": "会話の開始",
+      "firstMessageOnly": "最初のメッセージのみ"
+    },
+    "payment": {
+      "CASH": "現金",
+      "CARD": "カード",
+      "TRANSFER": "銀行振込",
+      "CRYPTO": "暗号資産",
+      "OTHER": "その他"
+    },
+    "priority": {
+      "LOW": "低",
+      "NORMAL": "標準",
+      "HIGH": "高",
+      "URGENT": "緊急"
+    },
+    "task": {
+      "title": "タスク名",
+      "titlePlaceholder": "{warehouse}で{product}を補充",
+      "details": "詳細",
+      "priority": "優先度",
+      "dueDays": "期限（日数）（最大{max})",
+      "dueEmpty": "期限なし",
+      "assignee": "担当者",
+      "unassigned": "引き受けた人",
+      "noAuthorNote": "ルールで作成されたタスクには作成者がいません。ルールは人ではないためです。こうした作業を受け入れるには、タスクの編集レベルの権限が必要です"
+    },
+    "notify": {
+      "text": "メッセージ",
+      "textPlaceholder": "大型セール {number}、{total} {currency}",
+      "recipients": "通知先",
+      "ownersFallback": "誰も選ばれていないため、所有者に送られます。宛先のないメッセージでチーム全体を起こすべきではありません"
+    },
+    "run": {
+      "DONE": "実行済み",
+      "SKIPPED": "スキップ",
+      "FAILED": "失敗"
+    },
+    "runReason": {
+      "daily_limit": "このルールの1日上限に達した",
+      "too_many_open": "未完了タスクが多すぎる",
+      "daily_tasks": "1日のタスク上限に達した",
+      "params_invalid": "ルール設定を読み取れなかった",
+      "assignee_gone": "担当者がチームを離れ、タスクは未割り当てになった",
+      "recipients_gone": "指定メンバーが離脱し、所有者に通知された",
+      "no_recipients": "通知先がいない",
+      "action_unknown": "このアクションはもう存在しない"
+    },
+    "events": {
+      "heading": "最新のイベント",
+      "hint": "「なぜ自分のルールが発火しなかったのか」への答えです。あなたのショップが記録した事実を新しい順に表示します。30日間保存します",
+      "empty": "まだ何も起きていません。",
+      "fromRule": "ルールから"
+    },
+    "hooks": {
+      "heading": "送信イベント",
+      "hint": "各イベントを署名付きリクエストとしてあなたのシステムへ送信します。エンドポイントの追加・削除は所有者のみ可能です—データはプラットフォームの外へ出ます。",
+      "readOnlyNote": "送信専用です。これ経由で書き戻すことはできません。レシートはレジが作り、在庫は倉庫が作ります。同じ記録に第二の作成者が現れると数字は食い違い始めます。",
+      "notConfigured": "このサーバーでは送信イベントがまだ設定されていません。ここに隠しているものはありません—署名に使えるものがまだ無く、配信されないエンドポイントを置くくらいなら無い方がましだからです。",
+      "url": "エンドポイントアドレス（https のみ）",
+      "events": "送信するイベント",
+      "create": "エンドポイントを追加",
+      "freshHeading": "署名用シークレット",
+      "freshOnce": "一度だけ表示されます。必ず保管してください—すべてのリクエストの署名はこれで計算され、再表示はできません。",
+      "lastDelivered": "配信 {at}",
+      "never": "まだ配信なし",
+      "lastError": "直近のエラー: {error}",
+      "attempts": "試行回数: {count}",
+      "status": {
+        "PENDING": "キュー待ち",
+        "DELIVERED": "配信済み",
+        "FAILED": "配信断念"
+      },
+      "docsHeading": "到達方法",
+      "docsNote": "再試行は 1 分、5 分、30 分、2 時間、6 時間の間隔です。4xx はあなたのシステムが拒否したことを意味し、そこで停止します。5xx、429、タイムアウトは接続問題として扱い、再試行します。"
+    },
+    "error": {
+      "unauth": "もう一度サインインしてください。",
+      "forbidden": "これにはオートメーションの編集権限が必要です。",
+      "not_found": "見つかりません。",
+      "name_required": "ルールに名前を付けてください—その名前で探すことになります。",
+      "trigger_invalid": "ルールが反応する対象を選んでください。",
+      "action_invalid": "ルールが実行する処理を選んでください。",
+      "title_required": "タスクのタイトルを入力してください。",
+      "text_required": "メッセージを入力してください。",
+      "text_too_long": "長すぎます。",
+      "priority_invalid": "優先度を選んでください。",
+      "due_invalid": "日数は 0 以上の整数でなければなりません。",
+      "too_many_rules": "1 社あたりのルール上限に達しました。不要なものを削除してください。",
+      "not_configured": "このサーバーでは送信イベントが設定されていません。",
+      "events_required": "送信するイベントを少なくとも 1 件選んでください。",
+      "url_required": "https:// で始まる完全なアドレスを入力してください",
+      "url_not_https": "https のみです。リクエストにはあなたの売上が含まれ、http では平文で流れます。",
+      "url_private": "そのアドレスはインターネットではなくプライベートネットワーク内を指しています。そこへは送信しません。",
+      "url_too_long": "そのアドレスは長すぎます。",
+      "too_many": "1 社あたりのエンドポイント上限に達しました."
     }
   }
 }

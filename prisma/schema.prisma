@@ -73,6 +73,11 @@ model User {
   companyAds               CompanyAd[]               @relation("CompanyAdAuthor")
   sales                    Sale[]                    @relation("SaleBuyer")
 
+  /// Автоматизация (слайс CO): кто завёл правило и webhook, чьё действие родило событие.
+  companyEvents            CompanyEvent[]            @relation("CompanyEventActor")
+  companyRules             CompanyRule[]             @relation("CompanyRuleAuthor")
+  companyWebhooks          CompanyWebhook[]          @relation("CompanyWebhookAuthor")
+
   /// Ключи API предприятий: кто выдал и кто отозвал (слайс CL).
   apiKeysCreated           MerchantApiKey[]          @relation("ApiKeyAuthor")
   apiKeysRevoked           MerchantApiKey[]          @relation("ApiKeyRevoker")
@@ -1097,6 +1102,12 @@ model Company {
 
   /// Ключи read-only API для учётных систем мерчанта (слайс CL, ТЗ 6.4).
   apiKeys MerchantApiKey[]
+
+  /// Автоматизация (слайс CO, ТЗ 6.7): события, правила «если — то» и исходящие
+  /// оповещения наружу.
+  events   CompanyEvent[]
+  rules    CompanyRule[]
+  webhooks CompanyWebhook[]
 
   @@index([ownerUserId])
   @@index([status, createdAt])
@@ -3407,4 +3418,168 @@ model MerchantApiKey {
   revokeReason  String?
 
   @@index([companyId, revokedAt])
+}
+
+/// Событие предприятия (слайс CO, ТЗ 6.7 «событийная архитектура»). Только вставка.
+///
+/// Словарь видов живёт **в коде** (`src/lib/automation/events.ts`), а не в enum базы:
+/// новый вид не должен требовать миграции, а негодный отсекается разбором — тот же ход
+/// мысли, что у листа проверок в AP и лестницы уровней в BD.
+///
+/// Событие пишется **после коммита** того, что его родило: откатившаяся продажа факта не
+/// оставляет. Старше тридцати суток чистится прогоном — это дверь отладки, а не архив.
+model CompanyEvent {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  kind String
+
+  /// `SYSTEM` — факт работы человека, `RULE` — следствие действия правила. Второе правил
+  /// не запускает: иначе «задача → задача» крутится вечно.
+  source String @default("SYSTEM")
+
+  /// Одна строка для человека: номер чека, название товара, имя поставщика.
+  subject String?
+
+  /// Снимок фактов события: имена и числа, по которым правило считает условия и
+  /// подставляет слова в задачу. Имена сняты на момент события — повтор доставки через
+  /// шесть часов обязан нести то же тело.
+  data Json
+
+  actorUserId String?
+  actor       User?   @relation("CompanyEventActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  runs       CompanyRuleRun[]
+  deliveries WebhookDelivery[]
+
+  @@index([companyId, createdAt])
+  @@index([createdAt])
+}
+
+/// Правило «если — то» (слайс CO). Триггер → условия → действие.
+model CompanyRule {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  /// Имя даёт человек: по нему он узнаёт своё правило в списке и в срабатываниях.
+  name String
+
+  trigger String
+
+  /// Условия — маленький типизованный набор (`minTotal`, `payment`, `pointId`…).
+  /// Какие поля имеет смысл читать у какого триггера, задано кодом.
+  conditions Json
+
+  action String
+
+  /// Параметры действия: заголовок задачи с подстановками, срок, исполнитель, текст
+  /// уведомления.
+  params Json
+
+  enabled Boolean @default(true)
+
+  firedCount  Int       @default(0)
+  lastFiredAt DateTime?
+
+  createdById String?
+  createdBy   User?   @relation("CompanyRuleAuthor", fields: [createdById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  runs CompanyRuleRun[]
+
+  @@index([companyId, trigger, enabled])
+}
+
+/// Срабатывание правила (слайс CO) — дверь «почему не сработало».
+///
+/// В журнал предприятия срабатывания не пишутся: журнал про «кто, что изменил», а
+/// правило срабатывает сотнями раз в сутки и вытеснило бы из него людей.
+model CompanyRuleRun {
+  id     String      @id @default(cuid())
+  ruleId String
+  rule   CompanyRule @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+
+  /// Событие чистится через тридцать суток, а строка срабатывания остаётся: `SetNull`.
+  eventId String?
+  event   CompanyEvent? @relation(fields: [eventId], references: [id], onDelete: SetNull)
+
+  /// `DONE` — действие выполнено, `SKIPPED` — отказ с причиной (потолок, исполнитель
+  /// исчез), `FAILED` — сбой. Молчаливого «ничего не случилось» нет.
+  outcome String
+  reason  String?
+
+  /// Что получилось: задача, которую правило поставило.
+  taskId String?
+
+  createdAt DateTime @default(now())
+
+  @@index([ruleId, createdAt])
+}
+
+/// Исходящее событие наружу (слайс CO). Только оповещение: записи через API нет и не
+/// будет в этой линии — у остатка и у номера чека один автор (правило BI, решение CL).
+model CompanyWebhook {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  /// Только `https` и только чужой узел: на localhost у нас Postgres, Redis и pm2.
+  url String
+
+  /// Какие виды события слать. Набор тот же, что у правил: второй словарь для внешних
+  /// систем разошёлся бы с первым.
+  events String[]
+
+  /// Секрет подписи **зашифрован**, а не захеширован: по нему считается HMAC (дословно
+  /// разбор ключа TOTP в BA). Нет `AUTOMATION_SECRET_KEY` — раздела нет вовсе.
+  secretSealed String
+
+  enabled Boolean @default(true)
+
+  createdById String?
+  createdBy   User?   @relation("CompanyWebhookAuthor", fields: [createdById], references: [id], onDelete: SetNull)
+
+  createdAt       DateTime  @default(now())
+  lastDeliveredAt DateTime?
+  lastFailedAt    DateTime?
+  lastError       String?
+
+  deliveries WebhookDelivery[]
+
+  @@index([companyId, enabled])
+}
+
+/// Попытка доставки (слайс CO). Тело — снимок события: подпись обязана сойтись у повтора
+/// через шесть часов, даже если имя товара с тех пор изменилось.
+model WebhookDelivery {
+  id        String         @id @default(cuid())
+  webhookId String
+  webhook   CompanyWebhook @relation(fields: [webhookId], references: [id], onDelete: Cascade)
+
+  eventId String?
+  event   CompanyEvent? @relation(fields: [eventId], references: [id], onDelete: SetNull)
+
+  kind    String
+  payload Json
+
+  /// `PENDING` → `DELIVERED` или `FAILED`. 4xx — ответ службы (повтора нет), 5xx, 429 и
+  /// обрыв — связь (повтор): та же классификация, что у читателей сетей в Y и BO.
+  status   String @default("PENDING")
+  attempts Int    @default(0)
+
+  nextAttemptAt DateTime  @default(now())
+  lastStatus    Int?
+  lastError     String?
+  deliveredAt   DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([status, nextAttemptAt])
+  @@index([webhookId, createdAt])
 }

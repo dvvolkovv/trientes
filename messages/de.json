@@ -1845,7 +1845,8 @@
       "ads": "Kartenbanner",
       "sales": "Kasse",
       "reports": "Berichte",
-      "crm": "Kunden"
+      "crm": "Kunden",
+      "automation": "Automatisierung"
     },
     "tileUnit": {
       "points": "{count} auf der Karte",
@@ -1862,7 +1863,8 @@
       "ads": "{count} aktiv",
       "sales": "Belege heute",
       "reports": "Belege in 30 Tagen",
-      "crm": "Käufer: {count}"
+      "crm": "Käufer: {count}",
+      "automation": "Regeln: {count}"
     },
     "tileEmpty": "noch nichts",
     "tileBadge": {
@@ -3790,6 +3792,9 @@
         "subject": "{company} hat Ihnen geantwortet",
         "body": "{company} hat auf Ihre Nachricht geantwortet."
       }
+    },
+    "automation": {
+      "subject": "{company}: {rule}"
     }
   },
   "captcha": {
@@ -4411,7 +4416,8 @@
         "customers": "Kundennachrichten",
         "hiring": "Einstellung: Einladungslinks",
         "sales": "Kasse und Belege",
-        "reports": "Berichte und Export"
+        "reports": "Berichte und Export",
+        "automation": "Automatisierung"
       },
       "levels": {
         "NONE": "Kein Zugriff",
@@ -4538,7 +4544,13 @@
       "SALE_CANCELLED": "Beleg storniert",
       "REPORT_EXPORTED": "Bericht exportiert",
       "API_KEY_CREATED": "API-Schlüssel erstellt",
-      "API_KEY_REVOKED": "API-Schlüssel widerrufen"
+      "API_KEY_REVOKED": "API-Schlüssel widerrufen",
+      "RULE_SAVED": "Automatisierungsregel gespeichert",
+      "RULE_TOGGLED": "Automatisierungsregel umgeschaltet",
+      "RULE_DELETED": "Automatisierungsregel gelöscht",
+      "WEBHOOK_CREATED": "Ausgehende Ereignisse: Endpunkt hinzugefügt",
+      "WEBHOOK_TOGGLED": "Ausgehende Ereignisse: Endpunkt umgeschaltet",
+      "WEBHOOK_DELETED": "Ausgehende Ereignisse: Endpunkt entfernt"
     }
   },
   "cabinetTasks": {
@@ -5580,6 +5592,158 @@
       "noHistory": "Noch keine Belege.",
       "cancelledBadge": "storniert",
       "openThread": "Unterhaltung öffnen"
+    }
+  },
+  "cabinetAutomation": {
+    "title": "Automatisierung",
+    "subtitle": "Regeln, die beantworten, was in deinem Shop passiert: ein Verkauf, ein leeres Regal, eine Lieferung, eine Nachricht eines Käufers.",
+    "rules": {
+      "heading": "Wenn — dann‑Regeln",
+      "hint": "Wähle, was passiert, grenze es bei Bedarf ein und bestimme, was folgen soll.",
+      "oneStep": "Eine Regel reagiert einmal auf einen Umstand. Was die Regel selbst tut, startet nie eine weitere Regel — so können sich zwei Regeln nie gegenseitig im Kreis jagen.",
+      "sentence": "Wenn {trigger} — dann {action}",
+      "empty": "Noch keine Regeln.",
+      "add": "Regel hinzufügen",
+      "edit": "Bearbeiten",
+      "delete": "Löschen",
+      "deleteConfirm": "Löschen — erneut tippen",
+      "enable": "Einschalten",
+      "disable": "Ausschalten",
+      "enabled": "An",
+      "disabled": "Aus",
+      "fired": "Ausgelöst: {count}",
+      "lastFired": "zuletzt {at}",
+      "never": "noch nicht ausgelöst",
+      "dailyLimit": "Eine Regel wird pro Tag höchstens {count}-mal ausgelöst. Darüber hinaus wird der Durchlauf mit seinem Grund protokolliert, statt zu handeln.",
+      "readOnly": "Du kannst die Regeln hier lesen, aber zum Ändern brauchst du das Recht Automatisierung auf Bearbeitungsstufe."
+    },
+    "builder": {
+      "name": "Regelname",
+      "namePlaceholder": "Regal geht zur Neige — Lageristen informieren",
+      "trigger": "Wenn dies passiert",
+      "conditions": "Nur wenn",
+      "action": "Dann dies tun",
+      "any": "beliebig",
+      "anyValue": "beliebiger Betrag",
+      "vars": "Sie können im Text verwenden: {list}",
+      "save": "Regel speichern",
+      "cancel": "Abbrechen"
+    },
+    "trigger": {
+      "SALE_RECORDED": "Ein Verkauf wird erfasst",
+      "SALE_CANCELLED": "Ein Beleg wird storniert",
+      "STOCK_LOW": "Bestand fällt auf den Meldebestand",
+      "STOCK_OUT": "Bestand ist aufgebraucht",
+      "ORDER_RECEIVED": "Eine Lieferantenbestellung wird vollständig erhalten",
+      "CUSTOMER_MESSAGE": "Ein Käufer schreibt dem Shop"
+    },
+    "action": {
+      "CREATE_TASK": "Eine Aufgabe erstellen",
+      "NOTIFY_MEMBER": "Ein Teammitglied benachrichtigen"
+    },
+    "field": {
+      "minTotal": "Belegsumme beträgt mindestens",
+      "payment": "Zahlungsmethode",
+      "pointId": "Verkaufsstelle",
+      "warehouseId": "Lager oder Regal",
+      "productId": "Produkt",
+      "supplierId": "Lieferant",
+      "firstMessage": "Beginn eines Gesprächs",
+      "firstMessageOnly": "nur die erste Nachricht"
+    },
+    "payment": {
+      "CASH": "Bar",
+      "CARD": "Karte",
+      "TRANSFER": "Banküberweisung",
+      "CRYPTO": "Krypto",
+      "OTHER": "Sonstiges"
+    },
+    "priority": {
+      "LOW": "Niedrig",
+      "NORMAL": "Normal",
+      "HIGH": "Hoch",
+      "URGENT": "Dringend"
+    },
+    "task": {
+      "title": "Aufgabentitel",
+      "titlePlaceholder": "Bestand von {product} in {warehouse} auffüllen",
+      "details": "Details",
+      "priority": "Priorität",
+      "dueDays": "Fällig in Tagen (bis {max})",
+      "dueEmpty": "kein Fälligkeitsdatum",
+      "assignee": "Zuweisen an",
+      "unassigned": "wer sie übernimmt",
+      "noAuthorNote": "Eine durch eine Regel erstellte Aufgabe hat keinen Autor: Eine Regel ist keine Person. Zum Annehmen solcher Arbeit ist das Aufgabenrecht auf Bearbeitungsebene erforderlich."
+    },
+    "notify": {
+      "text": "Nachricht",
+      "textPlaceholder": "Großer Verkauf {number} für {total} {currency}",
+      "recipients": "Wen benachrichtigen",
+      "ownersFallback": "Niemand ausgewählt — Eigentümer erhalten sie: Eine an niemanden adressierte Nachricht darf nicht das ganze Team wecken."
+    },
+    "run": {
+      "DONE": "ausgeführt",
+      "SKIPPED": "übersprungen",
+      "FAILED": "fehlgeschlagen"
+    },
+    "runReason": {
+      "daily_limit": "Tageslimit für diese Regel erreicht",
+      "too_many_open": "zu viele offene Aufgaben",
+      "daily_tasks": "Tageslimit für Aufgaben erreicht",
+      "params_invalid": "Die Einstellungen der Regel konnten nicht gelesen werden",
+      "assignee_gone": "Der Zuständige hat das Team verlassen — die Aufgabe blieb ohne Zuordnung",
+      "recipients_gone": "Die genannten Mitglieder sind ausgeschieden — Eigentümer wurden benachrichtigt",
+      "no_recipients": "Niemand zu benachrichtigen",
+      "action_unknown": "Diese Aktion existiert nicht mehr"
+    },
+    "events": {
+      "heading": "Neueste Ereignisse",
+      "hint": "Dies ist die Antwort auf „Warum hat meine Regel nicht ausgelöst“: die Fakten, die Ihr Shop aufgezeichnet hat, neueste zuerst. Aufbewahrt für 30 Tage.",
+      "empty": "Es ist noch nichts passiert.",
+      "fromRule": "aus einer Regel"
+    },
+    "hooks": {
+      "heading": "Ausgehende Ereignisse",
+      "hint": "Senden Sie jedes Ereignis als signierte Anfrage an Ihr eigenes System. Nur der Eigentümer kann Endpunkte hinzufügen oder entfernen: Die Daten verlassen die Plattform.",
+      "readOnlyNote": "Nur ausgehend. Es kann nichts darüber zurückgeschrieben werden: Ein Beleg entsteht an der Kasse und der Bestand im Lager, und ein zweiter Autor desselben Datensatzes führt dazu, dass Zahlen auseinanderlaufen.",
+      "notConfigured": "Ausgehende Ereignisse sind auf diesem Server noch nicht konfiguriert. Hier ist nichts versteckt — es gibt schlicht nichts, womit sich Anfragen signieren ließen, und ein Endpunkt, der nie liefert, wäre schlimmer als keiner.",
+      "url": "Endpunkt-Adresse (nur https)",
+      "events": "Welche Ereignisse senden",
+      "create": "Endpunkt hinzufügen",
+      "freshHeading": "Signatur-Geheimnis",
+      "freshOnce": "Einmalig angezeigt. Aufbewahren: Die Signatur jeder Anfrage wird damit berechnet, und wir können es nicht erneut anzeigen.",
+      "lastDelivered": "zugestellt {at}",
+      "never": "bisher nichts zugestellt",
+      "lastError": "Letzter Fehler: {error}",
+      "attempts": "Versuche: {count}",
+      "status": {
+        "PENDING": "eingereiht",
+        "DELIVERED": "zugestellt",
+        "FAILED": "aufgegeben"
+      },
+      "docsHeading": "Wie es ankommt",
+      "docsNote": "Wiederholungen nach 1 Min, 5 Min, 30 Min, 2 Std, 6 Std. Eine 4xx-Antwort bedeutet, dass Ihr System abgelehnt hat, und wir stoppen; 5xx, 429 und Timeouts gelten als Verbindungsproblem und werden erneut versucht."
+    },
+    "error": {
+      "unauth": "Bitte melden Sie sich erneut an.",
+      "forbidden": "Dazu ist das Recht „Automatisierung“ auf Bearbeitungsebene erforderlich.",
+      "not_found": "Nicht gefunden.",
+      "name_required": "Gib der Regel einen Namen — du wirst sie unter diesem Namen suchen.",
+      "trigger_invalid": "Wähle aus, worauf die Regel reagiert.",
+      "action_invalid": "Wähle aus, was die Regel tun soll.",
+      "title_required": "Schreibe den Aufgabentitel.",
+      "text_required": "Schreibe die Nachricht.",
+      "text_too_long": "Das ist zu lang.",
+      "priority_invalid": "Wähle eine Priorität.",
+      "due_invalid": "Tage müssen eine ganze Zahl sein, 0 oder mehr.",
+      "too_many_rules": "Das Limit an Regeln für ein Unternehmen ist erreicht. Lösche eine, die du nicht mehr brauchst.",
+      "not_configured": "Ausgehende Ereignisse sind auf diesem Server nicht konfiguriert.",
+      "events_required": "Wähle mindestens ein Ereignis zum Senden.",
+      "url_required": "Schreibe eine vollständige Adresse, beginnend mit https://",
+      "url_not_https": "Nur https: Die Anfrage überträgt deine Verkäufe, und über http reist sie im Klartext.",
+      "url_private": "Diese Adresse zeigt in ein privates Netzwerk, nicht ins Internet. Dorthin senden wir nicht.",
+      "url_too_long": "Diese Adresse ist zu lang.",
+      "too_many": "Das Limit an Endpunkten für ein Unternehmen ist erreicht."
     }
   }
 }

@@ -42,6 +42,7 @@ import { runPointReportSweep } from "../src/lib/points/report-sweep";
 import { runCompanyReviewSweep } from "../src/lib/cases/company-review-sweep";
 import { runReorderSweep } from "../src/lib/supply/reorder-sweep";
 import { runStaffAccessReviewSweep } from "../src/lib/staff-access-sweep";
+import { runWebhookSweep } from "../src/lib/automation/deliver";
 import { startBinance, stopBinance } from "./binance";
 
 async function runPriceSync() {
@@ -419,6 +420,28 @@ async function runReorderJob() {
   }
 }
 
+/**
+ * Доставка исходящих оповещений (слайс CO). Каждые две минуты: оповещение, пришедшее
+ * через час, оповещением уже не является, а вебсокетов и очереди в проекте нет.
+ *
+ * Молчит, когда нечего делать и нечего сказать: отчёт на двадцать одинаковых строк
+ * перестают читать (правило AA).
+ */
+async function runWebhookJob() {
+  const t0 = Date.now();
+  try {
+    const stats = await runWebhookSweep();
+    if (stats.reason === "no_secret_key") return;
+    if (stats.taken > 0 || stats.prunedEvents > 0) {
+      console.log(
+        `[worker] webhooks ok: ${stats.delivered} delivered, ${stats.retried} retry, ${stats.dropped} dropped, ${stats.skipped} skipped, pruned ${stats.prunedEvents} events / ${stats.prunedDeliveries} deliveries in ${Date.now() - t0}ms`,
+      );
+    }
+  } catch (err) {
+    console.error("[worker] webhook sweep failed:", err);
+  }
+}
+
 async function runCaseDueJob() {
   const t0 = Date.now();
   try {
@@ -773,6 +796,8 @@ async function main() {
   // Ящик заявок «это наш проект» — каждые пять минут: письмо проекта не должно
   // ждать час, а чаще незачем — ящик читается одним запросом.
   cron.schedule("*/5 * * * *", () => void runClaimMailboxJob());
+  // Исходящие оповещения (CO): повторы считаются минутами, значит и прогон минутами.
+  cron.schedule("*/2 * * * *", () => void runWebhookJob());
   // Жалобы на точки — раз в сутки: шаги лестницы считаются днями, частый
   // прогон ничего не ускорит.
   cron.schedule("20 5 * * *", () => void runPointReportJob());

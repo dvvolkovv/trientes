@@ -22,7 +22,9 @@ describe("permissionsFor", () => {
     const editor = permissionsFor({ role: "EDITOR", rolePermissions: null });
     const viewer = permissionsFor({ role: "VIEWER", rolePermissions: null });
     for (const section of TEAM_SECTIONS) {
-      if (section === "hiring") {
+      // `hiring` (CH) и `automation` (CO) в наследие не входят: первое — право звать
+      // людей, второе — право заводить правила, которые действуют без человека.
+      if (section === "hiring" || section === "automation") {
         expect(can(editor, section, "VIEW")).toBe(false);
         expect(can(viewer, section, "VIEW")).toBe(false);
         continue;
