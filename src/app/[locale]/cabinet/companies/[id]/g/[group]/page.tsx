@@ -136,6 +136,20 @@ async function countTiles(
       })(),
     );
   }
+  if (want.has("crm")) {
+    jobs.push(
+      (async () => {
+        // Число — покупатели, которых мы знаем по имени входа: привязанный чек (CK).
+        // Подписчиков считает плитка акций, и повторять их тут значило бы сложить
+        // два разных множества в одно число.
+        const buyers = await prisma.sale.groupBy({
+          by: ["buyerUserId"],
+          where: { companyId, status: "COMPLETED", buyerUserId: { not: null } },
+        });
+        out.crm = { value: buyers.length };
+      })(),
+    );
+  }
   if (want.has("sales")) {
     jobs.push(
       (async () => {

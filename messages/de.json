@@ -1844,7 +1844,8 @@
       "customers": "Kundenmitteilungen",
       "ads": "Kartenbanner",
       "sales": "Kasse",
-      "reports": "Berichte"
+      "reports": "Berichte",
+      "crm": "Kunden"
     },
     "tileUnit": {
       "points": "{count} auf der Karte",
@@ -1860,7 +1861,8 @@
       "customers": "Unterhaltungen: {count}",
       "ads": "{count} aktiv",
       "sales": "Belege heute",
-      "reports": "Belege in 30 Tagen"
+      "reports": "Belege in 30 Tagen",
+      "crm": "Käufer: {count}"
     },
     "tileEmpty": "noch nichts",
     "tileBadge": {
@@ -4723,11 +4725,24 @@
       "not_running": "Das Angebot läuft gerade nicht.",
       "daily_cap": "Die heutige Aussendung ist bereits aufgebraucht. Eine pro Tag und Shop.",
       "too_soon": "Zu früh nach der letzten Aussendung — es muss etwa ein Tag vergehen.",
-      "no_followers": "Dem Shop folgt noch niemand, daher gibt es niemanden, den man anschreiben kann."
+      "no_followers": "Dem Shop folgt noch niemand, daher gibt es niemanden, den man anschreiben kann.",
+      "segment_unknown": "Unbekannte Zielgruppe — wählen Sie eine aus der Liste.",
+      "segment_empty": "Niemand in diesem Segment folgt dem Shop, daher gibt es niemanden anzuschreiben. Ein Kauf ist keine Zustimmung zu Marketing."
     },
     "sendBlocked": {
       "daily_cap": "Das heutige Mailing ist aufgebraucht — das nächste morgen.",
       "not_listed": "Der Shop ist nicht im Schaufenster, daher sind Mailings deaktiviert."
+    },
+    "segmentLabel": "Zielgruppe",
+    "segmentAll": "Alle Follower",
+    "sendToSegment": "Senden an: {segment}",
+    "segment": {
+      "buyers": "Käufer",
+      "regulars": "Stammkunden",
+      "newcomers": "Neue Käufer",
+      "dormant": "Inaktiv",
+      "followersNoPurchase": "Follower, die noch nie gekauft haben",
+      "talkers": "Haben Ihnen geschrieben"
     }
   },
   "supply": {
@@ -5363,7 +5378,8 @@
       "too_many_lines": "Zu viele Positionen in einem Beleg.",
       "unauth": "Bitte melde dich erneut an.",
       "warehouse_unknown": "Dieses Regal ist nicht verfügbar."
-    }
+    },
+    "openCustomer": "Kundenkarte"
   },
   "receipt": {
     "title": "Beleg",
@@ -5518,5 +5534,52 @@
     "timezoneNote": "Tage werden in {tz} gezählt.",
     "timezoneMixed": "Ihre Standorte liegen in unterschiedlichen Zeitzonen, daher wurde die Übersicht auf UTC umgestellt.",
     "truncated": "Nur die ersten Belege des Zeitraums werden gezählt — siehe den Bereich Berichte für das vollständige Bild."
+  },
+  "cabinetCrm": {
+    "title": "Kunden",
+    "subtitle": "Personen, die diesem Shop über ihren Anmeldenamen bekannt sind: ein gespeicherter Beleg, ein Follow oder eine gesendete Nachricht.",
+    "segmentsTitle": "Segmente",
+    "segmentsHint": "Segmente überlappen: Das sind Merkmale, keine Zustände. Eine Person kann zugleich Stammkunde und inaktiv sein.",
+    "reachable": "per Nachricht erreichbar: {count}",
+    "segment": {
+      "buyers": "Käufer",
+      "regulars": "Stammkunden",
+      "newcomers": "Neue Käufer",
+      "dormant": "Inaktiv",
+      "followersNoPurchase": "Follower, die noch nie gekauft haben",
+      "talkers": "Haben Ihnen geschrieben"
+    },
+    "retention": "Inaktive Käufer: {count} · seit {days} Tagen oder länger kein Kauf.",
+    "retentionHint": "Ein Mailing erreicht nur jene von ihnen, die dem Shop folgen: Ein Kauf ist keine Zustimmung zu Marketing. Ein persönlicher Rabatt wird von Hand an der Kasse gewährt — die Kasse prüft keine Promo-Codes.",
+    "retentionAction": "Ein Angebot ankündigen",
+    "listTitle": "Alle, die wir kennen",
+    "listCount": "Personen: {count}",
+    "empty": "Hier ist noch niemand.",
+    "purchases": "Käufe: {count}",
+    "lastPurchase": "letzter Kauf {date}",
+    "noPurchase": "keine Käufe",
+    "notReachable": "Mailings aus",
+    "truncated": "Die Liste ist abgeschnitten — es werden nur die ersten Personen angezeigt.",
+    "anonymous": "Belege ohne zugeordneten Käufer: {count}. Diese Verkäufe sind für uns anonym: Der Käufer hat den Beleg nicht in ein Cabinet gespeichert.",
+    "privacy": "Sie sehen nur den Anmeldenamen. E-Mail und Telefon werden nicht angezeigt: Die Person hat sie Ihnen nicht gegeben.",
+    "card": {
+      "purchases": "Käufe",
+      "cancelled": "storniert: {count}",
+      "first": "Erster Kauf",
+      "subscription": "Folgt dem Shop",
+      "followYes": "ja",
+      "followNo": "nein",
+      "mutedYes": "ja, Mailings stummgeschaltet",
+      "promosOff": "Shop-Mailings sind in jenem Cabinet deaktiviert",
+      "turnover": "Umsatz in diesem Shop",
+      "noTurnover": "Noch keine abgeschlossenen Käufe.",
+      "cashbackCounted": "Cashback erfasst: {amount}",
+      "cashbackNote": "Cashback ist erfasst, nicht gutgeschrieben: Die Plattform-Wallet existiert noch nicht.",
+      "moneyHidden": "Beträge sind verborgen: Es werden Rechte für die Kasse oder für Berichte benötigt.",
+      "history": "Kaufhistorie in diesem Shop",
+      "noHistory": "Noch keine Belege.",
+      "cancelledBadge": "storniert",
+      "openThread": "Unterhaltung öffnen"
+    }
   }
 }

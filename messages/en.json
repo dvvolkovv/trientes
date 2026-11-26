@@ -1844,7 +1844,8 @@
       "customers": "Customer messages",
       "ads": "Card banner",
       "sales": "Till",
-      "reports": "Reports"
+      "reports": "Reports",
+      "crm": "Customers"
     },
     "tileUnit": {
       "points": "{count} on the map",
@@ -1860,7 +1861,8 @@
       "customers": "Conversations: {count}",
       "ads": "{count} live",
       "sales": "receipts today",
-      "reports": "receipts in 30 days"
+      "reports": "receipts in 30 days",
+      "crm": "buyers: {count}"
     },
     "tileEmpty": "nothing yet",
     "tileBadge": {
@@ -4723,11 +4725,24 @@
       "not_running": "The offer is not running right now.",
       "daily_cap": "Today's mailing is already spent. One per day per shop.",
       "too_soon": "Too soon after the last mailing — about a day has to pass.",
-      "no_followers": "Nobody follows the shop yet, so there is nobody to write to."
+      "no_followers": "Nobody follows the shop yet, so there is nobody to write to.",
+      "segment_unknown": "Unknown audience — pick one from the list.",
+      "segment_empty": "Nobody in that segment follows the shop, so there is nobody to write to. A purchase is not consent to marketing."
     },
     "sendBlocked": {
       "daily_cap": "Today's mailing is spent — the next one tomorrow.",
       "not_listed": "The shop is not on the showcase, so mailings are off."
+    },
+    "segmentLabel": "Audience",
+    "segmentAll": "All followers",
+    "sendToSegment": "Send to: {segment}",
+    "segment": {
+      "buyers": "Buyers",
+      "regulars": "Regulars",
+      "newcomers": "New buyers",
+      "dormant": "Dormant",
+      "followersNoPurchase": "Followers who never bought",
+      "talkers": "Wrote to you"
     }
   },
   "supply": {
@@ -5363,7 +5378,8 @@
       "too_many_lines": "Too many lines in one receipt.",
       "unauth": "Please sign in again.",
       "warehouse_unknown": "That shelf is not available."
-    }
+    },
+    "openCustomer": "Customer card"
   },
   "receipt": {
     "title": "Receipt",
@@ -5518,5 +5534,52 @@
     "timezoneNote": "Days are counted in {tz}.",
     "timezoneMixed": "Your points are in different time zones, so the summary switched to UTC.",
     "truncated": "Only the first receipts of the period are counted — see the reports section for the full picture."
+  },
+  "cabinetCrm": {
+    "title": "Customers",
+    "subtitle": "People this shop knows by sign-in name: a receipt they saved, a follow, or a message they sent.",
+    "segmentsTitle": "Segments",
+    "segmentsHint": "Segments overlap: these are traits, not states. A person can be both a regular and dormant.",
+    "reachable": "can be messaged: {count}",
+    "segment": {
+      "buyers": "Buyers",
+      "regulars": "Regulars",
+      "newcomers": "New buyers",
+      "dormant": "Dormant",
+      "followersNoPurchase": "Followers who never bought",
+      "talkers": "Wrote to you"
+    },
+    "retention": "Dormant buyers: {count} · no purchase for {days} days or more.",
+    "retentionHint": "A mailing reaches only those of them who follow the shop: a purchase is not consent to marketing. A personal discount is applied by the cashier's hand — the till does not check promo codes.",
+    "retentionAction": "Announce an offer",
+    "listTitle": "Everyone we know",
+    "listCount": "People: {count}",
+    "empty": "Nobody here yet.",
+    "purchases": "purchases: {count}",
+    "lastPurchase": "last purchase {date}",
+    "noPurchase": "no purchases",
+    "notReachable": "mailings off",
+    "truncated": "The list is cut off — only the first people are shown.",
+    "anonymous": "Receipts with no buyer attached: {count}. Those sales are anonymous to us: the buyer did not save the receipt to a cabinet.",
+    "privacy": "You see the sign-in name only. Email and phone are not shown: the person did not give them to you.",
+    "card": {
+      "purchases": "Purchases",
+      "cancelled": "cancelled: {count}",
+      "first": "First purchase",
+      "subscription": "Follows the shop",
+      "followYes": "yes",
+      "followNo": "no",
+      "mutedYes": "yes, mailings muted",
+      "promosOff": "shop mailings are switched off in that cabinet",
+      "turnover": "Turnover in this shop",
+      "noTurnover": "No completed purchases yet.",
+      "cashbackCounted": "cashback counted: {amount}",
+      "cashbackNote": "Cashback is counted, not credited: the platform wallet does not exist yet.",
+      "moneyHidden": "Amounts are hidden: they need the right to the till or to reports.",
+      "history": "Purchase history in this shop",
+      "noHistory": "No receipts yet.",
+      "cancelledBadge": "cancelled",
+      "openThread": "Open the conversation"
+    }
   }
 }

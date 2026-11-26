@@ -1844,7 +1844,8 @@
       "customers": "Správy od zákazníkov",
       "ads": "Baner karty",
       "sales": "Pokladňa",
-      "reports": "Prehľady"
+      "reports": "Prehľady",
+      "crm": "Zákazníci"
     },
     "tileUnit": {
       "points": "{count} na mape",
@@ -1860,7 +1861,8 @@
       "customers": "Konverzácie: {count}",
       "ads": "{count} aktívne",
       "sales": "účtenky dnes",
-      "reports": "účtenky za 30 dní"
+      "reports": "účtenky za 30 dní",
+      "crm": "kupujúci: {count}"
     },
     "tileEmpty": "zatiaľ nič",
     "tileBadge": {
@@ -4723,11 +4725,24 @@
       "not_running": "Ponuka práve neprebieha.",
       "daily_cap": "Dnešné rozoslanie je už vyčerpané. Jedno denne na obchod.",
       "too_soon": "Príliš skoro po poslednom rozoslaní — musí uplynúť asi deň.",
-      "no_followers": "Obchod zatiaľ nikto nesleduje, takže niet komu napísať."
+      "no_followers": "Obchod zatiaľ nikto nesleduje, takže niet komu napísať.",
+      "segment_unknown": "Neznáme publikum — vyberte jedno zo zoznamu.",
+      "segment_empty": "V tomto segmente obchod nikto nesleduje, takže nemáte komu napísať. Nákup nie je súhlasom s marketingom."
     },
     "sendBlocked": {
       "daily_cap": "Dnešná rozosielka je vyčerpaná — ďalšia zajtra.",
       "not_listed": "Obchod nie je na vitríne, takže rozosielky sú vypnuté."
+    },
+    "segmentLabel": "Publikum",
+    "segmentAll": "Všetci sledujúci",
+    "sendToSegment": "Poslať: {segment}",
+    "segment": {
+      "buyers": "Kupujúci",
+      "regulars": "Stáli",
+      "newcomers": "Noví kupujúci",
+      "dormant": "Neaktívni",
+      "followersNoPurchase": "Sledujúci, ktorí nikdy nenakúpili",
+      "talkers": "Napísali vám"
     }
   },
   "supply": {
@@ -5363,7 +5378,8 @@
       "too_many_lines": "Príliš veľa položiek v jednej účtenke.",
       "unauth": "Prosím, prihláste sa znova.",
       "warehouse_unknown": "Táto polica nie je dostupná."
-    }
+    },
+    "openCustomer": "Karta zákazníka"
   },
   "receipt": {
     "title": "Účtenka",
@@ -5518,5 +5534,52 @@
     "timezoneNote": "Dni sa počítajú v {tz}.",
     "timezoneMixed": "Vaše miesta sú v rôznych časových pásmach, preto sa prehľad prepol na UTC.",
     "truncated": "Započítané sú len prvé účtenky obdobia — pre úplný obraz pozrite sekciu reportov."
+  },
+  "cabinetCrm": {
+    "title": "Zákazníci",
+    "subtitle": "Ľudia, ktorých tento obchod pozná podľa prihlasovacieho mena: účtenka, ktorú si uložili, sledovanie alebo správa, ktorú poslali.",
+    "segmentsTitle": "Segmenty",
+    "segmentsHint": "Segmenty sa prekrývajú: sú to vlastnosti, nie stavy. Osoba môže byť zároveň stála aj neaktívna.",
+    "reachable": "možno osloviť: {count}",
+    "segment": {
+      "buyers": "Kupujúci",
+      "regulars": "Stáli",
+      "newcomers": "Noví kupujúci",
+      "dormant": "Neaktívni",
+      "followersNoPurchase": "Sledujúci, ktorí nikdy nenakúpili",
+      "talkers": "Napísali vám"
+    },
+    "retention": "Neaktívni kupujúci: {count} · bez nákupu {days} dní alebo viac.",
+    "retentionHint": "Hromadná správa zasiahne len tých z nich, ktorí obchod sledujú: nákup nie je súhlasom s marketingom. Osobná zľava sa uplatňuje ručne pri pokladni — pokladnica nekontroluje promo kódy.",
+    "retentionAction": "Oznámiť ponuku",
+    "listTitle": "Všetci, ktorých poznáme",
+    "listCount": "Osoby: {count}",
+    "empty": "Zatiaľ nikto",
+    "purchases": "nákupy: {count}",
+    "lastPurchase": "posledný nákup {date}",
+    "noPurchase": "žiadne nákupy",
+    "notReachable": "hromadné správy vypnuté",
+    "truncated": "Zoznam je skrátený — zobrazení sú iba prví.",
+    "anonymous": "Účtenky bez priradeného kupujúceho: {count}. Tieto predaje sú pre nás anonymné: kupujúci si neuložil účtenku do profilu.",
+    "privacy": "Vidíte iba prihlasovacie meno. E-mail a telefón sa nezobrazujú: osoba vám ich neposkytla.",
+    "card": {
+      "purchases": "Nákupy",
+      "cancelled": "zrušené: {count}",
+      "first": "Prvý nákup",
+      "subscription": "Sleduje obchod",
+      "followYes": "áno",
+      "followNo": "nie",
+      "mutedYes": "áno, rozosielky stíšené",
+      "promosOff": "obchodné rozosielky sú v tom profile vypnuté",
+      "turnover": "Obrat v tomto obchode",
+      "noTurnover": "Zatiaľ žiadne dokončené nákupy.",
+      "cashbackCounted": "cashback započítaný: {amount}",
+      "cashbackNote": "Cashback je započítaný, nie pripísaný: peňaženka platformy zatiaľ neexistuje.",
+      "moneyHidden": "Sumy sú skryté: potrebujete právo k pokladni alebo k výkazom.",
+      "history": "História nákupov v tomto obchode",
+      "noHistory": "Zatiaľ žiadne účtenky.",
+      "cancelledBadge": "zrušené",
+      "openThread": "Otvoriť konverzáciu"
+    }
   }
 }

@@ -1844,7 +1844,8 @@
       "customers": "Mensajes de clientes",
       "ads": "Banner de tarjeta",
       "sales": "Caja",
-      "reports": "Informes"
+      "reports": "Informes",
+      "crm": "Clientes"
     },
     "tileUnit": {
       "points": "{count} en el mapa",
@@ -1860,7 +1861,8 @@
       "customers": "Conversaciones: {count}",
       "ads": "{count} activos",
       "sales": "recibos hoy",
-      "reports": "recibos en 30 días"
+      "reports": "recibos en 30 días",
+      "crm": "compradores: {count}"
     },
     "tileEmpty": "nada todavía",
     "tileBadge": {
@@ -4723,11 +4725,24 @@
       "not_running": "La oferta no está activa ahora mismo.",
       "daily_cap": "El envío de hoy ya se ha utilizado. Uno por día por tienda.",
       "too_soon": "Demasiado pronto tras el último envío — debe pasar aproximadamente un día.",
-      "no_followers": "Nadie sigue la tienda todavía, así que no hay a quién escribir."
+      "no_followers": "Nadie sigue la tienda todavía, así que no hay a quién escribir.",
+      "segment_unknown": "Audiencia desconocida — elige una de la lista.",
+      "segment_empty": "Nadie en ese segmento sigue a la tienda, así que no hay a quién escribir. Una compra no es consentimiento para marketing."
     },
     "sendBlocked": {
       "daily_cap": "El envío de hoy está agotado — el próximo, mañana.",
       "not_listed": "La tienda no está en la vitrina, así que los envíos están desactivados."
+    },
+    "segmentLabel": "Audiencia",
+    "segmentAll": "Todos los seguidores",
+    "sendToSegment": "Enviar a: {segment}",
+    "segment": {
+      "buyers": "Compradores",
+      "regulars": "Habituales",
+      "newcomers": "Nuevos compradores",
+      "dormant": "Inactivos",
+      "followersNoPurchase": "Seguidores que nunca han comprado",
+      "talkers": "Te escribieron"
     }
   },
   "supply": {
@@ -5363,7 +5378,8 @@
       "too_many_lines": "Demasiadas líneas en un solo recibo.",
       "unauth": "Vuelve a iniciar sesión, por favor.",
       "warehouse_unknown": "Ese estante no está disponible."
-    }
+    },
+    "openCustomer": "Ficha del cliente"
   },
   "receipt": {
     "title": "Recibo",
@@ -5518,5 +5534,52 @@
     "timezoneNote": "Los días se calculan en {tz}.",
     "timezoneMixed": "Tus puntos están en distintas zonas horarias, por lo que el resumen cambió a UTC.",
     "truncated": "Solo se cuentan los primeros recibos del periodo — consulta la sección de informes para ver el panorama completo."
+  },
+  "cabinetCrm": {
+    "title": "Clientes",
+    "subtitle": "Personas que esta tienda conoce por su nombre de inicio de sesión: un recibo que guardaron, un seguimiento o un mensaje que enviaron.",
+    "segmentsTitle": "Segmentos",
+    "segmentsHint": "Los segmentos se superponen: son rasgos, no estados. Una persona puede ser a la vez habitual e inactiva.",
+    "reachable": "se les puede enviar mensajes: {count}",
+    "segment": {
+      "buyers": "Compradores",
+      "regulars": "Habituales",
+      "newcomers": "Nuevos compradores",
+      "dormant": "Inactivos",
+      "followersNoPurchase": "Seguidores que nunca compraron",
+      "talkers": "Te escribieron"
+    },
+    "retention": "Compradores inactivos: {count} · sin compra desde hace {days} días o más.",
+    "retentionHint": "Un envío solo llega a quienes siguen la tienda: una compra no es un consentimiento para marketing. Un descuento personal lo aplica el cajero a mano — la caja no verifica códigos promocionales.",
+    "retentionAction": "Anunciar una oferta",
+    "listTitle": "Todos los que conocemos",
+    "listCount": "Personas: {count}",
+    "empty": "Aún no hay nadie.",
+    "purchases": "compras: {count}",
+    "lastPurchase": "última compra {date}",
+    "noPurchase": "sin compras",
+    "notReachable": "envíos desactivados",
+    "truncated": "La lista está recortada — solo se muestran las primeras personas.",
+    "anonymous": "Recibos sin comprador asociado: {count}. Esas ventas son anónimas para nosotros: el comprador no guardó el recibo en su panel.",
+    "privacy": "Solo ves el nombre de inicio de sesión. El email y el teléfono no se muestran: la persona no te los dio.",
+    "card": {
+      "purchases": "Compras",
+      "cancelled": "canceladas: {count}",
+      "first": "Primera compra",
+      "subscription": "Sigue la tienda",
+      "followYes": "sí",
+      "followNo": "no",
+      "mutedYes": "sí, envíos silenciados",
+      "promosOff": "los correos de la tienda están desactivados en ese panel",
+      "turnover": "Volumen en esta tienda",
+      "noTurnover": "Aún no hay compras completadas.",
+      "cashbackCounted": "cashback contabilizado: {amount}",
+      "cashbackNote": "El cashback se contabiliza, no se abona: la billetera de la plataforma aún no existe.",
+      "moneyHidden": "Los importes están ocultos: se necesita permiso a la caja o a los informes.",
+      "history": "Historial de compras en esta tienda",
+      "noHistory": "Aún no hay recibos.",
+      "cancelledBadge": "cancelado",
+      "openThread": "Abrir la conversación"
+    }
   }
 }

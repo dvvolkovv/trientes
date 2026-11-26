@@ -1844,7 +1844,8 @@
       "customers": "Messages clients",
       "ads": "Bannière de carte",
       "sales": "Caisse",
-      "reports": "Rapports"
+      "reports": "Rapports",
+      "crm": "Clients"
     },
     "tileUnit": {
       "points": "{count} sur la carte",
@@ -1860,7 +1861,8 @@
       "customers": "Conversations : {count}",
       "ads": "{count} en cours",
       "sales": "reçus aujourd'hui",
-      "reports": "reçus sur 30 jours"
+      "reports": "reçus sur 30 jours",
+      "crm": "acheteurs: {count}"
     },
     "tileEmpty": "rien pour l’instant",
     "tileBadge": {
@@ -4723,11 +4725,24 @@
       "not_running": "L'offre n'est pas en cours en ce moment.",
       "daily_cap": "L'envoi du jour est déjà utilisé. Un par jour et par boutique.",
       "too_soon": "Trop tôt après le dernier envoi — environ une journée doit s'écouler.",
-      "no_followers": "Personne ne suit encore la boutique, il n'y a donc personne à qui écrire."
+      "no_followers": "Personne ne suit encore la boutique, il n'y a donc personne à qui écrire.",
+      "segment_unknown": "Audience inconnue — choisissez-en une dans la liste.",
+      "segment_empty": "Personne dans ce segment ne suit la boutique, il n'y a donc personne à qui écrire. Un achat ne vaut pas consentement au marketing."
     },
     "sendBlocked": {
       "daily_cap": "Le quota d'envoi d'aujourd'hui est épuisé — le prochain demain.",
       "not_listed": "La boutique n'est pas sur la vitrine, donc les envois sont désactivés."
+    },
+    "segmentLabel": "Audience",
+    "segmentAll": "Tous les abonnés",
+    "sendToSegment": "Envoyer à : {segment}",
+    "segment": {
+      "buyers": "Acheteurs",
+      "regulars": "Habitués",
+      "newcomers": "Nouveaux acheteurs",
+      "dormant": "Inactifs",
+      "followersNoPurchase": "Abonnés n'ayant jamais acheté",
+      "talkers": "Vous ont écrit"
     }
   },
   "supply": {
@@ -5363,7 +5378,8 @@
       "too_many_lines": "Trop de lignes dans un seul reçu.",
       "unauth": "Veuillez vous reconnecter.",
       "warehouse_unknown": "Cette étagère n'est pas disponible."
-    }
+    },
+    "openCustomer": "Fiche client"
   },
   "receipt": {
     "title": "Reçu",
@@ -5448,7 +5464,7 @@
       "CRYPTO": "Crypto",
       "OTHER": "Autre"
     },
-    "exportHeading": "Export",
+    "exportHeading": "Exporter",
     "exportHint": "Deux fichiers pour la période sélectionnée: une ligne par reçu, ou une ligne par ligne de reçu. CSV, UTF-8, noms de colonnes en anglais pour que tout outil comptable puisse les lire.",
     "exportReceipts": "Télécharger les reçus",
     "exportLines": "Télécharger les lignes",
@@ -5518,5 +5534,52 @@
     "timezoneNote": "Les jours sont comptés en {tz}.",
     "timezoneMixed": "Vos points sont dans des fuseaux horaires différents, le récapitulatif est donc passé en UTC.",
     "truncated": "Seuls les premiers reçus de la période sont comptés — consultez la section Rapports pour une vue d’ensemble."
+  },
+  "cabinetCrm": {
+    "title": "Clients",
+    "subtitle": "Personnes que cette boutique connaît par leur identifiant de connexion : un reçu qu'elles ont enregistré, un abonnement, ou un message qu'elles ont envoyé.",
+    "segmentsTitle": "Segments",
+    "segmentsHint": "Les segments se recoupent : ce sont des caractéristiques, pas des états. Une personne peut être à la fois fidèle et inactive.",
+    "reachable": "peuvent recevoir des messages : {count}",
+    "segment": {
+      "buyers": "Acheteurs",
+      "regulars": "Fidèles",
+      "newcomers": "Nouveaux acheteurs",
+      "dormant": "Inactifs",
+      "followersNoPurchase": "Abonnés n'ayant jamais acheté",
+      "talkers": "Vous ont écrit"
+    },
+    "retention": "Acheteurs inactifs : {count} · aucun achat depuis {days} jours ou plus.",
+    "retentionHint": "Un envoi n'atteint que ceux d'entre eux qui suivent la boutique : un achat n'est pas un consentement au marketing. Une remise personnelle est appliquée à la main par le caissier — la caisse ne vérifie pas les codes promo.",
+    "retentionAction": "Annoncer une offre",
+    "listTitle": "Toutes les personnes que nous connaissons",
+    "listCount": "Personnes : {count}",
+    "empty": "Personne ici pour l'instant.",
+    "purchases": "achats : {count}",
+    "lastPurchase": "dernier achat {date}",
+    "noPurchase": "aucun achat",
+    "notReachable": "envois désactivés",
+    "truncated": "La liste est tronquée — seules les premières personnes sont affichées.",
+    "anonymous": "Reçus sans acheteur associé : {count}. Ces ventes nous sont anonymes : l'acheteur n'a pas enregistré le reçu dans un cabinet.",
+    "privacy": "Vous ne voyez que l'identifiant de connexion. L'email et le téléphone ne sont pas affichés : la personne ne vous les a pas donnés.",
+    "card": {
+      "purchases": "Achats",
+      "cancelled": "annulés : {count}",
+      "first": "Premier achat",
+      "subscription": "Suit la boutique",
+      "followYes": "oui",
+      "followNo": "non",
+      "mutedYes": "oui, envois en sourdine",
+      "promosOff": "les envois de la boutique sont désactivés dans ce cabinet",
+      "turnover": "Chiffre d'affaires dans cette boutique",
+      "noTurnover": "Aucun achat finalisé pour l'instant.",
+      "cashbackCounted": "cashback comptabilisé : {amount}",
+      "cashbackNote": "Le cashback est comptabilisé, pas crédité : le portefeuille de la plateforme n'existe pas encore.",
+      "moneyHidden": "Les montants sont masqués : ils nécessitent le droit à la caisse ou aux rapports.",
+      "history": "Historique des achats dans cette boutique",
+      "noHistory": "Pas encore de reçus.",
+      "cancelledBadge": "annulé",
+      "openThread": "Ouvrir la conversation"
+    }
   }
 }

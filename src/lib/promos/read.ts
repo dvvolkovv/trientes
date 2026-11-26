@@ -157,9 +157,16 @@ export function quotaLeft(state: { sentToday: number }): number {
 export async function recipientStates(
   companyId: string,
   now = new Date(),
+  /**
+   * Сужение аудитории сегментом (слайс CN). Сегмент **сужает** список подписчиков и
+   * никогда его не расширяет: подписка — нажатие человека, то есть согласие, а покупка
+   * согласием на рекламу не является (правило BG). Пусто — все подписчики.
+   */
+  onlyUserIds?: readonly string[],
 ): Promise<(RecipientState & { userId: string })[]> {
+  if (onlyUserIds && onlyUserIds.length === 0) return [];
   const follows = await prisma.companyFollow.findMany({
-    where: { companyId },
+    where: { companyId, ...(onlyUserIds ? { userId: { in: [...onlyUserIds] } } : {}) },
     select: { userId: true, muted: true, user: { select: { notifyPromos: true } } },
     take: 5000,
   });

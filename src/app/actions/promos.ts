@@ -11,6 +11,8 @@ import { rawMessage } from "@/lib/messages-raw";
 import { parsePromoInput, promoWindow, type PromoInput } from "@/lib/promos/rules";
 import { companySendGate, planDeliveries, type SkipOutcome } from "@/lib/promos/antispam";
 import { companySendState, recipientStates } from "@/lib/promos/read";
+import { inSegment, isCrmSegment } from "@/lib/crm/segments";
+import { readCompanyCustomers } from "@/lib/crm/read";
 
 type Fail = { ok: false; reason: string };
 const fail = (reason: string): Fail => ({ ok: false, reason });
@@ -162,7 +164,7 @@ export async function setPromoArchived(promoId: string, archived: boolean) {
  * есть спам в чистом виде, и запретить его правилом дешевле, чем ловить лимитами:
  * вторая рассылка означает новую акцию со своим сроком и своим расходом квоты.
  */
-export async function sendPromo(promoId: string) {
+export async function sendPromo(promoId: string, segment?: string | null) {
   const userId = await requireUser();
   if (!userId) return fail("unauth");
   const promo = await prisma.merchantPromo.findUnique({
@@ -191,15 +193,28 @@ export async function sendPromo(promoId: string) {
   // акция привела бы его на пустую витрину.
   if (promoWindow(promo, now) !== "running") return fail("not_running");
 
+  // Адресная рассылка тратит **ту же** суточную квоту: иначе шесть сегментов
+  // превратились бы в шесть сообщений в день, и антиспам BG перестал бы значить
+  // что-либо (спека CN, раздел 5).
   const state = await companySendState(promo.companyId, now);
   const quota = companySendGate(state, now);
   if (!quota.ok) return fail(quota.reason);
 
-  const plan = planDeliveries(await recipientStates(promo.companyId, now));
-  if (plan.followers === 0) return fail("no_followers");
+  // Сегмент сужает список подписчиков и никогда его не расширяет: покупка согласием
+  // на рекламу не является. Неизвестный ключ отвергаем вслух — молча разослать всем
+  // значило бы написать тем, кому мерчант писать не собирался.
+  let only: string[] | undefined;
+  if (segment) {
+    if (!isCrmSegment(segment)) return fail("segment_unknown");
+    const { customers } = await readCompanyCustomers(promo.companyId, now);
+    only = customers.filter((c) => inSegment(c, segment, now)).map((c) => c.userId);
+  }
+
+  const plan = planDeliveries(await recipientStates(promo.companyId, now, only));
+  if (plan.followers === 0) return fail(segment ? "segment_empty" : "no_followers");
 
   const send = await prisma.promoSend.create({
-    data: { promoId, senderUserId: userId, followers: plan.followers },
+    data: { promoId, senderUserId: userId, followers: plan.followers, segment: segment ?? null },
     select: { id: true },
   });
 
@@ -243,7 +258,7 @@ export async function sendPromo(promoId: string) {
     actorUserId: userId,
     action: "PROMO_SENT",
     subject: promo.title,
-    meta: { followers: plan.followers, delivered, skipped: outcomes.length - delivered },
+    meta: { followers: plan.followers, delivered, skipped: outcomes.length - delivered, segment: segment ?? null },
   });
   revalidatePromo(promo.companyId, promo.product?.slug);
   return { ok: true as const, followers: plan.followers, delivered, skipped: outcomes.length - delivered };

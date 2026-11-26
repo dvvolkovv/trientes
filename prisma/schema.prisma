@@ -2912,6 +2912,11 @@ model PromoSend {
   delivered Int @default(0)
   skipped   Int @default(0)
 
+  /// Сегмент покупателей, которым адресована рассылка (слайс CN); пусто — всем
+  /// подписчикам. Хранится ключом из `src/lib/crm/segments.ts`, а не набором людей:
+  /// состав сегмента меняется каждый день, а запись обязана остаться читаемой.
+  segment String?
+
   createdAt DateTime @default(now())
 
   deliveries PromoDelivery[]

@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { sendPromo, setPromoArchived } from "@/app/actions/promos";
+import { CRM_SEGMENTS, type CrmSegment } from "@/lib/crm/segments";
 
 export type PromoRow = {
   id: string;
@@ -48,6 +49,9 @@ export function PromoList({
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<{ id: string; reason: string } | null>(null);
   const [done, setDone] = useState<{ id: string; delivered: number; skipped: number } | null>(null);
+  // Сегмент выбирается один на экран, а не на строку: рассылка в сутки одна, и две
+  // строки с разными сегментами означали бы выбор, который всё равно не состоится.
+  const [segment, setSegment] = useState<CrmSegment | "">("");
   const [, start] = useTransition();
 
   if (promos.length === 0) return <p className="text-sm text-muted">{t("empty")}</p>;
@@ -99,7 +103,7 @@ export function PromoList({
                       setBusy(p.id);
                       setError(null);
                       setDone(null);
-                      const r = await sendPromo(p.id);
+                      const r = await sendPromo(p.id, segment || null);
                       setBusy(null);
                       if (r.ok) {
                         setDone({ id: p.id, delivered: r.delivered, skipped: r.skipped });
@@ -110,8 +114,23 @@ export function PromoList({
                     })
                   }
                 >
-                  {t("send")}
+                  {segment ? t("sendToSegment", { segment: t(`segment.${segment}`) }) : t("send")}
                 </button>
+              ) : null}
+              {!p.sent && !p.archived && p.state === "running" ? (
+                <select
+                  aria-label={t("segmentLabel")}
+                  className="h-12 rounded-md border border-hairline bg-card px-3 text-sm"
+                  value={segment}
+                  onChange={(e) => setSegment((e.target.value as CrmSegment) || "")}
+                >
+                  <option value="">{t("segmentAll")}</option>
+                  {CRM_SEGMENTS.map((key) => (
+                    <option key={key} value={key}>
+                      {t(`segment.${key}`)}
+                    </option>
+                  ))}
+                </select>
               ) : null}
               {!p.sent && !p.archived && p.state === "running" && sendBlocked ? (
                 <p className="text-[11px] text-muted self-center">{t(`sendBlocked.${sendBlocked}`)}</p>

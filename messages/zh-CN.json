@@ -1844,7 +1844,8 @@
       "customers": "客户消息",
       "ads": "卡片横幅",
       "sales": "收银",
-      "reports": "报告"
+      "reports": "报告",
+      "crm": "客户"
     },
     "tileUnit": {
       "points": "地图上{count}个",
@@ -1860,7 +1861,8 @@
       "customers": "对话：{count}",
       "ads": "{count} 个在线",
       "sales": "今日收据",
-      "reports": "30天内的收据"
+      "reports": "30天内的收据",
+      "crm": "买家: {count}"
     },
     "tileEmpty": "尚无内容",
     "tileBadge": {
@@ -4723,11 +4725,24 @@
       "not_running": "该报价目前未在进行。",
       "daily_cap": "今日的群发额度已用完。每个店铺每天一次。",
       "too_soon": "距离上次群发时间太近 — 需要间隔约一天。",
-      "no_followers": "尚无人关注该店铺，因此没有可发送的对象。"
+      "no_followers": "尚无人关注该店铺，因此没有可发送的对象。",
+      "segment_unknown": "受众未知——请从列表中选择一个。",
+      "segment_empty": "该分组中没有人关注该商店，因此没有可发送对象。购买并不代表同意接收营销信息。"
     },
     "sendBlocked": {
       "daily_cap": "今天的群发已用完——下一次在明天。",
       "not_listed": "商店未在展示页中，因此已关闭群发。"
+    },
+    "segmentLabel": "受众",
+    "segmentAll": "所有关注者",
+    "sendToSegment": "发送至: {segment}",
+    "segment": {
+      "buyers": "买家",
+      "regulars": "常客",
+      "newcomers": "新买家",
+      "dormant": "休眠",
+      "followersNoPurchase": "从未购买的关注者",
+      "talkers": "给你发过消息"
     }
   },
   "supply": {
@@ -5363,7 +5378,8 @@
       "too_many_lines": "单张收据的行数过多。",
       "unauth": "请重新登录。",
       "warehouse_unknown": "该货架不可用。"
-    }
+    },
+    "openCustomer": "客户卡片"
   },
   "receipt": {
     "title": "收据",
@@ -5518,5 +5534,52 @@
     "timezoneNote": "天数按{tz}计算。",
     "timezoneMixed": "您的站点位于不同时区，因此摘要已切换为UTC。",
     "truncated": "仅统计该期间的首批收据——完整情况请查看报表部分。"
+  },
+  "cabinetCrm": {
+    "title": "客户",
+    "subtitle": "本店按登录名所知的用户：他们保存的收据、关注，或发送过的消息。",
+    "segmentsTitle": "分组",
+    "segmentsHint": "分组可能重叠：这些是特征，不是状态。一个人既可能是常客，也可能是休眠用户。",
+    "reachable": "可发送消息：{count}",
+    "segment": {
+      "buyers": "买家",
+      "regulars": "常客",
+      "newcomers": "新买家",
+      "dormant": "休眠",
+      "followersNoPurchase": "从未购买的关注者",
+      "talkers": "给你发过消息"
+    },
+    "retention": "沉睡买家：{count} · {days} 天及以上未购买。",
+    "retentionHint": "群发仅触达关注店铺的人：购买并不等于同意营销。个人折扣需由收银员手动应用——收银机不验证优惠码。",
+    "retentionAction": "发布优惠",
+    "listTitle": "我们所知的所有人",
+    "listCount": "人数: {count}",
+    "empty": "这里还没有人。",
+    "purchases": "购买次数：{count}",
+    "lastPurchase": "上次购买 {date}",
+    "noPurchase": "无购买",
+    "notReachable": "群发已关闭",
+    "truncated": "列表已被截断——仅显示最前面的几位。",
+    "anonymous": "未关联买家的小票：{count}。这些销售对我们是匿名的：买家未将小票保存到个人柜。",
+    "privacy": "你只能看到登录名。邮箱和电话不显示：对方未提供给你。",
+    "card": {
+      "purchases": "购买",
+      "cancelled": "已取消：{count}",
+      "first": "首次购买",
+      "subscription": "关注了店铺",
+      "followYes": "是",
+      "followNo": "否",
+      "mutedYes": "是，已将群发静音",
+      "promosOff": "该账户已关闭商店邮件发送",
+      "turnover": "此店铺的营业额",
+      "noTurnover": "尚无已完成的购买。",
+      "cashbackCounted": "已计入返现：{amount}",
+      "cashbackNote": "返现已计入但未入账：平台钱包尚不存在。",
+      "moneyHidden": "金额已隐藏：需具备收银台或报表权限。",
+      "history": "此店铺的购买历史",
+      "noHistory": "尚无小票。",
+      "cancelledBadge": "已取消",
+      "openThread": "打开对话"
+    }
   }
 }

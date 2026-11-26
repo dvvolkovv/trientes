@@ -1844,7 +1844,8 @@
       "customers": "Müşteri mesajları",
       "ads": "Kart afişi",
       "sales": "Kasa",
-      "reports": "Raporlar"
+      "reports": "Raporlar",
+      "crm": "Müşteriler"
     },
     "tileUnit": {
       "points": "{count} haritada",
@@ -1860,7 +1861,8 @@
       "customers": "Sohbetler: {count}",
       "ads": "{count} canlı",
       "sales": "bugünkü makbuzlar",
-      "reports": "30 günde makbuz"
+      "reports": "30 günde makbuz",
+      "crm": "alıcılar: {count}"
     },
     "tileEmpty": "henüz bir şey yok",
     "tileBadge": {
@@ -4723,11 +4725,24 @@
       "not_running": "Teklif şu anda yürürlükte değil.",
       "daily_cap": "Bugünkü gönderim hakkı zaten kullanıldı. Mağaza başına günde bir.",
       "too_soon": "Son gönderimin üzerinden çok az geçti — yaklaşık bir gün geçmesi gerekir.",
-      "no_followers": "Henüz mağazayı kimse takip etmiyor, yani yazılacak kimse yok."
+      "no_followers": "Henüz mağazayı kimse takip etmiyor, yani yazılacak kimse yok.",
+      "segment_unknown": "Bilinmeyen kitle — listeden birini seçin.",
+      "segment_empty": "Bu segmentte kimse mağazayı takip etmiyor, bu yüzden yazılacak kimse yok. Bir satın alma, pazarlama için rıza değildir."
     },
     "sendBlocked": {
       "daily_cap": "Bugünkü gönderim limiti doldu — yenisi yarın.",
       "not_listed": "Mağaza vitrinde değil, bu yüzden gönderimler kapalı."
+    },
+    "segmentLabel": "Kitle",
+    "segmentAll": "Tüm takipçiler",
+    "sendToSegment": "Gönder: {segment}",
+    "segment": {
+      "buyers": "Alıcılar",
+      "regulars": "Düzenli müşteriler",
+      "newcomers": "Yeni alıcılar",
+      "dormant": "Hareketsiz",
+      "followersNoPurchase": "Hiç satın almamış takipçiler",
+      "talkers": "Size yazanlar"
     }
   },
   "supply": {
@@ -5363,7 +5378,8 @@
       "too_many_lines": "Bir fişte çok fazla satır var.",
       "unauth": "Lütfen yeniden oturum açın.",
       "warehouse_unknown": "O raf kullanılamıyor."
-    }
+    },
+    "openCustomer": "Müşteri kartı"
   },
   "receipt": {
     "title": "Fiş",
@@ -5518,5 +5534,52 @@
     "timezoneNote": "Günler {tz} saat diliminde sayılır.",
     "timezoneMixed": "Noktalarınız farklı saat dilimlerinde, bu yüzden özet UTC'ye geçti.",
     "truncated": "Dönemin yalnızca ilk tahsilatları sayıldı — tam resim için raporlar bölümüne bakın."
+  },
+  "cabinetCrm": {
+    "title": "Müşteriler",
+    "subtitle": "Bu mağazanın oturum açma adıyla tanıdığı kişiler: kaydettikleri bir fiş, bir takip veya gönderdikleri bir mesaj.",
+    "segmentsTitle": "Segmentler",
+    "segmentsHint": "Segmentler çakışır: bunlar durumlar değil, özelliklerdir. Bir kişi hem düzenli hem de hareketsiz olabilir.",
+    "reachable": "mesaj gönderilebilir: {count}",
+    "segment": {
+      "buyers": "Alıcılar",
+      "regulars": "Düzenli müşteriler",
+      "newcomers": "Yeni alıcılar",
+      "dormant": "Hareketsiz",
+      "followersNoPurchase": "Hiç satın almamış takipçiler",
+      "talkers": "Size yazanlar"
+    },
+    "retention": "Hareketsiz alıcılar: {count} · {days} gün veya daha uzun süredir satın alma yok.",
+    "retentionHint": "Bir gönderi onlardan yalnızca mağazayı takip edenlere ulaşır: bir satın alma pazarlama için rıza değildir. Kişisel indirim kasiyerin eliyle uygulanır — yazar kasa promosyon kodlarını kontrol etmez.",
+    "retentionAction": "Bir teklifi duyur",
+    "listTitle": "Bildiklerimizin tümü",
+    "listCount": "Kişi: {count}",
+    "empty": "Burada henüz kimse yok.",
+    "purchases": "satın alma: {count}",
+    "lastPurchase": "son satın alma {date}",
+    "noPurchase": "satın alma yok",
+    "notReachable": "gönderimler kapalı",
+    "truncated": "Liste kesildi — yalnızca ilk kişiler gösteriliyor.",
+    "anonymous": "Alıcı iliştirilmemiş fişler: {count}. Bu satışlar bizim için anonimdir: alıcı fişi paneline kaydetmedi.",
+    "privacy": "Yalnızca oturum açma adını görürsünüz. E-posta ve telefon gösterilmez: kişi bunları size vermedi.",
+    "card": {
+      "purchases": "Satın almalar",
+      "cancelled": "iptal: {count}",
+      "first": "İlk satın alma",
+      "subscription": "Mağazayı takip ediyor",
+      "followYes": "evet",
+      "followNo": "hayır",
+      "mutedYes": "evet, gönderimler sessize alındı",
+      "promosOff": "o kabinde mağaza gönderimleri kapalı",
+      "turnover": "Bu mağazadaki ciro",
+      "noTurnover": "Henüz tamamlanan satın alma yok.",
+      "cashbackCounted": "Cashback hesaplandı: {amount}",
+      "cashbackNote": "Cashback hesaplandı, yatırılmadı: platform cüzdanı henüz yok.",
+      "moneyHidden": "Tutarlar gizli: kasa veya raporlar yetkisi gerekiyor.",
+      "history": "Bu mağazadaki satın alma geçmişi",
+      "noHistory": "Henüz fiş yok.",
+      "cancelledBadge": "iptal",
+      "openThread": "Sohbeti aç"
+    }
   }
 }

@@ -1844,7 +1844,8 @@
       "customers": "고객 메시지",
       "ads": "카드 배너",
       "sales": "금전등록기",
-      "reports": "보고서"
+      "reports": "보고서",
+      "crm": "고객"
     },
     "tileUnit": {
       "points": "지도에 {count}개",
@@ -1860,7 +1861,8 @@
       "customers": "대화: {count}개",
       "ads": "{count}개 진행 중",
       "sales": "금일 영수증",
-      "reports": "30일 내 영수증"
+      "reports": "30일 내 영수증",
+      "crm": "구매자: {count}"
     },
     "tileEmpty": "아직 없음",
     "tileBadge": {
@@ -4723,11 +4725,24 @@
       "not_running": "오퍼가 현재 진행 중이 아닙니다.",
       "daily_cap": "오늘의 발송 한도가 이미 소진되었습니다. 상점당 하루 한 번입니다.",
       "too_soon": "마지막 발송 직후입니다 — 약 하루가 지나야 합니다.",
-      "no_followers": "아직 이 상점을 팔로우하는 사용자가 없어 보낼 대상이 없습니다."
+      "no_followers": "아직 이 상점을 팔로우하는 사용자가 없어 보낼 대상이 없습니다.",
+      "segment_unknown": "알 수 없는 오디언스 — 목록에서 하나를 선택하세요.",
+      "segment_empty": "해당 세그먼트에는 상점을 팔로우하는 사람이 없어서 보낼 대상이 없습니다. 구매는 마케팅에 대한 동의가 아닙니다."
     },
     "sendBlocked": {
       "daily_cap": "오늘의 발송분은 소진되었습니다 — 다음 발송은 내일입니다.",
       "not_listed": "상점이 쇼케이스에 등록되지 않아 발송이 비활성화되었습니다."
+    },
+    "segmentLabel": "오디언스",
+    "segmentAll": "모든 팔로워",
+    "sendToSegment": "보내기 대상: {segment}",
+    "segment": {
+      "buyers": "구매자",
+      "regulars": "단골",
+      "newcomers": "신규 구매자",
+      "dormant": "휴면",
+      "followersNoPurchase": "구매한 적 없는 팔로워",
+      "talkers": "메시지 보낸 사람들"
     }
   },
   "supply": {
@@ -5363,7 +5378,8 @@
       "too_many_lines": "하나의 영수증에 항목이 너무 많습니다.",
       "unauth": "다시 로그인하세요.",
       "warehouse_unknown": "해당 선반을 사용할 수 없습니다."
-    }
+    },
+    "openCustomer": "고객 카드"
   },
   "receipt": {
     "title": "영수증",
@@ -5518,5 +5534,52 @@
     "timezoneNote": "일자는 {tz} 기준으로 계산됩니다.",
     "timezoneMixed": "지점들이 서로 다른 시간대에 있어 요약이 UTC로 전환되었습니다.",
     "truncated": "기간의 최초 영수증만 집계됩니다 — 전체 내역은 보고서 섹션을 확인하세요."
+  },
+  "cabinetCrm": {
+    "title": "고객",
+    "subtitle": "이 가게가 로그인 이름으로 알고 있는 사람들: 저장한 영수증, 팔로우, 또는 보낸 메시지.",
+    "segmentsTitle": "세그먼트",
+    "segmentsHint": "세그먼트는 겹칩니다: 이는 상태가 아니라 특성입니다. 한 사람이 단골이면서 휴면일 수도 있습니다.",
+    "reachable": "메시지 가능: {count}",
+    "segment": {
+      "buyers": "구매자",
+      "regulars": "단골",
+      "newcomers": "신규 구매자",
+      "dormant": "휴면",
+      "followersNoPurchase": "구매한 적 없는 팔로워",
+      "talkers": "메시지 보냄"
+    },
+    "retention": "휴면 구매자: {count} · {days}일 이상 미구매.",
+    "retentionHint": "발송은 그중 가게를 팔로우하는 사람에게만 도달합니다: 구매는 마케팅에 동의한 것이 아닙니다. 개인 할인은 캐셔가 수동으로 적용합니다 — POS는 프로모션 코드를 확인하지 않습니다.",
+    "retentionAction": "오퍼 알리기",
+    "listTitle": "우리가 아는 모든 사람",
+    "listCount": "인원: {count}",
+    "empty": "아직 아무도 없습니다.",
+    "purchases": "구매: {count}",
+    "lastPurchase": "마지막 구매 {date}",
+    "noPurchase": "구매 없음",
+    "notReachable": "발송 끔",
+    "truncated": "목록이 잘렸습니다 — 처음 일부만 표시됩니다.",
+    "anonymous": "구매자 연결이 없는 영수증: {count}. 해당 판매는 우리에게 익명입니다: 구매자가 영수증을 캐비닛에 저장하지 않았습니다.",
+    "privacy": "로그인 이름만 볼 수 있습니다. 이메일과 전화번호는 표시되지 않습니다: 상대가 제공하지 않았습니다.",
+    "card": {
+      "purchases": "구매",
+      "cancelled": "취소: {count}",
+      "first": "첫 구매",
+      "subscription": "가게 팔로우",
+      "followYes": "예",
+      "followNo": "아니오",
+      "mutedYes": "예, 발송 음소거",
+      "promosOff": "그 캐비닛에서 상점 메일링이 비활성화되어 있습니다",
+      "turnover": "이 가게의 매출",
+      "noTurnover": "완료된 구매가 아직 없습니다.",
+      "cashbackCounted": "캐시백 계산됨: {amount}",
+      "cashbackNote": "캐시백은 적립이 아니라 계산만 됩니다: 플랫폼 지갑은 아직 없습니다.",
+      "moneyHidden": "금액은 숨겨져 있습니다: POS 또는 보고서 권한이 필요합니다.",
+      "history": "이 가게의 구매 내역",
+      "noHistory": "영수증이 아직 없습니다.",
+      "cancelledBadge": "취소됨",
+      "openThread": "대화 열기"
+    }
   }
 }

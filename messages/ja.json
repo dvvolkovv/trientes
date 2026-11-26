@@ -1844,7 +1844,8 @@
       "customers": "カスタマーメッセージ",
       "ads": "カードバナー",
       "sales": "レジ",
-      "reports": "レポート"
+      "reports": "レポート",
+      "crm": "顧客"
     },
     "tileUnit": {
       "points": "{count}件（地図上）",
@@ -1860,7 +1861,8 @@
       "customers": "会話数: {count}",
       "ads": "{count}件配信中",
       "sales": "本日のレシート数",
-      "reports": "30日間のレシート"
+      "reports": "30日間のレシート",
+      "crm": "購入者: {count}"
     },
     "tileEmpty": "まだありません",
     "tileBadge": {
@@ -4723,11 +4725,24 @@
       "not_running": "現在このオファーは実施中ではありません。",
       "daily_cap": "本日の配信はすでに使い切りました。ショップごとに1日1回までです。",
       "too_soon": "直近の配信から間隔が短すぎます—約1日空けてください。",
-      "no_followers": "まだこのショップのフォロワーがいないため、送信先がありません."
+      "no_followers": "まだこのショップのフォロワーがいないため、送信先がありません.",
+      "segment_unknown": "不明なオーディエンス — リストから選んでください。",
+      "segment_empty": "そのセグメントにはショップのフォロワーがいないため、送れる相手がいません。購入はマーケティングへの同意ではありません。"
     },
     "sendBlocked": {
       "daily_cap": "本日の配信は使い切りました—次は明日です。",
       "not_listed": "ショップがショーケースに掲載されていないため、配信はオフです。"
+    },
+    "segmentLabel": "オーディエンス",
+    "segmentAll": "すべてのフォロワー",
+    "sendToSegment": "送信先: {segment}",
+    "segment": {
+      "buyers": "購入者",
+      "regulars": "常連",
+      "newcomers": "新規購入者",
+      "dormant": "休眠",
+      "followersNoPurchase": "購入したことのないフォロワー",
+      "talkers": "メッセージを送った"
     }
   },
   "supply": {
@@ -5363,7 +5378,8 @@
       "too_many_lines": "1つのレシートの行数が多すぎます。",
       "unauth": "もう一度サインインしてください。",
       "warehouse_unknown": "その棚は利用できません。"
-    }
+    },
+    "openCustomer": "顧客カード"
   },
   "receipt": {
     "title": "レシート",
@@ -5518,5 +5534,52 @@
     "timezoneNote": "日付は{tz}基準で集計されます。",
     "timezoneMixed": "拠点が異なるタイムゾーンにあるため、サマリーはUTCに切り替わりました。",
     "truncated": "期間内の最初のレシートのみが集計対象です—全体像はレポートセクションを参照してください。"
+  },
+  "cabinetCrm": {
+    "title": "顧客",
+    "subtitle": "このショップがサインイン名で把握している人々: 保存されたレシート、フォロー、または送信されたメッセージ。",
+    "segmentsTitle": "セグメント",
+    "segmentsHint": "セグメントは重複します。これは特性であり状態ではありません。ある人が常連であり休眠でもありえます。",
+    "reachable": "メッセージ可能: {count}",
+    "segment": {
+      "buyers": "購入者",
+      "regulars": "常連",
+      "newcomers": "新規購入者",
+      "dormant": "休眠",
+      "followersNoPurchase": "購入したことのないフォロワー",
+      "talkers": "メッセージを送った"
+    },
+    "retention": "休眠顧客: {count} · {days}日以上未購入.",
+    "retentionHint": "配信が届くのは、その中でもショップをフォローしている人だけです。購入はマーケティングへの同意ではありません。パーソナル割引はレジ係が手動で適用します—レジはプロモコードを照合しません。",
+    "retentionAction": "オファーを告知",
+    "listTitle": "把握している全員",
+    "listCount": "人数: {count}",
+    "empty": "まだ誰もいません。",
+    "purchases": "購入数: {count}",
+    "lastPurchase": "最終購入 {date}",
+    "noPurchase": "購入なし",
+    "notReachable": "配信オフ",
+    "truncated": "一覧は切り詰められています—先頭の人のみ表示されています。",
+    "anonymous": "購入者が紐づかないレシート: {count}。それらの販売は当方には匿名です。購入者がレシートをキャビネットに保存しませんでした。",
+    "privacy": "表示されるのはサインイン名のみです。メールと電話は表示されません: 本人があなたに提供していないためです。",
+    "card": {
+      "purchases": "購入",
+      "cancelled": "キャンセル: {count}",
+      "first": "初回購入",
+      "subscription": "ショップをフォロー",
+      "followYes": "はい",
+      "followNo": "いいえ",
+      "mutedYes": "はい、配信をミュート",
+      "promosOff": "そのキャビネットではショップのメール配信がオフになっています",
+      "turnover": "このショップでの売上",
+      "noTurnover": "完了した購入はまだありません。",
+      "cashbackCounted": "キャッシュバック計上: {amount}",
+      "cashbackNote": "キャッシュバックは計上のみで付与ではありません: プラットフォームのウォレットはまだ存在しません。",
+      "moneyHidden": "金額は非表示です: レジまたはレポートの権限が必要です。",
+      "history": "このショップでの購入履歴",
+      "noHistory": "まだ領収書はありません。",
+      "cancelledBadge": "キャンセル済み",
+      "openThread": "会話を開く"
+    }
   }
 }

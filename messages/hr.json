@@ -1844,7 +1844,8 @@
       "customers": "Poruke kupaca",
       "ads": "Baner kartice",
       "sales": "Blagajna",
-      "reports": "Izvješća"
+      "reports": "Izvješća",
+      "crm": "Kupci"
     },
     "tileUnit": {
       "points": "{count} na karti",
@@ -1860,7 +1861,8 @@
       "customers": "Razgovori: {count}",
       "ads": "{count} uživo",
       "sales": "računi danas",
-      "reports": "računa u 30 dana"
+      "reports": "računa u 30 dana",
+      "crm": "kupci: {count}"
     },
     "tileEmpty": "još ništa",
     "tileBadge": {
@@ -4723,11 +4725,24 @@
       "not_running": "Ponuda trenutačno nije aktivna.",
       "daily_cap": "Današnje slanje je već iskorišteno. Jedno dnevno po trgovini.",
       "too_soon": "Prebrzo nakon zadnjeg slanja — mora proći otprilike jedan dan.",
-      "no_followers": "Nitko još ne prati trgovinu, pa nema kome pisati."
+      "no_followers": "Nitko još ne prati trgovinu, pa nema kome pisati.",
+      "segment_unknown": "Nepoznata publika — odaberite jednu s popisa.",
+      "segment_empty": "Nitko iz tog segmenta ne prati trgovinu, pa nema kome pisati. Kupnja nije pristanak na marketing."
     },
     "sendBlocked": {
       "daily_cap": "Današnje slanje je iskorišteno — sljedeće sutra",
       "not_listed": "Trgovina nije u izlogu, pa su slanja isključena"
+    },
+    "segmentLabel": "Publika",
+    "segmentAll": "Svi pratitelji",
+    "sendToSegment": "Poslati: {segment}",
+    "segment": {
+      "buyers": "Kupci",
+      "regulars": "Redoviti",
+      "newcomers": "Novi kupci",
+      "dormant": "Neaktivni",
+      "followersNoPurchase": "Pratitelji koji nikada nisu kupili",
+      "talkers": "Pisali su vam"
     }
   },
   "supply": {
@@ -5363,7 +5378,8 @@
       "too_many_lines": "Previše stavki na jednom računu.",
       "unauth": "Prijavite se ponovno.",
       "warehouse_unknown": "Ta polica nije dostupna."
-    }
+    },
+    "openCustomer": "Kartica kupca"
   },
   "receipt": {
     "title": "Račun",
@@ -5518,5 +5534,52 @@
     "timezoneNote": "Dani se broje u {tz}.",
     "timezoneMixed": "Vaše lokacije su u različitim vremenskim zonama, pa je sažetak prebačen na UTC.",
     "truncated": "Samo su prve potvrde u razdoblju uračunate — za potpunu sliku pogledati odjeljak izvješća."
+  },
+  "cabinetCrm": {
+    "title": "Kupci",
+    "subtitle": "Osobe koje ova trgovina poznaje preko imena za prijavu: račun koji su spremili, praćenje ili poruka koju su poslali.",
+    "segmentsTitle": "Segmenti",
+    "segmentsHint": "Segmenti se preklapaju: to su obilježja, ne stanja. Osoba može biti i redovita i neaktivna.",
+    "reachable": "dostupni za poruke: {count}",
+    "segment": {
+      "buyers": "Kupci",
+      "regulars": "Redoviti",
+      "newcomers": "Novi kupci",
+      "dormant": "Neaktivni",
+      "followersNoPurchase": "Pratitelji koji nikad nisu kupili",
+      "talkers": "Pisali su vam"
+    },
+    "retention": "Neaktivni kupci: {count} · bez kupnje {days} dana ili više.",
+    "retentionHint": "Slanje poruka doseže samo one koji prate trgovinu: kupnja nije privola za marketing. Osobni popust primjenjuje blagajnik ručno — blagajna ne provjerava promo kodove.",
+    "retentionAction": "Objaviti ponudu",
+    "listTitle": "Svi koje znamo",
+    "listCount": "Osobe: {count}",
+    "empty": "Ovdje još nema nikoga.",
+    "purchases": "kupnje: {count}",
+    "lastPurchase": "zadnja kupnja {date}",
+    "noPurchase": "nema kupnji",
+    "notReachable": "slanja isključena",
+    "truncated": "Popis je skraćen — prikazani su samo prvi.",
+    "anonymous": "Računi bez pridruženog kupca: {count}. Te su prodaje za nas anonimne: kupac nije spremio račun u profil.",
+    "privacy": "Vidite samo prijavno ime. E-mail i telefon nisu prikazani: osoba vam ih nije dala.",
+    "card": {
+      "purchases": "Kupnje",
+      "cancelled": "otkazano: {count}",
+      "first": "Prva kupnja",
+      "subscription": "Prati trgovinu",
+      "followYes": "da",
+      "followNo": "ne",
+      "mutedYes": "da, slanja utišana",
+      "promosOff": "slanja e-pošte trgovine su isključena u tom profilu",
+      "turnover": "Promet u ovoj trgovini",
+      "noTurnover": "Još nema dovršenih kupnji.",
+      "cashbackCounted": "cashback obračunat: {amount}",
+      "cashbackNote": "Cashback je obračunat, nije pripisan: novčanik platforme još ne postoji.",
+      "moneyHidden": "Iznosi su skriveni: potreban je pristup blagajni ili izvješćima.",
+      "history": "Povijest kupnji u ovoj trgovini",
+      "noHistory": "Još nema računa.",
+      "cancelledBadge": "otkazano",
+      "openThread": "Otvoriti razgovor"
+    }
   }
 }

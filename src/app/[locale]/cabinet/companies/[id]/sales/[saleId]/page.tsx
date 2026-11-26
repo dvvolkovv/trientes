@@ -4,7 +4,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { getViewerCompanyById } from "@/lib/business";
 import { readSale } from "@/lib/sales/read";
 import { saleRightsFor } from "@/lib/sales/rules";
-import { pointScopeAllows } from "@/lib/company-team/permissions";
+import { pointScopeAllows, can } from "@/lib/company-team/permissions";
 import { ReceiptView } from "@/components/sales/receipt-view";
 import { ReceiptActions } from "@/components/sales/receipt-actions";
 import { CabinetBackButton } from "@/components/cabinet/back-button";
@@ -49,6 +49,17 @@ export default async function CompanySalePage({
       </nav>
 
       <ReceiptView receipt={receipt} locale={locale} showCashier />
+
+      {/* Дверь в карточку покупателя (слайс CN) — только при праве `customers`: чек
+          знает, кто купил, а кто этот человек, вправе смотреть не каждый кассир. */}
+      {receipt.buyerUserId && can(permissions, "customers", "VIEW") ? (
+        <Link
+          href={`/${locale}/cabinet/companies/${company.id}/customers/${receipt.buyerUserId}`}
+          className="mt-4 flex h-12 items-center justify-center rounded-md border border-hairline text-sm hover:border-accent"
+        >
+          {t("openCustomer")}
+        </Link>
+      ) : null}
 
       {rights.sell ? (
         <ReceiptActions
