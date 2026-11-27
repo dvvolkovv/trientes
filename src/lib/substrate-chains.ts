@@ -117,7 +117,11 @@ export const SUBSTRATE_CHAINS: readonly SubstrateChain[] = [
     // значение нужно.
     key: "hydradx",
     label: "Hydration",
-    defaultRpcUrl: "https://rpc.hydradx.cloud",
+    // 27.11.2026: прежний `rpc.hydradx.cloud` отдаёт 521 на каждый запрос
+    // (Cloudflare: их узел не отвечает) — живой замер, три попытки подряд.
+    // Переехали на dwellir; хэш генезиса сошёлся с записанным в карточке,
+    // то есть это та же сеть, а не другая под тем же именем.
+    defaultRpcUrl: "https://hydration-rpc.n.dwellir.com",
     ss58Format: 63,
     symbol: "HDX",
     // Набор подписанных расширений не совпал ни с одним из двух вариантов
