@@ -14,6 +14,36 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "assets.coingecko.com" },
     ],
   },
+  /**
+   * Страница приёма платежей (слайс CP) не открывается во фрейме.
+   *
+   * Это **единственная** CSP, которую вводит слайс, и только `frame-ancestors`
+   * (скрипты она не ограничивает) — согласовано с dex-9b 27.11. Смысл: нажатие «да»,
+   * которое меняет получателя денег, нельзя подсунуть через чужой фрейм.
+   *
+   * Почему здесь, а не в nginx: `add_header` в новом `location` отменяет заголовки,
+   * унаследованные с уровня `server`, и с этой страницы пропал бы HSTS. Префикс
+   * локали в образце — чтобы покрыть все двенадцать языков сразу.
+   */
+  async headers() {
+    return [
+      {
+        source: "/:locale/cabinet/companies/:id/payments",
+        headers: [
+          { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
+          { key: "X-Frame-Options", value: "DENY" },
+        ],
+      },
+      {
+        // Подтверждение личности ведёт к тому же действию, значит и защита та же.
+        source: "/:locale/cabinet/reauth",
+        headers: [
+          { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
+          { key: "X-Frame-Options", value: "DENY" },
+        ],
+      },
+    ];
+  },
 };
 
 export default withNextIntl(nextConfig);

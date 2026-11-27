@@ -1846,7 +1846,8 @@
       "sales": "Pokladňa",
       "reports": "Prehľady",
       "crm": "Zákazníci",
-      "automation": "Automatizácia"
+      "automation": "Automatizácia",
+      "payments": "Prijímajte platby"
     },
     "tileUnit": {
       "points": "{count} na mape",
@@ -1864,7 +1865,8 @@
       "sales": "účtenky dnes",
       "reports": "účtenky za 30 dní",
       "crm": "kupujúci: {count}",
-      "automation": "pravidlá: {count}"
+      "automation": "pravidlá: {count}",
+      "payments": "platobný odkaz"
     },
     "tileEmpty": "zatiaľ nič",
     "tileBadge": {
@@ -5744,6 +5746,168 @@
       "url_private": "Tá adresa smeruje do súkromnej siete, nie na internet. Tam nebudeme posielať.",
       "url_too_long": "Tá adresa je príliš dlhá.",
       "too_many": "Limit koncových bodov pre jednu spoločnosť bol dosiahnutý."
+    }
+  },
+  "payLink": {
+    "title": "Prijímajte platby",
+    "subtitle": "Kupujúci vám platia v kryptomenách cez Trientes. Peniaze idú priamo do vašej vlastnej peňaženky — Trientes ich nikdy nedrží.",
+    "payButton": "Zaplatiť",
+    "step1Title": "Krok 1. Nastavte si obchod",
+    "step1Body": "Obchod si registrujete sami v platobnom profile Trientes: názov obchodu, minca a adresa, na ktorú chcete dostávať platby, a peňaženka, ktorou sa prihlasujete. Tohto kroku sa nezúčastňujeme a vaše kľúče nikdy nevidíme.",
+    "connect": "Pripojiť platby",
+    "step2Title": "Krok 2. Overte, že odkaz je váš",
+    "step2Body": "V platobnom profile otvorte «Links» → váš odkaz → «Name» a pridajte tento kód do názvu odkazu. Profil podpíše túto úpravu peňaženkou vášho obchodu, takže to môžete urobiť len vy. Po uložení môžete kód z názvu znova odstrániť.",
+    "codeWarning": "Tento kód zadávate sami, vo svojom vlastnom profile. Nikomu ho nikdy nehovorte — tím Trientes ho od vás nikdy nebude žiadať.",
+    "getCode": "Získať kód",
+    "codeExpires": "Platné do {when}",
+    "step3Title": "Krok 3. Vložte platobný odkaz",
+    "step3Body": "V platobnom profile otvorte «Links» → «New link» a skopírujte adresu, ktorú vám vytvorí. Vložte ju sem. Ukladá sa len ID odkazu — tlačidlo „Zaplatiť“ sa z neho zostaví.",
+    "check": "Skontrolovať odkaz",
+    "confirmLine": "Obchod: {merchant} ({merchantId}), odkaz: {title}, suma: {amount}",
+    "confirmWarning": "Názov obchodu nastavuje ten, komu odkaz patrí; Trientes ho neoveruje. Overte ID obchodu podľa svojho profilu.",
+    "confirmDelayed": "Tento odkaz patrí inému obchodu, preto nadobudne účinnosť {when}. Dovtedy bude váš aktuálny odkaz fungovať a my vám pošleme správu.",
+    "confirmYes": "Áno, toto je môj obchod",
+    "amountFree": "kupujúci si zvolí sumu",
+    "currentTitle": "Platby sú zapnuté",
+    "openPayPage": "Otvoriť platobnú stránku",
+    "remove": "Odstrániť platobný odkaz",
+    "removeConfirm": "Tlačidlo „Zaplatiť“ zmizne z vašej karty. Môžete ho opäť pripojiť kedykoľvek.",
+    "removeYes": "Áno, odstrániť",
+    "removed": "Platobný odkaz bol odstránený.",
+    "disabledNote": "Platobná služba hlási, že tento odkaz je vo vašom profile vypnutý. Kupujúci to uvidia na platobnej stránke.",
+    "hiddenMissing": "Platobná služba tento odkaz už nepozná, preto je tlačidlo „Zaplatiť“ skryté. Vytvorte si vo svojom profile nový odkaz a vložte ho sem.",
+    "hiddenMismatch": "Tento odkaz teraz hlási iné ID obchodu, než je tu pripojené, preto je tlačidlo „Zaplatiť“ skryté. Pred opätovným použitím nás prosím kontaktujte.",
+    "pendingTitle": "Zmena čaká",
+    "pendingBody": "Odkaz obchodu {merchant} ({merchantId}) nadobudne účinnosť {when}.",
+    "pendingOldWorks": "Váš aktuálny odkaz dovtedy zostane funkčný. Ak ste o túto zmenu nepožiadali, zrušte ju teraz a zmeňte svoje heslo.",
+    "cancelChange": "Zrušiť zmenu",
+    "changeCancelled": "Čakajúca zmena bola zrušená.",
+    "savedNow": "Hotovo. Tlačidlo Zaplatiť je na vašej karte aktívne.",
+    "savedDelayed": "Uložené. Nový odkaz nadobudne účinnosť {when}; aktuálny dovtedy zostáva funkčný.",
+    "frozenUntil": "Nedávno ste zmenili e‑mail alebo Telegram svojho účtu, preto sú platobné odkazy zmrazené do {when}. Chráni vás to, ak sa do vášho účtu dostal niekto iný.",
+    "reauth": "Potvrďte, že ste to vy",
+    "journalTitle": "História zmien",
+    "journalBySystem": "Trientes",
+    "journal": {
+      "SET": "Odkaz nastavený",
+      "SCHEDULED": "Zmena naplánovaná",
+      "APPLIED": "Naplánovaná zmena vykonaná",
+      "CANCELLED": "Zmena zrušená",
+      "REMOVED": "Odkaz odstránený",
+      "DISABLED": "Odkaz vypnutý v platobnom profile",
+      "HIDDEN": "Tlačidlo Zaplatiť skryté"
+    },
+    "field": {
+      "linkInput": "Platobný odkaz",
+      "link": "ID odkazu",
+      "title": "Názov odkazu",
+      "amount": "Suma",
+      "checked": "Naposledy overené"
+    },
+    "error": {
+      "generic": "Toto sa nepodarilo vykonať. Skúste to znova.",
+      "unauth": "Prosím, prihláste sa.",
+      "not_found": "Platobný odkaz môže zmeniť iba vlastník tohto podniku.",
+      "suspended": "Tento podnik je mimo výkladu, preto nie je možné zmeniť platobný odkaz.",
+      "csrf": "Stránka je zastaraná. Obnovte ju a skúste znova.",
+      "empty": "Vložte platobný odkaz alebo jeho ID.",
+      "bad_link": "Toto nie je platobný odkaz Trientes. Musí vyzerať ako https://trientes.org/exchange/#/l/pl_… alebo byť samotné ID pl_….",
+      "too_many_checks": "Príliš veľa kontrol za poslednú hodinu. Skúste to neskôr.",
+      "link_missing": "Platobná služba tento odkaz nepozná.",
+      "link_off": "Tento odkaz je vo vašom platobnom profile vypnutý. Najprv ho tam zapnite.",
+      "link_later": "Platobná služba neodpovedala. Skúste to neskôr.",
+      "stale_login": "Prihlásili ste sa príliš dávno.",
+      "code_required": "Kód zatiaľ nie je v názve odkazu. Pridajte ho vo vašom platobnom profile («Links» → váš odkaz → «Name») a skontrolujte znova.",
+      "contact_frozen": "Za posledných 24 hodín ste zmenili e‑mail alebo Telegram svojho účtu, preto sú platobné odkazy do tej doby zmrazené.",
+      "no_channel": "Aby sme mohli zmeniť existujúci odkaz, musíme sa vám vedieť ozvať, a momentálne nemôžeme: prepojte Telegram so svojím účtom alebo zapnite e‑mailové upozornenia pre svoju overenú adresu (Profil → Upozornenia → kanály upozornení).",
+      "same_link": "Tento odkaz už je na vašej karte.",
+      "no_pending": "Nie je žiadna čakajúca zmena.",
+      "no_link": "Na tejto karte nie je žiadny platobný odkaz."
+    },
+    "notify": {
+      "installed": {
+        "subject": "Platby sú teraz zapnuté pre vašu kartu Trientes",
+        "body": "Platobný odkaz obchodu {merchant} ({merchantId}) je teraz aktívny na vašej firemnej karte. Ak ste to neboli vy, otvorte {link} a odstráňte ho, potom si zmeňte heslo."
+      },
+      "sameMerchant": {
+        "subject": "Váš platobný odkaz Trientes sa zmenil",
+        "body": "Ďalší odkaz toho istého obchodu {merchant} ({merchantId}) je teraz na vašej karte. Ak ste to neboli vy, otvorte {link} a odstráňte ho, potom si zmeňte heslo."
+      },
+      "scheduled": {
+        "subject": "Čaká zmena platobného odkazu na vašej karte Trientes",
+        "body": "Obchod bol {was}, stane sa {willBe} ({merchantId}), účinné od {when} UTC. Váš aktuálny odkaz bude dovtedy fungovať. Ak ste o to nepožiadali, zrušte to tu: {link}"
+      },
+      "applied": {
+        "subject": "Zmena platobného odkazu nadobudla účinnosť",
+        "body": "Platby na vašej karte teraz idú do obchodu {merchant} ({merchantId}). Ak ste to neboli vy, otvorte {link} a odstráňte odkaz, potom si zmeňte heslo."
+      },
+      "cancelled": {
+        "subject": "Čakajúca zmena platobného odkazu bola zrušená",
+        "body": "Zmena na obchod {merchant} bola zrušená. Na vašej karte sa nič nezmenilo: {link}"
+      },
+      "changeFailed": {
+        "subject": "Čakajúca zmena platobného odkazu neprešla",
+        "body": "Keď uplynulo 24 hodín, opäť sme sa spýtali platobnej služby na odkaz obchodu {merchant} a už nie je použiteľný. Na vašej karte sa nič nezmenilo: {link}"
+      },
+      "removed": {
+        "subject": "Platby sú vypnuté na vašej karte Trientes",
+        "body": "Platobný odkaz obchodu {merchant} bol z vašej karty odstránený. Ak ste to neboli vy, otvorte {link} a zmeňte si heslo."
+      },
+      "missing": {
+        "subject": "Váš platobný odkaz Trientes už nefunguje",
+        "body": "Platobná služba už nepozná odkaz obchodu {merchant}, preto je na vašej karte skryté tlačidlo Zaplatiť. Vytvorte nový odkaz vo svojom platobnom profile a vložte ho sem: {link}"
+      },
+      "disabled": {
+        "subject": "Váš platobný odkaz Trientes je vypnutý",
+        "body": "Platobná služba hlási, že odkaz obchodu {merchant} je vo vašom profile vypnutý. Zapnite ho tam, alebo ho tu odstráňte: {link}"
+      },
+      "mismatch": {
+        "subject": "Váš platobný odkaz Trientes hlási iný obchod",
+        "body": "Odkaz obchodu {merchant} teraz hlási iné ID obchodu ako to, ktoré je pripnuté na vašej karte, preto je tlačidlo Zaplatiť skryté. Pred ďalším použitím nás, prosím, kontaktujte: {link}"
+      },
+      "reset": {
+        "subject": "Platby boli vypnuté po zmene vlastníka",
+        "body": "Osoba, ktorá nastavila platobný odkaz obchodu {merchant}, už nie je vlastníkom tejto firmy, preto bol odkaz odstránený. Znovu pripojte platby tu: {link}"
+      },
+      "contactChanged": {
+        "subject": "Kontaktné údaje vášho účtu Trientes sa zmenili",
+        "body": {
+          "email": "E‑mail vášho účtu Trientes bol zmenený. Táto správa úmyselne ide na starú adresu. Ak ste to neboli vy, ihneď sa prihláste a zmeňte si heslo: platobné odkazy sú na 24 hodín zmrazené, čo je čas, ktorý máte.",
+          "telegram": "Notifikácie cez Telegram vášho účtu Trientes boli vypnuté alebo zmenené. Táto správa úmyselne ide do starého kanála. Ak ste to neboli vy, ihneď sa prihláste a zmeňte si heslo: platobné odkazy sú na 24 hodín zmrazené, čo je čas, ktorý máte."
+        }
+      }
+    },
+    "cardBlockOffer": "Umožnite kupujúcim zaplatiť vám v kryptomenách priamo z tejto karty. Peniaze idú do vašej vlastnej peňaženky; Trientes ich nikdy nedrží.",
+    "cardBlockOn": "Kupujúci vám môžu zaplatiť tu: {merchant}.",
+    "cardBlockHidden": "Platobný odkaz {merchant} nefunguje, preto je na vašej karte skryté tlačidlo Zaplatiť.",
+    "cardBlockManage": "Nastavenia platieb",
+    "cardBlockHaveLink": "Už máte obchod? Vložte svoj platobný odkaz",
+    "noChannelHint": "Momentálne sa vám nevieme ozvať: prepojte Telegram alebo zapnite e‑mailové upozornenia pre svoju overenú adresu (Profil → Upozornenia → kanály upozornení). Dovtedy nie je možné zmeniť existujúci platobný odkaz — pred nepozorovanou zmenou vás chráni práve toto zdržanie."
+  },
+  "reauth": {
+    "kicker": "Zabezpečenie",
+    "title": "Potvrďte, že ste to vy",
+    "codeBody": "Zadajte šesťmiestny kód z vašej overovacej aplikácie. Žiadame ho, pretože sa chystáte zmeniť, kam idú peniaze.",
+    "codeLabel": "Kód z aplikácie",
+    "passwordBody": "Zadajte svoje heslo. Žiadame ho, pretože sa chystáte zmeniť, kam idú peniaze.",
+    "passwordLabel": "Heslo",
+    "confirm": "Potvrdiť",
+    "signout": "Odhlásiť sa a prihlásiť sa znova",
+    "signoutBody": "Váš účet nemá heslo ani overovaciu aplikáciu, takže jediný spôsob, ako potvrdiť, že ste to vy, je odhlásiť sa a prihlásiť sa znova. Vrátite sa rovno sem.",
+    "error": {
+      "generic": "Nepodarilo sa potvrdiť. Skúste to znova.",
+      "unauth": "Prosím, prihláste sa.",
+      "csrf": "Stránka zastarala. Obnovte ju a skúste to znova.",
+      "too_many_attempts": "Príliš veľa pokusov. Skúste to o pätnásť minút.",
+      "code_required": "Zadajte kód z aplikácie.",
+      "password_required": "Zadajte svoje heslo.",
+      "invalid_credentials": "Toto heslo sa nezhoduje.",
+      "code_invalid": "Tento kód sa nezhoduje.",
+      "code_reused": "Tento kód už bol použitý. Počkajte na ďalší.",
+      "rate_limited": "Príliš veľa pokusov. Skúste to znova o minútu.",
+      "not_enrolled": "Pre tento účet nie je nastavená autentifikačná aplikácia.",
+      "unreadable": "Nedokážeme prečítať uložený kľúč. Kontaktujte podporu.",
+      "no_password_set": "Tento účet nemá heslo. Odhláste sa a prihláste sa znova."
     }
   }
 }

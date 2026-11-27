@@ -39,6 +39,7 @@ import { sendHealthReport } from "../src/lib/health-report";
 import { runCaseDueSweep } from "../src/lib/cases/due-sweep";
 import { runClaimMailboxSweep } from "../src/lib/claims/sweep";
 import { runPointReportSweep } from "../src/lib/points/report-sweep";
+import { runPayLinkDueSweep, runPayLinkSweep } from "../src/lib/pay-link/sweep";
 import { runCompanyReviewSweep } from "../src/lib/cases/company-review-sweep";
 import { runReorderSweep } from "../src/lib/supply/reorder-sweep";
 import { runStaffAccessReviewSweep } from "../src/lib/staff-access-sweep";
@@ -456,6 +457,42 @@ async function runCaseDueJob() {
   }
 }
 
+/**
+ * Суточная проверка ссылок оплаты (слайс CP, § 2.9). Молчание службы прежние числа не
+ * стирает — отчёт печатается только когда что-то изменилось (правило AA).
+ */
+async function runPayLinkJob() {
+  const t0 = Date.now();
+  try {
+    const stats = await runPayLinkSweep();
+    if (stats.hidden || stats.disabled || stats.mismatched || stats.later) {
+      console.log(
+        `[worker] pay links ok: ${stats.ok} live, ${stats.disabled} disabled, ${stats.hidden} hidden, ${stats.mismatched} mismatched, ${stats.later} unreachable of ${stats.checked} in ${Date.now() - t0}ms`,
+      );
+    }
+  } catch (err) {
+    console.error("[worker] pay link sweep failed:", err);
+  }
+}
+
+/**
+ * Исполнение отложенных смен ссылки. Каждые десять минут: срок считается сутками, и
+ * часовой прогон растянул бы «через 24 часа» до двадцати пяти.
+ */
+async function runPayLinkDueJob() {
+  const t0 = Date.now();
+  try {
+    const stats = await runPayLinkDueSweep();
+    if (stats.due > 0) {
+      console.log(
+        `[worker] pay link changes: ${stats.applied} applied, ${stats.cancelled} cancelled, ${stats.waiting} waiting of ${stats.due} due in ${Date.now() - t0}ms`,
+      );
+    }
+  } catch (err) {
+    console.error("[worker] pay link due sweep failed:", err);
+  }
+}
+
 async function runClaimMailboxJob() {
   const t0 = Date.now();
   try {
@@ -832,6 +869,9 @@ async function main() {
   // Отчёт здоровья — в 06:00 UTC (09:00 МСК): после всех ночных прогонов, чтобы
   // их свежесть считалась по уже прошедшим, а не по ещё не начавшимся.
   cron.schedule("0 6 * * *", () => void runHealthReportJob());
+  // Приём платежей (слайс CP): суточная проверка ссылок и исполнение отложенных смен.
+  cron.schedule("40 5 * * *", () => void runPayLinkJob());
+  cron.schedule("*/10 * * * *", () => void runPayLinkDueJob());
 
   // Live price feed via Binance WebSocket — top 20 coins.
   startBinance();

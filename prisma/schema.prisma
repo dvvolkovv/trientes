@@ -28,55 +28,60 @@ enum StaffLevel {
 }
 
 model User {
-  id                       String                    @id @default(cuid())
-  email                    String?                   @unique
-  name                     String?
-  image                    String?
-  username                 String?                   @unique
-  passwordHash             String?
-  firstName                String?
-  lastName                 String?
-  phone                    String?
-  role                     Role                      @default(USER)
-  preferredLocale          String                    @default("en")
-  preferredCurrency        String                    @default("USD")
-  preferredTheme           String                    @default("system")
-  emailVerified            DateTime?
-  createdAt                DateTime                  @default(now())
-  accounts                 Account[]
-  sessions                 Session[]
-  watchlist                Watchlist[]
-  exchangeWatchlist        ExchangeWatchlist[]
-  cardWatchlist            CardWatchlist[]
-  coinRatings              CoinRating[]
-  coinRequests             CoinRequest[]
-  adminAddedCoins          Coin[]                    @relation("AdminCoinAdditions")
-  reviewedRequests         CoinRequest[]             @relation("RequestReviewer")
-  auditLogs                AdminAuditLog[]           @relation("AdminAuditActor")
-  companies                Company[]
-  registeredExchanges      RegisteredExchange[]
-  reviewedPoints           CompanyPoint[]            @relation("PointReviewer")
-  reviewedCompanies        Company[]                 @relation("CompanyReviewer")
-  loginAttempts            LoginAttempt[]
-  passwordResets           PasswordResetToken[]      @relation("PasswordResets")
-  ownedFintechs            FintechCompany[]          @relation("FintechOwner")
-  reviewedFintechs         FintechCompany[]          @relation("FintechReviewer")
-  priceAlerts              PriceAlert[]
-  geoAlerts                GeoAlert[]
-  companyMemberships       CompanyMember[]
-  companyActions           CompanyActionLog[]
-  tasksCreated             CompanyTask[]             @relation("CompanyTaskAuthor")
-  tasksAssigned            CompanyTask[]             @relation("CompanyTaskAssignee")
-  tasksTaken               CompanyTask[]             @relation("CompanyTaskTaker")
-  tasksClosed              CompanyTask[]             @relation("CompanyTaskCloser")
-  chatMessages             CompanyChatMessage[]      @relation("CompanyChatAuthor")
-  companyAds               CompanyAd[]               @relation("CompanyAdAuthor")
-  sales                    Sale[]                    @relation("SaleBuyer")
+  id                  String               @id @default(cuid())
+  email               String?              @unique
+  name                String?
+  image               String?
+  username            String?              @unique
+  passwordHash        String?
+  firstName           String?
+  lastName            String?
+  phone               String?
+  role                Role                 @default(USER)
+  preferredLocale     String               @default("en")
+  preferredCurrency   String               @default("USD")
+  preferredTheme      String               @default("system")
+  emailVerified       DateTime?
+  /// Когда у записи последний раз сменился канал связи — почта или Telegram (CP).
+  /// Смена канала замораживает установку и смену ссылки оплаты на 24 часа: иначе
+  /// захватчик сначала заменит канал на свой, и 24 часа отложенной смены пройдут
+  /// молча. Сообщение о самой смене уходит на **старый** канал.
+  contactChangedAt    DateTime?
+  createdAt           DateTime             @default(now())
+  accounts            Account[]
+  sessions            Session[]
+  watchlist           Watchlist[]
+  exchangeWatchlist   ExchangeWatchlist[]
+  cardWatchlist       CardWatchlist[]
+  coinRatings         CoinRating[]
+  coinRequests        CoinRequest[]
+  adminAddedCoins     Coin[]               @relation("AdminCoinAdditions")
+  reviewedRequests    CoinRequest[]        @relation("RequestReviewer")
+  auditLogs           AdminAuditLog[]      @relation("AdminAuditActor")
+  companies           Company[]
+  registeredExchanges RegisteredExchange[]
+  reviewedPoints      CompanyPoint[]       @relation("PointReviewer")
+  reviewedCompanies   Company[]            @relation("CompanyReviewer")
+  loginAttempts       LoginAttempt[]
+  passwordResets      PasswordResetToken[] @relation("PasswordResets")
+  ownedFintechs       FintechCompany[]     @relation("FintechOwner")
+  reviewedFintechs    FintechCompany[]     @relation("FintechReviewer")
+  priceAlerts         PriceAlert[]
+  geoAlerts           GeoAlert[]
+  companyMemberships  CompanyMember[]
+  companyActions      CompanyActionLog[]
+  tasksCreated        CompanyTask[]        @relation("CompanyTaskAuthor")
+  tasksAssigned       CompanyTask[]        @relation("CompanyTaskAssignee")
+  tasksTaken          CompanyTask[]        @relation("CompanyTaskTaker")
+  tasksClosed         CompanyTask[]        @relation("CompanyTaskCloser")
+  chatMessages        CompanyChatMessage[] @relation("CompanyChatAuthor")
+  companyAds          CompanyAd[]          @relation("CompanyAdAuthor")
+  sales               Sale[]               @relation("SaleBuyer")
 
   /// Автоматизация (слайс CO): кто завёл правило и webhook, чьё действие родило событие.
-  companyEvents            CompanyEvent[]            @relation("CompanyEventActor")
-  companyRules             CompanyRule[]             @relation("CompanyRuleAuthor")
-  companyWebhooks          CompanyWebhook[]          @relation("CompanyWebhookAuthor")
+  companyEvents   CompanyEvent[]   @relation("CompanyEventActor")
+  companyRules    CompanyRule[]    @relation("CompanyRuleAuthor")
+  companyWebhooks CompanyWebhook[] @relation("CompanyWebhookAuthor")
 
   /// Ключи API предприятий: кто выдал и кто отозвал (слайс CL).
   apiKeysCreated           MerchantApiKey[]          @relation("ApiKeyAuthor")
@@ -153,6 +158,10 @@ model User {
   promoDeliveries          PromoDelivery[]           @relation("PromoRecipient")
   promoClicks              PromoClick[]              @relation("PromoClicker")
   supplyOrders             SupplyOrder[]             @relation("SupplyOrderAuthor")
+  payLinksSet              CompanyPayLink[]          @relation("PayLinkInstaller")
+  payLinkChanges           CompanyPayLinkChange[]    @relation("PayLinkChangeActor")
+  payLinkPending           CompanyPayLinkPending[]   @relation("PayLinkPendingRequester")
+  payLinkCodes             CompanyPayLinkCode[]      @relation("PayLinkCodeUser")
 }
 
 model PushSubscription {
@@ -584,6 +593,13 @@ model Session {
   /// GitHub, Telegram), и встраивать проверку в каждый — четыре места, где
   /// можно забыть. Один охранник там же, где читается право на очередь.
   mfaAt        DateTime?
+  /// Когда сеанс создан. Нужен «свежему входу» (слайс CP): смена ссылки оплаты
+  /// требует входа не старше 15 минут, а у сеанса этого факта не было вовсе.
+  createdAt    DateTime  @default(now())
+  /// Когда личность подтверждена **внутри** сеанса — пароль или код второго
+  /// фактора на `/cabinet/reauth`. Выход и повторный вход годится тоже: он
+  /// создаёт новый сеанс, то есть новый `createdAt`.
+  reauthAt     DateTime?
   user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -1108,6 +1124,13 @@ model Company {
   events   CompanyEvent[]
   rules    CompanyRule[]
   webhooks CompanyWebhook[]
+
+  /// Приём платежей Trientes в карточке (слайс CP). Деньги идут прямо на кошелёк
+  /// владельца, минуя сайт; у сайта лежит только номер ссылки оплаты.
+  payLink        CompanyPayLink?
+  payLinkPending CompanyPayLinkPending?
+  payLinkChanges CompanyPayLinkChange[]
+  payLinkCodes   CompanyPayLinkCode[]
 
   @@index([ownerUserId])
   @@index([status, createdAt])
@@ -3405,17 +3428,17 @@ model MerchantApiKey {
   keyHash String @unique
 
   createdById String?
-  createdBy   User?   @relation("ApiKeyAuthor", fields: [createdById], references: [id], onDelete: SetNull)
+  createdBy   User?    @relation("ApiKeyAuthor", fields: [createdById], references: [id], onDelete: SetNull)
   createdAt   DateTime @default(now())
 
   /// Обновляется не чаще раза в минуту: запись в базу на каждый запрос — лишняя точка
   /// отказа на горячем пути (прецедент `rate-gate` в BL).
   lastUsedAt DateTime?
 
-  revokedAt     DateTime?
-  revokedById   String?
-  revokedBy     User?     @relation("ApiKeyRevoker", fields: [revokedById], references: [id], onDelete: SetNull)
-  revokeReason  String?
+  revokedAt    DateTime?
+  revokedById  String?
+  revokedBy    User?     @relation("ApiKeyRevoker", fields: [revokedById], references: [id], onDelete: SetNull)
+  revokeReason String?
 
   @@index([companyId, revokedAt])
 }
@@ -3582,4 +3605,130 @@ model WebhookDelivery {
 
   @@index([status, nextAttemptAt])
   @@index([webhookId, createdAt])
+}
+
+/// Приём платежей в карточке магазина (слайс CP).
+///
+/// Хранится **только номер ссылки**: адрес кнопки «Оплатить» собирается из постоянного
+/// шаблона и языка страницы, и введённая владельцем строка в `href` не попадает никогда.
+/// Остальные поля — то, что служба оплаты сказала о ссылке в момент проверки: они нужны
+/// владельцу, чтобы узнать свой магазин, и суточной проверке, чтобы заметить подмену.
+/// Имя магазина защитой не является (его задаёт владелец ссылки) — защита в `merchantId`.
+model CompanyPayLink {
+  id        String  @id @default(cuid())
+  companyId String  @unique
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  /// `pl_…`, строго 11 знаков после приставки, с учётом регистра.
+  linkId       String
+  /// Закреплённый номер магазина. Расхождение с ответом службы — тревога.
+  merchantId   String
+  /// Имя магазина и название ссылки, уже очищенные от bidi и невидимых знаков.
+  merchantName String
+  title        String?
+  /// `usd` | `coin` и символ монеты при `coin`: сумму показывает сама страница оплаты,
+  /// а эти поля — чтобы владелец узнал свою ссылку в карточке.
+  unit         String
+  coinSymbol   String?
+  /// Сумма как её назвала служба; пусто — сумму выбирает покупатель.
+  amount       String?
+
+  /// Когда ссылка последний раз подтверждена службой.
+  checkedAt    DateTime
+  /// Служба ответила `accepting: false` — ссылка выключена в кабинете. Кнопку не
+  /// скрываем: выключенную ссылку страница оплаты объяснит сама, а владельцу стоит
+  /// пометки. Скрывает кнопку только `hiddenAt`.
+  disabledAt   DateTime?
+  /// 404 у службы или чужой `merchant_id`: «Оплатить» не показываем вовсе.
+  hiddenAt     DateTime?
+  hiddenReason String?
+
+  /// Кто поставил ссылку. Перестал быть владельцем — ссылка сбрасывается: передачи
+  /// предприятия одним действием в проекте нет, и это единственный наблюдаемый её вид.
+  installedById String?
+  installedBy   User?   @relation("PayLinkInstaller", fields: [installedById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Ожидающая смена на ссылку **другого** магазина (слайс CP): старая работает 24 часа,
+/// новая ждёт. Одна на предприятие — новый запрос заменяет прежний и отсчитывает срок
+/// заново: две ждущие смены означали бы, что порядок их применения никто не выбирал.
+model CompanyPayLinkPending {
+  id        String  @id @default(cuid())
+  companyId String  @unique
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  linkId       String
+  merchantId   String
+  merchantName String
+  title        String?
+  unit         String
+  coinSymbol   String?
+  amount       String?
+
+  requestedById String?
+  requestedBy   User?    @relation("PayLinkPendingRequester", fields: [requestedById], references: [id], onDelete: SetNull)
+  requestedAt   DateTime @default(now())
+  /// Каналы владельца **на момент запроса**: `{ chatId, email, locale }`. Сообщение об
+  /// исполнении через сутки уходит туда, а не на каналы момента исполнения — иначе
+  /// захватчик, сменивший почту за эти сутки, получил бы весть о своей же подмене.
+  notifyChannels Json?
+  /// Когда смена вступит в силу. Прогон воркера в этот час снова спрашивает службу и
+  /// только тогда включает: за сутки ссылку могли выключить.
+  effectiveAt   DateTime
+
+  @@index([effectiveAt])
+}
+
+/// Журнал смен ссылки, только вставка (слайс CP). Поддержке надо знать, куда шли
+/// платежи, поэтому строка не удаляется никогда и переживает автора (`SetNull`) —
+/// прецедент `CompanyActionLog`, где `RESTRICT` уже однажды запер уборку (AU).
+model CompanyPayLinkChange {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  /// Что случилось: SET | SCHEDULED | APPLIED | CANCELLED | REMOVED | DISABLED | HIDDEN.
+  action String
+
+  beforeLinkId     String?
+  beforeMerchantId String?
+  afterLinkId      String?
+  afterMerchantId  String?
+  /// Пояснение: причина скрытия, причина сброса. Текст наш, не владельца ссылки.
+  note             String?
+
+  actorUserId String?
+  actor       User?   @relation("PayLinkChangeActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+  /// Адрес и браузер — для поддержки: они отвечают на вопрос «кто это сделал».
+  ip          String?
+  userAgent   String?
+
+  createdAt DateTime @default(now())
+
+  @@index([companyId, createdAt])
+}
+
+/// Одноразовый код, который владелец дописывает в название ссылки в кабинете оплаты
+/// (слайс CP). Доказывает, что ссылкой управляет тот же человек, что правит карточку:
+/// уговоривший вставить чужую ссылку нашего кода не знает. Живёт 30 минут и привязан
+/// к карточке **и** к человеку.
+model CompanyPayLinkCode {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User    @relation("PayLinkCodeUser", fields: [userId], references: [id], onDelete: Cascade)
+
+  /// 8 знаков из алфавита без похожих друг на друга букв и цифр.
+  code      String
+  expiresAt DateTime
+  /// Гасится при успешном сохранении: тот же код второй раз не работает.
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([companyId, userId, createdAt])
+  @@index([expiresAt])
 }

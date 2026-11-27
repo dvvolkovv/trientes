@@ -26,6 +26,7 @@ import { industry as industryOf } from "@/lib/industries";
 import { CabinetBackButton } from "@/components/cabinet/back-button";
 import { buildCompanyCard } from "@/lib/company-card/view";
 import { AdBanner } from "@/components/company-card/ad-banner";
+import { PayLinkCardBlock } from "@/components/business/pay-link-card-block";
 
 export const dynamic = "force-dynamic";
 
@@ -72,6 +73,14 @@ export default async function CompanyManagementPage({
   const kybOpen = kybParam === "1" && isOwner;
 
   const officeHours = parseWeekHours(company.hours);
+
+  // Приём платежей читается только владельцу: сотруднику этого блока не видно вовсе.
+  const payLink = isOwner
+    ? await prisma.companyPayLink.findUnique({
+        where: { companyId: company.id },
+        select: { merchantName: true, hiddenAt: true },
+      })
+    : null;
 
   // Баннер глазами посетителя. Предприятие ещё не на витрине — карточки нет, и
   // предпросмотра тоже: показывать то, чего никто снаружи не видит, значит обещать.
@@ -209,6 +218,16 @@ export default async function CompanyManagementPage({
               returnDays: company.returnDays === null ? null : String(company.returnDays),
             }}
           />
+
+          {/* Приём платежей (слайс CP, § 1). Только владельцу и прямо на карточке:
+              человек, пришедший «подключить оплату», не должен искать его в группе. */}
+          {isOwner ? (
+            <PayLinkCardBlock
+              locale={locale}
+              companyId={company.id}
+              linked={payLink ? { merchantName: payLink.merchantName, hidden: payLink.hiddenAt !== null } : null}
+            />
+          ) : null}
 
           {editable ? (
             <>

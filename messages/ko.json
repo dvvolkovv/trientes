@@ -1846,7 +1846,8 @@
       "sales": "금전등록기",
       "reports": "보고서",
       "crm": "고객",
-      "automation": "자동화"
+      "automation": "자동화",
+      "payments": "결제 수락"
     },
     "tileUnit": {
       "points": "지도에 {count}개",
@@ -1864,7 +1865,8 @@
       "sales": "금일 영수증",
       "reports": "30일 내 영수증",
       "crm": "구매자: {count}",
-      "automation": "규칙: {count}"
+      "automation": "규칙: {count}",
+      "payments": "결제 링크"
     },
     "tileEmpty": "아직 없음",
     "tileBadge": {
@@ -5744,6 +5746,168 @@
       "url_private": "해당 주소는 인터넷이 아닌 사설 네트워크 내부를 가리킵니다. 그곳으로는 전송하지 않습니다.",
       "url_too_long": "주소가 너무 깁니다.",
       "too_many": "한 회사에 대한 엔드포인트 한도에 도달했습니다."
+    }
+  },
+  "payLink": {
+    "title": "결제 받기",
+    "subtitle": "구매자는 Trientes를 통해 암호화폐로 당신에게 결제합니다. 대금은 당신의 지갑으로 바로 들어가며 — Trientes는 절대 이를 보관하지 않습니다",
+    "payButton": "결제",
+    "step1Title": "1단계. 상점을 설정하세요",
+    "step1Body": "상점 등록은 Trientes 결제 캐비닛에서 직접 수행합니다: 상점명, 결제를 받을 코인과 주소, 그리고 로그인에 사용하는 지갑. 우리는 그 과정에 관여하지 않으며 귀하의 키를 볼 일도 없습니다",
+    "connect": "결제 연결",
+    "step2Title": "2단계. 링크가 본인 것임을 증명하세요",
+    "step2Body": "결제 캐비닛에서 «Links» → 본인 링크 → «Name»을 열고 이 코드를 링크 이름에 추가하세요. 캐비닛은 해당 수정을 상점 지갑으로 서명하므로 오직 당신만 할 수 있습니다. 저장한 뒤에는 이름에서 코드를 다시 제거할 수 있습니다",
+    "codeWarning": "이 코드는 본인의 캐비닛에서 직접 입력합니다. 누구에게도 절대 알려주지 마세요 — Trientes 직원도 절대 요구하지 않습니다",
+    "getCode": "코드 받기",
+    "codeExpires": "{when}까지 유효",
+    "step3Title": "3단계. 결제 링크를 붙여넣기",
+    "step3Body": "결제 관리 페이지에서 «Links» → «New link»를 열고 제공된 주소를 복사하세요. 여기에 붙여넣으세요. 링크 ID만 저장되며, 결제 버튼은 그것을 바탕으로 만들어집니다.",
+    "check": "링크 확인",
+    "confirmLine": "상점: {merchant} ({merchantId}), 링크: {title}, 금액: {amount}",
+    "confirmWarning": "상점 이름은 링크 소유자가 정하며 Trientes는 이를 검증하지 않습니다. 관리 페이지의 상점 ID와 일치하는지 확인하세요.",
+    "confirmDelayed": "이 링크는 다른 상점에 속하므로 {when}에 효력이 발생합니다. 그때까지는 현재 링크가 계속 작동하며, 저희가 메시지를 보내드립니다.",
+    "confirmYes": "예, 내 상점이 맞습니다",
+    "amountFree": "구매자가 금액을 선택",
+    "currentTitle": "결제가 활성화됨",
+    "openPayPage": "결제 페이지 열기",
+    "remove": "결제 링크 제거",
+    "removeConfirm": "결제 버튼이 카드에서 사라집니다. 언제든지 다시 연결할 수 있습니다.",
+    "removeYes": "예, 제거합니다",
+    "removed": "결제 링크가 제거되었습니다.",
+    "disabledNote": "결제 서비스에서 이 링크가 관리 페이지에서 꺼져 있다고 보고합니다. 구매자는 결제 페이지에서 이를 보게 됩니다.",
+    "hiddenMissing": "결제 서비스에서 더 이상 이 링크를 알지 못하므로 결제 버튼이 숨겨졌습니다. 관리 페이지에서 새 링크를 만들고 여기에 붙여넣으세요.",
+    "hiddenMismatch": "이 링크가 이제 여기 고정된 것과 다른 상점 ID를 보고하므로 결제 버튼이 숨겨졌습니다. 다시 사용하기 전에 저희에게 연락해 주세요.",
+    "pendingTitle": "변경이 대기 중입니다",
+    "pendingBody": "상점 {merchant} ({merchantId})의 링크가 {when}에 효력이 발생합니다.",
+    "pendingOldWorks": "그때까지 현재 링크는 계속 작동합니다. 이 변경을 요청하지 않았다면, 지금 취소하고 비밀번호를 변경하세요.",
+    "cancelChange": "변경 취소",
+    "changeCancelled": "대기 중인 변경이 취소되었습니다.",
+    "savedNow": "완료. 결제 버튼이 카드에서 활성화되었습니다.",
+    "savedDelayed": "저장되었습니다. 새 링크는 {when}에 효력이 발생하며, 그때까지는 현재 링크가 계속 작동합니다.",
+    "frozenUntil": "최근에 계정의 이메일 또는 Telegram을 변경하여 결제 링크가 {when}까지 동결됩니다. 이는 다른 사람이 계정에 침입했을 경우를 대비한 보호 조치입니다.",
+    "reauth": "본인 확인",
+    "journalTitle": "변경 내역",
+    "journalBySystem": "Trientes",
+    "journal": {
+      "SET": "링크 설정됨",
+      "SCHEDULED": "변경 예정됨",
+      "APPLIED": "예약된 변경 적용됨",
+      "CANCELLED": "변경 취소됨",
+      "REMOVED": "링크 제거됨",
+      "DISABLED": "관리 페이지에서 링크가 비활성화됨",
+      "HIDDEN": "결제 버튼 숨김"
+    },
+    "field": {
+      "linkInput": "결제 링크",
+      "link": "링크 ID",
+      "title": "링크 이름",
+      "amount": "금액",
+      "checked": "마지막 확인"
+    },
+    "error": {
+      "generic": "처리할 수 없습니다. 다시 시도하세요.",
+      "unauth": "로그인하세요.",
+      "not_found": "이 비즈니스의 소유자만 결제 링크를 변경할 수 있습니다.",
+      "suspended": "이 비즈니스가 쇼케이스에서 비활성화되어 결제 링크를 변경할 수 없습니다.",
+      "csrf": "페이지가 오래되었습니다. 새로고침 후 다시 시도하세요.",
+      "empty": "결제 링크 또는 해당 id를 붙여넣으세요.",
+      "bad_link": "Trientes 결제 링크가 아닙니다. https://trientes.org/exchange/#/l/pl_… 처럼 보여야 하거나 pl_… id 자체여야 합니다.",
+      "too_many_checks": "지난 한 시간 동안 확인이 너무 많았습니다. 나중에 다시 시도하세요.",
+      "link_missing": "결제 서비스가 이 링크를 알지 못합니다.",
+      "link_off": "결제 대시보드에서 이 링크가 꺼져 있습니다. 먼저 거기서 켜세요.",
+      "link_later": "결제 서비스가 응답하지 않았습니다. 나중에 다시 시도하세요.",
+      "stale_login": "로그인한 지 너무 오래되었습니다.",
+      "code_required": "아직 코드가 링크 이름에 없습니다. 결제 대시보드(«Links» → your link → «Name»)에서 추가한 다음 다시 확인하세요.",
+      "contact_frozen": "지난 24시간 내 계정의 이메일 또는 Telegram을 변경하여, 그때까지 결제 링크가 동결됩니다.",
+      "no_channel": "기존 링크를 변경하려면 저희가 연락드릴 수 있어야 하지만, 지금은 그렇지 않습니다: 계정에 Telegram을 연결하시거나, 인증된 주소의 이메일 알림을 켜주세요 (Cabinet → Alerts → notification channels).",
+      "same_link": "이 링크는 이미 카드에 있습니다.",
+      "no_pending": "대기 중인 변경이 없습니다.",
+      "no_link": "이 카드에 결제 링크가 없습니다."
+    },
+    "notify": {
+      "installed": {
+        "subject": "Trientes 카드에서 결제가 이제 활성화되었습니다",
+        "body": "상점 {merchant} ({merchantId})의 결제 링크가 이제 비즈니스 카드에서 라이브 상태입니다. 본인이 아니라면 {link}를 열어 제거한 다음 비밀번호를 변경하세요."
+      },
+      "sameMerchant": {
+        "subject": "Trientes 결제 링크가 변경되었습니다",
+        "body": "같은 상점 {merchant} ({merchantId})의 다른 링크가 이제 비즈니스 카드에 있습니다. 본인이 아니라면 {link}를 열어 제거한 다음 비밀번호를 변경하세요."
+      },
+      "scheduled": {
+        "subject": "Trientes 카드에서 결제 링크 변경이 대기 중입니다",
+        "body": "상점은 {was}에서 {willBe}({merchantId})로 변경되며, {when} UTC에 적용됩니다. 그때까지 현재 링크는 계속 작동합니다. 요청하지 않았다면 여기에서 취소하세요: {link}"
+      },
+      "applied": {
+        "subject": "결제 링크 변경이 적용되었습니다",
+        "body": "이제 비즈니스 카드의 결제가 상점 {merchant} ({merchantId})로 전송됩니다. 본인이 아니라면 {link}를 열어 링크를 제거한 다음 비밀번호를 변경하세요."
+      },
+      "cancelled": {
+        "subject": "대기 중이던 결제 링크 변경이 취소되었습니다",
+        "body": "상점 {merchant}로의 변경이 취소되었습니다. 카드의 내용은 아무 것도 변경되지 않았습니다: {link}"
+      },
+      "changeFailed": {
+        "subject": "대기 중이던 결제 링크 변경이 처리되지 않았습니다",
+        "body": "24시간이 지나 상점 {merchant}의 링크에 대해 결제 서비스에 다시 확인했지만, 더 이상 사용할 수 없습니다. 카드의 내용은 아무 것도 변경되지 않았습니다: {link}"
+      },
+      "removed": {
+        "subject": "Trientes 카드에서 결제가 꺼졌습니다",
+        "body": "상점 {merchant}의 결제 링크가 비즈니스 카드에서 제거되었습니다. 본인이 아니라면 {link}를 열고 비밀번호를 변경하세요."
+      },
+      "missing": {
+        "subject": "Trientes 결제 링크가 더 이상 작동하지 않습니다",
+        "body": "결제 서비스가 상점 {merchant}의 링크를 더 이상 인식하지 못하므로 카드의 결제 버튼이 숨겨졌습니다. 결제 대시보드에서 새 링크를 만들고 여기에 붙여넣으세요: {link}"
+      },
+      "disabled": {
+        "subject": "Trientes 결제 링크가 비활성화되었습니다",
+        "body": "결제 서비스가 상점 {merchant}의 링크가 대시보드에서 비활성화되었다고 보고합니다. 거기서 다시 켜거나, 여기에서 제거하세요: {link}"
+      },
+      "mismatch": {
+        "subject": "Trientes 결제 링크가 다른 상점을 보고합니다",
+        "body": "상점 {merchant}의 링크가 이제 카드에 고정된 것과 다른 상점 id를 보고하므로 결제 버튼이 숨겨졌습니다. 다시 사용하기 전에 저희에게 문의하세요: {link}"
+      },
+      "reset": {
+        "subject": "소유자 변경 후 결제가 꺼졌습니다",
+        "body": "상점 {merchant}의 결제 링크를 설정한 사람이 더 이상 이 비즈니스의 소유자가 아니므로 링크가 제거되었습니다. 여기에서 결제를 다시 연결하세요: {link}"
+      },
+      "contactChanged": {
+        "subject": "Trientes 계정의 연락처 정보가 변경되었습니다",
+        "body": {
+          "email": "Trientes 계정의 이메일이 변경되었습니다. 이 메시지는 의도적으로 기존 주소로 발송되었습니다. 본인이 아니라면 즉시 로그인하여 비밀번호를 변경하세요: 결제 링크는 24시간 동안 동결되며, 그 시간이 당신에게 주어진 시간입니다.",
+          "telegram": "Trientes 계정의 Telegram 알림이 꺼지거나 변경되었습니다. 이 메시지는 의도적으로 기존 채널로 발송되었습니다. 본인이 아니라면 즉시 로그인하여 비밀번호를 변경하세요: 결제 링크는 24시간 동안 동결되며, 그 시간이 당신에게 주어진 시간입니다."
+        }
+      }
+    },
+    "cardBlockOffer": "구매자가 이 카드에서 바로 암호화폐로 결제하도록 하세요. 대금은 본인 지갑으로 직접 들어가며, Trientes는 절대 보관하지 않습니다.",
+    "cardBlockOn": "구매자가 여기서 결제할 수 있습니다: {merchant}.",
+    "cardBlockHidden": "{merchant}의 결제 링크가 작동하지 않아 카드에서 결제 버튼이 숨겨져 있습니다.",
+    "cardBlockManage": "결제 설정",
+    "cardBlockHaveLink": "이미 상점이 있으신가요? 결제 링크를 붙여 넣으세요",
+    "noChannelHint": "지금은 연락드릴 수 없습니다: Telegram을 연결하시거나, 인증된 주소의 이메일 알림을 켜주세요 (Cabinet → Alerts → notification channels). 그때까지는 기존 결제 링크를 변경할 수 없습니다 — 아무 알림 없이 변경되는 일을 이 지연이 바로 막아줍니다."
+  },
+  "reauth": {
+    "kicker": "보안",
+    "title": "본인 확인",
+    "codeBody": "인증 앱의 6자리 코드를 입력하세요. 자금의 수신처를 변경하려고 하기 때문에 확인이 필요합니다.",
+    "codeLabel": "앱 코드",
+    "passwordBody": "비밀번호를 입력하세요. 자금의 수신처를 변경하려고 하기 때문에 확인이 필요합니다.",
+    "passwordLabel": "비밀번호",
+    "confirm": "확인",
+    "signout": "로그아웃 후 다시 로그인",
+    "signoutBody": "계정에 비밀번호와 인증 앱이 없어, 본인 확인을 위한 유일한 방법은 로그아웃 후 다시 로그인하는 것입니다. 곧바로 이곳으로 돌아옵니다.",
+    "error": {
+      "generic": "확인할 수 없습니다. 다시 시도하세요.",
+      "unauth": "로그인하세요.",
+      "csrf": "페이지가 만료되었습니다. 새로고침 후 다시 시도하세요.",
+      "too_many_attempts": "시도 횟수가 너무 많습니다. 15분 후 다시 시도하세요.",
+      "code_required": "앱의 코드를 입력하세요.",
+      "password_required": "비밀번호를 입력하세요.",
+      "invalid_credentials": "비밀번호가 일치하지 않습니다.",
+      "code_invalid": "코드가 일치하지 않습니다.",
+      "code_reused": "해당 코드는 이미 사용되었습니다. 다음 코드가 생성될 때까지 기다리세요.",
+      "rate_limited": "시도 횟수가 너무 많습니다. 1분 후 다시 시도하세요.",
+      "not_enrolled": "이 계정에는 인증 앱이 설정되어 있지 않습니다.",
+      "unreadable": "저장된 키를 읽을 수 없습니다. 지원팀에 문의하세요.",
+      "no_password_set": "이 계정에는 비밀번호가 없습니다. 로그아웃 후 다시 로그인하세요."
     }
   }
 }

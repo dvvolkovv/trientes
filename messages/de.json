@@ -1846,7 +1846,8 @@
       "sales": "Kasse",
       "reports": "Berichte",
       "crm": "Kunden",
-      "automation": "Automatisierung"
+      "automation": "Automatisierung",
+      "payments": "Zahlungen akzeptieren"
     },
     "tileUnit": {
       "points": "{count} auf der Karte",
@@ -1864,7 +1865,8 @@
       "sales": "Belege heute",
       "reports": "Belege in 30 Tagen",
       "crm": "Käufer: {count}",
-      "automation": "Regeln: {count}"
+      "automation": "Regeln: {count}",
+      "payments": "Zahlungslink"
     },
     "tileEmpty": "noch nichts",
     "tileBadge": {
@@ -5744,6 +5746,168 @@
       "url_private": "Diese Adresse zeigt in ein privates Netzwerk, nicht ins Internet. Dorthin senden wir nicht.",
       "url_too_long": "Diese Adresse ist zu lang.",
       "too_many": "Das Limit an Endpunkten für ein Unternehmen ist erreicht."
+    }
+  },
+  "payLink": {
+    "title": "Zahlungen akzeptieren",
+    "subtitle": "Käufer zahlen Ihnen in Krypto über Trientes. Das Geld geht direkt in Ihre eigene Wallet — Trientes verwahrt es nie.",
+    "payButton": "Bezahlen",
+    "step1Title": "Schritt 1. Richten Sie Ihren Shop ein",
+    "step1Body": "Sie registrieren den Shop selbst im Trientes-Zahlungs-Cabinet: Shopname, den Coin und die Adresse, auf die Sie bezahlt werden möchten, sowie die Wallet, mit der Sie sich anmelden. Wir sind an diesem Schritt nicht beteiligt und sehen Ihre Schlüssel niemals.",
+    "connect": "Zahlungen verbinden",
+    "step2Title": "Schritt 2. Bestätigen Sie, dass der Link Ihnen gehört",
+    "step2Body": "Öffnen Sie im Zahlungs-Cabinet «Links» → Ihren Link → «Name» und fügen Sie diesen Code zum Linknamen hinzu. Das Cabinet signiert diese Änderung mit der Wallet Ihres Shops, sodass nur Sie das tun können. Nach dem Speichern können Sie den Code wieder aus dem Namen entfernen.",
+    "codeWarning": "Sie geben diesen Code selbst in Ihrem eigenen Cabinet ein. Geben Sie ihn niemals weiter — Trientes-Mitarbeiter werden nie danach fragen.",
+    "getCode": "Code anfordern",
+    "codeExpires": "Gültig bis {when}",
+    "step3Title": "Schritt 3. Fügen Sie den Zahlungslink ein",
+    "step3Body": "Öffnen Sie im Zahlungs-Cabinet «Links» → «Neuer Link» und kopieren Sie die dort angegebene Adresse. Fügen Sie sie hier ein. Es wird nur die Link-ID gespeichert — der Bezahlen-Button wird daraus aufgebaut.",
+    "check": "Link prüfen",
+    "confirmLine": "Shop: {merchant} ({merchantId}), Link: {title}, Betrag: {amount}",
+    "confirmWarning": "Den Shopnamen legt der Besitzer des Links fest; Trientes prüft ihn nicht. Vergleichen Sie die Shop-ID mit Ihrem Cabinet.",
+    "confirmDelayed": "Dieser Link gehört zu einem anderen Shop und wird daher erst ab {when} wirksam. Ihr aktueller Link funktioniert bis dahin weiter, und wir benachrichtigen Sie.",
+    "confirmYes": "Ja, das ist mein Shop",
+    "amountFree": "der Käufer wählt den Betrag",
+    "currentTitle": "Zahlungen sind aktiv",
+    "openPayPage": "Zahlungsseite öffnen",
+    "remove": "Zahlungslink entfernen",
+    "removeConfirm": "Der Bezahlen-Button verschwindet von Ihrer Karte. Sie können ihn jederzeit wieder verbinden.",
+    "removeYes": "Ja, entfernen",
+    "removed": "Der Zahlungslink wurde entfernt.",
+    "disabledNote": "Der Zahlungsdienst meldet diesen Link in Ihrem Cabinet als ausgeschaltet. Käufer sehen das auf der Zahlungsseite.",
+    "hiddenMissing": "Der Zahlungsdienst kennt diesen Link nicht mehr, daher ist der Bezahlen-Button ausgeblendet. Erstellen Sie in Ihrem Cabinet einen neuen Link und fügen Sie ihn hier ein.",
+    "hiddenMismatch": "Dieser Link meldet jetzt eine andere Shop-ID als die hier hinterlegte, daher ist der Bezahlen-Button ausgeblendet. Bitte kontaktieren Sie uns, bevor Sie ihn erneut verwenden.",
+    "pendingTitle": "Eine Änderung steht aus",
+    "pendingBody": "Ein Link des Shops {merchant} ({merchantId}) wird ab {when} wirksam.",
+    "pendingOldWorks": "Ihr aktueller Link funktioniert bis dahin weiter. Wenn Sie diese Änderung nicht angefordert haben, brechen Sie sie jetzt ab und ändern Sie Ihr Passwort.",
+    "cancelChange": "Änderung abbrechen",
+    "changeCancelled": "Die ausstehende Änderung wurde abgebrochen.",
+    "savedNow": "Fertig. Der Bezahlen-Button ist auf Ihrer Karte aktiv.",
+    "savedDelayed": "Gespeichert. Der neue Link wird ab {when} wirksam; der aktuelle funktioniert bis dahin weiter.",
+    "frozenUntil": "Sie haben kürzlich die E-Mail oder Telegram Ihres Kontos geändert, daher sind Zahlungslinks bis {when} eingefroren. Das schützt Sie, falls jemand anderes Zugriff auf Ihr Konto erlangt hat.",
+    "reauth": "Bestätigen, dass Sie es sind",
+    "journalTitle": "Änderungsverlauf",
+    "journalBySystem": "Trientes",
+    "journal": {
+      "SET": "Link gesetzt",
+      "SCHEDULED": "Änderung geplant",
+      "APPLIED": "Geplante Änderung angewendet",
+      "CANCELLED": "Änderung abgebrochen",
+      "REMOVED": "Link entfernt",
+      "DISABLED": "Link im Zahlungsbereich ausgeschaltet",
+      "HIDDEN": "Pay-Button ausgeblendet"
+    },
+    "field": {
+      "linkInput": "Zahlungslink",
+      "link": "Link-ID",
+      "title": "Linkname",
+      "amount": "Betrag",
+      "checked": "Zuletzt geprüft"
+    },
+    "error": {
+      "generic": "Das konnte nicht ausgeführt werden. Bitte versuchen Sie es erneut.",
+      "unauth": "Bitte melden Sie sich an.",
+      "not_found": "Nur der Inhaber dieses Geschäfts kann den Zahlungslink ändern.",
+      "suspended": "Dieses Geschäft ist aus dem Schaufenster genommen, daher kann der Zahlungslink nicht geändert werden.",
+      "csrf": "Die Seite ist veraltet. Laden Sie sie neu und versuchen Sie es erneut.",
+      "empty": "Fügen Sie den Zahlungslink oder dessen ID ein.",
+      "bad_link": "Das ist kein Trientes-Zahlungslink. Er muss wie https://trientes.org/exchange/#/l/pl_… aussehen oder die pl_…-ID selbst sein.",
+      "too_many_checks": "Zu viele Prüfungen in der letzten Stunde. Versuchen Sie es später erneut.",
+      "link_missing": "Der Zahlungsdienst kennt diesen Link nicht.",
+      "link_off": "Dieser Link ist in Ihrem Zahlungsbereich ausgeschaltet. Schalten Sie ihn dort zuerst ein.",
+      "link_later": "Der Zahlungsdienst hat nicht geantwortet. Bitte versuchen Sie es später erneut.",
+      "stale_login": "Ihre Anmeldung ist zu lange her.",
+      "code_required": "Der Code steht noch nicht im Linknamen. Fügen Sie ihn in Ihrem Zahlungsbereich hinzu («Links» → Ihr Link → «Name») und prüfen Sie erneut.",
+      "contact_frozen": "Sie haben in den letzten 24 Stunden die E-Mail oder Telegram Ihres Kontos geändert, daher sind Zahlungslinks bis dahin eingefroren.",
+      "no_channel": "Um einen bestehenden Link zu ändern, müssen wir Sie erreichen können, und das ist derzeit nicht möglich: Verknüpfen Sie Telegram mit Ihrem Konto oder aktivieren Sie E‑Mail‑Benachrichtigungen für Ihre verifizierte Adresse (Cabinet → Alerts → Benachrichtigungskanäle).",
+      "same_link": "Dieser Link ist bereits auf Ihrer Karte.",
+      "no_pending": "Es gibt keine ausstehende Änderung.",
+      "no_link": "Auf dieser Karte gibt es keinen Zahlungslink."
+    },
+    "notify": {
+      "installed": {
+        "subject": "Zahlungen sind jetzt für Ihre Trientes-Karte aktiviert",
+        "body": "Ein Zahlungslink des Shops {merchant} ({merchantId}) ist jetzt auf Ihrer Visitenkarte aktiv. Wenn das nicht von Ihnen stammt, öffnen Sie {link} und entfernen Sie ihn, ändern Sie anschließend Ihr Passwort."
+      },
+      "sameMerchant": {
+        "subject": "Ihr Trientes-Zahlungslink wurde geändert",
+        "body": "Ein weiterer Link desselben Shops {merchant} ({merchantId}) ist jetzt auf Ihrer Visitenkarte. Wenn das nicht von Ihnen stammt, öffnen Sie {link} und entfernen Sie ihn, ändern Sie anschließend Ihr Passwort."
+      },
+      "scheduled": {
+        "subject": "Eine Änderung des Zahlungslinks wartet auf Ihrer Trientes-Karte",
+        "body": "Shop war {was}, er wird {willBe} ({merchantId}), wirksam ab {when} UTC. Ihr aktueller Link funktioniert bis dahin weiter. Wenn Sie dies nicht angefordert haben, brechen Sie es hier ab: {link}"
+      },
+      "applied": {
+        "subject": "Die Änderung des Zahlungslinks ist wirksam",
+        "body": "Zahlungen auf Ihrer Visitenkarte gehen jetzt an den Shop {merchant} ({merchantId}). Wenn das nicht von Ihnen stammt, öffnen Sie {link} und entfernen Sie den Link, ändern Sie anschließend Ihr Passwort."
+      },
+      "cancelled": {
+        "subject": "Die ausstehende Änderung des Zahlungslinks wurde abgebrochen",
+        "body": "Die Änderung zum Shop {merchant} wurde abgebrochen. Auf Ihrer Karte hat sich nichts geändert: {link}"
+      },
+      "changeFailed": {
+        "subject": "Die ausstehende Änderung des Zahlungslinks kam nicht zustande",
+        "body": "Als die 24 Stunden abliefen, haben wir den Zahlungsdienst erneut nach dem Link des Shops {merchant} gefragt, und er ist nicht mehr verwendbar. Auf Ihrer Karte hat sich nichts geändert: {link}"
+      },
+      "removed": {
+        "subject": "Zahlungen sind auf Ihrer Trientes-Karte ausgeschaltet",
+        "body": "Der Zahlungslink des Shops {merchant} wurde von Ihrer Visitenkarte entfernt. Wenn das nicht von Ihnen stammt, öffnen Sie {link} und ändern Sie Ihr Passwort."
+      },
+      "missing": {
+        "subject": "Ihr Trientes-Zahlungslink funktioniert nicht mehr",
+        "body": "Der Zahlungsdienst kennt den Link des Shops {merchant} nicht mehr, daher ist der Pay-Button auf Ihrer Karte ausgeblendet. Erstellen Sie in Ihrem Zahlungsbereich einen neuen Link und fügen Sie ihn hier ein: {link}"
+      },
+      "disabled": {
+        "subject": "Ihr Trientes-Zahlungslink ist ausgeschaltet",
+        "body": "Der Zahlungsdienst meldet den Link des Shops {merchant} als in Ihrem Zahlungsbereich ausgeschaltet. Schalten Sie ihn dort wieder ein oder entfernen Sie ihn hier: {link}"
+      },
+      "mismatch": {
+        "subject": "Ihr Trientes-Zahlungslink meldet einen anderen Shop",
+        "body": "Der Link des Shops {merchant} meldet jetzt eine andere Shop-ID als die auf Ihrer Karte hinterlegte, daher ist der Pay-Button ausgeblendet. Bitte kontaktieren Sie uns, bevor Sie ihn wieder verwenden: {link}"
+      },
+      "reset": {
+        "subject": "Zahlungen wurden nach einem Inhaberwechsel ausgeschaltet",
+        "body": "Die Person, die den Zahlungslink des Shops {merchant} eingerichtet hat, ist nicht mehr Inhaber dieses Unternehmens, daher wurde der Link entfernt. Verbinden Sie Zahlungen hier erneut: {link}"
+      },
+      "contactChanged": {
+        "subject": "Die Kontaktdaten Ihres Trientes-Kontos wurden geändert",
+        "body": {
+          "email": "Die E-Mail Ihres Trientes-Kontos wurde geändert. Diese Nachricht geht absichtlich an die alte Adresse. Wenn das nicht von Ihnen stammt, melden Sie sich an und ändern Sie umgehend Ihr Passwort: Zahlungslinks sind für 24 Stunden eingefroren, was Ihre verfügbare Zeit ist.",
+          "telegram": "Die Telegram-Benachrichtigungen Ihres Trientes-Kontos wurden ausgeschaltet oder geändert. Diese Nachricht geht absichtlich an den alten Kanal. Wenn das nicht von Ihnen stammt, melden Sie sich an und ändern Sie umgehend Ihr Passwort: Zahlungslinks sind für 24 Stunden eingefroren, was Ihre verfügbare Zeit ist."
+        }
+      }
+    },
+    "cardBlockOffer": "Lassen Sie Käufer direkt von dieser Karte in Krypto zahlen. Das Geld geht in Ihre eigene Wallet; Trientes verwahrt es niemals.",
+    "cardBlockOn": "Käufer können Sie hier bezahlen: {merchant}.",
+    "cardBlockHidden": "Der Zahlungslink von {merchant} funktioniert nicht, daher ist der Pay-Button auf Ihrer Karte ausgeblendet.",
+    "cardBlockManage": "Zahlungseinstellungen",
+    "cardBlockHaveLink": "Sie haben bereits einen Shop? Fügen Sie Ihren Zahlungslink ein",
+    "noChannelHint": "Wir können Sie derzeit nicht erreichen: Verknüpfen Sie Telegram oder aktivieren Sie E‑Mail‑Benachrichtigungen für Ihre verifizierte Adresse (Cabinet → Alerts → Benachrichtigungskanäle). Bis dahin kann ein bestehender Zahlungslink nicht geändert werden — eine stille Änderung ist genau das, wovor die Verzögerung Sie schützt."
+  },
+  "reauth": {
+    "kicker": "Sicherheit",
+    "title": "Bestätigen Sie, dass Sie es sind",
+    "codeBody": "Geben Sie den sechsstelligen Code aus Ihrer Authenticator-App ein. Wir fragen danach, weil Sie gleich ändern, wohin das Geld fließt.",
+    "codeLabel": "Code aus der App",
+    "passwordBody": "Geben Sie Ihr Passwort ein. Wir fragen danach, weil Sie gleich ändern, wohin das Geld fließt.",
+    "passwordLabel": "Passwort",
+    "confirm": "Bestätigen",
+    "signout": "Abmelden und erneut anmelden",
+    "signoutBody": "Ihr Konto hat kein Passwort und keine Authenticator-App, daher können Sie Ihre Identität nur bestätigen, indem Sie sich ab- und wieder anmelden. Sie kommen direkt hierher zurück.",
+    "error": {
+      "generic": "Konnte nicht bestätigt werden. Bitte versuchen Sie es erneut.",
+      "unauth": "Bitte melden Sie sich an.",
+      "csrf": "Die Seite ist veraltet. Laden Sie sie neu und versuchen Sie es erneut.",
+      "too_many_attempts": "Zu viele Versuche. Versuchen Sie es in fünfzehn Minuten erneut.",
+      "code_required": "Geben Sie den Code aus der App ein.",
+      "password_required": "Geben Sie Ihr Passwort ein.",
+      "invalid_credentials": "Dieses Passwort ist falsch.",
+      "code_invalid": "Dieser Code ist falsch.",
+      "code_reused": "Dieser Code wurde bereits verwendet. Warten Sie auf den nächsten.",
+      "rate_limited": "Zu viele Versuche. Versuchen Sie es in einer Minute erneut.",
+      "not_enrolled": "Für dieses Konto ist keine Authenticator-App eingerichtet.",
+      "unreadable": "Wir können den gespeicherten Schlüssel nicht lesen. Bitte wenden Sie sich an den Support.",
+      "no_password_set": "Dieses Konto hat kein Passwort. Melden Sie sich ab und erneut an."
     }
   }
 }

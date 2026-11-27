@@ -1846,7 +1846,8 @@
       "sales": "Till",
       "reports": "Reports",
       "crm": "Customers",
-      "automation": "Automation"
+      "automation": "Automation",
+      "payments": "Accept payments"
     },
     "tileUnit": {
       "points": "{count} on the map",
@@ -1864,7 +1865,8 @@
       "sales": "receipts today",
       "reports": "receipts in 30 days",
       "crm": "buyers: {count}",
-      "automation": "rules: {count}"
+      "automation": "rules: {count}",
+      "payments": "payment link"
     },
     "tileEmpty": "nothing yet",
     "tileBadge": {
@@ -5744,6 +5746,168 @@
       "url_private": "That address points inside a private network, not at the internet. We will not send there.",
       "url_too_long": "That address is too long.",
       "too_many": "The limit of endpoints for one company is reached."
+    }
+  },
+  "payLink": {
+    "title": "Accept payments",
+    "subtitle": "Buyers pay you in crypto through Trientes. The money goes straight to your own wallet — Trientes never holds it.",
+    "payButton": "Pay",
+    "step1Title": "Step 1. Set up your shop",
+    "step1Body": "You register the shop yourself in the Trientes payments cabinet: shop name, the coin and the address you want to be paid at, and the wallet you sign in with. We are not part of that step and never see your keys.",
+    "connect": "Connect payments",
+    "step2Title": "Step 2. Prove the link is yours",
+    "step2Body": "In the payments cabinet open «Links» → your link → «Name» and add this code to the link name. The cabinet signs that edit with your shop wallet, so only you can do it. Once saved you can remove the code from the name again.",
+    "codeWarning": "You type this code yourself, in your own cabinet. Never tell it to anyone — Trientes staff never ask for it.",
+    "getCode": "Get a code",
+    "codeExpires": "Valid until {when}",
+    "step3Title": "Step 3. Paste the payment link",
+    "step3Body": "In the payments cabinet open «Links» → «New link» and copy the address it gives you. Paste it here. Only the link id is stored — the Pay button is built from it.",
+    "check": "Check the link",
+    "confirmLine": "Shop: {merchant} ({merchantId}), link: {title}, amount: {amount}",
+    "confirmWarning": "The shop name is set by whoever owns the link; Trientes does not verify it. Check the shop id against your cabinet.",
+    "confirmDelayed": "This link belongs to a different shop, so it takes effect at {when}. Your current link keeps working until then, and we will message you.",
+    "confirmYes": "Yes, this is my shop",
+    "amountFree": "the buyer chooses the amount",
+    "currentTitle": "Payments are on",
+    "openPayPage": "Open the payment page",
+    "remove": "Remove the payment link",
+    "removeConfirm": "The Pay button will disappear from your card. You can connect it again at any time.",
+    "removeYes": "Yes, remove it",
+    "removed": "The payment link has been removed.",
+    "disabledNote": "The payments service reports this link as switched off in your cabinet. Buyers will see that on the payment page.",
+    "hiddenMissing": "The payments service no longer knows this link, so the Pay button is hidden. Create a new link in your cabinet and paste it here.",
+    "hiddenMismatch": "This link now reports a different shop id than the one pinned here, so the Pay button is hidden. Please contact us before using it again.",
+    "pendingTitle": "A change is waiting",
+    "pendingBody": "A link of shop {merchant} ({merchantId}) takes effect at {when}.",
+    "pendingOldWorks": "Your current link keeps working until then. If you did not ask for this change, cancel it now and change your password.",
+    "cancelChange": "Cancel the change",
+    "changeCancelled": "The waiting change has been cancelled.",
+    "savedNow": "Done. The Pay button is live on your card.",
+    "savedDelayed": "Saved. The new link takes effect at {when}; the current one keeps working until then.",
+    "frozenUntil": "You changed the email or Telegram of your account recently, so payment links are frozen until {when}. This protects you if someone else got into your account.",
+    "reauth": "Confirm it is you",
+    "journalTitle": "History of changes",
+    "journalBySystem": "Trientes",
+    "journal": {
+      "SET": "Link set",
+      "SCHEDULED": "Change scheduled",
+      "APPLIED": "Scheduled change applied",
+      "CANCELLED": "Change cancelled",
+      "REMOVED": "Link removed",
+      "DISABLED": "Link switched off in the cabinet",
+      "HIDDEN": "Pay button hidden"
+    },
+    "field": {
+      "linkInput": "Payment link",
+      "link": "Link id",
+      "title": "Link name",
+      "amount": "Amount",
+      "checked": "Last checked"
+    },
+    "error": {
+      "generic": "Could not do that. Please try again.",
+      "unauth": "Please sign in.",
+      "not_found": "Only the owner of this business can change the payment link.",
+      "suspended": "This business is off the showcase, so the payment link cannot be changed.",
+      "csrf": "The page went stale. Reload it and try again.",
+      "empty": "Paste the payment link or its id.",
+      "bad_link": "That is not a Trientes payment link. It has to look like https://trientes.org/exchange/#/l/pl_… or be the pl_… id itself.",
+      "too_many_checks": "Too many checks in the last hour. Try again later.",
+      "link_missing": "The payments service does not know this link.",
+      "link_off": "This link is switched off in your payments cabinet. Switch it on there first.",
+      "link_later": "The payments service did not answer. Please try again later.",
+      "stale_login": "You signed in too long ago.",
+      "code_required": "The code is not in the link name yet. Add it in your payments cabinet («Links» → your link → «Name») and check again.",
+      "contact_frozen": "You changed the email or Telegram of your account in the last 24 hours, so payment links are frozen until then.",
+      "no_channel": "To change an existing link we have to be able to reach you, and right now we cannot: link Telegram to your account, or switch email notifications on for your verified address (Cabinet → Alerts → notification channels).",
+      "same_link": "This link is already on your card.",
+      "no_pending": "There is no waiting change.",
+      "no_link": "There is no payment link on this card."
+    },
+    "notify": {
+      "installed": {
+        "subject": "Payments are now on for your Trientes card",
+        "body": "A payment link of shop {merchant} ({merchantId}) is now live on your business card. If this was not you, open {link} and remove it, then change your password."
+      },
+      "sameMerchant": {
+        "subject": "Your Trientes payment link changed",
+        "body": "Another link of the same shop {merchant} ({merchantId}) is now on your business card. If this was not you, open {link} and remove it, then change your password."
+      },
+      "scheduled": {
+        "subject": "A payment link change is waiting on your Trientes card",
+        "body": "Shop was {was}, it will become {willBe} ({merchantId}), taking effect at {when} UTC. Your current link keeps working until then. If you did not ask for this, cancel it here: {link}"
+      },
+      "applied": {
+        "subject": "The payment link change took effect",
+        "body": "Payments on your business card now go to shop {merchant} ({merchantId}). If this was not you, open {link} and remove the link, then change your password."
+      },
+      "cancelled": {
+        "subject": "The waiting payment link change was cancelled",
+        "body": "The change to shop {merchant} was cancelled. Nothing on your card has changed: {link}"
+      },
+      "changeFailed": {
+        "subject": "The waiting payment link change did not go through",
+        "body": "When the 24 hours were up we asked the payments service about the link of shop {merchant} again, and it is no longer usable. Nothing on your card has changed: {link}"
+      },
+      "removed": {
+        "subject": "Payments are off on your Trientes card",
+        "body": "The payment link of shop {merchant} was removed from your business card. If this was not you, open {link} and change your password."
+      },
+      "missing": {
+        "subject": "Your Trientes payment link no longer works",
+        "body": "The payments service no longer knows the link of shop {merchant}, so the Pay button is hidden on your card. Create a new link in your payments cabinet and paste it here: {link}"
+      },
+      "disabled": {
+        "subject": "Your Trientes payment link is switched off",
+        "body": "The payments service reports the link of shop {merchant} as switched off in your cabinet. Switch it back on there, or remove it here: {link}"
+      },
+      "mismatch": {
+        "subject": "Your Trientes payment link reports a different shop",
+        "body": "The link of shop {merchant} now reports a different shop id than the one pinned on your card, so the Pay button is hidden. Please contact us before using it again: {link}"
+      },
+      "reset": {
+        "subject": "Payments were switched off after an owner change",
+        "body": "The person who set up the payment link of shop {merchant} is no longer an owner of this business, so the link was removed. Connect payments again here: {link}"
+      },
+      "contactChanged": {
+        "subject": "The contact details of your Trientes account changed",
+        "body": {
+          "email": "The email of your Trientes account was changed. This message goes to the old address on purpose. If this was not you, sign in and change your password at once: payment links are frozen for 24 hours, which is the time you have.",
+          "telegram": "The Telegram notifications of your Trientes account were switched off or changed. This message goes to the old channel on purpose. If this was not you, sign in and change your password at once: payment links are frozen for 24 hours, which is the time you have."
+        }
+      }
+    },
+    "cardBlockOffer": "Let buyers pay you in crypto straight from this card. The money goes to your own wallet; Trientes never holds it.",
+    "cardBlockOn": "Buyers can pay you here: {merchant}.",
+    "cardBlockHidden": "The payment link of {merchant} is not working, so the Pay button is hidden on your card.",
+    "cardBlockManage": "Payment settings",
+    "cardBlockHaveLink": "Already have a shop? Paste your payment link",
+    "noChannelHint": "We cannot reach you right now: link Telegram, or switch email notifications on for your verified address (Cabinet → Alerts → notification channels). Until then an existing payment link cannot be changed — a silent change is exactly what the delay protects you from."
+  },
+  "reauth": {
+    "kicker": "Security",
+    "title": "Confirm it is you",
+    "codeBody": "Enter the six-digit code from your authenticator app. We ask for it because you are about to change where money goes.",
+    "codeLabel": "Code from the app",
+    "passwordBody": "Enter your password. We ask for it because you are about to change where money goes.",
+    "passwordLabel": "Password",
+    "confirm": "Confirm",
+    "signout": "Sign out and sign in again",
+    "signoutBody": "Your account has no password and no authenticator app, so the only way to confirm it is you is to sign out and sign in again. You will come straight back here.",
+    "error": {
+      "generic": "Could not confirm. Please try again.",
+      "unauth": "Please sign in.",
+      "csrf": "The page went stale. Reload it and try again.",
+      "too_many_attempts": "Too many attempts. Try again in fifteen minutes.",
+      "code_required": "Enter the code from the app.",
+      "password_required": "Enter your password.",
+      "invalid_credentials": "That password does not match.",
+      "code_invalid": "That code does not match.",
+      "code_reused": "That code has already been used. Wait for the next one.",
+      "rate_limited": "Too many attempts. Try again in a minute.",
+      "not_enrolled": "No authenticator app is set up for this account.",
+      "unreadable": "We cannot read the stored key. Please contact support.",
+      "no_password_set": "This account has no password. Sign out and sign in again."
     }
   }
 }

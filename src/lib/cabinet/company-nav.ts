@@ -41,6 +41,10 @@ export type CompanyTileDef = {
 
 export const COMPANY_TILES: CompanyTileDef[] = [
   { key: "points", group: "showcase", icon: "📍", section: "points", path: "points" },
+  // Приём платежей (слайс CP). Своего раздела прав не заводим: это право, которым
+  // меняется получатель денег, и настройке ролями оно не подлежит — как команда, KYB
+  // и удаление предприятия (решение BE). Поэтому `ownerOnly`, как у журнала.
+  { key: "payments", group: "showcase", icon: "💳", section: "card", path: "payments", ownerOnly: true },
   { key: "products", group: "showcase", icon: "📦", section: "products", path: "products" },
   { key: "pricing", group: "showcase", icon: "💰", section: "pricing", path: "loyalty" },
   { key: "promos", group: "showcase", icon: "📣", section: "promos", path: "promos" },

@@ -1846,7 +1846,8 @@
       "sales": "Blagajna",
       "reports": "Izvješća",
       "crm": "Kupci",
-      "automation": "Automatizacija"
+      "automation": "Automatizacija",
+      "payments": "Prihvaćajte plaćanja"
     },
     "tileUnit": {
       "points": "{count} na karti",
@@ -1864,7 +1865,8 @@
       "sales": "računi danas",
       "reports": "računa u 30 dana",
       "crm": "kupci: {count}",
-      "automation": "pravila: {count}"
+      "automation": "pravila: {count}",
+      "payments": "poveznica za plaćanje"
     },
     "tileEmpty": "još ništa",
     "tileBadge": {
@@ -4400,7 +4402,7 @@
         "stock": "Skladištar",
         "marketing": "Marketinški stručnjak",
         "observer": "Promatrač",
-        "hr": "HR",
+        "hr": "Ljudski resursi",
         "cashier": "Blagajnik",
         "accountant": "Računovođa"
       },
@@ -5744,6 +5746,168 @@
       "url_private": "Ta adresa pokazuje unutar privatne mreže, a ne na internet. Nećemo tamo slati.",
       "url_too_long": "Ta je adresa preduga.",
       "too_many": "Dosegnuto je ograničenje broja krajnjih točaka za jednu tvrtku."
+    }
+  },
+  "payLink": {
+    "title": "Prihvaćajte uplate",
+    "subtitle": "Kupci vam plaćaju kriptovalutama preko Trientes. Novac ide izravno u vaš novčanik — Trientes ga nikada ne drži.",
+    "payButton": "Plati",
+    "step1Title": "Korak 1. Postavite svoju trgovinu",
+    "step1Body": "Trgovinu registrirate sami u Trientes profilu za plaćanja: naziv trgovine, kovanica i adresa na koju želite primati uplate, te novčanik kojim se prijavljujete. Mi nismo dio tog koraka i vaše ključeve nikada ne vidimo.",
+    "connect": "Povežite plaćanja",
+    "step2Title": "Korak 2. Dokažite da je poveznica vaša",
+    "step2Body": "U profilu za plaćanja otvorite «Links» → vašu poveznicu → «Name» i dodajte ovaj kod u naziv poveznice. Profil potpisuje tu izmjenu novčanikom vaše trgovine, tako da to možete učiniti samo vi. Nakon spremanja kod možete ponovno ukloniti iz naziva.",
+    "codeWarning": "Ovaj kod upisujete sami, u svom profilu. Nikome ga nikada nemojte otkriti — osoblje Trientes ga nikada neće tražiti.",
+    "getCode": "Dohvatite kod",
+    "codeExpires": "Vrijedi do {when}",
+    "step3Title": "Korak 3. Zalijepite poveznicu za plaćanje",
+    "step3Body": "U profilu za plaćanja otvorite «Links» → «New link» i kopirajte adresu koju dobijete. Zalijepite je ovdje. Sprema se samo id poveznice — gumb Plati se gradi iz njega.",
+    "check": "Provjerite poveznicu",
+    "confirmLine": "Trgovina: {merchant} ({merchantId}), poveznica: {title}, iznos: {amount}",
+    "confirmWarning": "Naziv trgovine postavlja vlasnik poveznice; Trientes ga ne provjerava. Usporedite ID trgovine s onim u svom profilu.",
+    "confirmDelayed": "Ova poveznica pripada drugoj trgovini, pa stupa na snagu {when}. Vaša trenutačna poveznica radi do tada. Obavijestit ćemo vas.",
+    "confirmYes": "Da, ovo je moja trgovina",
+    "amountFree": "kupac bira iznos",
+    "currentTitle": "Plaćanja su uključena",
+    "openPayPage": "Otvorite stranicu za plaćanje",
+    "remove": "Uklonite poveznicu za plaćanje",
+    "removeConfirm": "Gumb Plati nestat će s vaše kartice. Možete ga ponovno povezati u bilo kojem trenutku.",
+    "removeYes": "Da, uklonite",
+    "removed": "Poveznica za plaćanje je uklonjena.",
+    "disabledNote": "Usluga plaćanja prijavljuje ovu poveznicu kao isključenu u vašem profilu. Kupci će to vidjeti na stranici za plaćanje.",
+    "hiddenMissing": "Usluga plaćanja više ne prepoznaje ovu poveznicu, pa je gumb Plati skriven. Stvorite novu poveznicu u svom profilu i zalijepite je ovdje.",
+    "hiddenMismatch": "Ova poveznica sada prijavljuje drukčiji ID trgovine od onog pridruženog ovdje, stoga je gumb Plati skriven. Obratite nam se prije ponovne uporabe.",
+    "pendingTitle": "Promjena na čekanju",
+    "pendingBody": "Poveznica trgovine {merchant} ({merchantId}) stupa na snagu {when}.",
+    "pendingOldWorks": "Vaša trenutačna poveznica radi do tada. Ako niste zatražili ovu promjenu, odmah je otkažite i promijenite lozinku.",
+    "cancelChange": "Otkažite promjenu",
+    "changeCancelled": "Promjena na čekanju je otkazana.",
+    "savedNow": "Gotovo. Gumb Plati je aktivan na vašoj kartici.",
+    "savedDelayed": "Spremljeno. Nova poveznica stupa na snagu {when}; trenutačna radi do tada.",
+    "frozenUntil": "Nedavno ste promijenili e-mail ili Telegram svog računa, zato su poveznice za plaćanje zamrznute do {when}. To vas štiti ako je netko drugi pristupio vašem računu.",
+    "reauth": "Potvrdite da ste to vi",
+    "journalTitle": "Povijest promjena",
+    "journalBySystem": "Trientes",
+    "journal": {
+      "SET": "Poveznica postavljena",
+      "SCHEDULED": "Promjena zakazana",
+      "APPLIED": "Zakazana promjena primijenjena",
+      "CANCELLED": "Promjena otkazana",
+      "REMOVED": "Poveznica uklonjena",
+      "DISABLED": "Poveznica isključena u profilu",
+      "HIDDEN": "Gumb Plati skriven"
+    },
+    "field": {
+      "linkInput": "Poveznica za plaćanje",
+      "link": "ID poveznice",
+      "title": "Naziv poveznice",
+      "amount": "Iznos",
+      "checked": "Zadnja provjera"
+    },
+    "error": {
+      "generic": "To nije bilo moguće. Pokušajte ponovno.",
+      "unauth": "Prijavite se.",
+      "not_found": "Samo vlasnik ovog poslovanja može mijenjati poveznicu za plaćanje.",
+      "suspended": "Ovo je poslovanje uklonjeno s izloga, stoga se poveznica za plaćanje ne može mijenjati.",
+      "csrf": "Stranica je zastarjela. Ponovno je učitajte i pokušajte opet.",
+      "empty": "Zalijepiti poveznicu za plaćanje ili njezin id.",
+      "bad_link": "To nije Trientes poveznica za plaćanje. Mora izgledati kao https://trientes.org/exchange/#/l/pl_… ili biti sam pl_… id.",
+      "too_many_checks": "Previše provjera u zadnjem satu. Pokušajte kasnije.",
+      "link_missing": "Usluga plaćanja ne poznaje ovu poveznicu.",
+      "link_off": "Ova je poveznica isključena u vašem profilu plaćanja. Najprije je tamo uključite.",
+      "link_later": "Usluga plaćanja nije odgovorila. Pokušajte ponovno kasnije.",
+      "stale_login": "Prijava je prestara.",
+      "code_required": "Kôd još nije u nazivu poveznice. Dodajte ga u svom profilu plaćanja («Poveznice» → vaša poveznica → «Naziv») i provjerite ponovno.",
+      "contact_frozen": "Promijenili ste e-poštu ili Telegram svojeg računa u posljednja 24 sata, zato su poveznice za plaćanje zamrznute do tada.",
+      "no_channel": "Da bismo mogli promijeniti postojeću poveznicu, moramo vas moći kontaktirati, a trenutačno ne možemo: povežite Telegram sa svojim računom ili uključite obavijesti e-poštom za svoju verificiranu adresu (Profil → Upozorenja → kanali obavijesti).",
+      "same_link": "Ta je poveznica već na vašoj kartici.",
+      "no_pending": "Nema promjene na čekanju.",
+      "no_link": "Na ovoj kartici nema poveznice za plaćanje."
+    },
+    "notify": {
+      "installed": {
+        "subject": "Plaćanja su sada uključena za vašu Trientes karticu",
+        "body": "Poveznica za plaćanje trgovine {merchant} ({merchantId}) sada je aktivna na vašoj poslovnoj kartici. Ako to niste bili vi, otvorite {link} i uklonite je, zatim promijenite lozinku."
+      },
+      "sameMerchant": {
+        "subject": "Vaša Trientes poveznica za plaćanje je promijenjena",
+        "body": "Još jedna poveznica iste trgovine {merchant} ({merchantId}) sada je na vašoj poslovnoj kartici. Ako to niste bili vi, otvorite {link} i uklonite je, zatim promijenite lozinku."
+      },
+      "scheduled": {
+        "subject": "Promjena poveznice za plaćanje čeka na vašoj Trientes kartici",
+        "body": "Trgovina je bila {was}, postat će {willBe} ({merchantId}), stupa na snagu u {when} UTC. Vaša trenutačna poveznica radi do tada. Ako to niste zatražili, otkažite ovdje: {link}"
+      },
+      "applied": {
+        "subject": "Promjena poveznice za plaćanje je stupila na snagu",
+        "body": "Plaćanja na vašoj poslovnoj kartici sada idu trgovini {merchant} ({merchantId}). Ako to niste bili vi, otvorite {link} i uklonite poveznicu, zatim promijenite lozinku."
+      },
+      "cancelled": {
+        "subject": "Promjena poveznice za plaćanje na čekanju je otkazana",
+        "body": "Promjena na trgovinu {merchant} je otkazana. Ništa na vašoj kartici nije promijenjeno: {link}"
+      },
+      "changeFailed": {
+        "subject": "Promjena poveznice za plaćanje na čekanju nije uspjela",
+        "body": "Kad je proteklo 24 sata ponovno smo pitali uslugu plaćanja za poveznicu trgovine {merchant}, i više nije upotrebljiva. Ništa na vašoj kartici nije promijenjeno: {link}"
+      },
+      "removed": {
+        "subject": "Plaćanja su isključena na vašoj Trientes kartici",
+        "body": "Poveznica za plaćanje trgovine {merchant} uklonjena je s vaše poslovne kartice. Ako to niste bili vi, otvorite {link} i promijenite lozinku."
+      },
+      "missing": {
+        "subject": "Vaša Trientes poveznica za plaćanje više ne radi",
+        "body": "Usluga plaćanja više ne poznaje poveznicu trgovine {merchant}, pa je gumb Plati skriven na vašoj kartici. Izradite novu poveznicu u svom profilu plaćanja i zalijepite je ovdje: {link}"
+      },
+      "disabled": {
+        "subject": "Vaša Trientes poveznica za plaćanje je isključena",
+        "body": "Usluga plaćanja prijavljuje poveznicu trgovine {merchant} kao isključenu u vašem profilu. Uključite je tamo ili je uklonite ovdje: {link}"
+      },
+      "mismatch": {
+        "subject": "Vaša Trientes poveznica za plaćanje prijavljuje drugu trgovinu",
+        "body": "Poveznica trgovine {merchant} sada prijavljuje drugačiji id trgovine od onoga koji je pričvršćen na vašoj kartici, pa je gumb Plati skriven. Molimo kontaktirajte nas prije ponovne uporabe: {link}"
+      },
+      "reset": {
+        "subject": "Plaćanja su isključena nakon promjene vlasnika",
+        "body": "Osoba koja je postavila poveznicu za plaćanje trgovine {merchant} više nije vlasnik ovog poslovanja, pa je poveznica uklonjena. Ponovno povežite plaćanja ovdje: {link}"
+      },
+      "contactChanged": {
+        "subject": "Kontaktni podaci vašeg Trientes računa su promijenjeni",
+        "body": {
+          "email": "E-pošta vašeg Trientes računa je promijenjena. Ova poruka namjerno ide na staru adresu. Ako to niste bili vi, odmah se prijavite i promijenite lozinku: poveznice za plaćanje su zamrznute 24 sata, što je vrijeme koje imate.",
+          "telegram": "Telegram obavijesti vašeg Trientes računa su isključene ili promijenjene. Ova poruka namjerno ide na stari kanal. Ako to niste bili vi, odmah se prijavite i promijenite lozinku: poveznice za plaćanje su zamrznute 24 sata, što je vrijeme koje imate."
+        }
+      }
+    },
+    "cardBlockOffer": "Neka kupci plate u kriptovaluti izravno s ove kartice. Novac ide u vaš vlastiti novčanik; Trientes ga nikada ne drži.",
+    "cardBlockOn": "Kupci vam mogu platiti ovdje: {merchant}.",
+    "cardBlockHidden": "Poveznica za plaćanje od {merchant} ne radi, zato je gumb Plati skriven na vašoj kartici.",
+    "cardBlockManage": "Postavke plaćanja",
+    "cardBlockHaveLink": "Već imate trgovinu? Zalijepite svoju poveznicu za plaćanje",
+    "noChannelHint": "Trenutačno vas ne možemo kontaktirati: povežite Telegram ili uključite obavijesti e-poštom za svoju verificiranu adresu (Profil → Upozorenja → kanali obavijesti). Do tada se postojeća platna poveznica ne može promijeniti — odgoda vas upravo štiti od tihe promjene."
+  },
+  "reauth": {
+    "kicker": "Sigurnost",
+    "title": "Potvrdite da ste to vi",
+    "codeBody": "Unesite šestoznamenkasti kod iz svoje aplikacije za autentifikaciju. Tražimo ga jer ćete upravo promijeniti kamo novac ide.",
+    "codeLabel": "Kod iz aplikacije",
+    "passwordBody": "Unesite svoju lozinku. Tražimo je jer ćete upravo promijeniti kamo novac ide.",
+    "passwordLabel": "Lozinka",
+    "confirm": "Potvrditi",
+    "signout": "Odjaviti se i ponovno prijaviti",
+    "signoutBody": "Vaš račun nema lozinku ni aplikaciju za autentifikaciju, stoga je jedini način potvrde da ste to vi odjava i ponovna prijava. Odmah ćete se vratiti ovdje.",
+    "error": {
+      "generic": "Nije moguće potvrditi. Pokušajte ponovno.",
+      "unauth": "Prijavite se.",
+      "csrf": "Stranica je zastarjela. Učitajte je ponovno i pokušajte opet.",
+      "too_many_attempts": "Previše pokušaja. Pokušajte ponovno za petnaest minuta.",
+      "code_required": "Unesite kod iz aplikacije.",
+      "password_required": "Unesite svoju lozinku.",
+      "invalid_credentials": "Ta lozinka ne odgovara.",
+      "code_invalid": "Taj kod ne odgovara.",
+      "code_reused": "Taj je kod već iskorišten. Pričekajte sljedeći.",
+      "rate_limited": "Previše pokušaja. Pokušajte ponovno za minutu.",
+      "not_enrolled": "Za ovaj račun nije postavljena aplikacija za autentifikaciju.",
+      "unreadable": "Ne možemo pročitati pohranjeni ključ. Obratite se podršci.",
+      "no_password_set": "Ovaj račun nema lozinku. Odjavite se i ponovno se prijavite."
     }
   }
 }

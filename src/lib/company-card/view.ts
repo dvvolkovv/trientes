@@ -24,6 +24,7 @@ import { localizedProse } from "@/lib/localized-prose";
 import { adInWindow, adSlides, takeAdsWithinSlides, type AdSlide } from "@/lib/ads/rules";
 import { readCompanyOffers, type ShowcaseOffer } from "@/lib/products/offers-read";
 import type { AcceptedCoin } from "@/lib/crypto-map";
+import { payHref } from "@/lib/pay-link/parse";
 
 export type CardHours = {
   week: WeekHours | null;
@@ -147,6 +148,13 @@ export type CompanyCardView = {
   offerCount: number;
   /** Куда ведёт «открыть на карте»: первая живая точка с координатами. */
   mapPointId: string | null;
+  /**
+   * Приём платежей Trientes (слайс CP). Адрес собирается из постоянного шаблона и
+   * языка страницы: введённая владельцем строка в `href` не попадает никогда, а в базе
+   * лежит только номер ссылки. Кнопку видят **все** — это обычная ссылка без скрипта.
+   * `null` — ссылки нет или она скрыта суточной проверкой (404, чужой номер магазина).
+   */
+  pay: { linkId: string; href: string; merchant: string } | null;
 };
 
 const POINT_SELECT = {
@@ -195,6 +203,7 @@ export async function buildCompanyCard({
   const company = await prisma.company.findFirst({
     where: { id: companyId, ...NOT_DELETED },
     include: {
+      payLink: { select: { linkId: true, merchantName: true, hiddenAt: true } },
       documents: {
         // Только бумаги предприятия: у объявления свои, и они показываются на его
         // странице, а не в разделе документов витрины (слайс CB).
@@ -433,5 +442,15 @@ export async function buildCompanyCard({
     ads,
     offerCount: offers.length,
     mapPointId: physical.find((p) => p.lat !== null && p.lon !== null && !p.suspendedAt)?.id ?? null,
+    // Скрытую суточной проверкой ссылку не показываем вовсе: кнопка «Оплатить», ведущая
+    // в «такой ссылки нет», хуже её отсутствия (правило AV о приглашении к отказу).
+    pay:
+      company.payLink && company.payLink.hiddenAt === null
+        ? {
+            linkId: company.payLink.linkId,
+            href: payHref(locale, company.payLink.linkId),
+            merchant: company.payLink.merchantName,
+          }
+        : null,
   };
 }

@@ -1846,7 +1846,8 @@
       "sales": "Caixa",
       "reports": "Relatórios",
       "crm": "Clientes",
-      "automation": "Automação"
+      "automation": "Automação",
+      "payments": "Aceitar pagamentos"
     },
     "tileUnit": {
       "points": "{count} no mapa",
@@ -1864,7 +1865,8 @@
       "sales": "recibos hoje",
       "reports": "recibos em 30 dias",
       "crm": "compradores: {count}",
-      "automation": "regras: {count}"
+      "automation": "regras: {count}",
+      "payments": "link de pagamento"
     },
     "tileEmpty": "ainda nada",
     "tileBadge": {
@@ -5744,6 +5746,168 @@
       "url_private": "Esse endereço aponta para dentro de uma rede privada, não para a internet. Não enviaremos para lá.",
       "url_too_long": "Esse endereço é longo demais.",
       "too_many": "O limite de endpoints para uma empresa foi atingido."
+    }
+  },
+  "payLink": {
+    "title": "Aceite pagamentos",
+    "subtitle": "Os compradores pagam você em cripto pela Trientes. O dinheiro vai direto para sua própria carteira — a Trientes nunca o retém.",
+    "payButton": "Pagar",
+    "step1Title": "Etapa 1. Configure sua loja",
+    "step1Body": "Você mesmo cadastra a loja no painel de pagamentos da Trientes: nome da loja, a moeda e o endereço no qual quer receber, e a carteira com a qual você entra. Nós não participamos dessa etapa e nunca vemos suas chaves.",
+    "connect": "Conectar pagamentos",
+    "step2Title": "Etapa 2. Prove que o link é seu",
+    "step2Body": "No painel de pagamentos, abra «Links» → seu link → «Nome» e adicione este código ao nome do link. O painel assina essa edição com a carteira da sua loja, então só você pode fazê-la. Após salvar, você pode remover o código do nome novamente.",
+    "codeWarning": "Você digita este código por conta própria, no seu próprio painel. Nunca o diga a ninguém — a equipe da Trientes nunca vai pedi-lo.",
+    "getCode": "Obter um código",
+    "codeExpires": "Válido até {when}",
+    "step3Title": "Etapa 3. Cole o link de pagamento",
+    "step3Body": "No painel de pagamentos, abra «Links» → «Novo link» e copie o endereço que ele gerar. Cole-o aqui. Somente o id do link é armazenado — o botão Pagar é montado a partir dele.",
+    "check": "Verificar o link",
+    "confirmLine": "Loja: {merchant} ({merchantId}), link: {title}, valor: {amount}",
+    "confirmWarning": "O nome da loja é definido por quem é dono do link; a Trientes não o verifica. Confira o id da loja no seu painel.",
+    "confirmDelayed": "Este link pertence a outra loja, então entrará em vigor em {when}. Seu link atual continuará funcionando até lá e nós avisaremos você.",
+    "confirmYes": "Sim, esta é minha loja",
+    "amountFree": "o comprador escolhe o valor",
+    "currentTitle": "Pagamentos ativados",
+    "openPayPage": "Abrir a página de pagamento",
+    "remove": "Remover o link de pagamento",
+    "removeConfirm": "O botão Pagar desaparecerá do seu cartão. Você pode vinculá-lo novamente a qualquer momento.",
+    "removeYes": "Sim, remover",
+    "removed": "O link de pagamento foi removido.",
+    "disabledNote": "O serviço de pagamentos informa que esse link está desligado no seu painel. Os compradores verão isso na página de pagamento.",
+    "hiddenMissing": "O serviço de pagamentos não reconhece mais esse link, então o botão Pagar está oculto. Crie um novo link no seu painel e cole-o aqui.",
+    "hiddenMismatch": "Este link agora informa um ID da loja diferente daquele fixado aqui, então o botão Pagar está oculto. Entre em contato conosco antes de usá-lo novamente.",
+    "pendingTitle": "Uma alteração está pendente",
+    "pendingBody": "Um link da loja {merchant} ({merchantId}) entra em vigor em {when}.",
+    "pendingOldWorks": "Seu link atual continua funcionando até lá. Se você não solicitou essa alteração, cancele agora e troque sua senha.",
+    "cancelChange": "Cancelar a alteração",
+    "changeCancelled": "A alteração pendente foi cancelada.",
+    "savedNow": "Pronto. O botão Pagar está ativo no seu cartão.",
+    "savedDelayed": "Salvo. O novo link entra em vigor em {when}; o atual continua funcionando até lá.",
+    "frozenUntil": "Você alterou o e-mail ou o Telegram da sua conta recentemente, então os links de pagamento estão congelados até {when}. Isso protege você caso alguém tenha acessado sua conta.",
+    "reauth": "Confirme que é você",
+    "journalTitle": "Histórico de alterações",
+    "journalBySystem": "Trientes",
+    "journal": {
+      "SET": "Link definido",
+      "SCHEDULED": "Alteração agendada",
+      "APPLIED": "Alteração agendada aplicada",
+      "CANCELLED": "Alteração cancelada",
+      "REMOVED": "Link removido",
+      "DISABLED": "Link desligado no painel",
+      "HIDDEN": "Botão Pagar oculto"
+    },
+    "field": {
+      "linkInput": "Link de pagamento",
+      "link": "ID do link",
+      "title": "Nome do link",
+      "amount": "Valor",
+      "checked": "Última verificação"
+    },
+    "error": {
+      "generic": "Não foi possível fazer isso. Tente novamente.",
+      "unauth": "Faça login.",
+      "not_found": "Apenas o proprietário deste negócio pode alterar o link de pagamento.",
+      "suspended": "Este negócio está fora da vitrine, então o link de pagamento não pode ser alterado.",
+      "csrf": "A página ficou desatualizada. Recarregue e tente novamente.",
+      "empty": "Cole o link de pagamento ou seu ID.",
+      "bad_link": "Isso não é um link de pagamento da Trientes. Ele deve parecer com https://trientes.org/exchange/#/l/pl_… ou ser o próprio ID pl_….",
+      "too_many_checks": "Verificações demais na última hora. Tente novamente mais tarde.",
+      "link_missing": "O serviço de pagamentos não reconhece esse link.",
+      "link_off": "Esse link está desligado no seu painel de pagamentos. Ative-o lá primeiro.",
+      "link_later": "O serviço de pagamentos não respondeu. Tente novamente mais tarde.",
+      "stale_login": "Você entrou há muito tempo.",
+      "code_required": "O código ainda não está no nome do link. Adicione-o no seu painel de pagamentos («Links» → seu link → «Nome») e verifique novamente.",
+      "contact_frozen": "Você alterou o e-mail ou o Telegram da sua conta nas últimas 24 horas, então os links de pagamento ficam congelados até lá.",
+      "no_channel": "Para alterar um link existente, precisamos conseguir contatar você e, no momento, não podemos: vincule o Telegram à sua conta ou ative as notificações por e-mail para o seu endereço verificado (Painel → Alertas → canais de notificação).",
+      "same_link": "Este link já está no seu cartão.",
+      "no_pending": "Não há alteração pendente.",
+      "no_link": "Não há link de pagamento neste cartão."
+    },
+    "notify": {
+      "installed": {
+        "subject": "Pagamentos ativados no seu cartão Trientes",
+        "body": "Um link de pagamento da loja {merchant} ({merchantId}) agora está ativo no seu cartão de negócios. Se não foi você, abra {link} e remova-o, depois altere sua senha."
+      },
+      "sameMerchant": {
+        "subject": "Seu link de pagamento Trientes foi alterado",
+        "body": "Outro link da mesma loja {merchant} ({merchantId}) agora está no seu cartão de negócios. Se não foi você, abra {link} e remova-o, depois altere sua senha."
+      },
+      "scheduled": {
+        "subject": "Uma alteração de link de pagamento está aguardando no seu cartão Trientes",
+        "body": "A loja era {was}, será {willBe} ({merchantId}), com efeito às {when} UTC. Seu link atual continua funcionando até lá. Se você não solicitou isso, cancele aqui: {link}"
+      },
+      "applied": {
+        "subject": "A alteração do link de pagamento entrou em vigor",
+        "body": "Os pagamentos no seu cartão de negócios agora vão para a loja {merchant} ({merchantId}). Se não foi você, abra {link} e remova o link, depois altere sua senha."
+      },
+      "cancelled": {
+        "subject": "A alteração de link de pagamento em espera foi cancelada",
+        "body": "A alteração para a loja {merchant} foi cancelada. Nada no seu cartão foi alterado: {link}"
+      },
+      "changeFailed": {
+        "subject": "A alteração de link de pagamento em espera não foi concluída",
+        "body": "Quando as 24 horas se encerraram, perguntamos novamente ao serviço de pagamentos sobre o link da loja {merchant}, e ele não é mais utilizável. Nada no seu cartão foi alterado: {link}"
+      },
+      "removed": {
+        "subject": "Pagamentos desativados no seu cartão Trientes",
+        "body": "O link de pagamento da loja {merchant} foi removido do seu cartão de negócios. Se não foi você, abra {link} e altere sua senha."
+      },
+      "missing": {
+        "subject": "Seu link de pagamento Trientes não funciona mais",
+        "body": "O serviço de pagamentos não reconhece mais o link da loja {merchant}, portanto o botão Pagar está oculto no seu cartão. Crie um novo link no seu painel de pagamentos e cole-o aqui: {link}"
+      },
+      "disabled": {
+        "subject": "Seu link de pagamento Trientes está desativado",
+        "body": "O serviço de pagamentos informa que o link da loja {merchant} está desativado no seu painel. Reative-o lá ou remova-o aqui: {link}"
+      },
+      "mismatch": {
+        "subject": "Seu link de pagamento Trientes informa uma loja diferente",
+        "body": "O link da loja {merchant} agora informa um ID de loja diferente do fixado no seu cartão, então o botão Pagar está oculto. Entre em contato conosco antes de usá-lo novamente: {link}"
+      },
+      "reset": {
+        "subject": "Pagamentos foram desativados após uma mudança de proprietário",
+        "body": "A pessoa que configurou o link de pagamento da loja {merchant} não é mais proprietária deste negócio, então o link foi removido. Conecte os pagamentos novamente aqui: {link}"
+      },
+      "contactChanged": {
+        "subject": "Os dados de contato da sua conta Trientes foram alterados",
+        "body": {
+          "email": "O e-mail da sua conta Trientes foi alterado. Esta mensagem vai para o endereço antigo de propósito. Se não foi você, entre e altere sua senha imediatamente: os links de pagamento ficam congelados por 24 horas, que é o tempo que você tem.",
+          "telegram": "As notificações do Telegram da sua conta Trientes foram desativadas ou alteradas. Esta mensagem vai para o canal antigo de propósito. Se não foi você, entre e altere sua senha imediatamente: os links de pagamento ficam congelados por 24 horas, que é o tempo que você tem."
+        }
+      }
+    },
+    "cardBlockOffer": "Permita que compradores paguem você em cripto direto deste cartão. O dinheiro vai para sua própria carteira; a Trientes nunca o guarda.",
+    "cardBlockOn": "Os compradores podem pagar você aqui: {merchant}.",
+    "cardBlockHidden": "O link de pagamento de {merchant} não está funcionando, então o botão Pagar está oculto no seu cartão.",
+    "cardBlockManage": "Configurações de pagamento",
+    "cardBlockHaveLink": "Já tem uma loja? Cole seu link de pagamento",
+    "noChannelHint": "Não conseguimos contatar você no momento: vincule o Telegram ou ative as notificações por e-mail para o seu endereço verificado (Painel → Alertas → canais de notificação). Até lá, um link de pagamento existente não pode ser alterado — uma alteração silenciosa é exatamente do que o atraso protege você."
+  },
+  "reauth": {
+    "kicker": "Segurança",
+    "title": "Confirme que é você",
+    "codeBody": "Digite o código de seis dígitos do seu app autenticador. Pedimos isso porque você está prestes a mudar para onde o dinheiro vai.",
+    "codeLabel": "Código do app",
+    "passwordBody": "Digite sua senha. Pedimos isso porque você está prestes a mudar para onde o dinheiro vai.",
+    "passwordLabel": "Senha",
+    "confirm": "Confirmar",
+    "signout": "Sair e entrar novamente",
+    "signoutBody": "Sua conta não tem senha nem app autenticador, então a única forma de confirmar que é você é sair e entrar novamente. Você voltará direto para cá.",
+    "error": {
+      "generic": "Não foi possível confirmar. Tente novamente.",
+      "unauth": "Faça login.",
+      "csrf": "A página ficou desatualizada. Recarregue e tente novamente.",
+      "too_many_attempts": "Muitas tentativas. Tente novamente em quinze minutos.",
+      "code_required": "Digite o código do app.",
+      "password_required": "Digite sua senha.",
+      "invalid_credentials": "Essa senha não confere.",
+      "code_invalid": "Esse código não confere.",
+      "code_reused": "Esse código já foi usado. Aguarde o próximo.",
+      "rate_limited": "Muitas tentativas. Tente novamente em um minuto.",
+      "not_enrolled": "Nenhum app autenticador está configurado para esta conta.",
+      "unreadable": "Não foi possível ler a chave armazenada. Entre em contato com o suporte.",
+      "no_password_set": "Esta conta não tem senha. Saia e entre novamente."
     }
   }
 }

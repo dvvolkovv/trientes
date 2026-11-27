@@ -1846,7 +1846,8 @@
       "sales": "Caisse",
       "reports": "Rapports",
       "crm": "Clients",
-      "automation": "Automatisation"
+      "automation": "Automatisation",
+      "payments": "Accepter les paiements"
     },
     "tileUnit": {
       "points": "{count} sur la carte",
@@ -1864,7 +1865,8 @@
       "sales": "reçus aujourd'hui",
       "reports": "reçus sur 30 jours",
       "crm": "acheteurs: {count}",
-      "automation": "règles: {count}"
+      "automation": "règles: {count}",
+      "payments": "lien de paiement"
     },
     "tileEmpty": "rien pour l’instant",
     "tileBadge": {
@@ -3794,7 +3796,7 @@
       }
     },
     "automation": {
-      "subject": "{company}: {rule}"
+      "subject": "{company} : {rule}"
     }
   },
   "captcha": {
@@ -4035,7 +4037,7 @@
       "gtin": "Code-barres",
       "description": "Description",
       "usage": "Mode d'utilisation",
-      "ingredients": "Composition",
+      "ingredients": "Ingrédients",
       "attributes": "Propriétés",
       "photos": "Photos",
       "videoUrl": "Vidéo",
@@ -5744,6 +5746,168 @@
       "url_private": "Cette adresse pointe vers un réseau privé, pas vers Internet. Nous n’y enverrons pas.",
       "url_too_long": "Cette adresse est trop longue.",
       "too_many": "La limite de points de terminaison pour une entreprise est atteinte."
+    }
+  },
+  "payLink": {
+    "title": "Accepter les paiements",
+    "subtitle": "Les acheteurs vous paient en crypto via Trientes. L'argent va directement dans votre propre portefeuille — Trientes ne le détient jamais.",
+    "payButton": "Payer",
+    "step1Title": "Étape 1. Configurez votre boutique",
+    "step1Body": "Vous enregistrez vous‑même la boutique dans la console des paiements Trientes : nom de la boutique, la pièce et l’adresse à laquelle vous souhaitez être payé, et le portefeuille avec lequel vous vous connectez. Nous ne participons pas à cette étape et ne voyons jamais vos clés.",
+    "connect": "Connecter les paiements",
+    "step2Title": "Étape 2. Prouvez que le lien est à vous",
+    "step2Body": "Dans la console des paiements, ouvrez « Liens » → votre lien → « Nom » et ajoutez ce code au nom du lien. La console signe cette modification avec le portefeuille de votre boutique, donc vous seul pouvez le faire. Une fois enregistré, vous pouvez retirer le code du nom à nouveau.",
+    "codeWarning": "Vous saisissez ce code vous‑même, dans votre propre console. Ne le communiquez jamais à qui que ce soit — l’équipe Trientes ne le demandera jamais.",
+    "getCode": "Obtenir un code",
+    "codeExpires": "Valide jusqu’au {when}",
+    "step3Title": "Étape 3. Collez le lien de paiement",
+    "step3Body": "Dans la console des paiements, ouvrez « Liens » → « Nouveau lien » et copiez l’adresse qu’elle vous donne. Collez‑la ici. Seul l’identifiant du lien est stocké — le bouton Payer est construit à partir de celui‑ci.",
+    "check": "Vérifier le lien",
+    "confirmLine": "Boutique : {merchant} ({merchantId}), lien : {title}, montant : {amount}",
+    "confirmWarning": "Le nom de la boutique est défini par le propriétaire du lien ; Trientes ne le vérifie pas. Comparez l’identifiant de la boutique dans votre console.",
+    "confirmDelayed": "Ce lien appartient à une autre boutique, il prendra donc effet à {when}. Votre lien actuel continue de fonctionner d’ici là, et nous vous enverrons un message.",
+    "confirmYes": "Oui, c’est ma boutique",
+    "amountFree": "l’acheteur choisit le montant",
+    "currentTitle": "Les paiements sont activés",
+    "openPayPage": "Ouvrir la page de paiement",
+    "remove": "Supprimer le lien de paiement",
+    "removeConfirm": "Le bouton Payer disparaîtra de votre carte. Vous pourrez le reconnecter à tout moment.",
+    "removeYes": "Oui, le supprimer",
+    "removed": "Le lien de paiement a été supprimé.",
+    "disabledNote": "Le service de paiement indique que ce lien est désactivé dans votre console. Les acheteurs le verront sur la page de paiement.",
+    "hiddenMissing": "Le service de paiement ne connaît plus ce lien, le bouton Payer est donc masqué. Créez un nouveau lien dans votre console et collez‑le ici.",
+    "hiddenMismatch": "Ce lien indique maintenant un identifiant de boutique différent de celui épinglé ici, le bouton Payer est donc masqué. Veuillez nous contacter avant de l’utiliser de nouveau.",
+    "pendingTitle": "Une modification est en attente",
+    "pendingBody": "Un lien de la boutique {merchant} ({merchantId}) prendra effet à {when}.",
+    "pendingOldWorks": "Votre lien actuel continue de fonctionner d’ici là. Si vous n’avez pas demandé ce changement, annulez‑le maintenant et changez votre mot de passe.",
+    "cancelChange": "Annuler la modification",
+    "changeCancelled": "La modification en attente a été annulée.",
+    "savedNow": "Terminé. Le bouton Payer est actif sur votre carte.",
+    "savedDelayed": "Enregistré. Le nouveau lien prendra effet à {when} ; l’actuel continuera de fonctionner d’ici là.",
+    "frozenUntil": "Vous avez récemment modifié l’email ou le Telegram de votre compte, les liens de paiement sont donc gelés jusqu’au {when}. Cela vous protège si quelqu’un d’autre est entré dans votre compte.",
+    "reauth": "Confirmez que c’est vous",
+    "journalTitle": "Historique des modifications",
+    "journalBySystem": "Trientes",
+    "journal": {
+      "SET": "Lien défini",
+      "SCHEDULED": "Modification planifiée",
+      "APPLIED": "Modification planifiée appliquée",
+      "CANCELLED": "Modification annulée",
+      "REMOVED": "Lien supprimé",
+      "DISABLED": "Lien désactivé dans le tableau de bord",
+      "HIDDEN": "Bouton de paiement masqué"
+    },
+    "field": {
+      "linkInput": "Lien de paiement",
+      "link": "ID du lien",
+      "title": "Nom du lien",
+      "amount": "Montant",
+      "checked": "Dernière vérification"
+    },
+    "error": {
+      "generic": "Action impossible. Veuillez réessayer.",
+      "unauth": "Veuillez vous connecter.",
+      "not_found": "Seul le propriétaire de cette entreprise peut modifier le lien de paiement.",
+      "suspended": "Cette entreprise est retirée de la vitrine, le lien de paiement ne peut donc pas être modifié.",
+      "csrf": "La page a expiré. Rechargez-la et réessayez.",
+      "empty": "Collez le lien de paiement ou son ID.",
+      "bad_link": "Ce n’est pas un lien de paiement Trientes. Il doit ressembler à https://trientes.org/exchange/#/l/pl_… ou être l’ID pl_… lui-même.",
+      "too_many_checks": "Trop de vérifications durant la dernière heure. Réessayez plus tard.",
+      "link_missing": "Le service de paiements ne connaît pas ce lien.",
+      "link_off": "Ce lien est désactivé dans votre tableau de bord des paiements. Activez-le là-bas d’abord.",
+      "link_later": "Le service de paiements n’a pas répondu. Veuillez réessayer plus tard.",
+      "stale_login": "Vous vous êtes connecté il y a trop longtemps.",
+      "code_required": "Le code n’est pas encore dans le nom du lien. Ajoutez-le dans votre tableau de bord des paiements («Links» → votre lien → «Name») puis vérifiez de nouveau.",
+      "contact_frozen": "Vous avez changé l’email ou Telegram de votre compte au cours des 24 dernières heures, les liens de paiement sont donc gelés jusque-là.",
+      "no_channel": "Pour modifier un lien existant, nous devons pouvoir vous joindre, et pour l'instant nous ne le pouvons pas : associez Telegram à votre compte, ou activez les notifications par e-mail pour votre adresse vérifiée (Cabinet → Alerts → notification channels).",
+      "same_link": "Ce lien est déjà sur votre carte.",
+      "no_pending": "Il n’y a aucun changement en attente.",
+      "no_link": "Il n’y a pas de lien de paiement sur cette carte."
+    },
+    "notify": {
+      "installed": {
+        "subject": "Les paiements sont désormais activés pour votre carte Trientes",
+        "body": "Un lien de paiement de la boutique {merchant} ({merchantId}) est maintenant actif sur votre carte professionnelle. Si ce n’était pas vous, ouvrez {link} et supprimez-le, puis changez votre mot de passe."
+      },
+      "sameMerchant": {
+        "subject": "Votre lien de paiement Trientes a changé",
+        "body": "Un autre lien de la même boutique {merchant} ({merchantId}) est maintenant sur votre carte professionnelle. Si ce n’était pas vous, ouvrez {link} et supprimez-le, puis changez votre mot de passe."
+      },
+      "scheduled": {
+        "subject": "Un changement de lien de paiement est en attente sur votre carte Trientes",
+        "body": "La boutique était {was}, elle deviendra {willBe} ({merchantId}), avec une prise d’effet à {when} UTC. Votre lien actuel continue de fonctionner jusque-là. Si vous n’avez pas demandé cela, annulez ici : {link}"
+      },
+      "applied": {
+        "subject": "Le changement de lien de paiement a pris effet",
+        "body": "Les paiements sur votre carte professionnelle vont désormais vers la boutique {merchant} ({merchantId}). Si ce n’était pas vous, ouvrez {link} et supprimez le lien, puis changez votre mot de passe."
+      },
+      "cancelled": {
+        "subject": "Le changement de lien de paiement en attente a été annulé",
+        "body": "Le changement vers la boutique {merchant} a été annulé. Rien n’a changé sur votre carte : {link}"
+      },
+      "changeFailed": {
+        "subject": "Le changement de lien de paiement en attente n’a pas abouti",
+        "body": "À l’issue des 24 heures, nous avons redemandé au service de paiements le lien de la boutique {merchant}, et il n’est plus utilisable. Rien n’a changé sur votre carte : {link}"
+      },
+      "removed": {
+        "subject": "Les paiements sont désactivés sur votre carte Trientes",
+        "body": "Le lien de paiement de la boutique {merchant} a été supprimé de votre carte professionnelle. Si ce n’était pas vous, ouvrez {link} et changez votre mot de passe."
+      },
+      "missing": {
+        "subject": "Votre lien de paiement Trientes ne fonctionne plus",
+        "body": "Le service de paiement ne reconnaît plus le lien de la boutique {merchant}, donc le bouton Payer est masqué sur votre carte. Créez un nouveau lien dans votre espace de paiements et collez-le ici : {link}"
+      },
+      "disabled": {
+        "subject": "Votre lien de paiement Trientes est désactivé",
+        "body": "Le service de paiement indique que le lien de la boutique {merchant} est désactivé dans votre espace. Réactivez-le là-bas, ou supprimez-le ici : {link}"
+      },
+      "mismatch": {
+        "subject": "Votre lien de paiement Trientes signale une autre boutique",
+        "body": "Le lien de la boutique {merchant} indique maintenant un identifiant de boutique différent de celui épinglé sur votre carte, donc le bouton Payer est masqué. Veuillez nous contacter avant de l’utiliser à nouveau : {link}"
+      },
+      "reset": {
+        "subject": "Les paiements ont été désactivés après un changement de propriétaire",
+        "body": "La personne qui avait configuré le lien de paiement de la boutique {merchant} n’est plus propriétaire de cette entreprise, donc le lien a été supprimé. Reconnectez les paiements ici : {link}"
+      },
+      "contactChanged": {
+        "subject": "Les coordonnées de votre compte Trientes ont changé",
+        "body": {
+          "email": "L’e-mail de votre compte Trientes a été modifié. Ce message est envoyé à l’ancienne adresse volontairement. Si ce n’était pas vous, connectez-vous et changez votre mot de passe immédiatement : les liens de paiement sont gelés pendant 24 heures, c’est le délai dont vous disposez.",
+          "telegram": "Les notifications Telegram de votre compte Trientes ont été désactivées ou modifiées. Ce message est envoyé à l’ancien canal volontairement. Si ce n’était pas vous, connectez-vous et changez votre mot de passe immédiatement : les liens de paiement sont gelés pendant 24 heures, c’est le délai dont vous disposez."
+        }
+      }
+    },
+    "cardBlockOffer": "Laissez les acheteurs vous payer en crypto directement depuis cette carte. L’argent va sur votre propre portefeuille ; Trientes ne le détient jamais.",
+    "cardBlockOn": "Les acheteurs peuvent vous payer ici : {merchant}.",
+    "cardBlockHidden": "Le lien de paiement de {merchant} ne fonctionne pas, donc le bouton Payer est masqué sur votre carte.",
+    "cardBlockManage": "Paramètres de paiement",
+    "cardBlockHaveLink": "Vous avez déjà une boutique ? Collez votre lien de paiement",
+    "noChannelHint": "Nous ne pouvons pas vous joindre pour le moment : associez Telegram, ou activez les notifications par e-mail pour votre adresse vérifiée (Cabinet → Alerts → notification channels). D'ici là, un lien de paiement existant ne peut pas être modifié — une modification silencieuse est précisément ce contre quoi le délai vous protège."
+  },
+  "reauth": {
+    "kicker": "Sécurité",
+    "title": "Confirmez que c’est vous",
+    "codeBody": "Saisissez le code à six chiffres de votre application d’authentification. Nous le demandons car vous êtes sur le point de changer où va l’argent.",
+    "codeLabel": "Code de l’application",
+    "passwordBody": "Saisissez votre mot de passe. Nous le demandons car vous êtes sur le point de changer où va l’argent.",
+    "passwordLabel": "Mot de passe",
+    "confirm": "Confirmer",
+    "signout": "Se déconnecter et se reconnecter",
+    "signoutBody": "Votre compte n’a pas de mot de passe ni d’application d’authentification, donc la seule façon de confirmer que c’est vous est de vous déconnecter puis de vous reconnecter. Vous reviendrez directement ici.",
+    "error": {
+      "generic": "Impossible de confirmer. Veuillez réessayer.",
+      "unauth": "Veuillez vous connecter.",
+      "csrf": "La page a expiré. Rechargez-la et réessayez.",
+      "too_many_attempts": "Trop de tentatives. Réessayez dans quinze minutes.",
+      "code_required": "Saisissez le code de l’application.",
+      "password_required": "Saisissez votre mot de passe.",
+      "invalid_credentials": "Ce mot de passe ne correspond pas.",
+      "code_invalid": "Ce code ne correspond pas.",
+      "code_reused": "Ce code a déjà été utilisé. Attendez le suivant.",
+      "rate_limited": "Trop de tentatives. Réessayez dans une minute.",
+      "not_enrolled": "Aucune application d’authentification n’est configurée pour ce compte.",
+      "unreadable": "Nous ne pouvons pas lire la clé enregistrée. Veuillez contacter l’assistance.",
+      "no_password_set": "Ce compte n’a pas de mot de passe. Déconnectez-vous et reconnectez-vous."
     }
   }
 }

@@ -25,6 +25,7 @@ import {
 import { serializeJsonLd } from "@/lib/json-ld";
 import { TranslatedBadge } from "@/components/coin-card/translated-badge";
 import { DocList } from "@/components/company-card/doc-list";
+import { PayButton } from "@/components/company-card/pay-button";
 import { CARD_ACTION, CARD_HEADING, CARD_PANEL } from "@/lib/company-card-ui";
 
 export const dynamic = "force-dynamic";
@@ -74,6 +75,7 @@ export default async function PublicCompanyPage({
 
   const t = await getTranslations("companyPublic");
   const tb = await getTranslations("business");
+  const tp = await getTranslations("payLink");
 
   // Подписка — согласие на рассылку (ТЗ 4.2), поэтому состояние читается на каждом
   // показе: отписавшийся не должен видеть «вы подписаны» до перезахода.
@@ -156,6 +158,9 @@ export default async function PublicCompanyPage({
             Выключатель продавца сильнее кнопки: скрытый телефон кнопки «позвонить» не
             даёт — иначе выключатель обходился бы набором номера из `tel:`. */}
         <div className="grid gap-2 px-5 py-5 sm:grid-cols-2">
+          {/* «Оплатить» (слайс CP): видят все, и первой кнопкой — человек на витрине
+              пришёл купить. Деньги идут прямо на кошелёк владельца магазина. */}
+          {card.pay ? <PayButton href={card.pay.href} label={tp("payButton")} /> : null}
           <MessageStoreButton
             companyId={card.id}
             locale={locale}

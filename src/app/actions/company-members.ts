@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { notifyUser } from "@/lib/notify";
 import { NOT_DELETED } from "@/lib/soft-delete";
 import { logCompanyAction } from "@/lib/company-team/journal";
+import { resetPayLinkOnOwnerLoss } from "@/lib/pay-link/store";
 
 const ROLES: CompanyRole[] = ["OWNER", "EDITOR", "VIEWER"];
 
@@ -92,6 +93,16 @@ export async function updateMemberRole(input: { companyId: string; userId: strin
     // источника прав у одного человека расходятся.
     data: { role: input.role, roleId: null },
   });
+  // Поставивший ссылку оплаты перестал быть владельцем — приём платежей сбрасывается
+  // (слайс CP): деньги покупателей не должны идти на кошелёк человека, которому
+  // предприятие больше не принадлежит. Сообщение уходит обоим.
+  if (input.role !== "OWNER") {
+    await resetPayLinkOnOwnerLoss({
+      companyId: input.companyId,
+      leavingUserId: input.userId,
+      actor: { userId: actorId, ip: null, userAgent: null },
+    });
+  }
   await logCompanyAction({
     companyId: input.companyId,
     actorUserId: actorId,
@@ -115,6 +126,11 @@ export async function removeMember(input: { companyId: string; userId: string })
   }
   await prisma.companyMember.delete({
     where: { companyId_userId: { companyId: input.companyId, userId: input.userId } },
+  });
+  await resetPayLinkOnOwnerLoss({
+    companyId: input.companyId,
+    leavingUserId: input.userId,
+    actor: { userId: actorId, ip: null, userAgent: null },
   });
   await logCompanyAction({
     companyId: input.companyId,

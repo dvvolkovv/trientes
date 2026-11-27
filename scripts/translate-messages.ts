@@ -62,6 +62,9 @@ const GLOSSARY: Record<string, string> = {
     // Слайс CM: «Receipts today» перевелось как «Чеки оформления заказа сегодня».
     "receipt (sales document) → чек (never «квитанция», never «оформление заказа»)",
     "pin (marker on the map) → метка (never «пин», never «булавка»)",
+    // Слайс CP: «business card» перевелось как «визитка», «link id» — как «ID ссылки».
+    "business card (company storefront) → карточка магазина (never «визитка»)",
+    "link id / shop id → номер ссылки / номер магазина (never «ID», never «айди»)",
   ].join("\n"),
   hr: [
     "Trientes — brand name, never translate.",

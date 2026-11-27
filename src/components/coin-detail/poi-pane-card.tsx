@@ -11,6 +11,7 @@ import { safeHttpUrl } from "@/lib/safe-url";
 import { PoiHours } from "@/components/coin-detail/poi-hours";
 import { AdBanner } from "@/components/company-card/ad-banner";
 import { CardPayments, CardRequisites } from "@/components/company-card/panels";
+import { PayButton } from "@/components/company-card/pay-button";
 import { useCompanyCard } from "@/components/company-card/use-company-card";
 import { useTranslations } from "next-intl";
 
@@ -43,6 +44,7 @@ export function PoiPaneCard({
   t: StepTranslator;
 }) {
   const tc = useTranslations("common");
+  const tp = useTranslations("payLink");
   const website = safeHttpUrl(poi.website);
   const photo = usePoiPhoto(poi, website);
   const hasAccepted = poi.acceptedCoins.length > 0 || poi.acceptedGeneric || poi.lightning;
@@ -126,6 +128,9 @@ export function PoiPaneCard({
         ) : null}
 
         <section className="space-y-2.5">
+          {/* «Оплатить» (слайс CP): та же кнопка, что на витрине, и первой — человек,
+              стоящий у прилавка, пришёл заплатить. Видят её все. */}
+          {card?.pay ? <PayButton href={card.pay.href} label={tp("payButton")} /> : null}
           {/* Идущая акция заведения (слайс BG). Строка, а не плашка: обещание
               продавца не должно спорить за внимание с адресом и часами. */}
           {poi.promo && (

@@ -1846,7 +1846,8 @@
       "sales": "收银",
       "reports": "报告",
       "crm": "客户",
-      "automation": "自动化"
+      "automation": "自动化",
+      "payments": "接受支付"
     },
     "tileUnit": {
       "points": "地图上{count}个",
@@ -1864,7 +1865,8 @@
       "sales": "今日收据",
       "reports": "30天内的收据",
       "crm": "买家: {count}",
-      "automation": "规则: {count}"
+      "automation": "规则: {count}",
+      "payments": "支付链接"
     },
     "tileEmpty": "尚无内容",
     "tileBadge": {
@@ -5744,6 +5746,168 @@
       "url_private": "该地址指向私有网络而非互联网。我们不会发送到那里。",
       "url_too_long": "该地址过长。",
       "too_many": "已达到单个公司的端点上限。"
+    }
+  },
+  "payLink": {
+    "title": "接受付款",
+    "subtitle": "买家通过 Trientes 用加密货币向你付款。资金直接进入你的自有钱包——Trientes 从不代管。",
+    "payButton": "支付",
+    "step1Title": "步骤 1：设置你的商店",
+    "step1Body": "你需要在 Trientes 支付后台自行登记商店：填写商店名称、你希望收款的币种和地址，以及你用于登录的钱包。我们不参与该步骤，也从不会接触到你的密钥。",
+    "connect": "接入支付",
+    "step2Title": "步骤 2：证明该链接属于你",
+    "step2Body": "在支付后台打开 «Links» → 你的链接 → «Name»，将此代码添加到链接名称中。后台会使用你的商店钱包对该次编辑进行签名，因此只有你能完成。保存后你可再从名称中移除该代码。",
+    "codeWarning": "你在自己的后台亲自输入此代码。切勿将其告知任何人——Trientes 员工也绝不会索要。",
+    "getCode": "获取代码",
+    "codeExpires": "有效期至 {when}",
+    "step3Title": "步骤 3：粘贴支付链接",
+    "step3Body": "在支付后台打开 «Links» → «New link» 并复制其生成的地址。将其粘贴到此处。我们仅保存链接 ID——Pay 按钮由此构建。",
+    "check": "检查链接",
+    "confirmLine": "商店：{merchant}（{merchantId}），链接：{title}，金额：{amount}",
+    "confirmWarning": "商店名称由链接所有者自行设置；Trientes 不予核验。请在你的后台核对商店 ID。",
+    "confirmDelayed": "此链接属于另一家商店，因此将在 {when} 生效。你当前的链接在此之前仍可使用，我们会向你发送通知。",
+    "confirmYes": "是的，这是我的商店",
+    "amountFree": "买家自选金额",
+    "currentTitle": "支付已开启",
+    "openPayPage": "打开支付页面",
+    "remove": "移除支付链接",
+    "removeConfirm": "Pay 按钮将从你的卡片中消失。你可以随时重新连接它。",
+    "removeYes": "是，移除",
+    "removed": "支付链接已移除。",
+    "disabledNote": "支付服务报告该链接已在你的控制台中被关闭。买家将在支付页面看到这一点。",
+    "hiddenMissing": "支付服务不再识别该链接，因此 Pay 按钮被隐藏。在你的控制台中创建一个新链接，并粘贴到这里。",
+    "hiddenMismatch": "该链接现在报告的商店 ID 与此处固定的不一致，因此 Pay 按钮被隐藏。再次使用前请联系我们。",
+    "pendingTitle": "有待处理的更改",
+    "pendingBody": "商店 {merchant}（{merchantId}）的链接将于 {when} 生效。",
+    "pendingOldWorks": "在此之前，你当前的链接将继续有效。若你未发起此更改，请立即取消并修改密码。",
+    "cancelChange": "取消更改",
+    "changeCancelled": "已取消待处理的更改。",
+    "savedNow": "完成。Pay 按钮已在你的卡片上生效。",
+    "savedDelayed": "已保存。新链接将于 {when} 生效；在此之前当前链接仍可使用。",
+    "frozenUntil": "你最近更改了账户的邮箱或 Telegram，因此支付链接将冻结至 {when}。这可以在他人进入你账户时保护你。",
+    "reauth": "确认是你本人",
+    "journalTitle": "更改历史",
+    "journalBySystem": "Trientes",
+    "journal": {
+      "SET": "链接已设置",
+      "SCHEDULED": "已安排更改",
+      "APPLIED": "已应用计划更改",
+      "CANCELLED": "已取消更改",
+      "REMOVED": "已移除链接",
+      "DISABLED": "链接已在控制台中关闭",
+      "HIDDEN": "已隐藏 Pay 按钮"
+    },
+    "field": {
+      "linkInput": "支付链接",
+      "link": "链接 ID",
+      "title": "链接名称",
+      "amount": "金额",
+      "checked": "上次检查"
+    },
+    "error": {
+      "generic": "无法完成此操作。请重试。",
+      "unauth": "请登录。",
+      "not_found": "只有此商家的所有者可以更改支付链接。",
+      "suspended": "此商家已下架，因此无法更改支付链接。",
+      "csrf": "页面已过期。请重新加载后重试。",
+      "empty": "粘贴支付链接或其 ID。",
+      "bad_link": "这不是 Trientes 的支付链接。它应类似 https://trientes.org/exchange/#/l/pl_…，或直接是 pl_… 的 ID。",
+      "too_many_checks": "过去一小时内检查次数过多。稍后再试。",
+      "link_missing": "支付服务不认识此链接。",
+      "link_off": "此链接在你的支付控制台中已关闭。请先在那里将其开启。",
+      "link_later": "支付服务未响应。请稍后重试。",
+      "stale_login": "你登录的时间过久。",
+      "code_required": "链接名称中还没有代码。请在你的支付控制台中添加它（«Links» → 你的链接 → «Name»），然后再检查。",
+      "contact_frozen": "你在过去24小时内更改了账户的邮箱或 Telegram，因此支付链接在此期间将被冻结。",
+      "no_channel": "要修改现有链接，我们必须能够联系到你，但目前做不到：请将 Telegram 关联到你的账户，或为已验证的邮箱地址开启邮件通知（控制台 → 提醒 → 通知渠道）。",
+      "same_link": "此链接已在你的卡片上。",
+      "no_pending": "没有等待中的更改。",
+      "no_link": "此卡片上没有支付链接。"
+    },
+    "notify": {
+      "installed": {
+        "subject": "你的 Trientes 卡片已开启支付",
+        "body": "商店 {merchant}（{merchantId}）的支付链接已在你的名片上生效。如果这不是你本人操作，请打开 {link} 将其移除，然后更改你的密码。"
+      },
+      "sameMerchant": {
+        "subject": "你的 Trientes 支付链接已更改",
+        "body": "同一商店 {merchant}（{merchantId}）的另一条链接现已挂在你的名片上。如果这不是你本人操作，请打开 {link} 将其移除，然后更改你的密码。"
+      },
+      "scheduled": {
+        "subject": "你的 Trientes 卡片有一项支付链接更改在等待中",
+        "body": "商店原为 {was}，将变为 {willBe}（{merchantId}），将于 {when} UTC 生效。届时之前，你当前的链接仍可使用。如果这不是你发起的，请在此取消：{link}"
+      },
+      "applied": {
+        "subject": "支付链接更改已生效",
+        "body": "你名片上的支付现已指向商店 {merchant}（{merchantId}）。如果这不是你本人操作，请打开 {link} 并移除该链接，然后更改你的密码。"
+      },
+      "cancelled": {
+        "subject": "等待中的支付链接更改已取消",
+        "body": "改为商店 {merchant} 的更改已被取消。你的卡片未发生任何变化：{link}"
+      },
+      "changeFailed": {
+        "subject": "等待中的支付链接更改未能通过",
+        "body": "在24小时到期时，我们向支付服务再次查询了商店 {merchant} 的链接，但它已不可用。你的卡片未发生任何变化：{link}"
+      },
+      "removed": {
+        "subject": "你的 Trientes 卡片已关闭支付",
+        "body": "商店 {merchant} 的支付链接已从你的名片上移除。如果这不是你本人操作，请打开 {link} 并更改你的密码。"
+      },
+      "missing": {
+        "subject": "你的 Trientes 支付链接已无法使用",
+        "body": "支付服务不再识别商店 {merchant} 的链接，因此你的名片上已隐藏 Pay 按钮。请在你的支付控制台创建新的链接，并将其粘贴到此处：{link}"
+      },
+      "disabled": {
+        "subject": "你的 Trientes 支付链接已被关闭",
+        "body": "支付服务报告你在控制台中将商店 {merchant} 的链接设为关闭。请在那里重新开启，或在此移除：{link}"
+      },
+      "mismatch": {
+        "subject": "你的 Trientes 支付链接指向了不同的商店",
+        "body": "商店 {merchant} 的链接现在报告的商店 ID 与固定在你卡片上的不一致，因此已隐藏 Pay 按钮。请在再次使用前联系我们：{link}"
+      },
+      "reset": {
+        "subject": "所有者变更后已关闭支付",
+        "body": "设置商店 {merchant} 支付链接的人已不再是此企业的所有者，因此该链接已被移除。请在此重新连接支付：{link}"
+      },
+      "contactChanged": {
+        "subject": "你的 Trientes 账户联系方式已更改",
+        "body": {
+          "email": "你的 Trientes 账户邮箱已被更改。本消息特意发送到旧地址。如果这不是你本人操作，请立即登录并更改密码：支付链接将冻结24小时，这是你所拥有的时间。",
+          "telegram": "你的 Trientes 账户的 Telegram 通知已被关闭或更改。本消息特意发送到旧渠道。如果这不是你本人操作，请立即登录并更改密码：支付链接将冻结24小时，这是你所拥有的时间。"
+        }
+      }
+    },
+    "cardBlockOffer": "让买家直接在此卡片上用加密货币向你付款。资金将进入你的自有钱包；Trientes 从不托管它。",
+    "cardBlockOn": "买家可以在此处向你付款：{merchant}。",
+    "cardBlockHidden": "{merchant} 的支付链接不可用，因此你的卡片上会隐藏支付按钮。",
+    "cardBlockManage": "支付设置",
+    "cardBlockHaveLink": "已经有商店了吗？粘贴你的支付链接",
+    "noChannelHint": "我们目前无法联系到你：请关联 Telegram，或为已验证的邮箱地址开启邮件通知（控制台 → 提醒 → 通知渠道）。在此之前，现有的支付链接无法更改 — 静默更改正是延迟机制要保护你免受的风险。"
+  },
+  "reauth": {
+    "kicker": "安全",
+    "title": "确认是你本人",
+    "codeBody": "请输入来自你身份验证器应用的六位数字代码。我们之所以要求它，是因为你即将更改资金的去向。",
+    "codeLabel": "应用中的代码",
+    "passwordBody": "请输入你的密码。我们之所以要求它，是因为你即将更改资金的去向。",
+    "passwordLabel": "密码",
+    "confirm": "确认",
+    "signout": "退出并重新登录",
+    "signoutBody": "你的账户没有密码也没有验证器应用，因此确认是你本人的唯一方式是先退出再重新登录。你将会立刻回到这里。",
+    "error": {
+      "generic": "无法确认。请重试。",
+      "unauth": "请登录。",
+      "csrf": "页面已过期。请重新加载后重试。",
+      "too_many_attempts": "尝试次数过多。请在十五分钟后重试。",
+      "code_required": "请输入应用中的验证码。",
+      "password_required": "请输入你的密码。",
+      "invalid_credentials": "密码不匹配。",
+      "code_invalid": "验证码不匹配。",
+      "code_reused": "该验证码已被使用。请等待下一个。",
+      "rate_limited": "尝试次数过多。请在一分钟后重试。",
+      "not_enrolled": "此账户尚未设置验证器应用。",
+      "unreadable": "我们无法读取存储的密钥。请联系支持。",
+      "no_password_set": "此账户没有密码。请退出并重新登录."
     }
   }
 }

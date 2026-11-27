@@ -12,6 +12,7 @@ import { validateProfileInput, type ProfileInput } from "@/lib/profile";
 import { loadMfaGate } from "@/lib/authz/guard";
 import { authSessionCookieName } from "@/lib/session";
 import { avatarFilePath } from "@/lib/avatar";
+import { channelsBeforeChange, stampContactChange } from "@/lib/pay-link/freeze";
 
 async function requireUserId(): Promise<string | null> {
   const session = await auth();
@@ -61,6 +62,11 @@ export async function updateProfile(input: ProfileInput): Promise<{ ok: true } |
   if (!v.ok) return { ok: false, reason: v.reason };
   const current = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } });
   const emailChanged = (current?.email ?? null) !== v.data.email;
+  // Каналы **до** правки: весть о смене почты уходит на старый адрес, и снимать его
+  // надо пока он ещё на месте (слайс CP). Смена канала замораживает приём платежей
+  // на сутки — иначе захватчик сначала меняет почту на свою, и отложенная смена
+  // ссылки оплаты проходит молча.
+  const channelsBefore = emailChanged ? await channelsBeforeChange(userId) : null;
   try {
     await prisma.user.update({
       where: { id: userId },
@@ -77,6 +83,9 @@ export async function updateProfile(input: ProfileInput): Promise<{ ok: true } |
       return { ok: false, reason: "email_taken" };
     }
     throw err;
+  }
+  if (emailChanged && channelsBefore) {
+    await stampContactChange({ userId, channel: "email", before: channelsBefore });
   }
   revalidatePath("/", "layout");
   return { ok: true };

@@ -1846,7 +1846,8 @@
       "sales": "Kasa",
       "reports": "Raporlar",
       "crm": "Müşteriler",
-      "automation": "Otomasyon"
+      "automation": "Otomasyon",
+      "payments": "Ödemeleri kabul et"
     },
     "tileUnit": {
       "points": "{count} haritada",
@@ -1864,7 +1865,8 @@
       "sales": "bugünkü makbuzlar",
       "reports": "30 günde makbuz",
       "crm": "alıcılar: {count}",
-      "automation": "kurallar: {count}"
+      "automation": "kurallar: {count}",
+      "payments": "ödeme bağlantısı"
     },
     "tileEmpty": "henüz bir şey yok",
     "tileBadge": {
@@ -5744,6 +5746,168 @@
       "url_private": "Bu adres internete değil özel bir ağın içine işaret ediyor. Oraya göndermeyeceğiz.",
       "url_too_long": "Bu adres çok uzun.",
       "too_many": "Bir şirket için uç nokta sınırına ulaşıldı."
+    }
+  },
+  "payLink": {
+    "title": "Ödemeleri kabul edin",
+    "subtitle": "Alıcılar size ödemeyi Trientes üzerinden kripto ile yapar. Para doğrudan kendi cüzdanınıza gider — Trientes asla tutmaz.",
+    "payButton": "Öde",
+    "step1Title": "Adım 1. Mağazanızı kurun",
+    "step1Body": "Mağazayı Trientes ödemeler panelinde kendiniz kaydedersiniz: mağaza adı, ödeme almak istediğiniz coin ve adres, ve oturum açtığınız cüzdan. Biz bu adımın parçası değiliz ve anahtarlarınızı asla görmeyiz.",
+    "connect": "Ödemeleri bağla",
+    "step2Title": "Adım 2. Bağlantının size ait olduğunu kanıtlayın",
+    "step2Body": "Ödemeler panelinde «Bağlantılar» → bağlantınız → «Ad» öğesini açın ve bu kodu bağlantı adına ekleyin. Panel bu düzenlemeyi mağaza cüzdanınızla imzalar, bu nedenle bunu yalnızca siz yapabilirsiniz. Kaydettikten sonra kodu addan tekrar kaldırabilirsiniz.",
+    "codeWarning": "Bu kodu kendi panelinizde kendiniz yazarsınız. Bunu asla kimseyle paylaşmayın — Trientes personeli bunu hiçbir zaman istemez.",
+    "getCode": "Kod al",
+    "codeExpires": "{when} tarihine kadar geçerli",
+    "step3Title": "Adım 3. Ödeme bağlantısını yapıştırın",
+    "step3Body": "Ödemeler panelinde «Bağlantılar» → «Yeni bağlantı»yı açın ve verdiği adresi kopyalayın. Onu buraya yapıştırın. Yalnızca bağlantı kimliği saklanır — Öde düğmesi ondan oluşturulur.",
+    "check": "Bağlantıyı kontrol et",
+    "confirmLine": "Mağaza: {merchant} ({merchantId}), bağlantı: {title}, tutar: {amount}",
+    "confirmWarning": "Mağaza adı bağlantının sahibince belirlenir; Trientes bunu doğrulamaz. Mağaza kimliğini panelinizle karşılaştırın.",
+    "confirmDelayed": "Bu bağlantı farklı bir mağazaya ait, bu nedenle {when} tarihinde yürürlüğe girer. O zamana kadar geçerli bağlantınız çalışmaya devam eder ve size mesaj göndereceğiz.",
+    "confirmYes": "Evet, bu benim mağazam",
+    "amountFree": "tutarı alıcı seçer",
+    "currentTitle": "Ödemeler açık",
+    "openPayPage": "Ödeme sayfasını aç",
+    "remove": "Ödeme bağlantısını kaldır",
+    "removeConfirm": "Öde düğmesi kartınızdan kaybolacak. İstediğiniz zaman yeniden bağlayabilirsiniz.",
+    "removeYes": "Evet, kaldır",
+    "removed": "Ödeme bağlantısı kaldırıldı.",
+    "disabledNote": "Ödemeler servisi bu bağlantının panelinizde kapalı olduğunu bildiriyor. Alıcılar bunu ödeme sayfasında görecek.",
+    "hiddenMissing": "Ödemeler servisi artık bu bağlantıyı tanımıyor, bu yüzden Öde düğmesi gizlendi. Panelinizde yeni bir bağlantı oluşturun ve buraya yapıştırın.",
+    "hiddenMismatch": "Bu bağlantı artık buraya sabitlenenden farklı bir mağaza kimliği bildiriyor, bu yüzden Öde düğmesi gizlendi. Lütfen tekrar kullanmadan önce bizimle iletişime geçin.",
+    "pendingTitle": "Bir değişiklik bekliyor",
+    "pendingBody": "Mağaza {merchant} ({merchantId}) bağlantısı {when} tarihinde etkinleşecek.",
+    "pendingOldWorks": "Mevcut bağlantınız o zamana kadar çalışmaya devam edecek. Bu değişikliği siz istemediyseniz, şimdi iptal edin ve parolanızı değiştirin.",
+    "cancelChange": "Değişikliği iptal et",
+    "changeCancelled": "Bekleyen değişiklik iptal edildi.",
+    "savedNow": "Tamam. Öde düğmesi kartınızda yayında.",
+    "savedDelayed": "Kaydedildi. Yeni bağlantı {when} tarihinde etkinleşecek; o zamana kadar mevcut olan çalışmaya devam edecek.",
+    "frozenUntil": "Hesabınızın e-postasını veya Telegram'ını yakın zamanda değiştirdiniz, bu yüzden ödeme bağlantıları {when} tarihine kadar donduruldu. Bu, bir başkası hesabınıza girdiyse sizi korur.",
+    "reauth": "Sizin olduğunuzu doğrulayın",
+    "journalTitle": "Değişiklik geçmişi",
+    "journalBySystem": "Trientes",
+    "journal": {
+      "SET": "Bağlantı ayarlandı",
+      "SCHEDULED": "Değişiklik zamanlandı",
+      "APPLIED": "Zamanlanmış değişiklik uygulandı",
+      "CANCELLED": "Değişiklik iptal edildi",
+      "REMOVED": "Bağlantı kaldırıldı",
+      "DISABLED": "Bağlantı ödemeler panelinde kapatıldı",
+      "HIDDEN": "Öde düğmesi gizlendi"
+    },
+    "field": {
+      "linkInput": "Ödeme bağlantısı",
+      "link": "Bağlantı kimliği",
+      "title": "Bağlantı adı",
+      "amount": "Tutar",
+      "checked": "Son kontrol"
+    },
+    "error": {
+      "generic": "Bunu yapamadık. Lütfen tekrar deneyin.",
+      "unauth": "Lütfen oturum açın.",
+      "not_found": "Ödeme bağlantısını yalnızca bu işletmenin sahibi değiştirebilir.",
+      "suspended": "Bu işletme vitrinden kaldırılmış, bu yüzden ödeme bağlantısı değiştirilemez.",
+      "csrf": "Sayfanın süresi dolmuş. Yenileyip tekrar deneyin.",
+      "empty": "Ödeme bağlantısını veya kimliğini yapıştırın.",
+      "bad_link": "Bu bir Trientes ödeme bağlantısı değil. https://trientes.org/exchange/#/l/pl_… gibi görünmeli ya da pl_… kimliğinin kendisi olmalı.",
+      "too_many_checks": "Son bir saatte çok fazla kontrol yapıldı. Daha sonra tekrar deneyin.",
+      "link_missing": "Ödemeler servisi bu bağlantıyı bilmiyor.",
+      "link_off": "Bu bağlantı ödemeler panelinizde kapalı. Önce oradan açın.",
+      "link_later": "Ödemeler servisi yanıt vermedi. Lütfen daha sonra tekrar deneyin.",
+      "stale_login": "Oturumu çok uzun zaman önce açtınız.",
+      "code_required": "Kod henüz bağlantı adında değil. Ödemeler panelinizde ekleyin («Bağlantılar» → bağlantınız → «Ad») ve tekrar kontrol edin.",
+      "contact_frozen": "Son 24 saat içinde hesabınızın e-postasını veya Telegram'ını değiştirdiniz, bu yüzden ödeme bağlantıları o zamana kadar donduruldu.",
+      "no_channel": "Mevcut bir bağlantıyı değiştirmek için size ulaşabilmemiz gerekir ve şu anda ulaşamıyoruz: hesabınıza Telegram’ı bağlayın ya da doğrulanmış adresiniz için e-posta bildirimlerini açın (Panel → Uyarılar → bildirim kanalları).",
+      "same_link": "Bu bağlantı zaten kartınızda.",
+      "no_pending": "Bekleyen bir değişiklik yok.",
+      "no_link": "Bu kartta ödeme bağlantısı yok."
+    },
+    "notify": {
+      "installed": {
+        "subject": "Trientes kartınız için ödemeler artık açık",
+        "body": "Mağaza {merchant} ({merchantId}) için bir ödeme bağlantısı artık işletme kartınızda etkin. Bu siz değilseniz, {link} adresini açıp onu kaldırın, sonra parolanızı değiştirin."
+      },
+      "sameMerchant": {
+        "subject": "Trientes ödeme bağlantınız değişti",
+        "body": "Aynı mağaza {merchant} ({merchantId}) için başka bir bağlantı artık işletme kartınızda. Bu siz değilseniz, {link} adresini açıp onu kaldırın, sonra parolanızı değiştirin."
+      },
+      "scheduled": {
+        "subject": "Trientes kartınızda bekleyen bir ödeme bağlantısı değişikliği var",
+        "body": "Mağaza {was} idi, {willBe} ({merchantId}) olacak; {when} UTC'de yürürlüğe girecek. Mevcut bağlantınız o zamana kadar çalışmayı sürdürecek. Bunu siz istemediyseniz, şuradan iptal edin: {link}"
+      },
+      "applied": {
+        "subject": "Ödeme bağlantısı değişikliği yürürlüğe girdi",
+        "body": "İşletme kartınızdaki ödemeler artık {merchant} ({merchantId}) mağazasına gidiyor. Bu siz değilseniz, {link} adresini açıp bağlantıyı kaldırın, sonra parolanızı değiştirin."
+      },
+      "cancelled": {
+        "subject": "Bekleyen ödeme bağlantısı değişikliği iptal edildi",
+        "body": "Mağaza {merchant} için değişiklik iptal edildi. Kartınızda hiçbir şey değişmedi: {link}"
+      },
+      "changeFailed": {
+        "subject": "Bekleyen ödeme bağlantısı değişikliği gerçekleşmedi",
+        "body": "24 saat dolduğunda ödeme hizmetine {merchant} mağazasının bağlantısını tekrar sorduk ve artık kullanılamıyor. Kartınızda hiçbir şey değişmedi: {link}"
+      },
+      "removed": {
+        "subject": "Trientes kartınızda ödemeler kapalı",
+        "body": "Mağaza {merchant} için ödeme bağlantısı işletme kartınızdan kaldırıldı. Bu siz değilseniz, {link} adresini açın ve parolanızı değiştirin."
+      },
+      "missing": {
+        "subject": "Trientes ödeme bağlantınız artık çalışmıyor",
+        "body": "Ödeme hizmeti artık {merchant} mağazasının bağlantısını tanımıyor, bu yüzden kartınızdaki Öde düğmesi gizlendi. Ödeme panelinizde yeni bir bağlantı oluşturup buraya yapıştırın: {link}"
+      },
+      "disabled": {
+        "subject": "Trientes ödeme bağlantınız kapalı",
+        "body": "Ödeme hizmeti, {merchant} mağazasının bağlantısının panelinizde kapalı olduğunu bildiriyor. Oradan yeniden açın ya da burada kaldırın: {link}"
+      },
+      "mismatch": {
+        "subject": "Trientes ödeme bağlantınız farklı bir mağaza bildiriyor",
+        "body": "Mağaza {merchant} için bağlantı, kartınızda sabitlenmiş olandan farklı bir mağaza kimliği bildiriyor, bu yüzden Öde butonu gizlendi. Lütfen tekrar kullanmadan önce bizimle iletişime geçin: {link}"
+      },
+      "reset": {
+        "subject": "Sahip değişikliğinden sonra ödemeler kapatıldı",
+        "body": "Mağaza {merchant} için ödeme bağlantısını kuran kişi artık bu işletmenin sahibi değil, bu nedenle bağlantı kaldırıldı. Ödemeleri yeniden bağlayın: {link}"
+      },
+      "contactChanged": {
+        "subject": "Trientes hesabınızın iletişim bilgileri değişti",
+        "body": {
+          "email": "Trientes hesabınızın e-postası değiştirildi. Bu mesaj bilerek eski adrese gönderiliyor. Bu siz değilseniz, hemen oturum açıp parolanızı değiştirin: ödeme bağlantıları 24 saatliğine dondurulur, bu da sizin sürenizdir.",
+          "telegram": "Trientes hesabınızın Telegram bildirimleri kapatıldı veya değiştirildi. Bu mesaj bilerek eski kanala gönderiliyor. Bu siz değilseniz, hemen oturum açıp parolanızı değiştirin: ödeme bağlantıları 24 saatliğine dondurulur, bu da sizin sürenizdir."
+        }
+      }
+    },
+    "cardBlockOffer": "Alıcıların bu karttan doğrudan kriptoyla size ödeme yapmasına izin verin. Para kendi cüzdanınıza gider; Trientes asla tutmaz.",
+    "cardBlockOn": "Alıcılar size burada ödeme yapabilir: {merchant}.",
+    "cardBlockHidden": "{merchant} mağazasının ödeme bağlantısı çalışmıyor, bu yüzden kartınızdaki Öde düğmesi gizlendi.",
+    "cardBlockManage": "Ödeme ayarları",
+    "cardBlockHaveLink": "Zaten bir mağazanız var mı? Ödeme bağlantınızı yapıştırın",
+    "noChannelHint": "Şu anda size ulaşamıyoruz: Telegram’ı bağlayın ya da doğrulanmış adresiniz için e-posta bildirimlerini açın (Panel → Uyarılar → bildirim kanalları). O zamana kadar mevcut bir ödeme bağlantısı değiştirilemez — sessiz bir değişiklik tam olarak bu gecikmenin sizi koruduğu şeydir."
+  },
+  "reauth": {
+    "kicker": "Güvenlik",
+    "title": "Sizin olduğunuzu doğrulayın",
+    "codeBody": "Kimlik doğrulama uygulamanızdaki altı haneli kodu girin. Bunu istiyoruz çünkü paranın nereye gideceğini değiştirmek üzeresiniz.",
+    "codeLabel": "Uygulamadaki kod",
+    "passwordBody": "Parolanızı girin. Bunu istiyoruz çünkü paranın nereye gideceğini değiştirmek üzeresiniz.",
+    "passwordLabel": "Parola",
+    "confirm": "Onayla",
+    "signout": "Oturumu kapatın ve yeniden açın",
+    "signoutBody": "Hesabınızda parola ve kimlik doğrulama uygulaması yok, bu yüzden sizin olduğunuzu doğrulamanın tek yolu oturumu kapatıp yeniden açmak. Doğrudan buraya geri döneceksiniz.",
+    "error": {
+      "generic": "Doğrulama yapılamadı. Lütfen tekrar deneyin.",
+      "unauth": "Lütfen oturum açın.",
+      "csrf": "Sayfa geçersiz hale geldi. Yenileyin ve tekrar deneyin.",
+      "too_many_attempts": "Çok fazla deneme. On beş dakika sonra tekrar deneyin.",
+      "code_required": "Uygulamadaki kodu girin.",
+      "password_required": "Parolanızı girin.",
+      "invalid_credentials": "Parola eşleşmiyor.",
+      "code_invalid": "Kod eşleşmiyor.",
+      "code_reused": "Bu kod zaten kullanılmış. Sonrakini bekleyin.",
+      "rate_limited": "Çok fazla deneme. Bir dakika sonra tekrar deneyin.",
+      "not_enrolled": "Bu hesap için bir kimlik doğrulama uygulaması ayarlı değil.",
+      "unreadable": "Kayıtlı anahtarı okuyamıyoruz. Lütfen destekle iletişime geçin.",
+      "no_password_set": "Bu hesabın parolası yok. Oturumu kapatıp yeniden oturum açın."
     }
   }
 }

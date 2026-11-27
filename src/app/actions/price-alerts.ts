@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { channelsBeforeChange, stampContactChange } from "@/lib/pay-link/freeze";
 
 const MAX_ALERTS_PER_USER = 50;
 
@@ -83,10 +84,28 @@ export async function updateNotifyChannels(input: unknown) {
   if (!userId) return { ok: false as const, reason: "unauth" as const };
   const parsed = channelsSchema.safeParse(input);
   if (!parsed.success) return { ok: false as const, reason: "invalid" as const };
+  // Выключение канала — та же смена канала, что смена адреса (слайс CP): захватчик,
+  // погасивший Telegram владельца, получил бы сутки тишины для подмены ссылки оплаты.
+  // Поэтому снимок каналов берётся до записи, а весть о выключении уходит на старый.
+  const before = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { notifyTelegram: true, notifyEmail: true },
+  });
+  const turnedOff =
+    (before?.notifyTelegram === true && !parsed.data.notifyTelegram) ||
+    (before?.notifyEmail === true && !parsed.data.notifyEmail);
+  const channelsBefore = turnedOff ? await channelsBeforeChange(userId) : null;
   await prisma.user.update({
     where: { id: userId },
     data: { notifyTelegram: parsed.data.notifyTelegram, notifyEmail: parsed.data.notifyEmail },
   });
+  if (channelsBefore) {
+    await stampContactChange({
+      userId,
+      channel: !parsed.data.notifyTelegram && before?.notifyTelegram ? "telegram" : "email",
+      before: channelsBefore,
+    });
+  }
   revalidatePath("/", "layout");
   return { ok: true as const };
 }
