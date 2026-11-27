@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { prisma } from "@/lib/prisma";
+import { ogLogoSource } from "@/lib/og-logo";
 
 export const runtime = "nodejs";
 export const alt = "Trientes coin card";
@@ -32,6 +33,9 @@ export default async function Image({ params }: { params: Promise<{ locale: stri
   const pct24h = snap?.pctChange24h ?? null;
   const up = (pct24h ?? 0) >= 0;
 
+  // satori не знает относительного адреса: наш файл читаем с диска.
+  const logo = await ogLogoSource(coin?.logoUrl);
+
   return new ImageResponse(
     (
       <div
@@ -59,9 +63,9 @@ export default async function Image({ params }: { params: Promise<{ locale: stri
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "32px", marginBottom: "auto" }}>
-          {coin?.logoUrl ? (
+          {logo ? (
             // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-            <img src={coin.logoUrl} width={120} height={120} style={{ borderRadius: 24 }} />
+            <img src={logo} width={120} height={120} style={{ borderRadius: 24 }} />
           ) : (
             <div
               style={{
