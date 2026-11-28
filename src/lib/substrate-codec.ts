@@ -156,7 +156,7 @@ export function decodeAccountBalance(hex: string | null | undefined): bigint | n
 
 const B58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
-function base58Decode(input: string): Uint8Array | null {
+export function base58Decode(input: string): Uint8Array | null {
   if (!input || !/^[1-9A-HJ-NP-Za-km-z]+$/.test(input)) return null;
   let num = BigInt(0);
   for (const ch of input) {

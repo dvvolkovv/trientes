@@ -36,6 +36,8 @@ export type SaleFormInput = {
   payCoin: string | null;
   payRate: string | null;
   payCoinAmount: string | null;
+  payAddress: string | null;
+  payTxHash: string | null;
   payNote: string | null;
   note: string | null;
 };
@@ -80,6 +82,8 @@ export async function recordSale(companyId: string, locale: string, input: SaleF
       payCoin: input.payCoin,
       payRate: input.payRate,
       payCoinAmount: input.payCoinAmount,
+      payAddress: input.payAddress,
+      payTxHash: input.payTxHash,
       hasShelf: Boolean(warehouse),
     },
     { offers, salesToday },
@@ -127,6 +131,8 @@ export async function recordSale(companyId: string, locale: string, input: SaleF
           payCoin: sale.payCoin,
           payRate: sale.payRate === null ? null : new Prisma.Decimal(sale.payRate),
           payCoinAmount: sale.payCoinAmount === null ? null : new Prisma.Decimal(sale.payCoinAmount),
+          payAddress: sale.payAddress,
+          payTxHash: sale.payTxHash,
           payNote: input.payNote?.trim() || null,
           note: input.note?.trim() || null,
           receiptTokenHash: hashReceiptToken(token),

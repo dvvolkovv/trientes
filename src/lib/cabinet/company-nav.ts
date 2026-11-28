@@ -66,6 +66,12 @@ export const COMPANY_TILES: CompanyTileDef[] = [
   // Отчётность (слайс CL). Та же группа «хозяйство», рядом с кассой: сводка считается
   // по её чекам, и смотрят их один за другим.
   { key: "reports", group: "household", icon: "📊", section: "reports", path: "reports" },
+  // Криптоучёт (слайс CR, ТЗ 6.8). Своего раздела прав не заводим — работает `reports`:
+  // книга монет это бухгалтерия, и ведёт её тот же человек, который видит чеки и
+  // выгружает их для консультанта. Плитка отдельная от отчётности, потому что это две
+  // разные работы: одну открывают, чтобы посчитать выручку, другую — чтобы сойтись по
+  // монетам.
+  { key: "crypto", group: "household", icon: "🪙", section: "reports", path: "crypto" },
   { key: "warehouses", group: "household", icon: "🏬", section: "warehouses", path: "warehouses" },
   { key: "supply", group: "household", icon: "🚚", section: "supply", path: "supply" },
 

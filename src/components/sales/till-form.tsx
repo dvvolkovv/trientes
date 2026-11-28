@@ -64,6 +64,11 @@ export function TillForm({
   const [coin, setCoin] = useState("");
   const [rate, setRate] = useState("");
   const [coinAmount, setCoinAmount] = useState("");
+  // Слайс CR: адрес получения и хеш транзакции — факты для книги криптоучёта. Оба
+  // необязательны: кассир знает их не всегда, а требовать то, чего он не знает, значит
+  // заставить его набрать что попало.
+  const [payAddress, setPayAddress] = useState("");
+  const [payTxHash, setPayTxHash] = useState("");
   const [note, setNote] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<{ number: number; url: string; id: string } | null>(null);
@@ -130,6 +135,8 @@ export function TillForm({
         payCoin: payment === "CRYPTO" ? coin : null,
         payRate: payment === "CRYPTO" ? rate : null,
         payCoinAmount: payment === "CRYPTO" ? coinAmount : null,
+        payAddress: payment === "CRYPTO" ? payAddress : null,
+        payTxHash: payment === "CRYPTO" ? payTxHash : null,
         payNote: null,
         note: note || null,
       });
@@ -143,6 +150,8 @@ export function TillForm({
       setCoin("");
       setRate("");
       setCoinAmount("");
+      setPayAddress("");
+      setPayTxHash("");
       router.refresh();
     });
   }
@@ -325,6 +334,26 @@ export function TillForm({
           <label className="block space-y-1">
             <span className={label}>{t("rate")}</span>
             <input value={rate} inputMode="decimal" onChange={(e) => setRate(e.target.value)} className={field} />
+          </label>
+          <label className="block space-y-1">
+            <span className={label}>{t("payAddress")}</span>
+            <input
+              value={payAddress}
+              onChange={(e) => setPayAddress(e.target.value)}
+              autoCapitalize="none"
+              spellCheck={false}
+              className={field}
+            />
+          </label>
+          <label className="block space-y-1">
+            <span className={label}>{t("payTxHash")}</span>
+            <input
+              value={payTxHash}
+              onChange={(e) => setPayTxHash(e.target.value)}
+              autoCapitalize="none"
+              spellCheck={false}
+              className={field}
+            />
           </label>
           <p className="text-[11.5px] leading-snug text-muted">{t("coinStated")}</p>
         </div>

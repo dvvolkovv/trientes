@@ -115,7 +115,15 @@ export type CompanyAction =
   | "WEBHOOK_DELETED"
   | "REPORT_EXPORTED"
   | "API_KEY_CREATED"
-  | "API_KEY_REVOKED";
+  | "API_KEY_REVOKED"
+  // Слайс CR: криптоучёт. Записи книги — не «кто что изменил», а факты о монете, и
+  // живут они своей строкой; в журнал идут только заведение адреса (им отмечается,
+  // куда предприятие ждёт деньги), запись операции и выгрузка книги наружу.
+  | "CRYPTO_ADDRESS_ADDED"
+  | "CRYPTO_ADDRESS_ARCHIVED"
+  | "CRYPTO_OP_RECORDED"
+  | "CRYPTO_OP_DELETED"
+  | "CRYPTO_EXPORTED";
 
 export async function logCompanyAction(input: {
   companyId: string;

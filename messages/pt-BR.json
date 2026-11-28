@@ -1847,7 +1847,8 @@
       "reports": "Relatórios",
       "crm": "Clientes",
       "automation": "Automação",
-      "payments": "Aceitar pagamentos"
+      "payments": "Aceitar pagamentos",
+      "crypto": "Livro-razão cripto"
     },
     "tileUnit": {
       "points": "{count} no mapa",
@@ -1866,7 +1867,8 @@
       "reports": "recibos em 30 dias",
       "crm": "compradores: {count}",
       "automation": "regras: {count}",
-      "payments": "link de pagamento"
+      "payments": "link de pagamento",
+      "crypto": "moedas no livro-razão"
     },
     "tileEmpty": "ainda nada",
     "tileBadge": {
@@ -4552,7 +4554,12 @@
       "RULE_DELETED": "Regra de automação excluída",
       "WEBHOOK_CREATED": "Eventos de saída: endpoint adicionado",
       "WEBHOOK_TOGGLED": "Eventos de saída: endpoint alternado",
-      "WEBHOOK_DELETED": "Eventos de saída: endpoint removido"
+      "WEBHOOK_DELETED": "Eventos de saída: endpoint removido",
+      "CRYPTO_ADDRESS_ADDED": "Endereço de cripto adicionado",
+      "CRYPTO_ADDRESS_ARCHIVED": "Endereço de cripto arquivado",
+      "CRYPTO_OP_RECORDED": "Operação de cripto registrada",
+      "CRYPTO_OP_DELETED": "Operação de cripto excluída",
+      "CRYPTO_EXPORTED": "Livro de cripto exportado"
     }
   },
   "cabinetTasks": {
@@ -5391,9 +5398,13 @@
       "shelf_required": "As mercadorias saem de uma prateleira — escolha uma.",
       "too_many_lines": "Linhas demais em um recibo.",
       "unauth": "Por favor, faça login novamente.",
-      "warehouse_unknown": "Essa prateleira não está disponível."
+      "warehouse_unknown": "Essa prateleira não está disponível.",
+      "pay_address_invalid": "Esse endereço não confere. Digite novamente ou deixe o campo vazio.",
+      "pay_tx_invalid": "Esse hash de transação não parece válido. Digite novamente ou deixe o campo vazio."
     },
-    "openCustomer": "Ficha do cliente"
+    "openCustomer": "Ficha do cliente",
+    "payAddress": "Endereço de recebimento",
+    "payTxHash": "Hash da transação"
   },
   "receipt": {
     "title": "Recibo",
@@ -5908,6 +5919,135 @@
       "not_enrolled": "Nenhum app autenticador está configurado para esta conta.",
       "unreadable": "Não foi possível ler a chave armazenada. Entre em contato com o suporte.",
       "no_password_set": "Esta conta não tem senha. Saia e entre novamente."
+    }
+  },
+  "cabinetCrypto": {
+    "title": "Livro de cripto",
+    "subtitle": "O que você recebeu em moeda, o que converteu, o que sacou — e o equivalente em fiat de cada um, como você registrou.",
+    "range": {
+      "today": "Hoje",
+      "week": "7 dias",
+      "month": "30 dias"
+    },
+    "kind": {
+      "RECEIPT": "Recebido",
+      "CONVERSION": "Convertido",
+      "WITHDRAWAL": "Sacado"
+    },
+    "family": {
+      "EVM": "EVM",
+      "SUBSTRATE": "Substrate",
+      "COSMOS": "Cosmos",
+      "BITCOIN": "Bitcoin"
+    },
+    "coins": {
+      "heading": "Moedas",
+      "hint": "Quantidades de moedas somam entre moedas; somas em fiat não — nunca observamos uma taxa entre elas.",
+      "empty": "Nada registrado para este período ainda.",
+      "balanceLabel": "Consta pelos seus registros — não é um saldo lido da blockchain.",
+      "negative": "Seus registros mostram mais saída do que entrada. Verifique os lançamentos: provavelmente falta um recibo.",
+      "received": "Recebido",
+      "converted": "Convertido",
+      "withdrawn": "Sacado",
+      "receivedFiat": "Recebido, {currency}",
+      "avgRate": "Taxa média ao receber",
+      "fxDiff": "Diferença cambial ({count})",
+      "fxUnknown": "Sem diferença cambial aqui: nenhum dos recibos traz uma taxa, então não há com o que comparar.",
+      "cancelled": "Recibos cancelados não contados: {count}",
+      "method": "A diferença cambial é a taxa da operação menos a taxa média ponderada à qual a moeda entrou. Sem lotes FIFO: isso exige um segundo livro, e seu contador deve solicitá-lo antes de o construirmos.",
+      "truncated": "Muitas linhas para uma página — os números acima cobrem apenas as mais novas. Restrinja o período."
+    },
+    "addresses": {
+      "heading": "Endereços de recebimento",
+      "hint": "Os endereços nos quais você espera moedas. Checamos o checksum, não a blockchain.",
+      "empty": "Ainda não há endereços.",
+      "add": "Adicionar endereço",
+      "archive": "Arquivar",
+      "restore": "Restaurar",
+      "archived": "arquivado",
+      "checked": "Formato verificado: {family}",
+      "unchecked": "Formato não verificado: não sabemos a que rede este ticker pertence.",
+      "received": "recebidos {amount} {coin}",
+      "unknownNote": "Endereços fora desta lista que receberam moedas: {count}. Vale a pena se perguntar de quem são."
+    },
+    "ops": {
+      "heading": "Seus lançamentos",
+      "hint": "Recibos do caixa são lidos dos próprios recibos — registre aqui apenas o que aconteceu fora do caixa: um pagamento online, uma transferência, uma conversão, um saque.",
+      "empty": "Ainda não há lançamentos.",
+      "add": "Registrar lançamento",
+      "delete": "Excluir",
+      "atRate": "a {rate} por moeda",
+      "author": "Registrado por {name}"
+    },
+    "receipts": {
+      "heading": "Recibos em cripto",
+      "hint": "Recibos de caixa pagos em moeda. Eles são o próprio registro do recibo — esta página apenas os lê.",
+      "empty": "Nenhum recibo em cripto neste período.",
+      "number": "Recibo nº{number}",
+      "cancelled": "cancelado"
+    },
+    "rate": {
+      "ok": "Corresponde ao nosso preço daquela hora dentro de {delta}% (o nosso: ${ours}).",
+      "off": "Fora do nosso preço daquela hora em {delta}% (o nosso: ${ours}). Sua taxa pode estar certa — isto é apenas um aviso.",
+      "unchecked": {
+        "no_fx": "Taxa não conferida com a nossa: não temos taxa de câmbio para esta moeda agora.",
+        "no_price": "Taxa não conferida com a nossa: não temos preço dessa moeda para aquela hora.",
+        "coin_unknown": "Taxa não conferida com a nossa: este ticker não está no nosso catálogo.",
+        "ticker_ambiguous": "Taxa não conferida com a nossa: mais de uma moeda no nosso catálogo usa este ticker."
+      }
+    },
+    "sanctions": {
+      "heading": "Um endereço corresponde a uma lista de sanções",
+      "body": "Um dos endereços abaixo consta na lista OFAC SDN. Nós não bloqueamos nada — é um alerta para você parar e verificar antes de tocar nesses fundos.",
+      "rowFlag": "Consta na lista OFAC SDN",
+      "justAdded": "Cuidado: o endereço que você acabou de adicionar consta na lista OFAC SDN.",
+      "noName": "nome não informado na lista"
+    },
+    "export": {
+      "heading": "Exportar para o seu contador",
+      "hint": "Mesmo formato da exportação de recibos: CSV, UTF-8 com BOM, nomes de colunas em inglês.",
+      "operations": "Baixar lançamentos",
+      "receipts": "Baixar recibos de cripto",
+      "needEdit": "Visualizar é permitido, exportar não: isso requer permissão de edição em relatórios."
+    },
+    "form": {
+      "coin": "Cripto",
+      "amount": "Quantidade em cripto",
+      "rate": "Taxa, moeda por unidade",
+      "currency": "Moeda",
+      "day": "Data",
+      "address": "Endereço",
+      "txHash": "Hash da transação",
+      "note": "Observação",
+      "label": "Etiqueta"
+    },
+    "notes": {
+      "noChainBalance": "Esses números são da sua contabilidade, não da blockchain. Não lemos os saldos dos seus endereços: isso exigiria um nó por rede e seus endereços são assunto seu.",
+      "noPayerAddress": "Nunca vemos o endereço do pagador: não há carteira da plataforma. Um cliente é identificado para você pela conta dele, não por um endereço.",
+      "tolerance": "As taxas são comparadas com o nosso preço daquela hora, tolerância de {pct}%. A taxa fiat usada na comparação é a de hoje — não armazenamos taxas fiat históricas."
+    },
+    "error": {
+      "unauth": "Faça login primeiro.",
+      "forbidden": "Você não tem acesso a isto.",
+      "coin_invalid": "Informe o ticker da cripto, de 2 a 12 letras ou dígitos.",
+      "label_too_long": "A etiqueta é longa demais.",
+      "too_many_addresses": "Você já tem o número máximo de endereços ativos. Arquive um que não usa mais.",
+      "address_empty": "Informe o endereço.",
+      "address_too_short": "Esse endereço é curto demais para ser um.",
+      "address_too_long": "Esse endereço é longo demais para ser um.",
+      "address_invalid": "Esse endereço não confere — a checksum falhou. Digite novamente.",
+      "address_wrong_network": "Esse endereço pertence a outra rede, não à desta cripto.",
+      "address_taken": "Esse endereço já está na sua lista.",
+      "kind_invalid": "Escolha o que aconteceu: recebido, convertido ou sacado.",
+      "amount_invalid": "Informe a quantidade em cripto, com até 8 casas decimais.",
+      "rate_invalid": "Informe a taxa como um número ou deixe em branco.",
+      "currency_unknown": "Escolha uma moeda da lista.",
+      "date_invalid": "Escolha a data.",
+      "date_future": "Essa data está no futuro.",
+      "note_too_long": "A nota é muito longa.",
+      "tx_invalid": "Esse hash de transação não parece válido.",
+      "daily_limit": "Entradas demais hoje. O resto pode esperar até amanhã.",
+      "not_found": "Essa entrada não existe mais."
     }
   }
 }

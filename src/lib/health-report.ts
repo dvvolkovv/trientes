@@ -122,6 +122,12 @@ export interface HealthFacts {
   quotaSpend: QuotaRow[];
   /** Новые люди за сутки. */
   signups: number;
+  /**
+   * Слайс CR: сколько адресов предприятий совпало с санкционным списком. Строка
+   * печатается только при ненулевом числе — одна и та же «санкций нет» каждую ночь
+   * приучила бы не читать отчёт целиком (правило AA).
+   */
+  sanctionHits: number;
 }
 
 /** Страницы живого GET: главная, карточка монеты и фид навигатора — три разных пути через базу и кэш. */
@@ -313,6 +319,13 @@ export function renderHealthReport(f: HealthFacts): string {
   if (f.queue.points) waiting.push(`точки ${f.queue.points}`);
   out.push("", waiting.length ? `Ждут модерации: ${waiting.join(", ")}.` : "Ждут модерации: ничего.");
   out.push(`Новых людей за сутки: ${f.signups}.`);
+  // Санкционное совпадение — громкая строка, и только при ненулевом числе.
+  if (f.sanctionHits > 0) {
+    out.push(
+      "",
+      `Санкционный список: совпадений с адресами предприятий — ${f.sanctionHits}; смотреть в криптоучёте предприятия.`,
+    );
+  }
 
   return out.join("\n");
 }
@@ -410,6 +423,21 @@ export async function collectHealth(deps: HealthDeps): Promise<HealthFacts> {
     }>,
   ]);
 
+  const [sanctionsRow, sanctionHits] = await Promise.all([
+    prisma.sanctionedCryptoAddress.aggregate({ _max: { fetchedAt: true } }) as never as Promise<{
+      _max: { fetchedAt: Date | null };
+    }>,
+    // Совпадение считается запросом по ключу, а не обходом двух таблиц в памяти:
+    // адресов предприятий десятки, а санкционных — тысяча.
+    prisma.$queryRaw<{ count: bigint }[]>`
+      SELECT COUNT(*)::bigint AS count
+      FROM "CompanyCryptoAddress" a
+      JOIN "SanctionedCryptoAddress" s ON s."addressKey" = a."addressKey"
+      WHERE a."archivedAt" IS NULL
+    `,
+  ]);
+  const sanctionsAt = sanctionsRow._max.fetchedAt;
+
   const [listAt, globalAt, marketsAt, newsAt, cpRun] = await Promise.all([
     redisWrittenAt(redis, KEYS.topList, TTL.snapshot, now),
     redisWrittenAt(redis, KEYS.globalStats, TTL.globalStats, now),
@@ -437,6 +465,9 @@ export async function collectHealth(deps: HealthDeps): Promise<HealthFacts> {
     // даже тогда, когда остальные источники работают.
     probe("рынки карточек, ветхая строка", stalestMarketAgg._min.checkedAt, 180, now),
     probe("точки BTC Map", poiAt, 36 * 60, now),
+    // Санкционный список (слайс CR): прогон суточный, норма — полтора круга. Своего
+    // следа у него не нужно: он сам и есть таблица со штампом снятия.
+    probe("санкционный список", sanctionsAt, 36 * 60, now),
   ];
 
   // Исчерпанный запас месяца — состояние службы: прогон о себе не виноват, и
@@ -514,6 +545,7 @@ export async function collectHealth(deps: HealthDeps): Promise<HealthFacts> {
     quotaBlocks,
     quotaSpend,
     signups,
+    sanctionHits: Number(sanctionHits[0]?.count ?? 0),
   };
 }
 

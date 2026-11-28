@@ -1847,7 +1847,8 @@
       "reports": "Berichte",
       "crm": "Kunden",
       "automation": "Automatisierung",
-      "payments": "Zahlungen akzeptieren"
+      "payments": "Zahlungen akzeptieren",
+      "crypto": "Krypto-Ledger"
     },
     "tileUnit": {
       "points": "{count} auf der Karte",
@@ -1866,7 +1867,8 @@
       "reports": "Belege in 30 Tagen",
       "crm": "Käufer: {count}",
       "automation": "Regeln: {count}",
-      "payments": "Zahlungslink"
+      "payments": "Zahlungslink",
+      "crypto": "Coins im Ledger"
     },
     "tileEmpty": "noch nichts",
     "tileBadge": {
@@ -4552,7 +4554,12 @@
       "RULE_DELETED": "Automatisierungsregel gelöscht",
       "WEBHOOK_CREATED": "Ausgehende Ereignisse: Endpunkt hinzugefügt",
       "WEBHOOK_TOGGLED": "Ausgehende Ereignisse: Endpunkt umgeschaltet",
-      "WEBHOOK_DELETED": "Ausgehende Ereignisse: Endpunkt entfernt"
+      "WEBHOOK_DELETED": "Ausgehende Ereignisse: Endpunkt entfernt",
+      "CRYPTO_ADDRESS_ADDED": "Krypto-Adresse hinzugefügt",
+      "CRYPTO_ADDRESS_ARCHIVED": "Krypto-Adresse archiviert",
+      "CRYPTO_OP_RECORDED": "Krypto-Vorgang erfasst",
+      "CRYPTO_OP_DELETED": "Krypto-Vorgang gelöscht",
+      "CRYPTO_EXPORTED": "Krypto-Hauptbuch exportiert"
     }
   },
   "cabinetTasks": {
@@ -5391,9 +5398,13 @@
       "shelf_required": "Waren verlassen ein Regal — wählen Sie eines.",
       "too_many_lines": "Zu viele Positionen in einem Beleg.",
       "unauth": "Bitte melde dich erneut an.",
-      "warehouse_unknown": "Dieses Regal ist nicht verfügbar."
+      "warehouse_unknown": "Dieses Regal ist nicht verfügbar.",
+      "pay_address_invalid": "Diese Adresse ist nicht gültig. Geben Sie sie erneut ein oder lassen Sie das Feld leer.",
+      "pay_tx_invalid": "Dieser Transaktions-Hash sieht nicht gültig aus. Geben Sie ihn erneut ein oder lassen Sie das Feld leer."
     },
-    "openCustomer": "Kundenkarte"
+    "openCustomer": "Kundenkarte",
+    "payAddress": "Empfangsadresse",
+    "payTxHash": "Transaktions-Hash"
   },
   "receipt": {
     "title": "Beleg",
@@ -5908,6 +5919,135 @@
       "not_enrolled": "Für dieses Konto ist keine Authenticator-App eingerichtet.",
       "unreadable": "Wir können den gespeicherten Schlüssel nicht lesen. Bitte wenden Sie sich an den Support.",
       "no_password_set": "Dieses Konto hat kein Passwort. Melden Sie sich ab und erneut an."
+    }
+  },
+  "cabinetCrypto": {
+    "title": "Krypto-Hauptbuch",
+    "subtitle": "Was Sie in Coin erhalten, konvertiert und abgehoben haben — und die Fiat-Seite davon, so wie Sie es erfasst haben.",
+    "range": {
+      "today": "Heute",
+      "week": "7 Tage",
+      "month": "30 Tage"
+    },
+    "kind": {
+      "RECEIPT": "Erhalten",
+      "CONVERSION": "Konvertiert",
+      "WITHDRAWAL": "Abgehoben"
+    },
+    "family": {
+      "EVM": "EVM",
+      "SUBSTRATE": "Substrate",
+      "COSMOS": "Cosmos",
+      "BITCOIN": "Bitcoin"
+    },
+    "coins": {
+      "heading": "Coins",
+      "hint": "Coin-Mengen summieren sich über Währungen hinweg; Fiat-Summen nicht — wir haben nie einen Kurs zwischen ihnen beobachtet.",
+      "empty": "Für diesen Zeitraum ist noch nichts erfasst.",
+      "balanceLabel": "Verbleibend laut Ihren Aufzeichnungen — kein von der Chain gelesener Kontostand.",
+      "negative": "Ihre Aufzeichnungen zeigen mehr Abflüsse als Zuflüsse. Prüfen Sie die Einträge: Wahrscheinlich fehlt ein Eingang.",
+      "received": "Erhalten",
+      "converted": "Konvertiert",
+      "withdrawn": "Abgehoben",
+      "receivedFiat": "Eingegangen, {currency}",
+      "avgRate": "Durchschnittskurs bei Eingang",
+      "fxDiff": "FX-Differenz ({count})",
+      "fxUnknown": "Keine FX-Differenz hier: Keiner der Belege enthält einen Kurs, daher gibt es nichts zu vergleichen.",
+      "cancelled": "Stornierte Belege nicht gezählt: {count}",
+      "method": "Die FX-Differenz ist der Operationskurs minus dem gewichteten Durchschnittskurs, zu dem die Coin einging. Keine FIFO-Lots: Das erfordert ein zweites Buch, und Ihr Buchhalter sollte es anfordern, bevor wir es bauen.",
+      "truncated": "Zu viele Zeilen für eine Seite — die obigen Zahlen decken nur die neuesten ab. Zeitraum eingrenzen."
+    },
+    "addresses": {
+      "heading": "Empfangsadressen",
+      "hint": "Die Adressen, auf denen Sie Coins erwarten. Wir prüfen die Prüfsumme, nicht die Chain.",
+      "empty": "Noch keine Adressen.",
+      "add": "Adresse hinzufügen",
+      "archive": "Archivieren",
+      "restore": "Wiederherstellen",
+      "archived": "archiviert",
+      "checked": "Format geprüft: {family}",
+      "unchecked": "Format nicht geprüft: Wir wissen nicht, zu welchem Netzwerk dieser Ticker gehört.",
+      "received": "erhalten {amount} {coin}",
+      "unknownNote": "Adressen außerhalb dieser Liste, die Coins erhalten haben: {count}. Es lohnt sich, sich zu fragen, wem sie gehören"
+    },
+    "ops": {
+      "heading": "Ihre Einträge",
+      "hint": "Kassenbelege werden aus den Belegen selbst gelesen — erfassen Sie hier nur, was außerhalb der Kasse geschah: eine Online-Zahlung, eine Überweisung, eine Konvertierung, eine Abhebung.",
+      "empty": "Noch keine Einträge.",
+      "add": "Eintrag erfassen",
+      "delete": "Löschen",
+      "atRate": "zu {rate} pro Coin",
+      "author": "Erfasst von {name}"
+    },
+    "receipts": {
+      "heading": "Krypto-Belege",
+      "hint": "Kassenbelege, die in Coin bezahlt wurden. Sie sind die eigene Aufzeichnung des Belegs — diese Seite liest sie nur aus.",
+      "empty": "Keine Krypto-Belege für diesen Zeitraum.",
+      "number": "Beleg Nr. {number}",
+      "cancelled": "storniert"
+    },
+    "rate": {
+      "ok": "Entspricht unserem Preis jener Stunde innerhalb von {delta}% (unser: ${ours}).",
+      "off": "Weicht von unserem Preis jener Stunde um {delta}% ab (unser: ${ours}). Ihr Kurs kann richtig sein — dies ist nur ein Hinweis.",
+      "unchecked": {
+        "no_fx": "Kurs nicht gegen unseren geprüft: Wir haben derzeit keinen Wechselkurs für diese Währung.",
+        "no_price": "Kurs nicht gegen unseren geprüft: Wir haben für jene Stunde keinen Preis dieser Coin.",
+        "coin_unknown": "Kurs nicht gegen unseren geprüft: Dieser Ticker ist nicht in unserem Katalog.",
+        "ticker_ambiguous": "Kurs nicht gegen unseren geprüft: Mehr als eine Coin in unserem Katalog trägt diesen Ticker."
+      }
+    },
+    "sanctions": {
+      "heading": "Eine Adresse stimmt mit einer Sanktionsliste überein",
+      "body": "Eine der folgenden Adressen ist in der OFAC-SDN-Liste genannt. Wir blockieren nichts — dies ist Ihr Hinweis, innezuhalten und zu prüfen, bevor Sie diese Gelder anfassen.",
+      "rowFlag": "In der OFAC-SDN-Liste genannt",
+      "justAdded": "Vorsicht: Die soeben hinzugefügte Adresse wird in der OFAC-SDN-Liste genannt.",
+      "noName": "Name in der Liste nicht angegeben"
+    },
+    "export": {
+      "heading": "Export für Ihren Steuerberater",
+      "hint": "Gleiches Format wie beim Beleg-Export: CSV, UTF-8 mit BOM, englische Spaltennamen.",
+      "operations": "Einträge herunterladen",
+      "receipts": "Krypto-Belege herunterladen",
+      "needEdit": "Ansehen ist erlaubt, Export nicht: Dafür sind Bearbeitungsrechte für Berichte nötig."
+    },
+    "form": {
+      "coin": "Coin",
+      "amount": "Betrag in Coin",
+      "rate": "Kurs, Währung pro Coin",
+      "currency": "Währung",
+      "day": "Datum",
+      "address": "Adresse",
+      "txHash": "Transaktions-Hash",
+      "note": "Notiz",
+      "label": "Bezeichnung"
+    },
+    "notes": {
+      "noChainBalance": "Diese Zahlen sind Ihre Buchführung, nicht die Chain. Wir lesen keine Salden Ihrer Adressen aus: Dafür bräuchte es einen Node pro Netzwerk, und Ihre Adressen sind Ihre Sache.",
+      "noPayerAddress": "Wir sehen die Adresse des Zahlers nie: Es gibt keine Plattform-Wallet. Ein Kunde ist Ihnen über sein Konto bekannt, nicht über eine Adresse.",
+      "tolerance": "Kurse werden mit unserem eigenen Preis jener Stunde verglichen, Toleranz {pct}%. Der für den Vergleich verwendete Fiat-Kurs ist der heutige — wir speichern keine historischen Fiat-Kurse."
+    },
+    "error": {
+      "unauth": "Bitte zuerst anmelden.",
+      "forbidden": "Sie haben darauf keinen Zugriff.",
+      "coin_invalid": "Geben Sie den Coin-Ticker ein, 2 bis 12 Buchstaben oder Ziffern.",
+      "label_too_long": "Das Label ist zu lang.",
+      "too_many_addresses": "Sie haben bereits die maximale Anzahl aktiver Adressen. Archivieren Sie eine, die Sie nicht mehr verwenden.",
+      "address_empty": "Geben Sie die Adresse ein.",
+      "address_too_short": "Diese Adresse ist zu kurz, um eine zu sein.",
+      "address_too_long": "Diese Adresse ist zu lang, um eine zu sein.",
+      "address_invalid": "Diese Adresse ist nicht gültig — ihre Prüfsumme stimmt nicht. Geben Sie sie erneut ein.",
+      "address_wrong_network": "Diese Adresse gehört zu einem anderen Netzwerk, nicht zu dem dieses Coins.",
+      "address_taken": "Diese Adresse steht bereits in Ihrer Liste.",
+      "kind_invalid": "Wählen Sie, was passiert ist: erhalten, umgetauscht oder ausgezahlt.",
+      "amount_invalid": "Geben Sie den Betrag in Coin ein, bis zu 8 Dezimalstellen.",
+      "rate_invalid": "Geben Sie den Kurs als Zahl ein, oder lassen Sie ihn leer.",
+      "currency_unknown": "Wählen Sie eine Währung aus der Liste.",
+      "date_invalid": "Wählen Sie das Datum.",
+      "date_future": "Dieses Datum liegt in der Zukunft.",
+      "note_too_long": "Die Notiz ist zu lang.",
+      "tx_invalid": "Dieser Transaktions-Hash sieht nicht wie einer aus.",
+      "daily_limit": "Heute zu viele Einträge. Der Rest kann bis morgen warten.",
+      "not_found": "Dieser Eintrag ist weg."
     }
   }
 }

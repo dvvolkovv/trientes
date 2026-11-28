@@ -124,6 +124,19 @@ export function ReceiptView({
 
       {receipt.payCoin ? <p className="mt-2 text-[11.5px] leading-snug text-muted">{t("coinStated")}</p> : null}
 
+      {/* Адрес получения и хеш — только продавцу (слайс CR): ссылка на чек это
+          предъявитель, и в копии покупателю адрес стал бы известен любому, кто её держит. */}
+      {showCashier && receipt.payAddress ? (
+        <p className="num mt-2 break-all text-[11.5px] leading-snug text-muted">
+          {t("payAddress")}: {receipt.payAddress}
+        </p>
+      ) : null}
+      {showCashier && receipt.payTxHash ? (
+        <p className="num mt-1 break-all text-[11.5px] leading-snug text-muted">
+          {t("payTxHash")}: {receipt.payTxHash}
+        </p>
+      ) : null}
+
       {receipt.cashbackTotal > 0 ? (
         <p className="mt-3 rounded-[10px] border border-hairline bg-background px-3 py-2 text-[12.5px] leading-snug">
           <span className="font-semibold num">{t("cashback", { amount: money(receipt.cashbackTotal) })}</span>

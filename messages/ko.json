@@ -1847,7 +1847,8 @@
       "reports": "보고서",
       "crm": "고객",
       "automation": "자동화",
-      "payments": "결제 수락"
+      "payments": "결제 수락",
+      "crypto": "암호화폐 원장"
     },
     "tileUnit": {
       "points": "지도에 {count}개",
@@ -1866,7 +1867,8 @@
       "reports": "30일 내 영수증",
       "crm": "구매자: {count}",
       "automation": "규칙: {count}",
-      "payments": "결제 링크"
+      "payments": "결제 링크",
+      "crypto": "장부 내 코인"
     },
     "tileEmpty": "아직 없음",
     "tileBadge": {
@@ -4552,7 +4554,12 @@
       "RULE_DELETED": "자동화 규칙이 삭제됨",
       "WEBHOOK_CREATED": "아웃바운드 이벤트: 엔드포인트가 추가됨",
       "WEBHOOK_TOGGLED": "아웃바운드 이벤트: 엔드포인트가 전환됨",
-      "WEBHOOK_DELETED": "아웃바운드 이벤트: 엔드포인트가 제거됨"
+      "WEBHOOK_DELETED": "아웃바운드 이벤트: 엔드포인트가 제거됨",
+      "CRYPTO_ADDRESS_ADDED": "암호화폐 주소가 추가됨",
+      "CRYPTO_ADDRESS_ARCHIVED": "암호화폐 주소가 보관됨",
+      "CRYPTO_OP_RECORDED": "암호화폐 거래가 기록됨",
+      "CRYPTO_OP_DELETED": "암호화폐 거래가 삭제됨",
+      "CRYPTO_EXPORTED": "암호화폐 원장이 내보내짐"
     }
   },
   "cabinetTasks": {
@@ -5391,9 +5398,13 @@
       "shelf_required": "상품은 선반에서 출고됩니다 — 선반을 선택하세요.",
       "too_many_lines": "하나의 영수증에 항목이 너무 많습니다.",
       "unauth": "다시 로그인하세요.",
-      "warehouse_unknown": "해당 선반을 사용할 수 없습니다."
+      "warehouse_unknown": "해당 선반을 사용할 수 없습니다.",
+      "pay_address_invalid": "해당 주소가 유효하지 않습니다. 다시 입력하거나 필드를 비워 두세요.",
+      "pay_tx_invalid": "해당 트랜잭션 해시가 올바르지 않습니다. 다시 입력하거나 필드를 비워 두세요."
     },
-    "openCustomer": "고객 카드"
+    "openCustomer": "고객 카드",
+    "payAddress": "수신 주소",
+    "payTxHash": "트랜잭션 해시"
   },
   "receipt": {
     "title": "영수증",
@@ -5908,6 +5919,135 @@
       "not_enrolled": "이 계정에는 인증 앱이 설정되어 있지 않습니다.",
       "unreadable": "저장된 키를 읽을 수 없습니다. 지원팀에 문의하세요.",
       "no_password_set": "이 계정에는 비밀번호가 없습니다. 로그아웃 후 다시 로그인하세요."
+    }
+  },
+  "cabinetCrypto": {
+    "title": "암호화폐 원장",
+    "subtitle": "코인으로 받은 것, 전환한 것, 출금한 것 — 그리고 각 항목의 법정화폐 측면, 당신이 기록한 그대로",
+    "range": {
+      "today": "오늘",
+      "week": "7일",
+      "month": "30일"
+    },
+    "kind": {
+      "RECEIPT": "수령됨",
+      "CONVERSION": "전환됨",
+      "WITHDRAWAL": "출금됨"
+    },
+    "family": {
+      "EVM": "EVM",
+      "SUBSTRATE": "Substrate",
+      "COSMOS": "Cosmos",
+      "BITCOIN": "비트코인"
+    },
+    "coins": {
+      "heading": "코인",
+      "hint": "코인 수량은 통화가 달라도 합산됩니다; 법정화폐 합계는 그렇지 않습니다 — 서로 간 환율을 관측한 적이 없습니다",
+      "empty": "이 기간에는 아직 기록이 없습니다",
+      "balanceLabel": "기록상 남은 금액 — 체인에서 읽어온 잔액이 아닙니다",
+      "negative": "기록상 유출이 유입보다 많습니다. 입력을 확인하세요: 수령 내역이 누락되었을 가능성이 큽니다",
+      "received": "수령됨",
+      "converted": "전환됨",
+      "withdrawn": "출금됨",
+      "receivedFiat": "수령, {currency}",
+      "avgRate": "수령 시 평균 환율",
+      "fxDiff": "환율 차이 ({count})",
+      "fxUnknown": "여기에는 환율 차이가 없습니다: 어떤 수령에도 환율이 없어 비교할 대상이 없습니다",
+      "cancelled": "취소된 수령 내역은 제외: {count}",
+      "method": "환율 차이는 해당 거래의 환율에서 코인이 유입된 가중평균 환율을 뺀 값입니다. 선입선출 로트는 사용하지 않습니다: 이를 위해서는 별도의 장부가 필요하며, 구축 전에 회계사가 이를 요청해야 합니다",
+      "truncated": "한 페이지에 행이 너무 많습니다 — 위 수치는 최신 항목만 포함합니다. 기간을 좁히세요"
+    },
+    "addresses": {
+      "heading": "수신 주소",
+      "hint": "코인을 받을 것으로 예상하는 주소입니다. 체인이 아니라 체크섬만 확인합니다",
+      "empty": "아직 주소가 없습니다",
+      "add": "주소 추가",
+      "archive": "보관",
+      "restore": "복원",
+      "archived": "보관됨",
+      "checked": "형식 확인됨: {family}",
+      "unchecked": "형식 미확인: 이 티커가 어느 네트워크에 속하는지 알 수 없습니다",
+      "received": "{amount} {coin} 수신",
+      "unknownNote": "이 목록에 없지만 코인을 받은 주소: {count}. 누구의 것인지 자문해 볼 필요가 있습니다."
+    },
+    "ops": {
+      "heading": "내 기록",
+      "hint": "포스(POS)에서 발생한 수령은 해당 영수증에서 직접 읽어옵니다 — 여기에는 포스(POS) 밖에서 일어난 일만 기록하세요: 온라인 결제, 이체, 전환, 출금",
+      "empty": "아직 기록이 없습니다",
+      "add": "기록 추가",
+      "delete": "삭제",
+      "atRate": "코인당 {rate}에",
+      "author": "{name}가 기록함"
+    },
+    "receipts": {
+      "heading": "암호화폐 영수증",
+      "hint": "코인으로 결제된 계산대 영수증입니다. 이는 영수증 자체의 기록 — 이 페이지는 읽기만 합니다.",
+      "empty": "이 기간에는 암호화폐 영수증이 없습니다.",
+      "number": "영수증 #{number}",
+      "cancelled": "취소됨"
+    },
+    "rate": {
+      "ok": "해당 시간의 당사 가격과 {delta}% 이내로 일치합니다(당사: ${ours}).",
+      "off": "해당 시간의 당사 가격에서 {delta}% 벗어납니다(당사: ${ours}). 귀하의 환율이 맞을 수도 있습니다 — 이는 단순한 알림입니다.",
+      "unchecked": {
+        "no_fx": "당사 기준과 비교하지 않음: 현재 이 통화의 환율이 없습니다.",
+        "no_price": "당사 기준과 비교하지 않음: 해당 시간의 이 코인 가격이 없습니다.",
+        "coin_unknown": "당사 기준과 비교하지 않음: 이 티커는 당사 목록에 없습니다.",
+        "ticker_ambiguous": "당사 기준과 비교하지 않음: 당사 목록에서 둘 이상의 코인이 이 티커를 사용합니다."
+      }
+    },
+    "sanctions": {
+      "heading": "주소가 제재 목록과 일치함",
+      "body": "아래 주소 중 하나가 OFAC SDN 목록에 등재되어 있습니다. 우리는 아무것도 차단하지 않습니다 — 자금을 다루기 전에 중단하고 확인하라는 안내입니다.",
+      "rowFlag": "OFAC SDN 목록에 등재됨",
+      "justAdded": "주의: 방금 추가한 주소가 OFAC SDN 목록에 등재되어 있습니다.",
+      "noName": "목록에 이름이 제공되지 않음"
+    },
+    "export": {
+      "heading": "회계 담당자용 내보내기",
+      "hint": "영수증 내보내기와 동일한 형식: CSV, UTF-8 with BOM, 열 이름은 영어",
+      "operations": "항목 다운로드",
+      "receipts": "암호화폐 영수증 다운로드",
+      "needEdit": "보기만 가능하며 내보내기는 불가합니다: 보고서 편집 권한이 필요합니다."
+    },
+    "form": {
+      "coin": "코인",
+      "amount": "코인 수량",
+      "rate": "환율, 코인당 통화",
+      "currency": "통화",
+      "day": "날짜",
+      "address": "주소",
+      "txHash": "트랜잭션 해시",
+      "note": "메모",
+      "label": "레이블"
+    },
+    "notes": {
+      "noChainBalance": "이 수치는 체인이 아니라 귀하의 장부입니다. 우리는 귀하의 주소 잔액을 읽지 않습니다: 네트워크마다 노드가 필요하고 주소는 귀하의 일입니다.",
+      "noPayerAddress": "우리는 지급인의 주소를 보지 않습니다: 플랫폼 지갑이 없습니다. 고객은 주소가 아니라 계정으로 식별됩니다.",
+      "tolerance": "환율은 해당 시간의 당사 가격과 비교되며 허용오차는 {pct}%입니다. 비교에 사용되는 법정통화 환율은 오늘자의 것으로 — 과거 법정통화 환율은 저장하지 않습니다."
+    },
+    "error": {
+      "unauth": "먼저 로그인하세요.",
+      "forbidden": "이에 대한 접근 권한이 없습니다.",
+      "coin_invalid": "코인 티커를 입력하세요. 문자 또는 숫자 2~12자.",
+      "label_too_long": "라벨이 너무 깁니다.",
+      "too_many_addresses": "사용 중인 주소가 최대 개수에 도달했습니다. 더 이상 사용하지 않는 주소를 보관 처리하세요.",
+      "address_empty": "주소를 입력하세요.",
+      "address_too_short": "주소로 보기엔 너무 짧습니다.",
+      "address_too_long": "주소로 보기엔 너무 깁니다.",
+      "address_invalid": "해당 주소가 유효하지 않습니다 — 체크섬 검증에 실패했습니다. 다시 입력하세요.",
+      "address_wrong_network": "해당 주소는 이 코인의 네트워크가 아닌 다른 네트워크의 주소입니다.",
+      "address_taken": "이 주소는 이미 목록에 있습니다.",
+      "kind_invalid": "무슨 작업인지 선택하세요: 입금, 전환 또는 출금.",
+      "amount_invalid": "코인 기준 금액을 입력하세요. 소수점은 최대 8자리까지 가능합니다.",
+      "rate_invalid": "환율을 숫자로 입력하거나 비워 두세요.",
+      "currency_unknown": "목록에서 통화를 선택하세요.",
+      "date_invalid": "날짜를 선택하세요.",
+      "date_future": "해당 날짜는 미래의 날짜입니다.",
+      "note_too_long": "메모가 너무 깁니다.",
+      "tx_invalid": "해당 트랜잭션 해시는 올바르지 않아 보입니다.",
+      "daily_limit": "오늘 입력이 너무 많습니다. 나머지는 내일까지 기다려 주세요.",
+      "not_found": "해당 항목이 사라졌습니다."
     }
   }
 }

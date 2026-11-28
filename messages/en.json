@@ -1847,7 +1847,8 @@
       "reports": "Reports",
       "crm": "Customers",
       "automation": "Automation",
-      "payments": "Accept payments"
+      "payments": "Accept payments",
+      "crypto": "Crypto ledger"
     },
     "tileUnit": {
       "points": "{count} on the map",
@@ -1866,7 +1867,8 @@
       "reports": "receipts in 30 days",
       "crm": "buyers: {count}",
       "automation": "rules: {count}",
-      "payments": "payment link"
+      "payments": "payment link",
+      "crypto": "coins in the book"
     },
     "tileEmpty": "nothing yet",
     "tileBadge": {
@@ -4552,7 +4554,12 @@
       "RULE_DELETED": "Automation rule deleted",
       "WEBHOOK_CREATED": "Outbound events: endpoint added",
       "WEBHOOK_TOGGLED": "Outbound events: endpoint switched",
-      "WEBHOOK_DELETED": "Outbound events: endpoint removed"
+      "WEBHOOK_DELETED": "Outbound events: endpoint removed",
+      "CRYPTO_ADDRESS_ADDED": "Crypto address added",
+      "CRYPTO_ADDRESS_ARCHIVED": "Crypto address archived",
+      "CRYPTO_OP_RECORDED": "Crypto operation recorded",
+      "CRYPTO_OP_DELETED": "Crypto operation deleted",
+      "CRYPTO_EXPORTED": "Crypto ledger exported"
     }
   },
   "cabinetTasks": {
@@ -5391,9 +5398,13 @@
       "shelf_required": "Goods leave a shelf — choose one.",
       "too_many_lines": "Too many lines in one receipt.",
       "unauth": "Please sign in again.",
-      "warehouse_unknown": "That shelf is not available."
+      "warehouse_unknown": "That shelf is not available.",
+      "pay_address_invalid": "That address does not check out. Retype it or leave the field empty.",
+      "pay_tx_invalid": "That transaction hash does not look like one. Retype it or leave the field empty."
     },
-    "openCustomer": "Customer card"
+    "openCustomer": "Customer card",
+    "payAddress": "Receiving address",
+    "payTxHash": "Transaction hash"
   },
   "receipt": {
     "title": "Receipt",
@@ -5908,6 +5919,135 @@
       "not_enrolled": "No authenticator app is set up for this account.",
       "unreadable": "We cannot read the stored key. Please contact support.",
       "no_password_set": "This account has no password. Sign out and sign in again."
+    }
+  },
+  "cabinetCrypto": {
+    "title": "Crypto ledger",
+    "subtitle": "What you received in coin, what you converted, what you withdrew — and the fiat side of each, as you recorded it.",
+    "range": {
+      "today": "Today",
+      "week": "7 days",
+      "month": "30 days"
+    },
+    "kind": {
+      "RECEIPT": "Received",
+      "CONVERSION": "Converted",
+      "WITHDRAWAL": "Withdrawn"
+    },
+    "family": {
+      "EVM": "EVM",
+      "SUBSTRATE": "Substrate",
+      "COSMOS": "Cosmos",
+      "BITCOIN": "Bitcoin"
+    },
+    "coins": {
+      "heading": "Coins",
+      "hint": "Coin amounts add up across currencies; fiat sums do not — we never observed a rate between them.",
+      "empty": "Nothing recorded for this period yet.",
+      "balanceLabel": "Left by your records — not a balance read from the chain.",
+      "negative": "Your records show more going out than coming in. Check the entries: a receipt is probably missing.",
+      "received": "Received",
+      "converted": "Converted",
+      "withdrawn": "Withdrawn",
+      "receivedFiat": "Received, {currency}",
+      "avgRate": "Average rate when received",
+      "fxDiff": "FX difference ({count})",
+      "fxUnknown": "No FX difference here: none of the receipts carries a rate, so there is nothing to compare against.",
+      "cancelled": "Cancelled receipts not counted: {count}",
+      "method": "The FX difference is the operation rate minus the weighted average rate at which the coin came in. No FIFO lots: that needs a second book, and your accountant should ask for it before we build it.",
+      "truncated": "Too many rows for one page — the numbers above cover only the newest ones. Narrow the period."
+    },
+    "addresses": {
+      "heading": "Receiving addresses",
+      "hint": "The addresses you expect coins on. We check the checksum, not the chain.",
+      "empty": "No addresses yet.",
+      "add": "Add address",
+      "archive": "Archive",
+      "restore": "Restore",
+      "archived": "archived",
+      "checked": "Format checked: {family}",
+      "unchecked": "Format not checked: we do not know which network this ticker belongs to.",
+      "received": "received {amount} {coin}",
+      "unknownNote": "Addresses outside this list that received coins: {count}. Worth asking yourself whose they are."
+    },
+    "ops": {
+      "heading": "Your entries",
+      "hint": "Receipts from the till are read from the receipts themselves — record here only what happened outside the till: an online payment, a transfer, a conversion, a withdrawal.",
+      "empty": "No entries yet.",
+      "add": "Record entry",
+      "delete": "Delete",
+      "atRate": "at {rate} per coin",
+      "author": "Recorded by {name}"
+    },
+    "receipts": {
+      "heading": "Crypto receipts",
+      "hint": "Till receipts paid in coin. They are the receipt's own record — this page only reads them.",
+      "empty": "No crypto receipts for this period.",
+      "number": "Receipt #{number}",
+      "cancelled": "cancelled"
+    },
+    "rate": {
+      "ok": "Matches our price of that hour within {delta}% (ours: ${ours}).",
+      "off": "Off our price of that hour by {delta}% (ours: ${ours}). Your rate may be right — this is only a heads-up.",
+      "unchecked": {
+        "no_fx": "Rate not checked against ours: we have no exchange rate for this currency right now.",
+        "no_price": "Rate not checked against ours: we have no price of this coin for that hour.",
+        "coin_unknown": "Rate not checked against ours: this ticker is not in our catalogue.",
+        "ticker_ambiguous": "Rate not checked against ours: more than one coin in our catalogue carries this ticker."
+      }
+    },
+    "sanctions": {
+      "heading": "An address matches a sanctions list",
+      "body": "One of the addresses below is named in the OFAC SDN list. We do not block anything — this is your cue to stop and check before you touch those funds.",
+      "rowFlag": "Named in the OFAC SDN list",
+      "justAdded": "Careful: the address you just added is named in the OFAC SDN list.",
+      "noName": "name not given in the list"
+    },
+    "export": {
+      "heading": "Export for your accountant",
+      "hint": "Same format as the receipts export: CSV, UTF-8 with BOM, English column names.",
+      "operations": "Download entries",
+      "receipts": "Download crypto receipts",
+      "needEdit": "Viewing is allowed, exporting is not: that needs edit rights on reports."
+    },
+    "form": {
+      "coin": "Coin",
+      "amount": "Amount in coin",
+      "rate": "Rate, currency per coin",
+      "currency": "Currency",
+      "day": "Date",
+      "address": "Address",
+      "txHash": "Transaction hash",
+      "note": "Note",
+      "label": "Label"
+    },
+    "notes": {
+      "noChainBalance": "These numbers are your book, not the chain. We do not read balances of your addresses: that would need a node per network and your addresses are your business.",
+      "noPayerAddress": "We never see the payer's address: there is no platform wallet. A customer is known to you by their account, not by an address.",
+      "tolerance": "Rates are compared with our own price of that hour, tolerance {pct}%. The fiat rate used for the comparison is today's — we do not store historical fiat rates."
+    },
+    "error": {
+      "unauth": "Sign in first.",
+      "forbidden": "You do not have access to this.",
+      "coin_invalid": "Enter the coin ticker, 2 to 12 letters or digits.",
+      "label_too_long": "The label is too long.",
+      "too_many_addresses": "You already have the maximum number of live addresses. Archive one you no longer use.",
+      "address_empty": "Enter the address.",
+      "address_too_short": "That address is too short to be one.",
+      "address_too_long": "That address is too long to be one.",
+      "address_invalid": "That address does not check out — its checksum fails. Retype it.",
+      "address_wrong_network": "That address belongs to another network, not the one of this coin.",
+      "address_taken": "This address is already in your list.",
+      "kind_invalid": "Pick what happened: received, converted or withdrawn.",
+      "amount_invalid": "Enter the amount in coin, up to 8 decimals.",
+      "rate_invalid": "Enter the rate as a number, or leave it empty.",
+      "currency_unknown": "Pick a currency from the list.",
+      "date_invalid": "Pick the date.",
+      "date_future": "That date is in the future.",
+      "note_too_long": "The note is too long.",
+      "tx_invalid": "That transaction hash does not look like one.",
+      "daily_limit": "Too many entries today. The rest can wait until tomorrow.",
+      "not_found": "That entry is gone."
     }
   }
 }

@@ -1847,7 +1847,8 @@
       "reports": "报告",
       "crm": "客户",
       "automation": "自动化",
-      "payments": "接受支付"
+      "payments": "接受支付",
+      "crypto": "加密账本"
     },
     "tileUnit": {
       "points": "地图上{count}个",
@@ -1866,7 +1867,8 @@
       "reports": "30天内的收据",
       "crm": "买家: {count}",
       "automation": "规则: {count}",
-      "payments": "支付链接"
+      "payments": "支付链接",
+      "crypto": "账本中的币"
     },
     "tileEmpty": "尚无内容",
     "tileBadge": {
@@ -3796,7 +3798,7 @@
       }
     },
     "automation": {
-      "subject": "{company}: {rule}"
+      "subject": "{company}：{rule}"
     }
   },
   "captcha": {
@@ -4552,7 +4554,12 @@
       "RULE_DELETED": "已删除自动化规则",
       "WEBHOOK_CREATED": "出站事件: 已添加端点",
       "WEBHOOK_TOGGLED": "出站事件: 已切换端点",
-      "WEBHOOK_DELETED": "出站事件: 已移除端点"
+      "WEBHOOK_DELETED": "出站事件: 已移除端点",
+      "CRYPTO_ADDRESS_ADDED": "已添加加密地址",
+      "CRYPTO_ADDRESS_ARCHIVED": "已归档加密地址",
+      "CRYPTO_OP_RECORDED": "已记录加密操作",
+      "CRYPTO_OP_DELETED": "已删除加密操作",
+      "CRYPTO_EXPORTED": "已导出加密账本"
     }
   },
   "cabinetTasks": {
@@ -5391,9 +5398,13 @@
       "shelf_required": "商品从某个货架出库——请选择一个。",
       "too_many_lines": "单张收据的行数过多。",
       "unauth": "请重新登录。",
-      "warehouse_unknown": "该货架不可用。"
+      "warehouse_unknown": "该货架不可用。",
+      "pay_address_invalid": "该地址未通过校验。请重新输入，或将该字段留空。",
+      "pay_tx_invalid": "该交易哈希看起来不正确。请重新输入，或将该字段留空。"
     },
-    "openCustomer": "客户卡片"
+    "openCustomer": "客户卡片",
+    "payAddress": "收款地址",
+    "payTxHash": "交易哈希"
   },
   "receipt": {
     "title": "收据",
@@ -5908,6 +5919,135 @@
       "not_enrolled": "此账户尚未设置验证器应用。",
       "unreadable": "我们无法读取存储的密钥。请联系支持。",
       "no_password_set": "此账户没有密码。请退出并重新登录."
+    }
+  },
+  "cabinetCrypto": {
+    "title": "加密账本",
+    "subtitle": "你以代币形式收到的、转换的、提取的——以及你为每一项记录的法币部分。",
+    "range": {
+      "today": "今天",
+      "week": "7天",
+      "month": "30天"
+    },
+    "kind": {
+      "RECEIPT": "已收到",
+      "CONVERSION": "已转换",
+      "WITHDRAWAL": "已提取"
+    },
+    "family": {
+      "EVM": "EVM",
+      "SUBSTRATE": "Substrate",
+      "COSMOS": "Cosmos",
+      "BITCOIN": "比特币"
+    },
+    "coins": {
+      "heading": "币种",
+      "hint": "币的数量可跨币种相加；法币金额不能——我们从未观测到它们之间的汇率。",
+      "empty": "此期间尚无记录。",
+      "balanceLabel": "来自您的记录——不是从链上读取的余额。",
+      "negative": "您的记录显示支出多于收入。请检查条目：可能缺少一张收据。",
+      "received": "已收",
+      "converted": "已转换",
+      "withdrawn": "已提取",
+      "receivedFiat": "已收，{currency}",
+      "avgRate": "收款时的平均汇率",
+      "fxDiff": "汇兑差额 ({count})",
+      "fxUnknown": "此处无汇兑差额：所有收据都不含汇率，因此无从比较。",
+      "cancelled": "未计入的作废收据：{count}",
+      "method": "汇兑差额=本次操作汇率减去该币种流入时的加权平均汇率。不做FIFO分批：那需要第二套账，只有在您的会计提出需求后我们才会去构建。",
+      "truncated": "单页行数过多——上面的数字仅涵盖最新的记录。请缩短时间范围。"
+    },
+    "addresses": {
+      "heading": "收款地址",
+      "hint": "您期望收到币的地址。我们只检查校验和，不检查链。",
+      "empty": "尚无地址。",
+      "add": "添加地址",
+      "archive": "归档",
+      "restore": "恢复",
+      "archived": "已归档",
+      "checked": "格式已校验：{family}",
+      "unchecked": "未校验格式：我们不清楚此代码属于哪个网络。",
+      "received": "已收 {amount} {coin}",
+      "unknownNote": "在此列表之外接收过代币的地址：{count}。不妨问问自己它们是谁的。"
+    },
+    "ops": {
+      "heading": "您的记录",
+      "hint": "收银台的收据由收据本身读取——这里只记录发生在收银台之外的事项：网上付款、转账、兑换、提取。",
+      "empty": "尚无记录。",
+      "add": "新增记录",
+      "delete": "删除",
+      "atRate": "每枚币按{rate}",
+      "author": "由 {name} 记录"
+    },
+    "receipts": {
+      "heading": "加密货币收据",
+      "hint": "以币支付的收银小票。它们是收据自身的记录——本页只读取它们。",
+      "empty": "此期间无加密货币收据。",
+      "number": "收据 #{number}",
+      "cancelled": "已作废"
+    },
+    "rate": {
+      "ok": "与我们该小时的价格相差不超过 {delta}%（我们的：${ours}）。",
+      "off": "比我们该小时的价格偏差 {delta}%（我们的：${ours}）。你的汇率可能是对的——这只是提醒。",
+      "unchecked": {
+        "no_fx": "未与我们的价格比对：我们目前没有该货币的汇率。",
+        "no_price": "未与我们的价格比对：我们没有该小时该币的价格。",
+        "coin_unknown": "未与我们的价格比对：我们的目录中没有该代码。",
+        "ticker_ambiguous": "未与我们的价格比对：我们的目录中有多个币使用该代码。"
+      }
+    },
+    "sanctions": {
+      "heading": "有地址匹配制裁名单",
+      "body": "以下地址之一列于 OFAC SDN 名单。我们不会拦截任何操作——这是提醒你在动用这些资金前先暂停检查。",
+      "rowFlag": "列于 OFAC SDN 名单",
+      "justAdded": "注意：你刚添加的地址列于 OFAC SDN 名单。",
+      "noName": "名单未给出名称"
+    },
+    "export": {
+      "heading": "为你的会计导出",
+      "hint": "与收据导出相同的格式：CSV，UTF-8 with BOM，英文列名。",
+      "operations": "下载条目",
+      "receipts": "下载加密收据",
+      "needEdit": "允许查看，不允许导出：这需要报表的编辑权限。"
+    },
+    "form": {
+      "coin": "币种",
+      "amount": "币的数量",
+      "rate": "汇率（每币的货币）",
+      "currency": "货币",
+      "day": "日期",
+      "address": "地址",
+      "txHash": "交易哈希",
+      "note": "备注",
+      "label": "标签"
+    },
+    "notes": {
+      "noChainBalance": "这些数字是你的账本，不是链上的。我们不会读取你地址的余额：那需要每个网络都有节点，而且你的地址是你的私事。",
+      "noPayerAddress": "我们从未看到付款方的地址：没有平台钱包。客户对你而言是通过其账户识别的，而非地址。",
+      "tolerance": "汇率与我们该小时的价格对比，容差 {pct}%。用于比较的法币汇率为今天的——我们不存历史法币汇率。"
+    },
+    "error": {
+      "unauth": "请先登录。",
+      "forbidden": "你无权访问此内容。",
+      "coin_invalid": "输入币种代码，2 到 12 个字母或数字。",
+      "label_too_long": "标签过长。",
+      "too_many_addresses": "你已拥有最多数量的在用地址。请归档一个你不再使用的。",
+      "address_empty": "请输入地址。",
+      "address_too_short": "该地址太短，不像是有效地址。",
+      "address_too_long": "该地址太长，不像是有效地址。",
+      "address_invalid": "该地址未通过校验——校验和失败。请重新输入。",
+      "address_wrong_network": "该地址属于其他网络，不是该币所在的网络。",
+      "address_taken": "该地址已在你的列表中。",
+      "kind_invalid": "选择发生了什么：已收款、已兑换或已提取。",
+      "amount_invalid": "请输入币的数量，最多8位小数。",
+      "rate_invalid": "请输入数字形式的汇率，或留空。",
+      "currency_unknown": "请从列表中选择一种货币。",
+      "date_invalid": "请选择日期。",
+      "date_future": "该日期在未来。",
+      "note_too_long": "备注过长。",
+      "tx_invalid": "该交易哈希看起来不对。",
+      "daily_limit": "今天的条目过多。其余可等到明天。",
+      "not_found": "该条目已不存在。"
     }
   }
 }

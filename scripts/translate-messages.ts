@@ -65,6 +65,13 @@ const GLOSSARY: Record<string, string> = {
     // Слайс CP: «business card» перевелось как «визитка», «link id» — как «ID ссылки».
     "business card (company storefront) → карточка магазина (never «визитка»)",
     "link id / shop id → номер ссылки / номер магазина (never «ID», never «айди»)",
+    // Слайс CR: одна вещь получила три имени — «Криптовалютный реестр» на плитке,
+    // «Криптожурнал» в заголовке и «криптожурнал» в журнале (болезнь BQ).
+    "crypto ledger → криптоучёт (never «криптожурнал», never «криптовалютный реестр»)",
+    "sanctions list → санкционный список; checked against → сверено с",
+    // Там же: «rate» в криптоучёте — это курс обмена, а не процентная ставка, и
+    // по-русски «по ставке 57 289 € за монету» читается про проценты.
+    "rate (exchange rate, currency per coin) → курс (never «ставка»)",
   ].join("\n"),
   hr: [
     "Trientes — brand name, never translate.",

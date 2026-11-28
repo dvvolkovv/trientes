@@ -120,6 +120,10 @@ export type Receipt = {
   payCoin: string | null;
   payRate: number | null;
   payCoinAmount: number | null;
+  /** Слайс CR: видны **только продавцу** — ссылка на чек это предъявитель, и адрес
+   * получения в ней стал бы известен любому, кто её держит. */
+  payAddress: string | null;
+  payTxHash: string | null;
   payNote: string | null;
   status: "COMPLETED" | "CANCELLED";
   cancelledAt: Date | null;
@@ -149,6 +153,8 @@ const RECEIPT_SELECT = {
   payCoin: true,
   payRate: true,
   payCoinAmount: true,
+  payAddress: true,
+  payTxHash: true,
   payNote: true,
   status: true,
   cancelledAt: true,
@@ -186,6 +192,8 @@ type Row = {
   payCoin: string | null;
   payRate: unknown;
   payCoinAmount: unknown;
+  payAddress: string | null;
+  payTxHash: string | null;
   payNote: string | null;
   status: "COMPLETED" | "CANCELLED";
   cancelledAt: Date | null;
@@ -226,6 +234,8 @@ function shape(row: Row): Receipt {
     payCoin: row.payCoin,
     payRate: row.payRate === null ? null : Number(row.payRate),
     payCoinAmount: row.payCoinAmount === null ? null : Number(row.payCoinAmount),
+    payAddress: row.payAddress,
+    payTxHash: row.payTxHash,
     payNote: row.payNote,
     status: row.status,
     cancelledAt: row.cancelledAt,

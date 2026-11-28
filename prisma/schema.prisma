@@ -162,6 +162,8 @@ model User {
   payLinkChanges           CompanyPayLinkChange[]    @relation("PayLinkChangeActor")
   payLinkPending           CompanyPayLinkPending[]   @relation("PayLinkPendingRequester")
   payLinkCodes             CompanyPayLinkCode[]      @relation("PayLinkCodeUser")
+  cryptoAddresses          CompanyCryptoAddress[]    @relation("CryptoAddressAuthor")
+  cryptoOperations         CompanyCryptoOperation[]  @relation("CryptoOpAuthor")
 }
 
 model PushSubscription {
@@ -1131,6 +1133,11 @@ model Company {
   payLinkPending CompanyPayLinkPending?
   payLinkChanges CompanyPayLinkChange[]
   payLinkCodes   CompanyPayLinkCode[]
+
+  /// Криптоучёт (слайс CR, ТЗ 6.8): адреса получения и книга операций в монете и
+  /// фиате. Приход из кассы строкой операции не дублируется — у числа один автор.
+  cryptoAddresses  CompanyCryptoAddress[]
+  cryptoOperations CompanyCryptoOperation[]
 
   @@index([ownerUserId])
   @@index([status, createdAt])
@@ -3349,6 +3356,10 @@ model Sale {
   payRate       Decimal? @db.Decimal(24, 8)
   payCoinAmount Decimal? @db.Decimal(28, 8)
   payNote       String?  @db.Text
+  /// Слайс CR (ТЗ 6.8): адрес получения и хеш транзакции. Тоже заявление продавца —
+  /// в сети мы их не проверяем и говорим это словами (разбор спеки, раздел 3).
+  payAddress    String?
+  payTxHash     String?
 
   status        SaleStatus @default(COMPLETED)
   cancelledAt   DateTime?
@@ -3668,16 +3679,16 @@ model CompanyPayLinkPending {
   coinSymbol   String?
   amount       String?
 
-  requestedById String?
-  requestedBy   User?    @relation("PayLinkPendingRequester", fields: [requestedById], references: [id], onDelete: SetNull)
-  requestedAt   DateTime @default(now())
+  requestedById  String?
+  requestedBy    User?    @relation("PayLinkPendingRequester", fields: [requestedById], references: [id], onDelete: SetNull)
+  requestedAt    DateTime @default(now())
   /// Каналы владельца **на момент запроса**: `{ chatId, email, locale }`. Сообщение об
   /// исполнении через сутки уходит туда, а не на каналы момента исполнения — иначе
   /// захватчик, сменивший почту за эти сутки, получил бы весть о своей же подмене.
   notifyChannels Json?
   /// Когда смена вступит в силу. Прогон воркера в этот час снова спрашивает службу и
   /// только тогда включает: за сутки ссылку могли выключить.
-  effectiveAt   DateTime
+  effectiveAt    DateTime
 
   @@index([effectiveAt])
 }
@@ -3731,4 +3742,105 @@ model CompanyPayLinkCode {
 
   @@index([companyId, userId, createdAt])
   @@index([expiresAt])
+}
+
+/// Вид операции книги (слайс CR, ТЗ 6.8). Приход из кассы здесь не записывается: его
+/// автор — чек (`Sale`), и вторая запись о том же приходе разошлась бы с первой в день
+/// отмены чека. `RECEIPT` — приход **не** из кассы: онлайн-оплата, перевод, донат.
+enum CryptoOpKind {
+  RECEIPT
+  CONVERSION
+  WITHDRAWAL
+}
+
+/// Адрес мерчанта, на который он получает монету (слайс CR). Архивируется, а не
+/// удаляется: по нему уже записаны приходы (правило BC о складах).
+model CompanyCryptoAddress {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  /// Тикер монеты как его называет продавец (`BTC`, `USDT`). Каталожной связи нет:
+  /// монета бывает не из нашего каталога, а книга обязана её учесть.
+  coin String
+
+  /// Адрес как набран. Регистр не трогаем: у base58 он значим.
+  address    String
+  /// Приведённый ключ для сверки с санкционным списком — считает `addressKey()`.
+  addressKey String
+
+  label String?
+
+  /// Проверился ли формат по нашим реестрам и чем именно. `null` — семья сети
+  /// неизвестна, и это сказано на экране, а не выдано за проверку.
+  family String?
+
+  archivedAt DateTime?
+
+  createdById String?
+  createdBy   User?    @relation("CryptoAddressAuthor", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+
+  @@unique([companyId, address])
+  @@index([companyId, archivedAt])
+  @@index([addressKey])
+}
+
+/// Строка книги: что мерчант сделал с монетой (слайс CR). Фиатная сторона — его
+/// заявление на момент операции, курс сверяется с нашей ценой того часа, но не правится.
+model CompanyCryptoOperation {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  kind CryptoOpKind
+
+  coin   String
+  amount Decimal @db.Decimal(28, 8)
+
+  /// Курс и фиатная сумма: курс может быть неизвестен продавцу (перевод между своими
+  /// кошельками), и тогда операция в курсовую разницу не идёт вовсе.
+  rate       Decimal? @db.Decimal(24, 8)
+  currency   String
+  fiatAmount Decimal? @db.Decimal(18, 2)
+
+  happenedAt DateTime
+
+  address String?
+  txHash  String?
+  note    String? @db.Text
+
+  createdById String?
+  createdBy   User?    @relation("CryptoOpAuthor", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+
+  @@index([companyId, happenedAt])
+  @@index([companyId, coin])
+}
+
+/// Санкционный криптоадрес из открытого списка (слайс CR). Своя таблица, а не Redis:
+/// по ней сверяются живые экраны, и исчезнувший кэш не должен молча превращать
+/// «проверено» в «не проверено».
+model SanctionedCryptoAddress {
+  id String @id @default(cuid())
+
+  /// Источник списка. Сейчас один — `OFAC_SDN`; поле есть, чтобы второй список не
+  /// требовал миграции.
+  source String
+
+  /// Как актив назван в списке: `XBT`, `ETH`, `USDT`, `TRX`. Наш тикер может не
+  /// совпасть (`XBT` против `BTC`) — сверка идёт по адресу, а не по активу.
+  asset String
+
+  address    String
+  addressKey String
+
+  listedName String?
+  programs   String?
+
+  publishedAt DateTime?
+  fetchedAt   DateTime  @default(now())
+
+  @@unique([source, addressKey])
+  @@index([addressKey])
 }

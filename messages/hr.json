@@ -1847,7 +1847,8 @@
       "reports": "Izvješća",
       "crm": "Kupci",
       "automation": "Automatizacija",
-      "payments": "Prihvaćajte plaćanja"
+      "payments": "Prihvaćajte plaćanja",
+      "crypto": "Kripto knjiga"
     },
     "tileUnit": {
       "points": "{count} na karti",
@@ -1866,7 +1867,8 @@
       "reports": "računa u 30 dana",
       "crm": "kupci: {count}",
       "automation": "pravila: {count}",
-      "payments": "poveznica za plaćanje"
+      "payments": "poveznica za plaćanje",
+      "crypto": "kovanice u knjizi"
     },
     "tileEmpty": "još ništa",
     "tileBadge": {
@@ -4552,7 +4554,12 @@
       "RULE_DELETED": "Pravilo automatizacije izbrisano",
       "WEBHOOK_CREATED": "Odlazni događaji: dodana krajnja točka",
       "WEBHOOK_TOGGLED": "Odlazni događaji: krajnja točka uključena/isključena",
-      "WEBHOOK_DELETED": "Odlazni događaji: uklonjena krajnja točka"
+      "WEBHOOK_DELETED": "Odlazni događaji: uklonjena krajnja točka",
+      "CRYPTO_ADDRESS_ADDED": "Kripto adresa dodana",
+      "CRYPTO_ADDRESS_ARCHIVED": "Kripto adresa arhivirana",
+      "CRYPTO_OP_RECORDED": "Kripto operacija zabilježena",
+      "CRYPTO_OP_DELETED": "Kripto operacija izbrisana",
+      "CRYPTO_EXPORTED": "Kripto evidencija izvezena"
     }
   },
   "cabinetTasks": {
@@ -5391,9 +5398,13 @@
       "shelf_required": "Roba izlazi s police — odaberite jednu.",
       "too_many_lines": "Previše stavki na jednom računu.",
       "unauth": "Prijavite se ponovno.",
-      "warehouse_unknown": "Ta polica nije dostupna."
+      "warehouse_unknown": "Ta polica nije dostupna.",
+      "pay_address_invalid": "Ta adresa ne prolazi provjeru. Ponovno je upišite ili ostavite polje prazno.",
+      "pay_tx_invalid": "Taj hash transakcije ne izgleda valjano. Ponovno ga upišite ili ostavite polje prazno."
     },
-    "openCustomer": "Kartica kupca"
+    "openCustomer": "Kartica kupca",
+    "payAddress": "Adresa za primanje",
+    "payTxHash": "Hash transakcije"
   },
   "receipt": {
     "title": "Račun",
@@ -5908,6 +5919,135 @@
       "not_enrolled": "Za ovaj račun nije postavljena aplikacija za autentifikaciju.",
       "unreadable": "Ne možemo pročitati pohranjeni ključ. Obratite se podršci.",
       "no_password_set": "Ovaj račun nema lozinku. Odjavite se i ponovno se prijavite."
+    }
+  },
+  "cabinetCrypto": {
+    "title": "Kripto evidencija",
+    "subtitle": "Što ste primili u kovanici, što ste pretvorili, što ste isplatili — i fiat strana svakog, kako ste zabilježili.",
+    "range": {
+      "today": "Danas",
+      "week": "7 dana",
+      "month": "30 dana"
+    },
+    "kind": {
+      "RECEIPT": "Primljeno",
+      "CONVERSION": "Pretvoreno",
+      "WITHDRAWAL": "Povučeno"
+    },
+    "family": {
+      "EVM": "EVM",
+      "SUBSTRATE": "Substrate",
+      "COSMOS": "Cosmos",
+      "BITCOIN": "Bitcoin"
+    },
+    "coins": {
+      "heading": "Kovanice",
+      "hint": "Iznosi kovanica zbrajaju se preko valuta; fiat zbrojevi ne — nikada nismo uočili tečaj između njih.",
+      "empty": "Još nema zapisa za ovo razdoblje.",
+      "balanceLabel": "Prema vašim zapisima — nije stanje pročitano s blockchaina.",
+      "negative": "Vaši zapisi pokazuju veći odljev nego priljev. Provjerite unose: vjerojatno nedostaje račun.",
+      "received": "Primljeno",
+      "converted": "Pretvoreno",
+      "withdrawn": "Povučeno",
+      "receivedFiat": "Primljeno, {currency}",
+      "avgRate": "Prosječni tečaj pri primitku",
+      "fxDiff": "Tečajna razlika ({count})",
+      "fxUnknown": "Ovdje nema tečajne razlike: nijedan od računa ne sadrži tečaj, pa se nema s čim usporediti.",
+      "cancelled": "Otkazani računi se ne računaju: {count}",
+      "method": "Tečajna razlika je tečaj operacije minus ponderirani prosječni tečaj po kojem je kovanica ušla. Nema FIFO lotova: za to je potrebna druga knjiga i vaš računovođa bi je trebao zatražiti prije nego što je izradimo.",
+      "truncated": "Previše redaka za jednu stranicu — gornje brojke obuhvaćaju samo najnovije. Sužite razdoblje."
+    },
+    "addresses": {
+      "heading": "Adrese za primitak",
+      "hint": "Adrese na koje očekujete kovanice. Provjeravamo kontrolni zbroj, ne blockchain.",
+      "empty": "Još nema adresa.",
+      "add": "Dodaj adresu",
+      "archive": "Arhiviraj",
+      "restore": "Vrati",
+      "archived": "arhivirano",
+      "checked": "Format provjeren: {family}",
+      "unchecked": "Format nije provjeren: ne znamo kojoj mreži pripada ovaj ticker.",
+      "received": "primljeno {amount} {coin}",
+      "unknownNote": "Adrese izvan ovog popisa koje su primile kovanice: {count}. Vrijedi se zapitati čije su"
+    },
+    "ops": {
+      "heading": "Vaši unosi",
+      "hint": "Računi s blagajne čitaju se iz samih računa — ovdje zabilježite samo što se dogodilo izvan blagajne: internetsko plaćanje, prijenos, pretvorba, povlačenje.",
+      "empty": "Još nema unosa.",
+      "add": "Zabilježi unos",
+      "delete": "Izbriši",
+      "atRate": "po {rate} po kovanici",
+      "author": "Evidentirao/la {name}"
+    },
+    "receipts": {
+      "heading": "Kripto računi",
+      "hint": "Blagajnički računi plaćeni kovanicom. Oni su vlastiti zapis računa — ova stranica ih samo čita.",
+      "empty": "Nema kripto računa za ovo razdoblje.",
+      "number": "Račun #{number}",
+      "cancelled": "otkazano"
+    },
+    "rate": {
+      "ok": "Podudara se s našom cijenom tog sata unutar {delta}% (naša: ${ours}).",
+      "off": "Odstupa od naše cijene tog sata za {delta}% (naša: ${ours}). Vaša stopa može biti točna — ovo je samo upozorenje.",
+      "unchecked": {
+        "no_fx": "Stopa nije provjerena prema našoj: trenutačno nemamo tečaj za ovu valutu.",
+        "no_price": "Stopa nije provjerena prema našoj: nemamo cijenu ove kovanice za taj sat.",
+        "coin_unknown": "Stopa nije provjerena prema našoj: ovaj ticker nije u našem katalogu.",
+        "ticker_ambiguous": "Stopa nije provjerena prema našoj: više od jedne kovanice u našem katalogu nosi ovaj ticker."
+      }
+    },
+    "sanctions": {
+      "heading": "Adresa se podudara s popisom sankcija",
+      "body": "Jedna od adresa u nastavku navedena je na OFAC SDN popisu. Ništa ne blokiramo — ovo je znak da stanete i provjerite prije nego što išta poduzmete s tim sredstvima.",
+      "rowFlag": "Navedeno na OFAC SDN popisu",
+      "justAdded": "Oprez: adresa koju ste upravo dodali navedena je na OFAC SDN popisu.",
+      "noName": "ime nije navedeno na popisu"
+    },
+    "export": {
+      "heading": "Izvoz za vašeg računovođu",
+      "hint": "Isti format kao izvoz računa: CSV, UTF-8 s BOM-om, nazivi stupaca na engleskom.",
+      "operations": "Preuzeti unose",
+      "receipts": "Preuzeti kripto račune",
+      "needEdit": "Pregled je dopušten, izvoz nije: za to su potrebna prava uređivanja izvješća."
+    },
+    "form": {
+      "coin": "Kovanica",
+      "amount": "Iznos u kovanici",
+      "rate": "Stopa, valuta po kovanici",
+      "currency": "Valuta",
+      "day": "Datum",
+      "address": "Adresa",
+      "txHash": "Hash transakcije",
+      "note": "Bilješka",
+      "label": "Oznaka"
+    },
+    "notes": {
+      "noChainBalance": "Ovi brojevi su vaša knjiga, ne lanac. Ne očitavamo stanja vaših adresa: za to bi bio potreban čvor po mreži, a vaše su adrese vaša stvar.",
+      "noPayerAddress": "Nikada ne vidimo adresu platitelja: nema novčanika platforme. Kupca prepoznajete po njegovu računu, a ne po adresi.",
+      "tolerance": "Stope se uspoređuju s našom cijenom tog sata, tolerancija {pct}%. Fiat tečaj korišten za usporedbu je današnji — ne pohranjujemo povijesne fiat tečajeve."
+    },
+    "error": {
+      "unauth": "Prvo se prijavite.",
+      "forbidden": "Nemate pristup ovome.",
+      "coin_invalid": "Unesite ticker kovanice, 2 do 12 slova ili znamenki.",
+      "label_too_long": "Oznaka je preduga.",
+      "too_many_addresses": "Već imate najveći broj aktivnih adresa. Arhivirajte onu koju više ne koristite.",
+      "address_empty": "Unesite adresu.",
+      "address_too_short": "Ta adresa je prekratka da bi bila valjana.",
+      "address_too_long": "Ta adresa je preduga da bi bila valjana.",
+      "address_invalid": "Ta adresa ne prolazi provjeru — njezina kontrolna suma ne valja. Unesite je ponovno.",
+      "address_wrong_network": "Ta adresa pripada drugoj mreži, ne mreži ove kovanice.",
+      "address_taken": "Ta je adresa već na vašem popisu.",
+      "kind_invalid": "Odaberite što se dogodilo: primljeno, zamijenjeno ili povučeno.",
+      "amount_invalid": "Unesite iznos u kovanici, do 8 decimala.",
+      "rate_invalid": "Unesite tečaj kao broj ili ostavite prazno.",
+      "currency_unknown": "Odaberite valutu s popisa.",
+      "date_invalid": "Odaberite datum.",
+      "date_future": "Taj je datum u budućnosti.",
+      "note_too_long": "Bilješka je preduga.",
+      "tx_invalid": "Taj hash transakcije ne izgleda kao hash transakcije.",
+      "daily_limit": "Previše unosa danas. Ostalo može pričekati do sutra.",
+      "not_found": "Taj je unos nestao."
     }
   }
 }

@@ -7,6 +7,7 @@
  * способ оплаты и курс — заявление продавца, а не наблюдённый нами факт.
  */
 import { CASHBACK_MAX, CASHBACK_MIN, OFFER_CURRENCIES, parseAmount } from "@/lib/products/offers-rules";
+import { checkAddress, checkTxHash } from "@/lib/crypto-ledger/address";
 
 export const SALE_PAYMENTS = ["CASH", "CARD", "TRANSFER", "CRYPTO", "OTHER"] as const;
 export type SalePayment = (typeof SALE_PAYMENTS)[number];
@@ -102,6 +103,8 @@ export type SaleReason =
   | "payment_invalid"
   | "coin_required"
   | "rate_invalid"
+  | "pay_address_invalid"
+  | "pay_tx_invalid"
   | "shelf_required"
   | "daily_limit";
 
@@ -111,6 +114,9 @@ export type SaleInput = {
   payCoin: string | null;
   payRate: string | null;
   payCoinAmount: string | null;
+  /** Слайс CR: адрес получения и хеш транзакции — необязательные факты для книги. */
+  payAddress?: string | null;
+  payTxHash?: string | null;
   /** Полка выбрана или нет — услуге она не нужна. */
   hasShelf: boolean;
 };
@@ -122,6 +128,8 @@ export type SaleValue = {
   payCoin: string | null;
   payRate: number | null;
   payCoinAmount: number | null;
+  payAddress: string | null;
+  payTxHash: string | null;
 };
 
 type Bad = { ok: false; reason: SaleReason };
@@ -205,6 +213,8 @@ export function validateSale(
   let payCoin: string | null = null;
   let payRate: number | null = null;
   let payCoinAmount: number | null = null;
+  let payAddress: string | null = null;
+  let payTxHash: string | null = null;
   if (input.payment === "CRYPTO") {
     const coin = (input.payCoin ?? "").trim().toUpperCase();
     // Монета обязательна: «оплачено криптой» без имени монеты не говорит ничего, а ТЗ
@@ -215,6 +225,19 @@ export function validateSale(
     payCoinAmount = parsePayNumber(input.payCoinAmount);
     if ((input.payRate ?? "").trim() && payRate === null) return { ok: false, reason: "rate_invalid" };
     if ((input.payCoinAmount ?? "").trim() && payCoinAmount === null) return { ok: false, reason: "rate_invalid" };
+
+    // Слайс CR: адрес и хеш — необязательные факты, но набранные обязаны быть похожи на
+    // себя. Опечатка в адресе делает запись книги бессмысленной, а сверку с санкционным
+    // списком — пустой: несуществующий адрес в списке не найдётся никогда.
+    const addressText = (input.payAddress ?? "").trim();
+    if (addressText) {
+      const checked = checkAddress(addressText, coin);
+      if (!checked.ok) return { ok: false, reason: "pay_address_invalid" };
+      payAddress = checked.address;
+    }
+    const hash = checkTxHash(input.payTxHash ?? "");
+    if (!hash.ok) return { ok: false, reason: "pay_tx_invalid" };
+    payTxHash = hash.value || null;
   }
 
   return {
@@ -226,6 +249,8 @@ export function validateSale(
       payCoin,
       payRate,
       payCoinAmount,
+      payAddress,
+      payTxHash,
     },
   };
 }

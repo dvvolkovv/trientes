@@ -45,6 +45,7 @@ import { runReorderSweep } from "../src/lib/supply/reorder-sweep";
 import { runStaffAccessReviewSweep } from "../src/lib/staff-access-sweep";
 import { runWebhookSweep } from "../src/lib/automation/deliver";
 import { startBinance, stopBinance } from "./binance";
+import { syncSanctions } from "../src/lib/sanctions/ofac";
 
 async function runPriceSync() {
   const t0 = Date.now();
@@ -454,6 +455,27 @@ async function runCaseDueJob() {
     }
   } catch (err) {
     console.error("[worker] case due sweep failed:", err);
+  }
+}
+
+/**
+ * Санкционный список OFAC (слайс CR, ТЗ 6.8). Раз в сутки: список публикуется по
+ * рабочим дням, и чаще спрашивать тридцать мегабайт незачем. Пустой разбор прежний
+ * список **не затирает** — ноль адресов означает смену формата, а не отмену санкций.
+ */
+async function runSanctionsJob() {
+  const t0 = Date.now();
+  try {
+    const res = await syncSanctions();
+    if (res.ok) {
+      console.log(
+        `[worker] sanctions ok: ${res.written} addresses, published ${res.publishedAt?.toISOString().slice(0, 10) ?? "?"} in ${Date.now() - t0}ms`,
+      );
+    } else {
+      console.error(`[worker] sanctions failed: ${res.reason}${res.detail ? ` (${res.detail})` : ""}`);
+    }
+  } catch (err) {
+    console.error("[worker] sanctions sync failed:", err);
   }
 }
 
@@ -872,6 +894,9 @@ async function main() {
   // Приём платежей (слайс CP): суточная проверка ссылок и исполнение отложенных смен.
   cron.schedule("40 5 * * *", () => void runPayLinkJob());
   cron.schedule("*/10 * * * *", () => void runPayLinkDueJob());
+  // Санкционный список (слайс CR): в 05:50, до ночного отчёта в 06:00 — тогда отчёт
+  // говорит о сегодняшнем состоянии списка, а не о вчерашнем.
+  cron.schedule("50 5 * * *", () => void runSanctionsJob());
 
   // Live price feed via Binance WebSocket — top 20 coins.
   startBinance();

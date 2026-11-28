@@ -1847,7 +1847,8 @@
       "reports": "Prehľady",
       "crm": "Zákazníci",
       "automation": "Automatizácia",
-      "payments": "Prijímajte platby"
+      "payments": "Prijímajte platby",
+      "crypto": "Krypto účtovná kniha"
     },
     "tileUnit": {
       "points": "{count} na mape",
@@ -1866,7 +1867,8 @@
       "reports": "účtenky za 30 dní",
       "crm": "kupujúci: {count}",
       "automation": "pravidlá: {count}",
-      "payments": "platobný odkaz"
+      "payments": "platobný odkaz",
+      "crypto": "mince v knihe"
     },
     "tileEmpty": "zatiaľ nič",
     "tileBadge": {
@@ -4552,7 +4554,12 @@
       "RULE_DELETED": "Pravidlo automatizácie odstránené",
       "WEBHOOK_CREATED": "Odchádzajúce udalosti: pridaný koncový bod",
       "WEBHOOK_TOGGLED": "Odchádzajúce udalosti: prepnutý koncový bod",
-      "WEBHOOK_DELETED": "Odchádzajúce udalosti: odstránený koncový bod"
+      "WEBHOOK_DELETED": "Odchádzajúce udalosti: odstránený koncový bod",
+      "CRYPTO_ADDRESS_ADDED": "Pridaná krypto adresa",
+      "CRYPTO_ADDRESS_ARCHIVED": "Archivovaná krypto adresa",
+      "CRYPTO_OP_RECORDED": "Zaznamenaná krypto operácia",
+      "CRYPTO_OP_DELETED": "Vymazaná krypto operácia",
+      "CRYPTO_EXPORTED": "Exportovaná krypto účtovná kniha"
     }
   },
   "cabinetTasks": {
@@ -5391,9 +5398,13 @@
       "shelf_required": "Tovar odchádza z police — vyberte policu.",
       "too_many_lines": "Príliš veľa položiek v jednej účtenke.",
       "unauth": "Prosím, prihláste sa znova.",
-      "warehouse_unknown": "Táto polica nie je dostupná."
+      "warehouse_unknown": "Táto polica nie je dostupná.",
+      "pay_address_invalid": "Tá adresa nesedí. Zadajte ju znova alebo nechajte pole prázdne.",
+      "pay_tx_invalid": "Ten hash transakcie tak nevyzerá. Zadajte ho znova alebo nechajte pole prázdne."
     },
-    "openCustomer": "Karta zákazníka"
+    "openCustomer": "Karta zákazníka",
+    "payAddress": "Prijímacia adresa",
+    "payTxHash": "Hash transakcie"
   },
   "receipt": {
     "title": "Účtenka",
@@ -5908,6 +5919,135 @@
       "not_enrolled": "Pre tento účet nie je nastavená autentifikačná aplikácia.",
       "unreadable": "Nedokážeme prečítať uložený kľúč. Kontaktujte podporu.",
       "no_password_set": "Tento účet nemá heslo. Odhláste sa a prihláste sa znova."
+    }
+  },
+  "cabinetCrypto": {
+    "title": "Krypto účtovná kniha",
+    "subtitle": "Čo ste prijali v minci, čo ste konvertovali, čo ste vybrali — a fiat strana každého z nich, ako ste to zaznamenali.",
+    "range": {
+      "today": "Dnes",
+      "week": "7 dní",
+      "month": "30 dní"
+    },
+    "kind": {
+      "RECEIPT": "Prijaté",
+      "CONVERSION": "Konvertované",
+      "WITHDRAWAL": "Vybraté"
+    },
+    "family": {
+      "EVM": "EVM",
+      "SUBSTRATE": "Substrate",
+      "COSMOS": "Cosmos",
+      "BITCOIN": "Bitcoin"
+    },
+    "coins": {
+      "heading": "Mince",
+      "hint": "Množstvá mincí sa sčítavajú naprieč menami; fiat súčty nie — nikdy sme medzi nimi nepozorovali kurz.",
+      "empty": "Zatiaľ nič zaznamenané pre toto obdobie.",
+      "balanceLabel": "Zostatok podľa vašich záznamov — nie z reťazca načítaný zostatok.",
+      "negative": "Vaše záznamy ukazujú viac odchádzajúcich než prichádzajúcich. Skontrolujte položky: pravdepodobne chýba záznam o prijatí.",
+      "received": "Prijaté",
+      "converted": "Konvertované",
+      "withdrawn": "Vybraté",
+      "receivedFiat": "Prijaté, {currency}",
+      "avgRate": "Priemerný kurz pri prijatí",
+      "fxDiff": "Kurzový rozdiel ({count})",
+      "fxUnknown": "Žiadny kurzový rozdiel: žiaden z dokladov neobsahuje kurz, takže niet s čím porovnať.",
+      "cancelled": "Zrušené doklady sa nepočítajú: {count}",
+      "method": "Kurzový rozdiel je kurz operácie mínus vážený priemer kurzu, za ktorý minca prišla. Žiadne FIFO loty: na to treba druhú knihu a váš účtovník by si ju mal vyžiadať skôr, než ju vytvoríme.",
+      "truncated": "Príliš veľa riadkov na jednu stránku — vyššie uvedené čísla pokrývajú len tie najnovšie. Zúžte obdobie."
+    },
+    "addresses": {
+      "heading": "Prijímacie adresy",
+      "hint": "Adresy, na ktoré očakávate mince. Kontrolujeme kontrolný súčet, nie sieť.",
+      "empty": "Zatiaľ žiadne adresy.",
+      "add": "Pridať adresu",
+      "archive": "Archivovať",
+      "restore": "Obnoviť",
+      "archived": "archivované",
+      "checked": "Formát overený: {family}",
+      "unchecked": "Formát neoverený: nevieme, do ktorej siete tento ticker patrí.",
+      "received": "prijaté {amount} {coin}",
+      "unknownNote": "Adresy mimo tohto zoznamu, ktoré prijali mince: {count}. Stojí za to si položiť otázku, čie sú."
+    },
+    "ops": {
+      "heading": "Vaše záznamy",
+      "hint": "Doklady z pokladne čítame z nich samotných — sem zapisujte len to, čo sa stalo mimo pokladne: online platbu, prevod, konverziu, výber.",
+      "empty": "Zatiaľ žiadne záznamy.",
+      "add": "Zapísať záznam",
+      "delete": "Vymazať",
+      "atRate": "pri kurze {rate} za mincu",
+      "author": "Zaznamenal(a) {name}"
+    },
+    "receipts": {
+      "heading": "Krypto doklady",
+      "hint": "Pokladničné doklady platené mincou. Sú to samotné záznamy dokladov — táto stránka ich iba číta.",
+      "empty": "V tomto období žiadne krypto doklady.",
+      "number": "Doklad č. {number}",
+      "cancelled": "zrušené"
+    },
+    "rate": {
+      "ok": "Zodpovedá našej cene v tej hodine v rámci {delta}% (naša: ${ours}).",
+      "off": "Líši sa od našej ceny v tej hodine o {delta}% (naša: ${ours}). Váš kurz môže byť správny — je to len upozornenie.",
+      "unchecked": {
+        "no_fx": "Kurz neporovnaný s naším: momentálne nemáme výmenný kurz pre túto menu.",
+        "no_price": "Kurz neporovnaný s naším: pre tú hodinu nemáme cenu tejto mince.",
+        "coin_unknown": "Kurz neporovnaný s naším: tento ticker nie je v našom katalógu.",
+        "ticker_ambiguous": "Kurz neporovnaný s naším: v našom katalógu má tento ticker viac ako jedna minca."
+      }
+    },
+    "sanctions": {
+      "heading": "Adresa sa zhoduje so sankčným zoznamom",
+      "body": "Jedna z adries nižšie je uvedená v zozname OFAC SDN. Nič neblokujeme — je to výzva, aby ste sa zastavili a overili predtým, než sa tých prostriedkov dotknete.",
+      "rowFlag": "Uvedená v zozname OFAC SDN",
+      "justAdded": "Pozor: práve pridaná adresa je uvedená v zozname OFAC SDN.",
+      "noName": "meno v zozname neuvedené"
+    },
+    "export": {
+      "heading": "Export pre vášho účtovníka",
+      "hint": "Rovnaký formát ako export potvrdeniek: CSV, UTF-8 s BOM, anglické názvy stĺpcov.",
+      "operations": "Stiahnuť položky",
+      "receipts": "Stiahnuť krypto potvrdenky",
+      "needEdit": "Zobrazenie je povolené, export nie: na to sú potrebné práva na úpravy v reportoch."
+    },
+    "form": {
+      "coin": "Minca",
+      "amount": "Suma v minci",
+      "rate": "Kurz, mena za mincu",
+      "currency": "Mena",
+      "day": "Dátum",
+      "address": "Adresa",
+      "txHash": "Hash transakcie",
+      "note": "Poznámka",
+      "label": "Štítok"
+    },
+    "notes": {
+      "noChainBalance": "Tieto čísla sú vaše účtovníctvo, nie blockchain. Nečítame zostatky vašich adries: vyžadovalo by to uzol pre každú sieť a vaše adresy sú vaša vec.",
+      "noPayerAddress": "Adresu platcu nikdy nevidíme: neexistuje žiadna peňaženka platformy. Zákazníka poznáte podľa jeho účtu, nie podľa adresy.",
+      "tolerance": "Kurzy sa porovnávajú s našou vlastnou cenou tej hodiny, tolerancia {pct}%. Fiat kurz použitý na porovnanie je dnešný — historické fiat kurzy neukladáme."
+    },
+    "error": {
+      "unauth": "Najprv sa prihláste.",
+      "forbidden": "K tomuto nemáte prístup.",
+      "coin_invalid": "Zadajte ticker mince, 2 až 12 písmen alebo číslic.",
+      "label_too_long": "Štítok je príliš dlhý.",
+      "too_many_addresses": "Už máte maximum aktívnych adries. Archivujte jednu, ktorú už nepoužívate.",
+      "address_empty": "Zadajte adresu.",
+      "address_too_short": "Táto adresa je príliš krátka na to, aby ňou bola.",
+      "address_too_long": "Táto adresa je príliš dlhá na to, aby ňou bola.",
+      "address_invalid": "Táto adresa nesedí — jej kontrolný súčet zlyhal. Zadajte ju znova.",
+      "address_wrong_network": "Táto adresa patrí do inej siete, nie do siete tejto mince.",
+      "address_taken": "Táto adresa už je vo vašom zozname.",
+      "kind_invalid": "Vyberte, čo sa stalo: prijaté, konvertované alebo vybraté.",
+      "amount_invalid": "Zadajte sumu v minci, najviac 8 desatinných miest.",
+      "rate_invalid": "Zadajte kurz ako číslo, alebo ho nechajte prázdny.",
+      "currency_unknown": "Vyberte menu zo zoznamu.",
+      "date_invalid": "Vyberte dátum.",
+      "date_future": "Tento dátum je v budúcnosti.",
+      "note_too_long": "Poznámka je príliš dlhá.",
+      "tx_invalid": "Tento hash transakcie tak nevyzerá.",
+      "daily_limit": "Dnes je príliš veľa položiek. Zvyšok môže počkať do zajtra.",
+      "not_found": "Tá položka je preč."
     }
   }
 }

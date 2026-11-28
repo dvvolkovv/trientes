@@ -93,6 +93,7 @@ const facts = (patch: Partial<HealthFacts> = {}): HealthFacts => ({
   log: null,
   pages: [{ path: "/en", status: 200, ms: 120 }],
   quotaBlocks: [],
+  sanctionHits: 0,
   quotaSpend: [],
   signups: 3,
   ...patch,

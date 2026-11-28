@@ -1847,7 +1847,8 @@
       "reports": "Rapports",
       "crm": "Clients",
       "automation": "Automatisation",
-      "payments": "Accepter les paiements"
+      "payments": "Accepter les paiements",
+      "crypto": "Grand livre crypto"
     },
     "tileUnit": {
       "points": "{count} sur la carte",
@@ -1866,7 +1867,8 @@
       "reports": "reçus sur 30 jours",
       "crm": "acheteurs: {count}",
       "automation": "règles: {count}",
-      "payments": "lien de paiement"
+      "payments": "lien de paiement",
+      "crypto": "jetons dans le grand livre"
     },
     "tileEmpty": "rien pour l’instant",
     "tileBadge": {
@@ -4552,7 +4554,12 @@
       "RULE_DELETED": "Règle d’automatisation supprimée",
       "WEBHOOK_CREATED": "Événements sortants: point de terminaison ajouté",
       "WEBHOOK_TOGGLED": "Événements sortants: point de terminaison basculé",
-      "WEBHOOK_DELETED": "Événements sortants: point de terminaison supprimé"
+      "WEBHOOK_DELETED": "Événements sortants: point de terminaison supprimé",
+      "CRYPTO_ADDRESS_ADDED": "Adresse crypto ajoutée",
+      "CRYPTO_ADDRESS_ARCHIVED": "Adresse crypto archivée",
+      "CRYPTO_OP_RECORDED": "Opération crypto enregistrée",
+      "CRYPTO_OP_DELETED": "Opération crypto supprimée",
+      "CRYPTO_EXPORTED": "Grand livre crypto exporté"
     }
   },
   "cabinetTasks": {
@@ -5391,9 +5398,13 @@
       "shelf_required": "Les marchandises sortent d'une étagère — choisissez-en une.",
       "too_many_lines": "Trop de lignes dans un seul reçu.",
       "unauth": "Veuillez vous reconnecter.",
-      "warehouse_unknown": "Cette étagère n'est pas disponible."
+      "warehouse_unknown": "Cette étagère n'est pas disponible.",
+      "pay_address_invalid": "Cette adresse ne semble pas valide. Retapez-la ou laissez le champ vide.",
+      "pay_tx_invalid": "Ce hash de transaction ne semble pas valide. Retapez-le ou laissez le champ vide."
     },
-    "openCustomer": "Fiche client"
+    "openCustomer": "Fiche client",
+    "payAddress": "Adresse de réception",
+    "payTxHash": "Hash de transaction"
   },
   "receipt": {
     "title": "Reçu",
@@ -5908,6 +5919,135 @@
       "not_enrolled": "Aucune application d’authentification n’est configurée pour ce compte.",
       "unreadable": "Nous ne pouvons pas lire la clé enregistrée. Veuillez contacter l’assistance.",
       "no_password_set": "Ce compte n’a pas de mot de passe. Déconnectez-vous et reconnectez-vous."
+    }
+  },
+  "cabinetCrypto": {
+    "title": "Grand livre crypto",
+    "subtitle": "Ce que vous avez reçu en coin, ce que vous avez converti, ce que vous avez retiré — et la contrepartie fiat de chacun, telle que vous l’avez enregistrée.",
+    "range": {
+      "today": "Aujourd’hui",
+      "week": "7 jours",
+      "month": "30 jours"
+    },
+    "kind": {
+      "RECEIPT": "Reçu",
+      "CONVERSION": "Converti",
+      "WITHDRAWAL": "Retiré"
+    },
+    "family": {
+      "EVM": "EVM",
+      "SUBSTRATE": "Substrate",
+      "COSMOS": "Cosmos",
+      "BITCOIN": "Bitcoin"
+    },
+    "coins": {
+      "heading": "Monnaies",
+      "hint": "Les montants en coin s’additionnent entre devises; les sommes en fiat non — nous n’avons jamais observé de taux entre elles.",
+      "empty": "Rien enregistré pour cette période pour l’instant.",
+      "balanceLabel": "Restant selon vos écritures — pas un solde lu sur la chaîne.",
+      "negative": "Vos écritures montrent plus de sorties que d’entrées. Vérifiez les lignes : une réception manque probablement.",
+      "received": "Reçu",
+      "converted": "Converti",
+      "withdrawn": "Retiré",
+      "receivedFiat": "Reçu, {currency}",
+      "avgRate": "Taux moyen à la réception",
+      "fxDiff": "Différence de change ({count})",
+      "fxUnknown": "Pas de différence de change ici : aucune réception n’indique de taux, donc rien à comparer.",
+      "cancelled": "Réceptions annulées non comptées : {count}",
+      "method": "La différence de change est le taux de l’opération moins le taux moyen pondéré auquel le coin est entré. Pas de lots FIFO : cela nécessite un second livre, et votre comptable doit le demander avant que nous ne le construisions.",
+      "truncated": "Trop de lignes pour une page — les chiffres ci‑dessus ne couvrent que les plus récentes. Réduisez la période."
+    },
+    "addresses": {
+      "heading": "Adresses de réception",
+      "hint": "Les adresses sur lesquelles vous attendez des coins. Nous vérifions la somme de contrôle, pas la chaîne.",
+      "empty": "Aucune adresse pour l’instant.",
+      "add": "Ajouter une adresse",
+      "archive": "Archiver",
+      "restore": "Restaurer",
+      "archived": "archivée",
+      "checked": "Format vérifié : {family}",
+      "unchecked": "Format non vérifié : nous ne savons pas à quel réseau appartient ce ticker.",
+      "received": "reçu {amount} {coin}",
+      "unknownNote": "Adresses en dehors de cette liste qui ont reçu des monnaies: {count}. Il vaudrait la peine de se demander à qui elles appartiennent."
+    },
+    "ops": {
+      "heading": "Vos écritures",
+      "hint": "Les tickets de caisse sont lus à partir des tickets eux‑mêmes — n’enregistrez ici que ce qui s’est passé hors caisse : un paiement en ligne, un transfert, une conversion, un retrait.",
+      "empty": "Aucune écriture pour l’instant.",
+      "add": "Enregistrer une écriture",
+      "delete": "Supprimer",
+      "atRate": "à {rate} par coin",
+      "author": "Enregistré par {name}"
+    },
+    "receipts": {
+      "heading": "Reçus crypto",
+      "hint": "Tickets de caisse payés en coin. Ils sont l’enregistrement propre au ticket — cette page ne fait que les lire.",
+      "empty": "Aucun reçu crypto pour cette période.",
+      "number": "Reçu n°{number}",
+      "cancelled": "annulé"
+    },
+    "rate": {
+      "ok": "Correspond à notre prix de cette heure à {delta}% près (le nôtre : ${ours}).",
+      "off": "S’écarte de notre prix de cette heure de {delta}% (le nôtre : ${ours}). Votre taux est peut‑être correct — simple avertissement.",
+      "unchecked": {
+        "no_fx": "Taux non vérifié par rapport au nôtre : nous n’avons pas de taux de change pour cette devise pour l’instant.",
+        "no_price": "Taux non vérifié par rapport au nôtre : nous n’avons pas le prix de ce coin pour cette heure.",
+        "coin_unknown": "Taux non vérifié par rapport au nôtre : ce ticker n’est pas dans notre catalogue.",
+        "ticker_ambiguous": "Taux non vérifié par rapport au nôtre : plus d’un coin dans notre catalogue porte ce ticker."
+      }
+    },
+    "sanctions": {
+      "heading": "Une adresse correspond à une liste de sanctions",
+      "body": "L’une des adresses ci‑dessous figure dans la liste OFAC SDN. Nous ne bloquons rien — c’est à vous de vous arrêter et de vérifier avant de toucher à ces fonds.",
+      "rowFlag": "Mentionnée dans la liste OFAC SDN",
+      "justAdded": "Attention : l’adresse que vous venez d’ajouter figure dans la liste OFAC SDN.",
+      "noName": "nom non indiqué dans la liste"
+    },
+    "export": {
+      "heading": "Export pour votre comptable",
+      "hint": "Même format que l’export des reçus : CSV, UTF‑8 avec BOM, noms de colonnes en anglais.",
+      "operations": "Télécharger les écritures",
+      "receipts": "Télécharger les reçus crypto",
+      "needEdit": "Lecture autorisée, export interdit : cela nécessite des droits d’édition sur les rapports."
+    },
+    "form": {
+      "coin": "Crypto",
+      "amount": "Montant en coin",
+      "rate": "Taux, devise par coin",
+      "currency": "Devise",
+      "day": "Date",
+      "address": "Adresse",
+      "txHash": "Hash de transaction",
+      "note": "Note",
+      "label": "Libellé"
+    },
+    "notes": {
+      "noChainBalance": "Ces chiffres sont votre comptabilité, pas la chaîne. Nous ne lisons pas les soldes de vos adresses : il faudrait un nœud par réseau et vos adresses ne regardent que vous.",
+      "noPayerAddress": "Nous ne voyons jamais l'adresse du payeur : il n'y a pas de portefeuille de plateforme. Un client est connu de vous par son compte, pas par une adresse.",
+      "tolerance": "Les cours sont comparés à notre propre prix de cette heure, tolérance {pct}%. Le taux fiat utilisé pour la comparaison est celui d’aujourd’hui — nous ne stockons pas les taux fiat historiques."
+    },
+    "error": {
+      "unauth": "Connectez-vous d'abord.",
+      "forbidden": "Vous n'y avez pas accès.",
+      "coin_invalid": "Saisissez le ticker de la pièce, de 2 à 12 lettres ou chiffres.",
+      "label_too_long": "Le libellé est trop long.",
+      "too_many_addresses": "Vous avez déjà le nombre maximal d'adresses actives. Archivez-en une que vous n'utilisez plus.",
+      "address_empty": "Saisissez l'adresse.",
+      "address_too_short": "Cette adresse est trop courte pour en être une.",
+      "address_too_long": "Cette adresse est trop longue pour en être une.",
+      "address_invalid": "Cette adresse ne passe pas — sa somme de contrôle échoue. Retapez-la.",
+      "address_wrong_network": "Cette adresse appartient à un autre réseau, pas à celui de cette pièce.",
+      "address_taken": "Cette adresse est déjà dans votre liste.",
+      "kind_invalid": "Choisissez ce qui s'est passé : reçu, converti ou retiré.",
+      "amount_invalid": "Saisissez le montant en crypto, jusqu'à 8 décimales.",
+      "rate_invalid": "Saisissez le taux en tant que nombre, ou laissez-le vide.",
+      "currency_unknown": "Choisissez une devise dans la liste.",
+      "date_invalid": "Choisissez la date.",
+      "date_future": "Cette date est dans le futur.",
+      "note_too_long": "La note est trop longue.",
+      "tx_invalid": "Ce hash de transaction n'en a pas l'air.",
+      "daily_limit": "Trop d'entrées aujourd'hui. Le reste peut attendre demain.",
+      "not_found": "Cette entrée a disparu."
     }
   }
 }

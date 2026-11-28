@@ -1847,7 +1847,8 @@
       "reports": "Raporlar",
       "crm": "Müşteriler",
       "automation": "Otomasyon",
-      "payments": "Ödemeleri kabul et"
+      "payments": "Ödemeleri kabul et",
+      "crypto": "Kripto Defteri"
     },
     "tileUnit": {
       "points": "{count} haritada",
@@ -1866,7 +1867,8 @@
       "reports": "30 günde makbuz",
       "crm": "alıcılar: {count}",
       "automation": "kurallar: {count}",
-      "payments": "ödeme bağlantısı"
+      "payments": "ödeme bağlantısı",
+      "crypto": "defterdeki coinler"
     },
     "tileEmpty": "henüz bir şey yok",
     "tileBadge": {
@@ -4552,7 +4554,12 @@
       "RULE_DELETED": "Otomasyon kuralı silindi",
       "WEBHOOK_CREATED": "Giden olaylar: uç nokta eklendi",
       "WEBHOOK_TOGGLED": "Giden olaylar: uç nokta değiştirildi",
-      "WEBHOOK_DELETED": "Giden olaylar: uç nokta kaldırıldı"
+      "WEBHOOK_DELETED": "Giden olaylar: uç nokta kaldırıldı",
+      "CRYPTO_ADDRESS_ADDED": "Kripto adresi eklendi",
+      "CRYPTO_ADDRESS_ARCHIVED": "Kripto adresi arşivlendi",
+      "CRYPTO_OP_RECORDED": "Kripto işlemi kaydedildi",
+      "CRYPTO_OP_DELETED": "Kripto işlemi silindi",
+      "CRYPTO_EXPORTED": "Kripto defteri dışa aktarıldı"
     }
   },
   "cabinetTasks": {
@@ -5391,9 +5398,13 @@
       "shelf_required": "Ürünler bir raftan çıkar — birini seçin.",
       "too_many_lines": "Bir fişte çok fazla satır var.",
       "unauth": "Lütfen yeniden oturum açın.",
-      "warehouse_unknown": "O raf kullanılamıyor."
+      "warehouse_unknown": "O raf kullanılamıyor.",
+      "pay_address_invalid": "Bu adres doğrulanamıyor. Yeniden yazın veya alanı boş bırakın.",
+      "pay_tx_invalid": "Bu işlem hash'i gibi görünmüyor. Yeniden yazın veya alanı boş bırakın."
     },
-    "openCustomer": "Müşteri kartı"
+    "openCustomer": "Müşteri kartı",
+    "payAddress": "Alıcı adresi",
+    "payTxHash": "İşlem hash'i"
   },
   "receipt": {
     "title": "Fiş",
@@ -5908,6 +5919,135 @@
       "not_enrolled": "Bu hesap için bir kimlik doğrulama uygulaması ayarlı değil.",
       "unreadable": "Kayıtlı anahtarı okuyamıyoruz. Lütfen destekle iletişime geçin.",
       "no_password_set": "Bu hesabın parolası yok. Oturumu kapatıp yeniden oturum açın."
+    }
+  },
+  "cabinetCrypto": {
+    "title": "Kripto defteri",
+    "subtitle": "Coin olarak aldıklarınız, dönüştürdükleriniz, çektikleriniz — ve her birinin sizin kaydettiğiniz itibari para karşılıkları.",
+    "range": {
+      "today": "Bugün",
+      "week": "7 gün",
+      "month": "30 gün"
+    },
+    "kind": {
+      "RECEIPT": "Alındı",
+      "CONVERSION": "Dönüştürüldü",
+      "WITHDRAWAL": "Çekildi"
+    },
+    "family": {
+      "EVM": "EVM",
+      "SUBSTRATE": "Substrate",
+      "COSMOS": "Cosmos",
+      "BITCOIN": "Bitcoin"
+    },
+    "coins": {
+      "heading": "Coinler",
+      "hint": "Coin miktarları para birimleri arasında toplanır; itibari para toplamları toplanmaz — aralarında hiç kur gözlemlemedik.",
+      "empty": "Bu dönem için henüz bir kayıt yok.",
+      "balanceLabel": "Kayıtlarınıza göre kalan — zincirden okunan bir bakiye değil.",
+      "negative": "Kayıtlarınıza göre girişten çok çıkış var. Kayıtları kontrol edin: muhtemelen bir alım kaydı eksik.",
+      "received": "Alındı",
+      "converted": "Dönüştürüldü",
+      "withdrawn": "Çekildi",
+      "receivedFiat": "Alındı, {currency}",
+      "avgRate": "Alındığı zamanki ortalama kur",
+      "fxDiff": "Kur farkı ({count})",
+      "fxUnknown": "Burada kur farkı yok: makbuzların hiçbirinde kur yok, karşılaştıracak bir şey yok.",
+      "cancelled": "İptal edilen makbuzlar sayılmadı: {count}",
+      "method": "Kur farkı, işlem kuru ile coin’in geldiği ağırlıklı ortalama kur arasındaki farktır. FIFO lotu yok: bunun için ikinci bir defter gerekir; bunu yapmadan önce muhasebecinizin talep etmesi gerekir.",
+      "truncated": "Bir sayfa için çok fazla satır — yukarıdaki rakamlar yalnızca en yenilerini kapsar. Dönemi daraltın."
+    },
+    "addresses": {
+      "heading": "Alım adresleri",
+      "hint": "Coin beklediğiniz adresler. Zinciri değil, sadece sağlama toplamını kontrol ederiz.",
+      "empty": "Henüz adres yok.",
+      "add": "Adres ekle",
+      "archive": "Arşivle",
+      "restore": "Geri yükle",
+      "archived": "arşivde",
+      "checked": "Biçim kontrol edildi: {family}",
+      "unchecked": "Biçim kontrol edilmedi: bu ticker’ın hangi ağa ait olduğunu bilmiyoruz.",
+      "received": "alındı {amount} {coin}",
+      "unknownNote": "Bu listenin dışında coin alan adresler: {count}. Kimin olduklarını kendinize sormaya değer."
+    },
+    "ops": {
+      "heading": "Girdileriniz",
+      "hint": "Kasadan gelen makbuzlar doğrudan makbuzların kendisinden okunur — burada yalnızca kasanın dışında olanları kaydedin: çevrimiçi ödeme, transfer, dönüşüm, çekim.",
+      "empty": "Henüz kayıt yok.",
+      "add": "Kayıt ekle",
+      "delete": "Sil",
+      "atRate": "coin başına {rate}",
+      "author": "{name} tarafından kaydedildi"
+    },
+    "receipts": {
+      "heading": "Kripto makbuzları",
+      "hint": "Coin ile ödenmiş kasa makbuzları. Bunlar makbuzun kendi kaydıdır — bu sayfa yalnızca onları okur.",
+      "empty": "Bu dönem için kripto makbuzu yok.",
+      "number": "Makbuz #{number}",
+      "cancelled": "iptal edildi"
+    },
+    "rate": {
+      "ok": "O saatteki fiyatımızla {delta}% içinde uyumlu (bizimki: ${ours}).",
+      "off": "O saatteki fiyatımızdan {delta}% sapıyor (bizimki: ${ours}). Kurunuz doğru olabilir — bu sadece bir uyarı.",
+      "unchecked": {
+        "no_fx": "Kur bizimle karşılaştırılmadı: şu anda bu para birimi için döviz kuru yok.",
+        "no_price": "Kur bizimle karşılaştırılmadı: o saat için bu coin’in fiyatı yok.",
+        "coin_unknown": "Kur bizimle karşılaştırılmadı: bu ticker kataloğumuzda yok.",
+        "ticker_ambiguous": "Kur bizimle karşılaştırılmadı: kataloğumuzda bu ticker’ı taşıyan birden fazla coin var."
+      }
+    },
+    "sanctions": {
+      "heading": "Bir adres yaptırım listesiyle eşleşiyor",
+      "body": "Aşağıdaki adreslerden biri OFAC SDN listesinde yer alıyor. Hiçbir şeyi engellemiyoruz — bu, o fonlara dokunmadan önce durup kontrol etmeniz için bir uyarıdır.",
+      "rowFlag": "OFAC SDN listesinde adı geçen",
+      "justAdded": "Dikkat: az önce eklediğiniz adres OFAC SDN listesinde adı geçiyor.",
+      "noName": "listede ad verilmemiş"
+    },
+    "export": {
+      "heading": "Muhasebeciniz için dışa aktarım",
+      "hint": "Makbuz dışa aktarımıyla aynı format: CSV, BOM’lu UTF-8, sütun adları İngilizce.",
+      "operations": "Kayıtları indir",
+      "receipts": "Kripto makbuzlarını indir",
+      "needEdit": "Görüntüleme serbest, dışa aktarma değil: bunun için raporlarda düzenleme yetkisi gerekir."
+    },
+    "form": {
+      "coin": "Coin",
+      "amount": "Coin cinsinden tutar",
+      "rate": "Kur, coin başına fiyat",
+      "currency": "Para birimi",
+      "day": "Tarih",
+      "address": "Adres",
+      "txHash": "İşlem hash'i",
+      "note": "Not",
+      "label": "Etiket"
+    },
+    "notes": {
+      "noChainBalance": "Bu sayılar zincirin değil, sizin kayıtlarınızdır. Adreslerinizin bakiyelerini okumayız: bunun için ağ başına bir node gerekir ve adresleriniz sizin işinizdir.",
+      "noPayerAddress": "Ödeyenin adresini asla görmeyiz: platform cüzdanı yoktur. Bir müşteriyi bir adresle değil, hesabıyla tanırsınız.",
+      "tolerance": "Kurlar, o saate ait kendi fiyatımızla karşılaştırılır, tolerans {pct}%. Karşılaştırmada kullanılan itibari para kuru bugünkü kurdur — geçmiş itibari para kurlarını saklamıyoruz."
+    },
+    "error": {
+      "unauth": "Önce oturum açın.",
+      "forbidden": "Buna erişiminiz yok.",
+      "coin_invalid": "Coin kodunu girin, 2 ila 12 harf veya rakam.",
+      "label_too_long": "Etiket çok uzun.",
+      "too_many_addresses": "Zaten en fazla sayıda etkin adrese sahipsiniz. Artık kullanmadığınız birini arşivleyin.",
+      "address_empty": "Adresi girin.",
+      "address_too_short": "Bu adres, bir adres olmak için fazla kısa.",
+      "address_too_long": "Bu adres, bir adres olmak için fazla uzun.",
+      "address_invalid": "Bu adres doğrulamayı geçmiyor — sağlama (checksum) hatalı. Yeniden yazın.",
+      "address_wrong_network": "Bu adres bu coinin ağına değil, başka bir ağa ait.",
+      "address_taken": "Bu adres zaten listenizde.",
+      "kind_invalid": "Ne olduğunu seçin: alındı, dönüştürüldü veya çekildi.",
+      "amount_invalid": "Tutarı coin cinsinden girin, en fazla 8 ondalık.",
+      "rate_invalid": "Kuru sayı olarak girin ya da boş bırakın.",
+      "currency_unknown": "Listeden bir para birimi seçin.",
+      "date_invalid": "Tarihi seçin.",
+      "date_future": "Bu tarih gelecekte.",
+      "note_too_long": "Not çok uzun.",
+      "tx_invalid": "Bu işlem hash'i öyle görünmüyor.",
+      "daily_limit": "Bugün çok fazla kayıt var. Kalanı yarına kadar bekleyebilir.",
+      "not_found": "Bu kayıt artık yok."
     }
   }
 }
