@@ -6,7 +6,7 @@
  * платёж. Денег сайт не двигает (эквайринг в ТЗ исключён из объёма разработки), поэтому
  * способ оплаты и курс — заявление продавца, а не наблюдённый нами факт.
  */
-import { CASHBACK_MAX, CASHBACK_MIN, OFFER_CURRENCIES, parseAmount } from "@/lib/products/offers-rules";
+import { CASHBACK_MAX, CASHBACK_MIN, OFFER_CURRENCIES, isServiceUnit, parseAmount } from "@/lib/products/offers-rules";
 import { checkAddress, checkTxHash } from "@/lib/crypto-ledger/address";
 
 export const SALE_PAYMENTS = ["CASH", "CARD", "TRANSFER", "CRYPTO", "OTHER"] as const;
@@ -24,12 +24,11 @@ export const RECEIPT_TTL_DAYS = 30;
 /**
  * Единицы, которые работа, а не товар. Такая строка с полки не списывается и полки не
  * требует. Угадывать «есть ли строка остатка» нельзя: кончившаяся полка тоже имеет
- * строку, только с нулём.
+ * строку, только с нулём. Набор живёт в правилах предложения — там же его читает
+ * витрина, и вторая копия разошлась бы с первой.
  */
-const SERVICE_UNITS = new Set(["service", "hour"]);
-
 export function isService(unit: string): boolean {
-  return SERVICE_UNITS.has(unit);
+  return isServiceUnit(unit);
 }
 
 export function isSalePayment(value: string): value is SalePayment {

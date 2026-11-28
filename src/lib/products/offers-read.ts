@@ -9,7 +9,7 @@ import { PUBLIC_COMPANY } from "@/lib/company-visibility";
 import { areaOf } from "@/lib/coin-card-acceptance";
 import type { MapArea } from "@/lib/map-start";
 import { firstPhotoUrl, VISIBLE_PRODUCT } from "@/lib/products/read";
-import { availabilityOf, offerVisible } from "@/lib/products/offers-rules";
+import { availabilityOf, isServiceUnit, offerVisible } from "@/lib/products/offers-rules";
 import { readCategoryRates, readCompanyRates } from "@/lib/loyalty/read";
 import { effectiveCashback, type CashbackSource } from "@/lib/loyalty/rates";
 import { publicFieldOn } from "@/lib/company-public-fields";
@@ -22,8 +22,12 @@ export type SellerPlace = {
   countryCode: string | null;
   lat: number | null;
   lon: number | null;
-  /** Покупателю — наличие, а не число: остаток продавца мы не проверяли. */
-  inStock: boolean;
+  /**
+   * Покупателю — наличие, а не число: остаток продавца мы не проверяли. У услуги
+   * (единицы `service` и `hour`) наличия нет вовсе — `null`, а не `false`: занятие
+   * по записи «кончиться на складе» не может, и «нет в наличии» было бы неправдой.
+   */
+  inStock: boolean | null;
 };
 
 export type SellerOffer = {
@@ -53,8 +57,8 @@ export type SellerOffer = {
    * на паспорте товара.
    */
   showReturns: boolean;
-  /** Хоть где-то на полке есть. */
-  inStock: boolean;
+  /** Хоть где-то на полке есть. У услуги — `null`: полки у неё нет по построению. */
+  inStock: boolean | null;
   places: SellerPlace[];
 };
 
@@ -62,6 +66,20 @@ export type WhereToBuy = {
   offers: SellerOffer[];
   /** Прямоугольник полок с координатами — с него открывается карта этого товара. */
   area: MapArea | null;
+};
+
+/**
+ * Живая точка предприятия — место, где оказывают услугу.
+ *
+ * Услуга полки не требует (правило кассы CK), поэтому «где взять» у неё считается не
+ * по остатку, а по тому, где стоит продавец: у студии йоги занятие происходит в самой
+ * студии. Без этого первый же продавец услуг получал бы «нет в наличии» и паспорт без
+ * адреса — то есть витрина говорила бы неправду о том, что мы про него знаем.
+ */
+const LIVE_PUBLIC_POINT = {
+  status: "APPROVED" as const,
+  deletedAt: null,
+  suspendedAt: null,
 };
 
 /** Полки, видимые покупателю: не архивные, и либо онлайн, либо на живой одобренной точке. */
@@ -138,6 +156,12 @@ export async function readProductOffers(productId: string): Promise<WhereToBuy> 
               balances: { where: { productId }, select: { qty: true } },
             },
           },
+          // Точки предприятия нужны услуге: её «где» — это место продавца.
+          points: {
+            where: LIVE_PUBLIC_POINT,
+            select: { id: true, name: true, city: true, countryCode: true, lat: true, lon: true },
+            take: 20,
+          },
         },
       },
     },
@@ -153,7 +177,8 @@ export async function readProductOffers(productId: string): Promise<WhereToBuy> 
 
   const rows: SellerOffer[] = visible
     .map((o) => {
-      const places: SellerPlace[] = o.company.warehouses.map((w) => {
+      const service = isServiceUnit(o.unit);
+      const shelfPlaces: SellerPlace[] = o.company.warehouses.map((w) => {
         const qty = w.balances.reduce((sum, b) => sum + Number(b.qty), 0);
         return {
           pointId: w.point?.id ?? null,
@@ -166,6 +191,16 @@ export async function readProductOffers(productId: string): Promise<WhereToBuy> 
           inStock: availabilityOf([{ qty }]),
         };
       });
+      const servicePlaces: SellerPlace[] = o.company.points.map((pt) => ({
+        pointId: pt.id,
+        name: pt.name,
+        city: pt.city,
+        countryCode: pt.countryCode,
+        lat: pt.lat,
+        lon: pt.lon,
+        inStock: null,
+      }));
+      const places = service ? servicePlaces : shelfPlaces;
       const cashback = effectiveCashback({
         offer: o.cashbackPercent === null ? null : Number(o.cashbackPercent),
         category: categoryRates.get(o.companyId) ?? null,
@@ -186,8 +221,8 @@ export async function readProductOffers(productId: string): Promise<WhereToBuy> 
         returnPolicy: o.company.returnPolicy,
         returnDays: o.company.returnDays,
         showReturns: publicFieldOn(o.company.publicFields, "returnPolicy"),
-        inStock: places.some((p) => p.inStock),
-        places: places.filter((p) => p.inStock),
+        inStock: service ? null : places.some((p) => p.inStock === true),
+        places: service ? places : places.filter((p) => p.inStock === true),
       };
     });
 
@@ -222,7 +257,8 @@ export type ShowcaseOffer = {
   unit: string;
   /** Действующая ставка — та же, что покупатель видит на паспорте товара. */
   cashbackPercent: number | null;
-  inStock: boolean;
+  /** У услуги наличия нет: `null`, а не `false` (то же правило, что в «где взять»). */
+  inStock: boolean | null;
 };
 
 /** Витрина предприятия: его живые предложения по живым паспортам. */
@@ -273,7 +309,7 @@ export async function readCompanyOffers(companyId: string, take = 24): Promise<S
         category: rates.byCategory[o.product.category] ?? null,
         company: rates.base,
       })?.percent ?? null,
-    inStock: (stock.get(o.productId) ?? 0) > 0,
+    inStock: isServiceUnit(o.unit) ? null : (stock.get(o.productId) ?? 0) > 0,
   }));
 }
 
@@ -312,6 +348,21 @@ export async function pointIdsWithProduct(slug: string): Promise<string[]> {
     select: { id: true },
   });
   if (!product) return [];
+  // Услуга лежит не на полке, а в месте продавца: иначе фильтр по товару у продавца
+  // услуг отдавал бы пустую карту, то есть «нигде» вместо «вот где».
+  const servicePoints = await prisma.companyPoint.findMany({
+    where: {
+      ...LIVE_PUBLIC_POINT,
+      company: {
+        ...PUBLIC_COMPANY,
+        productOffers: {
+          some: { productId: product.id, status: "ACTIVE", unit: { in: ["service", "hour"] } },
+        },
+      },
+    },
+    select: { id: true },
+    take: 500,
+  });
   const rows = await prisma.stockBalance.findMany({
     where: {
       productId: product.id,
@@ -328,7 +379,12 @@ export async function pointIdsWithProduct(slug: string): Promise<string[]> {
     select: { warehouse: { select: { pointId: true } } },
     take: 500,
   });
-  return [...new Set(rows.map((r) => r.warehouse.pointId).filter((id): id is string => Boolean(id)))];
+  return [
+    ...new Set([
+      ...servicePoints.map((pt) => pt.id),
+      ...rows.map((r) => r.warehouse.pointId).filter((id): id is string => Boolean(id)),
+    ]),
+  ];
 }
 
 /**
@@ -346,6 +402,15 @@ export async function readPointOffers(
 ): Promise<Map<string, { slug: string; name: string; price: string | null }[]>> {
   const out = new Map<string, { slug: string; name: string; price: string | null }[]>();
   if (pointIds.length === 0) return out;
+
+  // Чьи это точки: услуга принадлежит предприятию, а не полке, и без этой связи
+  // карточка студии йоги показывала бы пустую витрину (у неё полок нет вовсе).
+  const points = await prisma.companyPoint.findMany({
+    where: { id: { in: [...pointIds] } },
+    select: { id: true, companyId: true },
+  });
+  if (points.length === 0) return out;
+
   const shelves = await prisma.warehouse.findMany({
     where: { pointId: { in: [...pointIds] }, ...LIVE_SHELF },
     select: {
@@ -354,13 +419,20 @@ export async function readPointOffers(
       balances: { where: { qty: { gt: 0 } }, select: { productId: true }, take: 50 },
     },
   });
-  if (shelves.length === 0) return out;
 
   const productIds = Array.from(new Set(shelves.flatMap((w) => w.balances.map((b) => b.productId))));
-  if (productIds.length === 0) return out;
-  const companyIds = Array.from(new Set(shelves.map((w) => w.companyId)));
+  const companyIds = Array.from(new Set(points.map((pt) => pt.companyId)));
   const offers = await prisma.productOffer.findMany({
-    where: { companyId: { in: companyIds }, productId: { in: productIds } },
+    where: {
+      companyId: { in: companyIds },
+      // Товар — через полку этой точки; услуга — вся, что есть у предприятия.
+      OR: [
+        ...(productIds.length > 0 ? [{ productId: { in: productIds } }] : []),
+        { unit: { in: ["service", "hour"] }, status: "ACTIVE" as const },
+      ],
+    },
+    orderBy: [{ updatedAt: "desc" }],
+    take: 200,
     select: {
       companyId: true,
       productId: true,
@@ -376,27 +448,49 @@ export async function readPointOffers(
       },
     },
   });
+  if (offers.length === 0) return out;
   const byKey = new Map(offers.map((o) => [`${o.companyId}:${o.productId}`, o]));
+
+  type Row = { slug: string; name: string; price: string | null };
+  const line = (o: (typeof offers)[number]): Row => ({
+    slug: o.product.slug,
+    name: o.product.name,
+    price: `${Number(o.price)} ${o.currency}${o.unit ? ` / ${o.unit}` : ""}`,
+  });
+  // Выключатель «товары» читается здесь: фид публичный, и спрятать список вёрсткой
+  // значит всё равно отдать его наружу (правило слайса BX).
+  const showable = (o: (typeof offers)[number]) =>
+    publicFieldOn(o.company.publicFields, "products") && offerVisible(o, o.company, o.product);
+
+  const push = (pointId: string, o: (typeof offers)[number]) => {
+    const rows = out.get(pointId) ?? [];
+    if (rows.length >= perPoint) return;
+    if (!showable(o)) return;
+    if (rows.some((r) => r.slug === o.product.slug)) return;
+    rows.push(line(o));
+    out.set(pointId, rows);
+  };
+
+  // Услуги предприятия — на каждой его живой точке: занятие происходит там, где стоит
+  // продавец.
+  const servicesByCompany = new Map<string, (typeof offers)[number][]>();
+  for (const o of offers) {
+    if (!isServiceUnit(o.unit)) continue;
+    const list = servicesByCompany.get(o.companyId) ?? [];
+    list.push(o);
+    servicesByCompany.set(o.companyId, list);
+  }
+  for (const pt of points) {
+    for (const o of servicesByCompany.get(pt.companyId) ?? []) push(pt.id, o);
+  }
 
   for (const w of shelves) {
     if (!w.pointId) continue;
-    const rows = out.get(w.pointId) ?? [];
     for (const b of w.balances) {
-      if (rows.length >= perPoint) break;
       const offer = byKey.get(`${w.companyId}:${b.productId}`);
       if (!offer) continue;
-      // Выключатель «товары» читается здесь: фид публичный, и спрятать список
-      // вёрсткой значит всё равно отдать его наружу (правило слайса BX).
-      if (!publicFieldOn(offer.company.publicFields, "products")) continue;
-      if (!offerVisible(offer, offer.company, offer.product)) continue;
-      if (rows.some((r) => r.slug === offer.product.slug)) continue;
-      rows.push({
-        slug: offer.product.slug,
-        name: offer.product.name,
-        price: `${Number(offer.price)} ${offer.currency}${offer.unit ? ` / ${offer.unit}` : ""}`,
-      });
+      push(w.pointId, offer);
     }
-    if (rows.length > 0) out.set(w.pointId, rows);
   }
   return out;
 }

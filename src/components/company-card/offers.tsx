@@ -62,7 +62,9 @@ export function CardOffers({
                   </span>
                 ) : null}
               </div>
-              <div className="mt-1 text-[11.5px] text-muted">{r.inStock ? t("inStock") : t("outOfStock")}</div>
+              {r.inStock === null ? null : (
+                <div className="mt-1 text-[11.5px] text-muted">{r.inStock ? t("inStock") : t("outOfStock")}</div>
+              )}
             </div>
           </Link>
         </li>

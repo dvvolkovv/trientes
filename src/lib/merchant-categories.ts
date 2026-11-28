@@ -40,6 +40,11 @@ export const MERCHANT_CATEGORIES: MerchantCategory[] = [
   { key: "electronics", emoji: "💻", interest: "shop" },
   { key: "pharmacy", emoji: "💊", interest: "shop" },
   { key: "beauty", emoji: "💅", interest: "shop" },
+  // Велнес: студия йоги, пилатеса, медитации. Завести пришлось потому, что у такого
+  // заведения из списка подходили только «услуги» (🔧) — на витрине это читалось как
+  // мастерская. Интерес маршрута — `shop`: это место назначения, а не топливо, еда,
+  // ночлег или наличные.
+  { key: "wellness", emoji: "🧘", interest: "shop" },
   { key: "services", emoji: "🔧", interest: "shop" },
   { key: "exchange", emoji: "💱", interest: "cash" },
   { key: "atm", emoji: "🏧", interest: "cash" },

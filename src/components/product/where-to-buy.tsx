@@ -75,9 +75,13 @@ export async function WhereToBuy({
                         <span className="text-accent num"> · {t("cashback", { percent: o.cashbackPercent })}</span>
                       ) : null}
                     </div>
-                    <div className="text-[12px] text-muted mt-0.5">
-                      {o.inStock ? t("inStock") : t("outOfStock")}
-                    </div>
+                    {/* У услуги наличия нет вовсе (`null`), и строки о нём тоже:
+                        «нет в наличии» у занятия по записи — неправда. */}
+                    {o.inStock === null ? null : (
+                      <div className="text-[12px] text-muted mt-0.5">
+                        {o.inStock ? t("inStock") : t("outOfStock")}
+                      </div>
+                    )}
                     {o.saleRules ? <p className="text-[12px] text-muted mt-1 whitespace-pre-line">{o.saleRules}</p> : null}
                     {promoByCompany.has(o.companyId) ? (
                       <p className="text-[12px] mt-1">

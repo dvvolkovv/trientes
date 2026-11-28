@@ -1889,6 +1889,7 @@
       "electronics": "Elektronik",
       "pharmacy": "Apotheke",
       "beauty": "Kosmetik",
+      "wellness": "Yoga & Wellness",
       "services": "Dienstleistungen",
       "exchange": "Wechselstube",
       "atm": "Geldautomat",
@@ -2798,7 +2799,7 @@
       "title": "Risikomerkmale des Contracts"
     },
     "links": {
-      "website": "Website",
+      "website": "Webseite",
       "docs": "Dokumentation",
       "whitepaper": "Whitepaper",
       "github": "GitHub",

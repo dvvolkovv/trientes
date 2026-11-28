@@ -3,6 +3,7 @@ import {
   CASHBACK_MAX,
   OFFER_CURRENCIES,
   availabilityOf,
+  isServiceUnit,
   offerVisible,
   parseAmount,
   validateOffer,
@@ -114,5 +115,16 @@ describe("availabilityOf", () => {
     expect(availabilityOf([])).toBe(false);
     // Отрицательный остаток «в наличии» не значит: это разбор, а не товар на полке.
     expect(availabilityOf([{ qty: -3 }])).toBe(false);
+  });
+});
+
+describe("isServiceUnit", () => {
+  it("знает единицы, которые работа, а не товар", () => {
+    expect(isServiceUnit("service")).toBe(true);
+    expect(isServiceUnit("hour")).toBe(true);
+  });
+
+  it("товарные единицы услугой не считает — иначе остаток перестал бы считаться", () => {
+    for (const unit of ["pcs", "pack", "kg", "l", "m2"]) expect(isServiceUnit(unit)).toBe(false);
   });
 });

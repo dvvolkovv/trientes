@@ -23,6 +23,18 @@ export type OfferCurrency = (typeof OFFER_CURRENCIES)[number];
 export const OFFER_UNITS = ["pcs", "pack", "set", "kg", "g", "l", "ml", "m", "m2", "hour", "service"] as const;
 export type OfferUnit = (typeof OFFER_UNITS)[number];
 
+/**
+ * Единицы, которые работа, а не товар. Такая строка полки не требует и с полки не
+ * списывается (правило кассы CK), поэтому и наличие у неё не считается остатком:
+ * занятие по записи «кончиться на складе» не может. Правило одно на кассу и на
+ * витрину — вторая копия разошлась бы с первой.
+ */
+const SERVICE_UNITS = new Set(["service", "hour"]);
+
+export function isServiceUnit(unit: string): boolean {
+  return SERVICE_UNITS.has(unit);
+}
+
 /** Ставка ниже — это не кэшбэк, выше — почти наверняка набрали 500 вместо 5,00. */
 export const CASHBACK_MIN = 0.1;
 export const CASHBACK_MAX = 50;

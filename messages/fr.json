@@ -1889,6 +1889,7 @@
       "electronics": "Électronique",
       "pharmacy": "Pharmacie",
       "beauty": "Beauté",
+      "wellness": "Yoga & bien-être",
       "services": "Services",
       "exchange": "Bureau de change",
       "atm": "Distributeur de billets",
@@ -6018,7 +6019,7 @@
       "day": "Date",
       "address": "Adresse",
       "txHash": "Hash de transaction",
-      "note": "Note",
+      "note": "Remarque",
       "label": "Libellé"
     },
     "notes": {
